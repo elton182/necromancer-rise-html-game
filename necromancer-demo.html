@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Necromancer's Rise — Demo Visual</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: 'Georgia', serif; }
+  canvas { display: block; }
+
+  /* HUD */
+  #hud {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    z-index: 10;
+  }
+  .bar-group { display: flex; flex-direction: column; gap: 4px; }
+  .bar-label {
+    color: #aaa;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .bar-track {
+    width: 160px;
+    height: 10px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+  #hp-fill  { background: linear-gradient(90deg, #7b0000, #c0392b); width: 75%; }
+  #mp-fill  { background: linear-gradient(90deg, #1a0050, #8e44ad); width: 60%; }
+  #exp-fill { background: linear-gradient(90deg, #003300, #27ae60); width: 40%; }
+
+  .stat-value {
+    color: #fff;
+    font-size: 11px;
+    text-align: right;
+    opacity: 0.7;
+  }
+
+  /* Level badge */
+  #level-badge {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    color: #d4af37;
+    font-size: 13px;
+    letter-spacing: 1px;
+    z-index: 10;
+    text-shadow: 0 0 10px #d4af37;
+  }
+
+  /* Minion counter */
+  #minion-hud {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .minion-slot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    font-size: 12px;
+  }
+  .minion-icon {
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(150,100,200,0.5);
+    border-radius: 4px;
+    background: rgba(80,0,120,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .minion-hp-bar {
+    width: 60px;
+    height: 4px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .minion-hp-fill {
+    height: 100%;
+    background: #27ae60;
+    border-radius: 2px;
+  }
+
+  /* Floating soul text */
+  .soul-text {
+    position: fixed;
+    color: #a855f7;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 20;
+    text-shadow: 0 0 8px #a855f7;
+    animation: floatUp 1.5s ease-out forwards;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-60px); }
+  }
+
+  /* Title */
+  #title {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+    animation: fadeOut 3s ease-out forwards;
+  }
+  #title h1 {
+    font-size: 36px;
+    letter-spacing: 4px;
+    color: #d4af37;
+    text-shadow: 0 0 20px #d4af37, 0 0 40px rgba(212,175,55,0.5);
+    margin-bottom: 8px;
+  }
+  #title p {
+    color: #888;
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
+  @keyframes fadeOut {
+    0%   { opacity: 1; }
+    60%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Controls hint */
+  #controls {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #555;
+    font-size: 11px;
+    letter-spacing: 1px;
+    z-index: 10;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div id="level-badge">⚔ LEVEL 3 — NECROMANTE</div>
+
+<div id="minion-hud">
+  <div style="color:#888; font-size:11px; letter-spacing:1px; margin-bottom:2px;">MINIONS (2/3)</div>
+  <div class="minion-slot">
+    <span>Zumbi</span>
+    <div class="minion-hp-bar"><div class="minion-hp-fill" style="width:80%"></div></div>
+    <div class="minion-icon">🧟</div>
+  </div>
+  <div class="minion-slot">
+    <span>Esqueleto</span>
+    <div class="minion-hp-bar"><div class="minion-hp-fill" style="width:55%; background:#e67e22;"></div></div>
+    <div class="minion-icon">💀</div>
+  </div>
+</div>
+
+<div id="hud">
+  <div class="bar-group">
+    <div class="bar-label">HP</div>
+    <div class="bar-track"><div class="bar-fill" id="hp-fill"></div></div>
+    <div class="stat-value">75 / 100</div>
+  </div>
+  <div class="bar-group">
+    <div class="bar-label">MP</div>
+    <div class="bar-track"><div class="bar-fill" id="mp-fill"></div></div>
+    <div class="stat-value">60 / 100</div>
+  </div>
+  <div class="bar-group">
+    <div class="bar-label">EXP</div>
+    <div class="bar-track"><div class="bar-fill" id="exp-fill"></div></div>
+    <div class="stat-value">240 / 600</div>
+  </div>
+</div>
+
+<div id="controls">WASD / Setas para mover · Clique para lançar feitiço</div>
+
+<div id="title">
+  <h1>NECROMANCER'S RISE</h1>
+  <p>demo visual — protótipo</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── SETUP ────────────────────────────────────────────────────────────────────
+const scene    = new THREE.Scene();
+const camera   = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 200);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setClearColor(0x000000);
+document.body.appendChild(renderer.domElement);
+
+// Fog atmosférico
+scene.fog = new THREE.FogExp2(0x0a0010, 0.045);
+
+// ─── CÂMERA (top-down inclinada, estilo Vampire Survivors) ─────────────────
+camera.position.set(0, 14, 10);
+camera.lookAt(0, 0, 0);
+
+// ─── ILUMINAÇÃO ───────────────────────────────────────────────────────────────
+const ambient = new THREE.AmbientLight(0x1a0033, 0.8);
+scene.add(ambient);
+
+// Luz principal roxo-azulada
+const mainLight = new THREE.DirectionalLight(0x6600ff, 0.6);
+mainLight.position.set(5, 15, 5);
+mainLight.castShadow = true;
+mainLight.shadow.mapSize.set(2048, 2048);
+mainLight.shadow.camera.near = 0.1;
+mainLight.shadow.camera.far = 60;
+mainLight.shadow.camera.left = -20;
+mainLight.shadow.camera.right = 20;
+mainLight.shadow.camera.top = 20;
+mainLight.shadow.camera.bottom = -20;
+scene.add(mainLight);
+
+// Luz de preenchimento esverdeada (aura necromante)
+const fillLight = new THREE.PointLight(0x00ff88, 1.5, 12);
+fillLight.position.set(0, 3, 0);
+scene.add(fillLight);
+
+// Luz vermelha distante (perigo)
+const dangerLight = new THREE.PointLight(0xff2200, 0.8, 25);
+dangerLight.position.set(-10, 2, -10);
+scene.add(dangerLight);
+
+// ─── CHÃO ─────────────────────────────────────────────────────────────────────
+const groundGeo = new THREE.PlaneGeometry(60, 60, 30, 30);
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x0d0015,
+  roughness: 0.95,
+  metalness: 0.05,
+  wireframe: false,
+});
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// Grid sutil
+const gridHelper = new THREE.GridHelper(60, 40, 0x1a0033, 0x0f0020);
+gridHelper.position.y = 0.01;
+scene.add(gridHelper);
+
+// Pedras/ruínas decorativas
+function addRuin(x, z, scale = 1) {
+  const geo = new THREE.BoxGeometry(
+    0.4 + Math.random() * 0.5,
+    0.3 + Math.random() * 1.2,
+    0.4 + Math.random() * 0.5
+  );
+  const mat = new THREE.MeshStandardMaterial({ color: 0x1a0d2e, roughness: 1 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, mesh.geometry.parameters.height / 2, z);
+  mesh.rotation.y = Math.random() * Math.PI;
+  mesh.scale.setScalar(scale);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+const ruinPositions = [
+  [-6,4],[6,4],[-8,-3],[7,-5],[4,8],[-5,9],
+  [-12,2],[12,1],[2,-10],[-3,-12],[10,-8],[-10,-7],
+  [-4,15],[5,14],[-14,6],[14,-4]
+];
+ruinPositions.forEach(([x,z]) => addRuin(x, z, 0.8 + Math.random() * 0.8));
+
+// ─── NECROMANTE ───────────────────────────────────────────────────────────────
+const necroGroup = new THREE.Group();
+scene.add(necroGroup);
+
+// Corpo (robe)
+const bodyGeo = new THREE.CylinderGeometry(0.22, 0.35, 1.1, 8);
+const robeMat = new THREE.MeshStandardMaterial({ color: 0x0a0018, roughness: 0.9 });
+const body = new THREE.Mesh(bodyGeo, robeMat);
+body.position.y = 0.55;
+body.castShadow = true;
+necroGroup.add(body);
+
+// Cabeça
+const headGeo = new THREE.SphereGeometry(0.2, 10, 10);
+const skinMat = new THREE.MeshStandardMaterial({ color: 0x2d1f1f, roughness: 0.8 });
+const head = new THREE.Mesh(headGeo, skinMat);
+head.position.y = 1.3;
+head.castShadow = true;
+necroGroup.add(head);
+
+// Capuz
+const hoodGeo = new THREE.ConeGeometry(0.28, 0.45, 8);
+const hoodMat = new THREE.MeshStandardMaterial({ color: 0x050010, roughness: 1 });
+const hood = new THREE.Mesh(hoodGeo, hoodMat);
+hood.position.y = 1.6;
+hood.castShadow = true;
+necroGroup.add(hood);
+
+// Cajado
+const staffGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.6, 6);
+const staffMat = new THREE.MeshStandardMaterial({ color: 0x3d2200, roughness: 0.7 });
+const staff = new THREE.Mesh(staffGeo, staffMat);
+staff.position.set(0.4, 0.8, 0);
+staff.rotation.z = 0.15;
+staff.castShadow = true;
+necroGroup.add(staff);
+
+// Orbe do cajado
+const orbGeo = new THREE.SphereGeometry(0.1, 12, 12);
+const orbMat = new THREE.MeshStandardMaterial({
+  color: 0x00ff88,
+  emissive: 0x00ff88,
+  emissiveIntensity: 2,
+  roughness: 0.2,
+});
+const orb = new THREE.Mesh(orbGeo, orbMat);
+orb.position.set(0.52, 1.65, 0);
+necroGroup.add(orb);
+
+// Luz do orbe
+const orbLight = new THREE.PointLight(0x00ff88, 2, 4);
+orb.add(orbLight);
+
+necroGroup.position.set(0, 0, 0);
+
+// ─── MINION: ZUMBI ────────────────────────────────────────────────────────────
+function createZombie(offsetX, offsetZ) {
+  const g = new THREE.Group();
+
+  const zombieMat = new THREE.MeshStandardMaterial({ color: 0x2d5a1b, roughness: 1 });
+  const zombieDarkMat = new THREE.MeshStandardMaterial({ color: 0x1a3a10, roughness: 1 });
+
+  // Corpo
+  const zBodyGeo = new THREE.BoxGeometry(0.45, 0.7, 0.28);
+  const zBody = new THREE.Mesh(zBodyGeo, zombieMat);
+  zBody.position.y = 0.5;
+  zBody.castShadow = true;
+  g.add(zBody);
+
+  // Cabeça
+  const zHeadGeo = new THREE.BoxGeometry(0.35, 0.32, 0.3);
+  const zHead = new THREE.Mesh(zHeadGeo, zombieDarkMat);
+  zHead.position.y = 1.05;
+  zHead.castShadow = true;
+  g.add(zHead);
+
+  // Olhos brilhantes
+  const eyeGeo = new THREE.SphereGeometry(0.045, 6, 6);
+  const eyeMat = new THREE.MeshStandardMaterial({ emissive: 0x00ff44, emissiveIntensity: 3, color: 0x000000 });
+  const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+  const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+  eyeL.position.set(-0.1, 1.08, 0.15);
+  eyeR.position.set(0.1, 1.08, 0.15);
+  g.add(eyeL, eyeR);
+
+  // Braços
+  const armGeo = new THREE.BoxGeometry(0.15, 0.55, 0.15);
+  const armL = new THREE.Mesh(armGeo, zombieMat);
+  const armR = new THREE.Mesh(armGeo, zombieMat);
+  armL.position.set(-0.32, 0.5, 0);
+  armR.position.set(0.32, 0.5, 0);
+  armL.rotation.z = 0.5; // braço esticado (zumbi)
+  armR.rotation.z = -0.5;
+  armL.castShadow = true;
+  armR.castShadow = true;
+  g.add(armL, armR);
+
+  // Pernas
+  const legGeo = new THREE.BoxGeometry(0.17, 0.45, 0.17);
+  const legL = new THREE.Mesh(legGeo, zombieDarkMat);
+  const legR = new THREE.Mesh(legGeo, zombieDarkMat);
+  legL.position.set(-0.14, 0.22, 0);
+  legR.position.set(0.14, 0.22, 0);
+  legL.castShadow = true;
+  legR.castShadow = true;
+  g.add(legL, legR);
+
+  g.position.set(offsetX, 0, offsetZ);
+  g.userData = { offsetX, offsetZ, walkPhase: Math.random() * Math.PI * 2 };
+  scene.add(g);
+  return g;
+}
+
+// ─── MINION: ESQUELETO ────────────────────────────────────────────────────────
+function createSkeleton(offsetX, offsetZ) {
+  const g = new THREE.Group();
+  const boneMat = new THREE.MeshStandardMaterial({ color: 0xd4c8a0, roughness: 0.9 });
+  const darkBone = new THREE.MeshStandardMaterial({ color: 0x9a8c6e, roughness: 0.9 });
+
+  // Crânio
+  const skullGeo = new THREE.SphereGeometry(0.2, 8, 8);
+  const skull = new THREE.Mesh(skullGeo, boneMat);
+  skull.position.y = 1.1;
+  skull.scale.y = 0.9;
+  skull.castShadow = true;
+  g.add(skull);
+
+  // Olhos ocos (emissivos)
+  const eyeGeo = new THREE.SphereGeometry(0.055, 6, 6);
+  const eyeMat = new THREE.MeshStandardMaterial({ emissive: 0x6600ff, emissiveIntensity: 4, color: 0x000000 });
+  const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+  const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+  eyeL.position.set(-0.09, 1.13, 0.16);
+  eyeR.position.set(0.09, 1.13, 0.16);
+  g.add(eyeL, eyeR);
+
+  // Tórax (caixa torácica simplificada)
+  const torsoGeo = new THREE.BoxGeometry(0.38, 0.5, 0.18);
+  const torso = new THREE.Mesh(torsoGeo, darkBone);
+  torso.position.y = 0.65;
+  torso.castShadow = true;
+  g.add(torso);
+
+  // Braços (ossos finos)
+  const armGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 6);
+  const armL = new THREE.Mesh(armGeo, boneMat);
+  const armR = new THREE.Mesh(armGeo, boneMat);
+  armL.position.set(-0.28, 0.6, 0);
+  armR.position.set(0.28, 0.6, 0);
+  armL.rotation.z = 0.3;
+  armR.rotation.z = -0.3;
+  g.add(armL, armR);
+
+  // Pernas
+  const legGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.5, 6);
+  const legL = new THREE.Mesh(legGeo, boneMat);
+  const legR = new THREE.Mesh(legGeo, boneMat);
+  legL.position.set(-0.12, 0.25, 0);
+  legR.position.set(0.12, 0.25, 0);
+  g.add(legL, legR);
+
+  g.position.set(offsetX, 0, offsetZ);
+  g.userData = { offsetX, offsetZ, walkPhase: Math.random() * Math.PI * 2 };
+  scene.add(g);
+  return g;
+}
+
+const zombie   = createZombie(-1.5, 0.8);
+const skeleton = createSkeleton(1.2, 1.0);
+const minions  = [zombie, skeleton];
+
+// ─── INIMIGOS VIVOS (simples) ──────────────────────────────────────────────
+function createEnemy(x, z) {
+  const g = new THREE.Group();
+  const mat = new THREE.MeshStandardMaterial({ color: 0x8b1a1a, roughness: 0.8 });
+
+  const bodyGeo = new THREE.BoxGeometry(0.5, 0.75, 0.3);
+  const body = new THREE.Mesh(bodyGeo, mat);
+  body.position.y = 0.55;
+  body.castShadow = true;
+  g.add(body);
+
+  const headGeo = new THREE.SphereGeometry(0.22, 8, 8);
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xc0392b, roughness: 0.7 });
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.position.y = 1.1;
+  g.add(head);
+
+  // Barra de HP flutuante (vermelho)
+  const barBgGeo = new THREE.PlaneGeometry(0.5, 0.07);
+  const barBgMat = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
+  const barBg = new THREE.Mesh(barBgGeo, barBgMat);
+  barBg.position.y = 1.6;
+  barBg.rotation.x = -Math.PI / 6;
+  g.add(barBg);
+
+  const barFillGeo = new THREE.PlaneGeometry(0.48, 0.055);
+  const barFillMat = new THREE.MeshBasicMaterial({ color: 0xff2200, side: THREE.DoubleSide });
+  const barFill = new THREE.Mesh(barFillGeo, barFillMat);
+  barFill.position.y = 1.61;
+  barFill.position.z = 0.001;
+  barFill.rotation.x = -Math.PI / 6;
+  g.add(barFill);
+
+  g.position.set(x, 0, z);
+  g.userData = { hp: 0.6 + Math.random() * 0.4, barFill, baseX: x, baseZ: z, phase: Math.random() * Math.PI * 2 };
+  scene.add(g);
+  return g;
+}
+
+const enemies = [
+  createEnemy(-5, -3),
+  createEnemy(5, -4),
+  createEnemy(0, -6),
+  createEnemy(-7, -1),
+  createEnemy(7, -2),
+  createEnemy(-3, -8),
+  createEnemy(4, -9),
+];
+
+// ─── PARTÍCULAS DE ALMA ────────────────────────────────────────────────────
+const SOUL_COUNT = 120;
+const soulPositions = new Float32Array(SOUL_COUNT * 3);
+const soulSpeeds    = new Float32Array(SOUL_COUNT);
+const soulPhases    = new Float32Array(SOUL_COUNT);
+const soulGeo = new THREE.BufferGeometry();
+
+for (let i = 0; i < SOUL_COUNT; i++) {
+  soulPositions[i * 3]     = (Math.random() - 0.5) * 30;
+  soulPositions[i * 3 + 1] = Math.random() * 3;
+  soulPositions[i * 3 + 2] = (Math.random() - 0.5) * 30;
+  soulSpeeds[i]  = 0.3 + Math.random() * 0.7;
+  soulPhases[i]  = Math.random() * Math.PI * 2;
+}
+soulGeo.setAttribute('position', new THREE.BufferAttribute(soulPositions, 3));
+
+const soulMat = new THREE.PointsMaterial({
+  color: 0x8844ff,
+  size: 0.12,
+  transparent: true,
+  opacity: 0.8,
+  sizeAttenuation: true,
+});
+const souls = new THREE.Points(soulGeo, soulMat);
+scene.add(souls);
+
+// Partículas ao redor do necromante (aura)
+const AURA_COUNT = 40;
+const auraGeo = new THREE.BufferGeometry();
+const auraPos = new Float32Array(AURA_COUNT * 3);
+auraGeo.setAttribute('position', new THREE.BufferAttribute(auraPos, 3));
+const auraMat = new THREE.PointsMaterial({
+  color: 0x00ff88,
+  size: 0.08,
+  transparent: true,
+  opacity: 0.9,
+  sizeAttenuation: true,
+});
+const aura = new THREE.Points(auraGeo, auraMat);
+necroGroup.add(aura);
+
+// ─── CONTROLES ────────────────────────────────────────────────────────────────
+const keys = {};
+window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
+
+// Click para efeito de feitiço
+renderer.domElement.addEventListener('click', (e) => {
+  spawnSpell(e.clientX, e.clientY);
+});
+
+function spawnSpell(cx, cy) {
+  // Raycasting para posição no chão
+  const mouse = new THREE.Vector2(
+    (cx / innerWidth) * 2 - 1,
+    -(cy / innerHeight) * 2 + 1
+  );
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const target = new THREE.Vector3();
+  raycaster.ray.intersectPlane(plane, target);
+
+  createSpellEffect(target.x, target.z);
+  showSoulText(cx, cy, '+12 almas');
+}
+
+function createSpellEffect(x, z) {
+  // Anel de expansão
+  const ringGeo = new THREE.RingGeometry(0.1, 0.2, 16);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: 0x8800ff,
+    transparent: true,
+    opacity: 0.9,
+    side: THREE.DoubleSide
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.set(x, 0.05, z);
+  ring.userData = { life: 1.0, type: 'spell' };
+  scene.add(ring);
+  spellRings.push(ring);
+
+  // Luz flash
+  const flash = new THREE.PointLight(0x8800ff, 5, 6);
+  flash.position.set(x, 1, z);
+  flash.userData = { life: 1.0, type: 'flash' };
+  scene.add(flash);
+  spellRings.push(flash);
+}
+
+const spellRings = [];
+
+function showSoulText(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'soul-text';
+  el.textContent = text;
+  el.style.left = x + 'px';
+  el.style.top  = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+// ─── ANIMAÇÃO ─────────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+let time = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  time += dt;
+
+  // Movimento do necromante
+  const speed = 4;
+  if (keys['w'] || keys['arrowup'])    necroGroup.position.z -= speed * dt;
+  if (keys['s'] || keys['arrowdown'])  necroGroup.position.z += speed * dt;
+  if (keys['a'] || keys['arrowleft'])  necroGroup.position.x -= speed * dt;
+  if (keys['d'] || keys['arrowright']) necroGroup.position.x += speed * dt;
+
+  // Câmera segue o necromante
+  camera.position.x += (necroGroup.position.x - camera.position.x + 0) * 5 * dt;
+  camera.position.z += (necroGroup.position.z + 10 - camera.position.z) * 5 * dt;
+  camera.lookAt(necroGroup.position.x, 0, necroGroup.position.z);
+
+  // Luz de preenchimento segue necromante
+  fillLight.position.set(necroGroup.position.x, 3, necroGroup.position.z);
+
+  // Animação do orbe/cajado
+  orb.position.y = 1.65 + Math.sin(time * 3) * 0.05;
+  orbLight.intensity = 1.5 + Math.sin(time * 4) * 0.5;
+
+  // Flutuação do necromante
+  necroGroup.position.y = Math.sin(time * 1.5) * 0.04;
+
+  // Aura ao redor do necromante
+  for (let i = 0; i < AURA_COUNT; i++) {
+    const angle = (i / AURA_COUNT) * Math.PI * 2 + time * 0.5;
+    const radius = 1.0 + Math.sin(time * 2 + i) * 0.3;
+    auraPos[i * 3]     = Math.cos(angle) * radius;
+    auraPos[i * 3 + 1] = 0.5 + Math.sin(time * 3 + i * 0.5) * 0.8;
+    auraPos[i * 3 + 2] = Math.sin(angle) * radius;
+  }
+  auraGeo.attributes.position.needsUpdate = true;
+
+  // Minions seguem o necromante com delay/offset
+  minions.forEach((m, idx) => {
+    const targetX = necroGroup.position.x + m.userData.offsetX * Math.cos(time * 0.3 + idx) - m.userData.offsetZ * Math.sin(time * 0.3 + idx);
+    const targetZ = necroGroup.position.z + m.userData.offsetZ * Math.cos(time * 0.3 + idx) + m.userData.offsetX * Math.sin(time * 0.3 + idx);
+    m.position.x += (targetX - m.position.x) * 2.5 * dt;
+    m.position.z += (targetZ - m.position.z) * 2.5 * dt;
+
+    // Animação de caminhada (balanceio)
+    m.userData.walkPhase += dt * 3;
+    m.rotation.y = Math.atan2(
+      targetX - m.position.x,
+      targetZ - m.position.z
+    );
+    m.position.y = Math.abs(Math.sin(m.userData.walkPhase)) * 0.06;
+  });
+
+  // Inimigos: patrulham levemente e olham pro necromante
+  enemies.forEach(e => {
+    e.userData.phase += dt;
+    e.position.x = e.userData.baseX + Math.sin(e.userData.phase * 0.5) * 1.2;
+    e.position.z = e.userData.baseZ + Math.cos(e.userData.phase * 0.4) * 0.8;
+
+    // Olha pro necromante
+    const dx = necroGroup.position.x - e.position.x;
+    const dz = necroGroup.position.z - e.position.z;
+    e.rotation.y = Math.atan2(dx, dz);
+
+    // Barra de HP flutua
+    e.userData.barFill.lookAt(camera.position.x - e.position.x, camera.position.y, camera.position.z - e.position.z);
+  });
+
+  // Partículas de alma flutuam
+  for (let i = 0; i < SOUL_COUNT; i++) {
+    soulPositions[i * 3 + 1] += dt * soulSpeeds[i] * 0.3;
+    soulPositions[i * 3]     += Math.sin(time * soulSpeeds[i] + soulPhases[i]) * dt * 0.15;
+    if (soulPositions[i * 3 + 1] > 4) {
+      soulPositions[i * 3 + 1] = 0;
+      soulPositions[i * 3]     = necroGroup.position.x + (Math.random() - 0.5) * 30;
+      soulPositions[i * 3 + 2] = necroGroup.position.z + (Math.random() - 0.5) * 30;
+    }
+  }
+  soulGeo.attributes.position.needsUpdate = true;
+
+  // Feitiços: expande e desaparece
+  for (let i = spellRings.length - 1; i >= 0; i--) {
+    const obj = spellRings[i];
+    obj.userData.life -= dt * 2;
+    if (obj.userData.type === 'spell') {
+      const s = 1 + (1 - obj.userData.life) * 5;
+      obj.scale.set(s, s, s);
+      obj.material.opacity = obj.userData.life * 0.8;
+    } else if (obj.userData.type === 'flash') {
+      obj.intensity = obj.userData.life * 5;
+    }
+    if (obj.userData.life <= 0) {
+      scene.remove(obj);
+      spellRings.splice(i, 1);
+    }
+  }
+
+  // Luz de perigo pulsa
+  dangerLight.intensity = 0.5 + Math.sin(time * 1.2) * 0.4;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

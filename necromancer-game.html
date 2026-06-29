@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Necromancer's Rise</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#000; overflow:hidden; font-family:'Georgia',serif; color:#fff; }
+canvas { display:block; }
+
+/* ── HUD BARS ── */
+#hud {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  display:flex; gap:12px; align-items:flex-end; z-index:10; pointer-events:none;
+}
+.bar-wrap { display:flex; flex-direction:column; gap:3px; }
+.bar-label { font-size:9px; letter-spacing:2px; color:#888; }
+.bar-track { width:140px; height:10px; background:rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.12); border-radius:2px; overflow:hidden; position:relative; }
+.bar-fill  { height:100%; border-radius:2px; transition:width .15s; }
+#hp-fill   { background:linear-gradient(90deg,#7b0000,#c0392b); }
+#mp-fill   { background:linear-gradient(90deg,#1a0050,#8e44ad); }
+#sp-fill   { background:linear-gradient(90deg,#003333,#00ccaa); }
+#exp-fill  { background:linear-gradient(90deg,#003300,#27ae60); }
+#sp-segs   { position:absolute; inset:0; display:flex; pointer-events:none; }
+.sp-seg    { height:100%; border-right:1px solid rgba(0,0,0,.5); }
+.bar-val   { font-size:10px; color:#aaa; text-align:right; }
+
+/* ── SPELL BAR ── */
+#spellbar {
+  position:fixed; bottom:75px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; z-index:10; pointer-events:none;
+}
+.spell-slot {
+  width:52px; height:52px; border:2px solid rgba(255,255,255,.15); border-radius:6px;
+  background:rgba(10,0,20,.8); display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:2px; cursor:pointer; transition:all .2s; position:relative;
+}
+.spell-slot.active  { border-color:#d4af37; box-shadow:0 0 12px rgba(212,175,55,.4); }
+.spell-slot.locked  { opacity:.3; filter:grayscale(1); }
+.spell-slot .s-icon { font-size:20px; }
+.spell-slot .s-key  { font-size:9px; color:#555; letter-spacing:1px; }
+.spell-slot .s-cost { position:absolute; bottom:2px; right:4px; font-size:9px; color:#8e44ad; }
+.spell-slot .s-name { position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+  white-space:nowrap; font-size:9px; color:#aaa; opacity:0; transition:opacity .15s; }
+.spell-slot:hover .s-name { opacity:1; }
+
+/* ── SUMMON WHEEL (field) ── */
+#summon-wheel {
+  position:fixed; bottom:140px; left:50%; transform:translateX(-50%);
+  display:none; gap:10px; z-index:15; flex-direction:column; align-items:center;
+}
+#summon-wheel .sw-title { font-size:10px; letter-spacing:2px; color:#00ccaa; }
+#summon-wheel .sw-row   { display:flex; gap:8px; }
+.sw-btn {
+  padding:8px 14px; border:1px solid rgba(0,204,170,.3); border-radius:4px;
+  background:rgba(0,30,25,.85); color:#00ccaa; font-size:11px; cursor:pointer;
+  font-family:inherit; transition:all .2s; display:flex; flex-direction:column; gap:2px; align-items:center;
+}
+.sw-btn:hover { border-color:#00ccaa; background:rgba(0,60,50,.9); }
+.sw-btn.sw-disabled { opacity:.3; cursor:not-allowed; pointer-events:none; }
+.sw-btn .sw-cost { font-size:9px; color:#555; }
+
+/* ── TOP LEFT ── */
+#top-left { position:fixed; top:16px; left:16px; z-index:10; display:flex; flex-direction:column; gap:4px; pointer-events:none; }
+#level-txt { color:#d4af37; font-size:13px; letter-spacing:1px; text-shadow:0 0 10px #d4af37; }
+#souls-txt { color:#a855f7; font-size:12px; letter-spacing:1px; }
+#wave-txt  { color:#ff6633; font-size:11px; letter-spacing:1px; }
+#sp-pts-txt{ color:#00ccaa; font-size:11px; letter-spacing:1px; }
+
+/* ── MINION PANEL ── */
+#minion-panel { position:fixed; top:16px; right:16px; z-index:10; display:flex; flex-direction:column; gap:5px; align-items:flex-end; }
+.minion-row   { display:flex; align-items:center; gap:6px; }
+.minion-icon  { width:30px; height:30px; border:1px solid rgba(150,100,200,.5); border-radius:4px; background:rgba(80,0,120,.3); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.minion-icon.dead { filter:grayscale(1); opacity:.4; }
+.m-hp-track { width:55px; height:4px; background:rgba(0,0,0,.5); border-radius:2px; overflow:hidden; }
+.m-hp-fill  { height:100%; background:#27ae60; border-radius:2px; transition:width .2s; }
+.m-name     { font-size:10px; color:#999; width:62px; text-align:right; }
+
+/* ── FLOAT MSG ── */
+.float-msg { position:fixed; pointer-events:none; z-index:20; font-size:13px; font-weight:bold; text-shadow:0 0 6px currentColor; animation:floatUp 1.2s ease-out forwards; }
+@keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-55px) scale(.85)} }
+
+/* ── WAVE BANNER ── */
+#wave-banner { position:fixed; top:38%; left:50%; transform:translate(-50%,-50%); z-index:30; text-align:center; pointer-events:none; opacity:0; transition:opacity .3s; }
+#wave-banner h2 { font-size:32px; letter-spacing:4px; color:#ff6633; text-shadow:0 0 20px #ff6633; }
+#wave-banner p  { font-size:13px; color:#aaa; margin-top:6px; letter-spacing:2px; }
+
+/* ── OVERLAY MSG ── */
+#overlay-msg { position:fixed; top:40%; left:50%; transform:translate(-50%,-50%); z-index:35; text-align:center; pointer-events:none; opacity:0; transition:opacity .4s; }
+#overlay-msg h2 { font-size:28px; letter-spacing:3px; }
+#overlay-msg p  { font-size:12px; color:#aaa; margin-top:6px; }
+
+/* ── REANIMATE HINT ── */
+#reanimate-hint { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); font-size:11px; color:#8844ff; letter-spacing:1px; pointer-events:none; z-index:10; opacity:0; transition:opacity .3s; text-shadow:0 0 8px #8844ff; }
+
+/* ── HUB OVERLAY ── */
+#hub-overlay {
+  position:fixed; inset:0; z-index:40; display:none;
+  background:rgba(0,0,0,.92); backdrop-filter:blur(6px);
+  flex-direction:column; align-items:center;
+  overflow-y:auto; padding:24px 20px 32px;
+  gap:0;
+}
+#hub-overlay h1 { font-size:22px; color:#d4af37; letter-spacing:3px; text-shadow:0 0 15px #d4af37; margin-bottom:4px; flex-shrink:0; }
+#hub-souls-disp { flex-shrink:0; }
+
+/* Tabs */
+.hub-tabs {
+  display:flex; flex-wrap:wrap; gap:0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  margin-bottom:0; width:100%; max-width:900px; flex-shrink:0;
+  margin-top:12px;
+}
+.hub-tab {
+  padding:9px 22px; font-size:10px; letter-spacing:2px; cursor:pointer;
+  color:#555; border-bottom:2px solid transparent; transition:all .2s;
+  font-family:inherit; background:none;
+  border-top:none; border-left:none; border-right:none;
+  white-space:nowrap;
+}
+.hub-tab.active { color:#d4af37; border-bottom-color:#d4af37; }
+
+/* Panels */
+.hub-panel { display:none; width:100%; max-width:900px; padding:18px 0 8px; }
+.hub-panel.active { display:block; }
+
+/* Upgrades — 3 colunas */
+.hub-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+  gap:12px;
+}
+.upgrade-card {
+  background:rgba(20,0,40,.8); border:1px solid rgba(150,100,200,.3);
+  border-radius:6px; padding:12px 14px; cursor:pointer; transition:all .2s;
+  display:flex; flex-direction:column; gap:4px;
+}
+.upgrade-card:hover { border-color:#8844ff; background:rgba(40,0,80,.9); }
+.upgrade-card.disabled { opacity:.35; cursor:not-allowed; pointer-events:none; }
+.u-name { font-size:11px; color:#c9a0ff; letter-spacing:1px; }
+.u-desc { font-size:10px; color:#777; line-height:1.4; }
+.u-cost { font-size:11px; color:#a855f7; margin-top:3px; }
+
+/* Skill tree */
+#skill-tree { display:flex; flex-direction:column; align-items:center; gap:14px; }
+.st-node {
+  background:rgba(10,0,25,.9); border:1px solid rgba(150,100,200,.3);
+  border-radius:8px; padding:10px 16px; min-width:150px; max-width:200px;
+  text-align:center; cursor:pointer; transition:all .2s;
+}
+.st-node:hover:not(.st-locked):not(.st-learned) { border-color:#8844ff; }
+.st-node.st-learned  { border-color:#00ccaa; background:rgba(0,40,35,.8); }
+.st-node.st-locked   { opacity:.3; cursor:not-allowed; }
+.st-node.st-active   { border-color:#d4af37; box-shadow:0 0 10px rgba(212,175,55,.3); }
+.st-name { font-size:11px; color:#ddd; margin-bottom:3px; }
+.st-desc { font-size:10px; color:#777; line-height:1.4; }
+.st-cost { font-size:10px; color:#00ccaa; margin-top:4px; }
+.st-row  { display:flex; gap:40px; justify-content:center; flex-wrap:wrap; }
+.st-branch-label { font-size:9px; letter-spacing:2px; margin-bottom:4px; }
+.st-branch { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.st-connector { width:1px; height:12px; background:rgba(255,255,255,.12); }
+
+/* Spell upgrades section */
+#spell-upgrades-section .upgrade-card { min-width:140px; max-width:170px; }
+
+/* Hub summon */
+.summon-grid { display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-start; margin-top:8px; }
+.summon-card {
+  background:rgba(0,25,20,.8); border:1px solid rgba(0,204,170,.25);
+  border-radius:6px; padding:14px 18px; min-width:150px; text-align:center;
+  cursor:pointer; transition:all .2s;
+}
+.summon-card:hover:not(.disabled) { border-color:#00ccaa; }
+.summon-card.disabled { opacity:.35; cursor:not-allowed; pointer-events:none; }
+.sm-emoji { font-size:26px; margin-bottom:4px; }
+.sm-name  { font-size:12px; color:#00ccaa; letter-spacing:1px; }
+.sm-stats { font-size:10px; color:#555; margin-top:3px; line-height:1.5; }
+.sm-cost  { font-size:10px; color:#a855f7; margin-top:5px; }
+
+/* Minion upgrade panel */
+#minion-upgrade-grid .upgrade-card { min-width:150px; max-width:185px; }
+
+/* Shop */
+.shop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+.shop-card { background:rgba(15,10,0,.85); border:1px solid rgba(212,175,55,.2); border-radius:6px; padding:14px; display:flex; flex-direction:column; gap:6px; transition:all .2s; }
+.shop-card:hover:not(.disabled) { border-color:#d4af37; background:rgba(30,20,0,.9); }
+.shop-card.disabled { opacity:.35; cursor:not-allowed; }
+.shop-card .sh-top { display:flex; align-items:center; gap:10px; }
+.shop-card .sh-icon { font-size:22px; }
+.shop-card .sh-name { font-size:11px; color:#d4af37; letter-spacing:1px; }
+.shop-card .sh-desc { font-size:10px; color:#666; line-height:1.5; }
+.shop-card .sh-foot { display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+.shop-card .sh-cost { font-size:11px; color:#d4af37; }
+.shop-card .sh-btn { padding:5px 12px; border-radius:3px; border:1px solid rgba(212,175,55,.4); background:rgba(212,175,55,.08); color:#d4af37; font-size:10px; cursor:pointer; font-family:inherit; letter-spacing:1px; transition:all .2s; }
+.shop-card .sh-btn:hover { background:rgba(212,175,55,.2); }
+
+/* Mission board */
+.mission-board-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-top:4px; }
+.mission-card { background:rgba(10,0,25,.85); border:1px solid rgba(100,60,160,.3); border-radius:8px; padding:18px; display:flex; flex-direction:column; gap:10px; transition:all .2s; cursor:pointer; }
+.mission-card:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,.4); }
+.mission-card .mc-header { display:flex; align-items:center; gap:10px; }
+.mission-card .mc-icon { font-size:26px; }
+.mission-card .mc-title { font-size:13px; color:#ddd; letter-spacing:1px; }
+.mission-card .mc-diff { display:flex; gap:3px; }
+.mission-card .mc-diff span { width:8px; height:8px; border-radius:50%; }
+.mission-card .mc-desc { font-size:10px; color:#666; line-height:1.6; }
+.mission-card .mc-details { display:flex; flex-direction:column; gap:4px; }
+.mission-card .mc-detail { font-size:10px; color:#555; }
+.mission-card .mc-detail b { color:#999; }
+.mission-card .mc-rewards { background:rgba(212,175,55,.06); border:1px solid rgba(212,175,55,.15); border-radius:4px; padding:8px 10px; font-size:11px; color:#d4af37; }
+.mission-card .mc-btn { padding:9px; border-radius:4px; font-family:inherit; font-size:11px; letter-spacing:2px; cursor:pointer; text-align:center; transition:all .2s; border:1px solid; }
+
+/* Roster de minions */
+.slot-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.slot-label { font-size:10px; color:#555; letter-spacing:2px; }
+.slot-pips { display:flex; gap:5px; }
+.slot-pip { width:14px; height:14px; border-radius:2px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); }
+.slot-pip.filled { border-color:#00ccaa; background:rgba(0,204,170,.2); }
+.slot-pip.dead { border-color:#553; background:rgba(100,80,0,.15); }
+.roster-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+.roster-card { background:rgba(10,0,25,.8); border:1px solid rgba(150,100,200,.25); border-radius:6px; padding:12px; display:flex; flex-direction:column; gap:6px; position:relative; }
+.roster-card.dead { opacity:.6; border-color:rgba(80,80,0,.4); }
+.roster-card .rc-top { display:flex; align-items:center; gap:8px; }
+.roster-card .rc-emoji { font-size:22px; }
+.roster-card .rc-info { flex:1; }
+.roster-card .rc-name { font-size:11px; color:#ddd; letter-spacing:1px; }
+.roster-card .rc-status { font-size:10px; color:#555; margin-top:2px; }
+.roster-card .rc-bars { display:flex; flex-direction:column; gap:3px; }
+.roster-bar { height:4px; border-radius:2px; background:rgba(255,255,255,.06); overflow:hidden; }
+.roster-bar-fill { height:100%; border-radius:2px; }
+.dismiss-btn { position:absolute; top:8px; right:8px; background:none; border:1px solid rgba(255,80,80,.25); color:rgba(255,100,100,.5); font-size:10px; border-radius:3px; padding:2px 6px; cursor:pointer; font-family:inherit; transition:all .2s; }
+.dismiss-btn:hover { border-color:#ff4444; color:#ff6666; background:rgba(255,0,0,.08); }
+
+.hub-actions { display:flex; gap:10px; margin-top:18px; flex-shrink:0; flex-wrap:wrap; justify-content:center; }
+.btn { padding:9px 22px; border:1px solid rgba(255,255,255,.2); border-radius:4px; background:rgba(255,255,255,.05); color:#fff; font-size:11px; letter-spacing:2px; cursor:pointer; transition:all .2s; font-family:inherit; }
+.btn:hover { background:rgba(255,255,255,.12); }
+.btn.primary { border-color:#d4af37; color:#d4af37; }
+.btn.primary:hover { background:rgba(212,175,55,.15); }
+.hub-sub { font-size:10px; color:#555; letter-spacing:1px; margin-top:6px; flex-shrink:0; }
+
+/* ── HINT ── */
+#hint { position:fixed; bottom:58px; left:50%; transform:translateX(-50%); font-size:10px; color:#383838; letter-spacing:1px; pointer-events:none; z-index:10; text-align:center; }
+/* ── VOLUME ── */
+#vol-ctrl { position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:10; display:flex; align-items:center; gap:8px; }
+#vol-btn  { background:none; border:none; color:#555; font-size:18px; cursor:pointer; padding:2px; transition:color .2s; }
+#vol-btn:hover { color:#aaa; }
+#vol-slider { -webkit-appearance:none; appearance:none; width:80px; height:3px; background:rgba(255,255,255,.15); border-radius:2px; outline:none; cursor:pointer; }
+#vol-slider::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:#8844ff; cursor:pointer; }
+/* ── CMD BAR ── */
+.cmd-btn { padding:7px 12px; border-radius:4px; border:1px solid rgba(255,255,255,.15); background:rgba(10,0,20,.85); color:#aaa; font-size:11px; letter-spacing:1px; cursor:pointer; font-family:inherit; transition:all .2s; width:110px; text-align:left; }
+.cmd-btn:hover { border-color:#d4af37; color:#d4af37; }
+.cmd-btn.active { border-color:#d4af37; color:#d4af37; background:rgba(50,30,0,.8); box-shadow:0 0 8px rgba(212,175,55,.3); }
+</style>
+</head>
+<body>
+
+<div id="vol-ctrl">
+  <button id="vol-btn" onclick="toggleMute()" title="Mute/Unmute">🔊</button>
+  <input id="vol-slider" type="range" min="0" max="100" value="55" oninput="setVolume(this.value/100)">
+</div>
+
+<div id="top-left">
+  <div id="level-txt">⚔ LEVEL 1 — NECROMANTE</div>
+  <div id="souls-txt">💀 0 almas</div>
+  <div id="gold-txt" style="color:#d4af37;font-size:12px;letter-spacing:1px;">🪙 0 gold</div>
+  <div id="wave-txt"></div>
+  <div id="sp-pts-txt"></div>
+</div>
+
+<div id="minion-panel"></div>
+
+<!-- Spell Bar -->
+<div id="spellbar">
+  <div class="spell-slot active" id="slot-nova" onclick="selectSpell('nova')">
+    <div class="s-name">Nova Arcana</div>
+    <div class="s-icon">🔮</div>
+    <div class="s-key">1</div>
+    <div class="s-cost">25</div>
+  </div>
+  <div class="spell-slot locked" id="slot-raio" onclick="selectSpell('raio')">
+    <div class="s-name">Raio Necrótico</div>
+    <div class="s-icon">⚡</div>
+    <div class="s-key">2</div>
+    <div class="s-cost">30</div>
+  </div>
+  <div class="spell-slot locked" id="slot-chuva" onclick="selectSpell('chuva')">
+    <div class="s-name">Chuva de Ossos</div>
+    <div class="s-icon">🦴</div>
+    <div class="s-key">3</div>
+    <div class="s-cost">40</div>
+  </div>
+  <div class="spell-slot locked" id="slot-explosao" onclick="selectSpell('explosao')">
+    <div class="s-name">Explosão de Almas</div>
+    <div class="s-icon">💥</div>
+    <div class="s-key">4</div>
+    <div class="s-cost">60</div>
+  </div>
+</div>
+
+<!-- Summon wheel (field) -->
+<div id="summon-wheel">
+  <div class="sw-title">▲ INVOCAR (pressione Q)</div>
+  <div class="sw-row" id="sw-row"></div>
+</div>
+
+<!-- HUD bars -->
+<div id="hud">
+  <div class="bar-wrap">
+    <div class="bar-label">HP</div>
+    <div class="bar-track"><div class="bar-fill" id="hp-fill" style="width:100%"></div></div>
+    <div class="bar-val" id="hp-val">100/100</div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-label">MANA</div>
+    <div class="bar-track"><div class="bar-fill" id="mp-fill" style="width:100%"></div></div>
+    <div class="bar-val" id="mp-val">80/80</div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-label">INVOCAÇÃO</div>
+    <div class="bar-track" style="width:160px;">
+      <div class="bar-fill" id="sp-fill" style="width:0%"></div>
+      <div id="sp-segs"></div>
+    </div>
+    <div class="bar-val" id="sp-val">0/60</div>
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-label">EXP</div>
+    <div class="bar-track"><div class="bar-fill" id="exp-fill" style="width:0%"></div></div>
+    <div class="bar-val" id="exp-val">0/100</div>
+  </div>
+</div>
+
+<!-- Command Bar -->
+<div id="cmd-bar" style="position:fixed;bottom:140px;right:20px;z-index:10;display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+  <div style="font-size:9px;color:#555;letter-spacing:1px;margin-bottom:2px;">COMANDOS</div>
+  <button class="cmd-btn" id="cmd-attack" onclick="setCommand('attack')" title="Próximo clique-direito → atacar">⚔ FORÇAR ATAQUE</button>
+  <button class="cmd-btn" id="cmd-rally"  onclick="setCommand('rally')"  title="Próximo clique-direito → mover">↩ FORÇAR MOVER</button>
+  <button class="cmd-btn" id="cmd-auto"   onclick="setCommand('auto')"   title="Clique-direito detecta automaticamente">🤖 AUTO</button>
+</div>
+
+<!-- Inventário de itens -->
+<div id="inv-bar" style="position:fixed;bottom:140px;left:20px;z-index:10;display:flex;gap:6px;align-items:center;"></div>
+
+<div id="hint">WASD mover · 1-4 feitiço · Clique-esq. magia · Clique-dir. comandar minions · Q invocar · R reanimar · E portal · F1-F5 itens</div>
+<div id="reanimate-hint">R — reanimar agora (30 MP)</div>
+
+<!-- Boss HP bar -->
+<div id="boss-bar" style="position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:15;display:none;flex-direction:column;align-items:center;gap:4px;min-width:300px;">
+  <div id="boss-name" style="font-size:11px;color:#ff4466;letter-spacing:2px;text-shadow:0 0 10px #ff4466;"></div>
+  <div style="width:300px;height:10px;background:rgba(0,0,0,.7);border:1px solid rgba(255,66,102,.3);border-radius:3px;overflow:hidden;">
+    <div id="boss-hp-fill" style="height:100%;background:linear-gradient(90deg,#7b0000,#ff2244);width:100%;transition:width .1s;border-radius:3px;"></div>
+  </div>
+  <div id="boss-hp-txt" style="font-size:9px;color:#ff8888;"></div>
+</div>
+
+<div id="wave-banner"><h2 id="wb-title">WAVE 1</h2><p id="wb-sub"></p></div>
+<div id="overlay-msg"><h2 id="ov-title"></h2><p id="ov-sub"></p></div>
+
+<!-- HUB NPC PROMPT -->
+<div id="hub-npc-prompt" style="display:none;position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;pointer-events:none;">
+  <div style="background:rgba(10,0,30,0.88);border:1px solid rgba(180,100,255,0.5);border-radius:8px;padding:10px 22px;backdrop-filter:blur(4px);">
+    <div id="hub-npc-icon" style="font-size:22px;margin-bottom:2px;">📜</div>
+    <div id="hub-npc-label" style="color:#d4af37;font-size:13px;letter-spacing:2px;font-weight:bold;"></div>
+    <div id="hub-npc-hint" style="color:#a855f7;font-size:11px;margin-top:3px;letter-spacing:1px;"></div>
+  </div>
+</div>
+
+<!-- HUB -->
+<div id="hub-overlay">
+  <h1>⚗ ALTAR DOS OSSOS</h1>
+  <div id="hub-souls-disp" style="color:#a855f7;font-size:13px;letter-spacing:1px;"></div>
+
+  <div class="hub-tabs">
+    <button class="hub-tab active" onclick="showTab('missions',this)">📜 MISSÕES</button>
+    <button class="hub-tab" onclick="showTab('summon',this)">🧟 INVOCAR</button>
+    <button class="hub-tab" onclick="showTab('shop',this)">🛒 LOJA</button>
+    <button class="hub-tab" onclick="showTab('upgrades',this)">⚗ UPGRADES</button>
+    <button class="hub-tab" onclick="showTab('skills',this)">🔮 HABILIDADES</button>
+    <button class="hub-tab" onclick="showTab('minions',this)">💀 MINIONS</button>
+  </div>
+
+  <div class="hub-panel" id="panel-shop">
+    <div id="shop-grid"></div>
+  </div>
+
+  <div class="hub-panel active" id="panel-missions">
+    <div id="mission-board"></div>
+  </div>
+
+  <div class="hub-panel" id="panel-upgrades">
+    <div class="hub-grid" id="upgrade-grid"></div>
+  </div>
+
+  <div class="hub-panel" id="panel-skills">
+    <div id="skill-tree"></div>
+    <div id="spell-upgrades-section" style="margin-top:18px;border-top:1px solid rgba(255,255,255,.08);padding-top:14px;"></div>
+  </div>
+
+  <div class="hub-panel" id="panel-minions">
+    <div id="minion-upgrade-grid"></div>
+  </div>
+
+  <div class="hub-panel" id="panel-summon">
+    <div id="roster-section" style="margin-bottom:22px;"></div>
+    <div id="summon-section">
+      <div style="font-size:10px;color:#555;letter-spacing:2px;margin-bottom:10px;">INVOCAR NOVO</div>
+      <div class="summon-grid" id="summon-grid"></div>
+    </div>
+  </div>
+
+  <div class="hub-actions">
+    <button class="btn" onclick="saveGame()">💾 SALVAR</button>
+    <button class="btn" onclick="if(confirm('Resetar progresso?'))resetSave()" style="color:#ff4444;border-color:#ff4444;">RESET</button>
+  </div>
+  <div class="hub-sub" id="hub-stat"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════
+const FIELD_R = 28;
+const PORTAL  = {x:0, z:8};
+const MINION_REVIVE_TIME = 12;
+
+const MINION_DEFS = {
+  zombie:   {emoji:'🧟',name:'Zumbi',    hp:80, dmg:8,  spd:2.2,atkR:1.5,atkRate:1.2,col:0x2d5a1b,unlockLv:1,spCost:20},
+  skeleton: {emoji:'💀',name:'Esqueleto',hp:50, dmg:14, spd:3.0,atkR:1.6,atkRate:0.9,col:0xd4c8a0,unlockLv:3,spCost:35},
+  specter:  {emoji:'👻',name:'Espectro', hp:35, dmg:22, spd:4.0,atkR:2.0,atkRate:0.7,col:0x88aaff,unlockLv:6,spCost:55},
+};
+
+const UPGRADES = [
+  {id:'slots',   name:'Exército dos Mortos',  desc:'+1 slot de minion.',          baseCost:80, mult:2.2, max:4},
+  {id:'sppool',  name:'Reserva de Invocação', desc:'+20 SP máximo.',              baseCost:55, mult:1.8, max:6},
+  {id:'mhp',     name:'Vitalidade dos Mortos',desc:'Minions +30 HP.',             baseCost:50, mult:1.6, max:5},
+  {id:'mdmg',    name:'Força Necrótica',      desc:'Minions +5 dano.',             baseCost:50, mult:1.6, max:5},
+  {id:'mpregen', name:'Fluxo de Mana',        desc:'Mana regen +3/s.',             baseCost:45, mult:1.5, max:4},
+  {id:'phpmaxup',name:'Pacto Sombrio',        desc:'Necromante +25 HP máx.',       baseCost:55, mult:1.7, max:4},
+  {id:'mpmax',   name:'Mente Arcana',         desc:'+20 Mana máx.',                baseCost:40, mult:1.5, max:5},
+  {id:'hpregen', name:'Regeneração Vital',    desc:'Necromante recupera +0.5 HP/s.',baseCost:60, mult:1.8, max:6},
+  {id:'mregen',  name:'Carne Reanimada',      desc:'Minions recuperam +1 HP/s.',   baseCost:50, mult:1.6, max:5},
+];
+
+// ── Upgrades por Minion ─────────────────────────────────
+// ── Loja ────────────────────────────────────────────────────
+const SHOP_ITEMS = [
+  {id:'potion_hp',  name:'Poção de Vida',     icon:'❤️',  desc:'Restaura 50 HP imediatamente.',   cost:30, maxStack:5,
+   use:()=>{ player.hp=Math.min(player.maxHp,player.hp+50); floatMsg('❤️ +50 HP',innerWidth/2,innerHeight*.4,'#e74c3c'); playSound('pickupHp'); }},
+  {id:'potion_mp',  name:'Poção de Mana',     icon:'💙',  desc:'Restaura 40 MP imediatamente.',   cost:25, maxStack:5,
+   use:()=>{ player.mp=Math.min(player.maxMp,player.mp+40); floatMsg('💙 +40 MP',innerWidth/2,innerHeight*.4,'#8e44ad'); playSound('pickupMp'); }},
+  {id:'bone_shield',name:'Escudo de Ossos',   icon:'🛡',  desc:'Absorve o próximo golpe recebido.', cost:45, maxStack:3,
+   use:()=>{ player.boneShield=true; floatMsg('🛡 Escudo ativo!',innerWidth/2,innerHeight*.4,'#d4af37'); playSound('click'); }},
+  {id:'soul_bomb',  name:'Bomba de Almas',    icon:'💣',  desc:'Explode causando 80 dano em área ao redor.', cost:55, maxStack:3,
+   use:()=>{ const px=necroGroup.position.x,pz=necroGroup.position.z; spawnExplosaoFX(px,pz,5,0xaa00ff,2); enemies.forEach(e=>{ if(e.dead)return; const dx=e.mesh.position.x-px,dz=e.mesh.position.z-pz; if(dx*dx+dz*dz<25) dealDamageToEnemy(e,80); }); floatMsg('💣 BOOM!',innerWidth/2,innerHeight*.4,'#aa00ff'); playSound('explosao'); }},
+  {id:'recall_scroll',name:'Pergaminho',      icon:'📜',  desc:'Teleporta ao portal instantaneamente.',     cost:20, maxStack:5,
+   use:()=>{ necroGroup.position.set(PORTAL.x,0,PORTAL.z+2); floatMsg('📜 Teleportado!',innerWidth/2,innerHeight*.4,'#d4af37'); playSound('portal'); }},
+];
+
+const MINION_UPGRADES = {
+  zombie: [
+    {id:'z_hp',    name:'Carcaça Blindada',    icon:'🛡', desc:'+60 HP base.',          baseCost:40, mult:1.7, max:3, stat:'hp',  val:60},
+    {id:'z_dmg',   name:'Frenesi Putrefato',   icon:'⚔', desc:'+6 dano.',              baseCost:45, mult:1.7, max:3, stat:'dmg', val:6},
+    {id:'z_regen', name:'Regeneração Úmida',   icon:'💧', desc:'+1.5 HP/s.',           baseCost:50, mult:1.8, max:3, stat:'regen',val:1.5},
+  ],
+  skeleton: [
+    {id:'s_spd',   name:'Ossos Velozes',       icon:'💨', desc:'+0.4 velocidade.',     baseCost:40, mult:1.7, max:3, stat:'spd', val:0.4},
+    {id:'s_dmg',   name:'Ossos Afiados',       icon:'🔪', desc:'+8 dano.',             baseCost:45, mult:1.7, max:3, stat:'dmg', val:8},
+    {id:'s_revive',name:'Ressurreição Rápida', icon:'⏱', desc:'-2.5s tempo revive.',  baseCost:55, mult:1.8, max:2, stat:'revive',val:2.5},
+  ],
+  specter: [
+    {id:'p_drain', name:'Drenagem Vital',      icon:'🩸', desc:'Rouba 20% do dano como HP.',baseCost:65, mult:1.9, max:1, stat:'drain',val:1},
+    {id:'p_atkr',  name:'Alcance Espectral',   icon:'👁', desc:'+0.5 alcance de ataque.',  baseCost:50, mult:1.8, max:3, stat:'atkR',val:0.5},
+    {id:'p_cost',  name:'Vínculo Etéreo',      icon:'💠', desc:'-10 custo SP.',            baseCost:70, mult:2.0, max:2, stat:'cost',val:10},
+  ],
+};
+
+// ── Upgrades por Magia ──────────────────────────────────
+const SPELL_UPGRADES = {
+  nova:    [
+    {id:'nova_r', name:'Expansão Arcana',  icon:'⭕', desc:'+0.5 raio.',       baseCost:45, mult:1.6, max:4},
+    {id:'nova_d', name:'Dano Sombrio',     icon:'💀', desc:'+10 dano.',        baseCost:45, mult:1.6, max:5},
+  ],
+  raio:    [
+    {id:'raio_d', name:'Carga Elétrica',   icon:'⚡', desc:'+12 dano.',        baseCost:50, mult:1.7, max:5},
+    {id:'raio_s', name:'Arco Estendido',   icon:'📡', desc:'Atravessa +1 inimigo.',baseCost:60, mult:1.8, max:3},
+  ],
+  chuva:   [
+    {id:'chuva_n',name:'Mais Ossos',       icon:'🦴', desc:'+2 fragmentos.',   baseCost:50, mult:1.7, max:4},
+    {id:'chuva_d',name:'Ossos Pontiagudos',icon:'🗡', desc:'+8 dano/frag.',   baseCost:45, mult:1.6, max:5},
+  ],
+  explosao:[
+    {id:'exp_r',  name:'Onda de Choque',   icon:'💥', desc:'+0.7 raio.',       baseCost:60, mult:1.8, max:3},
+    {id:'exp_d',  name:'Almas Vorazes',    icon:'🔥', desc:'+18 dano.',        baseCost:60, mult:1.8, max:4},
+  ],
+};
+
+// ── Skill Tree ──────────────────────────────────────────
+// Cada nó custa 1 ponto de habilidade
+const SKILL_NODES = {
+  // Raiz — desbloqueada grátis
+  nova:     {name:'Nova Arcana',   icon:'🔮',desc:'Explosão arcana em área.',          path:'base',  req:null,     spell:'nova',   passive:null},
+  // Caminho Magia
+  raio:     {name:'Raio Necrótico',icon:'⚡',desc:'Projétil que atravessa inimigos.',  path:'magic', req:'nova',   spell:'raio',   passive:null},
+  chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:'raio',   spell:'chuva',  passive:null},
+  explosao: {name:'Explosão de Almas',icon:'💥',desc:'AoE massiva — consome 40 almas.',path:'magic', req:'chuva',  spell:'explosao',passive:null},
+  // Caminho Invocação
+  aura:     {name:'Aura das Sombras',icon:'🌑',desc:'Minions causam +30% dano.',       path:'summon',req:'nova',   spell:null,     passive:'aura'},
+  pacto:    {name:'Pacto de Sangue', icon:'🩸',desc:'Minion morto explode causando dano.',path:'summon',req:'aura',spell:null,   passive:'pacto'},
+  ritual:   {name:'Ritual da Morte', icon:'🕯',desc:'Minions recuperam 2 HP/s.',       path:'summon',req:'pacto',  spell:null,     passive:'ritual'},
+  ascensao: {name:'Ascensão Lich',   icon:'💠',desc:'Minions +50% HP e velocidade.',   path:'summon',req:'ritual', spell:null,     passive:'ascensao'},
+};
+
+// ═══════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════
+const player = {
+  hp:100,maxHp:100, mp:80,maxMp:80, exp:0,expNext:100,
+  level:1, souls:0, gold:0, maxSp:60,
+  minionSlots:3, // máximo de minions simultâneos
+  inventory:[], // [{id, name, icon, desc, count}]
+  spellDmg:40, spellRadius:2.5, mpRegen:4, hpRegen:0,
+  skillPoints:0, learnedSkills:new Set(['nova']),
+  activeSpell:'nova',
+  upgradeCount: Object.fromEntries(UPGRADES.map(u=>[u.id,0])),
+  minionUpgradeCount: Object.fromEntries(
+    Object.values(MINION_UPGRADES).flatMap(arr=>arr.map(u=>[u.id,0]))
+  ),
+  spellUpgradeCount: Object.fromEntries(
+    Object.values(SPELL_UPGRADES).flatMap(arr=>arr.map(u=>[u.id,0]))
+  ),
+};
+
+let gameState='hub', wave=0, waveActive=false, enemiesLeft=0;
+let spawnQueue=[], spawnTimer=0, waveEndTimer=0;
+let minionHpBonus=0, minionDmgBonus=0, minionRegenBonus=0;
+let minions=[], enemies=[], droppedItems=[], spellFx=[], soulOrbs=[];
+let hubObjects=[]; // meshes do hub 3D
+let hubNpcs=[]; // [{mesh, pos, label, tab, prompt}]
+let nearbyNpc=null; // NPC próximo ao player
+let summonWheelOpen=false;
+let minionCommand=null; // {type:'attack'|'rally', x, z, timer}
+let commandMarker=null;
+const LEASH_DIST=14; // distância máxima do necromante antes de forçar retorno
+
+function spUsed(){ return minions.reduce((s,m)=>s+(m.spCost??m.def.spCost),0); }
+function spFree(){ return player.maxSp-spUsed(); }
+function hasPassive(id){ return player.learnedSkills.has(id); }
+
+// Retorna bônus acumulado de upgrades de minion por stat
+function minionBonus(type, stat){
+  const ups = MINION_UPGRADES[type]||[];
+  return ups.filter(u=>u.stat===stat).reduce((acc,u)=>{
+    const cnt=player.minionUpgradeCount[u.id]||0;
+    return acc+cnt*u.val;
+  },0);
+}
+// Retorna custo SP efetivo de um tipo de minion (com upgrades)
+function minionSpCost(type){
+  const base=MINION_DEFS[type].spCost;
+  const red=minionBonus(type,'cost');
+  return Math.max(5, base-red);
+}
+// Retorna bônus de magia acumulado
+function spellBonus(spell, id){ return (player.spellUpgradeCount[id]||0) * (SPELL_UPGRADES[spell]?.find(u=>u.id===id)?.val||0); }
+function spellBonusByUpgrades(spell){
+  const ups=SPELL_UPGRADES[spell]||[];
+  return ups.reduce((acc,u)=>({...acc,[u.id]:(player.spellUpgradeCount[u.id]||0)*u.val}),{});
+}
+
+// ═══════════════════════════════════════════════════════════
+// THREE.JS
+// ═══════════════════════════════════════════════════════════
+const scene    = new THREE.Scene();
+const camera   = new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,200);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.setClearColor(0x000000);
+document.body.appendChild(renderer.domElement);
+
+scene.fog = new THREE.FogExp2(0x0d0020,0.022);
+camera.position.set(0,15,11); camera.lookAt(0,0,0);
+
+const ambient  = new THREE.AmbientLight(0x9988bb,1.8); scene.add(ambient);
+const hemi     = new THREE.HemisphereLight(0x6644aa,0x220033,1.2); scene.add(hemi);
+const sun      = new THREE.DirectionalLight(0xccaaff,1.2);
+sun.position.set(6,18,6); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-30; sun.shadow.camera.right=30;
+sun.shadow.camera.top=30;   sun.shadow.camera.bottom=-30;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xaaddff,.5);
+fill.position.set(-8,10,-5); scene.add(fill);
+const necroLight = new THREE.PointLight(0x00ff88,2.5,14); scene.add(necroLight);
+const dangerL    = new THREE.PointLight(0xff2200,.8,30);
+dangerL.position.set(-12,3,-12); scene.add(dangerL);
+
+// Chão
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(70,70,40,40),
+  new THREE.MeshStandardMaterial({color:0x1a0e2e,roughness:.9})
+);
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+scene.add(new THREE.GridHelper(70,50,0x180030,0x0e001e));
+
+function mkRuin(x,z){
+  const h=.4+Math.random()*1.4;
+  const m=new THREE.Mesh(new THREE.BoxGeometry(.4+Math.random()*.5,h,.4+Math.random()*.5),
+    new THREE.MeshStandardMaterial({color:0x180d2e,roughness:1}));
+  m.position.set(x,h/2,z); m.rotation.y=Math.random()*Math.PI; m.castShadow=true; scene.add(m);
+}
+[[-7,5],[7,5],[-10,-2],[10,-2],[4,10],[-4,10],[-14,3],[14,3],[3,-14],[-3,-14],[11,-9],[-11,-9],[0,-18],[16,-6],[-16,-6]].forEach(([x,z])=>mkRuin(x,z));
+
+// Portal
+const portalG = new THREE.Group();
+const portalRing = new THREE.Mesh(new THREE.TorusGeometry(1.2,.12,8,32),
+  new THREE.MeshStandardMaterial({color:0x440088,emissive:0x8800ff,emissiveIntensity:1.5}));
+portalRing.rotation.x=-Math.PI/2; portalG.add(portalRing);
+const portalInner=new THREE.Mesh(new THREE.CircleGeometry(1.05,32),
+  new THREE.MeshBasicMaterial({color:0x220044,side:THREE.DoubleSide,transparent:true,opacity:.7}));
+portalInner.rotation.x=-Math.PI/2; portalInner.position.y=.01; portalG.add(portalInner);
+const portalL=new THREE.PointLight(0xaa00ff,2.5,5); portalL.position.y=.5; portalG.add(portalL);
+portalG.position.set(PORTAL.x,0,PORTAL.z); scene.add(portalG);
+
+// Partículas de alma (ambiente)
+const SOUL_N=100;
+const soulGeo=new THREE.BufferGeometry();
+const soulPos=new Float32Array(SOUL_N*3), soulSpd=new Float32Array(SOUL_N), soulPhs=new Float32Array(SOUL_N);
+for(let i=0;i<SOUL_N;i++){
+  soulPos[i*3]=(Math.random()-.5)*50; soulPos[i*3+1]=Math.random()*3; soulPos[i*3+2]=(Math.random()-.5)*50;
+  soulSpd[i]=.3+Math.random()*.7; soulPhs[i]=Math.random()*Math.PI*2;
+}
+soulGeo.setAttribute('position',new THREE.BufferAttribute(soulPos,3));
+scene.add(new THREE.Points(soulGeo,new THREE.PointsMaterial({color:0x7722ff,size:.1,transparent:true,opacity:.7,sizeAttenuation:true})));
+
+// ═══════════════════════════════════════════════════════════
+// NECROMANTE
+// ═══════════════════════════════════════════════════════════
+const necroGroup=new THREE.Group(); scene.add(necroGroup);
+(function(){
+  const add=(geo,mat,px,py,pz,shadow=false,rx=0,rz=0)=>{
+    const m=new THREE.Mesh(geo,mat); m.position.set(px,py,pz); m.rotation.x=rx; m.rotation.z=rz;
+    if(shadow)m.castShadow=true; necroGroup.add(m); return m;
+  };
+  const robeMat=new THREE.MeshStandardMaterial({color:0x080012,roughness:.9});
+  const skinMat=new THREE.MeshStandardMaterial({color:0x2d1f1f,roughness:.8});
+  add(new THREE.CylinderGeometry(.22,.35,1.1,8),robeMat,0,.55,0,true);
+  add(new THREE.SphereGeometry(.2,10,10),skinMat,0,1.3,0,true);
+  add(new THREE.ConeGeometry(.28,.45,8),new THREE.MeshStandardMaterial({color:0x040008,roughness:1}),0,1.6,0,true);
+  add(new THREE.CylinderGeometry(.03,.03,1.6,6),new THREE.MeshStandardMaterial({color:0x3d2200,roughness:.7}),.4,.8,0,true,0,.15);
+  // Orbe do cajado — criado separadamente (não via helper add)
+  const orbMesh=new THREE.Mesh(
+    new THREE.SphereGeometry(.11,12,12),
+    new THREE.MeshStandardMaterial({color:0x00ff88,emissive:0x00ff88,emissiveIntensity:2.5,roughness:.2})
+  );
+  orbMesh.position.set(.52,1.65,0);
+  orbMesh.add(new THREE.PointLight(0x00ff88,2.5,5));
+  necroGroup.add(orbMesh);
+  necroGroup.userData.orb=orbMesh;
+  // Aura
+  const AURA_N=35, ap=new Float32Array(AURA_N*3);
+  const ag=new THREE.BufferGeometry(); ag.setAttribute('position',new THREE.BufferAttribute(ap,3));
+  const auraPoints=new THREE.Points(ag,new THREE.PointsMaterial({color:0x00ff88,size:.07,transparent:true,opacity:.85,sizeAttenuation:true}));
+  necroGroup.add(auraPoints);
+  necroGroup.userData.auraPos=ap; necroGroup.userData.auraN=AURA_N;
+  necroGroup.userData.auraPoints=auraPoints; // referência direta para update
+})();
+
+// ═══════════════════════════════════════════════════════════
+// MINION BUILD
+// ═══════════════════════════════════════════════════════════
+function mkMesh(geo,mat,pos,shadow=false){
+  const m=new THREE.Mesh(geo,mat); m.position.set(...pos); if(shadow)m.castShadow=true; return m;
+}
+
+function buildMinionMesh(type){
+  const def=MINION_DEFS[type], g=new THREE.Group();
+  const mat =new THREE.MeshStandardMaterial({color:def.col,roughness:1});
+  const matD=new THREE.MeshStandardMaterial({color:new THREE.Color(def.col).multiplyScalar(.6),roughness:1});
+  if(type==='zombie'){
+    g.add(mkMesh(new THREE.BoxGeometry(.42,.68,.26),mat,[0,.5,0],true));
+    g.add(mkMesh(new THREE.BoxGeometry(.34,.31,.28),matD,[0,1.04,0],true));
+    const eM=new THREE.MeshStandardMaterial({emissive:0x00ff44,emissiveIntensity:3,color:0});
+    g.add(mkMesh(new THREE.SphereGeometry(.04,6,6),eM,[-.1,1.07,.14]));
+    g.add(mkMesh(new THREE.SphereGeometry(.04,6,6),eM,[ .1,1.07,.14]));
+    const aL=mkMesh(new THREE.BoxGeometry(.14,.52,.14),mat,[-.3,.5,0],true); aL.rotation.z= .5; g.add(aL);
+    const aR=mkMesh(new THREE.BoxGeometry(.14,.52,.14),mat,[ .3,.5,0],true); aR.rotation.z=-.5; g.add(aR);
+    g.add(mkMesh(new THREE.BoxGeometry(.16,.43,.16),matD,[-.13,.21,0],true));
+    g.add(mkMesh(new THREE.BoxGeometry(.16,.43,.16),matD,[ .13,.21,0],true));
+  } else if(type==='skeleton'){
+    g.add(mkMesh(new THREE.SphereGeometry(.19,8,8),mat,[0,1.08,0],true));
+    const eM=new THREE.MeshStandardMaterial({emissive:0x6600ff,emissiveIntensity:4,color:0});
+    g.add(mkMesh(new THREE.SphereGeometry(.05,6,6),eM,[-.09,1.12,.15]));
+    g.add(mkMesh(new THREE.SphereGeometry(.05,6,6),eM,[ .09,1.12,.15]));
+    g.add(mkMesh(new THREE.BoxGeometry(.36,.48,.16),matD,[0,.64,0],true));
+    const ca=new THREE.CylinderGeometry(.04,.04,.48,6);
+    const aL=mkMesh(ca,mat,[-.26,.6,0],true); aL.rotation.z=.3; g.add(aL);
+    const aR=mkMesh(ca,mat,[ .26,.6,0],true); aR.rotation.z=-.3; g.add(aR);
+    const cl=new THREE.CylinderGeometry(.045,.045,.46,6);
+    g.add(mkMesh(cl,mat,[-.11,.22,0],true));
+    g.add(mkMesh(cl,mat,[ .11,.22,0],true));
+  } else {
+    const gM=new THREE.MeshStandardMaterial({color:def.col,emissive:def.col,emissiveIntensity:.8,transparent:true,opacity:.75});
+    g.add(mkMesh(new THREE.SphereGeometry(.22,10,10),gM,[0,1.1,0],true));
+    g.add(mkMesh(new THREE.ConeGeometry(.2,.8,8,1,true),gM,[0,.55,0]));
+    const eM=new THREE.MeshStandardMaterial({emissive:0xffffff,emissiveIntensity:5,color:0});
+    g.add(mkMesh(new THREE.SphereGeometry(.045,6,6),eM,[-.08,1.13,.18]));
+    g.add(mkMesh(new THREE.SphereGeometry(.045,6,6),eM,[ .08,1.13,.18]));
+  }
+  return g;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MINION SPAWN/KILL
+// ═══════════════════════════════════════════════════════════
+function dismissMinion(idx){
+  const m=minions[idx];
+  if(!m)return;
+  scene.remove(m.mesh);
+  minions.splice(idx,1);
+  updateMinionPanel(); updateHUD();
+  floatMsg('💨 Minion dispensado',innerWidth/2,innerHeight*.4,'#555');
+  playSound('click');
+}
+
+function spawnMinion(type,fromField=false){
+  const def=MINION_DEFS[type];
+  const effectiveCost=minionSpCost(type);
+  // checar slot livre
+  const activeCount=minions.filter(m=>!m.dead||true).length; // conta todos (vivos e mortos)
+  if(activeCount>=player.minionSlots){ floatMsg(`Slots cheios! (${player.minionSlots} máx)`,innerWidth/2,innerHeight*0.4,'#ff8844'); return null; }
+  if(spFree()<effectiveCost){ floatMsg('SP insuficiente!',innerWidth/2,innerHeight*0.4,'#00ccaa'); return null; }
+  const minionDmgMult = hasPassive('aura')?1.3:1;
+  const minionHpMult  = hasPassive('ascensao')?1.5:1;
+  const minionSpdMult = hasPassive('ascensao')?1.3:1;
+  // bônus específicos do tipo
+  const typeHp    = minionBonus(type,'hp');
+  const typeDmg   = minionBonus(type,'dmg');
+  const typeSpd   = minionBonus(type,'spd');
+  const typeRegen = minionBonus(type,'regen');
+  const typeAtkR  = minionBonus(type,'atkR');
+  const hasDrain  = (player.minionUpgradeCount['p_drain']||0)>0 && type==='specter';
+  const reviveReduce= minionBonus(type,'revive');
+  const obj={
+    type, def,
+    maxHp: Math.floor((def.hp+minionHpBonus+typeHp)*minionHpMult),
+    hp:    Math.floor((def.hp+minionHpBonus+typeHp)*minionHpMult),
+    dmg:   Math.floor((def.dmg+minionDmgBonus+typeDmg)*minionDmgMult),
+    spd:   (def.spd+typeSpd)*minionSpdMult,
+    atkR:  def.atkR+typeAtkR, atkRate:def.atkRate, atkTimer:0,
+    target:null, dead:false, deadTimer:0, fadeOut:false, _lastReviveMsg:null,
+    walkPhase:Math.random()*Math.PI*2, orbitAngle:Math.random()*Math.PI*2,
+    orbitRadius:1.4+minions.length*.4,
+    hpRegen: (hasPassive('ritual')?2:0) + minionRegenBonus + typeRegen,
+    lifeDrain: hasDrain,
+    reviveReduce,
+    spCost: effectiveCost,
+    mesh:null,
+  };
+  const mesh=buildMinionMesh(type); scene.add(mesh);
+  obj.mesh=mesh;
+  const ang=Math.random()*Math.PI*2;
+  mesh.position.set(necroGroup.position.x+Math.cos(ang)*2,0,necroGroup.position.z+Math.sin(ang)*2);
+  minions.push(obj);
+  playSound('summon');
+  if(fromField) floatMsg(`${def.emoji} ${def.name} invocado!`,innerWidth/2,innerHeight*.35,'#00ccaa');
+  updateMinionPanel(); updateHUD();
+  return obj;
+}
+
+function killMinion(m){
+  if(hasPassive('pacto')){
+    // Explode causando dano
+    const px=m.mesh.position.x, pz=m.mesh.position.z;
+    spawnExplosaoFX(px,pz,1.8,0xff4400,0.5);
+    enemies.forEach(e=>{ if(e.dead)return; const dx=e.mesh.position.x-px,dz=e.mesh.position.z-pz; if(dx*dx+dz*dz<9) dealDamageToEnemy(e,20); });
+    floatMsg('💥 Explosão!',innerWidth/2,innerHeight*.4,'#ff4400');
+  }
+  playSound('minionDeath');
+  const revTime=Math.max(4, MINION_REVIVE_TIME-(m.reviveReduce||0));
+  m.dead=true; m.deadTimer=revTime; m.fadeOut=true; m._reviveTime=revTime;
+  m.mesh.traverse(c=>{ if(c.material){c.material=c.material.clone(); c.material.transparent=true;} });
+  floatMsg(`💀 ${m.def.name} caiu! ${MINION_REVIVE_TIME}s...`,innerWidth/2,innerHeight*.42,'#ff8844');
+  updateMinionPanel();
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIMIGOS
+// ═══════════════════════════════════════════════════════════
+const ENEMY_TYPES=[
+  {name:'Guerreiro',col:0x8b1a1a,hCol:0xc0392b,hp:40, dmg:8, spd:2.0,xp:12,souls:8, dropChance:.3,sc:1.0},
+  {name:'Arqueiro', col:0x5a3a00,hCol:0xb8860b,hp:25, dmg:12,spd:2.8,xp:15,souls:10,dropChance:.35,sc:.85},
+  {name:'Bruto',    col:0x3a0010,hCol:0x8b0000,hp:100,dmg:18,spd:1.2,xp:30,souls:22,dropChance:.5, sc:1.5},
+  {name:'Mago Vivo',col:0x001a3a,hCol:0x1a5fb4,hp:30, dmg:20,spd:2.2,xp:25,souls:18,dropChance:.4, sc:.9},
+];
+
+// ── Missões ──────────────────────────────────────────────
+const MISSION_TEMPLATES = [
+  {id:'ext',   icon:'⚔',  label:'Extermínio',     difficulty:1, wavesGoal:4, enemyMult:1.0,
+   desc:'Sobreviva 4 waves e derrote o Guardião.', rewardSouls:60,  rewardExp:200, color:'#00ccaa',
+   boss:{name:'Guardião dos Ossos',col:0x6622aa,hCol:0xaa44ff,hp:350,dmg:15,spd:1.6,xp:100,souls:50,sc:2.4,isBoss:true}},
+  {id:'horde', icon:'💀',  label:'Horda Infernal', difficulty:2, wavesGoal:6, enemyMult:1.4,
+   desc:'6 waves densas + Lich Guerreiro.', rewardSouls:130, rewardExp:380, color:'#ff8844',
+   boss:{name:'Lich Guerreiro',   col:0xaa0022,hCol:0xff2244,hp:600,dmg:25,spd:2.0,xp:180,souls:90,sc:2.8,isBoss:true}},
+  {id:'elim',  icon:'💥',  label:'Eliminação',     difficulty:3, wavesGoal:3, enemyMult:1.8,
+   desc:'Apenas 3 waves, mas a Hidra é brutal.', rewardSouls:220, rewardExp:550, color:'#ff4466',
+   boss:{name:'Hidra Pútrida',    col:0x003a15,hCol:0x00aa44,hp:950,dmg:38,spd:1.3,xp:280,souls:150,sc:3.2,isBoss:true}},
+];
+
+// Estado de missão
+let currentMission = null;
+let missionWave = 0;   // wave atual dentro da missão
+let bossEnemy = null;  // referência ao inimigo boss atual
+let availableMissions = []; // geradas ao entrar no hub
+
+function generateMissions(){
+  // Escala dificuldade com o nível do player
+  const scale = 1 + (player.level-1)*0.08;
+  availableMissions = MISSION_TEMPLATES.map(t=>({
+    ...t,
+    boss:{...t.boss, hp:Math.floor(t.boss.hp*scale), dmg:Math.floor(t.boss.dmg*scale)},
+    rewardSouls: Math.floor(t.rewardSouls*scale),
+    rewardExp:   Math.floor(t.rewardExp*scale),
+  }));
+}
+
+function buildEnemyMesh(type){
+  const g=new THREE.Group(), sc=type.sc;
+  const mat=new THREE.MeshStandardMaterial({color:type.col,roughness:.8});
+  const hm =new THREE.MeshStandardMaterial({color:type.hCol,roughness:.7});
+  g.add(mkMesh(new THREE.BoxGeometry(.5*sc,.75*sc,.3*sc),mat,[0,.5*sc,0],true));
+  g.add(mkMesh(new THREE.SphereGeometry(.22*sc,8,8),hm,[0,1.1*sc,0],true));
+  const arm=new THREE.BoxGeometry(.15*sc,.55*sc,.15*sc);
+  g.add(mkMesh(arm,mat,[-.32*sc,.5*sc,0],true));
+  g.add(mkMesh(arm,mat,[ .32*sc,.5*sc,0],true));
+  // HP bar
+  const bg=new THREE.Mesh(new THREE.PlaneGeometry(.55*sc,.08),new THREE.MeshBasicMaterial({color:0x333,side:THREE.DoubleSide}));
+  bg.position.y=1.6*sc; g.add(bg);
+  const fg=new THREE.Mesh(new THREE.PlaneGeometry(.53*sc,.06),new THREE.MeshBasicMaterial({color:0xff2200,side:THREE.DoubleSide}));
+  fg.position.set(0,1.62*sc,.001); g.add(fg);
+  g.userData.hpBar=fg; g.userData.hpBarW=.53*sc;
+  return g;
+}
+
+function spawnEnemy(type,x,z){
+  const mesh=buildEnemyMesh(type); mesh.position.set(x,0,z); scene.add(mesh);
+  enemies.push({type,mesh,hp:type.hp*(1+wave*.12),maxHp:type.hp*(1+wave*.12),
+    dmg:type.dmg,spd:type.spd,atkR:1.4*type.sc,atkRate:1.5,atkTimer:0,
+    target:null,dead:false,deadTimer:0,xp:type.xp,souls:type.souls,dropChance:type.dropChance});
+}
+
+function killEnemy(e,hx,hz){
+  playSound('enemyDeath');
+  e.dead=true; e.deadTimer=1.2;
+  e.mesh.traverse(c=>{ if(c.material){c.material=c.material.clone(); c.material.transparent=true;} });
+  gainExp(e.xp); gainSouls(e.souls);
+  spawnSoulOrb(hx,hz);
+  // Drop de item
+  if(Math.random()<e.dropChance) spawnDrop(hx,hz);
+  // Boss morreu
+  if(e.isBoss && bossEnemy===e){
+    bossEnemy=null;
+    // explosão épica
+    for(let i=0;i<3;i++) setTimeout(()=>spawnExplosaoFX(hx+(Math.random()-.5)*3,hz+(Math.random()-.5)*3,3,0xd4af37,2),i*200);
+    onMissionComplete(); return;
+  }
+  enemiesLeft=Math.max(0,enemiesLeft-1);
+  if(enemiesLeft===0&&spawnQueue.length===0) endWave();
+}
+
+function updateEnemyHpBar(e){
+  const r=e.hp/e.maxHp, fw=e.mesh.userData.hpBarW;
+  e.mesh.userData.hpBar.scale.x=r;
+  e.mesh.userData.hpBar.position.x=-(fw*(1-r))/2;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DROPS
+// ═══════════════════════════════════════════════════════════
+function spawnDrop(x,z){
+  const isHp=Math.random()<.5;
+  const col=isHp?0xff2222:0x2244ff;
+  const emCol=isHp?0xff4444:0x4488ff;
+  const geo=new THREE.SphereGeometry(.18,8,8);
+  const mat=new THREE.MeshStandardMaterial({color:col,emissive:emCol,emissiveIntensity:2});
+  const mesh=new THREE.Mesh(geo,mat); mesh.position.set(x,.4,z); scene.add(mesh);
+  const pl=new THREE.PointLight(emCol,2,2.5); mesh.add(pl);
+  droppedItems.push({mesh,type:isHp?'hp':'mp',life:18});
+}
+
+function checkPickups(dt){
+  const nx=necroGroup.position.x, nz=necroGroup.position.z;
+  for(let i=droppedItems.length-1;i>=0;i--){
+    const item=droppedItems[i];
+    item.life-=dt;
+    item.mesh.position.y=.35+Math.sin(Date.now()*.003+i)*.12;
+    item.mesh.rotation.y+=dt*1.5;
+    const dx=item.mesh.position.x-nx, dz=item.mesh.position.z-nz;
+    if(dx*dx+dz*dz<1.8||item.life<=0){
+      if(item.life>0){
+        if(item.type==='hp'){
+          playSound('pickupHp');
+          const heal=Math.floor(player.maxHp*.3);
+          player.hp=Math.min(player.maxHp,player.hp+heal);
+          floatMsg('+'+heal+' HP',innerWidth/2-30,innerHeight*.5,'#ff4444');
+        } else {
+          playSound('pickupMp');
+          const restore=Math.floor(player.maxMp*.4);
+          player.mp=Math.min(player.maxMp,player.mp+restore);
+          floatMsg('+'+restore+' MP',innerWidth/2+30,innerHeight*.5,'#4488ff');
+        }
+        updateHUD();
+      }
+      scene.remove(item.mesh);
+      droppedItems.splice(i,1);
+    }
+    // Fade ao expirar
+    if(item.life<3) item.mesh.material.opacity=item.life/3;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SOUL ORBS (visual)
+// ═══════════════════════════════════════════════════════════
+function spawnSoulOrb(x,z){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(.12,6,6),
+    new THREE.MeshStandardMaterial({color:0xa855f7,emissive:0xa855f7,emissiveIntensity:2}));
+  m.position.set(x,.4,z); scene.add(m); soulOrbs.push({mesh:m,life:2.5});
+}
+
+// ═══════════════════════════════════════════════════════════
+// FEITIÇOS — VFX helpers
+// ═══════════════════════════════════════════════════════════
+function addFX(obj){ spellFx.push(obj); }
+
+function spawnRing(x,z,color,size=1,y=.05){
+  const m=new THREE.Mesh(new THREE.RingGeometry(.05*size,.18*size,20),
+    new THREE.MeshBasicMaterial({color,transparent:true,opacity:.95,side:THREE.DoubleSide}));
+  m.rotation.x=-Math.PI/2; m.position.set(x,y,z); scene.add(m);
+  return m;
+}
+
+function spawnExplosaoFX(x,z,radius,color,scale=1){
+  // Anel principal
+  const ring=spawnRing(x,z,color,scale);
+  addFX({type:'ring',mesh:ring,life:1,maxLife:1,baseScale:scale*radius});
+
+  // Anel secundário (menor, delay)
+  const ring2=spawnRing(x,z,color,scale*.5);
+  addFX({type:'ring',mesh:ring2,life:.8,maxLife:.8,baseScale:scale*radius*.6,delay:.1});
+
+  // Flash de luz
+  const fl=new THREE.PointLight(color,8,radius*3);
+  fl.position.set(x,1,z); scene.add(fl);
+  addFX({type:'flash',mesh:fl,life:.7,maxLife:.7});
+
+  // Partículas voando para fora
+  const SHARDS=12;
+  for(let i=0;i<SHARDS;i++){
+    const ang=(i/SHARDS)*Math.PI*2;
+    const geo=new THREE.SphereGeometry(.06+Math.random()*.08,5,5);
+    const mat=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9});
+    const m=new THREE.Mesh(geo,mat); m.position.set(x,.3,z); scene.add(m);
+    addFX({type:'shard',mesh:m,life:.6+Math.random()*.3,maxLife:.9,
+      vx:Math.cos(ang)*(2+Math.random()*3), vz:Math.sin(ang)*(2+Math.random()*3), vy:.5+Math.random()});
+  }
+}
+
+// ── Nova Arcana ───────────────────────────────────────────
+function castNova(tx,tz){ playSound('nova');
+  const cost=25;
+  if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+  player.mp-=cost; updateHUD();
+  const radius = player.spellRadius + spellBonus('nova','nova_r');
+  const dmg    = player.spellDmg   + spellBonus('nova','nova_d');
+
+  spawnExplosaoFX(tx,tz,radius,0x8800ff,1);
+  const inner=spawnRing(tx,tz,0xcc44ff,1.5);
+  addFX({type:'ring',mesh:inner,life:1.2,maxLife:1.2,baseScale:radius*.4});
+
+  enemies.forEach(e=>{ if(e.dead)return;
+    const dx=e.mesh.position.x-tx,dz=e.mesh.position.z-tz;
+    if(dx*dx+dz*dz<radius*radius) dealDamageToEnemy(e,dmg);
+  });
+}
+
+// ── Raio Necrótico (projétil) ─────────────────────────────
+let boltsFx=[];
+function castRaio(tx,tz){ playSound('raio');
+  const cost=30;
+  if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+  player.mp-=cost; updateHUD();
+
+  const nx=necroGroup.position.x, nz=necroGroup.position.z;
+  const dx=tx-nx, dz=tz-nz, dist=Math.sqrt(dx*dx+dz*dz)||1;
+  const vx=dx/dist*14, vz=dz/dist*14;
+
+  // Projétil visual
+  const geo=new THREE.SphereGeometry(.14,8,8);
+  const mat=new THREE.MeshStandardMaterial({color:0x00ffcc,emissive:0x00ffcc,emissiveIntensity:3});
+  const m=new THREE.Mesh(geo,mat); m.position.set(nx,.6,nz); scene.add(m);
+  const bl=new THREE.PointLight(0x00ffcc,4,3); m.add(bl);
+
+  // Trail
+  const trail=[];
+  for(let i=0;i<8;i++){
+    const tm=new THREE.Mesh(new THREE.SphereGeometry(.06,5,5),
+      new THREE.MeshBasicMaterial({color:0x00ffcc,transparent:true,opacity:.5}));
+    tm.position.copy(m.position); scene.add(tm);
+    trail.push(tm);
+  }
+
+  const raioDmg = (player.spellDmg + spellBonus('raio','raio_d'))*1.4;
+  const raioMaxPierce = 1 + Math.floor(spellBonus('raio','raio_s')/0.3); // raio_s val=0.3 each
+  boltsFx.push({mesh:m,trail,vx,vz,life:2,hitEnemies:new Set(),dmg:raioDmg,maxPierce:raioMaxPierce,pierced:0});
+}
+
+function updateBolts(dt){
+  for(let i=boltsFx.length-1;i>=0;i--){
+    const b=boltsFx[i];
+    b.life-=dt;
+    // Mover trail
+    for(let j=b.trail.length-1;j>0;j--) b.trail[j].position.lerp(b.trail[j-1].position,.3);
+    b.trail[0].position.copy(b.mesh.position);
+    b.trail.forEach((t,j)=>{ t.material.opacity=(.5-j*.06)*Math.max(0,b.life); });
+
+    b.mesh.position.x+=b.vx*dt; b.mesh.position.z+=b.vz*dt;
+    // Hit enemies
+    enemies.forEach(e=>{
+      if(e.dead||b.hitEnemies.has(e))return;
+      if(b.pierced>=(b.maxPierce||1))return;
+      const dx=e.mesh.position.x-b.mesh.position.x, dz=e.mesh.position.z-b.mesh.position.z;
+      if(dx*dx+dz*dz<1.2){ b.hitEnemies.add(e); b.pierced=(b.pierced||0)+1; dealDamageToEnemy(e,Math.floor(b.dmg)); spawnExplosaoFX(e.mesh.position.x,e.mesh.position.z,.8,0x00ffcc,.5); }
+    });
+    if(b.life<=0||b.mesh.position.x<-FIELD_R||b.mesh.position.x>FIELD_R){
+      scene.remove(b.mesh); b.trail.forEach(t=>scene.remove(t)); boltsFx.splice(i,1);
+    }
+  }
+}
+
+// ── Chuva de Ossos ────────────────────────────────────────
+function castChuva(tx,tz){ playSound('chuva');
+  const cost=40;
+  if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+  player.mp-=cost; updateHUD();
+
+  const COUNT=7+Math.floor(spellBonus('chuva','chuva_n')/2)*2, radius=player.spellRadius;
+  const chuvaFragDmg=player.spellDmg*.7+spellBonus('chuva','chuva_d');
+  // Indicador de área
+  const areaRing=spawnRing(tx,tz,0xffdd88,1);
+  addFX({type:'ring',mesh:areaRing,life:.5,maxLife:.5,baseScale:radius});
+
+  for(let i=0;i<COUNT;i++){
+    const delay=.1+i*.08;
+    const ox=(Math.random()-.5)*radius*1.8, oz=(Math.random()-.5)*radius*1.8;
+    const fx=tx+ox, fz=tz+oz;
+    setTimeout(()=>{
+      if(gameState!=='field')return;
+      // Osso caindo
+      const boneMat=new THREE.MeshStandardMaterial({color:0xd4c8a0,roughness:.8});
+      const boneM=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.3,6), boneMat);
+      boneM.position.set(fx,3,fz); boneM.rotation.z=Math.random()*Math.PI; scene.add(boneM);
+      addFX({type:'bone',mesh:boneM,life:.4,maxLife:.4,targetY:.1,fx,fz,dmg:chuvaFragDmg});
+    },delay*1000);
+  }
+}
+
+// ── Explosão de Almas ─────────────────────────────────────
+function castExplosao(tx,tz){ playSound('explosao');
+  const cost=60, soulCost=40;
+  if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+  if(player.souls<soulCost){floatMsg('Almas insuficientes! (40)',innerWidth/2,innerHeight*.45,'#a855f7');return;}
+  player.mp-=cost; player.souls-=soulCost; updateHUD();
+
+  const bigR=(player.spellRadius+spellBonus('explosao','exp_r'))*2.2;
+  const expDmg=player.spellDmg*2.5+spellBonus('explosao','exp_d');
+  // 3 anéis concêntricos
+  for(let i=0;i<3;i++){
+    const ring=spawnRing(tx,tz,0xcc00ff+(i*0x001100),1+i*.3);
+    addFX({type:'ring',mesh:ring,life:1.2-i*.1,maxLife:1.2,baseScale:bigR*(1-i*.15),delay:i*.05});
+  }
+  // Explosão principal
+  spawnExplosaoFX(tx,tz,bigR,0xaa00ff,2.5);
+  // Colunas de energia subindo
+  for(let i=0;i<6;i++){
+    const ang=(i/6)*Math.PI*2, r=bigR*.6;
+    const cx=tx+Math.cos(ang)*r, cz=tz+Math.sin(ang)*r;
+    const col=new THREE.Mesh(new THREE.CylinderGeometry(.08,.18,3,6),
+      new THREE.MeshBasicMaterial({color:0xcc00ff,transparent:true,opacity:.8}));
+    col.position.set(cx,0,cz); scene.add(col);
+    addFX({type:'column',mesh:col,life:.7,maxLife:.7});
+  }
+  // Dano em grande área
+  enemies.forEach(e=>{ if(e.dead)return;
+    const dx=e.mesh.position.x-tx, dz=e.mesh.position.z-tz;
+    if(dx*dx+dz*dz<bigR*bigR) dealDamageToEnemy(e,expDmg);
+  });
+  floatMsg('💥 EXPLOSÃO DE ALMAS!',innerWidth/2,innerHeight*.35,'#cc00ff');
+}
+
+// ── Dispatcher ───────────────────────────────────────────
+function castSpell(tx,tz){
+  if(gameState!=='field')return;
+  switch(player.activeSpell){
+    case 'nova':    castNova(tx,tz);    break;
+    case 'raio':    castRaio(tx,tz);    break;
+    case 'chuva':   castChuva(tx,tz);   break;
+    case 'explosao':castExplosao(tx,tz);break;
+  }
+}
+
+function selectSpell(id){
+  if(!player.learnedSkills.has(id))return;
+  player.activeSpell=id;
+  document.querySelectorAll('.spell-slot').forEach(s=>s.classList.remove('active'));
+  document.getElementById('slot-'+id)?.classList.add('active');
+}
+
+// ── FX update loop ────────────────────────────────────────
+function updateSpellFx(dt){
+  for(let i=spellFx.length-1;i>=0;i--){
+    const f=spellFx[i];
+    if(f.delay){ f.delay-=dt; if(f.delay>0)continue; f.delay=0; }
+    f.life-=dt;
+    const t=Math.max(0,f.life/f.maxLife);
+    if(f.type==='ring'){
+      const s=f.baseScale*(1+(1-t)*4);
+      f.mesh.scale.set(s,s,s);
+      f.mesh.material.opacity=t*.85;
+    } else if(f.type==='flash'){
+      f.mesh.intensity=t*8;
+    } else if(f.type==='shard'){
+      f.mesh.position.x+=f.vx*dt; f.mesh.position.y+=f.vy*dt-dt*3; f.mesh.position.z+=f.vz*dt;
+      f.mesh.material.opacity=t*.9;
+    } else if(f.type==='bone'){
+      // Cai em direção ao chão
+      const ty=f.targetY;
+      f.mesh.position.y+=(ty-f.mesh.position.y)*8*dt;
+      if(f.life<f.maxLife*.5&&!f.hit){
+        f.hit=true;
+        spawnExplosaoFX(f.fx,f.fz,.6,0xffd700,.4);
+        enemies.forEach(e=>{ if(e.dead)return; const dx=e.mesh.position.x-f.fx,dz=e.mesh.position.z-f.fz; if(dx*dx+dz*dz<1) dealDamageToEnemy(e,Math.floor(f.dmg)); });
+      }
+    } else if(f.type==='column'){
+      f.mesh.scale.y=t; f.mesh.material.opacity=t*.8;
+    }
+    if(f.life<=0){ scene.remove(f.mesh); spellFx.splice(i,1); }
+  }
+  updateBolts(dt);
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMBAT
+// ═══════════════════════════════════════════════════════════
+function dealDamageToEnemy(e,dmg){
+  if(e.dead)return;
+  if(Math.random()<.35) playSound('hit');
+  e.hp-=Math.floor(dmg);
+  const sp=worldToScreen(e.mesh.position.x,e.mesh.position.y+1.5,e.mesh.position.z);
+  floatMsg('-'+Math.floor(dmg),sp.x,sp.y,'#ff4466');
+  if(e.hp<=0) killEnemy(e,e.mesh.position.x,e.mesh.position.z);
+  else updateEnemyHpBar(e);
+}
+function dealDamageToMinion(m,dmg){
+  if(m.dead)return;
+  m.hp-=dmg;
+  const sp=worldToScreen(m.mesh.position.x,m.mesh.position.y+1.5,m.mesh.position.z);
+  floatMsg('-'+dmg,sp.x,sp.y,'#ffaa00');
+  if(m.hp<=0) killMinion(m);
+}
+function dealDamageToPlayer(dmg){
+  if(player.boneShield){ player.boneShield=false; floatMsg('🛡 Bloqueado!',innerWidth/2,innerHeight*.4,'#d4af37'); return; }
+  playSound('playerHurt');
+  player.hp=Math.max(0,player.hp-dmg); updateHUD();
+  floatMsg('-'+dmg,innerWidth/2+(Math.random()-.5)*60,innerHeight/2+(Math.random()-.5)*30,'#ff2200');
+  if(player.hp<=0) gameOver();
+}
+
+function addToInventory(itemId){
+  const def=SHOP_ITEMS.find(i=>i.id===itemId); if(!def)return;
+  const existing=player.inventory.find(i=>i.id===itemId);
+  if(existing){ if(existing.count<def.maxStack) existing.count++; }
+  else player.inventory.push({id:itemId,count:1});
+  updateInventoryBar();
+}
+
+function useItem(idx){
+  const slot=player.inventory[idx]; if(!slot||slot.count<=0)return;
+  const def=SHOP_ITEMS.find(i=>i.id===slot.id); if(!def)return;
+  def.use(); slot.count--;
+  if(slot.count<=0) player.inventory.splice(idx,1);
+  updateInventoryBar(); updateHUD();
+}
+
+function updateInventoryBar(){
+  const bar=document.getElementById('inv-bar'); if(!bar)return;
+  bar.innerHTML='';
+  player.inventory.forEach((slot,idx)=>{
+    const def=SHOP_ITEMS.find(i=>i.id===slot.id);
+    if(!def)return;
+    const btn=document.createElement('button');
+    btn.style.cssText='background:rgba(10,0,25,.9);border:1px solid rgba(212,175,55,.3);border-radius:4px;padding:6px 8px;color:#ddd;font-size:13px;cursor:pointer;font-family:inherit;position:relative;min-width:42px;transition:all .2s;';
+    btn.title=`${def.name}: ${def.desc} (F${idx+1})`;
+    btn.innerHTML=`${def.icon}<span style="position:absolute;bottom:1px;right:3px;font-size:9px;color:#d4af37;">${slot.count}</span>`;
+    btn.onclick=()=>{ if(gameState==='field') useItem(idx); };
+    bar.appendChild(btn);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// WAVES
+// ═══════════════════════════════════════════════════════════
+function startWave(){
+  if(gameState!=='field')return;
+  wave++; missionWave++;
+  waveActive=true; waveEndTimer=0;
+
+  // Se missão ativa e chegou na wave do boss
+  if(currentMission && missionWave > currentMission.wavesGoal){
+    spawnBoss(); return;
+  }
+
+  const mult = currentMission ? currentMission.enemyMult : 1;
+  const count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);
+  enemiesLeft=count; spawnQueue=[];
+  for(let i=0;i<count;i++){
+    const ti=Math.min(Math.floor(Math.random()*(1+Math.floor(wave/2))),ENEMY_TYPES.length-1);
+    spawnQueue.push(ENEMY_TYPES[ti]);
+  }
+  spawnTimer=0;
+  playSound('waveStart');
+  const waveLabel=currentMission?`WAVE ${missionWave}/${currentMission.wavesGoal}`:`WAVE ${wave}`;
+  showWaveBanner(waveLabel,`${count} inimigos se aproximam...`);
+  document.getElementById('wave-txt').textContent=currentMission?`${currentMission.label} · ${waveLabel} · ${count} ini.`:`Wave ${wave} · ${count} inimigos`;
+}
+
+function spawnBoss(){
+  if(!currentMission)return;
+  const bDef=currentMission.boss;
+  waveActive=true; enemiesLeft=1; spawnQueue=[];
+  playSound('waveStart');
+  showWaveBanner(`💀 ${bDef.name.toUpperCase()}`,`Boss da missão — prepare-se!`,'#ff2244');
+  document.getElementById('wave-txt').textContent=`👑 BOSS: ${bDef.name}`;
+
+  // Mesh do boss (enemy mesh escalado)
+  const mesh=buildEnemyMesh(bDef); mesh.scale.setScalar(bDef.sc);
+  const ang=Math.random()*Math.PI*2, r=FIELD_R*.65;
+  mesh.position.set(Math.cos(ang)*r,0,Math.sin(ang)*r);
+  scene.add(mesh);
+
+  const obj={
+    type:bDef, hp:bDef.hp, maxHp:bDef.hp,
+    dmg:bDef.dmg, spd:bDef.spd, xp:bDef.xp, souls:bDef.souls,
+    dropChance:1, dead:false, deadTimer:0, isBoss:true,
+    target:null, atkTimer:0, mesh
+  };
+  enemies.push(obj); bossEnemy=obj;
+
+  // Aura visual no boss
+  const auraGeo=new THREE.RingGeometry(1.5,2.5,24);
+  const auraMat=new THREE.MeshBasicMaterial({color:bDef.hCol,side:THREE.DoubleSide,transparent:true,opacity:.4});
+  const aura=new THREE.Mesh(auraGeo,auraMat); aura.rotation.x=-Math.PI/2;
+  mesh.add(aura); mesh.userData.bossAura=aura;
+  // Luz pontual pulsante
+  const bl=new THREE.PointLight(bDef.hCol,6,8); bl.position.y=2; mesh.add(bl); mesh.userData.bossLight=bl;
+}
+
+function onMissionComplete(){
+  const m=currentMission;
+  player.souls+=m.rewardSouls;
+  const goldReward=Math.floor(m.rewardSouls*0.6+Math.random()*30);
+  player.gold+=goldReward;
+  gainExp(m.rewardExp);
+  playSound('levelUp');
+  showWaveBanner(`✓ MISSÃO CONCLUÍDA!`,`+${m.rewardSouls} almas · +${goldReward} gold · +${m.rewardExp} XP`,'#d4af37');
+  waveActive=false;
+  // Botão de retorno ao hub aparece automaticamente (E ou botão)
+  setTimeout(()=>{ floatMsg('Pressione E para retornar ao Hub!',innerWidth/2,innerHeight*.45,'#d4af37'); },3000);
+  currentMission=null; bossEnemy=null; missionWave=0;
+}
+
+function endWave(){
+  waveActive=false; waveEndTimer=5;
+  if(currentMission && missionWave>=currentMission.wavesGoal && !bossEnemy){
+    // próxima wave é o boss
+    showWaveBanner('WAVE CONCLUÍDA!','Prepare-se... O boss se aproxima!','#ff8844');
+    waveEndTimer=4;
+  } else {
+    showWaveBanner('WAVE CONCLUÍDA!',currentMission?`Wave ${missionWave}/${currentMission.wavesGoal} — aguarde...`:'Volte ao portal ou aguarde a próxima...','#27ae60');
+  }
+}
+
+function startMission(mission){
+  currentMission={...mission};
+  missionWave=0; bossEnemy=null;
+  wave=Math.max(0,wave); // não reseta o wave global
+  enterField();
+}
+
+function enterField(){
+  gameState='field';
+  clearHubScene();
+  document.getElementById('hub-overlay').style.display='none';
+  // Reposiciona player perto do portal no campo
+  necroGroup.position.set(PORTAL.x,0,PORTAL.z+2);
+  if(wave===0||missionWave===0) setTimeout(startWave,2000); else setTimeout(startWave,1500);
+}
+function buildHubScene(){
+  hubNpcs=[]; hubObjects=[];
+  portalG.visible=false; // esconde portal do campo no hub
+  // Hub tem ground diferente (sobrescreve a fog e iluminação temporariamente)
+  scene.fog=new THREE.FogExp2(0x0d0035,0.014);
+
+  // Piso circular do hub (diferente do campo)
+  const floorGeo=new THREE.CircleGeometry(18,36);
+  const floorMat=new THREE.MeshStandardMaterial({color:0x110022,roughness:.9});
+  const floor=new THREE.Mesh(floorGeo,floorMat); floor.rotation.x=-Math.PI/2; floor.position.y=-.01; floor.receiveShadow=true;
+  scene.add(floor); hubObjects.push(floor);
+
+  // Círculo mágico no chão
+  const ringGeo=new THREE.RingGeometry(4,4.15,48);
+  const ringMat=new THREE.MeshBasicMaterial({color:0x8844ff,side:THREE.DoubleSide,transparent:true,opacity:.5});
+  const ring=new THREE.Mesh(ringGeo,ringMat); ring.rotation.x=-Math.PI/2; ring.position.y=.01;
+  scene.add(ring); hubObjects.push(ring);
+  const ringGeo2=new THREE.RingGeometry(7.5,7.6,48);
+  const ring2=new THREE.Mesh(ringGeo2,ringMat.clone()); ring2.rotation.x=-Math.PI/2; ring2.position.y=.01;
+  scene.add(ring2); hubObjects.push(ring2);
+
+  // Pilares decorativos
+  for(let i=0;i<6;i++){
+    const ang=(i/6)*Math.PI*2, r=14;
+    const px=Math.cos(ang)*r, pz=Math.sin(ang)*r;
+    const pillarMat=new THREE.MeshStandardMaterial({color:0x220033,roughness:.8});
+    const pillar=new THREE.Mesh(new THREE.CylinderGeometry(.3,.4,3,8),pillarMat);
+    pillar.position.set(px,1.5,pz); pillar.castShadow=true;
+    scene.add(pillar); hubObjects.push(pillar);
+    const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(.3),new THREE.MeshStandardMaterial({color:0x8844ff,emissive:0x4422aa,emissiveIntensity:1.5}));
+    crystal.position.set(px,3.3,pz);
+    scene.add(crystal); hubObjects.push(crystal);
+    const cLight=new THREE.PointLight(0x8844ff,1.5,4); cLight.position.set(px,3.5,pz);
+    scene.add(cLight); hubObjects.push(cLight);
+  }
+
+  // NPCs — funções auxiliares
+  function mkNpcMesh(color){
+    const g=new THREE.Group();
+    const mat=new THREE.MeshStandardMaterial({color,roughness:.7});
+    // corpo
+    g.add(new THREE.Mesh(new THREE.CylinderGeometry(.25,.3,.9,8),mat));
+    // cabeça
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.22,8,8),mat);
+    head.position.y=.7; g.add(head);
+    // brilho
+    const glow=new THREE.PointLight(color,2,2.5); glow.position.y=.7; g.add(glow);
+    g.userData.glow=glow;
+    return g;
+  }
+
+  const NPC_DEFS=[
+    {label:'Quadro de Missões', icon:'📜', tab:'missions',  pos:[0,0,-9],   color:0xff8844, hint:'[E] Ver Missões'},
+    {label:'Mercador',          icon:'🛒', tab:'shop',      pos:[-7,0,-4],  color:0xd4af37, hint:'[E] Abrir Loja'},
+    {label:'Altar dos Upgrades',icon:'⚗',  tab:'upgrades',  pos:[7,0,-4],   color:0x8844ff, hint:'[E] Upgrades & Habilidades'},
+    {label:'Cemitério',         icon:'🧟', tab:'summon',    pos:[0,0,-5],   color:0x00ccaa, hint:'[E] Gerenciar Minions'},
+  ];
+
+  NPC_DEFS.forEach(def=>{
+    const mesh=mkNpcMesh(def.color);
+    mesh.position.set(def.pos[0],0,def.pos[2]);
+    scene.add(mesh); hubObjects.push(mesh);
+
+    // Label 3D (billboard via sprite nativo não disponível em r128 sem extras — uso float div)
+    hubNpcs.push({mesh, pos:{x:def.pos[0],z:def.pos[2]}, label:def.label, icon:def.icon, tab:def.tab, hint:def.hint});
+  });
+
+  // Portal de saída (para o campo)
+  const portalGeo=new THREE.TorusGeometry(.8,.12,8,24);
+  const portalMat=new THREE.MeshStandardMaterial({color:0x4400aa,emissive:0x4400aa,emissiveIntensity:2});
+  const portalMesh=new THREE.Mesh(portalGeo,portalMat); portalMesh.position.set(0,1,8);
+  scene.add(portalMesh); hubObjects.push(portalMesh);
+  const portalLight=new THREE.PointLight(0x8800ff,4,5); portalLight.position.set(0,1,8);
+  scene.add(portalLight); hubObjects.push(portalLight);
+  hubNpcs.push({mesh:portalMesh, pos:{x:0,z:8}, label:'Portal do Campo', icon:'🌀', tab:'missions', hint:'[E] Escolher Missão', isPortal:true});
+
+  // Posiciona player no centro do hub
+  necroGroup.position.set(0,0,2);
+  necroGroup.rotation.y=Math.PI;
+  document.getElementById('wave-txt').textContent='🏰 CRIPTA DO NECROMANTE';
+  document.getElementById('boss-bar').style.display='none';
+}
+
+function clearHubScene(){
+  hubObjects.forEach(o=>scene.remove(o));
+  hubObjects=[]; hubNpcs=[]; nearbyNpc=null;
+  document.getElementById('hub-npc-prompt').style.display='none';
+  portalG.visible=true; // restaura portal do campo
+  // Restaura fog do campo
+  scene.fog=new THREE.FogExp2(0x0d0020,0.022);
+  document.getElementById('wave-txt').textContent='';
+}
+
+function enterHub(){
+  playSound('portal');
+  gameState='hub';
+  enemies.forEach(e=>scene.remove(e.mesh)); enemies=[];
+  droppedItems.forEach(i=>scene.remove(i.mesh)); droppedItems=[];
+  boltsFx.forEach(b=>{scene.remove(b.mesh);b.trail.forEach(t=>scene.remove(t));}); boltsFx=[];
+  spellFx.forEach(f=>scene.remove(f.mesh)); spellFx=[];
+  enemiesLeft=0; spawnQueue=[]; waveActive=false; summonWheelOpen=false;
+  bossEnemy=null; currentMission=null; minionWave=0;
+  document.getElementById('summon-wheel').style.display='none';
+  document.getElementById('hub-overlay').style.display='none';
+  buildHubScene();
+  generateMissions(); saveGame();
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROGRESSÃO
+// ═══════════════════════════════════════════════════════════
+function gainExp(v){ player.exp+=v; while(player.exp>=player.expNext){ player.exp-=player.expNext; player.level++; player.expNext=Math.floor(100*Math.pow(1.4,player.level-1)); onLevelUp(); } updateHUD(); }
+function gainSouls(v){ player.souls+=v; updateHUD(); }
+
+function onLevelUp(){ playSound('levelUp');
+  player.maxHp+=10; player.hp=Math.min(player.hp+20,player.maxHp);
+  player.maxMp+=5; player.maxSp+=10;
+  if(player.level%2===0){ player.skillPoints++; document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s) de habilidade`; }
+  showOverlay(`LEVEL ${player.level}!`,'HP/Mana/SP aumentados · Hub para gastar pontos','#d4af37');
+  document.getElementById('level-txt').textContent=`⚔ LEVEL ${player.level} — NECROMANTE`;
+  updateHUD();
+}
+
+function learnSkill(id){
+  const node=SKILL_NODES[id];
+  if(!node||player.skillPoints<=0||player.learnedSkills.has(id))return;
+  if(node.req&&!player.learnedSkills.has(node.req)){ floatMsg('Aprenda o pré-requisito primeiro!',innerWidth/2,innerHeight*.4,'#ff4444'); return; }
+  player.skillPoints--;
+  player.learnedSkills.add(id);
+  if(node.spell) document.getElementById('slot-'+node.spell)?.classList.remove('locked');
+  document.getElementById('sp-pts-txt').textContent=player.skillPoints>0?`✨ ${player.skillPoints} ponto(s) de habilidade`:'';
+  playSound('levelUp'); floatMsg(`✓ ${node.name} aprendida!`,innerWidth/2,innerHeight*.35,'#d4af37');
+  buildSkillTree();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HUB UI
+// ═══════════════════════════════════════════════════════════
+function showHubOverlay(tab){
+  document.getElementById('hub-overlay').style.display='flex';
+  document.getElementById('hub-souls-disp').textContent=`💀 ${player.souls} almas  ·  ✨ ${player.skillPoints} pontos de habilidade`;
+  document.getElementById('hub-stat').textContent=`Lv${player.level}  HP ${Math.ceil(player.hp)}/${player.maxHp}  MP ${Math.ceil(player.mp)}/${player.maxMp}  SP ${spUsed()}/${player.maxSp}  Wave ${wave}`;
+  buildShopGrid();
+  buildMissionBoard();
+  buildUpgradeGrid();
+  buildSkillTree();
+  buildSpellUpgradesSection();
+  buildMinionUpgradeGrid();
+  buildRosterSection();
+  buildSummonGrid();
+  // Muda para tab específica se indicada
+  if(tab){
+    // Mapeia tab especial 'upgrades' para a primeira aba disponível com upgrades
+    const tabMap={upgrades:'upgrades',skills:'skills',minions:'minions',shop:'shop',missions:'missions',summon:'summon'};
+    const actualTab=tabMap[tab]||'missions';
+    const btn=document.querySelector(`.hub-tab[onclick*="'${actualTab}'"]`);
+    showTab(actualTab, btn);
+  }
+}
+
+function showTab(id, btn){
+  document.querySelectorAll('.hub-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.hub-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+function buildShopGrid(){
+  const g=document.getElementById('shop-grid'); g.innerHTML='';
+  const goldEl=document.createElement('div');
+  goldEl.style.cssText='font-size:12px;color:#d4af37;letter-spacing:2px;margin-bottom:14px;';
+  goldEl.textContent=`🪙 ${player.gold} gold disponível`;
+  g.appendChild(goldEl);
+  const grid=document.createElement('div'); grid.className='shop-grid';
+  SHOP_ITEMS.forEach(item=>{
+    const inInv=player.inventory.find(i=>i.id===item.id);
+    const count=inInv?inInv.count:0;
+    const maxed=count>=item.maxStack;
+    const canBuy=player.gold>=item.cost&&!maxed;
+    const card=document.createElement('div');
+    card.className='shop-card'+(canBuy?'':' disabled');
+    card.innerHTML=`
+      <div class="sh-top"><div class="sh-icon">${item.icon}</div><div class="sh-name">${item.name}</div></div>
+      <div class="sh-desc">${item.desc}</div>
+      <div class="sh-foot">
+        <span class="sh-cost">🪙 ${item.cost} ${count>0?`· Em bolso: ${count}/${item.maxStack}`:''}</span>
+        ${canBuy?`<button class="sh-btn" onclick="buyItem('${item.id}')">COMPRAR</button>`:`<span style="font-size:9px;color:#444;">${maxed?'CHEIO':'SEM GOLD'}</span>`}
+      </div>`;
+    grid.appendChild(card);
+  });
+  g.appendChild(grid);
+}
+
+function buyItem(itemId){
+  const def=SHOP_ITEMS.find(i=>i.id===itemId); if(!def)return;
+  if(player.gold<def.cost){ floatMsg('Gold insuficiente!',innerWidth/2,innerHeight*.4,'#d4af37'); return; }
+  const inInv=player.inventory.find(i=>i.id===itemId);
+  if(inInv&&inInv.count>=def.maxStack){ floatMsg('Bolso cheio!',innerWidth/2,innerHeight*.4,'#aaa'); return; }
+  player.gold-=def.cost;
+  addToInventory(itemId);
+  playSound('click'); floatMsg(`✓ ${def.name} comprada!`,innerWidth/2,innerHeight*.4,'#d4af37');
+  showHubOverlay();
+}
+
+function buildMissionBoard(){
+  const board=document.getElementById('mission-board'); board.innerHTML='';
+  const header=document.createElement('div');
+  header.style.cssText='font-size:10px;color:#555;letter-spacing:2px;margin-bottom:14px;';
+  header.textContent='ESCOLHA UMA MISSÃO PARA INICIAR';
+  board.appendChild(header);
+  const grid=document.createElement('div'); grid.className='mission-board-grid';
+  availableMissions.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='mission-card';
+    card.style.borderColor=m.color+'44';
+    const diffDots=Array.from({length:3},(_,i)=>`<span style="background:${i<m.difficulty?m.color:'rgba(255,255,255,.08)'};"></span>`).join('');
+    card.innerHTML=`
+      <div class="mc-header">
+        <div class="mc-icon">${m.icon}</div>
+        <div>
+          <div class="mc-title">${m.label}</div>
+          <div class="mc-diff">${diffDots}</div>
+        </div>
+      </div>
+      <div class="mc-desc">${m.desc}</div>
+      <div class="mc-details">
+        <div class="mc-detail">🌊 <b>${m.wavesGoal} waves</b> + boss final</div>
+        <div class="mc-detail">👑 Boss: <b>${m.boss.name}</b> (${m.boss.hp} HP)</div>
+        <div class="mc-detail">⚔ Inimigos: <b>${m.enemyMult===1?'Normal':m.enemyMult===1.4?'Reforçados':'Elite'}</b></div>
+      </div>
+      <div class="mc-rewards">🎁 +${m.rewardSouls} almas · +${m.rewardExp} XP</div>
+      <button class="mc-btn" style="color:${m.color};border-color:${m.color}44;background:${m.color}11;"
+        onclick="startMission(availableMissions[${availableMissions.indexOf(m)}])">⚔ INICIAR MISSÃO</button>`;
+    grid.appendChild(card);
+  });
+  board.appendChild(grid);
+  // Botão para entrar direto no campo (modo livre sem missão)
+  const freeBtn=document.createElement('div');
+  freeBtn.style.cssText='margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);';
+  freeBtn.innerHTML=`<div style="font-size:9px;color:#333;letter-spacing:2px;margin-bottom:8px;">OU</div>
+    <button class="btn" onclick="enterField()" style="font-size:10px;">⚡ CAMPO LIVRE (sem missão, waves infinitas)</button>`;
+  board.appendChild(freeBtn);
+}
+
+function buildUpgradeGrid(){
+  const g=document.getElementById('upgrade-grid'); g.innerHTML='';
+  UPGRADES.forEach(u=>{
+    const c=player.upgradeCount[u.id]||0; if(c>=u.max)return;
+    const cost=Math.floor(u.baseCost*Math.pow(u.mult,c));
+    const card=document.createElement('div');
+    card.className='upgrade-card'+(player.souls<cost?' disabled':'');
+    card.innerHTML=`<div class="u-name">${u.name} <span style="color:#444;font-size:9px">${c}/${u.max}</span></div><div class="u-desc">${u.desc}</div><div class="u-cost">💀 ${cost}</div>`;
+    if(player.souls>=cost) card.onclick=()=>buyUpgrade(u,cost);
+    g.appendChild(card);
+  });
+}
+
+function buyUpgrade(u,cost){
+  if(player.souls<cost)return;
+  player.souls-=cost; player.upgradeCount[u.id]=(player.upgradeCount[u.id]||0)+1;
+  switch(u.id){
+    case 'slots':   player.minionSlots++; break;
+    case 'sppool':  player.maxSp+=20; break;
+    case 'mhp':     minionHpBonus+=30; minions.forEach(m=>{m.maxHp+=30;m.hp+=30;}); break;
+    case 'mdmg':    minionDmgBonus+=5; minions.forEach(m=>m.dmg+=5); break;
+    case 'mpregen': player.mpRegen+=3; break;
+    case 'phpmaxup':player.maxHp+=25; player.hp=Math.min(player.hp+25,player.maxHp); break;
+    case 'mpmax':   player.maxMp+=20; break;
+    case 'hpregen': player.hpRegen+=.5; break;
+    case 'mregen':  minionRegenBonus+=1; minions.forEach(m=>m.hpRegen+=1); break;
+  }
+  playSound('click'); floatMsg('✓ Upgrade!',innerWidth/2,innerHeight*.4,'#00ff88');
+  showHubOverlay();
+}
+
+function buildSkillTree(){
+  const container=document.getElementById('skill-tree'); container.innerHTML='';
+  const pts=document.createElement('div');
+  pts.style.cssText='color:#00ccaa;font-size:11px;letter-spacing:1px;margin-bottom:8px;text-align:center;';
+  pts.textContent=`✨ ${player.skillPoints} ponto(s) disponível(is)`;
+  container.appendChild(pts);
+
+  // Base
+  container.appendChild(mkSkillNode('nova'));
+
+  // Divisor
+  const divRow=document.createElement('div');
+  divRow.style.cssText='display:flex;justify-content:center;gap:200px;margin:4px 0;';
+  divRow.innerHTML='<div style="color:#8844ff;font-size:9px;letter-spacing:2px;">MAGIA</div><div style="color:#00ccaa;font-size:9px;letter-spacing:2px;">INVOCAÇÃO</div>';
+  container.appendChild(divRow);
+
+  // Branches lado a lado
+  const row=document.createElement('div');
+  row.className='st-row'; row.style.alignItems='flex-start';
+
+  const magicBranch=document.createElement('div'); magicBranch.className='st-branch';
+  ['raio','chuva','explosao'].forEach(id=>{
+    magicBranch.appendChild(mkConnector());
+    magicBranch.appendChild(mkSkillNode(id));
+  });
+
+  const summonBranch=document.createElement('div'); summonBranch.className='st-branch';
+  ['aura','pacto','ritual','ascensao'].forEach(id=>{
+    summonBranch.appendChild(mkConnector());
+    summonBranch.appendChild(mkSkillNode(id));
+  });
+
+  row.appendChild(magicBranch); row.appendChild(summonBranch);
+  container.appendChild(row);
+}
+
+function mkConnector(){ const d=document.createElement('div'); d.className='st-connector'; return d; }
+
+function mkSkillNode(id){
+  const node=SKILL_NODES[id];
+  const learned=player.learnedSkills.has(id);
+  const reqMet=!node.req||player.learnedSkills.has(node.req);
+  const canLearn=!learned&&reqMet&&player.skillPoints>0;
+  const div=document.createElement('div');
+  div.className='st-node'+(learned?' st-learned':reqMet&&!learned?' ':'  st-locked')+(id===player.activeSpell?' st-active':'');
+  div.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${node.icon}</div><div class="st-name">${node.name}</div><div class="st-desc">${node.desc}</div>${!learned?`<div class="st-cost">${canLearn?'1 ponto — clique para aprender':reqMet?'1 ponto (aprenda pré-req. primeiro)':'🔒 Bloqueado'}</div>`:'<div class="st-cost" style="color:#00ccaa">✓ Aprendida</div>'}`;
+  if(canLearn) div.onclick=()=>learnSkill(id);
+  return div;
+}
+
+function buildRosterSection(){
+  const sec=document.getElementById('roster-section'); sec.innerHTML='';
+
+  // Header com pips de slot
+  const hdr=document.createElement('div'); hdr.className='slot-header';
+  const lbl=document.createElement('div'); lbl.className='slot-label';
+  lbl.textContent=`ROSTER — ${minions.length}/${player.minionSlots} SLOTS`;
+  const pips=document.createElement('div'); pips.className='slot-pips';
+  for(let i=0;i<player.minionSlots;i++){
+    const pip=document.createElement('div');
+    if(i<minions.length){
+      pip.className='slot-pip '+(minions[i].dead?'dead':'filled');
+    } else {
+      pip.className='slot-pip';
+    }
+    pips.appendChild(pip);
+  }
+  hdr.appendChild(lbl); hdr.appendChild(pips);
+  sec.appendChild(hdr);
+
+  if(!minions.length){
+    sec.innerHTML+='<div style="color:#333;font-size:10px;letter-spacing:1px;padding:12px 0;">Nenhum minion invocado. Vá à seção abaixo.</div>';
+    return;
+  }
+
+  const grid=document.createElement('div'); grid.className='roster-grid';
+  minions.forEach((m,idx)=>{
+    const card=document.createElement('div');
+    card.className='roster-card'+(m.dead?' dead':'');
+    const hpPct=Math.max(0,m.hp/m.maxHp*100);
+    const revTime=m._reviveTime||MINION_REVIVE_TIME;
+    const statusTxt=m.dead?`☠ Revivendo em ${Math.ceil(m.deadTimer)}s`:`❤ ${Math.ceil(m.hp)}/${m.maxHp}`;
+    card.innerHTML=`
+      <button class="dismiss-btn" onclick="dismissMinion(${idx});showHubOverlay()">✕</button>
+      <div class="rc-top">
+        <div class="rc-emoji">${m.def.emoji}</div>
+        <div class="rc-info">
+          <div class="rc-name">${m.def.name}</div>
+          <div class="rc-status">${statusTxt}</div>
+        </div>
+      </div>
+      <div class="rc-bars">
+        <div class="roster-bar"><div class="roster-bar-fill" style="width:${hpPct}%;background:${m.dead?'#553':'#27ae60'};"></div></div>
+      </div>
+      <div style="font-size:9px;color:#444;display:flex;gap:10px;">
+        <span>⚔ DMG ${m.dmg}</span>
+        <span>💨 SPD ${m.spd.toFixed(1)}</span>
+        <span>🔮 SP ${m.spCost??m.def.spCost}</span>
+      </div>`;
+    grid.appendChild(card);
+  });
+  sec.appendChild(grid);
+}
+
+function buildSummonGrid(){
+  const g=document.getElementById('summon-grid'); g.innerHTML='';
+  const slotsLlenos=minions.length>=player.minionSlots;
+  if(slotsLlenos){
+    g.innerHTML=`<div style="color:#664400;font-size:10px;letter-spacing:1px;padding:10px 0;">⚠ Slots cheios (${player.minionSlots}/${player.minionSlots}). Dispense um minion acima ou compre mais slots em UPGRADES.</div>`;
+    return;
+  }
+  let added=0;
+  Object.entries(MINION_DEFS).forEach(([key,def])=>{
+    if(player.level<def.unlockLv)return;
+    const soulCost=key==='zombie'?0:key==='skeleton'?15:30;
+    const effectiveSp=minionSpCost(key);
+    const canSummon=spFree()>=effectiveSp&&player.souls>=soulCost;
+    const card=document.createElement('div');
+    card.className='summon-card'+(canSummon?'':' disabled');
+    const typeHp=minionBonus(key,'hp'), typeDmg=minionBonus(key,'dmg');
+    card.innerHTML=`<div class="sm-emoji">${def.emoji}</div><div class="sm-name">${def.name}</div>
+      <div class="sm-stats">HP: ${def.hp+minionHpBonus+typeHp} · DMG: ${def.dmg+minionDmgBonus+typeDmg}<br>SP: ${effectiveSp} · SPD: ${(def.spd+minionBonus(key,'spd')).toFixed(1)}</div>
+      <div class="sm-cost">🔮 ${effectiveSp} SP${soulCost?' · 💀 '+soulCost:' · grátis'}</div>`;
+    if(canSummon) card.onclick=()=>{ player.souls-=soulCost; spawnMinion(key); showHubOverlay(); };
+    g.appendChild(card); added++;
+  });
+  if(!added) g.innerHTML='<div style="color:#555;font-size:11px;letter-spacing:1px;">Nenhum minion disponível ainda.</div>';
+}
+
+// ── Upgrades de Minion ────────────────────────────────────
+function buildMinionUpgradeGrid(){
+  const g=document.getElementById('minion-upgrade-grid'); g.innerHTML='';
+  Object.entries(MINION_UPGRADES).forEach(([mType,ups])=>{
+    const def=MINION_DEFS[mType];
+    if(player.level<def.unlockLv)return;
+    const section=document.createElement('div');
+    section.style.cssText='margin-bottom:22px;';
+    section.innerHTML=`<div style="font-size:12px;color:#d4af37;letter-spacing:2px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(212,175,55,.15);">${def.emoji} ${def.name.toUpperCase()}</div>`;
+    const row=document.createElement('div');
+    row.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px;';
+    ups.forEach(u=>{
+      const c=player.minionUpgradeCount[u.id]||0;
+      const cost=Math.floor(u.baseCost*Math.pow(u.mult,c));
+      const maxed=c>=u.max;
+      const card=document.createElement('div');
+      card.className='upgrade-card'+(maxed?'':player.souls<cost?' disabled':'');
+      card.style.cssText='';
+      card.innerHTML=`<div class="u-name">${u.icon} ${u.name} <span style="color:#444;font-size:9px">${c}/${u.max}</span></div><div class="u-desc">${u.desc}</div><div class="u-cost">${maxed?'✓ MAX':'💀 '+cost}</div>`;
+      if(!maxed&&player.souls>=cost) card.onclick=()=>buyMinionUpgrade(mType,u,cost);
+      row.appendChild(card);
+    });
+    section.appendChild(row);
+    g.appendChild(section);
+  });
+}
+
+function buyMinionUpgrade(mType, u, cost){
+  if(player.souls<cost)return;
+  player.souls-=cost;
+  player.minionUpgradeCount[u.id]=(player.minionUpgradeCount[u.id]||0)+1;
+  // Aplica imediatamente em minions já existentes do tipo
+  minions.filter(m=>m.type===mType).forEach(m=>{
+    if(u.stat==='hp')    { m.maxHp+=u.val; m.hp+=u.val; }
+    if(u.stat==='dmg')   { m.dmg+=u.val; }
+    if(u.stat==='spd')   { m.spd+=u.val; }
+    if(u.stat==='regen') { m.hpRegen+=u.val; }
+    if(u.stat==='atkR')  { m.atkR+=u.val; }
+    if(u.stat==='drain') { m.lifeDrain=true; }
+    if(u.stat==='revive'){ m.reviveReduce=(m.reviveReduce||0)+u.val; }
+    if(u.stat==='cost')  { m.spCost=Math.max(5,(m.spCost||m.def.spCost)-u.val); }
+  });
+  playSound('click'); floatMsg(`✓ ${u.name}!`,innerWidth/2,innerHeight*.4,'#00ccaa');
+  showHubOverlay();
+}
+
+// ── Upgrades de Magia ─────────────────────────────────────
+function buildSpellUpgradesSection(){
+  const sec=document.getElementById('spell-upgrades-section'); sec.innerHTML='';
+  const learnedSpells=Object.keys(SPELL_UPGRADES).filter(s=>player.learnedSkills.has(s));
+  if(!learnedSpells.length) return;
+  const title=document.createElement('div');
+  title.style.cssText='color:#8844ff;font-size:10px;letter-spacing:2px;margin-bottom:14px;';
+  title.textContent='✦ UPGRADES DE MAGIA ✦';
+  sec.appendChild(title);
+  // Layout: todas as magias lado a lado em grid
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;';
+  const SPELL_NAMES={nova:'🔮 Nova Arcana',raio:'⚡ Raio Necrótico',chuva:'🦴 Chuva de Ossos',explosao:'💥 Explosão'};
+  learnedSpells.forEach(spell=>{
+    const ups=SPELL_UPGRADES[spell];
+    ups.forEach(u=>{
+      const c=player.spellUpgradeCount[u.id]||0;
+      const cost=Math.floor(u.baseCost*Math.pow(u.mult,c));
+      const maxed=c>=u.max;
+      const card=document.createElement('div');
+      card.className='upgrade-card'+(maxed?'':player.souls<cost?' disabled':'');
+      card.innerHTML=`<div class="u-name">${u.icon} ${u.name} <span style="color:#444;font-size:9px">${c}/${u.max}</span></div><div class="u-desc" style="color:#556;">${SPELL_NAMES[spell]}</div><div class="u-desc">${u.desc}</div><div class="u-cost">${maxed?'✓ MAX':'💀 '+cost}</div>`;
+      if(!maxed&&player.souls>=cost) card.onclick=()=>buySpellUpgrade(spell,u,cost);
+      grid.appendChild(card);
+    });
+  });
+  sec.appendChild(grid);
+}
+
+function buySpellUpgrade(spell, u, cost){
+  if(player.souls<cost)return;
+  player.souls-=cost;
+  player.spellUpgradeCount[u.id]=(player.spellUpgradeCount[u.id]||0)+1;
+  playSound('click'); floatMsg(`✓ ${u.name}!`,innerWidth/2,innerHeight*.4,'#8844ff');
+  showHubOverlay();
+}
+
+// ── Summon Wheel (campo) ──────────────────────────────────
+function toggleSummonWheel(){
+  summonWheelOpen=!summonWheelOpen;
+  const w=document.getElementById('summon-wheel');
+  if(summonWheelOpen){
+    w.style.display='flex'; buildSummonWheelUI();
+  } else {
+    w.style.display='none';
+  }
+}
+
+function buildSummonWheelUI(){
+  const row=document.getElementById('sw-row'); row.innerHTML='';
+  Object.entries(MINION_DEFS).forEach(([key,def])=>{
+    if(player.level<def.unlockLv)return;
+    const soulCost=key==='zombie'?0:key==='skeleton'?15:30;
+    const mpCost=key==='zombie'?20:key==='skeleton'?30:45;
+    const canSummon=spFree()>=def.spCost&&player.souls>=soulCost&&player.mp>=mpCost;
+    const btn=document.createElement('button');
+    btn.className='sw-btn'+(canSummon?'':' sw-disabled');
+    btn.innerHTML=`<span>${def.emoji} ${def.name}</span><span class="sw-cost">🔮${def.spCost}SP${soulCost?' 💀'+soulCost:''} 🔷${mpCost}MP</span>`;
+    if(canSummon) btn.onclick=()=>{
+      player.souls-=soulCost; player.mp-=mpCost; updateHUD();
+      spawnMinion(key,true); toggleSummonWheel();
+    };
+    row.appendChild(btn);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLES
+// ═══════════════════════════════════════════════════════════
+const keys={};
+window.addEventListener('keydown',e=>{
+  keys[e.key.toLowerCase()]=true;
+  if(e.key>='1'&&e.key<='4'){
+    const spells=['nova','raio','chuva','explosao'];
+    selectSpell(spells[parseInt(e.key)-1]);
+  }
+  if(e.key.toLowerCase()==='q') toggleSummonWheel();
+  if(e.key.toLowerCase()==='e'){
+    if(gameState==='hub'&&nearbyNpc){
+      // NPC é portal → abre board de missões
+      if(nearbyNpc.isPortal){ showHubOverlay('missions'); }
+      else { showHubOverlay(nearbyNpc.tab); }
+    } else if(gameState==='field'){
+      tryPortal();
+    }
+  }
+  if(e.key.toLowerCase()==='r') tryReanimate();
+  // F1-F5 usam itens do inventário
+  if(e.key.startsWith('F')&&!isNaN(e.key[1])){
+    const idx=parseInt(e.key[1])-1;
+    if(idx>=0&&idx<5&&gameState==='field'){ e.preventDefault(); useItem(idx); }
+  }
+});
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+
+function getWorldPoint(clientX,clientY){
+  const mouse=new THREE.Vector2((clientX/innerWidth)*2-1,-(clientY/innerHeight)*2+1);
+  const ray=new THREE.Raycaster(); ray.setFromCamera(mouse,camera);
+  const plane=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+  const pt=new THREE.Vector3(); ray.ray.intersectPlane(plane,pt);
+  return pt;
+}
+
+renderer.domElement.addEventListener('click',e=>{
+  if(gameState!=='field')return;
+  if(summonWheelOpen){toggleSummonWheel();return;}
+  const pt=getWorldPoint(e.clientX,e.clientY);
+  castSpell(pt.x,pt.z);
+});
+
+renderer.domElement.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  if(gameState!=='field')return;
+  if(minions.length===0)return;
+  const pt=getWorldPoint(e.clientX,e.clientY);
+  if(pt) applyRightClick(pt.x,pt.z);
+});
+
+// bloqueia contextmenu do document também (browsers às vezes capturam antes)
+document.addEventListener('contextmenu',e=>{ if(gameState==='field') e.preventDefault(); });
+
+// ── Comandos de minion ────────────────────────────────────
+let pendingCommand='auto'; // 'auto'|'attack'|'rally'
+
+function setCommand(type){
+  pendingCommand=type;
+  document.querySelectorAll('.cmd-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('cmd-'+type)?.classList.add('active');
+  if(type==='auto'){
+    minionCommand=null;
+    removeCommandMarker();
+  }
+}
+
+function applyRightClick(wx,wz){
+  // auto-detecta: se tem inimigo perto do clique → ataque, senão → reunir
+  const near=nearestEnemyToPoint(wx,wz);
+  const distToNear=near?Math.hypot(near.mesh.position.x-wx,near.mesh.position.z-wz):999;
+  const type=(pendingCommand!=='auto')?pendingCommand:(distToNear<4?'attack':'rally');
+  minionCommand={type,x:wx,z:wz,timer:14};
+  placeCommandMarker(wx,wz,type);
+  floatMsg(type==='attack'?'⚔ Minions atacando!':'↩ Minions reunindo!',innerWidth/2,innerHeight*.38,'#d4af37');
+  playSound('click');
+  // reseta modo manual de volta ao auto
+  if(pendingCommand!=='auto') setCommand('auto');
+}
+
+function placeCommandMarker(x,z,type){
+  removeCommandMarker();
+  const col=type==='attack'?0xff2200:0x00ccaa;
+  const geo=new THREE.RingGeometry(.3,.5,16);
+  const mat=new THREE.MeshBasicMaterial({color:col,side:THREE.DoubleSide,transparent:true,opacity:.9});
+  commandMarker=new THREE.Mesh(geo,mat);
+  commandMarker.rotation.x=-Math.PI/2; commandMarker.position.set(x,.08,z);
+  commandMarker.userData.col=col;
+  scene.add(commandMarker);
+}
+
+function removeCommandMarker(){
+  if(commandMarker){ scene.remove(commandMarker); commandMarker=null; }
+}
+
+function tryPortal(){
+  if(gameState!=='field')return;
+  const dx=necroGroup.position.x-PORTAL.x, dz=necroGroup.position.z-PORTAL.z;
+  if(dx*dx+dz*dz<6) enterHub();
+  else floatMsg('Chegue mais perto do portal!',innerWidth/2,innerHeight*.4,'#8844ff');
+}
+function tryReanimate(){
+  if(gameState!=='field')return;
+  const dead=minions.find(m=>m.dead);
+  if(!dead)return;
+  if(player.mp<30){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+  playSound('revive'); player.mp-=30; dead.hp=Math.floor(dead.maxHp*.5); dead.dead=false; dead.deadTimer=0; dead.fadeOut=false; dead._lastReviveMsg=null;
+  dead.mesh.traverse(c=>{if(c.material){c.material.opacity=1;c.material.transparent=false;}});
+  floatMsg('⚗ Reanimado!',innerWidth/2,innerHeight*.35,'#a855f7');
+  updateMinionPanel(); updateHUD();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HUD UPDATE
+// ═══════════════════════════════════════════════════════════
+function updateHUD(){
+  const ph=player.hp/player.maxHp, pm=player.mp/player.maxMp, pe=player.exp/player.expNext;
+  const used=spUsed(), psp=Math.min(1,used/player.maxSp);
+  document.getElementById('hp-fill').style.width=(ph*100)+'%';
+  document.getElementById('mp-fill').style.width=(pm*100)+'%';
+  document.getElementById('exp-fill').style.width=(pe*100)+'%';
+  document.getElementById('sp-fill').style.width=(psp*100)+'%';
+  document.getElementById('hp-val').textContent=`${Math.ceil(player.hp)}/${player.maxHp}`;
+  document.getElementById('mp-val').textContent=`${Math.ceil(player.mp)}/${player.maxMp}`;
+  document.getElementById('exp-val').textContent=`${player.exp}/${player.expNext}`;
+  document.getElementById('sp-val').textContent=`${used}/${player.maxSp}`;
+  document.getElementById('souls-txt').textContent=`💀 ${player.souls} almas`;
+  const gEl=document.getElementById('gold-txt'); if(gEl) gEl.textContent=`🪙 ${player.gold} gold`;
+  // Segmentos SP
+  const segs=document.getElementById('sp-segs'); segs.innerHTML='';
+  minions.forEach(m=>{ const s=document.createElement('div'); s.className='sp-seg'; s.style.width=((m.def.spCost/player.maxSp)*100)+'%'; segs.appendChild(s); });
+  const dead=minions.some(m=>m.dead);
+  document.getElementById('reanimate-hint').style.opacity=(dead&&gameState==='field')?'1':'0';
+}
+
+function updateBossHpBar(){
+  const bar=document.getElementById('boss-bar');
+  if(!bossEnemy||bossEnemy.dead){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  document.getElementById('boss-name').textContent=`👑 ${bossEnemy.type.name}`;
+  const pct=Math.max(0,bossEnemy.hp/bossEnemy.maxHp*100);
+  document.getElementById('boss-hp-fill').style.width=pct+'%';
+  document.getElementById('boss-hp-txt').textContent=`${Math.ceil(bossEnemy.hp)} / ${bossEnemy.maxHp}`;
+}
+
+function updateMinionPanel(){
+  const p=document.getElementById('minion-panel'); p.innerHTML='';
+  const h=document.createElement('div');
+  h.style.cssText='color:#888;font-size:10px;letter-spacing:1px;margin-bottom:2px;text-align:right;';
+  h.textContent=`MINIONS (${minions.filter(m=>!m.dead).length} · ${spUsed()}/${player.maxSp} SP)`;
+  p.appendChild(h);
+  minions.forEach(m=>{
+    const pct=Math.max(0,(m.hp/m.maxHp)*100);
+    const hpC=pct>50?'#27ae60':pct>25?'#e67e22':'#c0392b';
+    const row=document.createElement('div'); row.className='minion-row';
+    row.innerHTML=`<div class="m-name">${m.dead?'☠ '+(MINION_REVIVE_TIME-Math.ceil(m.deadTimer)<0?0:MINION_REVIVE_TIME-Math.ceil(m.deadTimer))+'s':m.def.name}</div>
+      <div class="m-hp-track"><div class="m-hp-fill" style="width:${m.dead?0:pct}%;background:${hpC}"></div></div>
+      <div class="minion-icon ${m.dead?'dead':''}">${m.def.emoji}</div>`;
+    p.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function worldToScreen(wx,wy,wz){
+  const v=new THREE.Vector3(wx,wy,wz).project(camera);
+  return {x:(v.x+1)/2*innerWidth,y:(-v.y+1)/2*innerHeight};
+}
+function floatMsg(text,x,y,color='#fff'){
+  const el=document.createElement('div'); el.className='float-msg';
+  el.style.cssText=`color:${color};left:${x}px;top:${y}px;`; el.textContent=text;
+  document.body.appendChild(el); setTimeout(()=>el.remove(),1200);
+}
+function showWaveBanner(title,sub,color='#ff6633'){
+  const wb=document.getElementById('wave-banner');
+  document.getElementById('wb-title').style.cssText=`color:${color};text-shadow:0 0 20px ${color}`;
+  document.getElementById('wb-title').textContent=title;
+  document.getElementById('wb-sub').textContent=sub;
+  wb.style.opacity='1'; setTimeout(()=>wb.style.opacity='0',2600);
+}
+function showOverlay(title,sub,color='#fff'){
+  const ov=document.getElementById('overlay-msg');
+  document.getElementById('ov-title').style.color=color; document.getElementById('ov-title').textContent=title;
+  document.getElementById('ov-sub').textContent=sub;
+  ov.style.opacity='1'; setTimeout(()=>ov.style.opacity='0',2800);
+}
+function gameOver(){
+  playSound('gameOver');
+  gameState='hub'; showOverlay('VOCÊ MORREU','As trevas te consomem...','#c0392b');
+  player.hp=1; setTimeout(()=>{ player.hp=Math.floor(player.maxHp*.5); updateHUD(); enterHub(); },3000);
+}
+function dist2(ax,az,bx,bz){ const dx=ax-bx,dz=az-bz; return dx*dx+dz*dz; }
+function nearestEnemy(mx,mz){ let best=null,bd=Infinity; enemies.forEach(e=>{ if(e.dead)return; const d=dist2(mx,mz,e.mesh.position.x,e.mesh.position.z); if(d<bd){bd=d;best=e;} }); return best; }
+function nearestMinion(ex,ez){ let best=null,bd=Infinity; minions.forEach(m=>{ if(m.dead)return; const d=dist2(ex,ez,m.mesh.position.x,m.mesh.position.z); if(d<bd){bd=d;best=m;} }); return best; }
+function nearestEnemyToPoint(px,pz){ let best=null,bd=Infinity; enemies.forEach(e=>{ if(e.dead)return; const d=dist2(px,pz,e.mesh.position.x,e.mesh.position.z); if(d<bd){bd=d;best=e;} }); return best; }
+
+// ═══════════════════════════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY='necromancer_v2';
+function saveGame(){
+  const data={
+    hp:player.hp,maxHp:player.maxHp,mp:player.mp,maxMp:player.maxMp,
+    exp:player.exp,expNext:player.expNext,level:player.level,souls:player.souls,
+    maxSp:player.maxSp,minionSlots:player.minionSlots,spellDmg:player.spellDmg,spellRadius:player.spellRadius,mpRegen:player.mpRegen,
+    skillPoints:player.skillPoints,learnedSkills:[...player.learnedSkills],activeSpell:player.activeSpell,
+    upgradeCount:player.upgradeCount,wave,minionTypes:minions.map(m=>m.type),
+    minionHpBonus,minionDmgBonus,minionRegenBonus,hpRegen:player.hpRegen,
+    minionUpgradeCount:player.minionUpgradeCount,spellUpgradeCount:player.spellUpgradeCount,
+    gold:player.gold,inventory:player.inventory,
+  };
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
+  floatMsg('💾 Salvo',innerWidth/2,innerHeight*.3,'#00ccaa');
+}
+function loadGame(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY); if(!raw)return false;
+    const d=JSON.parse(raw);
+    Object.assign(player,{
+      hp:d.hp,maxHp:d.maxHp,mp:d.mp,maxMp:d.maxMp,exp:d.exp,expNext:d.expNext,
+      level:d.level,souls:d.souls,maxSp:d.maxSp||60,minionSlots:d.minionSlots||3,spellDmg:d.spellDmg,
+      spellRadius:d.spellRadius,mpRegen:d.mpRegen,skillPoints:d.skillPoints||0,
+      learnedSkills:new Set(d.learnedSkills||['nova']),activeSpell:d.activeSpell||'nova',
+      upgradeCount:d.upgradeCount||{},
+      minionUpgradeCount:d.minionUpgradeCount||player.minionUpgradeCount,
+      spellUpgradeCount:d.spellUpgradeCount||player.spellUpgradeCount,
+      gold:d.gold||0, inventory:d.inventory||[],
+    });
+    wave=d.wave||0; minionHpBonus=d.minionHpBonus||0; minionDmgBonus=d.minionDmgBonus||0;
+    minionRegenBonus=d.minionRegenBonus||0; player.hpRegen=d.hpRegen||0;
+    document.getElementById('level-txt').textContent=`⚔ LEVEL ${player.level} — NECROMANTE`;
+    // Atualiza visual dos spell slots
+    player.learnedSkills.forEach(id=>{ document.getElementById('slot-'+id)?.classList.remove('locked'); });
+    selectSpell(player.activeSpell);
+    if(player.skillPoints>0) document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s)`;
+    (d.minionTypes||[]).forEach(t=>{ if(MINION_DEFS[t])spawnMinion(t); });
+    return true;
+  }catch(e){return false;}
+}
+function resetSave(){ try{localStorage.removeItem(SAVE_KEY);}catch(e){} location.reload(); }
+
+// ═══════════════════════════════════════════════════════════
+// MAIN LOOP
+// ═══════════════════════════════════════════════════════════
+const clock=new THREE.Clock(); let time=0;
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),.05); time+=dt;
+
+  // Regen de HP e MP
+  player.mp=Math.min(player.maxMp,player.mp+player.mpRegen*dt);
+  if(player.hpRegen>0) player.hp=Math.min(player.maxHp,player.hp+player.hpRegen*dt);
+  updateHUD();
+
+  // Necromante movimento
+  const spd=4, npos=necroGroup.position;
+  if(keys['w']||keys['arrowup'])    npos.z-=spd*dt;
+  if(keys['s']||keys['arrowdown'])  npos.z+=spd*dt;
+  if(keys['a']||keys['arrowleft'])  npos.x-=spd*dt;
+  if(keys['d']||keys['arrowright']) npos.x+=spd*dt;
+  const moveLimit=gameState==='hub'?16:FIELD_R;
+  npos.x=Math.max(-moveLimit,Math.min(moveLimit,npos.x));
+  npos.z=Math.max(-moveLimit,Math.min(moveLimit,npos.z));
+
+  // Câmera
+  camera.position.x+=(npos.x-camera.position.x)*4*dt;
+  camera.position.z+=(npos.z+11-camera.position.z)*4*dt;
+  camera.lookAt(npos.x,0,npos.z);
+  necroLight.position.set(npos.x,3,npos.z);
+
+  // Animações do necromante
+  npos.y=Math.sin(time*1.5)*.04;
+  if(necroGroup.userData.orb) necroGroup.userData.orb.position.y=1.65+Math.sin(time*3)*.05;
+  const ap=necroGroup.userData.auraPos, AN=necroGroup.userData.auraN;
+  if(ap) for(let i=0;i<AN;i++){ const ang=(i/AN)*Math.PI*2+time*.5, r=1+Math.sin(time*2+i)*.3; ap[i*3]=Math.cos(ang)*r; ap[i*3+1]=.5+Math.sin(time*3+i*.5)*.8; ap[i*3+2]=Math.sin(ang)*r; }
+  if(necroGroup.userData.auraPoints) necroGroup.userData.auraPoints.geometry.attributes.position.needsUpdate=true;
+
+  // Portal (somente no campo)
+  if(gameState==='field'){
+    portalRing.rotation.z+=dt*.8; portalL.intensity=2+Math.sin(time*3)*.8;
+    const pdx=npos.x-PORTAL.x, pdz=npos.z-PORTAL.z;
+    if(pdx*pdx+pdz*pdz<9) floatMsg('Pressione E para descansar',innerWidth/2,innerHeight*.35,'#aa55ff');
+  }
+
+  // Hub: animação de cristais + detecção de NPC
+  if(gameState==='hub'){
+    // Rotaciona cristais nos pilares (os itens pares na lista hubObjects são cristais)
+    hubObjects.forEach(o=>{
+      if(o.geometry&&o.geometry.type==='OctahedronGeometry') o.rotation.y+=dt*.8;
+    });
+    // Detecção de proximidade de NPC
+    let found=null, foundDist=99;
+    hubNpcs.forEach(npc=>{
+      const dx=npos.x-npc.pos.x, dz=npos.z-npc.pos.z;
+      const d2=dx*dx+dz*dz;
+      if(d2<8 && d2<foundDist){ found=npc; foundDist=d2; }
+    });
+    const prompt=document.getElementById('hub-npc-prompt');
+    if(found!==nearbyNpc){
+      nearbyNpc=found;
+      if(found){
+        document.getElementById('hub-npc-icon').textContent=found.icon;
+        document.getElementById('hub-npc-label').textContent=found.label;
+        document.getElementById('hub-npc-hint').textContent=found.hint;
+        prompt.style.display='block';
+      } else {
+        prompt.style.display='none';
+      }
+    }
+  }
+
+  // Spawner
+  if(gameState==='field'&&waveActive&&spawnQueue.length>0){
+    spawnTimer-=dt;
+    if(spawnTimer<=0){
+      const t=spawnQueue.shift(); const ang=Math.random()*Math.PI*2; const r=FIELD_R-2;
+      spawnEnemy(t,npos.x+Math.cos(ang)*r,npos.z+Math.sin(ang)*r); spawnTimer=.6+Math.random()*.6;
+    }
+  }
+  if(!waveActive&&gameState==='field'&&wave>0){ waveEndTimer-=dt; if(waveEndTimer<=0)startWave(); }
+
+  // Minion AI
+  const doUpdate=minions.some(m=>m.dead);
+  minions.forEach((m,idx)=>{
+    if(m.dead){
+      m.deadTimer-=dt;
+      const mRevTime=m._reviveTime||MINION_REVIVE_TIME;
+      if(m.fadeOut&&m.deadTimer>mRevTime-2){
+        const fr=(m.deadTimer-(mRevTime-2))/2;
+        m.mesh.traverse(c=>{if(c.material&&c.material.transparent)c.material.opacity=fr*.35;});
+        m.mesh.position.y-=dt*.5;
+      } else {
+        m.fadeOut=false;
+        m.mesh.traverse(c=>{if(c.material&&c.material.transparent)c.material.opacity=.08+Math.sin(time*4)*.04;});
+        m.mesh.position.y=-.4;
+        const rem=Math.ceil(m.deadTimer);
+        if(m._lastReviveMsg!==rem&&rem<=5&&rem>0){
+          m._lastReviveMsg=rem;
+          const sp=worldToScreen(m.mesh.position.x,1.2,m.mesh.position.z);
+          floatMsg(`⚗ ${rem}s`,sp.x,sp.y,'#a855f7');
+        }
+      }
+      if(m.deadTimer<=0){
+        m.dead=false; m.hp=Math.floor(m.maxHp*.3); m.deadTimer=0; m.fadeOut=false; m._lastReviveMsg=null;
+        // Renascer perto do player, não onde morreu
+        const ang=idx*(Math.PI*2/Math.max(1,minions.length));
+        m.mesh.position.set(npos.x+Math.cos(ang)*2,.1,npos.z+Math.sin(ang)*2);
+        m.mesh.traverse(c=>{if(c.material){c.material.opacity=1;c.material.transparent=false;}});
+        const sp=worldToScreen(m.mesh.position.x,2,m.mesh.position.z);
+        playSound('revive');
+        floatMsg('💀→🧟 Ressuscitou!',sp.x,sp.y,'#00ff88');
+        updateMinionPanel();
+      }
+      return;
+    }
+    // HP regen
+    if(m.hpRegen>0) m.hp=Math.min(m.maxHp,m.hp+m.hpRegen*dt);
+
+    // ── Leash: forçar retorno se muito longe ──
+    const distToPlayer=Math.sqrt(dist2(m.mesh.position.x,m.mesh.position.z,npos.x,npos.z));
+    if(distToPlayer>LEASH_DIST){
+      const dx2=npos.x-m.mesh.position.x, dz2=npos.z-m.mesh.position.z, d2=Math.sqrt(dx2*dx2+dz2*dz2);
+      m.mesh.position.x+=dx2/d2*m.spd*1.5*dt; m.mesh.position.z+=dz2/d2*m.spd*1.5*dt;
+      m.mesh.rotation.y=Math.atan2(dx2,dz2); m.target=null;
+    }
+    // ── Comando ──
+    else if(minionCommand){
+      if(minionCommand.type==='rally'){
+        // Ir para o ponto
+        const dx=minionCommand.x-m.mesh.position.x, dz=minionCommand.z-m.mesh.position.z, d=Math.sqrt(dx*dx+dz*dz);
+        if(d>1.2){ m.mesh.position.x+=dx/d*m.spd*dt; m.mesh.position.z+=dz/d*m.spd*dt; m.mesh.rotation.y=Math.atan2(dx,dz); }
+      } else if(minionCommand.type==='attack'){
+        // Atacar inimigo mais próximo do ponto de comando
+        const nearCmd=nearestEnemyToPoint(minionCommand.x,minionCommand.z);
+        const tgt=nearCmd||nearestEnemy(m.mesh.position.x,m.mesh.position.z);
+        if(tgt){ m.target=tgt; const ep=tgt.mesh.position; const dx=ep.x-m.mesh.position.x,dz=ep.z-m.mesh.position.z,d=Math.sqrt(dx*dx+dz*dz); if(d>m.atkR){m.mesh.position.x+=dx/d*m.spd*dt;m.mesh.position.z+=dz/d*m.spd*dt;m.mesh.rotation.y=Math.atan2(dx,dz);}else{m.atkTimer-=dt;if(m.atkTimer<=0){m.atkTimer=m.atkRate;dealDamageToEnemy(tgt,m.dmg);if(m.lifeDrain)m.hp=Math.min(m.maxHp,m.hp+m.dmg*.2);}} }
+      }
+    }
+    // ── Auto ──
+    else {
+      const noEnemies=enemies.filter(e=>!e.dead).length===0;
+      if(noEnemies){
+        m.orbitAngle+=dt*(.8+idx*.2);
+        const tx=npos.x+Math.cos(m.orbitAngle+idx*1.2)*m.orbitRadius;
+        const tz=npos.z+Math.sin(m.orbitAngle+idx*1.2)*m.orbitRadius;
+        m.mesh.position.x+=(tx-m.mesh.position.x)*3*dt;
+        m.mesh.position.z+=(tz-m.mesh.position.z)*3*dt;
+      } else {
+        if(!m.target||m.target.dead) m.target=nearestEnemy(m.mesh.position.x,m.mesh.position.z);
+        if(m.target){
+          const ep=m.target.mesh.position;
+          const dx=ep.x-m.mesh.position.x, dz=ep.z-m.mesh.position.z, d=Math.sqrt(dx*dx+dz*dz);
+          if(d>m.atkR){ m.mesh.position.x+=dx/d*m.spd*dt; m.mesh.position.z+=dz/d*m.spd*dt; m.mesh.rotation.y=Math.atan2(dx,dz); }
+          else { m.atkTimer-=dt; if(m.atkTimer<=0){ m.atkTimer=m.atkRate; dealDamageToEnemy(m.target,m.dmg); if(m.lifeDrain)m.hp=Math.min(m.maxHp,m.hp+m.dmg*.2); } }
+        }
+      }
+    }
+    m.walkPhase+=dt*3;
+    m.mesh.position.y=m.type==='specter'?.5+Math.sin(time*2+idx)*.2:Math.abs(Math.sin(m.walkPhase))*.06;
+  });
+  if(doUpdate) updateMinionPanel();
+
+  // Enemy AI
+  enemies.forEach((e,idx)=>{
+    if(e.dead){ e.deadTimer-=dt; e.mesh.traverse(c=>{if(c.material&&c.material.transparent)c.material.opacity=Math.max(0,e.deadTimer/1.2*.8);}); e.mesh.position.y-=dt*1.5; if(e.deadTimer<=0){scene.remove(e.mesh);enemies.splice(idx,1);} return; }
+    const nm=nearestMinion(e.mesh.position.x,e.mesh.position.z);
+    let tx=npos.x, tz=npos.z;
+    if(nm&&dist2(e.mesh.position.x,e.mesh.position.z,nm.mesh.position.x,nm.mesh.position.z)<25){ tx=nm.mesh.position.x; tz=nm.mesh.position.z; }
+    const dx=tx-e.mesh.position.x, dz=tz-e.mesh.position.z, d=Math.sqrt(dx*dx+dz*dz);
+    e.mesh.rotation.y=Math.atan2(dx,dz);
+    if(d>e.atkR){ e.mesh.position.x+=dx/d*e.spd*dt; e.mesh.position.z+=dz/d*e.spd*dt; }
+    else { e.atkTimer-=dt; if(e.atkTimer<=0){ e.atkTimer=e.atkRate; if(nm&&dist2(e.mesh.position.x,e.mesh.position.z,nm.mesh.position.x,nm.mesh.position.z)<e.atkR*e.atkR) dealDamageToMinion(nm,e.dmg); else dealDamageToPlayer(e.dmg); } }
+    e.mesh.children.forEach(c=>{ if(c.geometry?.type==='PlaneGeometry'){ const cam=camera.position; c.lookAt(cam.x-e.mesh.position.x,cam.y,cam.z-e.mesh.position.z); } });
+  });
+
+  // Command marker pulse + timer
+  if(minionCommand){
+    minionCommand.timer-=dt;
+    if(commandMarker){ const s=.9+Math.sin(time*6)*.15; commandMarker.scale.set(s,s,s); commandMarker.material.opacity=.6+Math.sin(time*6)*.3; }
+    if(minionCommand.timer<=0){ minionCommand=null; removeCommandMarker(); setCommand('auto'); }
+  }
+
+  // Pickups
+  checkPickups(dt);
+
+  // Soul orbs
+  soulOrbs.forEach((o,i)=>{ o.life-=dt; o.mesh.position.y=.4+Math.sin(time*3+i)*.1; if(o.life<=0){scene.remove(o.mesh);soulOrbs.splice(i,1);} });
+
+  // Spell FX
+  updateSpellFx(dt);
+
+  // Ambient soul particles
+  for(let i=0;i<SOUL_N;i++){
+    soulPos[i*3+1]+=dt*soulSpd[i]*.3; soulPos[i*3]+=Math.sin(time*soulSpd[i]+soulPhs[i])*dt*.12;
+    if(soulPos[i*3+1]>4){soulPos[i*3+1]=0;soulPos[i*3]=(Math.random()-.5)*50;soulPos[i*3+2]=(Math.random()-.5)*50;}
+  }
+  soulGeo.attributes.position.needsUpdate=true;
+  dangerL.intensity=.4+Math.sin(time*1.2)*.3;
+
+  // Animação do boss
+  if(bossEnemy&&!bossEnemy.dead){
+    const m=bossEnemy.mesh;
+    if(m.userData.bossAura) m.userData.bossAura.rotation.z=time*1.2;
+    if(m.userData.bossLight) m.userData.bossLight.intensity=5+Math.sin(time*3)*2;
+    m.position.y=Math.sin(time*1.8)*.15;
+    updateBossHpBar();
+  }
+
+  renderer.render(scene,camera);
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIO ENGINE (Web Audio API — sem arquivos externos)
+// ═══════════════════════════════════════════════════════════
+let _ctx=null, _master=null, _muted=false, _vol=0.55;
+let _ambNodes=[];
+
+function ac(){
+  if(!_ctx){
+    _ctx=new(window.AudioContext||window.webkitAudioContext)();
+    _master=_ctx.createGain(); _master.gain.value=_vol;
+    _master.connect(_ctx.destination);
+    startAmbient();
+  }
+  if(_ctx.state==='suspended') _ctx.resume();
+  return _ctx;
+}
+function gain(val,t=0){
+  const g=ac().createGain(); g.gain.value=val;
+  if(t) g.gain.setTargetAtTime(0,ac().currentTime+t,0.1);
+  g.connect(_master); return g;
+}
+function osc(type,freq,g,start,dur){
+  const o=ac().createOscillator(); o.type=type; o.frequency.value=freq;
+  o.connect(g); o.start(ac().currentTime+start); o.stop(ac().currentTime+start+dur); return o;
+}
+function noise(g,start,dur){
+  const buf=ac().createBuffer(1,ac().sampleRate*.5,ac().sampleRate);
+  const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  const src=ac().createBufferSource(); src.buffer=buf; src.loop=true;
+  src.connect(g); src.start(ac().currentTime+start); src.stop(ac().currentTime+start+dur);
+}
+function filter(type,freq,node){
+  const f=ac().createBiquadFilter(); f.type=type; f.frequency.value=freq;
+  node.connect(f); f.connect(_master); return f;
+}
+
+function setVolume(v){ _vol=v; if(_master) _master.gain.value=_muted?0:v; }
+function toggleMute(){
+  _muted=!_muted;
+  if(_master) _master.gain.value=_muted?0:_vol;
+  document.getElementById('vol-btn').textContent=_muted?'🔇':'🔊';
+  _ambNodes.forEach(n=>{ try{ n.gain?n.gain.value=0:null; }catch(e){} });
+  if(!_muted) startAmbient();
+}
+
+// ── Música ambiente (drone necromante) ───────────────────
+function startAmbient(){
+  if(_muted||!_ctx) return;
+  _ambNodes.forEach(n=>{ try{n.stop&&n.stop();}catch(e){} }); _ambNodes=[];
+  const freqs=[55,82.4,110,164.8]; // A1, E2, A2, E3 — quintas abertas, sombrio
+  freqs.forEach((f,i)=>{
+    const g=ac().createGain(); g.gain.value=.028/(i+1);
+    const rev=ac().createConvolver();
+    // Reverb simples com buffer de ruído
+    const rb=ac().createBuffer(2,ac().sampleRate*2,ac().sampleRate);
+    for(let c=0;c<2;c++){ const d=rb.getChannelData(c); for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*Math.pow(1-j/d.length,2); }
+    rev.buffer=rb;
+    const filt=ac().createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=600;
+    g.connect(filt); filt.connect(rev); rev.connect(_master);
+    g.connect(_master);
+    ['sine','triangle'].forEach(type=>{
+      const o=ac().createOscillator(); o.type=type;
+      o.frequency.value=f+(i%2===0?.3:-.3); // leve detuning para bater
+      o.connect(g); o.start(); _ambNodes.push(o);
+    });
+    _ambNodes.push(g);
+  });
+}
+
+// ── Sons ─────────────────────────────────────────────────
+const SND={
+  click(){
+    const g=gain(.12,.05);
+    osc('sine',880,g,0,.005); osc('sine',660,g,.005,.04);
+  },
+  nova(){
+    const t=ac().currentTime;
+    const g=gain(.3); g.gain.setValueAtTime(.3,t); g.gain.exponentialRampToValueAtTime(.001,t+.6);
+    const f=ac().createBiquadFilter(); f.type='bandpass'; f.frequency.value=300; f.Q.value=2;
+    const o=ac().createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(80,t); o.frequency.exponentialRampToValueAtTime(40,t+.5);
+    o.connect(f); f.connect(g); o.start(t); o.stop(t+.6);
+    // Shimmer alto
+    const g2=gain(.15); g2.gain.setValueAtTime(.15,t); g2.gain.exponentialRampToValueAtTime(.001,t+.5);
+    const o2=ac().createOscillator(); o2.type='sine'; o2.frequency.setValueAtTime(880,t); o2.frequency.exponentialRampToValueAtTime(440,t+.4);
+    o2.connect(g2); o2.start(t); o2.stop(t+.5);
+  },
+  raio(){
+    const t=ac().currentTime;
+    // Zap elétrico
+    const g=gain(.25); g.gain.setValueAtTime(.25,t); g.gain.exponentialRampToValueAtTime(.001,t+.3);
+    const f=ac().createBiquadFilter(); f.type='highpass'; f.frequency.value=1200;
+    const o=ac().createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(1200,t); o.frequency.exponentialRampToValueAtTime(200,t+.3);
+    o.connect(f); f.connect(g); o.start(t); o.stop(t+.3);
+    // Ruído de faísca
+    const ng=gain(.12); ng.gain.setValueAtTime(.12,t); ng.gain.exponentialRampToValueAtTime(.001,t+.2);
+    const nf=ac().createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=3000; nf.Q.value=1;
+    ng.connect(nf); nf.connect(_master);
+    noise(ng,0,.2);
+  },
+  chuva(){
+    const t=ac().currentTime;
+    for(let i=0;i<7;i++){
+      const delay=i*.06+Math.random()*.04;
+      const g=gain(.08); g.gain.setValueAtTime(.08,t+delay); g.gain.exponentialRampToValueAtTime(.001,t+delay+.15);
+      const f=ac().createBiquadFilter(); f.type='bandpass'; f.frequency.value=800+Math.random()*400; f.Q.value=3;
+      g.connect(f); f.connect(_master);
+      noise(g,delay,.15);
+      // clique de osso
+      const g2=gain(.1); g2.gain.setValueAtTime(.1,t+delay); g2.gain.exponentialRampToValueAtTime(.001,t+delay+.08);
+      osc('triangle',300+Math.random()*200,g2,delay,.08);
+    }
+  },
+  explosao(){
+    const t=ac().currentTime;
+    // Boom grave
+    const g=gain(.5); g.gain.setValueAtTime(.5,t); g.gain.exponentialRampToValueAtTime(.001,t+1.2);
+    const o=ac().createOscillator(); o.type='sine'; o.frequency.setValueAtTime(60,t); o.frequency.exponentialRampToValueAtTime(20,t+1);
+    o.connect(g); o.start(t); o.stop(t+1.2);
+    // Ruído médio
+    const ng=gain(.3); ng.gain.setValueAtTime(.3,t); ng.gain.exponentialRampToValueAtTime(.001,t+.8);
+    const nf=ac().createBiquadFilter(); nf.type='lowpass'; nf.frequency.value=500;
+    ng.connect(nf); nf.connect(_master);
+    noise(ng,0,.8);
+    // Shimmer mágico
+    const g3=gain(.2); g3.gain.setValueAtTime(.2,t+.1); g3.gain.exponentialRampToValueAtTime(.001,t+1);
+    osc('sine',440,g3,.1,.9); osc('sine',554,g3,.1,.9);
+  },
+  hit(){
+    const t=ac().currentTime;
+    const g=gain(.15); g.gain.setValueAtTime(.15,t); g.gain.exponentialRampToValueAtTime(.001,t+.12);
+    const f=ac().createBiquadFilter(); f.type='bandpass'; f.frequency.value=600; f.Q.value=2;
+    g.connect(f); f.connect(_master);
+    noise(g,0,.12);
+    osc('triangle',180,gain(.1,.1),0,.1);
+  },
+  enemyDeath(){
+    const t=ac().currentTime;
+    const g=gain(.18); g.gain.setValueAtTime(.18,t); g.gain.exponentialRampToValueAtTime(.001,t+.4);
+    const o=ac().createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(220,t); o.frequency.exponentialRampToValueAtTime(55,t+.4);
+    o.connect(g); o.start(t); o.stop(t+.4);
+    const ng=gain(.1); ng.gain.setValueAtTime(.1,t); ng.gain.exponentialRampToValueAtTime(.001,t+.25);
+    noise(ng,0,.25);
+  },
+  minionDeath(){
+    const t=ac().currentTime;
+    const g=gain(.2); g.gain.setValueAtTime(.2,t); g.gain.exponentialRampToValueAtTime(.001,t+.6);
+    const o=ac().createOscillator(); o.type='sine'; o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(60,t+.5);
+    o.connect(g); o.start(t); o.stop(t+.6);
+  },
+  revive(){
+    const t=ac().currentTime;
+    // Tom ascendente sombrio
+    [110,138.6,165,220].forEach((f,i)=>{
+      const g=gain(.12); g.gain.setValueAtTime(.12,t+i*.1); g.gain.exponentialRampToValueAtTime(.001,t+i*.1+.3);
+      osc('sine',f,g,i*.1,.3);
+      osc('triangle',f*2,gain(.05,.3),i*.1,.25);
+    });
+  },
+  levelUp(){
+    const t=ac().currentTime;
+    // Arpejo ascendente dourado: C4 E4 G4 C5
+    [261.6,329.6,392,523.3].forEach((f,i)=>{
+      const g=gain(.18); g.gain.setValueAtTime(.18,t+i*.1); g.gain.exponentialRampToValueAtTime(.001,t+i*.1+.4);
+      osc('sine',f,g,i*.1,.4);
+      osc('triangle',f,gain(.08,.4),i*.1,.35);
+    });
+    // Brilho final
+    const gf=gain(.15); gf.gain.setValueAtTime(.15,t+.4); gf.gain.exponentialRampToValueAtTime(.001,t+.9);
+    osc('sine',1046.5,gf,.4,.5);
+  },
+  waveStart(){
+    const t=ac().currentTime;
+    // Corno ominoso grave
+    const g=gain(.25); g.gain.setValueAtTime(.01,t); g.gain.linearRampToValueAtTime(.25,t+.2); g.gain.exponentialRampToValueAtTime(.001,t+1.5);
+    const f=ac().createBiquadFilter(); f.type='lowpass'; f.frequency.value=400;
+    const o=ac().createOscillator(); o.type='sawtooth'; o.frequency.setValueAtTime(55,t); o.frequency.setValueAtTime(55,t+.8); o.frequency.linearRampToValueAtTime(46,t+1.5);
+    o.connect(f); f.connect(g); o.start(t); o.stop(t+1.5);
+    // Sub
+    osc('sine',27.5,gain(.2,1.5),0,1.5);
+  },
+  playerHurt(){
+    const t=ac().currentTime;
+    const g=gain(.3); g.gain.setValueAtTime(.3,t); g.gain.exponentialRampToValueAtTime(.001,t+.2);
+    const o=ac().createOscillator(); o.type='square'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(80,t+.2);
+    o.connect(g); o.start(t); o.stop(t+.2);
+    const ng=gain(.2); ng.gain.setValueAtTime(.2,t); ng.gain.exponentialRampToValueAtTime(.001,t+.15);
+    const nf=ac().createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=400; nf.Q.value=1;
+    ng.connect(nf); nf.connect(_master);
+    noise(ng,0,.15);
+  },
+  gameOver(){
+    const t=ac().currentTime;
+    // Sino da morte — descida lenta
+    [220,185,165,138.6,110].forEach((f,i)=>{
+      const g=gain(.22); g.gain.setValueAtTime(.22,t+i*.35); g.gain.exponentialRampToValueAtTime(.001,t+i*.35+.8);
+      osc('sine',f,g,i*.35,.8);
+    });
+  },
+  portal(){
+    const t=ac().currentTime;
+    // Whoosh ascendente mágico
+    const g=gain(.2); g.gain.setValueAtTime(.01,t); g.gain.linearRampToValueAtTime(.2,t+.15); g.gain.exponentialRampToValueAtTime(.001,t+.7);
+    const o=ac().createOscillator(); o.type='sine'; o.frequency.setValueAtTime(200,t); o.frequency.exponentialRampToValueAtTime(800,t+.6);
+    o.connect(g); o.start(t); o.stop(t+.7);
+    osc('triangle',400,gain(.1,.6),.1,.5);
+    osc('sine',600,gain(.08,.5),.2,.4);
+  },
+  summon(){
+    const t=ac().currentTime;
+    // Acorde necromante sombrio
+    [55,69.3,82.4].forEach((f,i)=>{
+      const g=gain(.15); g.gain.setValueAtTime(.15,t+i*.05); g.gain.exponentialRampToValueAtTime(.001,t+i*.05+.6);
+      osc('sawtooth',f,g,i*.05,.6);
+      osc('sine',f*2,gain(.08,.5),i*.05,.5);
+    });
+    // Eco espectral
+    const g2=gain(.1); g2.gain.setValueAtTime(.1,t+.3); g2.gain.exponentialRampToValueAtTime(.001,t+.9);
+    osc('sine',440,g2,.3,.6);
+  },
+  pickupHp(){
+    const t=ac().currentTime;
+    // Pulso quente
+    [330,440,523.3].forEach((f,i)=>{
+      const g=gain(.14); g.gain.setValueAtTime(.14,t+i*.07); g.gain.exponentialRampToValueAtTime(.001,t+i*.07+.25);
+      osc('sine',f,g,i*.07,.25);
+    });
+  },
+  pickupMp(){
+    const t=ac().currentTime;
+    // Shimmer mágico azul ascendente
+    [440,554,659,880].forEach((f,i)=>{
+      const g=gain(.12); g.gain.setValueAtTime(.12,t+i*.06); g.gain.exponentialRampToValueAtTime(.001,t+i*.06+.2);
+      osc('triangle',f,g,i*.06,.2);
+    });
+  },
+};
+
+function playSound(name){ if(_muted)return; try{ ac(); SND[name]&&SND[name](); }catch(e){} }
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+// Iniciar áudio no primeiro clique (requisito dos browsers)
+document.addEventListener('click', ()=>{ try{ ac(); }catch(e){} }, {once:true});
+document.addEventListener('keydown',()=>{ try{ ac(); }catch(e){} }, {once:true});
+
+const hasSave=loadGame();
+document.getElementById('cmd-auto')?.classList.add('active');
+generateMissions();
+buildHubScene();
+showHubOverlay();
+updateInventoryBar();
+if(hasSave) floatMsg('✓ Save carregado — Wave '+wave,innerWidth/2,innerHeight*.35,'#d4af37');
+updateHUD(); updateMinionPanel(); animate();
+</script>
+</body>
+</html>
