@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "seed": 182,
+  "runs": 8,
+  "waves": 20,
+  "maxLevel": 60,
+  "xp": { "base": 100, "growth": 1.4 },
+  "proposed": { "hpGrowth": 1.12, "damageGrowth": 1.08, "xpGrowth": 1.04, "maxEnemies": 60 },
+  "combat": { "step": 0.1, "timeout": 240, "concurrentEnemies": 4, "spawnInterval": 0.9, "engageDelay": 1.5, "minionUptime": 0.7, "aggroToMinions": 0.65, "reviveSeconds": 12, "pickupChance": 0.65, "betweenWavesSeconds": 5 },
+  "profiles": {
+    "normal": { "accuracy": 0.8, "enemyAccuracy": 0.35, "specialAccuracy": 0.2, "areaTargets": 2 },
+    "exposed": { "accuracy": 0.65, "enemyAccuracy": 0.6, "specialAccuracy": 0.45, "areaTargets": 1 }
+  },
+  "loot": { "chance": 0.16, "weights": { "common": 60, "magic": 28, "rare": 10, "epic": 2 }, "affixes": { "common": 0, "magic": 2, "rare": 3, "epic": 4 }, "skillBonusMinLevel": 4, "schoolBonusMinLevel": 8, "valuePerLevel": 0.12, "capacity": 60 },
+  "economy": { "buyBase": 25, "buyPerLevel": 10, "sellFraction": 0.15, "purchasesPerVisit": 1 },
+  "targets": { "minWaveSeconds": 8, "maxWaveSeconds": 75, "minHitsSurvived": 4, "maxBossSeconds": 120, "maxWavesWithoutLevel": 5, "maxEquipmentDpsGain": 2, "maxDifficultyJump": 1.5 },
+  "scenarios": {
+    "rules": ["current", "proposed"],
+    "builds": ["caster", "horde", "hybrid"],
+    "gear": ["none", "reference", "loot"],
+    "profiles": ["normal"],
+    "routes": ["advance"]
+  }
+}

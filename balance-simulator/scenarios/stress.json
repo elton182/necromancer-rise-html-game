@@ -1,0 +1,8 @@
+{
+  "runs": 12,
+  "waves": 40,
+  "scenarios": {
+    "profiles": ["normal", "exposed"],
+    "routes": ["advance", "farm"]
+  }
+}

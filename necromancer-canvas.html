@@ -321,6 +321,239 @@ canvas { display:block; }
 .cmd-btn:hover { border-color:#d4af37; color:#d4af37; }
 .cmd-btn.active { border-color:#d4af37; color:#d4af37; background:rgba(50,30,0,.8); box-shadow:0 0 8px rgba(212,175,55,.3); }
 </style>
+<!-- SKILL_TREE_MODEL_BEGIN -->
+<script>
+/* Proposta de balanceamento: independente do estado e dos saves do jogo. */
+(function(root){
+'use strict';
+const nodes=[], schools=[];
+function school(tree,id,name,paths,rows){
+ schools.push({tree,id,name,paths});
+ rows.forEach((r,i)=>nodes.push({id:r[0],name:r[1],description:r[2],icon:r[3],effects:r[4],school:id,tree,tier:i===0?0:Math.ceil(i/2),side:i===0?0:i%2===1?-1:1,max:i>=5?1:5,level:i===0?1:i<=2?6:i<=4?12:24,requires:i===0?null:rows[i<=2?0:i-2][0],exclusive:i>=5?rows[i===5?6:5][0]:null}));
+}
+school('minions','flesh','Carne',['Colosso de Carne','Horda Explosiva'],[
+ ['zombie','Zumbis','Evoca 3 zumbis. Cada ponto fortalece Zumbis e Abominações.','☠',{'Dano de Zumbis e Abominações':4}],
+ ['vigor','Carne Reanimada','Aumenta a vida de Zumbis e Abominações.','♥',{'Vida de Zumbis e Abominações':10}],
+ ['burst','Explosão Cadavérica','Desbloqueia o comando de detonar um zumbi e aumenta seu dano.','✹',{'Dano da explosão de Zumbi':12}],
+ ['abom','Abominação','Evolução do ramo Zumbi, equipada como evocação própria. Recebe as sinergias de Carne.','♜',{'Dano da Abominação':10}],
+ ['unstable','Carne Instável','Sinergia entre a explosão dos Zumbis e Explosão Necrótica da árvore Profana.','✷',{'Dano das explosões de Zumbi e Necrótica':8}],
+ ['colossus','Colosso de Carne','Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva.','♜',{'Vida da Abominação':60,'Dano do Salto Devastador':40}],
+ ['plague','Horda Explosiva','Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne.','✹',{'Zumbis adicionais':2,'Dano da explosão de Zumbi':40}]
+]);
+school('minions','bone','Ossos',['Guarda Sepulcral','Legião de Arqueiros'],[
+ ['skeleton','Esqueletos','Evoca 3 guerreiros. Pontos fortalecem guerreiros e arqueiros.','⚔',{'Dano de Esqueletos e Arqueiros':4}],
+ ['armor','Armadura Óssea','Aumenta a vida dos guerreiros e arqueiros.','⛨',{'Vida de Esqueletos e Arqueiros':10}],
+ ['archer','Arqueiros','Desbloqueia 2 arqueiros e aprimora seu dano.','➶',{'Dano dos Arqueiros':10}],
+ ['blades','Ossos Afiados','Aprimora ataques dos dois tipos de esqueletos.','⚔',{'Dano de Esqueletos e Arqueiros':8}],
+ ['shot','Tiro Sepulcral','Desbloqueia o disparo comandado dos arqueiros.','➶',{'Dano do Tiro Sepulcral':15}],
+ ['guard','Guarda Sepulcral','Especialização: guerreiros ganham resistência e +1 integrante. Exclui Salva Sepulcral.','⛨',{'Vida dos Guerreiros':60,'Guerreiros adicionais':1}],
+ ['salvo','Salva Sepulcral','Especialização: +2 arqueiros e tiro comandado mais forte. Exclui Guarda Sepulcral.','➶',{'Arqueiros adicionais':2,'Dano do Tiro Sepulcral':40}]
+]);
+school('minions','spirit','Espíritos',['Drenagem Vital','Cortejo Espectral'],[
+ ['specter','Espectros','Evoca 2 espectros e aumenta seu dano mágico.','♧',{'Dano dos Espectros':8}],
+ ['drain','Drenar Vida','Ataques dos espectros recuperam uma porcentagem do dano como vida própria.','♥',{'Roubo de vida dos Espectros':2}],
+ ['ethereal','Essência Etérea','Aumenta a vida e o dano dos espectros.','◇',{'Vida dos Espectros':8,'Dano dos Espectros':5}],
+ ['bond','Vínculo Vital','A cura produzida pelos espectros também ajuda Zephyr.','♥',{'Cura compartilhada com Zephyr':3}],
+ ['step','Passo Espectral','Desbloqueia o comando de reposicionamento e aumenta sua frequência.','➤',{'Recarga do Passo Espectral':-5}],
+ ['vampire','Ceifadores Vitais','Especialização: amplia a drenagem de vida. Exclui Cortejo dos Mortos.','♥',{'Roubo de vida dos Espectros':15}],
+ ['procession','Cortejo dos Mortos','Especialização: +2 espectros e recuperação mais rápida. Exclui Ceifadores Vitais.','♧',{'Espectros adicionais':2,'Tempo de renascimento dos Espectros':-25}]
+]);
+school('spells','osso','Ossos',['Lança Perfurante','Tempestade Óssea'],[
+ ['bolt','Tiro de Osso','Desbloqueia o projétil principal. Sinergia: +4% ao dano da Chuva por ponto direto.','➶',{'Dano do Tiro de Osso':10,'Dano da Chuva de Ossos':4}],
+ ['pierce','Perfuração','Cada ponto permite atravessar um alvo adicional.','➳',{'Alvos perfurados adicionais':1}],
+ ['rain','Chuva de Ossos','Desbloqueia dano em área. Sinergia: +4% ao dano do Tiro por ponto direto.','☄',{'Dano da Chuva de Ossos':10,'Dano do Tiro de Osso':4}],
+ ['shards','Estilhaços','Melhora o dano de Tiro e Chuva de Ossos.','✧',{'Dano do Tiro de Osso':6,'Dano da Chuva de Ossos':6}],
+ ['wall','Muralha de Corpos','Desbloqueia a muralha e amplia sua duração e resistência a projéteis.','▥',{'Duração da Muralha':10,'Resistência da Muralha':10}],
+ ['lance','Lança Sepulcral','Especialização: projétil de alto dano. Exclui Tempestade Óssea.','➳',{'Dano do Tiro de Osso':60}],
+ ['storm','Tempestade Óssea','Especialização: amplia área e dano da Chuva. Exclui Lança Sepulcral.','☄',{'Área da Chuva de Ossos':30,'Dano da Chuva de Ossos':35}]
+]);
+school('spells','blood','Sangue',['Bastião de Carne','Ritual de Detonação'],[
+ ['shield','Escudo de Carne','Sacrifica um zumbi para proteger Zephyr. Herda o HP do zumbi aprimorado por Carne Reanimada.','⛨',{'Absorção do Escudo de Carne':8}],
+ ['vitality','Vitalidade Profana','Aumenta a vida máxima de Zephyr.','♥',{'Vida de Zephyr':8}],
+ ['nova','Explosão Necrótica','Desbloqueia explosão em área com mana, sem coleta de souls.','✹',{'Dano da Explosão Necrótica':12}],
+ ['pact','Pacto de Sangue','Morte comum de aliado recupera vida de Zephyr. Não ativa em sacrifícios ou detonações.','♱',{'Vida máxima recuperada por morte de aliado':1}],
+ ['ritual','Ritual Instável','Melhora Explosão Necrótica e Explosão Cadavérica.','✷',{'Dano das explosões de Zumbi e Necrótica':8}],
+ ['bastion','Bastião de Carne','Especialização: amplia a absorção do escudo. Exclui Detonação Profana.','⛨',{'Absorção do Escudo de Carne':60}],
+ ['detonation','Detonação Profana','Especialização: amplia as duas explosões. Exclui Bastião de Carne.','✹',{'Dano das explosões de Zumbi e Necrótica':40}]
+]);
+school('spells','shadow','Sombras',['Caminhante do Véu','Senhor da Horda'],[
+ ['dash','Dash','Desbloqueia a evasão e reduz sua recarga.','➤',{'Recarga do Dash':-3}],
+ ['stride','Passo Prolongado','Aumenta a distância do Dash.','➤',{'Distância do Dash':8}],
+ ['meditate','Meditação Sombria','Aumenta reserva e regeneração de mana.','◈',{'Mana máxima':8,'Regeneração de mana':8}],
+ ['veil','Véu Noturno','A evasão deixa uma proteção breve.','◇',{'Duração da proteção após Dash':10}],
+ ['curse','Maldição da Fraqueza','Desbloqueia maldição que reduz o dano dos inimigos afetados.','☽',{'Redução de dano da Maldição':3}],
+ ['walker','Caminhante do Véu','Especialização: Dash mais frequente e longo. Exclui Aura das Sombras.','➤',{'Recarga do Dash':-25,'Distância do Dash':25}],
+ ['aura','Aura das Sombras','Especialização: aumenta o dano de toda a horda próxima. Exclui Caminhante do Véu.','☽',{'Dano da horda próxima':30}]
+]);
+const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
+const budget=level=>3*(level-1), spent=r=>Object.values(r).reduce((a,b)=>a+b,0);
+function reason(n,r,level){
+ if(level<n.level)return `Requer nível ${n.level}.`;
+ if(n.requires&&(r[n.requires]||0)<2)return `Requer 2 pontos em ${byId[n.requires].name}.`;
+ if(n.exclusive&&r[n.exclusive])return `Incompatível com ${byId[n.exclusive].name}.`;
+ return '';
+}
+function validate(state){
+ if(!state||state.version!==1||!Number.isInteger(state.level)||state.level<1||state.level>60||!state.ranks||typeof state.ranks!=='object'||Array.isArray(state.ranks))throw Error('Código de build inválido.');
+ const ranks={};
+ for(const [id,rank] of Object.entries(state.ranks)){
+  if(!Object.hasOwn(byId,id)||!Number.isInteger(rank)||rank<0||rank>byId[id].max)throw Error('Habilidade ou quantidade de pontos inválida.');
+  if(rank)ranks[id]=rank;
+ }
+ if(spent(ranks)>budget(state.level))throw Error('A build excede os pontos do nível.');
+ for(const id of Object.keys(ranks)){const error=reason(byId[id],ranks,state.level);if(error)throw Error(error);}
+ return {version:1,level:state.level,ranks};
+}
+function invest(state,id){const n=byId[id];if(!n)throw Error('Skill inválida.');const error=reason(n,state.ranks,state.level);if(error)throw Error(error);if((state.ranks[id]||0)>=n.max)throw Error('Habilidade no máximo.');if(spent(state.ranks)>=budget(state.level))throw Error('Sem pontos disponíveis.');state.ranks[id]=(state.ranks[id]||0)+1;}
+function prune(state){let changed=true;while(changed){changed=false;for(const n of nodes){if(state.ranks[n.id]&&reason(n,state.ranks,state.level)){delete state.ranks[n.id];changed=true;}}}}
+function refund(state,id){const before=spent(state.ranks);if(state.ranks[id]){state.ranks[id]--;if(!state.ranks[id])delete state.ranks[id];prune(state);}return before-spent(state.ranks);}
+function setLevel(state,level){state.level=Math.max(1,Math.min(60,Math.round(Number(level)||1)));prune(state);for(const n of [...nodes].reverse()){while(state.ranks[n.id]&&spent(state.ranks)>budget(state.level))refund(state,n.id);}return state;}
+function effects(ranks){const out={};for(const n of nodes)for(const [key,value] of Object.entries(n.effects)){if(ranks[n.id])out[key]=(out[key]||0)+value*ranks[n.id];}return out;}
+function effective(r){const e=effects(r);return {...e,'Dano total da Abominação':(e['Dano de Zumbis e Abominações']||0)+(e['Dano da Abominação']||0)+(e['Dano da horda próxima']||0),'Dano total da explosão de Zumbi':(e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)+(e['Dano de Zumbis e Abominações']||0)+(e['Dano da horda próxima']||0),'Dano total da Explosão Necrótica':(e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)};}
+const presets={
+ tank:{name:'Colosso Imortal',level:30,ranks:{zombie:5,vigor:5,abom:5,colossus:1,shield:5,vitality:5,pact:5,bastion:1,dash:2}},
+ bomber:{name:'Horda Explosiva',level:30,ranks:{zombie:5,burst:5,unstable:5,plague:1,shield:2,nova:5,ritual:5,detonation:1,dash:2}},
+ archer:{name:'Legião de Arqueiros',level:30,ranks:{skeleton:5,archer:5,shot:5,salvo:1,dash:5,meditate:5,curse:5,aura:1}},
+ caster:{name:'Tempestade de Ossos',level:30,ranks:{bolt:5,rain:5,wall:5,storm:1,dash:5,stride:5,veil:5,walker:1,shield:2,vitality:3}},
+ hybrid:{name:'Ceifador Híbrido',level:30,ranks:{zombie:4,vigor:3,abom:3,specter:5,drain:3,bond:3,vampire:1,bolt:5,rain:4,dash:3,meditate:4,curse:2,aura:1}}
+};
+const api={nodes,schools,byId,budget,spent,reason,validate,invest,refund,setLevel,effects,effective,presets};
+if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.BuildModel=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+</script>
+<!-- SKILL_TREE_MODEL_END -->
+<!-- SKILL_TREE_STYLE_BEGIN -->
+<style>
+#souls-txt,#panel-minions,#panel-upgrades{display:none!important}
+#sp-pts-txt[role=button]{cursor:pointer;text-decoration:underline;text-underline-offset:3px}#sp-pts-txt:focus-visible{outline:2px solid #dfc58c;outline-offset:3px}
+.live-grimoire{--lg-accent:#a7bf8a;color:#e5dfcb;border:1px solid #8e7950;padding:18px;background:radial-gradient(ellipse at 15% 5%,#34442b33,transparent 55%),#10170f;box-shadow:inset 0 0 0 4px #090e0b,inset 0 0 0 5px #4b5135}
+.live-grimoire.profana{--lg-accent:#c0a5d5}
+.lg-heading{display:flex;gap:20px;justify-content:space-between;align-items:center;padding:6px 4px 16px;border-bottom:1px solid #5e6040;color:#b4be9f;font-size:12px}.lg-heading h2{font:25px/1.3 Georgia,serif;color:#dfc58c;margin:5px 0}.lg-heading small{display:block;color:#a7a687;font-size:10px;letter-spacing:1px}.lg-heading b{font:29px Georgia,serif;color:#dfc58c;margin-right:7px}
+.lg-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:16px 0}.lg-tabs{display:flex;gap:6px}.lg-tabs button{border:1px solid #5a6445;background:#172014;color:#a5ad95;font:16px Georgia,serif;padding:10px 18px;cursor:pointer}.lg-tabs button[aria-selected=true]{color:var(--lg-accent);border-color:var(--lg-accent);background:#263022}.lg-reset{font-size:10px!important}
+.lg-layout{display:grid;grid-template-columns:minmax(0,1fr) 235px;gap:16px}.lg-schools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-self:start}.lg-school{min-width:0;border:1px solid #424c34;background:repeating-linear-gradient(120deg,#ffffff01 0 1px,transparent 1px 10px),#121b10}.lg-school>h3{font:16px Georgia,serif;text-align:center;color:var(--lg-accent);letter-spacing:2px;border-bottom:1px solid #38412c;margin:0;padding:13px 4px}.lg-paths{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-height:49px;padding:10px 5px 0;text-align:center;color:#a6ae94;font:10px/1.4 Georgia,serif;overflow-wrap:anywhere}.lg-graph{height:470px;position:relative;margin:0 3px}.lg-graph>svg{position:absolute;inset:0;height:100%;width:100%;pointer-events:none}.lg-graph path{fill:none;stroke:#4a553b;stroke-width:1.5}.lg-graph path.learned{stroke:var(--lg-accent)}
+.lg-node{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:9px;width:46%;padding:0;background:none;border:0;cursor:pointer;color:#bcc8a9;font:11px/1.3 Georgia,serif;text-align:center}.lg-node>span:last-child{width:100%;min-height:30px;overflow-wrap:anywhere}.lg-seal{display:grid;place-items:center;height:48px;width:48px;position:relative;border:1px solid #727e57;box-shadow:inset 0 0 0 3px #10180c,inset 0 0 0 4px #465537;background:radial-gradient(circle,#34452a,#111a0e)}.lg-seal i{font:27px Georgia,serif;color:var(--lg-accent);font-style:normal}.lg-seal em{position:absolute;bottom:-6px;right:-6px;padding:1px 4px;background:#10170d;border:1px solid #778361;color:#dfebd1;font:10px sans-serif}.lg-node.locked .lg-seal{opacity:.38;filter:saturate(.3)}.lg-node.locked>span:last-child{color:#838c78}.lg-node.learned .lg-seal{border-color:var(--lg-accent);box-shadow:inset 0 0 0 3px #14210e,inset 0 0 0 4px #7a9460,0 0 12px #9cba7022}.lg-node.selected .lg-seal{outline:2px solid #d8ba75;outline-offset:3px}.lg-node.final .lg-seal{transform:rotate(45deg);width:40px;height:40px;margin:4px}.lg-node.final .lg-seal i,.lg-node.final .lg-seal em{transform:rotate(-45deg)}.lg-node:focus-visible{outline:2px solid #dfc58c;outline-offset:5px}
+.lg-detail{min-width:0;padding:14px;background:#1b2416;border:1px solid #4d593c;align-self:start}.lg-detail>small{font-size:10px;color:#b5bc9e;letter-spacing:1px}.lg-detail>h3{font:21px Georgia,serif;color:#dfc58c;margin:14px 0}.lg-detail>b{font-size:11px;color:var(--lg-accent)}.lg-detail p{font:12px/1.7 Georgia,serif;color:#c2c8b5}.lg-detail h4{font:13px Georgia,serif;color:#d5ba80;margin:18px 0 9px}.lg-detail ul{padding-left:17px;font:12px/1.8 Georgia,serif;color:#c4d3ad}.lg-requirement{border-left:2px solid #8b9d69;padding:8px;margin-top:15px;font-size:11px;color:#c7bd94}.lg-invest{display:flex;gap:8px;margin:18px 0}.lg-invest .invest{flex:1;background:linear-gradient(#725a31,#47391e);border-color:#aa8b51;color:#f3e4bb}.lg-invest button:disabled{opacity:.4;cursor:not-allowed}.lg-invest .refund{font-size:20px;padding:5px 12px}.lg-bonuses{font:11px/1.5 Georgia,serif;color:#bfc9ad}.lg-bonuses>div{display:flex;gap:8px;justify-content:space-between;padding:6px 0;border-bottom:1px solid #ffffff0a}.lg-bonuses b{white-space:nowrap;color:var(--lg-accent)}.lg-note{color:#a0aa91;font:10px/1.7 Georgia,serif;margin:12px 0 0}
+#panel-skills{width:100%}#skill-tree{display:block!important}.skill-tree-toolbar,.skill-branch-tabs{display:none}.pmbody:has(.live-grimoire){padding:12px}.pmbody:has(.live-grimoire)>p{font-size:11px}.pmmain:has(.live-grimoire){min-width:0}
+#tl .pm:has(.live-grimoire){width:min(1440px,96vw);grid-template-columns:210px minmax(0,1fr)}#panel-skills:has(.live-grimoire){padding:10px!important;background:#111a10;box-shadow:none}
+.hub-tab[onclick*="'upgrades'"],.hub-tab[onclick*="'minions'"]{display:none}
+@media(max-width:1250px){.lg-layout{grid-template-columns:minmax(0,1fr) 210px}.lg-detail{display:block}.lg-schools{gap:8px}.lg-node{font-size:10px}.lg-heading h2{font-size:22px}}
+@media(max-width:1100px){#tl .pm:has(.live-grimoire){grid-template-columns:1fr;grid-template-areas:"t" "m" "s" "f"}#tl .pm:has(.live-grimoire) .pmside{flex-direction:row;flex-wrap:wrap}#tl .pm:has(.live-grimoire) .pmside .pmcardh{display:none}#tl .pm:has(.live-grimoire) .pmside>.section-note{width:100%}#tl .pm:has(.live-grimoire) .pmside>button{flex:1}}
+@media(max-width:800px){.lg-layout{grid-template-columns:1fr}.lg-bonuses{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}}
+@media(max-width:700px){.lg-schools{grid-template-columns:1fr}.lg-graph{max-width:340px;margin:auto}.lg-paths{max-width:340px;margin:auto}.lg-node{font-size:12px}.lg-heading{align-items:start;flex-direction:column;gap:10px}.lg-bonuses{grid-template-columns:1fr}.live-grimoire{padding:12px}.lg-toolbar{align-items:stretch}.lg-tabs button{padding:10px 12px}}
+/* Spacious skill workspace; a single main scroll surface, with a matching detail scroll only when needed. */
+#tl .pm:has(.live-grimoire){width:min(1800px,98vw);height:calc(100dvh - 24px);grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"t" "m" "s";gap:8px;padding:4px}
+#tl .pm:has(.live-grimoire)>.pt{font-size:24px;margin:0;line-height:1.25}
+#tl .pm:has(.live-grimoire)>.foot{display:none}
+#tl .pm:has(.live-grimoire) .pmside{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px}
+#tl .pm:has(.live-grimoire) .pmside .pmcardh{display:none}
+#tl .pm:has(.live-grimoire) .pmside>.section-note{width:auto;margin:0 auto 0 0;font-size:11px}
+#tl .pm:has(.live-grimoire) .pmside>button{flex:0 1 auto;width:auto;padding:9px 15px;margin:0;font-size:12px}
+#tl .pmmain:has(.live-grimoire){min-height:0;height:100%;gap:6px}
+#tl .pmmain:has(.live-grimoire) .pmtabs{margin:0;flex-shrink:0}
+#tl .pmbody:has(.live-grimoire){max-height:none;flex:1;min-height:0;padding:0 8px 0 0;overflow:auto;overscroll-behavior:contain}
+#tl .pmbody:has(.live-grimoire)>p{display:none}
+#panel-skills:has(.live-grimoire){padding:5px!important;border-radius:3px}
+.live-grimoire{padding:10px 14px}.lg-heading{padding:0 0 8px}.lg-heading h2{font-size:23px;margin:3px 0}.lg-heading b{font-size:26px}.lg-toolbar{margin:9px 0;justify-content:flex-start;gap:10px}.lg-reset{margin-left:auto}.lg-gold{font-size:12px;color:#dec585}.lg-tabs button{padding:8px 18px}
+.lg-layout{grid-template-columns:minmax(0,1fr) minmax(250px,300px);gap:12px}.lg-graph{height:390px}.lg-school>h3{padding:8px 4px}.lg-paths{min-height:39px;padding-top:7px}.lg-node{font-size:11px;gap:7px}.lg-seal{width:43px;height:43px}.lg-seal i{font-size:25px}.lg-node.final .lg-seal{width:36px;height:36px}.lg-detail{padding:12px;max-height:calc(100dvh - 220px);overflow:auto;overscroll-behavior:contain}.lg-detail>h3{margin:9px 0;font-size:20px}.lg-detail p{line-height:1.5;margin:8px 0}.lg-detail h4{margin:12px 0 6px}.lg-requirement{margin-top:9px;padding:6px}.lg-invest{margin:12px 0}.lg-note{margin-top:8px}.lg-bonus-fold{margin:12px 0;color:#c1caaf;font-size:12px}.lg-bonus-fold summary{cursor:pointer;color:#d1bd87;padding:7px 0}.lg-bonuses{display:block}
+#tl .wrap,#tl .pmbody,.lg-detail,#hub-overlay{scrollbar-width:thin;scrollbar-color:#978250 #10170f;scrollbar-gutter:stable}
+#tl ::-webkit-scrollbar,#hub-overlay::-webkit-scrollbar{width:9px;height:9px}#tl ::-webkit-scrollbar-track,#hub-overlay::-webkit-scrollbar-track{background:#10170f;border:1px solid #303a25;border-radius:10px}#tl ::-webkit-scrollbar-thumb,#hub-overlay::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#635330,#ad9255,#76643d);border:2px solid #10170f;border-radius:10px;min-height:38px}#tl ::-webkit-scrollbar-thumb:hover,#hub-overlay::-webkit-scrollbar-thumb:hover{background:#c3a76b}#tl ::-webkit-scrollbar-corner{background:#10170f}
+#skill-level-tutorial{position:fixed;inset:0;z-index:150;display:grid;place-items:center;padding:20px;background:#050904db;color:#e7e1cd}#skill-level-tutorial section{max-width:500px;padding:26px;border:1px solid #a78e55;background:linear-gradient(135deg,#263322,#111a0e);box-shadow:0 20px 70px #000b}#skill-level-tutorial small{color:#c6ae76;letter-spacing:2px;font-size:11px}#skill-level-tutorial h2{font:26px Georgia,serif;color:#e6cf96}#skill-level-tutorial p{font:15px/1.7 Georgia,serif;color:#c9d2b9}#skill-level-tutorial button{margin:12px 8px 0 0}#skill-level-tutorial .primary{background:#66512c;color:#f7e8ba;border-color:#af945b}.lg-tutorial-guide{padding:10px 12px;border:1px solid #b49d5e;background:#344326;color:#e0ebbf;font-size:12px;margin:8px 0}.lg-tutorial-guide~.lg-layout .invest{outline:2px solid #e1c784;outline-offset:3px}
+@media(max-width:1000px){.lg-layout{grid-template-columns:minmax(0,1fr) 240px}.lg-paths{font-size:9px}.lg-detail{font-size:12px}.lg-node{font-size:10px}.lg-heading h2{font-size:21px}}
+@media(max-width:780px){.lg-layout{grid-template-columns:1fr}.lg-schools{grid-template-columns:repeat(3,minmax(0,1fr))}.lg-detail{max-height:none;overflow:visible}.lg-gold{font-size:11px}.lg-paths{min-height:46px}.lg-heading{gap:10px}.lg-heading h2{font-size:19px}}
+@media(max-width:540px){.lg-schools{grid-template-columns:1fr}.lg-graph{max-width:350px}.lg-paths{max-width:350px;font-size:11px}.lg-node{font-size:12px}.lg-heading{flex-direction:row}.lg-heading>div:last-child{font-size:10px}.lg-heading small{font-size:9px}.lg-heading h2{font-size:18px}.lg-reset{margin-left:0}.live-grimoire{padding:8px}.lg-tabs button{padding:8px 12px}#tl .pm:has(.live-grimoire) .pmside>.section-note{width:100%}}
+#tl.pz .pm .pmmain .pmbody:has(.live-grimoire){max-height:none!important;min-height:0;flex:1}
+#skill-equip-tutorial{position:fixed;inset:0;z-index:155;display:grid;place-items:center;background:#050904df;padding:18px;color:#e4dfca;overflow:auto;scrollbar-width:thin;scrollbar-color:#978250 #10170f}#skill-equip-tutorial>section{width:min(680px,100%);max-height:calc(100dvh - 36px);overflow:auto;padding:24px;border:1px solid #ae965a;background:linear-gradient(135deg,#263222,#10190e);box-shadow:0 18px 70px #000b;scrollbar-width:thin;scrollbar-color:#978250 #10170f}#skill-equip-tutorial section>small{color:#c9b17b;letter-spacing:2px;font-size:11px}#skill-equip-tutorial h2{font:27px Georgia,serif;color:#e7cf93;margin:12px 0}#skill-equip-tutorial p,#skill-equip-tutorial li{font:14px/1.6 Georgia,serif;color:#c9d1b8}#skill-equip-tutorial ol{padding-left:22px}#skill-equip-tutorial .equip-instruction{font-size:12px;color:#abb89a}.equip-tutorial-slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}#skill-equip-tutorial .equip-tutorial-slot{display:flex;flex-direction:column;gap:5px;align-items:center;min-height:88px;padding:12px 8px;background:#162110;border:1px solid #65754c;color:#c5cfb4;white-space:normal}#skill-equip-tutorial .equip-tutorial-slot.empty{border-color:#c3a86a;background:#314124}#skill-equip-tutorial .equip-tutorial-slot small{color:#dec88b;font-size:10px}#skill-equip-tutorial .equip-tutorial-slot b{font:16px Georgia,serif}#skill-equip-tutorial .equip-tutorial-slot span{font-size:11px}#skill-equip-tutorial .equip-tutorial-slot:hover{border-color:#edcd88;background:#3d4e2f}#skill-equip-tutorial .equip-tutorial-error{color:#e7aa8c;font-size:12px;min-height:18px}.lg-equip-help{margin:0 0 10px;width:100%;color:#e6d199!important;border-color:#9f8751!important}@media(max-width:480px){.equip-tutorial-slots{grid-template-columns:repeat(2,minmax(0,1fr))}#skill-equip-tutorial>section{padding:18px}#skill-equip-tutorial h2{font-size:23px}}
+
+</style>
+<!-- SKILL_TREE_STYLE_END -->
+<!-- EQUIPMENT_MODEL_BEGIN -->
+<script>
+(function(root){
+'use strict';
+const VERSION=1,CAPACITY=60,MAX_WAVE=1000;
+const slots={staff:{name:'Cajado',icon:'⚚',base:'spell'},grimoire:{name:'Grimório',icon:'▤',base:'horde'},body:{name:'Vestimenta',icon:'♜',base:'hp'},head:{name:'Capuz',icon:'♙',base:'mp'},boots:{name:'Botas',icon:'♟',base:'move'},ring1:{name:'Anel esquerdo',icon:'◉',base:'regen'},ring2:{name:'Anel direito',icon:'◉',base:'regen'}};
+const rarities={common:{name:'Comum',color:'#c7c9c2',count:0,weight:60},magic:{name:'Mágico',color:'#73b5ff',count:2,weight:28},rare:{name:'Raro',color:'#ecd16b',count:3,weight:10},epic:{name:'Épico',color:'#c994ff',count:4,weight:2}};
+const attributes={hp:{name:'Vida máxima',base:12},mp:{name:'Mana máxima',base:8},spell:{name:'Dano mágico',base:4,percent:true},horde:{name:'Dano da horda',base:4,percent:true},hordeHp:{name:'Vida da horda',base:6,percent:true},regen:{name:'Regeneração de mana',base:.4},move:{name:'Movimento',base:1,percent:true},cooldown:{name:'Redução de recarga',base:1,percent:true}};
+const pools={staff:['spell','mp','regen','horde','cooldown'],grimoire:['horde','hordeHp','mp','regen','spell'],body:['hp','mp','hordeHp','regen','cooldown'],head:['mp','hp','regen','spell','horde'],boots:['move','hp','mp','regen','cooldown'],ring1:['hp','mp','spell','horde','regen','cooldown'],ring2:['hp','mp','spell','horde','regen','cooldown']};
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const waveNumber=n=>clamp(Math.floor(Number(n)||1),1,MAX_WAVE);
+function waveStats(n){n=waveNumber(n);return {wave:n,hp:1.12**(n-1),damage:1.08**(n-1),xp:1.04**(n-1),itemLevel:n,maxEnemies:60};}
+function progress(raw={}){const best=clamp(Math.floor(Number(raw.best)||0),0,MAX_WAVE),unlocked=Math.min(MAX_WAVE,best+1);return {best,unlocked,selected:clamp(Math.floor(Number(raw.selected)||1),1,unlocked)};}
+function complete(raw,n){const p=progress(raw);if(!Number.isInteger(n)||n<1||n>p.unlocked)return p;n=waveNumber(n);p.best=Math.max(p.best,n);return progress(p);}
+function price(level){return 25+10*waveNumber(level);}
+function sellPrice(item){return Math.floor(price(item.level)*.15);}
+function generate(level,tree,random=Math.random,type,boss=false,id,options={}){
+ const loot=options.loot||{};
+ level=waveNumber(level);type=slots[type]?type:Object.keys(slots)[Math.floor(random()*7)];
+ const eligible=Object.entries(rarities).map(([k,v])=>[k,{...v,weight:loot.weights?.[k]??v.weight}]).filter(([k])=>!boss||k!=='common');let roll=random()*eligible.reduce((s,[,v])=>s+v.weight,0),rarity=eligible.at(-1)[0];
+ for(const [k,v]of eligible){roll-=v.weight;if(roll<0){rarity=k;break;}}
+ const scale=1+(level-1)*(loot.valuePerLevel??.12),value=stat=>Math.round(attributes[stat].base*scale*(.7+random()*.6)*100)/100;
+ const base={stat:slots[type].base,value:value(slots[type].base)},pool=[...pools[type]],affixes=[];
+ if(level>=(loot.skillBonusMinLevel??4))pool.push('skill');if(level>=(loot.schoolBonusMinLevel??8)&&['rare','epic'].includes(rarity))pool.push('school');
+ for(let i=0;i<(loot.affixes?.[rarity]??rarities[rarity].count);i++){
+  if(!pool.length)throw Error('Atributos insuficientes para a raridade.');
+  const stat=pool.splice(Math.floor(random()*pool.length),1)[0];
+  if(stat==='skill'){const nodes=tree.nodes.filter(n=>n.max>1);affixes.push({stat,target:nodes[Math.floor(random()*nodes.length)].id,value:level>=12&&random()<.25?2:1});}
+  else if(stat==='school')affixes.push({stat,target:tree.schools[Math.floor(random()*tree.schools.length)].id,value:1});
+  else affixes.push({stat,value:value(stat)});
+ }
+ return {version:VERSION,id:id||'eq-'+Date.now().toString(36)+'-'+random().toString(36).slice(2,12),type,level,originWave:level,rarity,base,affixes};
+}
+function validate(item,tree){
+ if(!item||item.version!==VERSION||!slots[item.type]||!rarities[item.rarity]||typeof item.id!=='string'||!/^[a-zA-Z0-9_-]{1,100}$/.test(item.id)||!Number.isInteger(item.level)||item.level<1||item.level>MAX_WAVE)return null;
+ if(!item.base||item.base.stat!==slots[item.type].base||!Array.isArray(item.affixes)||item.affixes.length!==rarities[item.rarity].count)return null;
+ const seen=new Set();
+ function attr(a,base=false){
+  if(!a||!Number.isFinite(a.value)||a.value<=0)return null;
+  if(['skill','school'].includes(a.stat)){
+   if(base||!Number.isInteger(a.value)||a.value>(a.stat==='school'?1:2)||item.level<(a.stat==='school'?8:4))return null;
+   if(a.stat==='skill'&&(!tree.byId[a.target]||tree.byId[a.target].max===1))return null;
+   if(a.stat==='school'&&(!['rare','epic'].includes(item.rarity)||!tree.schools.some(s=>s.id===a.target)))return null;
+   return {stat:a.stat,target:a.target,value:a.value};
+  }
+  if(!attributes[a.stat]||!base&&!pools[item.type].includes(a.stat)||a.value>attributes[a.stat].base*(1+(item.level-1)*.12)*1.3+.02)return null;
+  return {stat:a.stat,value:a.value};
+ }
+ const base=attr(item.base,true);if(!base)return null;const affixes=[];
+ for(const a of item.affixes){if(!a||seen.has(a.stat))return null;seen.add(a.stat);const v=attr(a);if(!v)return null;affixes.push(v);}
+ return {version:VERSION,id:item.id,type:item.type,level:item.level,originWave:waveNumber(item.originWave||item.level),rarity:item.rarity,base,affixes};
+}
+function migrate(data,tree){
+ const seen=new Set(),equipment={};
+ const read=raw=>{const i=validate(raw,tree);if(!i||seen.has(i.id))return null;seen.add(i.id);return i;};
+ for(const slot of Object.keys(slots)){const i=read(data.equipment?.[slot]);if(i&&(i.type===slot||slot.startsWith('ring')&&i.type.startsWith('ring')))equipment[slot]=i;}
+ const gearBag=[];for(const raw of (Array.isArray(data.gearBag)?data.gearBag:[]).slice(0,CAPACITY)){const i=read(raw);if(i)gearBag.push(i);}
+ Object.assign(data,{equipmentVersion:VERSION,equipment,gearBag,waveProgress:progress(data.waveProgress||{best:data.camp?.eb||0})});return data;
+}
+function items(data){return Object.values(data.equipment||{});}
+function bonuses(data){const out={};for(const i of items(data))for(const a of [i.base,...i.affixes])if(attributes[a.stat])out[a.stat]=(out[a.stat]||0)+a.value;out.move=Math.min(30,out.move||0);out.cooldown=Math.min(50,out.cooldown||0);return out;}
+function effects(tree,ranks,equipment){
+ const e=tree.effects(ranks),extra={};
+ for(const n of tree.nodes){if(!ranks[n.id]||n.max===1)continue;let count=0;
+  for(const i of Object.values(equipment||{}))for(const a of i.affixes)if(a.stat==='skill'&&a.target===n.id||a.stat==='school'&&a.target===n.school)count+=a.value;
+  extra[n.id]=count;
+  for(const [key,value]of Object.entries(n.effects)){if(n.id==='bolt'&&key==='Dano da Chuva de Ossos'||n.id==='rain'&&key==='Dano do Tiro de Osso')continue;e[key]=(e[key]||0)+value*count;}
+ }
+ if(e['Redução de dano da Maldição'])e['Redução de dano da Maldição']=Math.min(75,e['Redução de dano da Maldição']);
+ if(e['Recarga do Dash'])e['Recarga do Dash']=Math.max(-50,e['Recarga do Dash']);
+ if(e['Recarga do Passo Espectral'])e['Recarga do Passo Espectral']=Math.max(-50,e['Recarga do Passo Espectral']);
+ return {effects:e,extra};
+}
+function targetLabel(a,tree){if(a.stat==='skill')return tree.byId[a.target]?.name||a.target;const s=tree.schools.find(s=>s.id===a.target);return s?s.name+' · '+(s.tree==='minions'?'Minions':'Profana'):a.target;}
+function describe(a,tree){return ['skill','school'].includes(a.stat)?'+'+a.value+' em '+(a.stat==='school'?'toda a escola ':'')+targetLabel(a,tree):'+'+Number(a.value.toFixed(2))+(attributes[a.stat].percent?'%':'')+' '+attributes[a.stat].name+(a.stat==='regen'?'/s':'');}
+const api={VERSION,CAPACITY,MAX_WAVE,slots,rarities,attributes,pools,waveNumber,waveStats,progress,complete,price,sellPrice,generate,validate,migrate,items,bonuses,effects,describe};
+if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.EquipmentModel=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+
+</script>
+<!-- EQUIPMENT_MODEL_END -->
+<!-- EQUIPMENT_STYLE_BEGIN -->
+<style>
+.gear-header{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #746645;padding-bottom:12px}.gear-header h2{font:26px Georgia,serif;color:#dfc58c;margin:6px 0}.gear-header small{font-size:10px;letter-spacing:2px;color:#a7a687}.gear-header span{color:#c8b67d;font-size:12px}.gear-layout{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(190px,1fr) minmax(230px,1.3fr);gap:14px}.gear-layout h3,.gear-totals h3,.gear-merchant h3,.gear-wave-info h3{color:#dfc58c;font:18px Georgia,serif}.gear-layout .btn{display:block;text-align:left;width:100%;margin:0 0 7px;padding:10px;white-space:normal;font:12px/1.5 Georgia,serif;min-height:40px}.gear-bag{max-height:560px;overflow:auto}.gear-card{border:1px solid;background:#101713;padding:12px;margin-bottom:10px}.gear-card h3{margin:6px 0}.gear-card p,.gear-detail>p{font:13px/1.6 Georgia,serif;margin:8px 0}.gear-card small{font-size:10px;color:#b3bca5}.gear-card em{color:#999}.gear-base{border-bottom:1px solid #46503d;padding-bottom:8px;color:#e2dfbd}.gear-compare{color:#d0d8b5}.gear-layout button[aria-pressed=true],.gear-shop-types button[aria-pressed=true],.gear-wave-picker button[aria-pressed=true]{outline:2px solid #ddbf78;outline-offset:1px;background:#34432a}.gear-totals,.gear-merchant,.gear-wave-info{margin-top:18px;padding:12px;border:1px solid #4d583f;background:#121a12;color:#bdc5ae;font:13px/1.6 Georgia,serif}.gear-shop-types,.gear-wave-picker{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.gear-shop-types .btn,.gear-wave-picker .btn{padding:9px 13px;min-height:40px}.gear-wave-picker{max-height:220px;overflow:auto}.gear-skill-bonus{padding:9px;border:1px solid #9a8250;color:#e2cb91;font:12px/1.6 Georgia,serif}.pmtabs{flex-wrap:wrap}.pmtab{min-height:38px}@media(max-width:1050px){.gear-layout{grid-template-columns:1fr 1fr}.gear-detail{grid-column:1/-1}.gear-bag{max-height:320px}}@media(max-width:600px){.gear-layout{grid-template-columns:1fr}.gear-detail{grid-column:auto}.gear-header{align-items:flex-start;flex-direction:column;gap:4px}.gear-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}.gear-slots h3{grid-column:1/-1}.gear-layout .btn{font-size:13px}.gear-merchant .btn{white-space:normal}.pmtab{font-size:10px!important;padding:8px!important}}
+
+</style>
+<!-- EQUIPMENT_STYLE_END -->
 </head>
 <body>
 <canvas id="c"></canvas>
@@ -378,8 +611,8 @@ canvas { display:block; }
     <div class="s-key">3</div>
     <div class="s-cost">40</div>
   </div>
-  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Lançar Explosão de Almas" id="slot-explosao" onclick="castHotkey('explosao')">
-    <div class="s-name">Explosão de Almas</div>
+  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Lançar Explosão Necrótica" id="slot-explosao" onclick="castHotkey('explosao')">
+    <div class="s-name">Explosão Necrótica</div>
     <div class="s-icon">💥</div>
     <div class="s-key">4</div>
     <div class="s-cost">60</div>
@@ -585,7 +818,7 @@ const SKILL_NODES = {
   // Caminho Magia
   raio:     {name:'Tiro de Osso',icon:'⚡',desc:'20 MP · 40 de dano base, alcance 9; um alvo. Recarga: 0,5s.',path:'base',req:null,spell:'raio',passive:null},
   chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:null,   spell:'chuva',  passive:null},
-  explosao: {name:'Explosão de Almas',icon:'💥',desc:'AoE massiva — consome 40 almas.',path:'magic', req:null,  spell:'explosao',passive:null},
+  explosao: {name:'Explosão Necrótica',icon:'💥',desc:'60 MP · explosão necrótica em área.',path:'magic', req:null,  spell:'explosao',passive:null},
   wall_duration:{name:'Corpos Persistentes',icon:'⌛',desc:'Muralha dura 7s em vez de 5s.',path:'maos',req:'maos',passive:'wall_duration'},
   wall_damage:{name:'Espinhos de Osso',icon:'▥',desc:'Muralha causa +50% de dano de contato.',path:'maos',req:'wall_duration',passive:'wall_damage'},
   dash_cooldown:{name:'Passo Ágil',icon:'➶',desc:'Dash: recarga de 3s para 2,4s.',path:'dash',ability:'dash',req:null,passive:'dash_cooldown'},
@@ -1582,7 +1815,7 @@ function buildHubScene(){
   const NPC_DEFS=[
     {label:'Quadro de Missões', icon:'📜', tab:'missions',  pos:[0,-9],  color:'#ff8844', kind:'board',    hint:'[G] Ver Missões'},
     {label:'Mercador',          icon:'🛒', tab:'shop',      pos:[-7,-4], color:'#d4af37', kind:'merchant', hint:'[G] Abrir Loja'},
-    {label:'Altar dos Upgrades',icon:'⚗',  tab:'upgrades',  pos:[7,-4],  color:'#8844ff', kind:'altar',    hint:'[G] Upgrades & Habilidades'},
+    {label:'Altar do Grimório',icon:'⚗',  tab:'skills',  pos:[7,-4],  color:'#8844ff', kind:'altar',    hint:'[G] Minions & Profana'},
     {label:'Cemitério',         icon:'🧟', tab:'summon',    pos:[0,-5],  color:'#00ccaa', kind:'graveyard',hint:'[G] Gerenciar Minions'},
   ];
   NPC_DEFS.forEach(def=>{
@@ -1841,7 +2074,7 @@ const STORY={
     {...R_(.5,0,.5,.6,.05),bg:'dawn',cap:{t:'O sol nasceu sobre o Vale Cinzento. Pela primeira vez em três invernos, ninguém teve medo da noite.',pos:'tl',w:.9},
       actors:[{k:'p',s:NECRO_STYLE,x:.5,y:.98,z:1.5,f:1,sc:1.08},{k:'p',s:'zombie',x:.24,y:.98,z:1.3,f:1},{k:'p',s:'skeleton',x:.76,y:.98,z:1.3,f:-1}],
       bubbles:[{t:'A Ordem da Aurora caiu.',kind:'dead',x:.5,y:.44,w:.45,tail:[.5,.62]}]},
-    {...R_(0,.6,1,.4),bg:'dark',title:{t:'FIM DO CAPÍTULO I',sub:'O Campo Livre aguarda — sempre há mais almas a colher...'},actors:[]},
+    {...R_(0,.6,1,.4),bg:'dark',title:{t:'FIM DO CAPÍTULO I',sub:'O Campo Livre aguarda — novos poderes aguardam nas árvores...'},actors:[]},
   ]}],
 };
 
@@ -2254,12 +2487,11 @@ function castChuva(tx,tz){ playSound('chuva');
   }
 }
 
-// ── Explosão de Almas ─────────────────────────────────────
+// ── Explosão Necrótica ─────────────────────────────────────
 function castExplosao(tx,tz){ playSound('explosao');
-  const cost=60, soulCost=40;
+  const cost=60;
   if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
-  if(player.souls<soulCost){floatMsg('Almas insuficientes! (40)',innerWidth/2,innerHeight*.45,'#a855f7');return;}
-  player.mp-=cost; player.souls-=soulCost; updateHUD(); castAnim(tx,tz,'#ff5522');
+  player.mp-=cost; updateHUD(); castAnim(tx,tz,'#ff5522');
   const bigR=(player.spellRadius+spellBonus('explosao','exp_r'))*2.2;
   const expDmg=player.spellDmg*2.5+spellBonus('explosao','exp_d');
   for(let i=0;i<3;i++) ring(tx,tz,bigR*(1-i*.15),['#cc00ff','#dd22ff','#ee44ff'][i],1.2-i*.1,i*.05);
@@ -2272,7 +2504,7 @@ function castExplosao(tx,tz){ playSound('explosao');
     const dx=e.mesh.position.x-tx, dz=e.mesh.position.z-tz;
     if(dx*dx+dz*dz<bigR*bigR) dealDamageToEnemy(e,expDmg);
   });
-  floatMsg('💥 EXPLOSÃO DE ALMAS!',innerWidth/2,innerHeight*.35,'#cc00ff');
+  floatMsg('💥 EXPLOSÃO NECRÓTICA!',innerWidth/2,innerHeight*.35,'#cc00ff');
 }
 
 
@@ -2423,7 +2655,8 @@ function startWave(){
   }
 
   const mult = currentMission ? currentMission.enemyMult : 1;
-  const count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);
+  let count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);
+  if(currentMission&&currentMission.endless)count=Math.min(count,EquipmentModel.waveStats(wave).maxEnemies);
   enemiesLeft=count; spawnQueue=[];
   for(let i=0;i<count;i++){
     const ti=Math.min(Math.floor(Math.random()*(1+Math.floor(wave/2))),ENEMY_TYPES.length-1);
@@ -2461,12 +2694,12 @@ function spawnBoss(){
 
 function onMissionComplete(){
   const m=currentMission;
-  player.souls+=m.rewardSouls;
+  player.souls=0;
   const goldReward=Math.floor(m.rewardSouls*0.6+Math.random()*30);
   player.gold+=goldReward;
   gainExp(m.rewardExp);
   playSound('levelUp');
-  showWaveBanner(`✓ MISSÃO CONCLUÍDA!`,`+${m.rewardSouls} almas · +${goldReward} gold · +${m.rewardExp} XP`,'#d4af37');
+  showWaveBanner(`✓ MISSÃO CONCLUÍDA!`,`+${goldReward} gold · +${m.rewardExp} XP`,'#d4af37');
   waveActive=false;
   if(!m.route){
     setTimeout(()=>{ floatMsg('Pressione G para retornar ao Hub!',innerWidth/2,innerHeight*.45,'#d4af37'); },3000);
@@ -2578,7 +2811,7 @@ function showHubOverlay(tab){
   restoreManagementPanels();
 
   document.getElementById('hub-overlay').style.display='flex';
-  document.getElementById('hub-souls-disp').textContent=`💀 ${player.souls} almas  ·  ✨ ${player.skillPoints} pontos de habilidade`;
+  document.getElementById('hub-souls-disp').textContent=`✨ ${player.skillPoints} pontos de habilidade`;
   document.getElementById('hub-stat').textContent=`Lv${player.level}  VIDA ${Math.ceil(player.hp)}/${player.maxHp}  MP ${Math.ceil(player.mp)}/${player.maxMp}  SLOTS ${summonSlotCount()}  CRIATURAS ${minions.length}`;
   buildShopGrid();
   buildMissionBoard();
@@ -2673,7 +2906,7 @@ function buildMissionBoard(){
         <div class="mc-detail">👑 Boss: <b>${m.boss.name}</b> (${m.boss.hp} HP)</div>
         <div class="mc-detail">⚔ Inimigos: <b>${m.enemyMult===1?'Normal':m.enemyMult===1.4?'Reforçados':'Elite'}</b></div>
       </div>
-      <div class="mc-rewards">🎁 +${m.rewardSouls} almas · +${m.rewardExp} XP</div>
+      <div class="mc-rewards">🎁 +${m.rewardExp} XP</div>
       <button class="mc-btn" style="color:${m.color};border-color:${m.color}44;background:${m.color}11;"
         onclick="startMission(availableMissions[${availableMissions.indexOf(m)}])">⚔ INICIAR MISSÃO</button>`;
     grid.appendChild(card);
@@ -2725,7 +2958,7 @@ const SKILL_BRANCHES=[
   {id:'dash',name:'Dash',icon:'➶',nodes:['dash_cooldown','dash_distance']},
   {id:'barreira',name:'Escudo de Carne',icon:'🛡',nodes:['barreira','bastiao']},
   {id:'chuva',name:'Chuva de Ossos',icon:'🦴',nodes:['chuva']},
-  {id:'explosao',name:'Explosão de Almas',icon:'💥',nodes:['explosao']},
+  {id:'explosao',name:'Explosão Necrótica',icon:'💥',nodes:['explosao']},
   {id:'horde',name:'Bônus gerais da horda',icon:'🌑',nodes:['aura','pacto','ritual','ascensao']}
 ];
 let selectedSkillBranch='raio';
@@ -2988,7 +3221,7 @@ function buildSummonWheelUI(){
   Object.entries(MINION_DEFS).forEach(([type,def])=>{
     const quote=summonGroupQuote(index,type), button=document.createElement('button');
     button.className='group-choice'+(current===type?' equipped':''); button.disabled=!quote.ok;
-    button.innerHTML='<span>'+def.emoji+'</span><div><b>'+def.name+'</b><small>'+summonGroupSize(type)+' criaturas por slot</small><em>'+(quote.ok?(quote.count?quote.count+' novas · '+quote.mp+' MP · '+quote.soul+' almas':'Grupo completo'):quote.why)+'</em></div>';
+    button.innerHTML='<span>'+def.emoji+'</span><div><b>'+def.name+'</b><small>'+summonGroupSize(type)+' criaturas por slot</small><em>'+(quote.ok?(quote.count?quote.count+' novas · '+quote.mp+' MP':'Grupo completo'):quote.why)+'</em></div>';
     button.onclick=()=>{ if(configureSummonSlot(index,type)){ closeSummonPicker(); if(TITLE.paused) showHubOverlay('summon'); } }; row.appendChild(button);
   });
   if(!current&&!slotMembers(index).length) player.summonReserve.forEach((group,n)=>{
@@ -3452,6 +3685,7 @@ function saveGame(){
   const data={
     actionLoadout:player.actionLoadout,actionLoadoutVersion:1,minionSkillCooldowns:player.minionSkillCooldowns,
     abilityVersion:ABILITY_VERSION,
+    skillTreeVersion:SKILL_TREE_VERSION,skillRanks:player.skillRanks,skillGrants:player.skillGrants,skillTutorialState:player.skillTutorialState,skillEquipTutorialSeen:player.skillEquipTutorialSeen,skillEquipTutorialPending:player.skillEquipTutorialPending,
     summonSlotVersion:SUMMON_SLOT_VERSION,summonLoadout:player.summonLoadout,summonReserve:player.summonReserve,
     summonGroups:unlockedSummonIndices().filter(i=>player.summonLoadout[i]).map(slot=>({slot,type:player.summonLoadout[slot],count:slotMembers(slot).length,members:slotMembers(slot).map(m=>({hp:m.hp,dead:m.dead,sacrificed:!!m.sacrificed,exploded:!!m.exploded,deadTimer:m.deadTimer,maxHp:m.maxHp,dmg:m.dmg,sc:m.sc,fused:m.fused}))})),
     hp:player.hp,maxHp:player.maxHp,mp:player.mp,maxMp:player.maxMp,
@@ -3462,6 +3696,7 @@ function saveGame(){
     minionHpBonus,minionDmgBonus,minionRegenBonus,hpRegen:player.hpRegen,
     minionUpgradeCount:player.minionUpgradeCount,spellUpgradeCount:player.spellUpgradeCount,
     gold:player.gold,inventory:player.inventory,ts:Date.now(),
+    equipmentVersion:EquipmentModel.VERSION,gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress,
     mode:CAMP.on?'campaign':'free',camp:campData(),
   };
   try{localStorage.setItem(SAVE_KEY,JSON.stringify(data));}catch(e){}
@@ -3470,12 +3705,14 @@ function saveGame(){
 function loadGame(){
   try{
     const raw=localStorage.getItem(SAVE_KEY); if(!raw)return false;
-    const d=migrateSummonSlots(migrateAbilitySave(JSON.parse(raw)));
+    try{if(!JSON.parse(raw).skillTreeVersion&&!localStorage.getItem(SAVE_KEY+'_before_skill_trees'))localStorage.setItem(SAVE_KEY+'_before_skill_trees',raw);}catch(e){}
+    const d=skillMigrateSave(migrateSummonSlots(migrateAbilitySave(JSON.parse(raw))));
     localStorage.setItem(SAVE_KEY,JSON.stringify(d));
     resetAbilities();
     Object.assign(player,{
       hp:d.hp,maxHp:d.maxHp,mp:d.mp,maxMp:d.maxMp,exp:d.exp,expNext:d.expNext,
-      level:d.level,souls:d.souls,maxSp:d.maxSp||60,minionSlots:d.minionSlots||3,spellDmg:d.spellDmg,
+      skillTreeVersion:d.skillTreeVersion,skillRanks:d.skillRanks,skillGrants:d.skillGrants,skillTutorialState:d.skillTutorialState,skillEquipTutorialSeen:d.skillEquipTutorialSeen,skillEquipTutorialPending:d.skillEquipTutorialPending,
+      level:d.level,souls:0,maxSp:d.maxSp||60,minionSlots:d.minionSlots||3,spellDmg:d.spellDmg,
       spellRadius:d.spellRadius,mpRegen:d.mpRegen,skillPoints:d.skillPoints||0,
       learnedSkills:new Set(d.learnedSkills||['raio']),activeSpell:d.activeSpell||'raio',
       upgradeCount:d.upgradeCount||{},
@@ -3483,6 +3720,7 @@ function loadGame(){
       spellUpgradeCount:d.spellUpgradeCount||player.spellUpgradeCount,
       gold:d.gold||0, inventory:d.inventory||[],
     });
+    Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress});
     campLoad(d); wave=d.wave||0; minionHpBonus=d.minionHpBonus||0; minionDmgBonus=d.minionDmgBonus||0;
     minionRegenBonus=d.minionRegenBonus||0; player.hpRegen=d.hpRegen||0;
     document.getElementById('level-txt').textContent=`NV. ${player.level}`;
@@ -3490,7 +3728,7 @@ function loadGame(){
     player.learnedSkills.forEach(id=>{ document.getElementById('slot-'+id)?.classList.remove('locked'); });
     selectSpell(player.activeSpell);
     if(player.skillPoints>0) document.getElementById('sp-pts-txt').textContent=`✦ ${player.skillPoints} pts`;
-    restoreSummonGroups(d); loadActionState(d);
+    skillSync(false); restoreSummonGroups(d); loadActionState(d);
     return true;
   }catch(e){return false;}
 }
@@ -3526,7 +3764,7 @@ function updateDashMovement(dt){
   if(badge){badge.style.display=playerDash.cd>0?'flex':'none';badge.textContent=playerDash.cd.toFixed(1);}
   if(playerDash.time<=0)return false;
   if(P.deadT>0){playerDash.time=0;return false;}
-  const travel=(hasPassive('dash_distance')?6/.18:25)*Math.min(dt,playerDash.time), steps=Math.max(1,Math.ceil(travel/.15)), step=travel/steps;
+  const travel=(typeof skillPercent==='function'?4.5*skillPercent('Distância do Dash')/.18:(hasPassive('dash_distance')?6/.18:25))*Math.min(dt,playerDash.time), steps=Math.max(1,Math.ceil(travel/.15)), step=travel/steps;
   for(let i=0;i<steps;i++){
     const x=P.x+playerDash.dx*step,y=P.y+playerDash.dy*step,q={x,y};
     if(STG.on&&sceneMode==='field') STG.clamp(q,.35);
@@ -3607,7 +3845,7 @@ function updateHostileProjectile(sh,dt){
   if(P.deadT===0){const t=segmentHitTime(ax,ay,sh.x,sh.y,P.x,P.y,.6);if(t!==null)hits.push({t,m:null});}
   minions.forEach(m=>{if(!m.dead){const t=segmentHitTime(ax,ay,sh.x,sh.y,m.x,m.y,.6);if(t!==null)hits.push({t,m});}});
   hits.sort((a,b)=>a.t-b.t);
-  const wall=firstWallHit(ax,ay,sh.x,sh.y);if(wall!==null&&(!hits.length||wall<=hits[0].t)){sh.life=0;burst(ax+(sh.x-ax)*wall,ay+(sh.y-ay)*wall,'#b6b896',5,1);return;}
+  const wall=firstWallHit(ax,ay,sh.x,sh.y);if(wall!==null&&(!hits.length||wall<=hits[0].t)){sh.life=0;if(typeof skillWallAbsorb==='function')skillWallAbsorb(sh,ax+(sh.x-ax)*wall,ay+(sh.y-ay)*wall);burst(ax+(sh.x-ax)*wall,ay+(sh.y-ay)*wall,'#b6b896',5,1);return;}
   if(hits.length){sh.life=0;const hit=hits[0];if(hit.m)dealDamageToMinion(hit.m,sh.dmg);else dealDamageToPlayer(sh.dmg);burst(ax+(sh.x-ax)*hit.t,ay+(sh.y-ay)*hit.t,sh.strong?'#edce77':'#ff5555',6,2);}
   else if(sh.kind==='magic'&&Math.random()<.7)particles.push({x:sh.x,y:sh.y,z:sh.z,vx:rnd(-.3,.3),vy:rnd(-.3,.3),vz:0,life:.35,max:.35,col:'#7ab8ff',size:2.5});
 }
@@ -3653,7 +3891,7 @@ function update(dt){
       else bc.style.display='none'; } }
 
   // Movimento
-  const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1); let mx=0,mz=0;
+  const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1)*(1+gearBonus('move')/100); let mx=0,mz=0;
   if(P.deadT===0){
     if(keys['w']||keys['arrowup']) mz-=1;
     if(keys['s']||keys['arrowdown']) mz+=1;
@@ -3901,11 +4139,12 @@ function render(){
 
   // itens no chão
   droppedItems.forEach(d=>{
-    const dx=sx(d.mesh.position.x), dy=sy(d.mesh.position.z), c=d.type==='hp'?'#e74c3c':'#6c6cff', a=d.life<3?d.life/3:1;
+    const dx=sx(d.mesh.position.x), dy=sy(d.mesh.position.z), c=d.type==='equipment'?EquipmentModel.rarities[d.item.rarity].color:d.type==='gold'?'#e4be58':d.type==='hp'?'#e74c3c':'#6c6cff', a=d.life<3?d.life/3:1;
     ctx.globalAlpha=a; shadow(dx,dy,.2);
     const y=dy-8-Math.sin(d.t*4)*3;
     ctx.globalCompositeOperation='lighter'; glow(dx,y,18,c,.85); ctx.globalCompositeOperation='source-over';
-    ctx.fillStyle=c; ctx.beginPath(); ctx.arc(dx,y,5.5,0,6.283); ctx.fill(); ctx.fillStyle='rgba(255,255,255,.6)'; ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;
+    ctx.fillStyle=c; ctx.beginPath(); ctx.arc(dx,y,d.type==='gold'?7:5.5,0,6.283); ctx.fill();if(d.type==='gold'){ctx.strokeStyle='#fff1a0';ctx.lineWidth=1.5;ctx.stroke();} ctx.fillStyle='rgba(255,255,255,.6)'; ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;
+    if(d.type==='equipment'){ctx.save();ctx.font='bold 12px Georgia';ctx.textAlign='center';ctx.strokeStyle='#080e08';ctx.lineWidth=3;const label=EquipmentModel.slots[d.item.type].icon+' '+EquipmentModel.rarities[d.item.rarity].name+' Nv.'+d.item.level;ctx.strokeText(label,dx,y-15);ctx.fillStyle=c;ctx.fillText(label,dx,y-15);ctx.restore();}
   });
   // anéis, avisos e marcadores
   spellFx.forEach(f=>{
@@ -4734,7 +4973,7 @@ function tMain(){
     mk('CRÉDITOS',tCredits,[122,718,352,50]);
     mk('SAIR',()=>tConfirm('Sair do jogo?','SAIR',()=>{ try{ window.close(); }catch(e){} setTimeout(()=>tScreen(x=>{ x.innerHTML='<div class="pt">ATÉ A PRÓXIMA</div><div class="msg">Você já pode fechar esta aba.</div>'; const m=tMenuEl(x); m.appendChild(tBtn('← VOLTAR AO MENU',tMain)); }),150); },tMain),[122,786,348,50]);
     const c=document.createElement('div'); c.className='tcard';
-    c.innerHTML=d?`<b>${camp?'Campanha — Ato I (fase '+Math.min(4,(d.camp&&d.camp.unlocked)||1)+'/4)':'Modo Livre'}</b><br>Nível ${d.level} · Wave ${d.wave||0}<br>💀 ${d.souls||0} · 🪙 ${d.gold||0}${d.ts?' · <span style="color:#777">'+agoTxt(d.ts)+'</span>':''}`:'<span style="color:#777;font-style:italic">Nenhum save neste navegador.</span>';
+    c.innerHTML=d?`<b>${camp?'Campanha — Ato I (fase '+Math.min(4,(d.camp&&d.camp.unlocked)||1)+'/4)':'Modo Livre'}</b><br>Nível ${d.level} · Wave ${d.wave||0}<br>🪙 ${d.gold||0}${d.ts?' · <span style="color:#777">'+agoTxt(d.ts)+'</span>':''}`:'<span style="color:#777;font-style:italic">Nenhum save neste navegador.</span>';
     w.appendChild(c);
     const mg=document.createElement('div'); mg.className='tmsg'; mg.id='tl-msg'; w.appendChild(mg);
     w._lay=()=>{ const W_=innerWidth, H_=innerHeight, k=Math.min(H_/860,W_/900), ox=W_>IW*k?(W_-IW*k)/2:0; const tl=document.getElementById('tl'); tl.style.backgroundSize=(IW*k)+'px '+(IH*k)+'px'; tl.style.backgroundPosition=ox+'px 0px'; w.querySelectorAll('button.tm').forEach(b=>{ const r=b._r; b.style.left=(ox+r[0]*k)+'px'; b.style.top=(r[1]*k)+'px'; b.style.width=r[2]*k+'px'; b.style.height=r[3]*k+'px'; }); };
@@ -4819,8 +5058,8 @@ const PM={tab:'status',ov:false};
 function pmOpenOverlay(tab){ PM.ov=!!TITLE.paused; if(TITLE.paused) tlShow(false,false); showHubOverlay(tab); }
 function pmBar(v,mx,col){ return `<div class="pmbar"><i style="width:${Math.max(0,Math.min(100,v/mx*100))}%;background:${col}"></i><span>${Math.ceil(v)}/${Math.ceil(mx)}</span></div>`; }
 function pmStatusHtml(){
-  const SP=[['raio','M1 / 1','Tiro de Osso','⚡'],['maos','M2 / 2','Muralha de Corpos','🖐'],['chuva','3','Chuva de Ossos','🦴'],['explosao','4','Explosão de Almas','💥'],['barreira','ESPAÇO','Escudo de Carne','🛡']];
-  const spells=SP.map(([id,k,n,ic])=>{ const ok=player.learnedSkills.has(id), lock=CAMP.on&&CAMP_GATE[id]&&!ok; return `<div class="pmsp${ok?'':' off'}"><span>${ic}</span><b>${n}</b><kbd>${k}</kbd><em title="${lock?CAMP_GATE[id]:''}">${ok?'Aprendida':lock?CAMP_GATE[id]:'Não aprendida'}</em></div>`; }).join('');
+  const SP=[['raio','M1 / 1','Tiro de Osso','⚡'],['maos','M2 / 2','Muralha de Corpos','🖐'],['chuva','3','Chuva de Ossos','🦴'],['explosao','4','Explosão Necrótica','💥'],['barreira','ESPAÇO','Escudo de Carne','🛡']];
+  const spells=SP.map(([id,k,n,ic])=>{ const ok=player.learnedSkills.has(id), lock=false; return `<div class="pmsp${ok?'':' off'}"><span>${ic}</span><b>${n}</b><kbd>${k}</kbd><em title="${lock?CAMP_GATE[id]:''}">${ok?'Aprendida':lock?CAMP_GATE[id]:'Não aprendida'}</em></div>`; }).join('');
   const pas=Object.entries(SKILL_NODES).filter(([id,n])=>n.passive&&player.learnedSkills.has(id)).map(([id,n])=>`<span class="pmchip">${n.icon} ${n.name}</span>`).join('')||'<span class="pmdim">nenhuma</span>';
   const mn=minions.map(m=>`<div class="pmmin"><span>${MINION_DEFS[m.type].emoji} ${MINION_DEFS[m.type].name}</span><small>${minionStateText(m)}</small>${m.dead?'':pmBar(m.hp,m.maxHp,'#27ae60')}</div>`).join('')||'<span class="pmdim">nenhum minion ativo</span>';
   const prog=CAMP.on?`Campanha — Ato I · fases concluídas: <b>${Object.keys(CAMP.cleared).length}/4</b>${CAMP.inStage?' · jogando: <b>'+CAMP_STAGES[CAMP.stage].name+'</b>':''}`:`Modo Livre · Wave <b>${wave}</b>`;
@@ -4835,7 +5074,7 @@ function pmStatusHtml(){
       <div><span>Dano mágico</span><b>${player.spellDmg}</b></div><div><span>Área base de Chuva</span><b>${player.spellRadius.toFixed(1)}</b></div>
       <div><span>Regen. de mana</span><b>${player.mpRegen.toFixed(1)}/s</b></div><div><span>Regen. de vida</span><b>${(player.hpRegen||0).toFixed(1)}/s</b></div>
       <div><span>Criaturas / slots</span><b>${minions.length} / ${summonSlotCount()}</b></div><div><span>Pontos de habilidade</span><b>${player.skillPoints}</b></div>
-      <div><span>Almas</span><b>💀 ${player.souls}</b></div><div><span>Ouro</span><b>🪙 ${player.gold}</b></div></div></div>
+      <div><span>Ouro</span><b>🪙 ${player.gold}</b></div></div></div>
     <div class="pmcard"><h4>FEITIÇOS</h4>${spells}<div class="pmsp"><span>➶</span><b>Passo Sepulcral</b><kbd>F</kbd><em>Base · 3s</em></div><div class="pmsub">PASSIVAS</div><div>${pas}</div></div>
     <div class="pmcard"><h4>HORDA</h4>${mn}</div></div>`;
 }
@@ -4856,7 +5095,7 @@ function tPause(tab){
       hero.innerHTML=(im?`<img src="${im}" alt="Zephyr">`:'')+`<b>${CAMP.on?'ZEPHYR':'NECROMANTE'}</b><small>NÍVEL ${player.level} · NECROMANTE</small>
       <div class="pmrow"><span>HP</span>${pmBar(player.hp,player.maxHp,'#c0392b')}</div><div class="pmrow"><span>MANA</span>${pmBar(player.mp,player.maxMp,'#6c6cff')}</div><div class="pmrow"><span>EXP</span>${pmBar(player.exp,player.expNext,'#d4af37')}</div>`;
       side.appendChild(hero); }
-    const resources=document.createElement('div'); resources.className='section-note'; resources.textContent=player.souls+' almas · '+player.gold+' ouro · '+player.skillPoints+' pontos'; side.appendChild(resources);
+    const resources=document.createElement('div'); resources.className='section-note'; resources.textContent=player.gold+' ouro · '+player.skillPoints+' pontos'; side.appendChild(resources);
     side.appendChild(tBtn('▶ CONTINUAR',()=>setPause(false),{pri:true,sub:'ESC'}));
     if(PM.tab!=='controls') side.appendChild(tBtn('AJUDA',()=>tPause('controls'),{sub:'H'}));
     if(VILLAGE_ROUTE.on)side.appendChild(tBtn('🏘 VOLTAR À VILA',()=>tConfirm('Abandonar a trilha atual e voltar à vila?','VOLTAR À VILA',()=>{setPause(false);enterHub();},tPause)));
@@ -4872,16 +5111,15 @@ function tPause(tab){
     T('status','PERSONAGEM'); T('skills','HABILIDADES'); T('horde','HORDA'); T('system','SISTEMA');
     const body=document.createElement('div'); body.className='pmbody'; main.appendChild(body);
     if(PM.tab==='status'){
-      body.innerHTML=pmStatusHtml()+'<h3 class="section-title">MELHORIAS DO PERSONAGEM · ALMAS</h3>';
-      mountManagementPanel('upgrades',body); buildUpgradeGrid();
+      body.innerHTML=pmStatusHtml();
     } else if(PM.tab==='skills'){
-      body.innerHTML='<p class="section-note">Escolha uma habilidade para ver seu ramo. Melhorias usam pontos; evoluções adicionais usam almas.</p>';
+      body.innerHTML='<p class="section-note">Escolha Minions ou Profana. Cada nível concede 3 pontos para investir em bifurcações e sinergias.</p>';
       mountManagementPanel('skills',body); buildSkillTree(); buildSpellUpgradesSection();
     } else if(PM.tab==='horde'){
       if(CAMP.on&&!CAMP.summon) body.innerHTML='<p class="section-note">A invocação será aprendida na Floresta de Eldrin.</p>';
       else {
         body.innerHTML='<p class="section-note">Configure os grupos nos slots abaixo. Zumbi: 3 por slot; Arqueiro Ósseo: 2. Sacrificados aguardam recuperação.</p>';
-        mountManagementPanel('summon',body); mountManagementPanel('minions',body);
+        mountManagementPanel('summon',body);
         buildRosterSection(); buildSummonGrid(); buildMinionUpgradeGrid();
       }
     } else if(PM.tab==='controls') body.innerHTML=pmControlsHtml();
@@ -5137,7 +5375,7 @@ function campMapClose(){ CAMP.map=false; document.getElementById('cmap').classLi
 function campMapRender(){
   const el=document.getElementById('cmap'); const keep=el.querySelector('#cm-cv'); el.innerHTML=''; el.appendChild(keep);
   const top=document.createElement('div'); top.className='cm-top';
-  top.innerHTML=`<div class="cm-title">ATO I — O DESPERTAR<small>ZEPHYR · NÍVEL ${player.level} · 💀 ${player.souls} · 🪙 ${player.gold}${player.skillPoints>0?' · ✨ '+player.skillPoints+' ponto(s)':''}</small></div>`;
+  top.innerHTML=`<div class="cm-title">ATO I — O DESPERTAR<small>ZEPHYR · NÍVEL ${player.level} · 🪙 ${player.gold}${player.skillPoints>0?' · ✨ '+player.skillPoints+' ponto(s)':''}</small></div>`;
   const mk=(txt,fn,dis)=>{ const b=document.createElement('button'); b.className='cb'; b.innerHTML=txt; if(dis) b.disabled=true; b.onclick=()=>{ try{playSound('click');}catch(e){} fn(); }; return b; };
   top.appendChild(mk('☰ PAUSA',()=>setPause(true)));
   el.appendChild(top);
@@ -5162,7 +5400,7 @@ function campMapRender(){
   const grantTxt=s.grant==='summon'?'Aprende a <b>invocar mortos</b> (tecla Q)':`Aprende <b>${s.grantName}</b>`;
   pn.innerHTML=`<h2>${s.n}. ${s.name}</h2><div class="ty">${s.type.toUpperCase()}</div><p>${s.desc}</p>
     <div class="row">${s.grantIcon} ${done?'Habilidade: <b>'+s.grantName+'</b>':grantTxt}</div>
-    <div class="row">🎁 ${done?'Recompensa já coletada':`+${s.rew.souls} almas · +${s.rew.gold} gold · +${s.rew.xp} XP${s.rew.sp?' · +'+s.rew.sp+' ponto de habilidade':''}`}</div>
+    <div class="row">🎁 ${done?'Recompensa já coletada':`+${s.rew.gold} gold · +${s.rew.xp} XP`}</div>
     <div class="btns"></div>`;
   const bt=pn.querySelector('.btns');
   bt.appendChild(mk(done?'↻ JOGAR NOVAMENTE':'▶ JOGAR',()=>campPlay(s.n)));
@@ -5208,10 +5446,10 @@ function unlockCard(s,done){
 function campStageComplete(){
   if(!CAMP.inStage) return; CAMP.inStage=false; const n=CAMP.stage, s=stageOf(n); waveActive=false; spawnQueue=[];
   const first=!CAMP.cleared[n]; CAMP.cleared[n]=1; syncSummonProgress(); renderSummonSlots(); CAMP.unlocked=Math.max(CAMP.unlocked,Math.min(n+1,CAMP_STAGES.length-1));
-  if(first){ player.souls+=s.rew.souls; player.gold+=s.rew.gold; gainExp(s.rew.xp); player.skillPoints+=s.rew.sp||0;
+  if(first){ player.gold+=s.rew.gold; gainExp(s.rew.xp);
     const el=document.getElementById('sp-pts-txt'); if(el&&player.skillPoints>0) el.textContent=`✦ ${player.skillPoints} pts`; }
   try{ playSound('levelUp'); }catch(e){}
-  showWaveBanner('✓ FASE CONCLUÍDA!',first?`+${s.rew.souls} almas · +${s.rew.gold} gold · +${s.rew.xp} XP`:'Fase concluída novamente','#d4af37');
+  showWaveBanner('✓ FASE CONCLUÍDA!',first?`+${s.rew.gold} gold · +${s.rew.xp} XP`:'Fase concluída novamente','#d4af37');
   const g=document.getElementById('go-arrow'); if(g) g.style.display='none';
   document.getElementById('tut').style.display='none'; TUT.on=false;
   try{ saveGame(); }catch(e){}
@@ -5312,7 +5550,7 @@ function campDrawFx(){
     droppedItems.push({mesh:mkMesh2(x+rnd(-.3,.3),z+rnd(-.3,.3)),type:isHp?'hp':'mp',life:22,t:rnd(0,6)});
   };
   const _ke=killEnemy; killEnemy=function(e,hx,hz){
-    if(CAMP.on&&!e.isBoss){ e.dropChance=e.dummy?1:Math.max(e.dropChance||0,.55); if(!e.dummy&&(e.maxHp||e.hp)>=100&&Math.random()<.7) spawnDrop(hx,hz); }
+    // Orb chance is applied once by the final combat rules, including campaign enemies.
     _ke(e,hx,hz); if(CAMP.on){ tutEvent('kill'); if(STG.on&&STG.onKill) STG.onKill(e); } };
   const _sp=setPause; setPause=function(on){ const r=_sp(on); const t=document.getElementById('tut'); if(t) t.style.visibility=on?'hidden':'visible'; if(on) tutEvent('pause'); return r; };
   const _eh=enterHub; enterHub=function(){ if(CAMP.on){ if(!CAMP.map) campMapOpen(); return; } return _eh(); };
@@ -6102,7 +6340,7 @@ function vilOffer(id,force){
       m.innerHTML=`<div class="vc"><div class="vh"><span class="vi">♾</span><div><b>Pedra do Infinito</b><small>ARENA SEM FIM</small></div></div>
       <p class="say">As runas pulsam. Dizem que quem entra ali enfrenta a morte sem descanso — até cair.</p>
       <div class="offer"><h3>Modo Infinito</h3><div class="tg">RECORDE: WAVE ${ENDLESS.best}</div>
-      <p>Ondas sem fim, mais fortes a cada rodada. Cada wave concluída rende almas, XP e ouro.</p><p>Voltar ao portal encerra a corrida (o que você ganhou fica com você).</p></div>
+      <p>Ondas sem fim, mais fortes a cada rodada. Cada wave concluída rende XP e ouro.</p><p>Voltar ao portal encerra a corrida (o que você ganhou fica com você).</p></div>
       <div class="vb"><button class="pri" id="vm-go">♾ ENTRAR NA ARENA</button><button id="vm-x">FECHAR</button></div></div>`;
       m.querySelector('#vm-go').onclick=()=>{ vilClose(); startEndless(); };
     } else {
@@ -6110,7 +6348,7 @@ function vilOffer(id,force){
       m.innerHTML=`<div class="vc"><div class="vh"><span class="vi">${n.icon}</span><div><b>${n.name}</b><small>MORADOR DA VILA DE ELDRIN</small></div></div>
       <p class="say">“${o.say}”</p>
       <div class="offer"><h3>${o.icon} ${o.label}</h3><div class="tg">${stars(o.difficulty)} · 📍 ${BIOMES[o.biome].icon||''} ${BIOMES[o.biome].name}</div>
-      <p>${o.desc}</p><p class="rw">🎁 +${o.rewardSouls} almas · +${o.rewardExp} XP · ouro</p></div>
+      <p>${o.desc}</p><p class="rw">🎁 +${o.rewardExp} XP · ouro</p></div>
       <div class="vb"><button class="pri" id="vm-go">ACEITAR MISSÃO</button><button id="vm-re">🔄 OUTRO PEDIDO</button><button id="vm-x">FECHAR</button></div></div>`;
       m.querySelector('#vm-go').onclick=()=>{ vilClose(); startMission(Object.assign({},o)); };
       m.querySelector('#vm-re').onclick=()=>{ vilOffer(id,true); vilOpen(id); };
@@ -6141,8 +6379,8 @@ function startEndless(){
   const _ew=endWave; endWave=function(){
     _ew.apply(this,arguments);
     const m=currentMission; if(!m||!m.endless||CAMP.on) return; const w=missionWave;
-    const s=6+w*3, g=3+w*2, x=20+w*8; player.souls+=s; player.gold+=g; gainExp(x); ENDLESS.best=Math.max(ENDLESS.best,w);
-    try{ floatMsg(`♾ Wave ${w} · +${s} almas · +${g} ouro · +${x} XP`,innerWidth/2,innerHeight*.4,'#c9a0ff'); }catch(e){}
+    const s=6+w*3, g=3+w*2, x=20+w*8; player.gold+=g; gainExp(x); ENDLESS.best=Math.max(ENDLESS.best,w);
+    try{ floatMsg(`♾ Wave ${w} · +${g} ouro · +${x} XP`,innerWidth/2,innerHeight*.4,'#c9a0ff'); }catch(e){}
   };
   const endRun=()=>{ const m=currentMission; if(!m||!m.endless) return; const w=Math.max(0,missionWave-(waveActive?1:0)); const rec=w>ENDLESS.best; ENDLESS.best=Math.max(ENDLESS.best,w); currentMission=null; missionWave=0;
     setTimeout(()=>{ try{ floatMsg(`♾ Você chegou à wave ${w}${rec?' — NOVO RECORDE!':' · recorde '+ENDLESS.best}`,innerWidth/2,innerHeight*.35,'#d4af37'); saveGame(); }catch(e){} },1200); };
@@ -6174,7 +6412,7 @@ function startEndless(){
       m.innerHTML=`<div class="vc"><div class="vh"><span class="vi">🏆</span><div><b>Parabéns!</b><small>FIM DA DEMO · ATO I</small></div></div>
       <p class="say">Você terminou a demo de <b>Zephyr — O Despertar do Necromante</b>.</p>
       <div class="offer"><h3>Mini endgame liberado</h3>
-      <p>🏘 <b>Vila de Eldrin</b> — fale com os moradores e aceite missões aleatórias, com recompensas de almas, XP e ouro.</p>
+      <p>🏘 <b>Vila de Eldrin</b> — fale com os moradores e aceite missões aleatórias, com recompensas de XP e ouro.</p>
       <p>♾ <b>Arena Infinita</b> — ondas sem fim, cada vez mais fortes. Bata o seu recorde de waves!</p>
       <p>⚔ Continue evoluindo o necromante, seus minions e habilidades. Os próximos atos estão a caminho.</p></div>
       <div class="vb"><button class="pri" id="vm-go">🏘 IR PARA A VILA</button><button id="vm-x">CONTINUAR NO MAPA</button></div></div>`;
@@ -6203,9 +6441,7 @@ showStoryMenu=function(){ try{ if(document.getElementById('hub-overlay').style.d
 // ═══════════════════════════════════════════════════════════
 MINION_DEFS.zombie.hp=130; MINION_DEFS.zombie.dmg=11;          // zumbi inicial mais resistente
 MINION_DEFS.zombie.spd=3.4; MINION_DEFS.skeleton.spd=3.8; MINION_DEFS.archer.spd=3.2; MINION_DEFS.specter.spd=4.6;   // minions mais rápidos que os inimigos comuns
-// no Ato I da campanha só o zumbi pode ser invocado
-['skeleton','archer','specter'].forEach(k=>{ const d=MINION_DEFS[k], base=d.unlockLv; Object.defineProperty(d,'unlockLv',{get(){ return CAMP.on&&!CAMP.cleared[4]?99:base; },configurable:true,enumerable:true}); });
-(function(){ const _sm=spawnMinion; spawnMinion=function(type){ if(CAMP.on&&!CAMP.cleared[4]&&type!=='zombie'&&type!=='abom'){ floatMsg('Só o Zumbi responde ao chamado neste Ato',innerWidth/2,innerHeight*.4,'#a855f7'); return null; } return _sm.apply(this,arguments); }; })();
+// Tipos de evocação agora são desbloqueados pelas árvores.
 
 const SW_COST={zombie:[0,20],skeleton:[15,30],archer:[15,30],specter:[30,45]};
 function swStats(key){
@@ -6609,7 +6845,7 @@ const ACTION_SKILLS={
   abom:{name:'Abominação',icon:'👹',summon:true,passive:'abom_slam',ability:'Salto com impacto',cooldown:8},
   archer:{name:'Esqueletos arqueiros',icon:'🏹',summon:true,passive:'archer_power',ability:'Tiro forte',cooldown:7},
   dash:{name:'Dash',icon:'➶',cost:0},barreira:{name:'Escudo de Carne',icon:'🛡',cost:15},
-  chuva:{name:'Chuva de Ossos',icon:'☄',cost:40},explosao:{name:'Explosão de Almas',icon:'✦',cost:60},empty:{name:'Vazio',icon:'+'}
+  chuva:{name:'Chuva de Ossos',icon:'☄',cost:40},explosao:{name:'Explosão Necrótica',icon:'✦',cost:60},empty:{name:'Vazio',icon:'+'}
 };
 let actionSelection=-1,actionSignature='',actionAvailabilitySignature='';
 const VILLAGE_ROUTE={on:false,completed:false,token:0};
@@ -6791,6 +7027,423 @@ function updateVillageRoute(dt){
 renderSummonSlots=function(){renderActionSlots();};
 buildSummonGrid=function(){buildActionManagement();};
 
+/* SKILL_TREE_RULES_BEGIN */
+// Embedded into necromancer-canvas.html by sync-skill-trees.js, before bootGame().
+// BuildModel is also embedded: the released game remains a standalone HTML file.
+const SKILL_TREE_VERSION=1;
+// Shared with the simulator through its source adapter. Keep pressure readable and dodgeable.
+const COMBAT_TUNING={boltMultiplier:.5,zombieBurstMultiplier:3.5,zombieBurstRadius:3.5,enemySpeed:1.15,meleeInterval:1.1,rangedInterval:1.3,specialDelayMin:.75,specialDelayMax:1.25,gearChance:.16,orbChance:.16,hpOrbShare:.25,specials:{Guerreiro:{windup:.5,cooldown:5},Arqueiro:{windup:.65,cooldown:5},'Mago Vivo':{windup:.75,cooldown:6.5},Bruto:{windup:.65,cooldown:6}}};
+const TREE_ACTIONS={bolt:'raio',rain:'chuva',wall:'maos',shield:'barreira',nova:'explosao',dash:'dash',zombie:'zombie',skeleton:'skeleton',archer:'archer',specter:'specter',abom:'abom',curse:'maldicao'};
+const TREE_PASSIVES={zombie_burst:'burst',archer_power:'shot',abom_slam:'colossus',aura:'aura'};
+let skillTreeTab='minions',skillTreeSelected='zombie';
+function skillRank(id){return player.skillRanks?.[id]||0;}
+function skillEffects(){return typeof EquipmentModel==='undefined'?BuildModel.effects(player.skillRanks||{}):EquipmentModel.effects(BuildModel,player.skillRanks||{},player.equipment).effects;}
+function skillGearStat(key){return typeof EquipmentModel==='undefined'?0:EquipmentModel.bonuses(player)[key]||0;}
+function skillEffect(key){return skillEffects()[key]||0;}
+function skillPercent(key){return 1+skillEffect(key)/100;}
+function skillState(){return {version:1,level:player.level,ranks:player.skillRanks||{}};}
+function skillBaseGrants(){return ['raio','dash'];}
+const SKILL_REFUND_GOLD_PER_POINT=20;
+function skillResetCost(ranks=player.skillRanks){return BuildModel.spent(ranks||{})*SKILL_REFUND_GOLD_PER_POINT;}
+function skillRefundQuote(id){const s={...skillState(),ranks:{...player.skillRanks}},points=BuildModel.refund(s,id);return {points,cost:points*SKILL_REFUND_GOLD_PER_POINT,ranks:s.ranks};}
+function skillPayRefund(cost){if((player.gold||0)<cost){floatMsg('Ouro insuficiente: precisa de '+cost+' ouro.',innerWidth/2,innerHeight*.4,'#d7a68e');return false;}player.gold-=cost;return true;}
+function skillTutorialComplete(){player.skillTutorialState='done';document.getElementById('skill-level-tutorial')?.remove();}
+function skillTutorialOpen(){
+ if(player.skillTutorialState!=='pending'||TITLE.active||COMIC.active)return;
+ if(document.getElementById('skill-level-tutorial'))return;
+ setPause(true);
+ const modal=document.createElement('div');modal.id='skill-level-tutorial';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','skill-tutorial-title');
+ modal.innerHTML='<section><small>SEU PRIMEIRO NÍVEL</small><h2 id="skill-tutorial-title">Três pontos. Seu primeiro caminho.</h2><p>Você ganhou <b>3 pontos de habilidade</b>. Abra o Grimório, escolha um símbolo em <b>Minions</b> ou <b>Profana</b> e use <b>+ Investir ponto</b>.</p><p>Depois, clique em um slot do HUD para equipar as habilidades aprendidas.</p><button class="btn primary">Abrir Grimório</button><button class="btn later">Depois</button></section>';
+ document.body.append(modal);
+ modal.querySelector('.primary').onclick=()=>{player.skillTutorialState='allocating';modal.remove();tPause('skills');};
+ modal.querySelector('.later').onclick=()=>{skillTutorialComplete();setPause(false);};
+ modal.querySelector('.primary').focus();setTimeout(()=>{if(modal.isConnected)modal.querySelector('.primary').focus();},40);
+ modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();skillTutorialComplete();setPause(false);}if(e.key==='Tab'){const buttons=[...modal.querySelectorAll('button')],index=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(index+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}});
+}
+function skillEquipTutorialQueue(action){
+ if(!action||!skillUnlocked(action)||player.actionLoadout.includes(action)||(player.skillEquipTutorialSeen||[]).includes(action))return false;
+ player.skillEquipTutorialPending=action;setTimeout(skillEquipTutorialOpen,0);return true;
+}
+function skillEquipTutorialDone(action){
+ player.skillEquipTutorialSeen=[...new Set([...(player.skillEquipTutorialSeen||[]),action])];
+ player.skillEquipTutorialPending=null;
+}
+function skillEquipTutorialOpen(){
+ const action=player.skillEquipTutorialPending;
+ if(!action||!skillUnlocked(action)||TITLE.active||COMIC.active||document.getElementById('skill-equip-tutorial'))return;
+ if(player.actionLoadout.includes(action)){skillEquipTutorialDone(action);return;}
+ const wasPaused=TITLE.paused;setPause(true);
+ const modal=document.createElement('div');modal.id='skill-equip-tutorial';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','skill-equip-title');
+ modal.innerHTML='<section><small>HABILIDADE DESBLOQUEADA</small><h2 id="skill-equip-title">'+ACTION_SKILLS[action].icon+' '+ACTION_SKILLS[action].name+'</h2><p><b>Aprender é o primeiro passo. Agora escolha onde usar.</b></p><ol><li>Escolha um dos seis slots abaixo.</li><li>Use a tecla indicada para ativar a habilidade.</li></ol><p class="equip-instruction">Você também pode trocar habilidades clicando nos slots do HUD durante o jogo. Uma evocação traz seu grupo ao ser equipada.</p><div class="equip-tutorial-slots"></div><p class="equip-tutorial-error" role="alert"></p><button class="btn equip-later">Alocar depois</button></section>';
+ const close=()=>{skillEquipTutorialDone(action);modal.remove();if(wasPaused)tPause('skills');else setPause(false);if(gameState==='hub'||CAMP.map)saveGame();};
+ player.actionLoadout.forEach((current,index)=>{
+  const b=document.createElement('button');b.className='btn equip-tutorial-slot'+(current==='empty'?' empty':'');b.innerHTML='<small>'+ACTION_KEYS[index]+'</small><b>Slot '+(index+1)+'</b><span>'+ACTION_SKILLS[current].name+'</span>';b.setAttribute('aria-label','Alocar '+ACTION_SKILLS[action].name+' no slot '+(index+1)+' · '+ACTION_KEYS[index]+(current==='empty'?' · vazio':' · substituir '+ACTION_SKILLS[current].name));
+  b.onclick=()=>{if(equipActionSkill(index,action))close();else modal.querySelector('.equip-tutorial-error').textContent='Não foi possível equipar neste slot. Confira a mana ou aguarde a recuperação do grupo atual.';};
+  modal.querySelector('.equip-tutorial-slots').append(b);
+ });
+ modal.querySelector('.equip-later').onclick=close;document.body.append(modal);
+ const firstSlot=modal.querySelector('.empty')||modal.querySelector('button');firstSlot.focus();setTimeout(()=>{if(modal.isConnected)firstSlot.focus();},40);
+ modal.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close();}if(e.key==='Tab'){const buttons=[...modal.querySelectorAll('button')],i=buttons.indexOf(document.activeElement);e.preventDefault();buttons[(i+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();}});
+}
+function skillUnlocked(id){return (player.skillGrants||[]).includes(id)||Object.entries(TREE_ACTIONS).some(([node,action])=>action===id&&skillRank(node)>0);}
+function skillMigrateSave(d){
+ if(typeof EquipmentModel!=='undefined')EquipmentModel.migrate(d,BuildModel);
+ const level=Math.max(1,Math.min(60,Math.floor(Number(d.level)||1))),legacy=d.skillTreeVersion!==SKILL_TREE_VERSION;
+ let ranks={};
+ if(!legacy){try{ranks=BuildModel.validate({version:1,level,ranks:d.skillRanks}).ranks;}catch(e){ranks={};}}
+ const grants=skillBaseGrants();
+ d.skillTutorialState=['pending','allocating','done'].includes(d.skillTutorialState)?d.skillTutorialState:level>=2?'done':'new';
+ const oldHp=d.maxHp||100,oldMp=d.maxMp||80;
+ Object.assign(d,{level,skillTreeVersion:SKILL_TREE_VERSION,skillRanks:ranks,skillGrants:grants,souls:0,skillPoints:BuildModel.budget(level)-BuildModel.spent(ranks),upgradeCount:{},minionUpgradeCount:{},spellUpgradeCount:{},minionHpBonus:0,minionDmgBonus:0,minionRegenBonus:0});
+ const effects=typeof EquipmentModel==='undefined'?BuildModel.effects(ranks):EquipmentModel.effects(BuildModel,ranks,d.equipment).effects;
+ const gear=typeof EquipmentModel==='undefined'?{}:EquipmentModel.bonuses(d);
+ d.maxHp=Math.round((100+10*(level-1))*(1+(effects['Vida de Zephyr']||0)/100)+(gear.hp||0));
+ d.maxMp=Math.round((80+5*(level-1))*(1+(effects['Mana máxima']||0)/100)+(gear.mp||0));
+ d.hp=Math.max(1,Math.min(d.maxHp,Math.round((d.hp??oldHp)/oldHp*d.maxHp)));
+ d.mp=Math.max(0,Math.min(d.maxMp,Math.round((d.mp??oldMp)/oldMp*d.maxMp)));
+ d.spellDmg=Math.round((40+4*(level-1))*(1+(gear.spell||0)/100));d.spellRadius=2.5;d.mpRegen=(4+.3*(level-1))*(1+(effects['Regeneração de mana']||0)/100)+(gear.regen||0);d.hpRegen=.2*(level-1);
+ d.learnedSkills=[...new Set([...grants,...Object.entries(TREE_ACTIONS).filter(([node])=>ranks[node]).map(([,action])=>action),...Object.keys(ranks)])];
+ d.skillEquipTutorialSeen=Array.isArray(d.skillEquipTutorialSeen)?[...new Set(d.skillEquipTutorialSeen.filter(id=>Object.values(TREE_ACTIONS).includes(id)))]:[];
+ const allowed=id=>id==='empty'||d.learnedSkills.includes(id);
+ d.actionLoadout=(Array.isArray(d.actionLoadout)&&d.actionLoadout.length===6?d.actionLoadout:['raio','empty','dash','empty','empty','empty']).map(id=>allowed(id)&&ACTION_SKILLS[id]?id:'empty');
+ d.skillEquipTutorialPending=d.learnedSkills.includes(d.skillEquipTutorialPending)&&!d.actionLoadout.includes(d.skillEquipTutorialPending)&&!d.skillEquipTutorialSeen.includes(d.skillEquipTutorialPending)?d.skillEquipTutorialPending:null;
+ if(!allowed(d.activeSpell))d.activeSpell='raio';
+ // Preserve cooldowns and unavailable members of retained groups, discard removed types.
+ const minionAllowed=type=>d.learnedSkills.includes(type);
+ d.summonLoadout=(d.summonLoadout||[]).map(type=>minionAllowed(type)?type:null);
+ d.summonGroups=(d.summonGroups||[]).filter(group=>minionAllowed(group.type));
+ d.summonReserve=(d.summonReserve||[]).filter(group=>minionAllowed(group.type));
+ d.minionTypes=(d.minionTypes||[]).filter(minionAllowed);
+ return d;
+}
+function skillMinionStats(type){
+ const def=MINION_DEFS[type],e=skillEffects(),flesh=type==='zombie'||type==='abom',bone=type==='skeleton'||type==='archer';
+ let hp=flesh?(e['Vida de Zumbis e Abominações']||0):bone?(e['Vida de Esqueletos e Arqueiros']||0):(e['Vida dos Espectros']||0);
+ let damage=flesh?(e['Dano de Zumbis e Abominações']||0):bone?(e['Dano de Esqueletos e Arqueiros']||0):(e['Dano dos Espectros']||0);
+ if(type==='abom'){hp+=e['Vida da Abominação']||0;damage+=e['Dano da Abominação']||0;}
+ if(type==='skeleton')hp+=e['Vida dos Guerreiros']||0;
+ if(type==='archer')damage+=e['Dano dos Arqueiros']||0;
+ hp+=skillGearStat('hordeHp');damage+=skillGearStat('horde');
+ return {hp:Math.round(def.hp*(1+hp/100)),dmg:Math.round((def.dmg+player.level-1)*(1+damage/100)),baseDmg:def.dmg+player.level-1,damageBonus:damage,spd:def.spd,regen:0,rng:def.atkR};
+}
+function skillApplyMinion(m){
+ const stats=skillMinionStats(m.type),ratio=m.maxHp?m.hp/m.maxHp:1;
+ m.maxHp=stats.hp;m.hp=m.dead?0:Math.min(stats.hp,Math.max(1,Math.round(stats.hp*ratio)));m.dmg=stats.dmg;m.spd=stats.spd;m.hpRegen=stats.regen;m.atkR=stats.rng;m.lifeDrain=false;
+ m.reviveReduce=m.type==='specter'?MINION_REVIVE_TIME*(-skillEffect('Tempo de renascimento dos Espectros'))/100:0;
+}
+function skillSync(recalculate=true){
+ player.skillRanks=player.skillRanks||{};player.skillGrants=skillBaseGrants();player.skillTreeVersion=SKILL_TREE_VERSION;player.souls=0;
+ player.skillPoints=Math.max(0,BuildModel.budget(player.level)-BuildModel.spent(player.skillRanks));
+ player.learnedSkills=new Set([...player.skillGrants,...Object.entries(TREE_ACTIONS).filter(([node])=>skillRank(node)).map(([,action])=>action),...Object.keys(player.skillRanks)]);
+ if(recalculate){
+  const hpRatio=player.hp/player.maxHp,mpRatio=player.mp/player.maxMp;
+  player.maxHp=Math.round((100+10*(player.level-1))*skillPercent('Vida de Zephyr')+skillGearStat('hp'));player.maxMp=Math.round((80+5*(player.level-1))*skillPercent('Mana máxima')+skillGearStat('mp'));
+  player.hp=Math.min(player.maxHp,Math.max(1,Math.round(player.maxHp*hpRatio)));player.mp=Math.min(player.maxMp,Math.max(0,Math.round(player.maxMp*mpRatio)));
+  player.spellDmg=Math.round((40+4*(player.level-1))*(1+skillGearStat('spell')/100));player.mpRegen=(4+.3*(player.level-1))*skillPercent('Regeneração de mana')+skillGearStat('regen');player.hpRegen=.2*(player.level-1);
+  minionHpBonus=0;minionDmgBonus=0;minionRegenBonus=0;
+  player.upgradeCount={};player.minionUpgradeCount={};player.spellUpgradeCount={};minions.forEach(skillApplyMinion);
+ }
+ const pts=document.getElementById('sp-pts-txt');if(pts)pts.textContent=`✦ ${player.skillPoints} pts`;
+ actionSignature='';actionAvailabilitySignature='';summonSlotsSignature='';_mpSig='';
+}
+function skillCanRefund(){return (gameState==='hub'||CAMP.map)&&!minions.some(m=>m.exploded||m.sacrificed);}
+function skillRefresh(){skillSync();syncSummonProgress();reconcileActionSummons();updateHUD();updateMinionPanel();buildSkillTree();const footer=document.querySelector?.('.pm:has(.live-grimoire) .pmside>.section-note');if(footer)footer.textContent=(player.gold||0)+' ouro · '+player.skillPoints+' pontos';if(gameState==='hub'||CAMP.map)saveGame();}
+function skillInvest(id){
+ try{const action=TREE_ACTIONS[id],wasUnlocked=action&&skillUnlocked(action),s=skillState();BuildModel.invest(s,id);player.skillRanks=s.ranks;if(player.skillTutorialState==='allocating'&&BuildModel.spent(s.ranks)>=3)skillTutorialComplete();if(action&&!wasUnlocked)skillEquipTutorialQueue(action);skillRefresh();playSound('levelUp');}
+ catch(e){floatMsg(e.message,innerWidth/2,innerHeight*.4,'#d7a68e');}
+}
+function skillRefund(id){
+ if(!skillCanRefund()){floatMsg('Redistribua na vila ou no mapa, após os aliados se recuperarem.',innerWidth/2,innerHeight*.4,'#d7a68e');return;}
+ const quote=skillRefundQuote(id);if(!quote.points||!skillPayRefund(quote.cost))return;player.skillRanks=quote.ranks;skillRemoveUnavailable();skillRefresh();
+}
+function skillRemoveUnavailable(){
+ skillSync();
+ for(const i of unlockedSummonIndices())if(player.summonLoadout[i]&&!skillUnlocked(player.summonLoadout[i])){
+  slotMembers(i).forEach(m=>scene.remove(m.mesh));minions=minions.filter(m=>m.summonSlot!==i);player.summonLoadout[i]=null;
+ }
+ player.summonReserve=player.summonReserve.filter(g=>skillUnlocked(g.type));
+ player.actionLoadout=player.actionLoadout.map(id=>id==='empty'||skillUnlocked(id)?id:'empty');
+ if(!skillUnlocked(player.activeSpell))player.activeSpell='raio';
+}
+function skillDamage(m,commandBonus=0){
+ const stats=skillMinionStats(m.type),aura=Math.hypot(m.x-P.x,m.y-P.y)<=LEASH_DIST?skillEffect('Dano da horda próxima'):0;
+ return stats.baseDmg*(1+(stats.damageBonus+aura+commandBonus)/100);
+}
+function skillCastCurse(x,y){
+ if(!skillUnlocked('maldicao')||!abilityReady('maldicao',25))return false;
+ if(!Number.isFinite(x)||!Number.isFinite(y)||Math.hypot(x-P.x,y-P.y)>9)return false;
+ player.mp-=25;player.spellCooldowns.maldicao=8;
+ enemies.forEach(e=>{if(e.dead||Math.hypot(e.x-x,e.y-y)>4)return;e._uncursedDmg=e._uncursedDmg??e.dmg;e.dmg=e._uncursedDmg*(1-skillEffect('Redução de dano da Maldição')/100);e.skillCurseT=6;});
+ ring(x,y,4,'#b69ad2',1);castAnim(x,y,'#b69ad2');playSound('raio');updateHUD();return true;
+}
+function skillWallAbsorb(sh,x,y){
+ const wall=handsAreas.find(w=>{const q=wallNearest(w,x,y);return Math.hypot(q.x-x,q.y-y)<w.width/2+.3;});
+ if(wall){wall.hp=(wall.hp??160)-sh.dmg;if(wall.hp<=0){wall.life=0;handsAreas=handsAreas.filter(w=>w.life>0);}}
+}
+
+// Install the new progression and combat rules before the game loads a save.
+(function installSkillTrees(){
+ player.skillRanks={};player.skillGrants=skillBaseGrants();player.skillTreeVersion=1;player.skillTutorialState='new';player.skillEquipTutorialSeen=[];player.skillEquipTutorialPending=null;
+ player.actionLoadout=['raio','empty','dash','empty','empty','empty'];player.summonLoadout=Array(7).fill(null);
+ ACTION_SKILLS.explosao.name='Explosão Necrótica';
+ ACTION_SKILLS.skeleton={name:'Esqueletos Guerreiros',icon:'⚔',summon:true,passive:'skeleton',ability:'Reunir',cooldown:4};
+ ACTION_SKILLS.specter={name:'Espectros',icon:'👻',summon:true,passive:'step',ability:'Passo Espectral',cooldown:8};
+ ACTION_SKILLS.maldicao={name:'Maldição da Fraqueza',icon:'☽',cost:25};
+ Object.assign(player.minionSkillCooldowns,{skeleton:0,specter:0});
+ // These compatibility names are consulted by the existing command dispatcher.
+ hasPassive=function(id){return !!skillRank(TREE_PASSIVES[id]||id);};
+ minionBonus=function(){return 0;};
+ spellBonus=function(spell,id){
+  // The old projectile adds this bridge to spellDmg; scale the complete hit, including bonuses.
+  if(id==='raio_d')return player.spellDmg*COMBAT_TUNING.boltMultiplier*skillPercent('Dano do Tiro de Osso')-player.spellDmg;
+  if(id==='raio_s')return skillEffect('Alvos perfurados adicionais')*.3;
+  if(id==='chuva_d')return player.spellDmg*.7*skillEffect('Dano da Chuva de Ossos')/100;
+  if(id==='exp_d')return player.spellDmg*2.5*(skillEffect('Dano da Explosão Necrótica')+skillEffect('Dano das explosões de Zumbi e Necrótica'))/100;
+  return 0;
+ };
+ swStats=skillMinionStats;
+ summonAvailable=function(){return true;};
+ summonTypeAvailable=function(type){return !!MINION_DEFS[type]&&skillUnlocked(type);};
+ summonGroupSize=function(type){const e=skillEffects();return type==='zombie'?3+(e['Zumbis adicionais']||0):type==='skeleton'?3+(e['Guerreiros adicionais']||0):type==='archer'?2+(e['Arqueiros adicionais']||0):type==='specter'?2+(e['Espectros adicionais']||0):1;};
+ for(const cost of Object.values(SW_COST))cost[0]=0;
+ const spawn=spawnMinion;spawnMinion=function(type,fromField){if(!skillUnlocked(type))return null;const m=spawn(type,fromField);if(m){skillApplyMinion(m);_mpSig='';updateMinionPanel();}return m;};
+ const load=loadGame;loadGame=function(){const ok=load();if(ok){skillSync();skillRemoveUnavailable();minions.forEach(skillApplyMinion);if(player.skillEquipTutorialPending)setTimeout(skillEquipTutorialOpen,0);}return ok;};
+ gainSouls=function(){};spawnSoulOrb=function(){};
+ onLevelUp=function(){
+  const oldHp=player.hp,oldMp=player.mp;skillSync();player.hp=Math.min(player.maxHp,oldHp+20);player.mp=Math.min(player.maxMp,oldMp+5);player.maxSp+=10;
+  syncSummonProgress();renderSummonSlots();document.getElementById('level-txt').textContent=`NV. ${player.level}`;
+  playSound('levelUp');showOverlay(`NÍVEL ${player.level}!`,'+3 pontos · Minions e Profana','#d4af37');updateHUD();
+  if(player.level===2&&player.skillTutorialState==='new'){player.skillTutorialState='pending';setTimeout(skillTutorialOpen,0);}
+ };
+ gainExp=function(v){if(player.level>=60)return;player.exp+=v;while(player.level<60&&player.exp>=player.expNext){player.exp-=player.expNext;player.level++;player.expNext=Math.floor(100*Math.pow(1.4,player.level-1));onLevelUp();}if(player.level===60)player.exp=0;updateHUD();};
+ campGrant=function(){CAMP.summon=true;campSyncSlots();return false;};
+ const newChar=campNewChar;campNewChar=function(){newChar();CAMP.summon=true;player.skillRanks={};player.skillGrants=skillBaseGrants();player.skillTutorialState='new';player.skillEquipTutorialSeen=[];player.skillEquipTutorialPending=null;player.summonLoadout=Array(7).fill(null);skillSync();};
+ const syncCampaign=campSyncSlots;campSyncSlots=function(){CAMP.summon=true;syncCampaign();};
+ if(typeof TUT_DEFS!=='undefined'){
+  TUT_DEFS[1]=TUT_DEFS[1].map(s=>s.ev==='pause'?{...s,t:'Abra o Grimório pelo contador de pontos do HUD ou por ESC → Habilidades.'}:s);
+  TUT_DEFS[2]=TUT_DEFS[2].filter(s=>s.ev!=='summon');
+  TUT_DEFS[3]=TUT_DEFS[3].filter(s=>s.ev!=='maos');TUT_DEFS[4]=TUT_DEFS[4].filter(s=>s.ev!=='barrier');
+ }
+ const castWall=castHands;castHands=function(x,y){const before=handsAreas.length;castWall(x,y);if(handsAreas.length>before){const wall=handsAreas[handsAreas.length-1];wall.life=5*skillPercent('Duração da Muralha');wall.hp=160*skillPercent('Resistência da Muralha');}};
+ const rain=castChuva;castChuva=function(x,y){if(!abilityReady('chuva',40)||!Number.isFinite(x)||!Number.isFinite(y)||Math.hypot(x-P.x,y-P.y)>9)return;const radius=player.spellRadius;player.spellRadius=radius*Math.sqrt(skillPercent('Área da Chuva de Ossos'));rain(x,y);player.spellRadius=radius;player.spellCooldowns.chuva=5;};
+ const nova=castExplosao;castExplosao=function(x,y){if(!abilityReady('explosao',60)||!Number.isFinite(x)||!Number.isFinite(y)||Math.hypot(x-P.x,y-P.y)>9)return;nova(x,y);player.spellCooldowns.explosao=8;};
+ const barrier=castBarrier;castBarrier=function(){const mp=player.mp;barrier();if(player.mp<mp){player.barrier=Math.round(player.barrier*skillPercent('Absorção do Escudo de Carne'));player.barrierMax=player.barrier;}};
+ const dash=castDash;castDash=function(){const ok=dash();if(ok){playerDash.cd=3*skillPercent('Recarga do Dash');if(skillRank('veil'))player.skillVeilT=.18+skillPercent('Duração da proteção após Dash');}return ok;};
+ const damage=dealDamageToPlayer;dealDamageToPlayer=function(v){damage(v*((player.skillVeilT||0)>0?.75:1));};
+ const kill=killMinion;killMinion=function(m){if(m.dead)return;if(!m.sacrificed&&!m.exploded&&skillRank('pact'))player.hp=Math.min(player.maxHp,player.hp+player.maxHp*skillEffect('Vida máxima recuperada por morte de aliado')/100);kill(m);};
+ const enemyDeath=killEnemy;killEnemy=function(e,x,y){if(e.dead)return;if(!e.dummy){const amount=Math.max(2,Math.round((e.xp||10)*.35))*(e.isBoss?3:1);droppedItems.push({mesh:mkMesh2(x,y),type:'gold',amount,life:45,t:0});}return enemyDeath(e,x,y);};
+ const pickup=checkPickups;checkPickups=function(dt){
+  for(let i=droppedItems.length-1;i>=0;i--){const item=droppedItems[i];if(item.type!=='gold')continue;if(Math.hypot(item.mesh.position.x-P.x,item.mesh.position.z-P.y)<1.8){player.gold+=item.amount;droppedItems.splice(i,1);playSound('pickupMp');floatMsg('+'+item.amount+' ouro',innerWidth/2,innerHeight*.47,'#e2c46d');updateHUD();}}
+  // The original collector handles only potions. Gold keeps its own lifetime and pickup radius.
+  const gold=droppedItems.filter(i=>i.type==='gold');droppedItems=droppedItems.filter(i=>i.type!=='gold');pickup(dt);gold.forEach(i=>{i.life-=dt;i.t+=dt;if(i.life>0)droppedItems.push(i);});
+ };
+ const strike=minionStrike;minionStrike=function(m,target){const base=m.dmg,oldHp=Math.max(0,target.hp);m.dmg=Math.round(skillDamage(m));strike(m,target);m.dmg=base;
+  if(m.type==='specter'&&skillRank('drain')){const healed=Math.min(m.maxHp-m.hp,Math.max(0,oldHp-Math.max(0,target.hp))*skillEffect('Roubo de vida dos Espectros')/100);m.hp+=healed;player.hp=Math.min(player.maxHp,player.hp+healed*skillEffect('Cura compartilhada com Zephyr')/100);}
+ };
+ actionSkillAvailable=function(id){return !!ACTION_SKILLS[id]&&(id==='empty'||(ACTION_SKILLS[id].summon?summonTypeAvailable(id):skillUnlocked(id)));};
+ const activate=activateActionSlot;activateActionSlot=function(i,x,y){if(player.actionLoadout[i]==='maldicao'){if(TITLE.active||TITLE.paused||COMIC.active||CAMP.map||summonWheelOpen||P.deadT>0)return false;const aim=screenToWorld(mouse.x,mouse.y);return skillCastCurse(x??aim.x,y??aim.z);}return activate(i,x,y);};
+ activateSummonSkill=function(type,x,y){
+  const skill=ACTION_SKILLS[type];if(!hasPassive(skill.passive)){floatMsg('Aprenda '+skill.ability+' na árvore',innerWidth/2,innerHeight*.4,'#bdc79f');return false;}
+  if((player.minionSkillCooldowns[type]||0)>0)return false;
+  const group=actionGroup(type).filter(m=>!m.dead);if(!group.length)return false;
+  if(type==='zombie'){
+   const z=group.slice().sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0],px=z.x,py=z.y,damage=skillDamage(z,skillEffect('Dano da explosão de Zumbi')+skillEffect('Dano das explosões de Zumbi e Necrótica'))*COMBAT_TUNING.zombieBurstMultiplier,radius=COMBAT_TUNING.zombieBurstRadius;
+   z.exploded=true;killMinion(z);enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-px,e.y-py)<=radius)dealDamageToEnemy(e,Math.round(damage));});ring(px,py,radius,'#99c46a',.6);burst(px,py,'#9dbf68',26,3);
+  }else if(type==='archer'){
+   const target=localMinionTarget(x,y,necroGroup.position);if(!target)return false;
+   for(const m of group){const dx=target.x-m.x,dy=target.y-m.y,d=Math.hypot(dx,dy)||1;eshots.push({friendly:true,locked:true,strong:true,x:m.x,y:m.y,vx:dx/d*18,vy:dy/d*18,dmg:Math.round(skillDamage(m,skillEffect('Dano do Tiro Sepulcral'))*1.9),kind:'arrow',life:1.3,z:1.1});m.swing=.28;}
+  }else if(type==='abom'){
+   const m=group[0],target=localMinionTarget(x,y,necroGroup.position);let tx=target?target.x:x,ty=target?target.y:y;
+   let dx=tx-P.x,dy=ty-P.y,d=Math.hypot(dx,dy)||1;if(d>LEASH_DIST){tx=P.x+dx/d*LEASH_DIST;ty=P.y+dy/d*LEASH_DIST;}dx=tx-m.x;dy=ty-m.y;d=Math.hypot(dx,dy)||1;if(d>7){tx=m.x+dx/d*7;ty=m.y+dy/d*7;}
+   const q=clampMobLanding(tx,ty,{type:{sc:1.3}});m.allyLeap={sx:m.x,sy:m.y,x:q.x,y:q.y,time:0};m.target=null;
+  }else if(type==='specter'){
+   const dx=x-P.x,dy=y-P.y,d=Math.hypot(dx,dy)||1,cx=P.x+dx/d*Math.min(d,6),cy=P.y+dy/d*Math.min(d,6);
+   group.forEach((m,i)=>{const a=i*Math.PI*2/group.length,q=clampMobLanding(cx+Math.cos(a),cy+Math.sin(a),{type:{sc:1}});m.x=q.x;m.y=q.y;m.target=null;ring(m.x,m.y,.7,'#b6c4ec',.5);});
+  }else if(type==='skeleton'){minionCommand={type:'rally',x:P.x,z:P.y,timer:14};placeCommandMarker(P.x,P.y,'rally');}
+  player.minionSkillCooldowns[type]=skill.cooldown*(type==='specter'?skillPercent('Recarga do Passo Espectral'):1);return true;
+ };
+ updateAllyLeap=function(m,dt){const a=m.allyLeap;if(!a)return false;a.time+=dt;const k=Math.min(1,a.time/.45);m.x=a.sx+(a.x-a.sx)*k;m.y=a.sy+(a.y-a.sy)*k;m.jumpZ=Math.sin(k*Math.PI)*2.6;if(k>=1){m.jumpZ=0;m.allyLeap=null;enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-m.x,e.y-m.y)<=3)dealDamageToEnemy(e,Math.round(skillDamage(m,skillEffect('Dano do Salto Devastador'))*2.2));});ring(m.x,m.y,3,'#aac679',.6);burst(m.x,m.y,'#a7c98a',25,3);}return true;};
+ const tick=updateActionSystem;updateActionSystem=function(dt){tick(dt);if(player.skillTutorialState==='pending')skillTutorialOpen();player.skillVeilT=Math.max(0,(player.skillVeilT||0)-dt);for(const id of ['skeleton','specter'])player.minionSkillCooldowns[id]=Math.max(0,(player.minionSkillCooldowns[id]||0)-dt);for(const id of ['chuva','explosao','maldicao'])player.spellCooldowns[id]=Math.max(0,(player.spellCooldowns[id]||0)-dt);enemies.forEach(e=>{if(e.skillCurseT>0){e.skillCurseT-=dt;if(e.skillCurseT<=0){e.dmg=e._uncursedDmg;delete e._uncursedDmg;}}});};
+ buildUpgradeGrid=function(){document.getElementById('upgrade-grid').innerHTML='';};
+ buildMinionUpgradeGrid=function(){const el=document.getElementById('minion-upgrade-grid');if(el)el.innerHTML='';};
+ buildSpellUpgradesSection=function(){const el=document.getElementById('spell-upgrades-section');if(el)el.innerHTML='';};
+ const hub=showHubOverlay;showHubOverlay=function(tab){return hub(tab==='upgrades'||tab==='minions'?'skills':tab);};
+ const selectTab=showTab;showTab=function(id,button){return selectTab(id==='upgrades'||id==='minions'?'skills':id,button);};
+ buyUpgrade=buyMinionUpgrade=buySpellUpgrade=function(){return false;};
+ fuseZombies=function(){floatMsg('Abominação é desbloqueada no ramo dos Zumbis.',innerWidth/2,innerHeight*.4,'#bdc79f');return null;};
+ learnSkill=skillInvest;unlearnSkill=skillRefund;
+ respecAllSkills=function(){if(!skillCanRefund()){floatMsg('Redistribua na vila ou no mapa após a recuperação dos aliados.',innerWidth/2,innerHeight*.4,'#d7a68e');return;}const cost=skillResetCost();if(!cost||!skillPayRefund(cost))return;player.skillRanks={};skillRemoveUnavailable();skillRefresh();};
+ MANAGEMENT_INFO.upgrades[1]='Atributos e equipamentos de Zephyr.';MANAGEMENT_INFO.skills[1]='Minions e Profana · bifurcações, sinergias e 3 pontos por nível.';
+ const pointButton=document.getElementById('sp-pts-txt');
+ if(pointButton?.setAttribute){
+  pointButton.setAttribute('role','button');pointButton.setAttribute('tabindex','0');pointButton.title='Abrir árvores de habilidades: Minions e Profana';
+  const open=()=>{if(TITLE.active||COMIC.active||CAMP.map)return;setPause(true);tPause('skills');};
+  pointButton.onclick=open;pointButton.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();open();}});
+ }
+ skillSync();
+})();
+
+function buildSkillTree(){
+ const container=document.getElementById('skill-tree');if(!container)return;container.innerHTML='';
+ const shell=document.createElement('div');shell.className='live-grimoire';container.append(shell);
+ shell.innerHTML=`<div class="lg-heading"><div><small>O LEGADO DE ZEPHYR</small><h2>Grimório dos Mortos</h2></div><div><b>${player.skillPoints}</b> pontos disponíveis<small>3 pontos por nível · nível ${player.level}</small></div></div><div class="lg-toolbar"><div class="lg-tabs" role="tablist" aria-label="Árvore de habilidades"><button data-tree="minions" role="tab" aria-selected="${skillTreeTab==='minions'}">☠ Minions</button><button data-tree="spells" role="tab" aria-selected="${skillTreeTab==='spells'}">✧ Profana</button></div><button class="btn lg-reset">Redistribuir pontos</button></div><div class="lg-layout"><div class="lg-schools"></div><section class="lg-detail" aria-live="polite"></section></div><p class="lg-note">Linhas: pré-requisitos · Diamantes: especializações finais exclusivas · Sinergias somam pontos diretos.</p>`;
+ shell.classList.toggle('profana',skillTreeTab==='spells');
+ shell.querySelectorAll('[data-tree]').forEach(b=>b.onclick=()=>{skillTreeTab=b.dataset.tree;skillTreeSelected=BuildModel.nodes.find(n=>n.tree===skillTreeTab).id;buildSkillTree();});
+ const reset=shell.querySelector('.lg-reset'),resetCost=skillResetCost();reset.textContent='Redistribuir · '+resetCost+' ouro';reset.disabled=!resetCost||!skillCanRefund()||(player.gold||0)<resetCost;reset.title='20 ouro por ponto devolvido · Seu ouro: '+(player.gold||0);reset.onclick=respecAllSkills;
+ const balance=document.createElement('span');balance.className='lg-gold';balance.textContent='🪙 '+(player.gold||0)+' ouro';shell.querySelector('.lg-toolbar').append(balance);
+ if(player.skillTutorialState==='allocating'){
+  const guide=document.createElement('div');guide.className='lg-tutorial-guide';guide.setAttribute('role','status');guide.textContent='Seus primeiros pontos: selecione um símbolo e clique em + Investir ponto. Distribuídos: '+Math.min(3,BuildModel.spent(player.skillRanks))+'/3. Você pode misturar Minions e Profana.';shell.querySelector('.lg-toolbar').after(guide);
+ }
+ const positions=[[50,8],[23,104],[77,104],[23,200],[77,200],[23,296],[77,296]];
+ for(const school of BuildModel.schools.filter(s=>s.tree===skillTreeTab)){
+  const section=document.createElement('section');section.className='lg-school';section.innerHTML=`<h3>${school.name}</h3><div class="lg-paths"><span>${school.paths[0]}</span><span>${school.paths[1]}</span></div><div class="lg-graph"></div>`;
+  const graph=section.querySelector('.lg-graph'),list=BuildModel.nodes.filter(n=>n.school===school.id),svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 100 390');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
+  list.forEach((n,i)=>{if(!n.requires)return;const p=list.findIndex(x=>x.id===n.requires),[x,y]=positions[i],[px,py]=positions[p],path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',`M ${px} ${py+82} V ${y-8} H ${x} V ${y}`);if(skillRank(n.id))path.classList.add('learned');svg.append(path);});graph.append(svg);
+  list.forEach((n,i)=>{const b=document.createElement('button'),rank=skillRank(n.id),blocked=BuildModel.reason(n,player.skillRanks,player.level);b.className='lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(n.max===1?' final':'')+(n.id===skillTreeSelected?' selected':'');b.style.left=positions[i][0]+'%';b.style.top=positions[i][1]+'px';b.setAttribute('aria-label',n.name+', '+rank+' de '+n.max+' pontos');b.setAttribute('aria-pressed',String(n.id===skillTreeSelected));b.innerHTML=`<span class="lg-seal"><i>${n.icon}</i><em>${rank}/${n.max}</em></span><span>${n.name}</span>`;b.onclick=()=>{skillTreeSelected=n.id;buildSkillTree();};graph.append(b);});shell.querySelector('.lg-schools').append(section);
+ }
+ const n=BuildModel.byId[skillTreeSelected],rank=skillRank(n.id),error=BuildModel.reason(n,player.skillRanks,player.level),detail=shell.querySelector('.lg-detail'),e=skillEffects();
+ detail.innerHTML=`<small>${skillTreeTab==='minions'?'MINIONS':'PROFANA'} · ${BuildModel.schools.find(s=>s.id===n.school).name}</small><h3>${n.icon} ${n.name}</h3><b>${rank}/${n.max} pontos</b><p>${n.description}</p><div class="lg-requirement">${error||`Nível ${n.level}${n.requires?' · 2 pontos em '+BuildModel.byId[n.requires].name:''}`}</div>${TREE_ACTIONS[n.id]&&(player.skillGrants||[]).includes(TREE_ACTIONS[n.id])?'<p class="lg-note">Habilidade base já disponível. Investir aprimora e abre os próximos nós.</p>':''}${n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+BuildModel.byId[n.exclusive].name+'.</p>':''}<h4>Por ponto investido</h4><ul>${Object.entries(n.effects).map(([k,v])=>`<li>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'} ${k.toLowerCase()}</li>`).join('')}</ul><div class="lg-invest"><button class="btn invest">+ Investir ponto</button><button class="btn refund">−</button></div><h4>Sinergias da build</h4><div class="lg-bonuses">${Object.entries(e).map(([k,v])=>`<div><span>${k}</span><b>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'}</b></div>`).join('')||'Invista pontos para fortalecer sua build.'}</div><p class="lg-note">Bônus para habilidades ainda não aprendidas ficam dormentes. Redistribuição apenas na vila ou no mapa, sem aliados em recuperação.</p>`;
+ const invest=detail.querySelector('.invest');invest.disabled=!!error||rank>=n.max||player.skillPoints<=0;invest.onclick=()=>skillInvest(n.id);
+ const refund=detail.querySelector('.refund'),quote=skillRefundQuote(n.id);refund.disabled=!rank||!skillCanRefund()||(player.gold||0)<quote.cost;refund.setAttribute('aria-label','Devolver ponto de '+n.name+' por '+quote.cost+' ouro');refund.title='Devolve '+quote.points+' ponto(s), incluindo dependentes · '+quote.cost+' ouro';refund.onclick=()=>skillRefund(n.id);
+ if(rank){const price=document.createElement('p');price.className='lg-note';price.textContent='Devolver este ponto e dependentes: '+quote.cost+' ouro ('+quote.points+' pontos).';detail.querySelector('.lg-invest').after(price);}
+ const bonus=detail.querySelector('.lg-bonuses'),bonusTitle=bonus.previousElementSibling,fold=document.createElement('details');fold.className='lg-bonus-fold';fold.innerHTML='<summary>Bônus acumulados da build</summary>';bonusTitle.replaceWith(fold);fold.append(bonus);
+ const action=TREE_ACTIONS[n.id];if(action&&skillUnlocked(action)&&!player.actionLoadout.includes(action)){
+  const equip=document.createElement('button');equip.className='btn lg-equip-help';equip.textContent='Alocar em um slot';equip.onclick=()=>{player.skillEquipTutorialPending=action;skillEquipTutorialOpen();};detail.querySelector('.lg-invest').after(equip);
+ }
+}
+
+/* SKILL_TREE_RULES_END */
+/* EQUIPMENT_RULES_BEGIN */
+// Embedded after the skill rules, before bootGame(). Source of runtime equipment integration.
+let gearSelected=null,gearShopType='staff',gearSerial=0,gearNoticeAt=0;
+const gearVillage=()=>gameState==='hub'&&!CAMP.on;
+const gearBonus=key=>EquipmentModel.bonuses(player)[key]||0;
+function gearEnsure(){player.equipment||={};player.gearBag||=[];player.waveProgress||=EquipmentModel.progress();}
+function gearName(item){return EquipmentModel.slots[item.type].name+' '+EquipmentModel.rarities[item.rarity].name;}
+function gearCurrentWave(){return EquipmentModel.waveNumber(currentMission?.endless?wave:CAMP.on?CAMP.stage:currentMission?.difficulty||1);}
+function gearRefresh(){
+ const hp=player.hp/player.maxHp,mp=player.mp/player.maxMp,allies=minions.map(m=>({m,hp:m.hp/maxHpSafe(m)}));
+ skillSync();player.hp=hp<=0?0:Math.max(1,Math.floor(player.maxHp*hp+1e-8));player.mp=Math.max(0,Math.floor(player.maxMp*mp+1e-8));
+ for(const {m,hp:ratio}of allies)m.hp=m.dead?0:Math.max(1,Math.floor(m.maxHp*ratio+1e-8));
+ updateHUD();updateMinionPanel();buildSkillTree();saveGame();
+}
+function maxHpSafe(m){return Math.max(1,m.maxHp||1);}
+function gearEquip(id,slot){
+ gearEnsure();const index=player.gearBag.findIndex(i=>i.id===id),item=player.gearBag[index];if(!item||!EquipmentModel.slots[slot])return false;
+ if(item.type!==slot&&!(item.type.startsWith('ring')&&slot.startsWith('ring')))return false;
+ const old=player.equipment[slot];player.gearBag.splice(index,1);if(old)player.gearBag.push(old);player.equipment[slot]=item;gearSelected={slot};gearRefresh();return true;
+}
+function gearUnequip(slot){gearEnsure();if(!player.equipment[slot]||player.gearBag.length>=EquipmentModel.CAPACITY)return false;const item=player.equipment[slot];player.gearBag.push(item);delete player.equipment[slot];gearSelected={id:item.id};gearRefresh();return true;}
+function gearSell(id){if(!gearVillage())return false;const index=player.gearBag.findIndex(i=>i.id===id);if(index<0)return false;player.gold+=EquipmentModel.sellPrice(player.gearBag[index]);player.gearBag.splice(index,1);gearSelected=null;updateHUD();saveGame();return true;}
+function gearBuy(type){
+ gearEnsure();if(!gearVillage()||!EquipmentModel.slots[type]||player.gearBag.length>=EquipmentModel.CAPACITY)return false;
+ const level=player.waveProgress.unlocked,cost=EquipmentModel.price(level);if(player.gold<cost)return false;
+ const item=EquipmentModel.generate(level,BuildModel,Math.random,type,false,'eq-'+Date.now().toString(36)+'-'+(++gearSerial));
+ player.gold-=cost;player.gearBag.push(item);gearSelected={id:item.id};updateHUD();saveGame();playSound('pickupMp');return true;
+}
+function gearPickup(drop){gearEnsure();if(player.gearBag.length>=EquipmentModel.CAPACITY)return false;player.gearBag.push(drop.item);floatMsg('+'+gearName(drop.item),innerWidth/2,innerHeight*.42,EquipmentModel.rarities[drop.item.rarity].color);playSound('pickupMp');return true;}
+function gearCollectAvailable(){let collected=false;for(let i=droppedItems.length-1;i>=0;i--)if(droppedItems[i].type==='equipment'&&gearPickup(droppedItems[i])){droppedItems.splice(i,1);collected=true;}if(collected)saveGame();}
+function gearLeave(next){
+ if(player.hp<=0||P.deadT>0)return next();
+ gearCollectAvailable();const remaining=droppedItems.filter(d=>d.type==='equipment').length;
+ if(!remaining)return next();
+ if(CAMP.on&&!CAMP.inStage)CAMP.noWaves=true;
+ setPause(true);tConfirm(remaining+' equipamento(s) ficarão no chão porque a mochila está cheia. Sair mesmo assim?','SAIR',()=>{setPause(false);next();},()=>tPause('equipment'));
+}
+function gearSelectWave(n){gearEnsure();if(!gearVillage())return false;n=Math.floor(Number(n));if(!Number.isFinite(n)||n<1||n>player.waveProgress.unlocked)return false;player.waveProgress.selected=n;saveGame();return true;}
+function gearOpen(tab='equipment'){if(TITLE.active||COMIC.active||CAMP.map||P.deadT>0)return;setPause(true);tPause(tab);}
+function gearRender(body){
+ gearEnsure();body.innerHTML='<div class="gear-header"><div><small>RELICÁRIO DE ZEPHYR</small><h2>Equipamentos</h2></div><span>'+player.gearBag.length+'/'+EquipmentModel.CAPACITY+' peças · '+player.gold+' ouro</span></div><p class="section-note">Selecione uma peça para comparar. Os equipamentos modificam atributos e habilidades; a aparência de Zephyr permanece a mesma.</p><div class="gear-layout"><section class="gear-slots" aria-label="Equipados"></section><section class="gear-bag" aria-label="Mochila"></section><section class="gear-detail" aria-live="polite"></section></div><div class="gear-totals"></div><section class="gear-merchant"></section>';
+ const button=(host,text,action,disabled=false)=>{const b=document.createElement('button');b.type='button';b.className='btn';b.textContent=text;b.disabled=disabled;b.onclick=()=>{action();tPause('equipment');};host.append(b);return b;};
+ const slots=body.querySelector('.gear-slots'),bag=body.querySelector('.gear-bag'),detail=body.querySelector('.gear-detail');
+ slots.innerHTML='<h3>Equipados</h3>';bag.innerHTML='<h3>Mochila</h3>';
+ for(const [slot,def]of Object.entries(EquipmentModel.slots)){
+  const item=player.equipment[slot],b=button(slots,def.icon+' '+def.name+' · '+(item?EquipmentModel.rarities[item.rarity].name+' Nv.'+item.level:'vazio'),()=>{gearSelected={slot};});
+  if(item)b.style.borderColor=b.style.color=EquipmentModel.rarities[item.rarity].color;if(gearSelected?.slot===slot)b.setAttribute('aria-pressed','true');
+ }
+ if(!player.gearBag.length)bag.insertAdjacentHTML('beforeend','<p class="section-note">Encontre equipamentos nos monstros ou compre relíquias na vila.</p>');
+ for(const item of player.gearBag){const b=button(bag,EquipmentModel.slots[item.type].icon+' '+gearName(item)+' · Nv.'+item.level,()=>{gearSelected={id:item.id};});b.style.borderColor=b.style.color=EquipmentModel.rarities[item.rarity].color;if(gearSelected?.id===item.id)b.setAttribute('aria-pressed','true');}
+ const chosen=gearSelected?.slot?player.equipment[gearSelected.slot]:player.gearBag.find(i=>i.id===gearSelected?.id);
+ function card(item,title){
+  const rarity=EquipmentModel.rarities[item.rarity];
+  const dormant=a=>a.stat==='skill'&&!skillRank(a.target)||a.stat==='school'&&!BuildModel.nodes.some(n=>n.school===a.target&&n.max>1&&skillRank(n.id));
+  return '<article class="gear-card" style="border-color:'+rarity.color+'"><small>'+title+'</small><h3 style="color:'+rarity.color+'">'+gearName(item)+'</h3><p>Nível '+item.level+' · '+rarity.name+'</p><p class="gear-base">Base: '+EquipmentModel.describe(item.base,BuildModel)+'</p>'+item.affixes.map(a=>'<p>'+EquipmentModel.describe(a,BuildModel)+(dormant(a)?' <em>(inativo)</em>':'')+'</p>').join('')+'</article>';
+ }
+ if(chosen){
+  detail.innerHTML=card(chosen,gearSelected.slot?'EQUIPADO':'SELECIONADO');
+  if(gearSelected.slot)button(detail,'Desequipar',()=>gearUnequip(gearSelected.slot),player.gearBag.length>=EquipmentModel.CAPACITY);
+  else {
+   const targets=chosen.type.startsWith('ring')?['ring1','ring2']:[chosen.type];
+   for(const slot of targets){
+    const current=player.equipment[slot];if(current)detail.insertAdjacentHTML('beforeend',card(current,'ATUAL · '+EquipmentModel.slots[slot].name));
+    const next={...player.equipment,[slot]:chosen},before=EquipmentModel.effects(BuildModel,player.skillRanks||{},player.equipment),after=EquipmentModel.effects(BuildModel,player.skillRanks||{},next);
+    const oldBonus=EquipmentModel.bonuses(player),newBonus=EquipmentModel.bonuses({equipment:next}),changes=[];
+    for(const key of Object.keys(EquipmentModel.attributes)){const delta=(newBonus[key]||0)-(oldBonus[key]||0);if(Math.abs(delta)>.001)changes.push((delta>0?'+':'')+delta.toFixed(2)+(EquipmentModel.attributes[key].percent?'%':'')+' '+EquipmentModel.attributes[key].name);}
+    for(const n of BuildModel.nodes){const delta=(after.extra[n.id]||0)-(before.extra[n.id]||0);if(delta)changes.push((delta>0?'+':'')+delta+' pontos em '+n.name);}
+    detail.insertAdjacentHTML('beforeend','<p class="gear-compare">Troca em '+EquipmentModel.slots[slot].name+': '+(changes.join(' · ')||'mesmos bônus ativos')+'</p>');
+    button(detail,'Equipar · '+EquipmentModel.slots[slot].name,()=>gearEquip(chosen.id,slot));
+   }
+   if(gearVillage())button(detail,'Vender por '+EquipmentModel.sellPrice(chosen)+' ouro',()=>gearSell(chosen.id));
+   else button(detail,'Descartar peça',()=>{player.gearBag=player.gearBag.filter(i=>i.id!==chosen.id);gearSelected=null;saveGame();});
+  }
+ }else detail.innerHTML='<h3>Detalhes da peça</h3><p>Selecione um equipamento. Bônus de pontos só fortalecem nós aprendidos e não liberam pré-requisitos.</p>';
+ const totals=EquipmentModel.bonuses(player),extra=EquipmentModel.effects(BuildModel,player.skillRanks||{},player.equipment).extra;
+ body.querySelector('.gear-totals').innerHTML='<h3>Bônus equipados</h3><p>'+Object.entries(totals).filter(([,v])=>v).map(([stat,value])=>EquipmentModel.describe({stat,value},BuildModel)).join(' · ')+'</p><p>'+Object.entries(extra).filter(([,n])=>n).map(([id,n])=>BuildModel.byId[id].name+': '+skillRank(id)+' investidos + '+n+' de equipamento = '+(skillRank(id)+n)).join(' · ')+'</p>';
+ const merchant=body.querySelector('.gear-merchant');
+ if(gearVillage()){
+  const level=player.waveProgress.unlocked,cost=EquipmentModel.price(level);
+  merchant.innerHTML='<h3>Mercador de relíquias misteriosas</h3><p>Peça nível '+level+' · '+cost+' ouro. Revelada após a compra.</p><p>Comum 60% · Mágico 28% · Raro 10% · Épico 2%</p>';
+  const choose=document.createElement('div');choose.className='gear-shop-types';merchant.append(choose);
+  for(const [type,def]of Object.entries(EquipmentModel.slots)){const b=button(choose,def.name,()=>{gearShopType=type;});b.setAttribute('aria-pressed',String(gearShopType===type));}
+  button(merchant,'Comprar '+EquipmentModel.slots[gearShopType].name+' · '+cost+' ouro',()=>gearBuy(gearShopType),player.gold<cost||player.gearBag.length>=EquipmentModel.CAPACITY);
+ }else merchant.innerHTML='<p class="section-note">Compre relíquias e venda equipamentos na vila. Atalho I abre esta mochila.</p>';
+}
+function gearRenderWaves(body){
+ gearEnsure();const p=player.waveProgress;
+ body.innerHTML='<div class="gear-header"><h2>Pedra do Infinito</h2><span>Recorde concluído: '+p.best+'</span></div><p>Escolha uma wave desbloqueada. Repetir waves anteriores mantém seu recorde e reduz a dificuldade e o nível do loot.</p><div class="gear-wave-picker"></div><div class="gear-wave-info"></div>';
+ const picker=body.querySelector('.gear-wave-picker');
+ for(let n=1;n<=p.unlocked;n++){const b=document.createElement('button');b.className='btn';b.textContent=String(n);b.disabled=!gearVillage();b.setAttribute('aria-label','Selecionar wave '+n);b.setAttribute('aria-pressed',String(p.selected===n));b.onclick=()=>{gearSelectWave(n);tPause('waves');};picker.append(b);}
+ const s=EquipmentModel.waveStats(p.selected),info=body.querySelector('.gear-wave-info');
+ info.innerHTML='<h3>Wave '+p.selected+'</h3><p>Vida dos monstros ×'+s.hp.toFixed(2)+' · dano ×'+s.damage.toFixed(2)+' · loot nível '+s.itemLevel+'</p><p>Conclusão: +'+(20+p.selected*8)+' XP e +'+(3+p.selected*2)+' ouro, além dos monstros. Loja: peças nível '+p.unlocked+'.</p>';
+ const b=document.createElement('button');b.className='btn';b.textContent='Entrar na wave '+p.selected;b.disabled=!gearVillage();b.onclick=()=>{setPause(false);startEndless();};info.append(b);
+}
+function installEquipment(){
+ gearEnsure();
+ for(const [name,values]of Object.entries(COMBAT_TUNING.specials))Object.assign(MOB_ABILITIES[name],values);
+ const pause=tPause;tPause=function(tab){pause(tab);const tabs=document.querySelector('.pmtabs'),body=document.querySelector('.pmbody');if(!tabs||!body)return;
+  for(const [id,name]of [['equipment','EQUIPAMENTOS'],['waves','WAVES']]){if(id==='waves'&&!gearVillage())continue;const b=document.createElement('button');b.className='pmtab'+(PM.tab===id?' on':'');b.textContent=name;b.onclick=()=>tPause(id);tabs.append(b);}
+  if(PM.tab==='equipment')gearRender(body);if(PM.tab==='waves')gearRenderWaves(body);
+  if(currentMission?.endless){const b=document.createElement('button');b.className='btn';b.textContent='Voltar à vila';b.onclick=()=>{setPause(false);enterHub();};document.querySelector('.pmside')?.append(b);}
+ };
+ const controls=pmControlsHtml;pmControlsHtml=function(){return controls()+'<p class="section-note">I · Equipamentos. Na vila, abra WAVES para escolher a dificuldade e EQUIPAMENTOS para comprar ou vender.</p>';};
+ const shop=buildShopGrid;buildShopGrid=function(){shop();const host=document.getElementById('shop-grid');if(!host||!gearVillage()||host.querySelector?.('.gear-world-shop'))return;const b=document.createElement('button');b.className='btn gear-world-shop';b.textContent='Relíquias · Comprar equipamentos';b.onclick=()=>{closeHubOverlay();gearOpen('equipment');};host.prepend(b);};
+ const tree=buildSkillTree;buildSkillTree=function(){tree();const detail=document.querySelector('.lg-detail');if(!detail)return;const rank=skillRank(skillTreeSelected),n=EquipmentModel.effects(BuildModel,player.skillRanks||{},player.equipment).extra[skillTreeSelected]||0;const p=document.createElement('p');p.className='gear-skill-bonus';p.textContent=rank+' investidos + '+n+' de equipamento = '+(rank+n)+' efetivos. Equipamentos não liberam pré-requisitos.';detail.prepend(p);};
+ const newChar=campNewChar;campNewChar=function(){player.equipment={};player.gearBag=[];player.waveProgress=EquipmentModel.progress();ENDLESS.best=0;gearSelected=null;return newChar();};
+ const load=loadGame;loadGame=function(){const result=load();if(result)ENDLESS.best=player.waveProgress.best;return result;};
+ const spawn=spawnEnemy;spawnEnemy=function(type,x,z){const e=spawn(type,x,z);e.gearWave=gearCurrentWave();if(!e.isBoss){e.spd=(e.spd??type.spd??0)*COMBAT_TUNING.enemySpeed;e.atkRate=['Arqueiro','Mago Vivo'].includes(type.name)?COMBAT_TUNING.rangedInterval:COMBAT_TUNING.meleeInterval;e.abilityCd=COMBAT_TUNING.specialDelayMin+Math.random()*(COMBAT_TUNING.specialDelayMax-COMBAT_TUNING.specialDelayMin);}if(currentMission?.endless&&!CAMP.on){const s=EquipmentModel.waveStats(wave);e.hp=e.maxHp=Math.round(type.hp*s.hp);e.dmg=Math.round(type.dmg*s.damage);e.xp=Math.round(type.xp*s.xp);}return e;};
+ spawnDrop=function(x,z){const hp=Math.random()<COMBAT_TUNING.hpOrbShare;droppedItems.push({mesh:mkMesh2(x+(Math.random()-.5)*.6,z+(Math.random()-.5)*.6),type:hp?'hp':'mp',life:22,t:0});};
+ const death=killEnemy;killEnemy=function(e,x,z){if(e.dead)return;e.dropChance=COMBAT_TUNING.orbChance;const reward=!e.dummy&&(e.isBoss||Math.random()<COMBAT_TUNING.gearChance),level=e.gearWave||gearCurrentWave();if(reward){const item=EquipmentModel.generate(level,BuildModel,Math.random,undefined,!!e.isBoss,'eq-'+Date.now().toString(36)+'-'+(++gearSerial));droppedItems.push({type:'equipment',item,mesh:mkMesh2(x,z),life:Infinity,t:0});}return death(e,x,z);};
+ const pickup=checkPickups;checkPickups=function(dt){
+  const equipment=droppedItems.filter(d=>d.type==='equipment');droppedItems=droppedItems.filter(d=>d.type!=='equipment');pickup(dt);let changed=false;
+  for(const d of equipment){d.t+=dt;if(Math.hypot(d.mesh.position.x-P.x,d.mesh.position.z-P.y)<1.8){if(gearPickup(d)){changed=true;continue;}if(Date.now()>gearNoticeAt){floatMsg('Mochila cheia · I para equipamentos',innerWidth/2,innerHeight*.4,'#e8c777');gearNoticeAt=Date.now()+3000;}}droppedItems.push(d);}if(changed)saveGame();
+ };
+ const hub=enterHub;enterHub=function(){return gearLeave(()=>hub());};
+ const map=campMapOpen;campMapOpen=function(){return gearLeave(()=>map());};
+ const start=startEndless;startEndless=function(){gearEnsure();const selected=player.waveProgress.selected;start();wave=selected-1;missionWave=selected-1;};
+ const end=endWave;endWave=function(){const endless=!!currentMission?.endless,finished=missionWave;if(endless&&!waveActive)return;if(endless){player.waveProgress=EquipmentModel.complete(player.waveProgress,finished);ENDLESS.best=player.waveProgress.best;}const result=end();if(endless)saveGame();return result;};
+ const offer=vilOpen;vilOpen=function(id){offer(id);if(id==='endless'){const card=VIL.modal?.querySelector('.offer');if(!card)return;const p=player.waveProgress,b=document.createElement('button');b.className='btn';b.textContent='Escolher wave · atual '+p.selected+' / liberada '+p.unlocked;b.onclick=()=>{vilClose();gearOpen('waves');};card.append(b);}};
+ for(const [name,key,base]of [['castRaio','raio',.5],['castHands','maos',12],['castChuva','chuva',5],['castExplosao','explosao',8],['skillCastCurse','maldicao',8]]){
+  // Global function declarations in this script share the browser global object.
+  const original=globalThis[name];globalThis[name]=function(...args){const mp=player.mp,result=original(...args);if(player.mp<mp)player.spellCooldowns[key]=Math.max(base*.5,(player.spellCooldowns[key]||0)*(1-gearBonus('cooldown')/100));return result;};
+ }
+ const barrier=castBarrier;castBarrier=function(...args){const mp=player.mp,result=barrier(...args);if(player.mp<mp)player.barrierCd=Math.max(6,player.barrierCd*(1-gearBonus('cooldown')/100));return result;};
+ const dash=castDash;castDash=function(...args){const result=dash(...args);if(result)playerDash.cd=Math.max(1.5,playerDash.cd*(1-gearBonus('cooldown')/100));return result;};
+ const command=activateSummonSkill;activateSummonSkill=function(type,...args){const result=command(type,...args);if(result)player.minionSkillCooldowns[type]=Math.max(ACTION_SKILLS[type].cooldown*.5,player.minionSkillCooldowns[type]*(1-gearBonus('cooldown')/100));return result;};
+ window.addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='i'||e.repeat||TITLE.active||COMIC.active||CAMP.map||document.getElementById('hub-overlay')?.style.display==='flex'||VIL.open)return;if(['INPUT','SELECT','TEXTAREA'].includes(e.target?.tagName))return;e.preventDefault();e.stopImmediatePropagation();if(TITLE.paused&&PM.tab==='equipment')setPause(false);else gearOpen();},true);
+}
+installEquipment();
+
+/* EQUIPMENT_RULES_END */
 const hasSave=bootGame();
 if(!hasSave) initializeDefaultSummonGroup();
 reconcileActionSummons();renderActionSlots();

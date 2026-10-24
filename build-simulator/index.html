@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Grimório • Simulador de builds</title><link rel="stylesheet" href="style.css"><script src="model.js" defer></script><script src="app.js" defer></script></head>
+<body>
+<main class="grimoire">
+ <header><div class="eyebrow">NECROMANCER'S RISE <span>•</span> LABORATÓRIO DE BUILDS</div><h1>Grimório dos Mortos</h1><p>Um ponto, muitos caminhos. Construa sua própria escola de necromancia.</p><a class="back" href="../index.html">← Voltar ao jogo</a></header>
+ <section class="toolbar" aria-label="Configuração da build">
+  <label class="level">Nível de Zephyr <input id="level" type="number" min="1" max="60" value="30"></label>
+  <div class="counter"><strong id="remaining">87</strong><span>pontos disponíveis</span></div><div class="counter small"><strong id="spent">0 / 87</strong><span>investidos • 3 por nível</span></div>
+  <label class="preset">Explorar uma build<select id="presets"><option value="">Build personalizada</option></select></label>
+  <button id="reset">Limpar build</button>
+ </section>
+ <div class="workspace">
+  <section class="tree-area" aria-label="Árvore de habilidades">
+   <div class="tree-heading"><div class="tabs" role="tablist" aria-label="Árvore"><button id="tab-minions" role="tab" aria-selected="true" aria-controls="tree" data-tree="minions">☠ Minions <span id="minions-count">0</span></button><button id="tab-spells" role="tab" aria-selected="false" aria-controls="tree" data-tree="spells">✧ Profana <span id="spells-count">0</span></button></div><span class="tree-hint">Selecione um selo para investir</span></div>
+   <div id="tree" role="tabpanel" aria-labelledby="tab-minions"></div>
+   <div class="legend"><span><i class="available"></i> Disponível</span><span><i class="learned"></i> Aprendida</span><span><i class="locked"></i> Bloqueada</span><span>◇ Escolha final exclusiva por escola</span></div>
+  </section>
+  <aside>
+   <section class="detail" aria-labelledby="skill-name"><div class="eyebrow" id="skill-school">ESCOLA DE CARNE</div><div class="detail-title"><span id="skill-icon">☠</span><h2 id="skill-name">Zumbis</h2></div><div id="skill-rank" class="rank-label"></div><p id="skill-description"></p><div id="requirements"></div><h3>Por ponto investido</h3><ul id="skill-effects"></ul><div id="synergy"></div><div class="actions"><button id="invest" class="primary">+ Investir ponto</button><button id="refund" aria-label="Remover um ponto da habilidade selecionada">−</button></div><p class="micro">Ao remover um pré-requisito, os pontos dos seus descendentes são devolvidos.</p></section>
+   <section class="summary"><h2>Identidade da build</h2><p id="identity">O grimório aguarda sua primeira escolha.</p><div id="distribution"></div><h3>Bônus acumulados</h3><div id="totals"></div><p class="micro">Bônus aditivos. Sinergias usam somente pontos diretos. Efeitos de skills não aprendidas ficam dormentes.</p></section>
+  </aside>
+ </div>
+ <footer><div><strong>Compartilhar o grimório</strong><p>Salvo neste navegador automaticamente. Independente do seu save no jogo.</p></div><div class="share-actions"><button id="share">Copiar link</button><button id="export">Exportar código</button><button id="import">Importar código</button></div><details id="code-panel"><summary>Código da build</summary><label for="code">Copie ou cole um código de build</label><textarea id="code" rows="3" spellcheck="false"></textarea><button id="apply-code">Carregar código</button></details></footer>
+ <p class="prototype">PROTÓTIPO DE BALANCEAMENTO · 42 habilidades · 12 especializações finais · sem souls · nível 1 começa com 0 pontos</p>
+ <div id="status" role="status" aria-live="polite">Escolha um ramo ou carregue uma build de exemplo.</div>
+</main>
+</body></html>

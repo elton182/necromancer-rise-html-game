@@ -288,7 +288,7 @@ class MenuElement {
     assert.notEqual(document.getElementById('panel-summon').parentNode,host);
     run("tPause('status')");
     assert.equal(document.getElementById('panel-summon').parentNode,host);
-    assert.notEqual(document.getElementById('panel-upgrades').parentNode,host);
+    assert.equal(document.getElementById('panel-upgrades').parentNode,host);
     run("tPause('system')");
     panels.forEach(panel=>assert.equal(panel.parentNode,host));
   }
@@ -767,7 +767,7 @@ unifiedTest('Ramos de Arqueiro e Abominação melhoram somente seus comandos',ru
     for(const name of ['campStageComplete','returnToVillageAfterStage'])vm.runInContext(fn(name),context);
     const run=code=>vm.runInContext(code,context);
     run('campStageComplete();campStageComplete()');
-    assert.equal(run('player.souls'),30);assert.equal(run('player.gold'),20);assert.equal(run('xp'),10);
+    assert.equal(run('player.souls'),0);assert.equal(run('player.gold'),20);assert.equal(run('xp'),10);
     assert.equal(run('timers.length'),1);
     run('timers.shift()()');assert.equal(run('destination'),expected);
     assert.equal(run('CAMP.cleared[3]'),1);
@@ -785,7 +785,7 @@ unifiedTest('Ramos de Arqueiro e Abominação melhoram somente seus comandos',ru
     let timers=0;const setTimeout=()=>timers++;
   `,context);
   vm.runInContext(fn('onMissionComplete'),context);vm.runInContext('onMissionComplete()',context);
-  assert.equal(vm.runInContext('player.souls',context),50);
+  assert.equal(vm.runInContext('player.souls',context),0);
   assert.equal(vm.runInContext('player.xp',context),25);
   assert.equal(vm.runInContext('timers',context),0);
   checks++;console.log('OK Missão lateral concede recompensa sem agendar aviso de retorno manual ou história atrasada');

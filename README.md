@@ -36,24 +36,28 @@ Os inimigos básicos preparam seus ataques especiais com avisos visuais:
 
 | Inimigo | Habilidade | Comportamento inicial |
 |---|---|---|
-| Guerreiro | Golpe pesado | Avisa por 0,65 s; dano de 1,6× em raio 2,1; recarga de 7 s |
-| Arqueiro | Tiro forte | Avisa a linha de tiro por 0,9 s; flecha de 1,9× de dano com direção fixa; recarga de 7 s |
-| Mago Vivo | Erupção de fogo | Marca o chão por 1 s; impacto de 1,2× e três pulsos de 0,3× em raio 2,2; recarga de 9 s |
-| Bruto | Salto devastador | Avisa o destino por 0,85 s; salta e causa 2× de dano em raio 2,6 ao cair; recarga de 8 s |
+| Guerreiro | Golpe pesado | Avisa por 0,5 s; dano de 1,6× em raio 2,1; recarga de 5 s |
+| Arqueiro | Tiro forte | Avisa a linha de tiro por 0,65 s; flecha de 1,9× de dano com direção fixa; recarga de 5 s |
+| Mago Vivo | Erupção de fogo | Marca o chão por 0,75 s; impacto de 1,2× e três pulsos de 0,3× em raio 2,2; recarga de 6,5 s |
+| Bruto | Salto devastador | Avisa o destino por 0,65 s; salta e causa 2× de dano em raio 2,6 ao cair; recarga de 6 s |
 
 Sair da região marcada evita o impacto. Inimigos mortos durante a preparação não completam a habilidade. Chefes mantêm suas habilidades próprias, e alvos de treino não usam esses ataques. Os valores são iniciais e ainda precisam de balanceamento em uma partida.
 
-As seis habilidades iniciais do painel são **Tiro de Osso**, **Muralha de Corpos**, **Zumbis**, **Abominação**, **Esqueletos arqueiros** e **Dash**. As opções ainda não aprendidas ficam bloqueadas até sua liberação na campanha ou árvore. Clique em qualquer slot para trocar sua habilidade; magias e evocações usam os mesmos seis espaços. No controle, LB/RB escolhem o slot e A/RT ativam.
+Monstros comuns se movem 15% mais rápido. Ataques básicos corpo a corpo ocorrem a cada 1,1 s, e tiros comuns a cada 1,3 s. A primeira habilidade especial fica pronta após 0,75–1,25 s de atividade. O Tiro de Osso causa 50% da base mágica, incluindo os bônus da própria skill: sem equipamento no nível 1, são 20 de dano, dois tiros no guerreiro de 40 HP e cinco no bruto de 100 HP. Chuva e Explosão Necrótica mantêm seu dano.
+
+Chefes têm dano base aumentado em 30%, incluindo Capitão da Guarda, Guardião dos Ossos, Lich Guerreiro e Hidra Pútrida. Os ataques especiais que escalam com o dano do chefe também recebem esse aumento.
+
+O personagem começa com **Tiro de Osso** e **Dash**, distribuídos entre os seis slots compartilhados de habilidades, sem minions ativos. **Zumbis exige o primeiro ponto no nó Zumbis**; depois equipe a evocação em um slot para trazer o grupo. As demais magias e evocações são desbloqueadas nas árvores **Minions** e **Profana**, sem bloqueios ou liberações de skills pela campanha. Clique em qualquer slot para trocar sua habilidade. No controle, LB/RB escolhem o slot e A/RT ativam.
 
 **Muralha de Corpos** custa 35 MP e ergue um muro por 5 segundos, com dano de contato. O muro impede a passagem de inimigos e intercepta seus projéteis. **Tiro de Osso** custa 20 MP. Escudo de Carne pode ser equipado entre as opções adicionais: sacrifica um zumbi e reserva seu lugar até a recuperação.
 
-Saves anteriores são migrados automaticamente. Upgrades removidos de Nova são reembolsados em almas, e Bastião devolve seu ponto para permitir escolher Carne Reforçada.
+Saves anteriores são migrados automaticamente: os pontos são recalculados como **3 × (nível − 1)** para redistribuição. Melhorias antigas e souls deixam de participar da progressão. Ouro, inventário e campanha são preservados; skills dependem dos investimentos nas árvores. Uma cópia do save anterior é mantida no navegador quando há espaço disponível.
 
 Para verificar sintaxe e regras das habilidades: `node game_check.js`.
 
 A horda só escolhe alvos a até 8 unidades de Zephyr. Ao ultrapassar essa região ou perder um alvo que se afasta, os aliados retornam até chegar a 3 unidades do personagem. Comandos de ataque e reunião respeitam o mesmo limite. Separações extremas, como em transições, recuperam o aliado perto do personagem.
 
-Na pausa, Personagem reúne status e melhorias gerais; Habilidades reúne árvore e evoluções; Horda reúne integrantes, invocação e melhorias; Sistema reúne controles, opções e saves. Loja e missões continuam disponíveis pelos serviços do mundo e mapa. O HUD distingue o vínculo reservado da mana e mostra os atalhos de cada habilidade.
+Na pausa, Personagem reúne os atributos; Habilidades abre as árvores; Horda reúne integrantes e configuração das invocações; Sistema reúne controles, opções e saves. As melhorias avulsas foram removidas. Loja e missões continuam disponíveis pelos serviços do mundo e mapa. Clique no contador de pontos do HUD para abrir diretamente o Grimório.
 
 O HUD de combate usa o Relicário de Zephyr: vida integrada ao painel esquerdo e mana ao direito, com um espaço livre entre os painéis. As seis habilidades ficam divididas entre os dois lados. A Ajuda (`H`) reúne as instruções.
 
@@ -67,23 +71,47 @@ Equipar uma evocação traz seu grupo automaticamente: **3 zumbis**, **2 esquele
 | Esqueletos arqueiros | Cada arqueiro vivo dispara um tiro forte | 7 s |
 | Abominação | Salta e causa dano em área ao aterrissar | 8 s |
 
+A explosão comandada do zumbi usa multiplicador de dano 3,5× e raio de 3,5 unidades. Detona apenas um aliado por comando e mantém a recuperação normal do grupo.
+
 O zumbi detonado permanece vinculado ao slot e aguarda o renascimento normal (12 segundos, modificado pelas melhorias). Se todos forem detonados, o comando aguarda até algum voltar. Reanimação manual, dispensa e troca de evocação não antecipam essa recuperação. Os tempos de recuperação também são salvos.
 
 ### Grimório de habilidades
 
-Na pausa, **Habilidades** abre o Grimório dos Mortos, com moldura de metal escuro e latão alinhada ao Relicário do HUD. Cada habilidade tem uma aba com seu próprio ramo, pré-requisitos e melhorias. As evoluções com almas aparecem somente na habilidade selecionada. Os bônus que afetam toda a horda ficam em uma aba geral, e os investimentos de saves anteriores são mantidos.
+Na pausa, **Habilidades** abre o Grimório dos Mortos. **Minions** contém Carne, Ossos e Espíritos; **Profana** contém Ossos, Sangue e Sombras. São 42 habilidades e 12 talentos finais. Cada escola começa em uma raiz e se bifurca em duas especializações; os caminhos intermediários podem ser combinados, mas os dois talentos finais da mesma escola são exclusivos.
 
-Os ramos são diagramas gravados em pedra: símbolos quadrados ligados por trilhas mostram a progressão, com estados de bloqueio, disponibilidade e aprendizado. Selecione um símbolo para consultar descrição, pré-requisito e custo; o botão de aprender ou evoluir realiza a compra. As evoluções com almas fazem parte do mesmo diagrama. Em telas pequenas, os detalhes ficam abaixo da árvore.
+Cada subida de nível concede **3 pontos** compartilhados entre as duas árvores, até o nível 60. Ao chegar ao nível 2, um tutorial rápido explica como abrir o Grimório e investir os três primeiros pontos. Skills comuns aceitam 5 pontos; talentos finais, 1. As etapas abrem nos níveis 1, 6, 12 e 24 e cada ligação exige 2 pontos no nó anterior. Selecione um símbolo para consultar os efeitos e investir. Redistribuição custa **20 de ouro por ponto devolvido**, na vila ou no mapa, após a recuperação dos aliados sacrificados ou detonados. Remover um pré-requisito também devolve e cobra os pontos dos descendentes; o custo aparece antes da ação.
 
-Muralha possui melhorias de duração (5 → 7 s) e dano (+50%); Dash, recarga (3 → 2,4 s) e distância (4,5 → 6 unidades). Zumbis podem melhorar o dano da explosão (+50%), arqueiros o tiro forte (+40%) e Abominação o impacto (+30% de dano e raio de 3 → 4 unidades). Cada melhoria custa um ponto e respeita os pré-requisitos exibidos no seu ramo.
+Inimigos deixam **ouro no chão**, coletado por proximidade; chefes deixam quantias maiores. Alvos de treino não geram ouro. O menu de habilidades usa a largura da tela, nós compactos, detalhes laterais e barras de rolagem com estilo próprio quando necessárias.
 
-Legião Putrefata e Maré dos Mortos aumentam os zumbis por grupo; Salva Sepulcral aumenta os arqueiros. Grupos de saves antigos são migrados; os não equipados ficam em reserva. Os antigos marcos de grupos são preservados para compatibilidade, mas o painel de combate usa seis slots compartilhados entre magias e evocações.
+Ao aprender uma habilidade equipável ainda não alocada, um tutorial pausa o jogo e apresenta os **seis slots com seus atalhos**, destacando os vazios. Escolher um slot equipa a habilidade usando as regras normais de mana e recuperação. É possível alocar depois; o botão **Alocar em um slot** nos detalhes da habilidade reabre a orientação. Aprimoramentos e passivas não repetem o tutorial.
+
+As sinergias usam pontos diretos e bônus aditivos: Zumbis e Carne Reanimada fortalecem a Abominação; Tiro e Chuva de Ossos fortalecem um ao outro; Carne Instável e Ritual Instável melhoram a explosão dos zumbis e Explosão Necrótica. Aura das Sombras afeta aliados próximos de Zephyr. A escola de Espíritos oferece drenagem e reposicionamento; Maldição da Fraqueza é uma magia equipável em Profana.
+
+**Souls não são coletadas nem cobradas.** Explosão Necrótica custa apenas mana. Abominação é uma evolução dentro do ramo dos Zumbis e ocupa seu próprio slot de evocação. Horda Explosiva, Guarda Sepulcral, Salva Sepulcral e Cortejo dos Mortos ampliam os respectivos grupos.
+
+O modelo é compartilhado com o simulador. Para atualizar o HTML independente após editar as árvores: `node scripts/sync-skill-trees.js`. Validação: `node game_check.js` e `node --test scripts/skill-trees.test.js build-simulator/model.test.js`. Consulte [a implementação e a migração](docs/arvores-habilidades-implementacao.md).
 
 ### Vila, campanha e missões
 
 O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem perder o progresso. Interaja com `G`. As missões da vila podem oferecer arenas ou trilhas de rolagem lateral, com três emboscadas e chefe no trecho final. A recompensa é concedida uma vez e, ao chegar ao final da trilha, o retorno à vila é automático. Fases laterais da campanha rejogadas após liberar a vila também retornam automaticamente, após a sequência de conclusão. Na primeira passagem do Ato I, a história mantém o retorno ao mapa até a vila ser liberada.
 
 ## Rodando localmente
+
+### Equipamentos e waves
+
+Use **I** ou **ESC → Equipamentos** para abrir a mochila: cajado, grimório, vestimenta, capuz, botas e dois anéis. Peças comuns têm apenas o atributo base; mágicas têm 2 atributos aleatórios, raras 3 e épicas 4. Bônus de pontos fortalecem habilidades ou escolas já aprendidas sem alterar os pontos investidos, liberar pré-requisitos ou mudar a aparência de Zephyr.
+
+Monstros comuns têm 16% de chance de deixar equipamento; chefes garantem uma peça mágica ou melhor. Orbes de mana têm 12% de chance e orbes de vida 4%, sem sorteios extras na campanha. Equipamento e orbe são sorteados independentemente. A coleta é por proximidade, e peças permanecem no chão enquanto a tentativa durar. A mochila comporta 60 peças. Trocas preservam a proporção de vida/mana e não reiniciam recargas ou recuperações da horda.
+
+Na vila, o menu de equipamentos vende peças e oferece relíquias aleatórias por tipo, com nível/preço definidos pela maior wave desbloqueada. **ESC → Waves** ou a **Pedra do Infinito** permite selecionar uma wave já liberada. Concluir a maior disponível libera a seguinte. Repetir anteriores preserva o recorde e reduz a dificuldade e o nível do loot. Na campanha, o nível das peças acompanha a fase.
+
+A arena usa +12% de vida e +8% de dano compostos por wave, XP dos monstros +4% e até 60 inimigos por wave. São valores iniciais sujeitos a balanceamento. Saves anteriores recebem mochila vazia e preservam o recorde existente.
+
+Fontes: `scripts/equipment-model.js`, `scripts/equipment.js` e `scripts/equipment.css`. Após editar, execute `node scripts/sync-equipment.js` para atualizar o HTML distribuído. Verificações: `node --test scripts/equipment.test.js scripts/skill-trees.test.js build-simulator/model.test.js balance-simulator/model.test.js` e `node game_check.js`. O simulador compartilha geração de itens, bônus e curvas de waves com o jogo; `legacy` mantém a comparação com as curvas anteriores.
+
+### Simulador de builds
+
+Abra [o Grimório de builds](build-simulator/index.html) para planejar as árvores de **Minions** e **Profana** com o mesmo modelo de pré-requisitos e sinergias do jogo. Inclui cinco builds de exemplo, devolução de pontos e importação/exportação dos planos. O planejamento não modifica o save do jogo; os valores ainda precisam de balanceamento em partidas. Consulte [as regras do simulador](build-simulator/README.md).
 
 Não precisa de build nem servidor: basta abrir `necromancer-canvas.html` no navegador.
 

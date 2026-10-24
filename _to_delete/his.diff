@@ -1,0 +1,2080 @@
+diff --git a/necromancer-canvas.html b/necromancer-canvas.html
+index 38124c6..6d7f1ab 100644
+--- a/necromancer-canvas.html
++++ b/necromancer-canvas.html
+@@ -261,96 +261,92 @@ canvas { display:block; }
+   <input id="vol-slider" type="range" min="0" max="100" value="55" oninput="setVolume(this.value/100)">
+ </div>
+ 
++
++
++<div id="horde-status"><div id="minion-panel"></div><!-- Command Bar -->
++<div id="cmd-bar" style="position:fixed;bottom:140px;right:20px;z-index:10;display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
++  <div style="font-size:9px;color:#555;letter-spacing:1px;margin-bottom:2px;">HORDA</div>
++  <button class="cmd-btn" id="cmd-attack" onclick="setCommand('attack')" title="Shift + clique direito: ordenar ataque">⚔ Ataque</button>
++  <button class="cmd-btn" id="cmd-rally"  onclick="setCommand('rally')"  title="Shift + clique direito: reunir">↩ Reunir</button>
++  <button class="cmd-btn" id="cmd-auto"   onclick="setCommand('auto')"   title="Shift + clique direito: detectar alvo ou ponto automaticamente">Auto</button>
++</div></div>
++
++<!-- Summon wheel (field) -->
++<div id="summon-wheel">
++  <div class="sw-title">▲ INVOCAR (pressione Q)</div>
++  <div class="sw-row" id="sw-row"></div>
++</div>
++
++<!-- Zephyr's reliquary: original iron, bone and necrotic glass HUD. -->
++<div id="hud" aria-label="Recursos e habilidades de Zephyr">
++  <div class="hud-wing life-wing" aria-label="Vida e habilidades">
++<div class="resource-vessel life-vessel" id="hp-vessel" title="Vida de Zephyr">
++    <div class="vessel-crown" aria-hidden="true">✦</div>
++    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="hp-fill"></div><span class="vessel-rune" aria-hidden="true">♜</span></div>
++    <div class="vessel-caption"><span>VIDA</span><strong id="hp-val">100/100</strong></div>
++  </div>
++<div class="hud-left-dock" aria-label="Personagem e habilidades">
++<div class="hud-crest"><i></i><span>PACTO DOS MORTOS</span><i></i></div>
+ <div id="top-left">
+-  <div id="level-txt">⚔ LEVEL 1 — NECROMANTE</div>
+-  <div id="souls-txt">💀 0 almas</div>
++  <div id="level-txt" title="Nível do personagem">NV. 1</div>
++  <div id="souls-txt" title="Almas disponíveis para melhorias">💀 0 almas</div>
+   <div id="gold-txt" style="color:#d4af37;font-size:12px;letter-spacing:1px;">🪙 0 gold</div>
+   <div id="wave-txt"></div>
+-  <div id="sp-pts-txt"></div>
++  <div id="sp-pts-txt" title="Pontos de habilidade disponíveis"></div>
+ </div>
+-
+-<div id="minion-panel"></div>
+-
+-<!-- Spell Bar -->
+ <div id="spellbar">
+-  <div class="spell-slot active" id="slot-nova" onclick="selectSpell('nova')">
+-    <div class="s-name">Nova Arcana</div>
+-    <div class="s-icon">🔮</div>
+-    <div class="s-key">1</div>
+-    <div class="s-cost">25</div>
++  <div id="selected-spell" aria-live="polite">Raio Necrótico · 20 MP</div>
++  <div class="spell-slot active" role="button" tabindex="0" aria-label="Lançar Raio Necrótico" id="slot-raio" onclick="castHotkey('raio')" title="Raio Necrótico · 20 MP · alcance 9 · recarga 0,5s">
++    <div class="s-name">Raio Necrótico</div><div class="s-icon">⚡</div><div class="s-key">M1 · 1</div><div class="s-cost">20</div>
+   </div>
+-  <div class="spell-slot locked" id="slot-raio" onclick="selectSpell('raio')">
+-    <div class="s-name">Raio Necrótico</div>
+-    <div class="s-icon">⚡</div>
+-    <div class="s-key">2</div>
+-    <div class="s-cost">30</div>
++  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Lançar Mãos dos Mortos" id="slot-maos" onclick="castHotkey('maos')" title="Mãos dos Mortos · 35 MP · 5s · lentidão 40% · recarga 12s">
++    <div class="s-name">Mãos dos Mortos</div><div class="s-icon">🖐</div><div class="s-key">M2 · 2</div><div class="s-cost">35</div>
+   </div>
+-  <div class="spell-slot locked" id="slot-chuva" onclick="selectSpell('chuva')">
++  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Lançar Chuva de Ossos" id="slot-chuva" onclick="castHotkey('chuva')">
+     <div class="s-name">Chuva de Ossos</div>
+     <div class="s-icon">🦴</div>
+     <div class="s-key">3</div>
+     <div class="s-cost">40</div>
+   </div>
+-  <div class="spell-slot locked" id="slot-explosao" onclick="selectSpell('explosao')">
++  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Lançar Explosão de Almas" id="slot-explosao" onclick="castHotkey('explosao')">
+     <div class="s-name">Explosão de Almas</div>
+     <div class="s-icon">💥</div>
+     <div class="s-key">4</div>
+     <div class="s-cost">60</div>
+   </div>
+-  <div class="spell-slot locked" id="slot-barreira" onclick="castBarrier()" style="margin-left:10px;">
+-    <div class="s-name">Barreira Arcana</div>
++  <button id="summon-action" class="summon-action" onclick="toggleSummonWheel()" title="Q · Configurar um slot de invocação"><span class="s-icon">☠</span><span class="s-key">Q</span></button>
++  <div class="spell-slot locked" role="button" tabindex="0" aria-label="Ativar Escudo de Carne" id="slot-barreira" title="15 MP + zumbi (70% do HP máximo); sem zumbi: 15% HP por escudo de 25% HP. Duração 8s; recarga 12s." onclick="castBarrier()" style="margin-left:10px;">
++    <div class="s-name">Escudo de Carne</div>
+     <div class="s-icon">🛡</div>
+     <div class="s-key">ESPAÇO</div>
+-    <div class="s-cost" style="color:#5ab8ff">40</div>
++    <div class="s-cost" style="color:#5ab8ff">15</div>
+     <div id="barrier-cd" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:15px;color:#fff;border-radius:inherit;"></div>
+   </div>
+ </div>
+-
+-<!-- Summon wheel (field) -->
+-<div id="summon-wheel">
+-  <div class="sw-title">▲ INVOCAR (pressione Q)</div>
+-  <div class="sw-row" id="sw-row"></div>
++<div class="experience-line" title="Experiência para o próximo nível"><div class="experience-track"><div class="bar-fill" id="exp-fill"></div></div><span id="exp-val">0/100</span><b id="hud-level">NV. 1</b></div>
+ </div>
+-
+-<!-- HUD bars -->
+-<div id="hud">
+-  <div class="bar-wrap">
+-    <div class="bar-label">HP</div>
+-    <div class="bar-track"><div class="bar-fill" id="hp-fill" style="width:100%"></div></div>
+-    <div class="bar-val" id="hp-val">100/100</div>
+-  </div>
+-  <div class="bar-wrap">
+-    <div class="bar-label">MANA</div>
+-    <div class="bar-track"><div class="bar-fill" id="mp-fill" style="width:100%"></div></div>
+-    <div class="bar-val" id="mp-val">80/80</div>
+-  </div>
+-  <div class="bar-wrap">
+-    <div class="bar-label">INVOCAÇÃO</div>
+-    <div class="bar-track" style="width:160px;">
+-      <div class="bar-fill" id="sp-fill" style="width:0%"></div>
+-      <div id="sp-segs"></div>
++</div>
++<div class="hud-wing mana-wing" aria-label="Mana e invocações">
++<div class="hud-right-dock" aria-label="Grupos de invocação">
++<div class="summon-dock-title">GRUPOS DE INVOCAÇÃO</div>
++<div id="summon-slots" aria-label="Slots de grupos de invocação"></div>
++<div class="horde-meter" title="Cada slot configura um grupo. Zumbi: 3 unidades; Arqueiro Ósseo: 2. Expansões ficam na árvore de habilidades.">
++      <span id="hud-slots">HORDA · 0 criaturas · 0/3 slots</span><span class="horde-link" aria-hidden="true">VÍNCULO <b id="sp-val">0/60</b></span>
++      <div class="horde-track"><div class="bar-fill" id="sp-fill"></div><div id="sp-segs"></div></div>
+     </div>
+-    <div class="bar-val" id="sp-val">0/60</div>
+-  </div>
+-  <div class="bar-wrap">
+-    <div class="bar-label">EXP</div>
+-    <div class="bar-track"><div class="bar-fill" id="exp-fill" style="width:0%"></div></div>
+-    <div class="bar-val" id="exp-val">0/100</div>
++</div>
++<div class="resource-vessel mana-vessel" id="mp-vessel" title="Mana disponível para lançar habilidades">
++    <div class="vessel-crown" aria-hidden="true">✧</div>
++    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="mp-fill"></div><span class="vessel-rune" aria-hidden="true">◈</span></div>
++    <div class="vessel-caption"><span>MANA</span><strong id="mp-val">80/80</strong></div>
+   </div>
+ </div>
+-
+-<!-- Command Bar -->
+-<div id="cmd-bar" style="position:fixed;bottom:140px;right:20px;z-index:10;display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+-  <div style="font-size:9px;color:#555;letter-spacing:1px;margin-bottom:2px;">COMANDOS</div>
+-  <button class="cmd-btn" id="cmd-attack" onclick="setCommand('attack')" title="Próximo clique-direito → atacar">⚔ FORÇAR ATAQUE</button>
+-  <button class="cmd-btn" id="cmd-rally"  onclick="setCommand('rally')"  title="Próximo clique-direito → mover">↩ FORÇAR MOVER</button>
+-  <button class="cmd-btn" id="cmd-auto"   onclick="setCommand('auto')"   title="Clique-direito detecta automaticamente">🤖 AUTO</button>
+ </div>
+ 
+ <!-- Inventário de itens -->
+ <div id="inv-bar" style="position:fixed;bottom:140px;left:20px;z-index:10;display:flex;gap:6px;align-items:center;"></div>
+ 
+-<div id="hint">WASD mover · 1-4 feitiço · Clique-esq. magia · Clique-dir. comandar minions · Q invocar · R reanimar · ESPAÇO barreira · E portal · F1-F5 itens</div>
++<div id="hint" hidden></div>
+ <div id="reanimate-hint">R — reanimar agora (30 MP)</div>
+ 
+ <!-- Boss HP bar -->
+@@ -377,16 +373,17 @@ canvas { display:block; }
+ <!-- HUB -->
+ <div id="hub-overlay">
+   <button class="btn" onclick="closeHubOverlay()" style="position:absolute;top:14px;right:18px;">✕ SAIR [ESC]</button>
+-  <h1>⚗ ALTAR DOS OSSOS</h1>
++  <h1 id="management-title">PREPARAÇÃO</h1>
++  <p id="management-desc" class="hub-sub"></p>
+   <div id="hub-souls-disp" style="color:#a855f7;font-size:13px;letter-spacing:1px;"></div>
+ 
+   <div class="hub-tabs">
+     <button class="hub-tab active" onclick="showTab('missions',this)">📜 MISSÕES</button>
+-    <button class="hub-tab" onclick="showTab('summon',this)">🧟 INVOCAR</button>
++    <button class="hub-tab" onclick="showTab('summon',this)">🧟 HORDA</button>
+     <button class="hub-tab" onclick="showTab('shop',this)">🛒 LOJA</button>
+-    <button class="hub-tab" onclick="showTab('upgrades',this)">⚗ UPGRADES</button>
++    <button class="hub-tab" onclick="showTab('upgrades',this)">⚗ PERSONAGEM</button>
+     <button class="hub-tab" onclick="showTab('skills',this)">🔮 HABILIDADES</button>
+-    <button class="hub-tab" onclick="showTab('minions',this)">💀 MINIONS</button>
++    <button class="hub-tab" onclick="showTab('minions',this)">💀 MELHORIAS DA HORDA</button>
+   </div>
+ 
+   <div class="hub-panel" id="panel-shop">
+@@ -422,7 +419,7 @@ canvas { display:block; }
+     <button class="btn" onclick="closeHubOverlay()">✕ SAIR</button>
+     <button class="btn" onclick="saveGame()">💾 SALVAR</button>
+     <button class="btn" onclick="showStoryMenu()">📖 HISTÓRIA</button>
+-    <button class="btn" onclick="if(confirm('Resetar progresso?'))resetSave()" style="color:#ff4444;border-color:#ff4444;">RESET</button>
++
+   </div>
+   <div class="hub-sub" id="hub-stat"></div>
+ </div>
+@@ -443,8 +440,6 @@ const MINION_DEFS = {
+ };
+ 
+ const UPGRADES = [
+-  {id:'slots',   name:'Exército dos Mortos',  desc:'+1 slot de minion.',          baseCost:80, mult:2.2, max:4},
+-  {id:'sppool',  name:'Reserva de Invocação', desc:'+20 SP máximo.',              baseCost:55, mult:1.8, max:6},
+   {id:'mhp',     name:'Vitalidade dos Mortos',desc:'Minions +30 HP.',             baseCost:50, mult:1.6, max:5},
+   {id:'mdmg',    name:'Força Necrótica',      desc:'Minions +5 dano.',             baseCost:50, mult:1.6, max:5},
+   {id:'mpregen', name:'Fluxo de Mana',        desc:'Mana regen +3/s.',             baseCost:45, mult:1.5, max:4},
+@@ -488,18 +483,13 @@ const MINION_UPGRADES = {
+   specter: [
+     {id:'p_drain', name:'Drenagem Vital',      icon:'🩸', desc:'Rouba 20% do dano como HP.',baseCost:65, mult:1.9, max:1, stat:'drain',val:1},
+     {id:'p_atkr',  name:'Alcance Espectral',   icon:'👁', desc:'+0.5 alcance de ataque.',  baseCost:50, mult:1.8, max:3, stat:'atkR',val:0.5},
+-    {id:'p_cost',  name:'Vínculo Etéreo',      icon:'💠', desc:'-10 custo SP.',            baseCost:70, mult:2.0, max:2, stat:'cost',val:10},
+   ],
+ };
+ 
+ // ── Upgrades por Magia ──────────────────────────────────
+ const SPELL_UPGRADES = {
+-  nova:    [
+-    {id:'nova_r',val:0.5, name:'Expansão Arcana',  icon:'⭕', desc:'+0.5 raio.',       baseCost:45, mult:1.6, max:4},
+-    {id:'nova_d',val:10, name:'Dano Sombrio',     icon:'💀', desc:'+10 dano.',        baseCost:45, mult:1.6, max:5},
+-  ],
+   raio:    [
+-    {id:'raio_d',val:12, name:'Carga Elétrica',   icon:'⚡', desc:'+12 dano.',        baseCost:50, mult:1.7, max:5},
++    {id:'raio_d',val:12, name:'Energia Necrótica',   icon:'⚡', desc:'+12 dano.',        baseCost:50, mult:1.7, max:5},
+     {id:'raio_s',val:0.3, name:'Arco Estendido',   icon:'📡', desc:'Atravessa +1 inimigo.',baseCost:60, mult:1.8, max:3},
+   ],
+   chuva:   [
+@@ -516,16 +506,19 @@ const SPELL_UPGRADES = {
+ // Cada nó custa 1 ponto de habilidade
+ const SKILL_NODES = {
+   // Caminho Defesa
+-  barreira: {name:'Barreira Arcana',icon:'🛡',desc:'[ESPAÇO] Cúpula que absorve dano por 8s e reduz 45% do dano dos minions próximos.',path:'defense',req:'nova',spell:'barreira',passive:null},
+-  bastiao:  {name:'Bastião Eterno',icon:'🏰',desc:'Barreira +60% de absorção e recarga menor.',path:'defense',req:'barreira',spell:null,passive:'bastiao'},
++  barreira: {name:'Escudo de Carne',icon:'🛡',desc:'[ESPAÇO] 15 MP + zumbi: escudo de 70% do HP máximo por 8s. Sem zumbi: 15% HP por 25% HP de escudo. Recarga: 12s.',path:'defense',req:'raio',spell:'barreira',passive:null},
++  bastiao:  {name:'Carne Reforçada',icon:'🏰',desc:'Escudo de Carne absorve 100% do HP máximo do zumbi. Alternativa sem zumbi permanece igual.',path:'defense',req:'barreira',spell:null,passive:'bastiao'},
+   // Raiz — desbloqueada grátis
+-  nova:     {name:'Nova Arcana',   icon:'🔮',desc:'Explosão arcana em área.',          path:'base',  req:null,     spell:'nova',   passive:null},
++  maos:     {name:'Mãos dos Mortos',icon:'🖐',desc:'35 MP · área de raio 3,5 por 5s; lentidão de 40%, sem dano. Recarga: 12s.',path:'magic',req:'raio',spell:'maos',passive:null},
+   // Caminho Magia
+-  raio:     {name:'Raio Necrótico',icon:'⚡',desc:'Projétil que atravessa inimigos.',  path:'magic', req:'nova',   spell:'raio',   passive:null},
+-  chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:'raio',   spell:'chuva',  passive:null},
++  raio:     {name:'Raio Necrótico',icon:'⚡',desc:'20 MP · 40 de dano base, alcance 9; um alvo. Recarga: 0,5s.',path:'base',req:null,spell:'raio',passive:null},
++  chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:'maos',   spell:'chuva',  passive:null},
+   explosao: {name:'Explosão de Almas',icon:'💥',desc:'AoE massiva — consome 40 almas.',path:'magic', req:'chuva',  spell:'explosao',passive:null},
+   // Caminho Invocação
+-  aura:     {name:'Aura das Sombras',icon:'🌑',desc:'Minions causam +30% dano.',       path:'summon',req:'nova',   spell:null,     passive:'aura'},
++  horda_zumbi:{name:'Legião Putrefata',icon:'🧟',desc:'+1 zumbi por slot de Zumbi (3 → 4). Reforce o grupo pelo slot.',path:'summon',req:'aura',spell:null,passive:'horda_zumbi'},
++  horda_zumbi_2:{name:'Maré dos Mortos',icon:'☠',desc:'+1 zumbi adicional por slot (4 → 5).',path:'summon',req:'horda_zumbi',spell:null,passive:'horda_zumbi_2'},
++  horda_arqueiro:{name:'Salva Sepulcral',icon:'🏹',desc:'+1 arqueiro por slot de Arqueiro Ósseo (2 → 3).',path:'summon',req:'aura',spell:null,passive:'horda_arqueiro'},
++  aura:     {name:'Aura das Sombras',icon:'🌑',desc:'Minions causam +30% dano.',       path:'summon',req:'raio',   spell:null,     passive:'aura'},
+   pacto:    {name:'Pacto de Sangue', icon:'🩸',desc:'Minion morto explode causando dano.',path:'summon',req:'aura',spell:null,   passive:'pacto'},
+   ritual:   {name:'Ritual da Morte', icon:'🕯',desc:'Minions recuperam 2 HP/s.',       path:'summon',req:'pacto',  spell:null,     passive:'ritual'},
+   ascensao: {name:'Ascensão Lich',   icon:'💠',desc:'Minions +50% HP e velocidade.',   path:'summon',req:'ritual', spell:null,     passive:'ascensao'},
+@@ -537,11 +530,12 @@ const SKILL_NODES = {
+ const player = {
+   hp:100,maxHp:100, mp:80,maxMp:80, exp:0,expNext:100,
+   level:1, souls:0, gold:0, maxSp:60,
+-  minionSlots:3, // máximo de minions simultâneos
++  minionSlots:9, // capacidade de criaturas derivada dos grupos
++  summonLoadout:['zombie',null,null,null,null,null,null], summonReserve:[],
+   inventory:[], // [{id, name, icon, desc, count}]
+   spellDmg:40, spellRadius:2.5, mpRegen:4, hpRegen:0,
+-  skillPoints:0, learnedSkills:new Set(['nova']),
+-  activeSpell:'nova',
++  skillPoints:0, learnedSkills:new Set(['raio']),
++  activeSpell:'raio',
+   upgradeCount: Object.fromEntries(UPGRADES.map(u=>[u.id,0])),
+   minionUpgradeCount: Object.fromEntries(
+     Object.values(MINION_UPGRADES).flatMap(arr=>arr.map(u=>[u.id,0]))
+@@ -561,7 +555,8 @@ let nearbyNpc=null; // NPC próximo ao player
+ let summonWheelOpen=false;
+ let minionCommand=null; // {type:'attack'|'rally', x, z, timer}
+ let commandMarker=null;
+-const LEASH_DIST=14; // distância máxima do necromante antes de forçar retorno
++const LEASH_DIST=8;
++const MINION_RETURN_DIST=3; // distância máxima do necromante antes de forçar retorno
+ 
+ function spUsed(){ return minions.reduce((s,m)=>s+(m.spCost??m.def.spCost),0); }
+ function spFree(){ return player.maxSp-spUsed(); }
+@@ -765,7 +760,7 @@ function drawHead(cx,cy,r,o,fl){
+     return;
+   }
+   // olhos
+-  if(o.zombie){ blob(cx+r*.4,cy-r*.1,r*.2,r*.17,'#c9d37a'); eyeGlow(cx+r*.45,cy-r*.08,r*.09,'#2f4'); blob(cx-r*.1,cy-r*.1,r*.12,r*.12,'#222'); 
++  if(o.zombie){ blob(cx+r*.4,cy-r*.1,r*.2,r*.17,'#c9d37a'); eyeGlow(cx+r*.45,cy-r*.08,r*.09,'#2f4'); blob(cx-r*.1,cy-r*.1,r*.12,r*.12,'#222');
+     ctx.strokeStyle='#2a1a1a'; ctx.lineWidth=1.3; ctx.beginPath(); ctx.moveTo(cx+r*.1,cy+r*.5); ctx.lineTo(cx+r*.7,cy+r*.45); ctx.stroke();
+     for(let i=0;i<4;i++){ ctx.beginPath(); ctx.moveTo(cx+r*(.2+i*.14),cy+r*.4); ctx.lineTo(cx+r*(.2+i*.14),cy+r*.58); ctx.stroke(); }
+   } else { blob(cx+r*.42,cy-r*.05,r*.17,r*.14,'#fff'); blob(cx+r*.48,cy-r*.05,r*.08,r*.1,o.eyeCol||'#222');
+@@ -871,7 +866,7 @@ function person(o){
+   // tronco
+   if(o.robe){
+     const sway=Math.sin(time*3+seed)*.025*u+sw*.07*u*amp;
+-    ctx.beginPath(); ctx.moveTo(-.25*u+lean,shY); ctx.lineTo(.25*u+lean,shY); ctx.quadraticCurveTo(.35*u,hipY,.46*u+sway,-.02*u); 
++    ctx.beginPath(); ctx.moveTo(-.25*u+lean,shY); ctx.lineTo(.25*u+lean,shY); ctx.quadraticCurveTo(.35*u,hipY,.46*u+sway,-.02*u);
+     for(let i=0;i<=4;i++){ ctx.lineTo(.46*u-i*.23*u+sway*(1-i/4)*-1+(i%2?0:0),(i%2?-.06:-.01)*u); }
+     ctx.quadraticCurveTo(-.35*u,hipY,-.25*u+lean,shY); ctx.closePath();
+     const g=ctx.createLinearGradient(-.4*u,0,.45*u,0); g.addColorStop(0,fl?'#fff':shade(o.cloth,.55)); g.addColorStop(.6,fl?'#fff':o.cloth); g.addColorStop(1,fl?'#fff':shade(o.cloth,.7)); outlined(g,1.6);
+@@ -1442,9 +1437,10 @@ function drawLighting(){
+ function withAlpha(c,a){ if(c[0]==='#'){ const n=parseInt(c.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; } return c.replace(/,1\)$/,`,${a})`); }
+ 
+ // ── Minimapa ───────────────────────────────────────────────
++function hudMapClearance(){ return W<=700?210:166; }
+ function drawMinimap(){
+   if(STG.on){ if(STG.minimap) STG.minimap(); return; }
+-  const r=62, cx=W-r-22, cy=H-r-26, k=r/FIELD_R;
++  const r=62, cx=W-r-22, cy=H-r-hudMapClearance(), k=r/FIELD_R;
+   ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,6.283); ctx.fillStyle=BIOME.mm; ctx.fill(); ctx.clip();
+   ctx.strokeStyle='rgba(120,90,170,.35)'; ctx.lineWidth=5; for(const a of PATH_ANGLES){ ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r); ctx.stroke(); }
+   ctx.fillStyle='rgba(150,90,255,.5)'; ctx.beginPath(); ctx.arc(cx,cy,4.8*k,0,6.283); ctx.fill();
+@@ -1861,6 +1857,7 @@ function showStoryMenu(){ const s=storySeen(); let pages=[...STORY.intro]; ['ext
+ function dismissMinion(idx){
+   const m=minions[idx];
+   if(!m)return;
++  if(m.sacrificed){ floatMsg('Zumbi em recuperação: '+Math.ceil(m.deadTimer)+'s',innerWidth/2,innerHeight*.4,'#dc8999'); return; }
+   scene.remove(m.mesh);
+   minions.splice(idx,1);
+   updateMinionPanel(); updateHUD();
+@@ -1872,9 +1869,8 @@ function spawnMinion(type,fromField=false){
+   const def=MINION_DEFS[type];
+   const effectiveCost=minionSpCost(type);
+   // checar slot livre
+-  const activeCount=minions.filter(m=>!m.dead||true).length; // conta todos (vivos e mortos)
++  const activeCount=minions.length; // conta todos (vivos e mortos)
+   if(activeCount>=player.minionSlots){ floatMsg(`Slots cheios! (${player.minionSlots} máx)`,innerWidth/2,innerHeight*0.4,'#ff8844'); return null; }
+-  if(spFree()<effectiveCost){ floatMsg('SP insuficiente!',innerWidth/2,innerHeight*0.4,'#00ccaa'); return null; }
+   const minionDmgMult = hasPassive('aura')?1.3:1;
+   const minionHpMult  = hasPassive('ascensao')?1.5:1;
+   const minionSpdMult = hasPassive('ascensao')?1.3:1;
+@@ -1923,7 +1919,7 @@ function killMinion(m){
+   }
+   playSound('minionDeath');
+   const revTime=Math.max(4, MINION_REVIVE_TIME-(m.reviveReduce||0));
+-  m.dead=true; m.deadTimer=revTime; m.fadeOut=true; m._reviveTime=revTime;
++  m.dead=true; m.deadTimer=revTime; m.returning=false; m.fadeOut=true; m._reviveTime=revTime;
+   m.mesh.traverse(c=>{ if(c.material){c.material=c.material.clone(); c.material.transparent=true;} });
+   floatMsg(`💀 ${m.def.name} caiu! ${MINION_REVIVE_TIME}s...`,innerWidth/2,innerHeight*.42,'#ff8844');
+   updateMinionPanel();
+@@ -2061,31 +2057,80 @@ function spawnExplosaoFX(x,z,radius,color,scale=1){
+   if(scale>=1.5) shake=Math.max(shake,.35);
+ }
+ 
+-// ── Nova Arcana ───────────────────────────────────────────
+-function castNova(tx,tz){ playSound('nova');
+-  const cost=25;
+-  if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+-  player.mp-=cost; updateHUD(); castAnim(tx,tz,'#cc44ff');
+-  const radius = player.spellRadius + spellBonus('nova','nova_r');
+-  const dmg    = player.spellDmg   + spellBonus('nova','nova_d');
+-  spawnExplosaoFX(tx,tz,radius,0x8800ff,1);
+-  ring(tx,tz,radius*.4,'#cc44ff',1.2);
+-  enemies.forEach(e=>{ if(e.dead)return;
+-    const dx=e.mesh.position.x-tx,dz=e.mesh.position.z-tz;
+-    if(dx*dx+dz*dz<radius*radius) dealDamageToEnemy(e,dmg);
++// ── Mãos dos Mortos ───────────────────────────────────────────
++const ABILITY_VERSION=1;
++let handsAreas=[];
++player.spellCooldowns={raio:0,maos:0};
++function abilityReady(id,cost){
++  if(gameState!=='field'||P.deadT>0||!player.learnedSkills.has(id)) return false;
++  if((player.spellCooldowns[id]||0)>0){ floatMsg('Habilidade em recarga',innerWidth/2,innerHeight*.45,'#a855f7'); return false; }
++  if(player.mp<cost){ floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff'); return false; }
++  return true;
++}
++function castHands(tx,tz){
++  if(!abilityReady('maos',35)) return;
++  if(!Number.isFinite(tx)||!Number.isFinite(tz)||Math.hypot(tx-P.x,tz-P.y)>9){ floatMsg('Fora de alcance (9)',innerWidth/2,innerHeight*.45,'#ff8844'); return; }
++  player.mp-=35; player.spellCooldowns.maos=12;
++  handsAreas.push({x:tx,y:tz,r:3.5,life:5});
++  castAnim(tx,tz,'#78b85a'); ring(tx,tz,3.5,'#78b85a',.6); playSound('revive'); updateHUD(); tutEvent('maos');
++}
++function handsSpeed(e){
++  return handsAreas.some(a=>a.life>0&&Math.hypot(e.x-a.x,e.y-a.y)<=a.r)?(e.isBoss?.8:.6):1;
++}
++function resetAbilities(){
++  handsAreas=[]; player.spellCooldowns={raio:0,maos:0};
++  player.barrier=0; player.barrierT=0; player.barrierCd=0;
++}
++function updateAbilities(dt){
++  handsAreas=handsAreas.filter(a=>(a.life-=dt)>0);
++  for(const id of ['raio','maos']){
++    player.spellCooldowns[id]=Math.max(0,(player.spellCooldowns[id]||0)-dt);
++    const el=document.getElementById('slot-'+id);
++    if(el){ let badge=el.querySelector('.ability-cd'); if(!badge){ badge=document.createElement('div'); badge.className='ability-cd'; badge.style.cssText='position:absolute;inset:0;background:#000a;display:none;align-items:center;justify-content:center;color:white;pointer-events:none'; el.appendChild(badge); }
++      const cd=player.spellCooldowns[id]; badge.style.display=cd>0?'flex':'none'; badge.textContent=cd<1?cd.toFixed(1):Math.ceil(cd)+'s'; }
++  }
++  updateCombatInterface(); syncSummonProgress(); renderSummonSlots();
++}
++let _combatSig='';
++function updateCombatInterface(){
++  const signature=[player.activeSpell,...player.learnedSkills,Math.floor(player.mp),player.barrierCd>0,player.spellCooldowns.raio>0,player.spellCooldowns.maos>0,CAMP.on].join('|');
++  if(signature===_combatSig)return; _combatSig=signature;
++  const costs={raio:20,maos:35,chuva:40,explosao:60,barreira:15};
++  document.querySelectorAll('#spellbar .spell-slot').forEach(el=>{
++    const id=el.id.slice(5),learned=player.learnedSkills.has(id);
++    const cd=id==='barreira'?player.barrierCd:(player.spellCooldowns[id]||0);
++    el.setAttribute('aria-disabled',String(!learned));
++    el.classList.toggle('no-mana',learned&&player.mp<costs[id]);
++    if(!learned) el.title=CAMP.on?(CAMP_GATE[id]||'Aprenda durante a campanha'):'Aprenda na seção Habilidades';
++    else if(id!=='barreira') el.title=SKILL_NODES[id].desc+(cd>0?' · Em recarga':'');
++  });
++  const selected=document.getElementById('selected-spell'), id=player.activeSpell;
++  if(selected) selected.textContent=id&&SKILL_NODES[id]?SKILL_NODES[id].name+' · '+costs[id]+' MP'+(player.mp<costs[id]?' · mana insuficiente':''):'Nenhuma magia aprendida';
++}
++function drawHands(){
++  handsAreas.forEach(a=>{
++    ctx.save(); ctx.globalAlpha=Math.min(1,a.life); ctx.fillStyle='rgba(65,100,35,.26)'; ctx.strokeStyle='#90c878'; ctx.lineWidth=2;
++    ctx.beginPath(); ctx.ellipse(sx(a.x),sy(a.y),a.r*S,a.r*S*.6,0,0,Math.PI*2); ctx.fill(); ctx.stroke();
++    for(let i=0;i<16;i++){
++      const angle=i*2.39996, r=a.r*Math.sqrt((i+.5)/16), x=sx(a.x+Math.cos(angle)*r), y=sy(a.y+Math.sin(angle)*r);
++      const h=S*(.18+.05*Math.sin(time*4+i)); ctx.strokeStyle='#a4c987'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y-h);
++      for(let j=-1;j<=1;j++){ ctx.moveTo(x,y-h*.6); ctx.lineTo(x+j*4,y-h-5+Math.abs(j)*2); } ctx.stroke();
++    } ctx.restore();
+   });
+ }
+ 
+ // ── Raio Necrótico (projétil) ─────────────────────────────
+-function castRaio(tx,tz){ playSound('raio');
+-  const cost=30;
++function castRaio(tx,tz){
++  if(!abilityReady('raio',20)||!Number.isFinite(tx)||!Number.isFinite(tz)) return;
++  player.spellCooldowns.raio=.5; playSound('raio');
++  const cost=20;
+   if(player.mp<cost){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+   player.mp-=cost; updateHUD(); castAnim(tx,tz,'#00ffcc');
+   const nx=necroGroup.position.x, nz=necroGroup.position.z;
+   const dx=tx-nx, dz=tz-nz, d=Math.sqrt(dx*dx+dz*dz)||1;
+-  const raioDmg = (player.spellDmg + spellBonus('raio','raio_d'))*1.4;
++  const raioDmg = player.spellDmg + spellBonus('raio','raio_d');
+   const raioMaxPierce = 1 + Math.floor(spellBonus('raio','raio_s')/0.3 + 1e-6);
+-  tutEvent('raio'); boltsFx.push({mesh:mkMesh2(nx,nz),trail:[],vx:dx/d*14,vz:dz/d*14,life:2,hitEnemies:new Set(),dmg:raioDmg,maxPierce:raioMaxPierce,pierced:0});
++  tutEvent('raio'); boltsFx.push({mesh:mkMesh2(nx,nz),trail:[],vx:dx/d*14,vz:dz/d*14,life:9/14,remaining:9,hitEnemies:new Set(),dmg:raioDmg,maxPierce:raioMaxPierce,pierced:0});
+ }
+ 
+ function updateBolts(dt){
+@@ -2093,14 +2138,21 @@ function updateBolts(dt){
+     const b=boltsFx[i];
+     b.life-=dt;
+     b.trail.push({x:b.mesh.position.x,z:b.mesh.position.z}); if(b.trail.length>12) b.trail.shift();
+-    b.mesh.position.x+=b.vx*dt; b.mesh.position.z+=b.vz*dt;
+-    enemies.forEach(e=>{
++    const step=Math.min(dt,Math.max(0,b.remaining)/14); b.remaining-=14*step;
++    const ox=b.mesh.position.x, oz=b.mesh.position.z;
++    b.mesh.position.x+=b.vx*step; b.mesh.position.z+=b.vz*step;
++    const hits=enemies.filter(e=>!e.dead&&!b.hitEnemies.has(e)).map(e=>{
++      const dx=b.mesh.position.x-ox,dz=b.mesh.position.z-oz, len=dx*dx+dz*dz;
++      const t=len?clamp(((e.x-ox)*dx+(e.y-oz)*dz)/len,0,1):0;
++      return {e,t,d:Math.hypot(e.x-ox-t*dx,e.y-oz-t*dz)};
++    }).filter(h=>h.d<1.095).sort((a,b)=>a.t-b.t);
++    hits.forEach(({e})=>{
+       if(e.dead||b.hitEnemies.has(e))return;
+       if(b.pierced>=(b.maxPierce||1))return;
+-      const dx=e.mesh.position.x-b.mesh.position.x, dz=e.mesh.position.z-b.mesh.position.z;
+-      if(dx*dx+dz*dz<1.2){ b.hitEnemies.add(e); b.pierced=(b.pierced||0)+1; dealDamageToEnemy(e,Math.floor(b.dmg)); spawnExplosaoFX(e.mesh.position.x,e.mesh.position.z,.8,0x00ffcc,.5); }
++      b.hitEnemies.add(e); b.pierced=(b.pierced||0)+1;
++      dealDamageToEnemy(e,Math.floor(b.dmg)); spawnExplosaoFX(e.mesh.position.x,e.mesh.position.z,.8,0x00ffcc,.5);
+     });
+-    if(b.life<=0||(STG.on?(Math.abs(b.mesh.position.x-cam.x)>W/S/2+6||Math.abs(b.mesh.position.z)>12):Math.hypot(b.mesh.position.x,b.mesh.position.z)>FIELD_R+3)) boltsFx.splice(i,1);
++    if(b.remaining<=0||b.pierced>=b.maxPierce||b.life<=0||(STG.on?(Math.abs(b.mesh.position.x-cam.x)>W/S/2+6||Math.abs(b.mesh.position.z)>12):Math.hypot(b.mesh.position.x,b.mesh.position.z)>FIELD_R+3)) boltsFx.splice(i,1);
+   }
+ }
+ 
+@@ -2141,21 +2193,53 @@ function castExplosao(tx,tz){ playSound('explosao');
+ 
+ // ── Dispatcher ───────────────────────────────────────────
+ function castSpell(tx,tz){
+-  if(gameState!=='field')return;
++  if(gameState!=='field'||P.deadT>0)return;
+   if(!player.learnedSkills.has(player.activeSpell)){ if(CAMP.on) floatMsg('Você ainda não aprendeu nenhum feitiço',innerWidth/2,innerHeight*.4,'#8844ff'); return; }
+   switch(player.activeSpell){
+-    case 'nova':    castNova(tx,tz);    break;
++    case 'maos':    castHands(tx,tz);    break;
+     case 'raio':    castRaio(tx,tz);    break;
+     case 'chuva':   castChuva(tx,tz);   break;
+     case 'explosao':castExplosao(tx,tz);break;
+   }
+ }
+ 
++function combatInputAllowed(){
++  return gameState==='field'&&P.deadT===0&&!TITLE.active&&!TITLE.paused&&!COMIC.active&&!CAMP.map;
++}
++function castAssignedSpell(id,tx,tz){
++  if(!combatInputAllowed()) return;
++  if(!player.learnedSkills.has(id)){ floatMsg('Habilidade ainda não aprendida',innerWidth/2,innerHeight*.4,'#bba1d0'); return; }
++  selectSpell(id); castSpell(tx,tz);
++}
++function castHotkey(id){
++  if(summonWheelOpen) return;
++  const pt=screenToWorld(mouse.x,mouse.y); castAssignedSpell(id,pt.x,pt.z);
++}
++function handlePrimaryClick(e){
++  if(!combatInputAllowed()) return;
++  if(summonWheelOpen){ toggleSummonWheel(); return; }
++  const pt=screenToWorld(e.clientX,e.clientY); castAssignedSpell('raio',pt.x,pt.z);
++}
++function handleSecondaryClick(e){
++  e.preventDefault();
++  if(!combatInputAllowed()) return;
++  if(summonWheelOpen){ toggleSummonWheel(); return; }
++  const pt=screenToWorld(e.clientX,e.clientY);
++  if(e.shiftKey){ if(minions.length) applyRightClick(pt.x,pt.z); }
++  else castAssignedSpell('maos',pt.x,pt.z);
++}
++function openHelp(){
++  if(TITLE.active||COMIC.active) return;
++  if(summonWheelOpen) toggleSummonWheel();
++  setPause(true); tPause('controls');
++}
++
+ function selectSpell(id){
+   if(!player.learnedSkills.has(id))return;
+   player.activeSpell=id;
+   document.querySelectorAll('.spell-slot').forEach(s=>s.classList.remove('active'));
+   document.getElementById('slot-'+id)?.classList.add('active');
++  document.querySelectorAll('#spellbar .spell-slot').forEach(el=>el.setAttribute('aria-pressed',String(el.id==='slot-'+id)));
+ }
+ 
+ 
+@@ -2193,7 +2277,6 @@ function dealDamageToEnemy(e,dmg){
+ }
+ function dealDamageToMinion(m,dmg){
+   if(m.dead)return;
+-  if(player.barrierT>0&&Math.hypot(m.x-P.x,m.y-P.y)<4.2) dmg=Math.max(1,Math.floor(dmg*.55));
+   m.hp-=dmg; m.hit=.18;
+   const sp=worldToScreen(m.mesh.position.x,m.mesh.position.y+1.5,m.mesh.position.z);
+   floatMsg('-'+dmg,sp.x,sp.y,'#ffaa00');
+@@ -2342,6 +2425,7 @@ function enterHub(){
+   gameState='hub';
+   enemies.forEach(e=>scene.remove(e.mesh)); enemies=[];
+   droppedItems.forEach(i=>scene.remove(i.mesh)); droppedItems=[];
++  resetAbilities();
+   boltsFx.forEach(b=>{scene.remove(b.mesh);b.trail.forEach(t=>scene.remove(t));}); boltsFx=[];
+   spellFx.forEach(f=>scene.remove(f.mesh)); spellFx=[];
+   enemiesLeft=0; spawnQueue=[]; waveActive=false; summonWheelOpen=false; eshots=[]; soulOrbs=[]; particles=[]; commandMarker=null; minionCommand=null; P.deadT=0;
+@@ -2360,10 +2444,10 @@ function gainSouls(v){ player.souls+=v; updateHUD(); }
+ 
+ function onLevelUp(){ playSound('levelUp');
+   player.maxHp+=10; player.hp=Math.min(player.hp+20,player.maxHp);
+-  player.maxMp+=5; player.maxSp+=10;
+-  if(player.level%2===0){ player.skillPoints++; document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s) de habilidade`; }
+-  showOverlay(`LEVEL ${player.level}!`,'HP/Mana/SP aumentados · Hub para gastar pontos','#d4af37');
+-  document.getElementById('level-txt').textContent=`⚔ LEVEL ${player.level} — NECROMANTE`;
++  player.maxMp+=5; player.maxSp+=10; syncSummonProgress(); renderSummonSlots();
++  if(player.level%2===0){ player.skillPoints++; document.getElementById('sp-pts-txt').textContent=`✦ ${player.skillPoints} pts`; }
++  showOverlay(`LEVEL ${player.level}!`,'Vida e mana aumentadas · Confira os slots no HUD','#d4af37');
++  document.getElementById('level-txt').textContent=`NV. ${player.level}`;
+   updateHUD();
+ }
+ 
+@@ -2375,18 +2459,40 @@ function learnSkill(id){
+   player.skillPoints--;
+   player.learnedSkills.add(id);
+   if(node.spell) document.getElementById('slot-'+node.spell)?.classList.remove('locked');
+-  document.getElementById('sp-pts-txt').textContent=player.skillPoints>0?`✨ ${player.skillPoints} ponto(s) de habilidade`:'';
++  document.getElementById('sp-pts-txt').textContent=player.skillPoints>0?`✦ ${player.skillPoints} pts`:'';
+   playSound('levelUp'); floatMsg(`✓ ${node.name} aprendida!`,innerWidth/2,innerHeight*.35,'#d4af37');
+-  buildSkillTree();
++  showHubOverlay('skills');
+ }
+ 
+ // ═══════════════════════════════════════════════════════════
+ // HUB UI
+ // ═══════════════════════════════════════════════════════════
++const MANAGEMENT_INFO={
++  missions:['MISSÕES','Escolha uma missão e confira seus objetivos e recompensas.'],
++  upgrades:['PERSONAGEM','Melhorias gerais são compradas com almas.'],
++  skills:['HABILIDADES','Desbloqueios usam pontos de habilidade; evoluções usam almas.'],
++  summon:['HORDA','Cada slot contém um grupo. Caídos e sacrificados continuam vinculados a ele.'],
++  minions:['MELHORIAS DA HORDA','Melhore os atributos de cada tipo de aliado usando almas.'],
++  shop:['LOJA','Itens e consumíveis são comprados com ouro.']
++};
++function restoreManagementPanels(){
++  const host=document.getElementById('hub-overlay'), wrap=document.getElementById('tl-wrap');
++  if(!host||!wrap) return;
++  wrap.querySelectorAll('.hub-panel').forEach(panel=>{ host.insertBefore(panel,host.querySelector('.hub-actions')); panel.classList.remove('active'); });
++}
++function mountManagementPanel(id,body){
++  const panel=document.getElementById('panel-'+id); panel.classList.add('active'); body.appendChild(panel);
++}
+ function showHubOverlay(tab){
++  if(TITLE.paused&&!PM.ov){
++    const map={skills:'skills',summon:'horde',minions:'horde',upgrades:'status'};
++    if(map[tab]||!tab){ tPause(map[tab]||PM.tab); return; }
++  }
++  restoreManagementPanels();
++
+   document.getElementById('hub-overlay').style.display='flex';
+   document.getElementById('hub-souls-disp').textContent=`💀 ${player.souls} almas  ·  ✨ ${player.skillPoints} pontos de habilidade`;
+-  document.getElementById('hub-stat').textContent=`Lv${player.level}  HP ${Math.ceil(player.hp)}/${player.maxHp}  MP ${Math.ceil(player.mp)}/${player.maxMp}  SP ${spUsed()}/${player.maxSp}  Wave ${wave}`;
++  document.getElementById('hub-stat').textContent=`Lv${player.level}  VIDA ${Math.ceil(player.hp)}/${player.maxHp}  MP ${Math.ceil(player.mp)}/${player.maxMp}  SLOTS ${summonSlotCount()}  CRIATURAS ${minions.length}`;
+   buildShopGrid();
+   buildMissionBoard();
+   buildUpgradeGrid();
+@@ -2396,7 +2502,8 @@ function showHubOverlay(tab){
+   buildRosterSection();
+   buildSummonGrid();
+   // Muda para tab específica se indicada
+-  if(tab){
++  {
++    tab=tab||document.querySelector('.hub-panel.active')?.id.slice(6)||(CAMP.on?'skills':'missions');
+     // Mapeia tab especial 'upgrades' para a primeira aba disponível com upgrades
+     const tabMap={upgrades:'upgrades',skills:'skills',minions:'minions',shop:'shop',missions:'missions',summon:'summon'};
+     const actualTab=tabMap[tab]||'missions';
+@@ -2411,13 +2518,16 @@ function showTab(id, btn){
+   document.querySelectorAll('.hub-tab').forEach(t=>t.classList.remove('active'));
+   document.getElementById('panel-'+id).classList.add('active');
+   if(btn) btn.classList.add('active');
++  const info=MANAGEMENT_INFO[id];
++  document.getElementById('management-title').textContent=info[0];
++  document.getElementById('management-desc').textContent=info[1];
+ }
+ 
+ function buildShopGrid(){
+   const g=document.getElementById('shop-grid'); g.innerHTML='';
+   const goldEl=document.createElement('div');
+   goldEl.style.cssText='font-size:12px;color:#d4af37;letter-spacing:2px;margin-bottom:14px;';
+-  goldEl.textContent=`🪙 ${player.gold} gold disponível`;
++  goldEl.textContent=`🪙 ${player.gold} ouro disponível`;
+   g.appendChild(goldEl);
+   const grid=document.createElement('div'); grid.className='shop-grid';
+   SHOP_ITEMS.forEach(item=>{
+@@ -2507,8 +2617,6 @@ function buyUpgrade(u,cost){
+   if(player.souls<cost)return;
+   player.souls-=cost; player.upgradeCount[u.id]=(player.upgradeCount[u.id]||0)+1;
+   switch(u.id){
+-    case 'slots':   player.minionSlots++; break;
+-    case 'sppool':  player.maxSp+=20; break;
+     case 'mhp':     minionHpBonus+=30; minions.forEach(m=>{m.maxHp+=30;m.hp+=30;}); break;
+     case 'mdmg':    minionDmgBonus+=5; minions.forEach(m=>m.dmg+=5); break;
+     case 'mpregen': player.mpRegen+=3; break;
+@@ -2525,17 +2633,17 @@ function buildSkillTree(){
+   const container=document.getElementById('skill-tree'); container.innerHTML='';
+   const pts=document.createElement('div');
+   pts.style.cssText='color:#00ccaa;font-size:11px;letter-spacing:1px;margin-bottom:8px;text-align:center;';
+-  pts.textContent=`✨ ${player.skillPoints} ponto(s) disponível(is)`;
++  pts.textContent=`✦ ${player.skillPoints} pts disponível(is)`;
+   container.appendChild(pts);
+ 
+   const rs=document.createElement('button'); rs.className='btn'; rs.style.cssText='display:block;margin:0 auto 10px;font-size:10px;'; rs.textContent='↺ REDEFINIR TODAS AS HABILIDADES'; rs.onclick=respecAllSkills; container.appendChild(rs);
+   // Base
+-  container.appendChild(mkSkillNode('nova'));
++  container.appendChild(mkSkillNode('raio'));
+ 
+   // Divisor
+   const divRow=document.createElement('div');
+   divRow.style.cssText='display:flex;justify-content:center;gap:90px;margin:4px 0;';
+-  divRow.innerHTML='<div style="color:#8844ff;font-size:9px;letter-spacing:2px;">MAGIA</div><div style="color:#00ccaa;font-size:9px;letter-spacing:2px;">INVOCAÇÃO</div><div style="color:#5ab8ff;font-size:9px;letter-spacing:2px;">DEFESA</div>';
++  divRow.innerHTML='<div style="color:#8844ff;font-size:9px;letter-spacing:2px;">MAGIA</div><div style="color:#00ccaa;font-size:9px;letter-spacing:2px;">HORDA</div><div style="color:#5ab8ff;font-size:9px;letter-spacing:2px;">DEFESA</div>';
+   container.appendChild(divRow);
+ 
+   // Branches lado a lado
+@@ -2543,13 +2651,13 @@ function buildSkillTree(){
+   row.className='st-row'; row.style.alignItems='flex-start';
+ 
+   const magicBranch=document.createElement('div'); magicBranch.className='st-branch';
+-  ['raio','chuva','explosao'].forEach(id=>{
++  ['maos','chuva','explosao'].forEach(id=>{
+     magicBranch.appendChild(mkConnector());
+     magicBranch.appendChild(mkSkillNode(id));
+   });
+ 
+   const summonBranch=document.createElement('div'); summonBranch.className='st-branch';
+-  ['aura','pacto','ritual','ascensao'].forEach(id=>{
++  ['aura','horda_zumbi','horda_zumbi_2','horda_arqueiro','pacto','ritual','ascensao'].forEach(id=>{
+     summonBranch.appendChild(mkConnector());
+     summonBranch.appendChild(mkSkillNode(id));
+   });
+@@ -2561,26 +2669,27 @@ function buildSkillTree(){
+ }
+ 
+ function unlearnSkill(id){
++  if(CAMP.on&&['raio','maos','barreira'].includes(id)) return;
+   const node=SKILL_NODES[id];
+   if(!node||!player.learnedSkills.has(id))return;
+-  if(id==='nova'){ floatMsg('A Nova Arcana é a raiz e não pode ser desaprendida',innerWidth/2,innerHeight*.4,'#ff8844'); return; }
++  if(id==='raio'){ floatMsg('O Raio Necrótico é a raiz e não pode ser desaprendida',innerWidth/2,innerHeight*.4,'#ff8844'); return; }
+   const deps=Object.keys(SKILL_NODES).filter(k=>SKILL_NODES[k].req===id&&player.learnedSkills.has(k));
+   if(deps.length){ floatMsg('Desaprenda antes: '+deps.map(k=>SKILL_NODES[k].name).join(', '),innerWidth/2,innerHeight*.4,'#ff8844'); return; }
+   player.learnedSkills.delete(id); player.skillPoints++;
+-  if(node.spell){ document.getElementById('slot-'+node.spell)?.classList.add('locked'); if(player.activeSpell===id) selectSpell('nova'); }
++  if(node.spell){ document.getElementById('slot-'+node.spell)?.classList.add('locked'); if(player.activeSpell===id) selectSpell('raio'); }
+   if(id==='barreira'){ player.barrier=0; player.barrierT=0; }
+-  document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s) de habilidade`;
++  document.getElementById('sp-pts-txt').textContent=`✦ ${player.skillPoints} pts`;
+   playSound('click'); floatMsg(`↺ ${node.name} desaprendida (+1 ponto)`,innerWidth/2,innerHeight*.35,'#00ccaa');
+   showHubOverlay('skills');
+ }
+ function respecAllSkills(){
+   let n=0;
+-  [...player.learnedSkills].forEach(id=>{ if(id==='nova')return; const node=SKILL_NODES[id]; if(!node)return;
++  [...player.learnedSkills].forEach(id=>{ if(id==='raio'||(CAMP.on&&['maos','barreira'].includes(id)))return; const node=SKILL_NODES[id]; if(!node)return;
+     player.learnedSkills.delete(id); player.skillPoints++; n++;
+     if(node.spell) document.getElementById('slot-'+node.spell)?.classList.add('locked'); });
+   if(!n){ floatMsg('Nenhuma habilidade para redefinir',innerWidth/2,innerHeight*.4,'#888'); return; }
+-  player.activeSpell='nova'; selectSpell('nova'); player.barrier=0; player.barrierT=0;
+-  document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s) de habilidade`;
++  player.activeSpell='raio'; selectSpell('raio'); player.barrier=0; player.barrierT=0;
++  document.getElementById('sp-pts-txt').textContent=`✦ ${player.skillPoints} pts`;
+   playSound('click'); floatMsg(`↺ Habilidades redefinidas (+${n} ponto${n>1?'s':''})`,innerWidth/2,innerHeight*.35,'#00ccaa');
+   showHubOverlay('skills');
+ }
+@@ -2590,33 +2699,24 @@ function mkSkillNode(id){
+   const node=SKILL_NODES[id];
+   const learned=player.learnedSkills.has(id);
+   const reqMet=!node.req||player.learnedSkills.has(node.req);
+-  const canLearn=!learned&&reqMet&&player.skillPoints>0;
++  const gated=CAMP.on&&CAMP_GATE[id]&&!learned;
++  const canLearn=!gated&&!learned&&reqMet&&player.skillPoints>0;
+   const div=document.createElement('div');
+   div.className='st-node'+(learned?' st-learned':reqMet&&!learned?' ':'  st-locked')+(id===player.activeSpell?' st-active':'');
+-  div.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${node.icon}</div><div class="st-name">${node.name}</div><div class="st-desc">${node.desc}</div>${!learned?`<div class="st-cost">${canLearn?'1 ponto — clique para aprender':reqMet?'1 ponto (aprenda pré-req. primeiro)':'🔒 Bloqueado'}</div>`:`<div class="st-cost" style="color:#00ccaa">✓ Aprendida${id==='nova'?'':' <span style="color:#ff9966">· clique para desaprender</span>'}</div>`}`;
++  div.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${node.icon}</div><div class="st-name">${node.name}</div><div class="st-desc">${node.desc}</div>${!learned?`<div class="st-cost">${gated?CAMP_GATE[id]:canLearn?'1 ponto — clique para aprender':reqMet?'1 ponto (aprenda pré-req. primeiro)':'🔒 Bloqueado'}</div>`:`<div class="st-cost" style="color:#00ccaa">✓ Aprendida${id==='raio'||(CAMP.on&&['maos','barreira'].includes(id))?'':' <span style="color:#ff9966">· clique para desaprender</span>'}</div>`}`;
+   if(canLearn) div.onclick=()=>learnSkill(id);
+-  else if(learned&&id!=='nova'){ div.onclick=()=>unlearnSkill(id); div.style.cursor='pointer'; div.title='Desaprender e recuperar 1 ponto'; }
++  else if(learned&&id!=='raio'&&!(CAMP.on&&['maos','barreira'].includes(id))){ div.onclick=()=>unlearnSkill(id); div.style.cursor='pointer'; div.title='Desaprender e recuperar 1 ponto'; }
+   return div;
+ }
+ 
+ function buildRosterSection(){
+   const sec=document.getElementById('roster-section'); sec.innerHTML='';
+ 
+-  // Header com pips de slot
++  // Resumo de criaturas e slots de grupos
+   const hdr=document.createElement('div'); hdr.className='slot-header';
+   const lbl=document.createElement('div'); lbl.className='slot-label';
+-  lbl.textContent=`ROSTER — ${minions.length}/${player.minionSlots} SLOTS`;
+-  const pips=document.createElement('div'); pips.className='slot-pips';
+-  for(let i=0;i<player.minionSlots;i++){
+-    const pip=document.createElement('div');
+-    if(i<minions.length){
+-      pip.className='slot-pip '+(minions[i].dead?'dead':'filled');
+-    } else {
+-      pip.className='slot-pip';
+-    }
+-    pips.appendChild(pip);
+-  }
+-  hdr.appendChild(lbl); hdr.appendChild(pips);
++  lbl.textContent=`HORDA — ${minions.length} criaturas em ${summonSlotCount()} slots disponíveis`;
++  hdr.appendChild(lbl);
+   sec.appendChild(hdr);
+ 
+   if(!minions.length){
+@@ -2630,7 +2730,7 @@ function buildRosterSection(){
+     card.className='roster-card'+(m.dead?' dead':'');
+     const hpPct=Math.max(0,m.hp/m.maxHp*100);
+     const revTime=m._reviveTime||MINION_REVIVE_TIME;
+-    const statusTxt=m.dead?`☠ Revivendo em ${Math.ceil(m.deadTimer)}s`:`❤ ${Math.ceil(m.hp)}/${m.maxHp}`;
++    const statusTxt=minionStateText(m);
+     card.innerHTML=`
+       <button class="dismiss-btn" onclick="dismissMinion(${idx});showHubOverlay()">✕</button>
+       <div class="rc-top">
+@@ -2646,7 +2746,7 @@ function buildRosterSection(){
+       <div style="font-size:9px;color:#444;display:flex;gap:10px;">
+         <span>⚔ DMG ${m.dmg}</span>
+         <span>💨 SPD ${m.spd.toFixed(1)}</span>
+-        <span>🔮 SP ${m.spCost??m.def.spCost}</span>
++
+       </div>`;
+     grid.appendChild(card);
+   });
+@@ -2654,28 +2754,8 @@ function buildRosterSection(){
+ }
+ 
+ function buildSummonGrid(){
+-  const g=document.getElementById('summon-grid'); g.innerHTML='';
+-  const slotsLlenos=minions.length>=player.minionSlots;
+-  if(slotsLlenos){
+-    g.innerHTML=`<div style="color:#664400;font-size:10px;letter-spacing:1px;padding:10px 0;">⚠ Slots cheios (${player.minionSlots}/${player.minionSlots}). Dispense um minion acima ou compre mais slots em UPGRADES.</div>`;
+-    return;
+-  }
+-  let added=0;
+-  Object.entries(MINION_DEFS).forEach(([key,def])=>{
+-    if(player.level<def.unlockLv)return;
+-    const soulCost=key==='zombie'?0:(key==='skeleton'||key==='archer')?15:30;
+-    const effectiveSp=minionSpCost(key);
+-    const canSummon=spFree()>=effectiveSp&&player.souls>=soulCost;
+-    const card=document.createElement('div');
+-    card.className='summon-card'+(canSummon?'':' disabled');
+-    const typeHp=minionBonus(key,'hp'), typeDmg=minionBonus(key,'dmg');
+-    card.innerHTML=`<div class="sm-emoji">${def.emoji}</div><div class="sm-name">${def.name}</div>
+-      <div class="sm-stats">HP: ${def.hp+minionHpBonus+typeHp} · DMG: ${def.dmg+minionDmgBonus+typeDmg}<br>SP: ${effectiveSp} · SPD: ${(def.spd+minionBonus(key,'spd')).toFixed(1)}</div>
+-      <div class="sm-cost">🔮 ${effectiveSp} SP${soulCost?' · 💀 '+soulCost:' · grátis'}</div>`;
+-    if(canSummon) card.onclick=()=>{ player.souls-=soulCost; spawnMinion(key); showHubOverlay(); };
+-    g.appendChild(card); added++;
+-  });
+-  if(!added) g.innerHTML='<div style="color:#555;font-size:11px;letter-spacing:1px;">Nenhum minion disponível ainda.</div>';
++  const root=document.getElementById('summon-grid'); root.innerHTML='';
++  unlockedSummonIndices().forEach(i=>{ const type=player.summonLoadout[i], def=MINION_DEFS[type], b=document.createElement('button'); b.className='group-choice';b.disabled=!summonAvailable();b.innerHTML='<span>'+(def?def.emoji:'+')+'</span><div><b>Slot '+(i+1)+'</b><small>'+(def?def.name+' · '+slotMembers(i).length+'/'+summonGroupSize(type):'Escolher grupo')+'</small></div>';b.onclick=()=>openSummonSlot(i);root.appendChild(b); });
+ }
+ 
+ // ── Upgrades de Minion ────────────────────────────────────
+@@ -2736,7 +2816,7 @@ function buildSpellUpgradesSection(){
+   // Layout: todas as magias lado a lado em grid
+   const grid=document.createElement('div');
+   grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;';
+-  const SPELL_NAMES={nova:'🔮 Nova Arcana',raio:'⚡ Raio Necrótico',chuva:'🦴 Chuva de Ossos',explosao:'💥 Explosão'};
++  const SPELL_NAMES={maos:'🖐 Mãos dos Mortos',raio:'⚡ Raio Necrótico',chuva:'🦴 Chuva de Ossos',explosao:'💥 Explosão'};
+   learnedSpells.forEach(spell=>{
+     const ups=SPELL_UPGRADES[spell];
+     ups.forEach(u=>{
+@@ -2763,32 +2843,30 @@ function buySpellUpgrade(spell, u, cost){
+ 
+ // ── Summon Wheel (campo) ──────────────────────────────────
+ function toggleSummonWheel(){
+-  if(CAMP.on&&!CAMP.summon&&!summonWheelOpen){ floatMsg('🔒 Invocação ainda não aprendida',innerWidth/2,innerHeight*.4,'#a855f7'); return; }
+-  summonWheelOpen=!summonWheelOpen;
+-  const w=document.getElementById('summon-wheel');
+-  if(summonWheelOpen){
+-    w.style.display='flex'; buildSummonWheelUI();
+-  } else {
+-    w.style.display='none';
+-  }
++  if(summonWheelOpen){ closeSummonPicker(); return; }
++  const available=unlockedSummonIndices(), empty=available.find(i=>!player.summonLoadout[i]);
++  openSummonSlot(empty===undefined?available[0]:empty);
+ }
+ 
+ function buildSummonWheelUI(){
+-  const row=document.getElementById('sw-row'); row.innerHTML='';
+-  Object.entries(MINION_DEFS).forEach(([key,def])=>{
+-    if(player.level<def.unlockLv)return;
+-    const soulCost=key==='zombie'?0:(key==='skeleton'||key==='archer')?15:30;
+-    const mpCost=key==='zombie'?20:(key==='skeleton'||key==='archer')?30:45;
+-    const canSummon=spFree()>=def.spCost&&player.souls>=soulCost&&player.mp>=mpCost;
+-    const btn=document.createElement('button');
+-    btn.className='sw-btn'+(canSummon?'':' sw-disabled');
+-    btn.innerHTML=`<span>${def.emoji} ${def.name}</span><span class="sw-cost">🔮${def.spCost}SP${soulCost?' 💀'+soulCost:''} 🔷${mpCost}MP</span>`;
+-    if(canSummon) btn.onclick=()=>{
+-      player.souls-=soulCost; player.mp-=mpCost; updateHUD();
+-      spawnMinion(key,true); toggleSummonWheel();
+-    };
+-    row.appendChild(btn);
++  summonPickerSignature=summonPickerState();
++  const root=document.getElementById('summon-wheel'), index=selectedSummonSlot, current=player.summonLoadout[index];
++  root.innerHTML='<div class="summon-picker-heading"><div><small>GRUPO DE INVOCAÇÃO</small><h3>SLOT '+(index+1)+'</h3></div><button class="btn" onclick="closeSummonPicker()" aria-label="Fechar seleção">✕</button></div><p class="summon-explanation">Um slot contém um grupo: Zumbi começa com 3 unidades; Arqueiro Ósseo, com 2. A árvore pode ampliar esses grupos. Caídos e sacrificados continuam no grupo.</p><div id="sw-row" class="sw-row"></div>';
++  const row=root.querySelector('#sw-row');
++  Object.entries(MINION_DEFS).forEach(([type,def])=>{
++    const quote=summonGroupQuote(index,type), button=document.createElement('button');
++    button.className='group-choice'+(current===type?' equipped':''); button.disabled=!quote.ok;
++    button.innerHTML='<span>'+def.emoji+'</span><div><b>'+def.name+'</b><small>'+summonGroupSize(type)+' criaturas por slot</small><em>'+(quote.ok?(quote.count?quote.count+' novas · '+quote.mp+' MP · '+quote.soul+' almas':'Grupo completo'):quote.why)+'</em></div>';
++    button.onclick=()=>{ if(configureSummonSlot(index,type)){ closeSummonPicker(); if(TITLE.paused) showHubOverlay('summon'); } }; row.appendChild(button);
+   });
++  if(!current&&!slotMembers(index).length) player.summonReserve.forEach((group,n)=>{
++    const b=document.createElement('button');b.className='group-choice';b.disabled=!summonTypeAvailable(group.type);
++    b.textContent='Restaurar reserva: '+MINION_DEFS[group.type].name+' × '+Math.min(group.count,summonGroupSize(group.type))+' (já adquirido)';
++    b.onclick=()=>{if(claimReservedGroup(index,n)){closeSummonPicker();if(TITLE.paused)showHubOverlay('summon');}};root.appendChild(b);
++  });
++  const clear=document.createElement('button'); clear.className='btn'; clear.textContent='Liberar este slot'; clear.disabled=slotMembers(index).some(m=>m.sacrificed)||!current;
++  clear.onclick=()=>{ if(clearSummonSlot(index)){ closeSummonPicker(); if(TITLE.paused) showHubOverlay('summon'); } };root.appendChild(clear);
++  if(player.summonReserve.length){ const note=document.createElement('p'); note.className='section-note';note.textContent=player.summonReserve.length+' grupos do save anterior estão em reserva até liberar slots.';root.appendChild(note); }
+ }
+ 
+ // ═══════════════════════════════════════════════════════════
+@@ -2799,10 +2877,11 @@ window.addEventListener('keydown',e=>{
+   if(TITLE.active||TITLE.paused){ titleKey(e); return; }
+   keys[e.key.toLowerCase()]=true;
+   if(e.key>='1'&&e.key<='4'){
+-    const spells=['nova','raio','chuva','explosao'];
+-    selectSpell(spells[parseInt(e.key)-1]);
++    const spells=['raio','maos','chuva','explosao'];
++    if(!e.repeat) castHotkey(spells[parseInt(e.key)-1]);
+   }
+-  if(e.key.toLowerCase()==='q') toggleSummonWheel();
++  if(e.key.toLowerCase()==='h'){ e.preventDefault(); openHelp(); return; }
++  if(e.key.toLowerCase()==='q'&&!e.repeat) toggleSummonWheel();
+   if(e.key==='Escape') escKey();
+   if(e.code==='Space'){ e.preventDefault(); castBarrier(); }
+   if(e.key.toLowerCase()==='e'){
+@@ -2826,20 +2905,8 @@ window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+ 
+ 
+ cv.addEventListener('mousemove',e=>{ mouse.x=e.clientX; mouse.y=e.clientY; });
+-cv.addEventListener('click',e=>{
+-  if(gameState!=='field')return;
+-  if(summonWheelOpen){toggleSummonWheel();return;}
+-  const pt=screenToWorld(e.clientX,e.clientY);
+-  castSpell(pt.x,pt.z);
+-});
+-cv.addEventListener('contextmenu',e=>{
+-  e.preventDefault();
+-  if(gameState!=='field')return;
+-  if(minions.length===0)return;
+-  const pt=screenToWorld(e.clientX,e.clientY);
+-  applyRightClick(pt.x,pt.z);
+-});
+-
++cv.addEventListener('click',handlePrimaryClick);
++cv.addEventListener('contextmenu',handleSecondaryClick);
+ 
+ // bloqueia contextmenu do document também (browsers às vezes capturam antes)
+ document.addEventListener('contextmenu',e=>{ if(gameState==='field') e.preventDefault(); });
+@@ -2847,11 +2914,11 @@ document.addEventListener('contextmenu',e=>{ if(gameState==='field') e.preventDe
+ // ── Comandos de minion ────────────────────────────────────
+ let pendingCommand='auto'; // 'auto'|'attack'|'rally'
+ 
+-function setCommand(type){
++function setCommand(type,preserveOrder=false){
+   pendingCommand=type;
+   document.querySelectorAll('.cmd-btn').forEach(b=>b.classList.remove('active'));
+   document.getElementById('cmd-'+type)?.classList.add('active');
+-  if(type==='auto'){
++  if(type==='auto'&&!preserveOrder){
+     minionCommand=null;
+     removeCommandMarker();
+   }
+@@ -2859,7 +2926,9 @@ function setCommand(type){
+ 
+ function applyRightClick(wx,wz){
+   // auto-detecta: se tem inimigo perto do clique → ataque, senão → reunir
+-  const near=nearestEnemyToPoint(wx,wz);
++  const near=localMinionTarget(wx,wz,necroGroup.position);
++  const dx=wx-P.x,dz=wz-P.y,d=Math.hypot(dx,dz)||1;
++  if(d>LEASH_DIST-1){ wx=P.x+dx/d*(LEASH_DIST-1); wz=P.y+dz/d*(LEASH_DIST-1); }
+   const distToNear=near?Math.hypot(near.mesh.position.x-wx,near.mesh.position.z-wz):999;
+   const type=(pendingCommand!=='auto')?pendingCommand:(distToNear<4?'attack':'rally');
+   minionCommand={type,x:wx,z:wz,timer:14};
+@@ -2867,21 +2936,32 @@ function applyRightClick(wx,wz){
+   floatMsg(type==='attack'?'⚔ Minions atacando!':'↩ Minions reunindo!',innerWidth/2,innerHeight*.38,'#d4af37');
+   playSound('click');
+   // reseta modo manual de volta ao auto
+-  if(pendingCommand!=='auto') setCommand('auto');
++  if(pendingCommand!=='auto') setCommand('auto',true);
+ }
+ 
+ 
+ Object.assign(player,{barrier:0,barrierMax:0,barrierT:0,barrierCd:0});
++function sacrificeCandidate(){
++  return minions.filter(m=>m.type==='zombie'&&!m.dead).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp||Math.hypot(a.x-P.x,a.y-P.y)-Math.hypot(b.x-P.x,b.y-P.y))[0];
++}
+ function castBarrier(){
+   if(gameState!=='field'||P.deadT>0)return;
+-  if(!player.learnedSkills.has('barreira')){ floatMsg('Aprenda a Barreira Arcana na árvore de habilidades',innerWidth/2,innerHeight*.4,'#5ab8ff'); return; }
+-  if(player.barrierCd>0){ floatMsg('Recarga: '+Math.ceil(player.barrierCd)+'s',innerWidth/2,innerHeight*.45,'#5ab8ff'); return; }
+-  if(player.mp<40){ floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff'); return; }
+-  player.mp-=40; updateHUD();
+-  const cap=Math.floor((50+player.level*10)*(hasPassive('bastiao')?1.6:1));
+-  player.barrier=player.barrierMax=cap; player.barrierT=8; player.barrierCd=hasPassive('bastiao')?9:14;
+-  castAnim(P.x+P.face,P.y,'#5ab8ff'); ring(P.x,P.y,4.2,'#5ab8ff',.9); ring(P.x,P.y,2,'#9fdcff',.6,.1); burst(P.x,P.y,'#7ad0ff',22,3);
+-  playSound('revive'); floatMsg('🛡 Barreira Arcana!',innerWidth/2,innerHeight*.35,'#5ab8ff'); tutEvent('barrier');
++  if(!player.learnedSkills.has('barreira')){ floatMsg('Aprenda Escudo de Carne',innerWidth/2,innerHeight*.4,'#a855f7'); return; }
++  if(player.barrierCd>0){ floatMsg('Recarga: '+Math.ceil(player.barrierCd)+'s',innerWidth/2,innerHeight*.45,'#a855f7'); return; }
++  if(player.mp<15){ floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff'); return; }
++  const victim=sacrificeCandidate(), hpCost=Math.ceil(player.maxHp*.15);
++  if(!victim&&player.hp-hpCost<1){ floatMsg('Vida insuficiente para o sacrifício',innerWidth/2,innerHeight*.45,'#ff6655'); return; }
++  const cap=Math.floor(victim?victim.maxHp*(hasPassive('bastiao')?100:70)/100:player.maxHp*.25);
++  player.mp-=15;
++  if(victim){
++    // Sacrifice is not a combat death: no Pacto explosion and no recovery reductions.
++    victim.hp=0; victim.dead=true; victim.sacrificed=true; victim.deadTimer=20; victim._reviveTime=20; victim.fadeOut=true; victim._lastReviveMsg=null; victim.target=null;
++    victim.mesh.traverse(c=>{ if(c.material){c.material=c.material.clone(); c.material.transparent=true;} });
++    burst(victim.x,victim.y,'#a65465',22,3); updateMinionPanel();
++  } else player.hp-=hpCost;
++  player.barrier=player.barrierMax=cap; player.barrierT=8; player.barrierCd=12;
++  castAnim(P.x+P.face,P.y,'#a65465'); ring(P.x,P.y,1.6,'#a65465',.9); burst(P.x,P.y,'#a65465',22,3);
++  playSound('revive'); updateHUD(); floatMsg('Escudo de Carne: '+cap+(victim?' · zumbi recupera em 20s':' · custo '+hpCost+' HP'),innerWidth/2,innerHeight*.35,'#dc8999'); tutEvent('barrier');
+ }
+ function minionStrike(m,t){
+   if(m.type!=='archer'){ dealDamageToEnemy(t,m.dmg); return; }
+@@ -2900,10 +2980,10 @@ function tryPortal(){
+ }
+ function tryReanimate(){
+   if(gameState!=='field')return;
+-  const dead=minions.find(m=>m.dead);
++  const dead=minions.find(m=>m.dead&&!m.sacrificed);
+   if(!dead)return;
+   if(player.mp<30){floatMsg('Mana insuficiente!',innerWidth/2,innerHeight*.45,'#8844ff');return;}
+-  playSound('revive'); player.mp-=30; dead.hp=Math.floor(dead.maxHp*.5); dead.dead=false; dead.deadTimer=0; dead.fadeOut=false; dead._lastReviveMsg=null;
++  playSound('revive'); player.mp-=30; dead.hp=Math.floor(dead.maxHp*.5); dead.dead=false; dead.returning=false; dead.deadTimer=0; dead.fadeOut=false; dead._lastReviveMsg=null;
+   dead.mesh.traverse(c=>{if(c.material){c.material.opacity=1;c.material.transparent=false;}});
+   floatMsg('⚗ Reanimado!',innerWidth/2,innerHeight*.35,'#a855f7');
+   updateMinionPanel(); updateHUD();
+@@ -2914,24 +2994,28 @@ function tryReanimate(){
+ // ═══════════════════════════════════════════════════════════
+ let _hudSig='';
+ function updateHUD(){
+-  const _sg=[Math.ceil(player.hp),player.maxHp,Math.ceil(player.mp),player.maxMp,player.exp,player.expNext,spUsed(),player.maxSp,player.souls,player.gold,gameState,minions.map(m=>m.type+(m.dead?1:0)).join(',')].join('|');
++  const _sg=[Math.ceil(player.hp),player.maxHp,Math.ceil(player.mp),player.maxMp,player.exp,player.expNext,spUsed(),player.maxSp,player.souls,player.gold,player.level,player.minionSlots,gameState,minions.map(m=>m.type+(m.dead?1:0)).join(',')].join('|');
+   if(_sg===_hudSig) return; _hudSig=_sg;
+   const ph=player.hp/player.maxHp, pm=player.mp/player.maxMp, pe=player.exp/player.expNext;
+   const used=spUsed(), psp=Math.min(1,used/player.maxSp);
+-  document.getElementById('hp-fill').style.width=(ph*100)+'%';
+-  document.getElementById('mp-fill').style.width=(pm*100)+'%';
++  document.getElementById('hp-vessel').style.setProperty('--fill',(ph*100)+'%');
++  document.getElementById('hp-fill').style.width='100%';
++  document.getElementById('mp-vessel').style.setProperty('--fill',(pm*100)+'%');
++  document.getElementById('mp-fill').style.width='100%';
+   document.getElementById('exp-fill').style.width=(pe*100)+'%';
+   document.getElementById('sp-fill').style.width=(psp*100)+'%';
+   document.getElementById('hp-val').textContent=`${Math.ceil(player.hp)}/${player.maxHp}`;
+   document.getElementById('mp-val').textContent=`${Math.ceil(player.mp)}/${player.maxMp}`;
+   document.getElementById('exp-val').textContent=`${player.exp}/${player.expNext}`;
+   document.getElementById('sp-val').textContent=`${used}/${player.maxSp}`;
++  document.getElementById('hud-slots').textContent=`HORDA · ${minions.length} criaturas · ${player.summonLoadout.filter((t,i)=>t&&unlockedSummonIndices().includes(i)).length}/${summonSlotCount()} slots`;
++  document.getElementById('hud-level').textContent='NV. '+player.level;
+   document.getElementById('souls-txt').textContent=`💀 ${player.souls} almas`;
+-  const gEl=document.getElementById('gold-txt'); if(gEl) gEl.textContent=`🪙 ${player.gold} gold`;
++  const gEl=document.getElementById('gold-txt'); if(gEl) gEl.textContent=`🪙 ${player.gold} ouro`;
+   // Segmentos SP
+   const segs=document.getElementById('sp-segs'); segs.innerHTML='';
+-  minions.forEach(m=>{ const s=document.createElement('div'); s.className='sp-seg'; s.style.width=((m.def.spCost/player.maxSp)*100)+'%'; segs.appendChild(s); });
+-  const dead=minions.some(m=>m.dead);
++  minions.forEach(m=>{ const s=document.createElement('div'); s.className='sp-seg'; s.style.width=(((m.spCost??m.def.spCost)/player.maxSp)*100)+'%'; segs.appendChild(s); });
++  const dead=minions.some(m=>m.dead&&!m.sacrificed);
+   document.getElementById('reanimate-hint').style.opacity=(dead&&gameState==='field')?'1':'0';
+ }
+ 
+@@ -2947,22 +3031,26 @@ function updateBossHpBar(){
+ 
+ let _mpSig='';
+ function updateMinionPanel(){
+-  const _sg=spUsed()+'/'+player.maxSp+'|'+minions.map(m=>m.type+(m.dead?'d'+Math.ceil(m.deadTimer):Math.round(m.hp/m.maxHp*50))).join(',');
++  const _sg=spUsed()+'/'+player.maxSp+'/'+player.minionSlots+'|'+minions.map(m=>m.type+(m.dead?(m.sacrificed?'s':'d')+Math.ceil(m.deadTimer):(m.returning?'r':'a')+Math.round(m.hp/m.maxHp*50))).join(',');
+   if(_sg===_mpSig) return; _mpSig=_sg;
+   const p=document.getElementById('minion-panel'); p.innerHTML='';
+-  const h=document.createElement('div');
+-  h.style.cssText='color:#888;font-size:10px;letter-spacing:1px;margin-bottom:2px;text-align:right;';
+-  h.textContent=`MINIONS (${minions.filter(m=>!m.dead).length} · ${spUsed()}/${player.maxSp} SP)`;
++  const h=document.createElement('div'); h.className='horde-summary';
++  h.innerHTML=`<span>HORDA <b>${minions.filter(m=>!m.dead).length} vivos</b></span><span>${minions.length} criaturas</span>`;
+   p.appendChild(h);
++  const members=document.createElement('div'); members.className='horde-members'; p.appendChild(members);
+   minions.forEach(m=>{
+-    const pct=Math.max(0,(m.hp/m.maxHp)*100);
+-    const hpC=pct>50?'#27ae60':pct>25?'#e67e22':'#c0392b';
+-    const row=document.createElement('div'); row.className='minion-row';
+-    row.innerHTML=`<div class="m-name">${m.dead?'☠ '+(MINION_REVIVE_TIME-Math.ceil(m.deadTimer)<0?0:MINION_REVIVE_TIME-Math.ceil(m.deadTimer))+'s':m.def.name}</div>
+-      <div class="m-hp-track"><div class="m-hp-fill" style="width:${m.dead?0:pct}%;background:${hpC}"></div></div>
+-      <div class="minion-icon ${m.dead?'dead':''}">${m.def.emoji}</div>`;
+-    p.appendChild(row);
++    const pct=clamp(m.hp/m.maxHp*100,0,100), col=pct>50?'#62b88a':pct>25?'#d4b56b':'#de776d';
++    const row=document.createElement('div');
++    row.className='horde-member'+(m.dead?' dead':'')+(m.sacrificed?' sacrificed':'');
++    row.title=m.def.name+' · '+minionStateText(m); row.tabIndex=0;
++    row.setAttribute('role','img'); row.setAttribute('aria-label',row.title);
++    row.innerHTML=`<span class="member-portrait" aria-hidden="true">${m.def.emoji}</span>
++      ${m.dead?`<span class="member-timer">${Math.ceil(m.deadTimer)}s</span>`:m.returning?'<span class="member-return">↩</span>':''}
++      <span class="member-life"><i style="width:${m.dead?0:pct}%;background:${col}"></i></span>`;
++    members.appendChild(row);
+   });
++
++
+ }
+ 
+ // ═══════════════════════════════════════════════════════════
+@@ -2989,11 +3077,62 @@ function showOverlay(title,sub,color='#fff'){
+   ov.style.opacity='1'; setTimeout(()=>ov.style.opacity='0',2800);
+ }
+ function gameOver(){
++  resetAbilities();
+   playSound('gameOver');
+   gameState='hub'; P.deadT=.001; showOverlay('VOCÊ MORREU','As trevas te consomem...','#c0392b');
+   player.hp=1; setTimeout(()=>{ player.hp=Math.floor(player.maxHp*.5); updateHUD(); enterHub(); },3000);
+ }
+ function dist2(ax,az,bx,bz){ const dx=ax-bx,dz=az-bz; return dx*dx+dz*dz; }
++function minionTargetAllowed(e,npos){
++  return !!e&&!e.dead&&Math.hypot(e.mesh.position.x-npos.x,e.mesh.position.z-npos.z)<=LEASH_DIST;
++}
++function localMinionTarget(x,z,npos){
++  let best=null, distance=Infinity;
++  enemies.forEach(e=>{ if(!minionTargetAllowed(e,npos)) return;
++    const d=Math.hypot(e.mesh.position.x-x,e.mesh.position.z-z); if(d<distance){distance=d;best=e;} });
++  return best;
++}
++function moveMinionTo(m,x,z,speed,dt,stop=0){
++  const dx=x-m.mesh.position.x,dz=z-m.mesh.position.z,d=Math.hypot(dx,dz);
++  if(d<=stop) return;
++  const step=Math.min(d-stop,speed*dt);
++  m.mesh.position.x+=dx/d*step; m.mesh.position.z+=dz/d*step; m.mesh.rotation.y=Math.atan2(dx,dz);
++}
++function updateMinionIntent(m,idx,dt,npos){
++  const distance=Math.hypot(m.mesh.position.x-npos.x,m.mesh.position.z-npos.z);
++  if(distance>LEASH_DIST||(m.target&&!m.target.dead&&!minionTargetAllowed(m.target,npos))) m.returning=true;
++  if(m.returning){
++    m.target=null;
++    // Recover only extreme separation (portal/transition), never teleport during normal pursuit.
++    if(distance>LEASH_DIST*3){ const a=idx*2.4; m.mesh.position.x=npos.x+Math.cos(a)*2; m.mesh.position.z=npos.z+Math.sin(a)*2; }
++    else moveMinionTo(m,npos.x,npos.z,Math.max(5,m.spd*1.5),dt,2.5);
++    if(Math.hypot(m.mesh.position.x-npos.x,m.mesh.position.z-npos.z)<=MINION_RETURN_DIST) m.returning=false;
++    return;
++  }
++  if(minionCommand&&minionCommand.type==='rally'){
++    m.target=null;
++    const dx=minionCommand.x-npos.x,dz=minionCommand.z-npos.z,d=Math.hypot(dx,dz)||1, scale=Math.min(1,(LEASH_DIST-1)/d);
++    moveMinionTo(m,npos.x+dx*scale,npos.z+dz*scale,m.spd,dt,1.2); return;
++  }
++  if(minionCommand&&minionCommand.type==='attack') m.target=localMinionTarget(minionCommand.x,minionCommand.z,npos);
++  else if(!minionTargetAllowed(m.target,npos)) m.target=localMinionTarget(m.mesh.position.x,m.mesh.position.z,npos);
++  if(m.target){
++    const ep=m.target.mesh.position, d=Math.hypot(ep.x-m.mesh.position.x,ep.z-m.mesh.position.z);
++    if(d>m.atkR) moveMinionTo(m,ep.x,ep.z,m.spd,dt,m.atkR);
++    else { m.atkTimer-=dt; if(m.atkTimer<=0){ m.atkTimer=m.atkRate; minionStrike(m,m.target); if(m.lifeDrain)m.hp=Math.min(m.maxHp,m.hp+m.dmg*.2); } }
++  } else {
++    m.orbitAngle+=dt*(.8+idx*.2);
++    const radius=Math.min(2.8,m.orbitRadius), a=m.orbitAngle+idx*1.2;
++    moveMinionTo(m,npos.x+Math.cos(a)*radius,npos.z+Math.sin(a)*radius,Math.max(4.5,m.spd),dt,.15);
++  }
++}
++function minionStateText(m){
++  if(m.sacrificed) return 'Sacrificado · recupera em '+Math.ceil(m.deadTimer)+'s';
++  if(m.dead) return 'Caído · renasce em '+Math.ceil(m.deadTimer)+'s · R: 30 MP';
++  if(m.returning) return 'Retornando a Zephyr';
++  return Math.ceil(m.hp)+'/'+m.maxHp+' de vida';
++}
++
+ function nearestEnemy(mx,mz){ let best=null,bd=Infinity; enemies.forEach(e=>{ if(e.dead)return; const d=dist2(mx,mz,e.mesh.position.x,e.mesh.position.z); if(d<bd){bd=d;best=e;} }); return best; }
+ function nearestMinion(ex,ez){ let best=null,bd=Infinity; minions.forEach(m=>{ if(m.dead)return; const d=dist2(ex,ez,m.mesh.position.x,m.mesh.position.z); if(d<bd){bd=d;best=m;} }); return best; }
+ function nearestEnemyToPoint(px,pz){ let best=null,bd=Infinity; enemies.forEach(e=>{ if(e.dead)return; const d=dist2(px,pz,e.mesh.position.x,e.mesh.position.z); if(d<bd){bd=d;best=e;} }); return best; }
+@@ -3001,9 +3140,183 @@ function nearestEnemyToPoint(px,pz){ let best=null,bd=Infinity; enemies.forEach(
+ // ═══════════════════════════════════════════════════════════
+ // SAVE / LOAD
+ // ═══════════════════════════════════════════════════════════
++document.getElementById('spellbar').addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); e.target.closest('.spell-slot')?.click(); } });
+ const SAVE_KEY='necromancer_v2';
++const SUMMON_SLOT_VERSION=1;
++const SUMMON_SLOT_MILESTONES=['Inicial','Inicial','Inicial','Concluir Ato I','Nível 12','Nível 15','Nível 20'];
++let selectedSummonSlot=0, summonSlotsSignature='',summonPickerSignature='';
++function summonSlotCount(level=player.level,act1=!!CAMP.cleared[4]){
++  return 3+Number(act1)+Number(level>=12)+Number(level>=15)+Number(level>=20);
++}
++function summonGroupSize(type){
++  if(type==='zombie') return 3+Number(hasPassive('horda_zumbi'))+Number(hasPassive('horda_zumbi_2'));
++  if(type==='archer') return 2+Number(hasPassive('horda_arqueiro'));
++  return 1;
++}
++// Milestones are independent: a level unlock never waits for completion of Act I.
++function unlockedSummonIndices(){
++  return [0,1,2,...(CAMP.cleared[4]?[3]:[]),...(player.level>=12?[4]:[]),...(player.level>=15?[5]:[]),...(player.level>=20?[6]:[])];
++}
++function summonAvailable(){ return !CAMP.on||CAMP.summon; }
++function summonTypeAvailable(type){
++  const def=MINION_DEFS[type];
++  return !!def&&summonAvailable()&&player.level>=def.unlockLv&&(!CAMP.on||!!CAMP.cleared[4]||type==='zombie');
++}
++function slotMembers(index){ return minions.filter(m=>m.summonSlot===index); }
++function syncSummonProgress(){
++  if(!Array.isArray(player.summonLoadout)) player.summonLoadout=['zombie',null,null,null,null,null,null];
++  const indices=unlockedSummonIndices();
++  for(const i of indices){
++    const type=player.summonLoadout[i]; if(!type)continue;
++    const group=slotMembers(i), size=summonGroupSize(type);
++    if(group.length>size){
++      const kept=group.slice().sort((a,b)=>Number(!!b.sacrificed)-Number(!!a.sacrificed)).slice(0,size);
++      const extra=group.filter(m=>!kept.includes(m)&&!m.sacrificed);
++      extra.forEach(m=>scene.remove(m.mesh)); minions=minions.filter(m=>!extra.includes(m));
++    }
++  }
++  player.minionSlots=indices.reduce((n,i)=>n+summonGroupSize(player.summonLoadout[i]||'zombie'),0);
++}
++function summonGroupQuote(index,type){
++  if(!unlockedSummonIndices().includes(index)) return {ok:false,why:'Slot bloqueado: '+SUMMON_SLOT_MILESTONES[index]};
++  const old=slotMembers(index);
++  if(!summonTypeAvailable(type)) return {ok:false,why:'Tipo ainda não disponível'};
++  if(old.some(m=>m.sacrificed)) return {ok:false,why:'Aguarde a recuperação do sacrifício'};
++  const same=player.summonLoadout[index]===type;
++  const count=Math.max(0,summonGroupSize(type)-(same?old.length:0));
++  const [unitSoul,unitMp]=SW_COST[type], soul=count*unitSoul, mp=gameState==='field'?count*unitMp:0;
++  return {ok:player.souls>=soul&&player.mp>=mp,count,soul,mp,same,why:player.souls<soul?'Almas insuficientes':player.mp<mp?'Mana insuficiente':''};
++}
++function configureSummonSlot(index,type,free=false){
++  const old=slotMembers(index);
++  if(!unlockedSummonIndices().includes(index)||!summonTypeAvailable(type)) return false;
++  if(old.some(m=>m.sacrificed)){ floatMsg('Aguarde a recuperação do sacrifício',innerWidth/2,innerHeight*.4,'#d994a3'); return false; }
++  const quote=summonGroupQuote(index,type);
++  if(!quote.ok&&!free){ floatMsg(quote.why,innerWidth/2,innerHeight*.4,'#df9f80'); return false; }
++  if(!quote.same){
++    old.forEach(m=>scene.remove(m.mesh)); minions=minions.filter(m=>m.summonSlot!==index);
++  }
++  player.summonLoadout[index]=type; syncSummonProgress();
++  if(!free){ player.souls-=quote.soul; player.mp-=quote.mp; }
++  for(let i=0;i<quote.count;i++){ const m=spawnMinion(type,gameState==='field'); if(m) m.summonSlot=index; }
++  summonSlotsSignature=''; updateMinionPanel(); updateHUD(); renderSummonSlots(); return true;
++}
++function clearSummonSlot(index){
++  if(!unlockedSummonIndices().includes(index)) return false;
++  const group=slotMembers(index);
++  if(group.some(m=>m.sacrificed)){ floatMsg('Aguarde a recuperação do sacrifício',innerWidth/2,innerHeight*.4,'#d994a3'); return false; }
++  group.forEach(m=>scene.remove(m.mesh)); minions=minions.filter(m=>m.summonSlot!==index);
++  player.summonLoadout[index]=null; syncSummonProgress(); summonSlotsSignature=''; updateHUD(); updateMinionPanel(); renderSummonSlots(); return true;
++}
++function closeSummonPicker(){
++  summonWheelOpen=false; document.getElementById('summon-wheel').style.display='none';
++}
++function openSummonSlot(index){
++  if(TITLE.active||COMIC.active) return;
++  if(!summonAvailable()){ floatMsg('Aprenda a invocar na Floresta de Eldrin',innerWidth/2,innerHeight*.4,'#c4b58a'); return; }
++  if(!unlockedSummonIndices().includes(index)){ floatMsg('Slot bloqueado: '+SUMMON_SLOT_MILESTONES[index],innerWidth/2,innerHeight*.4,'#c4b58a'); return; }
++  selectedSummonSlot=index; summonWheelOpen=true;
++  document.getElementById('summon-wheel').style.display='flex'; buildSummonWheelUI();
++}
++function summonPickerState(){
++  return JSON.stringify([selectedSummonSlot,player.summonLoadout[selectedSummonSlot],...Object.keys(MINION_DEFS).map(type=>summonGroupQuote(selectedSummonSlot,type))]);
++}
++function renderSummonSlots(){
++  const root=document.getElementById('summon-slots'); if(!root) return;
++  if(summonWheelOpen&&summonPickerState()!==summonPickerSignature) buildSummonWheelUI();
++  const indices=unlockedSummonIndices(), enabled=summonAvailable();
++  const signature=JSON.stringify([indices,enabled,selectedSummonSlot,summonWheelOpen,player.summonLoadout,player.learnedSkills.size,...minions.map(m=>[m.summonSlot,m.dead,m.sacrificed,Math.ceil(m.deadTimer||0)])]);
++  if(signature===summonSlotsSignature) return; summonSlotsSignature=signature; root.innerHTML='';
++  for(let i=0;i<7;i++){
++    const unlocked=indices.includes(i), type=player.summonLoadout[i], def=MINION_DEFS[type], group=slotMembers(i), live=group.filter(m=>!m.dead).length;
++    const button=document.createElement('button'); button.className='summon-group-slot'+(!unlocked||!enabled?' locked':'')+(i===selectedSummonSlot&&summonWheelOpen?' selected':'');
++    button.disabled=!unlocked||!enabled;
++    button.title=!enabled?'Aprenda a invocar na Floresta de Eldrin':!unlocked?SUMMON_SLOT_MILESTONES[i]:def?def.name+': '+live+' vivos de '+summonGroupSize(type)+' · clique para configurar':'Clique e escolha um tipo para este slot';
++    button.setAttribute('aria-label','Slot '+(i+1)+' · '+button.title);
++    button.innerHTML='<small>'+(i+1)+'</small><span>'+(!unlocked?'◇':def?def.emoji:'+')+'</span><b>'+(!unlocked?(i===3?'ATO I':i===4?'NV12':i===5?'NV15':'NV20'):def?live+'/'+summonGroupSize(type):'VAZIO')+'</b>';
++    button.onclick=()=>openSummonSlot(i); root.appendChild(button);
++  }
++}
++function migrateSummonSlots(d){
++  if((d.summonSlotVersion||0)>=SUMMON_SLOT_VERSION) return d;
++  const types=d.minionTypes||[], groups=[];
++  for(const type of Object.keys(MINION_DEFS)){
++    let count=types.filter(t=>t===type).length;
++    const size=type==='zombie'?3:type==='archer'?2:1;
++    while(count>0){ groups.push({type,count:Math.min(size,count)}); count-=size; }
++  }
++  const indices=[0,1,2,...(d.camp?.cleared?.[4]?[3]:[]),...(d.level>=12?[4]:[]),...(d.level>=15?[5]:[]),...(d.level>=20?[6]:[])];
++  d.summonLoadout=Array(7).fill(null); d.summonGroups=[]; d.summonReserve=[];
++  groups.forEach((g,n)=>{ if(indices[n]!==undefined){ const slot=indices[n]; d.summonLoadout[slot]=g.type; d.summonGroups.push({...g,slot}); } else d.summonReserve.push(g); });
++  if(!groups.length) d.summonLoadout[0]='zombie';
++  const upgrades=d.upgradeCount||{}, mups=d.minionUpgradeCount||{};
++  for(const [key,base,mult,object] of [['slots',80,2.2,upgrades],['sppool',55,1.8,upgrades],['p_cost',70,2,mups]]){
++    for(let n=0;n<(object[key]||0);n++) d.souls=(d.souls||0)+Math.floor(base*Math.pow(mult,n));
++    delete object[key];
++  }
++  d.summonSlotVersion=SUMMON_SLOT_VERSION; return d;
++}
++function claimReservedGroup(index,reserveIndex){
++  const group=player.summonReserve[reserveIndex];
++  if(!group||!unlockedSummonIndices().includes(index)||slotMembers(index).length||player.summonLoadout[index]||!summonTypeAvailable(group.type)) return false;
++  player.summonLoadout[index]=group.type; syncSummonProgress();
++  const count=Math.min(group.count,summonGroupSize(group.type));
++  for(let i=0;i<count;i++){ const m=spawnMinion(group.type); if(m)m.summonSlot=index; }
++  group.count-=count; if(group.count<=0)player.summonReserve.splice(reserveIndex,1);
++  summonSlotsSignature='';updateHUD();updateMinionPanel();renderSummonSlots();return true;
++}
++function restoreSummonGroups(d){
++  player.summonLoadout=d.summonLoadout||['zombie',null,null,null,null,null,null]; player.summonReserve=d.summonReserve||[];
++  syncSummonProgress();
++  (d.summonGroups||[]).forEach(g=>{
++    if(!MINION_DEFS[g.type]) return;
++    if(!unlockedSummonIndices().includes(g.slot)||!summonTypeAvailable(g.type)){ player.summonReserve.push({type:g.type,count:g.count}); player.summonLoadout[g.slot]=null; return; }
++    for(let i=0;i<Math.min(g.count,summonGroupSize(g.type));i++){
++      const m=spawnMinion(g.type); if(!m)continue; m.summonSlot=g.slot;
++      const saved=g.members?.[i];
++      if(saved){
++        m.hp=Math.max(0,Math.min(m.maxHp,saved.hp??m.maxHp));
++        m.dead=!!saved.dead;m.sacrificed=m.dead&&!!saved.sacrificed;m.deadTimer=m.dead?Math.max(.01,Number(saved.deadTimer)||12):0;
++        m._reviveTime=m.deadTimer;m.fadeOut=m.dead;
++        if(m.dead)m.mesh.traverse?.(c=>{if(c.material){c.material=c.material.clone();c.material.transparent=true;c.material.opacity=.1;}});
++      }
++    }
++  });
++}
++function initializeDefaultSummonGroup(){
++  syncSummonProgress();
++  if(summonAvailable()&&!minions.length&&!player.summonLoadout.some((type,i)=>i>0&&type)) configureSummonSlot(0,'zombie',true);
++}
++
++function migrateAbilitySave(d){
++  if((d.abilityVersion||0)>=ABILITY_VERSION) return d;
++  const known=new Set(d.learnedSkills||[]), ups=d.spellUpgradeCount||{};
++  let refund=0;
++  for(const id of ['nova_r','nova_d']){
++    for(let n=0;n<(ups[id]||0);n++) refund+=Math.floor(45*Math.pow(1.6,n));
++    delete ups[id];
++  }
++  known.delete('nova'); known.add('raio');
++  if(known.delete('bastiao')) d.skillPoints=(d.skillPoints||0)+1;
++  if(d.mode==='campaign'){
++    const camp=d.camp||{}, cleared=camp.cleared||{};
++    const accessible=Math.max(camp.unlocked||1,...Object.keys(cleared).filter(k=>cleared[k]).map(k=>Math.min(4,Number(k)+1)));
++    if(accessible>=2) camp.summon=true;
++    if(accessible>=3) known.add('maos'); else known.delete('maos');
++    if(accessible>=4) known.add('barreira'); else known.delete('barreira');
++    camp.tut={}; d.camp=camp;
++  } else if((d.learnedSkills||[]).includes('raio')) known.add('maos');
++  d.learnedSkills=[...known]; d.spellUpgradeCount=ups; d.souls=(d.souls||0)+refund;
++  d.activeSpell=d.activeSpell==='nova'?'raio':d.activeSpell;
++  if(!known.has(d.activeSpell)) d.activeSpell='raio';
++  d.abilityVersion=ABILITY_VERSION;
++  return d;
++}
+ function saveGame(){
+   const data={
++    abilityVersion:ABILITY_VERSION,
++    summonSlotVersion:SUMMON_SLOT_VERSION,summonLoadout:player.summonLoadout,summonReserve:player.summonReserve,
++    summonGroups:unlockedSummonIndices().filter(i=>player.summonLoadout[i]).map(slot=>({slot,type:player.summonLoadout[slot],count:slotMembers(slot).length,members:slotMembers(slot).map(m=>({hp:m.hp,dead:m.dead,sacrificed:!!m.sacrificed,deadTimer:m.deadTimer}))})),
+     hp:player.hp,maxHp:player.maxHp,mp:player.mp,maxMp:player.maxMp,
+     exp:player.exp,expNext:player.expNext,level:player.level,souls:player.souls,
+     maxSp:player.maxSp,minionSlots:player.minionSlots,spellDmg:player.spellDmg,spellRadius:player.spellRadius,mpRegen:player.mpRegen,
+@@ -3020,12 +3333,14 @@ function saveGame(){
+ function loadGame(){
+   try{
+     const raw=localStorage.getItem(SAVE_KEY); if(!raw)return false;
+-    const d=JSON.parse(raw);
++    const d=migrateSummonSlots(migrateAbilitySave(JSON.parse(raw)));
++    localStorage.setItem(SAVE_KEY,JSON.stringify(d));
++    resetAbilities();
+     Object.assign(player,{
+       hp:d.hp,maxHp:d.maxHp,mp:d.mp,maxMp:d.maxMp,exp:d.exp,expNext:d.expNext,
+       level:d.level,souls:d.souls,maxSp:d.maxSp||60,minionSlots:d.minionSlots||3,spellDmg:d.spellDmg,
+       spellRadius:d.spellRadius,mpRegen:d.mpRegen,skillPoints:d.skillPoints||0,
+-      learnedSkills:new Set(d.learnedSkills||['nova']),activeSpell:d.activeSpell||'nova',
++      learnedSkills:new Set(d.learnedSkills||['raio']),activeSpell:d.activeSpell||'raio',
+       upgradeCount:d.upgradeCount||{},
+       minionUpgradeCount:d.minionUpgradeCount||player.minionUpgradeCount,
+       spellUpgradeCount:d.spellUpgradeCount||player.spellUpgradeCount,
+@@ -3033,12 +3348,12 @@ function loadGame(){
+     });
+     campLoad(d); wave=d.wave||0; minionHpBonus=d.minionHpBonus||0; minionDmgBonus=d.minionDmgBonus||0;
+     minionRegenBonus=d.minionRegenBonus||0; player.hpRegen=d.hpRegen||0;
+-    document.getElementById('level-txt').textContent=`⚔ LEVEL ${player.level} — NECROMANTE`;
++    document.getElementById('level-txt').textContent=`NV. ${player.level}`;
+     // Atualiza visual dos spell slots
+     player.learnedSkills.forEach(id=>{ document.getElementById('slot-'+id)?.classList.remove('locked'); });
+     selectSpell(player.activeSpell);
+-    if(player.skillPoints>0) document.getElementById('sp-pts-txt').textContent=`✨ ${player.skillPoints} ponto(s)`;
+-    (d.minionTypes||[]).forEach(t=>{ if(MINION_DEFS[t])spawnMinion(t); });
++    if(player.skillPoints>0) document.getElementById('sp-pts-txt').textContent=`✦ ${player.skillPoints} pts`;
++    restoreSummonGroups(d);
+     return true;
+   }catch(e){return false;}
+ }
+@@ -3049,6 +3364,7 @@ let _portalMsg=0;
+ function nearestAliveMinion(ex,ez){ return nearestMinion(ex,ez); }
+ 
+ function update(dt){
++  updateAbilities(dt);
+   time+=dt; shake=Math.max(0,shake-dt);
+   const npos=necroGroup.position;
+   P.hit=Math.max(0,P.hit-dt); if(P.swing>0) P.swing=Math.max(0,P.swing-dt);
+@@ -3062,8 +3378,8 @@ function update(dt){
+   if(player.barrierT>0){ player.barrierT-=dt; if(player.barrierT<=0||player.barrier<=0){ player.barrier=0; player.barrierT=0; ring(P.x,P.y,1.6,'#9fdcff',.5); } }
+   if(player.barrierCd>0) player.barrierCd=Math.max(0,player.barrierCd-dt);
+   { const bs=document.getElementById('slot-barreira'), bc=document.getElementById('barrier-cd');
+-    if(bs&&bc){ const on=player.barrierT>0; bs.style.boxShadow=on?'0 0 14px rgba(90,184,255,.7)':''; bs.style.borderColor=on?'#5ab8ff':'';
+-      if(on){ bc.style.display='flex'; bc.style.background='rgba(20,60,110,.45)'; bc.textContent=Math.ceil(player.barrier); }
++    if(bs&&bc){ const victim=sacrificeCandidate(); bs.title=victim?'15 MP + zumbi mais ferido: '+Math.floor(victim.maxHp*(hasPassive('bastiao')?100:70)/100)+' de escudo por 8s; recuperação 20s.':'Sem zumbi: 15 MP + '+Math.ceil(player.maxHp*.15)+' HP por '+Math.floor(player.maxHp*.25)+' de escudo durante 8s.'; const on=player.barrierT>0; bs.style.boxShadow=on?'0 0 14px rgba(90,184,255,.7)':''; bs.style.borderColor=on?'#5ab8ff':'';
++      if(on){ bc.style.display='flex'; bc.style.background='rgba(20,60,110,.45)'; bc.textContent=Math.ceil(player.barrier)+' · '+Math.ceil(player.barrierT)+'s'; }
+       else if(player.barrierCd>0){ bc.style.display='flex'; bc.style.background='rgba(0,0,0,.6)'; bc.textContent=Math.ceil(player.barrierCd)+'s'; }
+       else bc.style.display='none'; } }
+ 
+@@ -3125,6 +3441,7 @@ function update(dt){
+   const doUpdate=minions.some(m=>m.dead);
+   minions.forEach((m,idx)=>{
+     if(m.dead){
++      if(m.sacrificed&&gameState!=='field') return;
+       m.deadTimer-=dt;
+       const mRevTime=m._reviveTime||MINION_REVIVE_TIME;
+       if(m.fadeOut&&m.deadTimer>mRevTime-2){
+@@ -3143,7 +3460,7 @@ function update(dt){
+         }
+       }
+       if(m.deadTimer<=0){
+-        m.dead=false; m.hp=Math.floor(m.maxHp*.3); m.deadTimer=0; m.fadeOut=false; m._lastReviveMsg=null;
++        m.dead=false; m.sacrificed=false; m.returning=false; m.hp=Math.floor(m.maxHp*.3); m.deadTimer=0; m.fadeOut=false; m._lastReviveMsg=null;
+         // Renascer perto do player, não onde morreu
+         const ang=idx*(Math.PI*2/Math.max(1,minions.length));
+         m.mesh.position.set(npos.x+Math.cos(ang)*2,.1,npos.z+Math.sin(ang)*2);
+@@ -3158,45 +3475,7 @@ function update(dt){
+     // HP regen
+     if(m.hpRegen>0) m.hp=Math.min(m.maxHp,m.hp+m.hpRegen*dt);
+ 
+-    // ── Leash: forçar retorno se muito longe ──
+-    const distToPlayer=Math.sqrt(dist2(m.mesh.position.x,m.mesh.position.z,npos.x,npos.z));
+-    if(distToPlayer>LEASH_DIST){
+-      const dx2=npos.x-m.mesh.position.x, dz2=npos.z-m.mesh.position.z, d2=Math.sqrt(dx2*dx2+dz2*dz2);
+-      m.mesh.position.x+=dx2/d2*m.spd*1.5*dt; m.mesh.position.z+=dz2/d2*m.spd*1.5*dt;
+-      m.mesh.rotation.y=Math.atan2(dx2,dz2); m.target=null;
+-    }
+-    // ── Comando ──
+-    else if(minionCommand){
+-      if(minionCommand.type==='rally'){
+-        // Ir para o ponto
+-        const dx=minionCommand.x-m.mesh.position.x, dz=minionCommand.z-m.mesh.position.z, d=Math.sqrt(dx*dx+dz*dz);
+-        if(d>1.2){ m.mesh.position.x+=dx/d*m.spd*dt; m.mesh.position.z+=dz/d*m.spd*dt; m.mesh.rotation.y=Math.atan2(dx,dz); }
+-      } else if(minionCommand.type==='attack'){
+-        // Atacar inimigo mais próximo do ponto de comando
+-        const nearCmd=nearestEnemyToPoint(minionCommand.x,minionCommand.z);
+-        const tgt=nearCmd||nearestEnemy(m.mesh.position.x,m.mesh.position.z);
+-        if(tgt){ m.target=tgt; const ep=tgt.mesh.position; const dx=ep.x-m.mesh.position.x,dz=ep.z-m.mesh.position.z,d=Math.sqrt(dx*dx+dz*dz); if(d>m.atkR){m.mesh.position.x+=dx/d*m.spd*dt;m.mesh.position.z+=dz/d*m.spd*dt;m.mesh.rotation.y=Math.atan2(dx,dz);}else{m.atkTimer-=dt;if(m.atkTimer<=0){m.atkTimer=m.atkRate;minionStrike(m,tgt);if(m.lifeDrain)m.hp=Math.min(m.maxHp,m.hp+m.dmg*.2);}} }
+-      }
+-    }
+-    // ── Auto ──
+-    else {
+-      const noEnemies=enemies.filter(e=>!e.dead).length===0;
+-      if(noEnemies){
+-        m.orbitAngle+=dt*(.8+idx*.2);
+-        const tx=npos.x+Math.cos(m.orbitAngle+idx*1.2)*m.orbitRadius;
+-        const tz=npos.z+Math.sin(m.orbitAngle+idx*1.2)*m.orbitRadius;
+-        m.mesh.position.x+=(tx-m.mesh.position.x)*3*dt;
+-        m.mesh.position.z+=(tz-m.mesh.position.z)*3*dt;
+-      } else {
+-        if(!m.target||m.target.dead) m.target=nearestEnemy(m.mesh.position.x,m.mesh.position.z);
+-        if(m.target){
+-          const ep=m.target.mesh.position;
+-          const dx=ep.x-m.mesh.position.x, dz=ep.z-m.mesh.position.z, d=Math.sqrt(dx*dx+dz*dz);
+-          if(d>m.atkR){ m.mesh.position.x+=dx/d*m.spd*dt; m.mesh.position.z+=dz/d*m.spd*dt; m.mesh.rotation.y=Math.atan2(dx,dz); }
+-          else { m.atkTimer-=dt; if(m.atkTimer<=0){ m.atkTimer=m.atkRate; minionStrike(m,m.target); if(m.lifeDrain)m.hp=Math.min(m.maxHp,m.hp+m.dmg*.2); } }
+-        }
+-      }
+-    }
++    updateMinionIntent(m,idx,dt,npos);
+     m.walkPhase+=dt*3;
+     m.mesh.position.y=m.type==='specter'?.5+Math.sin(time*2+idx)*.2:Math.abs(Math.sin(m.walkPhase))*.06;
+   });
+@@ -3247,14 +3526,14 @@ function update(dt){
+     const dx=tx-e.x, dz=tz-e.y, d=Math.sqrt(dx*dx+dz*dz)||1, rg=RANGED[e.type.name]||0;
+     if(Math.abs(dx)>.2) e.face=dx>0?1:-1;
+     if(rg && d<=rg){
+-      if(d<2.6){ e.x-=dx/d*e.spd*.8*dt; e.y-=dz/d*e.spd*.8*dt; e.phase+=dt*8; }
++      if(d<2.6){ e.x-=dx/d*e.spd*handsSpeed(e)*.8*dt; e.y-=dz/d*e.spd*handsSpeed(e)*.8*dt; e.phase+=dt*8; }
+       e.atkTimer-=dt;
+       if(e.atkTimer<=0 && (tgt||P.deadT===0)){
+         e.atkTimer=1.9; e.swing=.28; const kind=e.type.name==='Arqueiro'?'arrow':'magic', sp=kind==='arrow'?12:8;
+         eshots.push({x:e.x+e.face*.5,y:e.y,vx:dx/d*sp,vy:dz/d*sp,dmg:e.dmg,kind,life:2,z:1.15});
+       }
+     } else if(d>e.atkR){
+-      e.x+=dx/d*e.spd*dt; e.y+=dz/d*e.spd*dt; e.phase+=dt*8; stepDust(e,dt,e.type.sc>1.2);
++      e.x+=dx/d*e.spd*handsSpeed(e)*dt; e.y+=dz/d*e.spd*handsSpeed(e)*dt; e.phase+=dt*8; stepDust(e,dt,e.type.sc>1.2);
+     } else {
+       e.atkTimer-=dt;
+       if(e.atkTimer<=0){
+@@ -3329,15 +3608,11 @@ function necromancer(){
+     const fr=clamp(player.barrier/player.barrierMax,0,1), fade=player.barrierT<1.5?(.55+.45*Math.sin(time*18)):1, hit=Math.min(1,(P.barHit||0)*4);
+     const cy=y-.85*S, A=(.55+.45*fr)*fade;
+     ctx.save(); ctx.globalCompositeOperation='lighter';
+-    // área protegida (minions próximos)
+-    ctx.strokeStyle=`rgba(110,200,255,${.22*fade})`; ctx.lineWidth=1.5; ctx.setLineDash([8,8]); ctx.lineDashOffset=-time*14;
+-    ctx.beginPath(); ctx.ellipse(x,y,4.2*S,4.2*S*.6,0,0,6.283); ctx.stroke(); ctx.setLineDash([]);
+-    ctx.fillStyle=`rgba(80,170,255,${.05*fade})`; ctx.fill();
+-    // cúpula
+-    const g=ctx.createRadialGradient(x,cy,.2*S,x,cy,1.5*S); g.addColorStop(0,`rgba(120,210,255,${.04+hit*.2})`); g.addColorStop(.75,`rgba(90,180,255,${(.12+hit*.25)*A})`); g.addColorStop(1,`rgba(160,230,255,${(.3+hit*.4)*A})`);
++    // carne e energia do sacrifício
++    const g=ctx.createRadialGradient(x,cy,.2*S,x,cy,1.5*S); g.addColorStop(0,`rgba(150,60,85,${.04+hit*.2})`); g.addColorStop(.75,`rgba(175,70,95,${(.12+hit*.25)*A})`); g.addColorStop(1,`rgba(220,130,145,${(.3+hit*.4)*A})`);
+     ctx.fillStyle=g; ctx.beginPath(); ctx.ellipse(x,cy,1.12*S,1.5*S,0,0,6.283); ctx.fill();
+-    ctx.strokeStyle=`rgba(170,230,255,${(.55+hit*.45)*A})`; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(x,cy,1.12*S,1.5*S,0,0,6.283); ctx.stroke();
+-    ctx.lineWidth=1; ctx.strokeStyle=`rgba(150,220,255,${.3*A})`;
++    ctx.strokeStyle=`rgba(230,150,165,${(.55+hit*.45)*A})`; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(x,cy,1.12*S,1.5*S,0,0,6.283); ctx.stroke();
++    ctx.lineWidth=1; ctx.strokeStyle=`rgba(180,90,115,${.3*A})`;
+     for(let i=0;i<3;i++){ const w=Math.abs(Math.cos(time*.8+i*1.05))*1.12*S; ctx.beginPath(); ctx.ellipse(x,cy,Math.max(2,w),1.5*S,0,0,6.283); ctx.stroke(); }
+     ctx.beginPath(); ctx.ellipse(x,cy,1.12*S,.4*S,0,0,6.283); ctx.stroke();
+     ctx.restore();
+@@ -3379,11 +3654,13 @@ function render(){
+   if(commandMarker){ const s=.9+Math.sin(time*6)*.15, c=commandMarker.type==='attack'?'#ff2200':'#00ccaa';
+     ctx.strokeStyle=c; ctx.globalAlpha=.6+Math.sin(time*6)*.3; ctx.lineWidth=2.5; ctx.beginPath();
+     ctx.ellipse(sx(commandMarker.x),sy(commandMarker.z),.5*S*s,.3*S*s,0,0,6.283); ctx.moveTo(sx(commandMarker.x)-9,sy(commandMarker.z)); ctx.lineTo(sx(commandMarker.x)+9,sy(commandMarker.z)); ctx.stroke(); ctx.globalAlpha=1; }
++  drawHands();
+   // mira da magia
+   if(gameState==='field'&&P.deadT===0){
+-    const sp=player.activeSpell, col={nova:'#cc44ff',raio:'#00ffcc',chuva:'#e8e0c0',explosao:'#ff5522'}[sp]||'#fff';
+-    const R=sp==='nova'?player.spellRadius+spellBonus('nova','nova_r'):sp==='explosao'?(player.spellRadius+spellBonus('explosao','exp_r'))*2.2:sp==='chuva'?player.spellRadius:.4;
+-    ctx.strokeStyle=col; ctx.globalAlpha=.35; ctx.setLineDash([5,5]); ctx.lineWidth=1.5; ctx.beginPath();
++    const sp=player.activeSpell, col={maos:'#90c878',raio:'#00ffcc',chuva:'#e8e0c0',explosao:'#ff5522'}[sp]||'#fff';
++    const R=sp==='maos'?3.5:sp==='explosao'?(player.spellRadius+spellBonus('explosao','exp_r'))*2.2:sp==='chuva'?player.spellRadius:.4;
++    const aim=screenToWorld(mouse.x,mouse.y);
++    ctx.strokeStyle=sp==='maos'&&Math.hypot(aim.x-P.x,aim.z-P.y)>9?'#ff5555':col; ctx.globalAlpha=.35; ctx.setLineDash([5,5]); ctx.lineWidth=1.5; ctx.beginPath();
+     if(sp==='raio'){ ctx.moveTo(sx(P.x),sy(P.y)); ctx.lineTo(mouse.x,mouse.y); } else ctx.ellipse(mouse.x,mouse.y,R*S,R*S*.6,0,0,6.283);
+     ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+   }
+@@ -3554,7 +3831,7 @@ const SND={
+     const g=gain(.12,.05);
+     osc('sine',880,g,0,.005); osc('sine',660,g,.005,.04);
+   },
+-  nova(){
++  maos(){
+     const t=ac().currentTime;
+     const g=gain(.3); g.gain.setValueAtTime(.3,t); g.gain.exponentialRampToValueAtTime(.001,t+.6);
+     const f=ac().createBiquadFilter(); f.type='bandpass'; f.frequency.value=300; f.Q.value=2;
+@@ -4164,6 +4441,7 @@ function tBtn(label,fn,o={}){
+   return b;
+ }
+ function tScreen(build){
++  restoreManagementPanels();
+   const w=document.getElementById('tl-wrap'); w.innerHTML=''; w.className='wrap'; document.getElementById('tl').classList.add('dim'); build(w);
+   const first=w.querySelector('button.tb:not(:disabled)'); if(first) setTimeout(()=>first.focus({preventScroll:true}),30);
+ }
+@@ -4192,7 +4470,7 @@ function tMain(){
+     c.innerHTML=d?`<b>${camp?'Campanha — Ato I (fase '+Math.min(4,(d.camp&&d.camp.unlocked)||1)+'/4)':'Modo Livre'}</b><br>Nível ${d.level} · Wave ${d.wave||0}<br>💀 ${d.souls||0} · 🪙 ${d.gold||0}${d.ts?' · <span style="color:#777">'+agoTxt(d.ts)+'</span>':''}`:'<span style="color:#777;font-style:italic">Nenhum save neste navegador.</span>';
+     w.appendChild(c);
+     const mg=document.createElement('div'); mg.className='tmsg'; mg.id='tl-msg'; w.appendChild(mg);
+-    w._lay=()=>{ const W_=innerWidth, H_=innerHeight, k=H_/860, ox=W_>IW*k?(W_-IW*k)/2:0; const tl=document.getElementById('tl'); tl.style.backgroundSize=(IW*k)+'px '+(IH*k)+'px'; tl.style.backgroundPosition=ox+'px 0px'; w.querySelectorAll('button.tm').forEach(b=>{ const r=b._r; b.style.left=(ox+r[0]*k)+'px'; b.style.top=(r[1]*k)+'px'; b.style.width=r[2]*k+'px'; b.style.height=r[3]*k+'px'; }); };
++    w._lay=()=>{ const W_=innerWidth, H_=innerHeight, k=Math.min(H_/860,W_/900), ox=W_>IW*k?(W_-IW*k)/2:0; const tl=document.getElementById('tl'); tl.style.backgroundSize=(IW*k)+'px '+(IH*k)+'px'; tl.style.backgroundPosition=ox+'px 0px'; w.querySelectorAll('button.tm').forEach(b=>{ const r=b._r; b.style.left=(ox+r[0]*k)+'px'; b.style.top=(r[1]*k)+'px'; b.style.width=r[2]*k+'px'; b.style.height=r[3]*k+'px'; }); };
+     w._lay(); window.removeEventListener('resize',window._tmLay); window._tmLay=()=>{ const ww=document.getElementById('tl-wrap'); if(ww&&ww._lay&&TITLE.view==='main') ww._lay(); }; window.addEventListener('resize',window._tmLay);
+   });
+   document.getElementById('tl').classList.remove('dim');
+@@ -4266,45 +4544,46 @@ function importSaveText(txt){
+ // ── pausa ──
+ function setPause(on){
+   if(on===TITLE.paused) return;
+-  TITLE.paused=on;
++  TITLE.paused=on; if(!on&&summonWheelOpen) closeSummonPicker();
+   Object.keys(keys).forEach(k=>keys[k]=false);
+-  if(on){ tlShow(true,true); tPause(); } else { tlShow(false,false); _last=performance.now(); }
++  if(on){ tlShow(true,true); tPause(); } else { restoreManagementPanels(); tlShow(false,false); _last=performance.now(); }
+ }
+ const PM={tab:'status',ov:false};
+ function pmOpenOverlay(tab){ PM.ov=!!TITLE.paused; if(TITLE.paused) tlShow(false,false); showHubOverlay(tab); }
+ function pmBar(v,mx,col){ return `<div class="pmbar"><i style="width:${Math.max(0,Math.min(100,v/mx*100))}%;background:${col}"></i><span>${Math.ceil(v)}/${Math.ceil(mx)}</span></div>`; }
+ function pmStatusHtml(){
+-  const SP=[['nova','1','Nova Arcana','🔮'],['raio','2','Raio Necrótico','⚡'],['chuva','3','Chuva de Ossos','🦴'],['explosao','4','Explosão de Almas','💥'],['barreira','ESPAÇO','Barreira Arcana','🛡']];
+-  const spells=SP.map(([id,k,n,ic])=>{ const ok=player.learnedSkills.has(id), lock=CAMP.on&&CAMP_GATE[id]&&!ok; return `<div class="pmsp${ok?'':' off'}"><span>${ic}</span><b>${n}</b><kbd>${k}</kbd><em title="${lock?CAMP_GATE[id]:''}">${ok?'✓':lock?'🔒':'—'}</em></div>`; }).join('');
++  const SP=[['raio','M1 / 1','Raio Necrótico','⚡'],['maos','M2 / 2','Mãos dos Mortos','🖐'],['chuva','3','Chuva de Ossos','🦴'],['explosao','4','Explosão de Almas','💥'],['barreira','ESPAÇO','Escudo de Carne','🛡']];
++  const spells=SP.map(([id,k,n,ic])=>{ const ok=player.learnedSkills.has(id), lock=CAMP.on&&CAMP_GATE[id]&&!ok; return `<div class="pmsp${ok?'':' off'}"><span>${ic}</span><b>${n}</b><kbd>${k}</kbd><em title="${lock?CAMP_GATE[id]:''}">${ok?'Aprendida':lock?CAMP_GATE[id]:'Não aprendida'}</em></div>`; }).join('');
+   const pas=Object.entries(SKILL_NODES).filter(([id,n])=>n.passive&&player.learnedSkills.has(id)).map(([id,n])=>`<span class="pmchip">${n.icon} ${n.name}</span>`).join('')||'<span class="pmdim">nenhuma</span>';
+-  const mn=minions.map(m=>`<div class="pmmin"><span>${MINION_DEFS[m.type].emoji} ${MINION_DEFS[m.type].name}</span>${m.dead?'<em>caído</em>':pmBar(m.hp,m.maxHp,'#27ae60')}</div>`).join('')||'<span class="pmdim">nenhum minion ativo</span>';
++  const mn=minions.map(m=>`<div class="pmmin"><span>${MINION_DEFS[m.type].emoji} ${MINION_DEFS[m.type].name}</span><small>${minionStateText(m)}</small>${m.dead?'':pmBar(m.hp,m.maxHp,'#27ae60')}</div>`).join('')||'<span class="pmdim">nenhum minion ativo</span>';
+   const prog=CAMP.on?`Campanha — Ato I · fases concluídas: <b>${Object.keys(CAMP.cleared).length}/4</b>${CAMP.inStage?' · jogando: <b>'+CAMP_STAGES[CAMP.stage].name+'</b>':''}`:`Modo Livre · Wave <b>${wave}</b>`;
+   return `<div class="pmgrid">
+     <div class="pmcard"><h4>${CAMP.on?'ZEPHYR':'NECROMANTE'} · NÍVEL ${player.level}</h4>
+       <div class="pmrow"><span>EXP</span>${pmBar(player.exp,player.expNext,'#d4af37')}</div>
+       <div class="pmrow"><span>HP</span>${pmBar(player.hp,player.maxHp,'#c0392b')}</div>
+       <div class="pmrow"><span>MANA</span>${pmBar(player.mp,player.maxMp,'#6c6cff')}</div>
+-      <div class="pmrow"><span>SP</span>${pmBar(spUsed(),player.maxSp,'#00ccaa')}</div>
++      <div class="pmrow"><span>SLOTS</span>${pmBar(player.summonLoadout.filter((t,i)=>t&&unlockedSummonIndices().includes(i)).length,summonSlotCount(),'#00ccaa')}</div>
+       <div class="pmline">${prog}</div></div>
+     <div class="pmcard"><h4>ATRIBUTOS</h4><div class="pmst">
+-      <div><span>Dano mágico</span><b>${player.spellDmg}</b></div><div><span>Raio das magias</span><b>${player.spellRadius.toFixed(1)}</b></div>
++      <div><span>Dano mágico</span><b>${player.spellDmg}</b></div><div><span>Área base de Chuva</span><b>${player.spellRadius.toFixed(1)}</b></div>
+       <div><span>Regen. de mana</span><b>${player.mpRegen.toFixed(1)}/s</b></div><div><span>Regen. de vida</span><b>${(player.hpRegen||0).toFixed(1)}/s</b></div>
+-      <div><span>Slots de minion</span><b>${minions.length}/${player.minionSlots}</b></div><div><span>Pontos de habilidade</span><b>${player.skillPoints}</b></div>
+-      <div><span>Almas</span><b>💀 ${player.souls}</b></div><div><span>Gold</span><b>🪙 ${player.gold}</b></div></div></div>
++      <div><span>Criaturas / slots</span><b>${minions.length} / ${summonSlotCount()}</b></div><div><span>Pontos de habilidade</span><b>${player.skillPoints}</b></div>
++      <div><span>Almas</span><b>💀 ${player.souls}</b></div><div><span>Ouro</span><b>🪙 ${player.gold}</b></div></div></div>
+     <div class="pmcard"><h4>FEITIÇOS</h4>${spells}<div class="pmsub">PASSIVAS</div><div>${pas}</div></div>
+-    <div class="pmcard"><h4>MINIONS</h4>${mn}</div></div>`;
++    <div class="pmcard"><h4>HORDA</h4>${mn}</div></div>`;
+ }
+ function pmControlsHtml(){
+   const R=(k,t)=>`<div class="pmkey"><kbd>${k}</kbd><span>${t}</span></div>`;
+-  return `<div class="pmgrid"><div class="pmcard"><h4>MOVIMENTO E MAGIA</h4>${R('W A S D','Mover o necromante')}${R('Clique esq.','Lançar a magia selecionada')}${R('1 2 3 4','Trocar de magia')}${R('ESPAÇO','Barreira Arcana')}${R('F1–F5','Usar itens do inventário')}</div>
+-    <div class="pmcard"><h4>MINIONS</h4>${R('Q','Círculo de invocação')}${R('Clique dir.','Reunir (chão) ou atacar (inimigo)')}${R('R','Reanimar minion caído')}${R('E','Portal / interagir')}${R('ESC','Pausa e menu')}</div></div>
+-    <div class="pmcard" style="margin-top:10px"><h4>🎮 CONTROLE</h4>${R('Analógico esq.','Mover')}${R('Analógico dir.','Mirar e atirar (empurre para lançar magia continuamente)')}${R('A / RT','Lançar magia na mira')}${R('LB / RB','Trocar de magia')}${R('LT','Comandar minions')}${R('X','Barreira Arcana')}${R('Y','Círculo de invocação')}${R('B','Portal / interagir')}${R('Back / R3','Reanimar minion')}${R('Start','Pausa')}</div>`;
++  return `<div class="pmgrid"><div class="pmcard"><h4>MOVIMENTO E MAGIA</h4>${R('W A S D','Mover o necromante')}${R('Mouse 1 / 1','Raio Necrótico — lança diretamente')}${R('Mouse 2 / 2','Mãos dos Mortos — lança diretamente')}${R('3 / 4','Chuva de Ossos / Explosão de Almas — quando aprendidas')}${R('H','Abrir esta Ajuda')}${R('ESPAÇO','Escudo de Carne')}${R('F1–F5','Usar itens do inventário')}</div>
++    <div class="pmcard"><h4>HORDA</h4>${R('Q','Slots de invocação')}${R('Shift + Mouse 2','Reunir ou mandar atacar; horda permanece perto de Zephyr')}${R('R','Reanimar caído por 30 MP; sacrificados aguardam a recuperação')}${R('E','Portal / interagir')}${R('ESC','Pausa e menu')}</div></div>
++    <div class="pmcard" style="margin-top:10px"><h4>COMO FUNCIONA A INVOCAÇÃO</h4><p class="section-note"><b>Um slot é um grupo.</b> Zumbi começa com 3 unidades; Arqueiro Ósseo, com 2. Outros tipos começam com 1.<br>Você começa com 3 slots. Ganha mais um após o Ato I e nos níveis 12, 15 e 20, até 7.<br>Clique nos slots do HUD para escolher um tipo ou reforçar o grupo. A árvore amplia a quantidade por grupo. Mana e almas são cobradas por criatura nova; no hub, não há custo de mana. Sacrifícios bloqueiam a troca do grupo durante a recuperação.</p></div>
++    <div class="pmcard" style="margin-top:10px"><h4>🎮 CONTROLE</h4>${R('Analógico esq.','Mover')}${R('Analógico dir.','Mirar e atirar (empurre para lançar magia continuamente)')}${R('A / RT','Lançar magia na mira')}${R('LB / RB','Trocar de magia')}${R('LT','Comandar minions')}${R('X','Escudo de Carne')}${R('Y','Slots de invocação')}${R('B','Portal / interagir')}${R('Back / R3','Reanimar minion')}${R('Start','Pausa')}</div>`;
+ }
+ function tPause(tab){
+   TITLE.view='pause'; if(typeof tab==='string') PM.tab=tab;
+   tScreen(w=>{
+     const root=document.createElement('div'); root.className='pm'; w.appendChild(root);
+-    const h=document.createElement('div'); h.className='pt'; h.textContent='— PAUSA —'; root.appendChild(h);
++    const h=document.createElement('div'); h.className='pt'; h.textContent=PM.tab==='controls'?'— AJUDA —':'— PAUSA —'; root.appendChild(h);
+     const hub=gameState==='hub'; const canSave=hub||CAMP.on;
+     // coluna esquerda: foto grande + ações principais
+     const side=document.createElement('div'); side.className='pmside'; root.appendChild(side);
+@@ -4312,7 +4591,9 @@ function tPause(tab){
+       hero.innerHTML=(im?`<img src="${im}" alt="Zephyr">`:'')+`<b>${CAMP.on?'ZEPHYR':'NECROMANTE'}</b><small>NÍVEL ${player.level} · NECROMANTE</small>
+       <div class="pmrow"><span>HP</span>${pmBar(player.hp,player.maxHp,'#c0392b')}</div><div class="pmrow"><span>MANA</span>${pmBar(player.mp,player.maxMp,'#6c6cff')}</div><div class="pmrow"><span>EXP</span>${pmBar(player.exp,player.expNext,'#d4af37')}</div>`;
+       side.appendChild(hero); }
++    const resources=document.createElement('div'); resources.className='section-note'; resources.textContent=player.souls+' almas · '+player.gold+' ouro · '+player.skillPoints+' pontos'; side.appendChild(resources);
+     side.appendChild(tBtn('▶ CONTINUAR',()=>setPause(false),{pri:true,sub:'ESC'}));
++    if(PM.tab!=='controls') side.appendChild(tBtn('AJUDA',()=>tPause('controls'),{sub:'H'}));
+     if(CAMP.on&&CAMP.inStage&&!CAMP.map) side.appendChild(tBtn('🗺 VOLTAR AO MAPA',()=>tConfirm('Voltar ao <b>mapa</b> da campanha?<br>O progresso desta fase será perdido.','VOLTAR AO MAPA',()=>{ setPause(false); campMapOpen(); },tPause)));
+     side.appendChild(tBtn('⌂ MENU PRINCIPAL',()=>{
+       if(canSave&&(hub||CAMP.map)){ saveGame(); goMainMenu(); }
+@@ -4322,19 +4603,30 @@ function tPause(tab){
+     const main=document.createElement('div'); main.className='pmmain'; root.appendChild(main);
+     const tabs=document.createElement('div'); tabs.className='pmtabs'; main.appendChild(tabs);
+     const T=(id,lab)=>{ const b=document.createElement('button'); b.className='pmtab'+(PM.tab===id?' on':''); b.textContent=lab; b.onclick=()=>{ try{playSound('click');}catch(e){} tPause(id); }; tabs.appendChild(b); };
+-    T('status','📊 STATUS'); T('controls','⌨ CONTROLES'); T('system','☰ SISTEMA');
+-    const sep=document.createElement('span'); sep.className='pmsep'; tabs.appendChild(sep);
+-    const O=(tabId,lab)=>{ const b=document.createElement('button'); b.className='pmtab ov'; b.textContent=lab; b.onclick=()=>{ try{playSound('click');}catch(e){} pmOpenOverlay(tabId); }; tabs.appendChild(b); };
+-    O('skills','🔮 HABILIDADES'); O('upgrades','⚗ UPGRADES'); O('minions','💀 MINIONS'); O('shop','🛒 LOJA'); if(!CAMP.on||CAMP.summon) O('summon','🧟 INVOCAR');
++    T('status','PERSONAGEM'); T('skills','HABILIDADES'); T('horde','HORDA'); T('system','SISTEMA');
+     const body=document.createElement('div'); body.className='pmbody'; main.appendChild(body);
+-    if(PM.tab==='status') body.innerHTML=pmStatusHtml();
+-    else if(PM.tab==='controls') body.innerHTML=pmControlsHtml();
++    if(PM.tab==='status'){
++      body.innerHTML=pmStatusHtml()+'<h3 class="section-title">MELHORIAS DO PERSONAGEM · ALMAS</h3>';
++      mountManagementPanel('upgrades',body); buildUpgradeGrid();
++    } else if(PM.tab==='skills'){
++      body.innerHTML='<p class="section-note">Aprenda com pontos de habilidade; evolua suas magias com almas.</p>';
++      mountManagementPanel('skills',body); buildSkillTree(); buildSpellUpgradesSection();
++    } else if(PM.tab==='horde'){
++      if(CAMP.on&&!CAMP.summon) body.innerHTML='<p class="section-note">A invocação será aprendida na Floresta de Eldrin.</p>';
++      else {
++        body.innerHTML='<p class="section-note">Configure os grupos nos slots abaixo. Zumbi: 3 por slot; Arqueiro Ósseo: 2. Sacrificados aguardam recuperação.</p>';
++        mountManagementPanel('summon',body); mountManagementPanel('minions',body);
++        buildRosterSection(); buildSummonGrid(); buildMinionUpgradeGrid();
++      }
++    } else if(PM.tab==='controls') body.innerHTML=pmControlsHtml();
+     else {
+       const m=document.createElement('div'); m.className='pmsys'; body.appendChild(m);
+       m.appendChild(tBtn('💾 SALVAR',()=>{ saveGame(); tMsg('✓ Jogo salvo.'); },{dis:!canSave,sub:canSave?'':'só no hub'}));
+       m.appendChild(tBtn('⬇ EXPORTAR SAVE',()=>{ if(canSave) saveGame(); exportSave(); },{dis:!canSave&&!saveInfo()}));
+       m.appendChild(tBtn('📖 HISTÓRIA',()=>{ if(CAMP.on&&!CAMP.map) tMsg('Reveja a história pelo mapa da campanha.'); else if(!CAMP.on&&gameState==='field') tMsg('Reveja a história no hub ou na Vila.'); else { setPause(false); campStoryOpen(); } }));
++      m.appendChild(tBtn('⌨ AJUDA · H',()=>tPause('controls')));
+       m.appendChild(tBtn('⚙ OPÇÕES',tOptions));
++      m.appendChild(tBtn('🗑 APAGAR PROGRESSO',()=>tConfirm('Apagar o progresso salvo deste personagem? Esta ação não pode ser desfeita.','APAGAR PROGRESSO',resetSave,()=>tPause('system')),{dng:true}));
+       tMsgEl(body);
+     }
+     const f=document.createElement('div'); f.className='foot'; f.textContent='ESC para voltar ao jogo'; root.appendChild(f);
+@@ -4342,6 +4634,7 @@ function tPause(tab){
+ }
+ function escKey(){
+   if(COMIC.active||TITLE.active) return;
++  if(summonWheelOpen){ closeSummonPicker(); return; }
+   { const ov0=document.getElementById('hub-overlay'); if(ov0.style.display==='flex'){ closeHubOverlay(); return; } }
+   if(TITLE.paused){ if(TITLE.view==='pause') setPause(false); else if(TITLE.view==='opts') tBack(); else tPause(); return; }
+   const ov=document.getElementById('hub-overlay');
+@@ -4397,18 +4690,18 @@ function drawSprite(key,ref,o){
+ // ═══════════════════════════════════════════════════════════
+ const CAMP={on:false,unlocked:1,cleared:{},tut:{},story:{},summon:false,stage:0,sel:1,map:false,inStage:false,noWaves:false,newGame:false};
+ const STG={on:false,kind:'circle'};   // STG.on = fase customizada (salas / side-scroller) com geometria própria
+-const CAMP_GATE={raio:'Libera na fase 3',barreira:'Libera na fase 4',chuva:'Disponível no Ato II',explosao:'Disponível no Ato II'};   // feitiços liberados pela campanha
++const CAMP_GATE={maos:'Libera na fase 3',barreira:'Libera na fase 4',chuva:'Disponível no Ato II',explosao:'Disponível no Ato II'};   // feitiços liberados pela campanha
+ const CAMP_STAGES=[null,
+- {n:1,kind:'rooms',icon:'⚰️',name:'A Cripta Esquecida',type:'Exploração de salas',pos:[15,70],grant:'nova',grantName:'Nova Arcana',grantIcon:'🔮',
++ {n:1,kind:'rooms',icon:'⚰️',name:'A Cripta Esquecida',type:'Exploração de salas',pos:[15,70],grant:'raio',grantName:'Raio Necrótico',grantIcon:'⚡',
+   desc:'Zephyr desperta no fundo de uma cripta. Abra caminho por quatro salas seladas, derrotando quem guarda cada porta.',
+   rew:{souls:50,gold:30,xp:140,sp:1}},
+  {n:2,kind:'arena',icon:'🌲',name:'Floresta de Eldrin',type:'Arena com ondas',pos:[37,36],grant:'summon',grantName:'Invocação de Mortos',grantIcon:'🧟',
+   desc:'A Guarda Real patrulha a floresta. Aguente seis ondas e aprenda a erguer os mortos para lutar ao seu lado.',
+   rew:{souls:90,gold:60,xp:220,sp:1}},
+- {n:3,kind:'strip',icon:'🍂',name:'Trilha dos Vigias',type:'Side-scroller 2.5D',pos:[62,66],grant:'raio',grantName:'Raio Necrótico',grantIcon:'⚡',
++ {n:3,kind:'strip',icon:'🍂',name:'Trilha dos Vigias',type:'Side-scroller 2.5D',pos:[62,66],grant:'maos',grantName:'Mãos dos Mortos',grantIcon:'🖐',
+   desc:'Siga a trilha para a direita. Em cada clareira, a tela trava até que todos os vigias caiam.',
+   rew:{souls:130,gold:90,xp:320,sp:1}},
+- {n:4,kind:'boss',icon:'🛡️',name:'Posto do Capitão',type:'Chefe',pos:[85,30],grant:'barreira',grantName:'Barreira Arcana',grantIcon:'🛡',
++ {n:4,kind:'boss',icon:'🛡️',name:'Posto do Capitão',type:'Chefe',pos:[85,30],grant:'barreira',grantName:'Escudo de Carne',grantIcon:'🛡',
+   desc:'O Capitão da Guarda da Floresta bloqueia o caminho até o castelo. Ele não vai cair sem luta.',
+   rew:{souls:220,gold:150,xp:520,sp:2}},
+ ];
+@@ -4422,11 +4715,11 @@ function campLoad(d){
+ }
+ 
+ // ── habilidades da campanha ────────────────────────────────
+-const SPELL_SLOTS=['nova','raio','chuva','explosao','barreira'];
++const SPELL_SLOTS=['raio','maos','chuva','explosao','barreira'];
+ function campSyncSlots(){
+   SPELL_SLOTS.forEach(id=>{ const el=document.getElementById('slot-'+id); if(el) el.classList.toggle('locked',!player.learnedSkills.has(id)); });
+   if(!player.learnedSkills.has(player.activeSpell)){
+-    const first=['nova','raio','chuva','explosao'].find(s=>player.learnedSkills.has(s)); if(first) selectSpell(first);
++    const first=['raio','maos','chuva','explosao'].find(s=>player.learnedSkills.has(s)); if(first) selectSpell(first);
+     else { player.activeSpell=null; document.querySelectorAll('.spell-slot').forEach(s=>s.classList.remove('active')); }
+   }
+   const sw=document.getElementById('cmd-bar'); if(sw) sw.style.display=(CAMP.on&&!CAMP.summon)?'none':'flex';
+@@ -4436,15 +4729,17 @@ function campGrant(n){
+   const s=stageOf(n); if(!s) return false; let fresh=false;
+   if(s.grant==='summon'){ if(!CAMP.summon){ CAMP.summon=true; fresh=true; } }
+   else if(!player.learnedSkills.has(s.grant)){ player.learnedSkills.add(s.grant); fresh=true; if(!player.activeSpell||!player.learnedSkills.has(player.activeSpell)) player.activeSpell=s.grant; }
+-  campSyncSlots(); return fresh;
++  campSyncSlots(); if(s.grant==='summon'&&fresh) initializeDefaultSummonGroup(); renderSummonSlots(); return fresh;
+ }
+ function campNewChar(){
+   player.learnedSkills=new Set(); player.activeSpell=null; player.skillPoints=0; CAMP.summon=false;
++  player.summonLoadout=['zombie',null,null,null,null,null,null]; player.summonReserve=[];
+   campSyncSlots();
+ }
+ 
+ // ── estado de campo ────────────────────────────────────────
+ function resetFieldState(){
++  resetAbilities();
+   enemies=[]; droppedItems=[]; boltsFx=[]; spellFx=[]; enemiesLeft=0; spawnQueue=[]; waveActive=false; summonWheelOpen=false; eshots=[]; soulOrbs=[]; particles=[];
+   commandMarker=null; minionCommand=null; P.deadT=0; P.hit=0; P.swing=0; bossEnemy=null; currentMission=null; missionWave=0; waveEndTimer=0;
+   player.barrier=0; player.barrierT=0; player.barrierCd=0; CAMP.fx=[];
+@@ -4454,7 +4749,7 @@ function resetFieldState(){
+   const g=document.getElementById('go-arrow'); if(g) g.style.display='none';
+ }
+ function campReviveMinions(cx,cy){
+-  minions.forEach((m,i)=>{ m.dead=false; m.fadeOut=false; m.deadTimer=0; m.hp=m.maxHp; const a=i*(6.283/Math.max(1,minions.length));
++  minions.forEach((m,i)=>{ m.dead=false; m.sacrificed=false; m.returning=false; m.fadeOut=false; m.deadTimer=0; m.hp=m.maxHp; const a=i*(6.283/Math.max(1,minions.length));
+     m.mesh.position.set(cx+Math.cos(a)*2,.1,cy+Math.sin(a)*2); m.target=null; m.mesh.traverse(c=>{ if(c.material){c.material.opacity=1;c.material.transparent=false;} }); });
+   updateMinionPanel();
+ }
+@@ -4545,6 +4840,7 @@ function campMapPaint(){
+   g.fillStyle='#ff4466'; g.fillRect(cx-3,cy-44,6,10); g.globalAlpha=1; g.fillStyle='rgba(255,120,140,.7)'; g.font='11px Georgia'; g.fillText('Castelo de Valdoria',cx,cy+46);
+ }
+ function campMapOpen(){
++  resetAbilities();
+   CAMP.map=true; CAMP.inStage=false; STG.on=false; CAMP.noWaves=false; gameState='hub'; sceneMode='hub'; hubNpcs=[]; nearbyNpc=null;
+   resetFieldState(); STG.kind='circle'; BIOME=BIOMES.grave; vigC=null;
+   document.getElementById('tut').style.display='none'; TUT.on=false;
+@@ -4620,7 +4916,7 @@ function campLaunch(n){
+ function unlockCard(s,done){
+   const u=document.getElementById('unlock'); const sum=s.grant==='summon';
+   u.innerHTML=`<div class="ub"><div class="u1">NOVA HABILIDADE</div><div class="ui">${s.grantIcon}</div><div class="un">${s.grantName.toUpperCase()}</div>
+-    <div class="ud">${{nova:'Uma explosão arcana em área. Clique para lançar no alvo.',summon:'Pressione <kbd>Q</kbd> para abrir o círculo de invocação e erguer mortos que lutam por você.',raio:'Projétil necrótico que atravessa inimigos. Pressione <kbd>2</kbd> para equipar.',barreira:'Cúpula que absorve dano. Pressione <kbd>ESPAÇO</kbd> para ativar.'}[s.grant]||''}</div>
++    <div class="ud">${{maos:'Mãos agarram inimigos por 5s: 40% de lentidão. Mouse 2 ou tecla <kbd>2</kbd>; 35 MP.',summon:'Pressione <kbd>Q</kbd> para abrir o círculo de invocação e erguer mortos que lutam por você.',raio:'Projétil de alvo único. Mouse 1 ou tecla <kbd>1</kbd>; 20 MP; alcance 9.',barreira:'<kbd>ESPAÇO</kbd>: 15 MP + zumbi por proteção de 8s. Sem zumbi, paga 15% HP por um escudo menor.'}[s.grant]||''}</div>
+     <button id="unlock-ok">CONTINUAR</button></div>`;
+   u.style.display='flex'; try{ playSound('levelUp'); }catch(e){}
+   const ok=()=>{ u.style.display='none'; window.removeEventListener('keydown',kd,true); done(); };
+@@ -4629,9 +4925,9 @@ function unlockCard(s,done){
+ }
+ function campStageComplete(){
+   if(!CAMP.inStage) return; CAMP.inStage=false; const n=CAMP.stage, s=stageOf(n); waveActive=false; spawnQueue=[];
+-  const first=!CAMP.cleared[n]; CAMP.cleared[n]=1; CAMP.unlocked=Math.max(CAMP.unlocked,Math.min(n+1,CAMP_STAGES.length-1));
++  const first=!CAMP.cleared[n]; CAMP.cleared[n]=1; syncSummonProgress(); renderSummonSlots(); CAMP.unlocked=Math.max(CAMP.unlocked,Math.min(n+1,CAMP_STAGES.length-1));
+   if(first){ player.souls+=s.rew.souls; player.gold+=s.rew.gold; gainExp(s.rew.xp); player.skillPoints+=s.rew.sp||0;
+-    const el=document.getElementById('sp-pts-txt'); if(el&&player.skillPoints>0) el.textContent=`✨ ${player.skillPoints} ponto(s) de habilidade`; }
++    const el=document.getElementById('sp-pts-txt'); if(el&&player.skillPoints>0) el.textContent=`✦ ${player.skillPoints} pts`; }
+   try{ playSound('levelUp'); }catch(e){}
+   showWaveBanner('✓ FASE CONCLUÍDA!',first?`+${s.rew.souls} almas · +${s.rew.gold} gold · +${s.rew.xp} XP`:'Fase concluída novamente','#d4af37');
+   const g=document.getElementById('go-arrow'); if(g) g.style.display='none';
+@@ -4653,16 +4949,16 @@ const TUT={on:false,steps:[],i:0,cnt:0,n:0};
+ const K=t=>`<kbd>${t}</kbd>`;
+ const TUT_DEFS={
+  1:[{t:`Mova-se com ${K('W')} ${K('A')} ${K('S')} ${K('D')}`,ev:'move',n:8},
+-    {t:`Clique com o <b>botão esquerdo</b> para lançar a <b>Nova Arcana</b> (25 MP). Destrua os 3 mortos-vivos de treino.`,ev:'kill',n:3,chk:()=>!enemies.some(e=>!e.dead&&e.dummy)},
++    {t:`Clique com o <b>botão esquerdo</b> para lançar o <b>Raio Necrótico</b> (20 MP). Destrua os 3 mortos-vivos de treino.`,ev:'kill',n:3,chk:()=>!enemies.some(e=>!e.dead&&e.dummy)},
+     {t:`Pressione ${K('ESC')} para abrir o menu: status, habilidades e upgrades.`,ev:'pause',n:1},
+     {t:`Siga pelo corredor. Cada sala só abre a próxima porta quando todos caírem.`,ev:'time',n:7}],
+  2:[{t:`Pressione ${K('Q')} e escolha <b>Zumbi</b> para invocar um minion.`,ev:'summon',n:1},
+-    {t:`<b>Clique direito</b> no chão para reunir os minions, ou em um inimigo para mandar atacar.`,ev:'command',n:1},
++    {t:`<b>Shift + clique direito</b> no chão para reunir os minions, ou em um inimigo para mandar atacar.`,ev:'command',n:1},
+     {t:`Sobreviva às 6 ondas. Minions caídos ressuscitam sozinhos depois de alguns segundos.`,ev:'time',n:8}],
+- 3:[{t:`Pressione ${K('2')} para equipar o <b>Raio Necrótico</b>.`,ev:'select',arg:'raio',n:1,chk:()=>player.activeSpell==='raio'},
+-    {t:`Dispare o raio (30 MP) atravessando inimigos alinhados. Use ${K('1')} para voltar à Nova.`,ev:'raio',n:2},
++ 3:[{t:`Use o <b>botão direito do mouse</b> ou ${K('2')} para lançar <b>Mãos dos Mortos</b>.`,ev:'maos',n:1},
++    {t:`Lance Mãos dos Mortos (35 MP) para atrasar grupos. O botão esquerdo continua lançando o Raio.`,ev:'maos',n:2},
+     {t:`Avance para a <b>direita</b>. Quando a tela travar, derrote todos para seguir.`,ev:'time',n:8}],
+- 4:[{t:`Pressione ${K('ESPAÇO')} para erguer a <b>Barreira Arcana</b> (40 MP).`,ev:'barrier',n:1},
++ 4:[{t:`Pressione ${K('ESPAÇO')} para erguer o <b>Escudo de Carne</b>: 15 MP + um zumbi (recuperação de 20s). Sem zumbi, custa também 15% da vida máxima.`,ev:'barrier',n:1},
+     {t:`Uma <b>linha vermelha</b> no chão avisa a investida do Capitão. Saia do caminho!`,ev:'time',n:7},
+     {t:`Derrote o Capitão da Guarda. Ele chama reforços quando ferido.`,ev:'time',n:8}],
+ };
+@@ -4730,7 +5026,7 @@ function campDrawFx(){
+     _ke(e,hx,hz); if(CAMP.on){ tutEvent('kill'); if(STG.on&&STG.onKill) STG.onKill(e); } };
+   const _sp=setPause; setPause=function(on){ const r=_sp(on); const t=document.getElementById('tut'); if(t) t.style.visibility=on?'hidden':'visible'; if(on) tutEvent('pause'); return r; };
+   const _eh=enterHub; enterHub=function(){ if(CAMP.on){ if(!CAMP.map) campMapOpen(); return; } return _eh(); };
+-  const _go=gameOver; gameOver=function(){ if(!CAMP.on) return _go(); playSound('gameOver'); gameState='hub'; P.deadT=.001; CAMP.inStage=false;
++  const _go=gameOver; gameOver=function(){ resetAbilities(); if(!CAMP.on) return _go(); playSound('gameOver'); gameState='hub'; P.deadT=.001; CAMP.inStage=false;
+     showOverlay('VOCÊ CAIU','Zephyr desperta de novo no mapa...','#c0392b'); player.hp=1; setTimeout(()=>{ player.hp=Math.floor(player.maxHp*.5); updateHUD(); campMapOpen(); },3000); };
+ })();
+ 
+@@ -4977,7 +5273,7 @@ function stripUpdate(dt){
+   fogs.forEach(f=>{ if(Math.abs(f.x-cam.x)>45) f.x=cam.x+(Math.random()*2-1)*35; });
+ }
+ function stripMinimap(){
+-  const w=200,x0=W-w-22,y0=H-40; ctx.save(); ctx.fillStyle='rgba(8,14,10,.72)'; ctx.fillRect(x0-8,y0-14,w+16,32); ctx.strokeStyle='rgba(200,230,160,.5)'; ctx.strokeRect(x0-8,y0-14,w+16,32);
++  const w=200,x0=W-w-22,y0=H-hudMapClearance()-14; ctx.save(); ctx.fillStyle='rgba(8,14,10,.72)'; ctx.fillRect(x0-8,y0-14,w+16,32); ctx.strokeStyle='rgba(200,230,160,.5)'; ctx.strokeRect(x0-8,y0-14,w+16,32);
+   ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x0+w,y0); ctx.stroke();
+   STRIP.zones.forEach(z=>{ ctx.fillStyle=z.done?'#27ae60':z.active?'#ff4466':'#d4af37'; ctx.beginPath(); ctx.arc(x0+z.x/STRIP.L*w,y0,4.5,0,6.283); ctx.fill(); });
+   ctx.fillStyle='#fff'; ctx.shadowColor='#0f8'; ctx.shadowBlur=6; ctx.beginPath(); ctx.arc(x0+clampN(P.x/STRIP.L,0,1)*w,y0,4,0,6.283); ctx.fill(); ctx.shadowBlur=0;
+@@ -5056,7 +5352,7 @@ function stripProps(){
+ }
+ 
+ // ═══════════════ 4. CHEFE — CAPITÃO DA GUARDA ═════════════════
+-const CAPTAIN={name:'Capitão da Guarda',col:0x1a3a6a,hCol:0x4a90e2,hp:20000,dmg:22,spd:2.0,xp:300,souls:160,sc:2.2,isBoss:true};
++const CAPTAIN={name:'Capitão da Guarda',col:0x1a3a6a,hCol:0x4a90e2,hp:20000,dmg:27.5,spd:2.0,xp:300,souls:160,sc:2.2,isBoss:true};
+ CHAR['Capitão da Guarda']={skin:'#d9a37c',cloth:'#1a3a6a',dark:'#0e2144',legCol:'#222a3a',weapon:'sword',shield:true,head:'helmet',armor:'#a8b4cc',bulk:1.3,cape:'#1a3a6a',boot:'#1a1a22',belt:'#d4af37',crown:false};
+ STAGE_KINDS.boss={
+   setup(s){
+@@ -5121,7 +5417,7 @@ function capAI(e,dt){
+   if(Math.abs(dx)>.2) e.face=dx>0?1:-1;
+   e.chargeCd-=dt; e.slamCd-=dt;
+   if(e.cs==='chase'){
+-    if(d>e.atkR){ e.x+=dx/d*e.spd*dt; e.y+=dy/d*e.spd*dt; e.phase+=dt*8; stepDust(e,dt,true); }
++    if(d>e.atkR){ e.x+=dx/d*e.spd*handsSpeed(e)*dt; e.y+=dy/d*e.spd*handsSpeed(e)*dt; e.phase+=dt*8; stepDust(e,dt,true); }
+     else { e.atkTimer-=dt; if(e.atkTimer<=0){ e.atkTimer=e.atkRate*(ph>=2?.8:1); e.swing=.28; if(tg.m) dealDamageToMinion(tg.m,e.dmg); else if(P.deadT===0) dealDamageToPlayer(e.dmg); } }
+     if(e.chargeCd<=0&&d>4.5){ e.cs='tele'; e.ct=ph>=2?.75:.95; e.dx=dx/d; e.dy=dy/d; CAMP.fx.push({kind:'line',x:e.x,y:e.y,dx:e.dx,dy:e.dy,len:13,w:1.3,t:0,life:e.ct}); try{ playSound('click'); }catch(_){} }
+     else if(ph>=1&&e.slamCd<=0&&d<9){ e.cs='slam'; e.ct=1.0; e.sx=tg.x; e.sy=tg.y; CAMP.fx.push({kind:'circle',x:e.sx,y:e.sy,r:3.3,t:0,life:1.0});
+@@ -5230,7 +5526,7 @@ Object.assign(STORY,{
+  camp_pre1:[{panels:[
+   sc_('crypt',R_(0,0,1,.6),{cap:{t:'Quatro salas seladas. Cada porta só cede quando seus guardiões deixam de respirar.',pos:'tl',w:.5},actors:[{k:'p',s:NECRO_STYLE,x:.3,y:.97,z:2,f:1,sc:1.08}],
+      bubbles:[{who:'zn',t:'Meus ossos ainda lembram como se luta.',kind:'dead',x:.58,y:.3,w:.4,tail:[.36,.6]}]}),
+-  sc_('boneyard',R_(0,.6,1,.4),{cap:{t:'Guie Zephyr pela cripta e aprenda a Nova Arcana.',pos:'tl',w:.5},actors:[{k:'p',s:'skeleton',x:.7,y:.97,z:1.6,f:-1},{k:'p',s:'skeleton',x:.82,y:.97,z:1.6,f:-1}]}),
++  sc_('boneyard',R_(0,.6,1,.4),{cap:{t:'Guie Zephyr pela cripta e aprenda o Raio Necrótico.',pos:'tl',w:.5},actors:[{k:'p',s:'skeleton',x:.7,y:.97,z:1.6,f:-1},{k:'p',s:'skeleton',x:.82,y:.97,z:1.6,f:-1}]}),
+  ]}],
+  camp_post1:[{panels:[
+   sc_('night',R_(0,0,.55,1),{cap:{t:'A lua. Pela primeira vez em um ano.',pos:'tl',w:.6},actors:[{k:'p',s:NECRO_STYLE,x:.5,y:.98,z:1.9,f:1,sc:1.08}],bubbles:[{who:'zn',t:'A Floresta de Eldrin é o caminho para o castelo.',kind:'dead',x:.5,y:.4,w:.7,tail:[.5,.64]}]}),
+@@ -5259,7 +5555,7 @@ Object.assign(STORY,{
+  camp_pre4:[{panels:[
+   sc_('camp',R_(0,0,.5,.6),{actors:[{k:'p',s:'Capitão da Guarda',x:.55,y:.97,z:1.5,f:-1,sc:1.6}],cap:{t:'Capitão Dorian Valk, da Guarda Real da Floresta.',pos:'tl',w:.9},bubbles:[{who:'cap',t:'Fui eu quem acendeu a pira da sua casa, garoto.',kind:'shout',x:.4,y:.28,w:.7,tail:[.5,.55]}]}),
+   sc_('closeup',R_(.5,0,.5,.6,.05),{actors:[{k:'p',s:NECRO_STYLE,x:.45,y:1.88,z:5.4,f:1,sc:1.08}],bubbles:[{who:'zn',t:'Ótimo. Um nome para começar.',kind:'dead',x:.5,y:.2,w:.7,tail:[.55,.46]}]}),
+-  sc_('camp',R_(0,.6,1,.4),{cap:{t:'Erga a Barreira Arcana. A investida do Capitão não perdoa.',pos:'tl',w:.45},actors:[{k:'p',s:NECRO_STYLE,x:.25,y:.97,z:1.9,f:1,sc:1.08,cast:'#5ab8ff'},{k:'p',s:'Capitão da Guarda',x:.75,y:.97,z:1.5,f:-1,sc:1.6}]}),
++  sc_('camp',R_(0,.6,1,.4),{cap:{t:'Erga a Escudo de Carne. A investida do Capitão não perdoa.',pos:'tl',w:.45},actors:[{k:'p',s:NECRO_STYLE,x:.25,y:.97,z:1.9,f:1,sc:1.08,cast:'#5ab8ff'},{k:'p',s:'Capitão da Guarda',x:.75,y:.97,z:1.5,f:-1,sc:1.6}]}),
+  ]}],
+  camp_post4:[{panels:[
+   sc_('camp',R_(0,0,.55,.6),{cap:{t:'O Capitão caiu de joelhos, a armadura rachada.',pos:'tl',w:.7},actors:[{k:'p',s:'Capitão da Guarda',x:.65,y:.97,z:1.5,f:-1,sc:1.6,fall:a=>Math.min(.7,ease(Math.min(1,a/2.4)))},{k:'p',s:NECRO_STYLE,x:.25,y:.97,z:1.9,f:1,sc:1.08}],
+@@ -5612,8 +5908,8 @@ showStoryMenu=function(){ try{ if(document.getElementById('hub-overlay').style.d
+ MINION_DEFS.zombie.hp=130; MINION_DEFS.zombie.dmg=11;          // zumbi inicial mais resistente
+ MINION_DEFS.zombie.spd=3.4; MINION_DEFS.skeleton.spd=3.8; MINION_DEFS.archer.spd=3.2; MINION_DEFS.specter.spd=4.6;   // minions mais rápidos que os inimigos comuns
+ // no Ato I da campanha só o zumbi pode ser invocado
+-['skeleton','archer','specter'].forEach(k=>{ const d=MINION_DEFS[k], base=d.unlockLv; Object.defineProperty(d,'unlockLv',{get(){ return CAMP.on?99:base; },configurable:true,enumerable:true}); });
+-(function(){ const _sm=spawnMinion; spawnMinion=function(type){ if(CAMP.on&&type!=='zombie'){ floatMsg('Só o Zumbi responde ao chamado neste Ato',innerWidth/2,innerHeight*.4,'#a855f7'); return null; } return _sm.apply(this,arguments); }; })();
++['skeleton','archer','specter'].forEach(k=>{ const d=MINION_DEFS[k], base=d.unlockLv; Object.defineProperty(d,'unlockLv',{get(){ return CAMP.on&&!CAMP.cleared[4]?99:base; },configurable:true,enumerable:true}); });
++(function(){ const _sm=spawnMinion; spawnMinion=function(type){ if(CAMP.on&&!CAMP.cleared[4]&&type!=='zombie'){ floatMsg('Só o Zumbi responde ao chamado neste Ato',innerWidth/2,innerHeight*.4,'#a855f7'); return null; } return _sm.apply(this,arguments); }; })();
+ 
+ const SW_COST={zombie:[0,20],skeleton:[15,30],archer:[15,30],specter:[30,45]};
+ function swStats(key){
+@@ -5621,82 +5917,8 @@ function swStats(key){
+   return { hp:Math.floor((d.hp+minionHpBonus+minionBonus(key,'hp'))*(asc?1.5:1)), dmg:Math.floor((d.dmg+minionDmgBonus+minionBonus(key,'dmg'))*(aura?1.3:1)),
+     spd:(d.spd+minionBonus(key,'spd'))*(asc?1.3:1), regen:(hasPassive('ritual')?2:0)+minionRegenBonus+minionBonus(key,'regen'), rng:d.atkR+minionBonus(key,'atkR') };
+ }
+-(function(){
+-  const st=document.createElement('style');
+-  st.textContent=`
+-#summon-wheel{position:fixed;bottom:128px;left:50%;transform:translateX(-50%);display:none;z-index:15;flex-direction:column;align-items:stretch;gap:10px;width:min(820px,calc(100vw - 24px));
+-  padding:14px 16px 16px;background:linear-gradient(180deg,rgba(18,8,34,.94),rgba(8,3,18,.96));border:1px solid rgba(155,107,255,.45);border-top:2px solid #d4af37;border-radius:6px;
+-  box-shadow:0 18px 60px rgba(0,0,0,.75),0 0 40px rgba(120,60,220,.25);backdrop-filter:blur(6px);font-family:Georgia,serif;max-height:calc(100vh - 150px);overflow:auto}
+-#summon-wheel .sw-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+-#summon-wheel .sw-title{font-size:13px;letter-spacing:.32em;color:#ffe9b0;margin-right:auto}
+-#summon-wheel .sw-title small{display:block;font-size:9px;letter-spacing:.2em;color:#8f7fb0;margin-top:3px}
+-#summon-wheel .sw-chip{font-size:11px;letter-spacing:.06em;color:#cdbfe6;background:rgba(60,30,110,.4);border:1px solid #4a2a7a;border-radius:20px;padding:4px 10px}
+-#summon-wheel .sw-chip b{color:#fff3c4;font-weight:normal}
+-#summon-wheel .sw-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:10px}
+-#summon-wheel .sw-btn.sw-card{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:7px;text-align:left;padding:12px 12px 10px;border:1px solid #4a2a7a;border-radius:5px;
+-  background:linear-gradient(180deg,rgba(44,20,80,.7),rgba(14,6,28,.85));color:#e6dcf5;cursor:pointer;font-family:inherit;transition:transform .15s,border-color .15s,box-shadow .15s}
+-#summon-wheel .sw-btn.sw-card:hover:not(.sw-disabled),#summon-wheel .sw-btn.sw-card.pad-focus{border-color:#d4af37;transform:translateY(-3px);box-shadow:0 8px 24px rgba(212,175,55,.25)}
+-#summon-wheel .sw-btn.sw-disabled{opacity:.55;cursor:not-allowed;pointer-events:auto}
+-#summon-wheel .sw-key{position:absolute;top:8px;right:9px;font-style:normal;font-size:10px;color:#1a0a24;background:#d4af37;border-radius:3px;padding:1px 6px}
+-#summon-wheel .sw-top{display:flex;align-items:center;gap:10px}
+-#summon-wheel .sw-ic{font-size:30px;line-height:1;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a2470,#150a2c);border:1px solid #6b3fd0}
+-#summon-wheel .sw-nm{font-size:15px;color:#fff3c4;letter-spacing:.05em}#summon-wheel .sw-nm small{display:block;font-size:10px;color:#8f7fb0;letter-spacing:.14em;margin-top:2px}
+-#summon-wheel .sw-st{display:grid;grid-template-columns:44px 1fr 34px;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;color:#9b8bbb}
+-#summon-wheel .sw-bar{height:6px;background:#12061f;border-radius:3px;overflow:hidden;border:1px solid #2a1850}#summon-wheel .sw-bar i{display:block;height:100%;border-radius:3px}
+-#summon-wheel .sw-st em{font-style:normal;color:#fff3c4;text-align:right;font-size:11px}
+-#summon-wheel .sw-cost{display:flex;gap:6px;flex-wrap:wrap;font-size:11px;color:#cdbfe6;margin-top:2px}
+-#summon-wheel .sw-cost span{background:rgba(0,0,0,.35);border-radius:3px;padding:2px 6px}#summon-wheel .sw-cost span.no{color:#ff8b8b;background:rgba(120,20,30,.35)}
+-#summon-wheel .sw-why{font-size:10px;color:#ff9b7b;letter-spacing:.06em;min-height:12px}
+-#summon-wheel .sw-sec{font-size:10px;letter-spacing:.3em;color:#9b6bff;margin-top:2px}
+-#summon-wheel .sw-live{display:flex;flex-direction:column;gap:5px}
+-#summon-wheel .sw-m{display:grid;grid-template-columns:26px 100px 1fr 74px 64px;gap:8px;align-items:center;font-size:11px;color:#cdbfe6;background:rgba(0,0,0,.28);border-radius:4px;padding:5px 8px}
+-#summon-wheel .sw-m .sw-bar{height:8px}#summon-wheel .sw-m .dead{color:#ff8b8b}
+-#summon-wheel .sw-none{font-size:11px;color:#6a5a85;font-style:italic;padding:4px 2px}
+-@media(max-width:620px){#summon-wheel .sw-m{grid-template-columns:22px 1fr 60px}#summon-wheel .sw-m span:nth-child(4),#summon-wheel .sw-m span:nth-child(5){display:none}}`;
+-  document.head.appendChild(st);
+-  const w=document.getElementById('summon-wheel'); w.innerHTML='<div class="sw-head"><div class="sw-title">INVOCAÇÃO<small>ESCOLHA UM MORTO PARA LEVANTAR · Q OU ESC PARA FECHAR</small></div><span class="sw-chip" id="swc-sp"></span><span class="sw-chip" id="swc-slot"></span><span class="sw-chip" id="swc-soul"></span><span class="sw-chip" id="swc-mp"></span></div><div class="sw-row" id="sw-row"></div><div class="sw-sec">MINIONS ATIVOS</div><div class="sw-live" id="sw-live"></div>';
+-  const bar=(v,mx,c)=>`<div class="sw-bar"><i style="width:${Math.max(4,Math.min(100,v/mx*100))}%;background:${c}"></i></div>`;
+-  let cards=[], tmr=0;
+-  function can(key){
+-    const [soul,mp]=SW_COST[key], sp=minionSpCost(key); let why='';
+-    if(minions.length>=player.minionSlots) why='Slots cheios';
+-    else if(spFree()<sp) why='SP insuficiente';
+-    else if(player.souls<soul) why='Faltam almas';
+-    else if(player.mp<mp) why='Mana insuficiente';
+-    return {ok:!why,why,soul,mp,sp};
+-  }
+-  buildSummonWheelUI=function(){
+-    const row=document.getElementById('sw-row'); row.innerHTML=''; cards=[];
+-    let n=0;
+-    Object.entries(MINION_DEFS).forEach(([key,def])=>{
+-      if(player.level<def.unlockLv) return; n++;
+-      const s=swStats(key), c=can(key), btn=document.createElement('button'); btn.className='sw-btn sw-card'; btn.dataset.key=key;
+-      btn.innerHTML=`<i class="sw-key">${n}</i><div class="sw-top"><div class="sw-ic">${def.emoji}</div><div class="sw-nm">${def.name}<small>${def.atkR>3?'DISTÂNCIA':'CORPO A CORPO'}</small></div></div>
+-        <div class="sw-st"><span>VIDA</span>${bar(s.hp,260,'linear-gradient(90deg,#c0392b,#ff6b5a)')}<em>${s.hp}</em></div>
+-        <div class="sw-st"><span>DANO</span>${bar(s.dmg,60,'linear-gradient(90deg,#d68910,#ffd24a)')}<em>${s.dmg}</em></div>
+-        <div class="sw-st"><span>VEL.</span>${bar(s.spd,6,'linear-gradient(90deg,#1f8f6b,#4de3b0)')}<em>${s.spd.toFixed(1)}</em></div>
+-        <div class="sw-st"><span>REGEN</span>${bar(s.regen,4,'linear-gradient(90deg,#5b3fd0,#a58bff)')}<em>${s.regen.toFixed(1)}</em></div>
+-        <div class="sw-cost"><span data-k="sp">🔮 ${c.sp} SP</span><span data-k="soul">💀 ${c.soul}</span><span data-k="mp">🔷 ${c.mp}</span></div><div class="sw-why"></div>`;
+-      btn.onclick=()=>{ const q=can(key); if(!q.ok){ try{ floatMsg(q.why,innerWidth/2,innerHeight*.4,'#ff8b8b'); }catch(e){} return; }
+-        player.souls-=q.soul; player.mp-=q.mp; updateHUD(); const r=spawnMinion(key,true); if(r) toggleSummonWheel(); else { player.souls+=q.soul; player.mp+=q.mp; updateHUD(); } };
+-      row.appendChild(btn); cards.push({btn,key});
+-    });
+-    swRefresh();
+-  };
+-  window.swRefresh=function(){
+-    if(!summonWheelOpen) return;
+-    const sp=document.getElementById('swc-sp'); if(!sp) return;
+-    sp.innerHTML=`🔮 SP <b>${spUsed()}/${player.maxSp}</b>`; document.getElementById('swc-slot').innerHTML=`☠ Slots <b>${minions.length}/${player.minionSlots}</b>`;
+-    document.getElementById('swc-soul').innerHTML=`💀 Almas <b>${player.souls}</b>`; document.getElementById('swc-mp').innerHTML=`🔷 Mana <b>${Math.floor(player.mp)}/${player.maxMp}</b>`;
+-    cards.forEach(({btn,key})=>{ const c=can(key); btn.classList.toggle('sw-disabled',!c.ok); btn.querySelector('.sw-why').textContent=c.why;
+-      btn.querySelector('[data-k=soul]').classList.toggle('no',player.souls<c.soul); btn.querySelector('[data-k=mp]').classList.toggle('no',player.mp<c.mp); btn.querySelector('[data-k=sp]').classList.toggle('no',spFree()<c.sp); });
+-    const lv=document.getElementById('sw-live');
+-    lv.innerHTML=minions.length?minions.map(m=>{ const d=m.def||MINION_DEFS[m.type]; const pct=m.dead?0:Math.max(0,m.hp/m.maxHp*100);
+-      return `<div class="sw-m"><span>${d.emoji}</span><span>${d.name}</span><div class="sw-bar"><i style="width:${pct}%;background:${pct>50?'#4de39a':pct>25?'#ffd24a':'#ff6b5a'}"></i></div><span class="${m.dead?'dead':''}">${m.dead?'☠ caído':Math.ceil(m.hp)+'/'+m.maxHp}</span><span>⚔ ${m.dmg}${m.hpRegen?' · +'+m.hpRegen.toFixed(1)+'/s':''}</span></div>`; }).join(''):'<div class="sw-none">Nenhum minion ativo ainda.</div>';
+-  };
+-  const _tg=toggleSummonWheel; toggleSummonWheel=function(){ const r=_tg.apply(this,arguments); clearInterval(tmr); if(summonWheelOpen) tmr=setInterval(()=>{ if(!summonWheelOpen){ clearInterval(tmr); return; } swRefresh(); },300); return r; };
+-  window.addEventListener('keydown',e=>{ if(!summonWheelOpen||e.key<'1'||e.key>'4') return; e.preventDefault(); e.stopImmediatePropagation(); const c=cards[+e.key-1]; if(c) c.btn.click(); },true);
+-})();
++
++
+ 
+ // ═══════════════════════════════════════════════════════════
+ // GAMEPAD — mapeamento "standard" (Xbox/PlayStation/Switch Pro)
+@@ -5774,7 +5996,7 @@ const PAD={map:(function(){ try{ return (JSON.parse(localStorage.getItem('nr_opt
+     if(best) setFocus(best);
+   }
+   function press(i,b){ return !!(b[i]&&b[i].pressed); }
+-  const SPELLS=['nova','raio','chuva','explosao'];
++  const SPELLS=['raio','maos','chuva','explosao'];
+   function cycleSpell(d){
+     const l=SPELLS.filter(s=>player.learnedSkills.has(s)); if(!l.length) return;
+     const i=Math.max(0,l.indexOf(player.activeSpell)); selectSpell(l[(i+d+l.length)%l.length]);
+@@ -5856,7 +6078,7 @@ const PAD={map:(function(){ try{ return (JSON.parse(localStorage.getItem('nr_opt
+     { const near=(typeof nearbyNpc!=='undefined'&&nearbyNpc&&gameState==='hub')?nearbyNpc:null;
+       legend(PAD.used?'col':'x',!PAD.used?null: gameState==='hub'
+         ? [['L','Mover']].concat(near?[['A','Falar: '+String(near.label||'NPC').replace(/<[^>]+>/g,'')]]:[['A','Interagir (perto de um NPC)']]).concat([['Start','Pausa']])
+-        : [['L','Mover'],['R','Mirar'],['RT','Lançar magia'],['A','Lançar na mira'],['LB','Magia anterior'],['RB','Próxima magia'],['X','Barreira'],['Y','Invocar'],['LT','Comandar minions'],['B','Portal / interagir'],['Select','Reanimar'],['Start','Pausa']]);
++        : [['L','Mover'],['R','Mirar'],['RT','Lançar magia'],['A','Lançar na mira'],['LB','Magia anterior'],['RB','Próxima magia'],['X','Escudo de Carne'],['Y','Invocar'],['LT','Comandar minions'],['B','Portal / interagir'],['Select','Reanimar'],['Start','Pausa']]);
+       const pr=document.getElementById('hub-npc-prompt'); if(PAD.used&&pr&&pr.style.display!=='none'&&/\[E\]/.test(pr.textContent)) pr.innerHTML=pr.innerHTML.replace(/\[E\]/g,'[A]'); }
+     if(gameState==='hub'){ ret.style.display=line.style.display='none'; if(A||B) fire('e'); return; }
+     // mira
+@@ -6026,12 +6248,204 @@ startAmbient=function(){};
+ })();
+ 
+ const hasSave=bootGame();
++if(!hasSave) initializeDefaultSummonGroup();
++renderSummonSlots();
+ document.getElementById('cmd-auto')?.classList.add('active');
+ generateMissions();
+ buildHubScene();
+ updateInventoryBar();
+ if(hasSave) floatMsg('✓ Save carregado — Wave '+wave,innerWidth/2,innerHeight*.35,'#d4af37');
+ updateHUD(); updateMinionPanel(); requestAnimationFrame(frame);
++{ const st=document.createElement('style'); st.textContent=`
++/* Interface: combat hierarchy and readable management screens. */
++:root{--ui-text:#eee6d7;--ui-muted:#b7a9ca;--ui-panel:rgba(12,7,23,.94);--ui-border:#695080}
++.spell-slot{pointer-events:auto;color:var(--ui-text)}
++.spell-slot .s-key{color:#e8d5a3;font-size:11px}.spell-slot .s-cost{color:#d4b9ff;font-size:11px}
++.spell-slot:focus-visible,.btn:focus-visible,.hub-tab:focus-visible,.st-node:focus-visible,.upgrade-card:focus-visible{outline:2px solid #ffe08a;outline-offset:3px}
++.spell-slot .s-name{font:12px/1.4 Georgia,serif;background:#130b21;padding:4px 8px;border:1px solid var(--ui-border);border-radius:4px;top:-34px;color:var(--ui-text)}
++#hud{padding:8px 12px;border:1px solid #514060;border-radius:7px;background:var(--ui-panel);gap:12px;bottom:12px}
++.bar-label{font-size:10px;letter-spacing:.07em;color:#d6c9df}.bar-val{font-size:12px;color:#eee3f4}.bar-track{height:11px}
++#spellbar{bottom:94px}#reanimate-hint{bottom:161px;background:#160e25;border:1px solid #8869ad;border-radius:4px;padding:6px 10px;color:#e3ceff}
++#hint{bottom:185px;max-width:700px;width:90vw;color:#c6b6d7;font-size:11px;line-height:1.5;background:rgba(9,4,17,.75);padding:4px 8px;border-radius:4px}
++#vol-ctrl{display:none}#boss-bar{max-width:calc(100vw - 32px)}
++#cmd-bar{bottom:230px!important}#inv-bar{bottom:150px!important}#summon-wheel{bottom:230px!important;max-height:calc(100vh - 250px)!important}
++#minion-panel{background:rgba(12,7,23,.85);padding:8px;border-radius:5px}.m-name{width:92px;color:#e0d5e9}.m-hp-track{width:70px;height:6px}
++.hub-tab{color:#c3b3d5;font-size:12px;padding:10px 14px;letter-spacing:.05em}.hub-sub,#hub-stat{color:#b9a8ce;font-size:12px}
++.u-desc,.st-desc,.sm-stats,.shop-card .sh-desc,.mission-card .mc-desc,.mission-card .mc-detail,.roster-card .rc-status{color:#c7b8d4;font-size:12px;line-height:1.55}
++.u-name,.st-name,.sm-name,.shop-card .sh-name,.roster-card .rc-name{font-size:13px}.u-cost,.sm-cost{font-size:12px;color:#d0afff}
++.upgrade-card.disabled,.summon-card.disabled,.st-node.st-locked{opacity:.65}.upgrade-card.disabled,.summon-card.disabled{pointer-events:auto;cursor:not-allowed}
++.section-title{font:14px Georgia,serif;color:#e4c88b;letter-spacing:.06em;margin:20px 0 8px}.section-note{font-size:12px;line-height:1.6;color:#c9bbd7;margin:8px 0}
++#tl .hub-panel{max-width:none;padding:8px 0}#tl .pmgrid{grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr))}
++#tl .pmsp{flex-wrap:wrap}#tl .pmsp em{width:auto;max-width:150px;font-size:11px;color:#c6bad3}#tl .pmmin{flex-wrap:wrap}#tl .pmmin small{color:#c7b8d4}
++#tl .st-row{gap:12px;flex-wrap:nowrap}#tl .st-node{min-width:0;width:100%;padding:10px;max-width:190px}#tl .st-branch{flex:1;min-width:0}
++@media(max-width:760px){
++ #hud{width:calc(100vw - 20px);gap:8px;justify-content:space-between}.bar-wrap{flex:1;min-width:0}.bar-track{width:100%!important}.bar-label{font-size:9px;letter-spacing:0}
++ #hint{display:none}#minion-panel{top:90px;right:10px}#cmd-bar{bottom:210px!important}#tl .st-row{flex-wrap:wrap}#tl .st-branch{min-width:125px}
++ #spellbar{bottom:95px;gap:5px}.spell-slot{width:48px;height:52px}#reanimate-hint{bottom:158px;width:max-content;max-width:94vw;text-align:center}
++ #tl .pm{width:96vw}#hub-overlay{padding:60px 12px 24px}#hub-overlay h1{font-size:20px}.hub-tabs{margin-top:16px}.hub-tab{padding:9px}
++}
++
++#selected-spell{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);width:max-content;max-width:94vw;font-size:12px;color:#eee3f4;padding:4px 9px;border-radius:4px;background:rgba(12,7,23,.94);pointer-events:none;text-align:center}
++#reanimate-hint{bottom:189px}#hint{bottom:225px}.spell-slot.no-mana{border-color:#a65d68}.spell-slot.no-mana .s-cost{color:#ff9aa5}
++body.camp #slot-chuva,body.camp #slot-explosao{display:none}
++#tl .sw-m{font-size:12px}#summon-wheel .sw-m{grid-template-columns:26px 90px minmax(40px,1fr) minmax(160px,2fr) 64px}
++@media(max-width:760px){#hint{display:none}#reanimate-hint{bottom:184px}#summon-wheel .sw-m{grid-template-columns:24px 1fr;gap:6px}#summon-wheel .sw-m span:nth-child(4){display:block;grid-column:2}#summon-wheel .sw-m .sw-bar{display:none}}
++
++/* The Reliquary — original Zephyr combat dock, made entirely in CSS. */
++#hud{--orb-size:112px;--core-width:380px;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:auto;display:flex;align-items:flex-end;gap:5px;padding:0;border:0;background:none;pointer-events:none;filter:drop-shadow(0 8px 12px #000b)}
++.hud-core{position:relative;width:var(--core-width);padding:15px 14px 8px;background:linear-gradient(175deg,#393b32 0,#171c19 5%,#0b1110 54%,#242b24 95%,#62604b);border:1px solid #5c604d;border-radius:12px 12px 4px 4px;box-shadow:inset 0 2px #a4a08a33,inset 0 -3px 6px #000;pointer-events:auto}
++.hud-core:before,.hud-core:after{content:'';position:absolute;top:20px;width:9px;height:48px;border:1px solid #85816a;background:linear-gradient(90deg,#4b4e3e,#151b17);transform:skewY(-30deg);left:-7px;z-index:-1}.hud-core:after{left:auto;right:-7px;transform:skewY(30deg)}
++.hud-crest{display:flex;gap:9px;align-items:center;justify-content:center;position:absolute;top:-9px;left:14px;right:14px;font-size:8px;letter-spacing:.22em;color:#c2b995;text-shadow:0 1px #000}.hud-crest span{background:#161d16;padding:3px 10px;border:1px solid #565a46;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 50%,calc(100% - 8px) 100%,8px 100%,0 50%)}.hud-crest i{height:1px;flex:1;background:#686a50}
++#spellbar{position:relative;bottom:auto;left:auto;transform:none;display:flex;gap:6px;justify-content:center;padding:0;pointer-events:auto}
++#selected-spell{display:none}.spell-slot,#summon-action{width:49px;height:58px;border-radius:3px;border:1px solid #686956;background:linear-gradient(145deg,#383d30,#111c16 18%,#07110d 80%,#333a2c);box-shadow:inset 0 0 0 3px #090e0b,inset 0 0 0 4px #72745a55;flex-shrink:0}
++.spell-slot.active{border-color:#c9bb7f;box-shadow:inset 0 0 0 3px #090e0b,0 0 10px #b6ab6144}.spell-slot .s-icon{font-size:24px;line-height:29px;filter:drop-shadow(0 0 6px #65c69c55)}.spell-slot .s-key,#summon-action .s-key{font:9px Georgia,serif;color:#dfd5ac;letter-spacing:0;white-space:nowrap}.spell-slot .s-cost{right:3px;bottom:1px;font-size:9px;color:#a8b8a6}.spell-slot.locked{opacity:.4}.spell-slot .s-name{top:-44px;font-size:11px;z-index:2}
++#summon-action{pointer-events:auto;color:#b5c89e;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;gap:2px}#summon-action .s-icon{font-size:25px}#summon-action:focus-visible{outline:2px solid #dfd5ac;outline-offset:3px}body.camp-nosum #summon-action{display:none}#slot-barreira{margin-left:0!important}
++.resource-vessel{--fill:100%;position:relative;width:var(--orb-size);flex:0 0 var(--orb-size);height:144px;pointer-events:auto}
++.vessel-glass{position:absolute;bottom:30px;left:6px;right:6px;height:104px;border:5px solid #434d3b;border-radius:35% 35% 43% 43%;background:radial-gradient(ellipse at 50% 0,#252626,#060a08 72%);overflow:hidden;box-shadow:0 0 0 1px #99947a,inset 0 0 16px #000,0 0 0 5px #111a13}
++.vessel-glass:after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 26% 22%,#ffffd34a,transparent 24%),linear-gradient(110deg,transparent 30%,#eee8be13 34%,transparent 38%);box-shadow:inset 0 0 12px 4px #000a;pointer-events:none}
++.vessel-liquid{position:absolute;bottom:0;left:0;width:100%!important;height:var(--fill);transition:height .18s ease;background:radial-gradient(ellipse at 38% 20%,#f07964,#9f252e 55%,#380e1b)!important;box-shadow:0 -2px 8px #f78d7955;border-top:1px solid #efb9a366;border-radius:0}
++.mana-vessel .vessel-liquid{background:radial-gradient(ellipse at 38% 20%,#8ce4ce,#247d77 55%,#102b40)!important;box-shadow:0 -2px 8px #6cead055;border-color:#b1fae066}
++.vessel-rune{position:absolute;inset:24px 0 0;text-align:center;font-size:31px;color:#f3e0b955;text-shadow:0 2px 6px #000;pointer-events:none}.mana-vessel .vessel-rune{color:#c0ffee66}
++.vessel-crown{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:1;font-size:25px;color:#b4ac86;text-shadow:0 2px 2px #000}
++.vessel-caption{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;flex-direction:column;gap:2px;text-shadow:0 1px 3px #000}.vessel-caption span{font-size:9px;letter-spacing:.2em;color:#c9bd9e}.vessel-caption strong{font:12px Georgia,serif;color:#f3e8d2}
++.horde-meter{position:relative;display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-bottom:6px;color:#a9b8a3;font-size:9px;letter-spacing:.03em}.horde-link{color:#a7cbb9}.horde-track{position:absolute;height:2px;bottom:0;left:0;right:0;background:#050907;overflow:hidden}#sp-fill{height:100%;background:#527f64}.horde-track #sp-segs{display:flex}
++.experience-line{display:flex;align-items:center;gap:8px;position:relative;margin-top:6px}.experience-track{height:4px;flex:1;background:#050806;border:1px solid #454a36;overflow:hidden}#exp-fill{background:linear-gradient(90deg,#646241,#c1b87c);height:100%}#hud-level{color:#c6bb8d;font-size:9px;font-weight:normal;white-space:nowrap}.experience-line #exp-val{display:none;position:absolute;bottom:12px;left:0;background:#11190f;border:1px solid #626748;padding:3px 6px;font-size:10px;color:#eee2b5}.experience-line:hover #exp-val{display:block}
++#hint,#pad-hint{display:none!important}#reanimate-hint{bottom:170px}#inv-bar{bottom:16px!important;left:16px!important}
++#cmd-bar{top:162px!important;bottom:auto!important;right:16px!important;flex-direction:row!important;gap:3px!important;align-items:center!important;background:#0d1712a6;padding:4px;border:1px solid #6e78503d;border-radius:4px}#cmd-bar>div{display:none}#cmd-bar .cmd-btn{font-size:10px;padding:5px 7px;min-width:0;letter-spacing:0;border-color:#53674966;background:#0e1a14a6;color:#b6c2a4;box-shadow:none}#cmd-bar .cmd-btn.active{border-color:#9f9c6b;color:#ddd6a4;background:#293523a6}
++#summon-wheel{bottom:182px!important;max-height:calc(100vh - 212px)!important}.summon-explanation{font:12px/1.6 Georgia,serif;color:#bdc8b5;padding:9px 12px;background:#132019;border-left:2px solid #829f74}#summon-wheel .sw-chip{border-color:#5e7651;background:#18251c}#swc-slot{order:-2;font-size:12px}#swc-sp{order:-1;font-size:12px}#summon-wheel .sw-cost{gap:8px}#summon-wheel .sw-cost span{padding:5px 8px}
++@media(max-width:760px){#hud{--orb-size:86px;--core-width:310px;width:auto;gap:3px;bottom:8px}.resource-vessel{height:122px}.vessel-glass{height:82px;left:5px;right:5px;border-width:4px}.vessel-crown{font-size:20px}.vessel-caption strong{font-size:10px}.hud-core{padding:14px 8px 7px}#spellbar{bottom:auto;gap:4px}.spell-slot,#summon-action{width:43px;height:53px}.horde-meter{font-size:8px}#cmd-bar{top:225px!important;bottom:auto!important;right:10px!important}#inv-bar{bottom:152px!important}#summon-wheel{bottom:160px!important;max-height:calc(100vh - 180px)!important}}
++@media(max-width:510px){#hud{--orb-size:64px;--core-width:calc(100vw - 146px);gap:2px}.resource-vessel{height:103px}.vessel-glass{height:62px;bottom:28px;left:4px;right:4px;border-width:3px}.vessel-rune{font-size:21px;inset:15px 0 0}.vessel-crown{font-size:16px}.vessel-caption span{font-size:8px}.vessel-caption strong{font-size:9px}.hud-core{padding:13px 4px 7px}.hud-crest{font-size:6px;letter-spacing:.08em;left:4px;right:4px}.spell-slot,#summon-action{width:calc((var(--core-width) - 34px)/6);max-width:40px;min-width:27px;height:48px}.spell-slot .s-icon{font-size:19px}.spell-slot .s-key,#summon-action .s-key{font-size:7px}.spell-slot .s-cost{display:none}.horde-meter{font-size:7px;gap:3px}.vessel-caption{gap:2px}#hud-level{font-size:8px}#reanimate-hint{bottom:140px}}
++
++#horde-status{position:fixed;top:16px;right:16px;z-index:10;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 32px)}
++#horde-status #minion-panel{position:static;max-height:32vh;overflow-y:auto}#horde-status #cmd-bar{position:static!important;top:auto!important;bottom:auto!important;right:auto!important}
++#summon-wheel .sw-head{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#summon-wheel .sw-title{grid-column:1/-1;grid-row:1}#summon-wheel .sw-chip{white-space:normal;line-height:1.6}#summon-wheel #swc-slot,#summon-wheel #swc-sp{order:0}#summon-wheel #swc-slot{border-left:3px solid #bacb9d}#summon-wheel #swc-sp{border-left:3px solid #89c3ac}
++@media(max-width:760px){#horde-status{top:16px;right:10px}.horde-meter{letter-spacing:0}#horde-status #minion-panel{max-height:25vh}}
++
++/* Compact horde roster: five members per row and no fixed-width command buttons. */
++#horde-status{width:198px;gap:0;background:linear-gradient(150deg,#142019e8,#0a110ee8);border:1px solid #59654a88;border-radius:5px;box-shadow:0 3px 14px #0005;overflow:hidden}
++#horde-status #minion-panel{display:block;width:100%;background:none;padding:8px 8px 6px;border-radius:0;max-height:30vh;overflow-y:auto;scrollbar-width:thin}
++.horde-summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:6px;font-size:9px;color:#9cab91;letter-spacing:.03em}.horde-summary b{font-weight:normal;color:#d1d9c5;margin-left:5px}
++.horde-members{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.horde-member{height:39px;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #51634877;border-radius:3px;background:#1d2a2066;overflow:hidden;cursor:help}.member-portrait{font-size:21px;line-height:1}.member-life{position:absolute;bottom:0;left:2px;right:2px;height:3px;background:#040905;border-radius:1px;overflow:hidden}.member-life i{display:block;height:100%;transition:width .2s}.horde-member.dead .member-portrait{filter:grayscale(1);opacity:.3}.member-timer{position:absolute;bottom:4px;font-size:10px;color:#e0c595;text-shadow:0 1px 2px #000}.horde-member.sacrificed{border-color:#95576299}.horde-member.sacrificed .member-timer{color:#e5a1a7}.member-return{position:absolute;right:1px;top:0;color:#d4ce9c;font-size:10px}.horde-member.empty{border-style:dashed;color:#718265;background:none;font-size:17px;opacity:.55}.horde-member:focus-visible{outline:2px solid #d1ca9e;outline-offset:-2px}
++#horde-status #cmd-bar{width:100%;gap:3px!important;border:0;border-top:1px solid #53624666;border-radius:0;padding:5px!important;background:#080e0b66;justify-content:stretch}
++#horde-status #cmd-bar .cmd-btn{width:auto;flex:1;min-width:0;padding:5px 3px;font-size:9px;text-align:center;white-space:nowrap;line-height:1.2}
++@media(max-width:760px){#horde-status{width:180px}.horde-members{gap:4px}.horde-member{height:35px}.member-portrait{font-size:19px}}
++
++/* Character resources belong to the lower reliquary, not the playfield. */
++#hud #top-left{position:static;display:grid;grid-template-columns:auto auto auto 1fr;align-items:center;gap:5px 10px;width:100%;padding:0 1px 8px;margin-bottom:8px;border-bottom:1px solid #66715255;pointer-events:auto}
++#hud #top-left>div{font-size:10px!important;line-height:1.25;letter-spacing:0!important;text-shadow:none;min-width:0;white-space:nowrap}
++#hud #level-txt{color:#d5c895}#hud #souls-txt{color:#bc9dd5}#hud #gold-txt{color:#d2bd77!important}#hud #sp-pts-txt{color:#a4cba9;text-align:right}
++#hud #wave-txt{grid-column:1/-1;grid-row:2;overflow:hidden;text-overflow:ellipsis;color:#b8c4ac;font-size:9px!important;letter-spacing:.03em!important;padding-top:2px}
++#hud #wave-txt:empty{display:none}#hud #hud-level{display:none}#hud .experience-line{margin-top:7px}
++@media(max-width:760px){#hud #top-left{gap:4px 6px;padding-bottom:6px;margin-bottom:6px}#hud #top-left>div{font-size:9px!important}#hud #wave-txt{font-size:8px!important}}
++@media(max-width:510px){#hud #top-left{grid-template-columns:1fr 1fr;gap:3px 5px}#hud #wave-txt{grid-row:3}#hud #sp-pts-txt{text-align:right}#hud #top-left>div{font-size:8px!important}}
++
++#summon-slots{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:9px;padding-top:7px;border-top:1px solid #5d695044;pointer-events:auto}
++.summon-group-slot{height:46px;min-width:0;position:relative;border:1px solid #6b7d5266;border-radius:3px;background:linear-gradient(#223122,#0d1711);color:#c9d4b9;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-family:inherit}.summon-group-slot>small{position:absolute;top:2px;left:3px;font-size:7px;color:#aab99a}.summon-group-slot>span{font-size:20px;line-height:23px}.summon-group-slot>b{font-size:8px;font-weight:normal}.summon-group-slot.locked{opacity:.4;cursor:not-allowed}.summon-group-slot.selected,.summon-group-slot:hover:not(:disabled){border-color:#cec38d}.summon-group-slot:focus-visible{outline:2px solid #d9ce9a;outline-offset:2px}
++.horde-link,.horde-track{display:none}.horde-meter{justify-content:center}#summon-wheel{z-index:100020!important;width:min(560px,calc(100vw - 24px));bottom:244px!important;max-height:calc(100vh - 266px)!important;overflow:auto;background:#101a12f5;border:1px solid #697754;padding:14px;border-radius:6px;box-shadow:0 12px 40px #000a}
++.summon-picker-heading{display:flex;justify-content:space-between;align-items:center;color:#d0c69b}.summon-picker-heading small{font-size:9px;letter-spacing:.15em}.summon-picker-heading h3{font-size:18px;margin-top:3px}.summon-picker-heading .btn{padding:6px 9px}.summon-explanation{margin:10px 0}#summon-wheel #sw-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.group-choice{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #566b4866;background:#1a281b;color:#d2d9c6;border-radius:4px;font-family:inherit;cursor:pointer;text-align:left}.group-choice>span{font-size:26px}.group-choice>div{display:flex;flex-direction:column;gap:5px}.group-choice small{font-size:11px;color:#aabf9f}.group-choice em{font-size:10px;color:#c3bd91;font-style:normal}.group-choice:disabled{opacity:.4;cursor:not-allowed}.group-choice.equipped{border-color:#c4bc86}
++@media(max-width:760px){.summon-group-slot{height:42px}.summon-group-slot>span{font-size:17px}#summon-slots{gap:3px}#summon-wheel{bottom:230px!important;max-height:calc(100vh - 248px)!important}#reanimate-hint{bottom:238px}}
++@media(max-width:510px){.summon-group-slot{height:36px}.summon-group-slot>span{font-size:15px}.summon-group-slot>b{font-size:6px}#summon-slots{gap:2px}#summon-wheel #sw-row{grid-template-columns:1fr}}
++
++/* Wide combat layout: life and mana anchor the viewport edges. */
++#hud{--orb-size:104px;--core-width:auto;left:12px;right:12px;bottom:8px;transform:none;width:auto;max-width:none;display:grid;grid-template-columns:var(--orb-size) minmax(0,1fr) var(--orb-size);gap:12px;align-items:end}
++#hud .hud-core{width:auto;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"info info" "skills summons" "experience horde";align-items:center;gap:7px 18px;padding:15px 16px 9px;border-radius:8px 8px 3px 3px}
++#hud #top-left{grid-area:info;grid-template-columns:auto auto auto auto minmax(0,1fr);gap:8px;margin:0;padding:0 0 7px}
++#hud #wave-txt{grid-column:auto;grid-row:auto;order:1;text-align:right;padding:0}#hud #sp-pts-txt{text-align:left}
++#hud #spellbar{grid-area:skills;bottom:auto;gap:6px;justify-content:center;min-width:0}
++#hud #summon-slots{grid-area:summons;margin:0;padding:0 0 0 16px;border-top:0;border-left:1px solid #77815b66;gap:5px;align-items:center;min-width:0}
++#hud .summon-group-slot{height:51px;min-width:0}#hud .summon-group-slot>span{font-size:22px}#hud .summon-group-slot>b{font-size:8px}
++#hud .experience-line{grid-area:experience;margin:0;min-width:0}#hud .horde-meter{grid-area:horde;margin:0;padding:0;min-width:0;font-size:9px;justify-content:center}
++#hud .resource-vessel{width:var(--orb-size);height:140px}#hud .vessel-glass{height:99px;left:5px;right:5px}#hud .vessel-crown{font-size:23px}
++#summon-wheel{bottom:166px!important;max-height:calc(100vh - 190px)!important}#reanimate-hint{bottom:166px}
++#inv-bar{bottom:166px!important;left:16px!important}#hub-npc-prompt{bottom:180px!important}
++@media(max-width:1000px){
++ #hud{--orb-size:88px;left:10px;right:10px;gap:9px}#hud .hud-core{padding:14px 10px 9px;column-gap:12px}
++ #hud #spellbar{gap:4px}#hud .spell-slot,#hud #summon-action{width:40px;height:54px}#hud .spell-slot .s-icon{font-size:22px}
++ #hud #summon-slots{padding-left:10px;gap:4px}#hud .summon-group-slot{height:48px}#hud .resource-vessel{height:122px}#hud .vessel-glass{height:82px}#hud .vessel-caption strong{font-size:10px}
++ #hud #top-left>div{font-size:9px!important}
++}
++@media(max-width:700px){
++ #hud{--orb-size:68px;left:8px;right:8px;gap:7px}
++ #hud .hud-core{grid-template-columns:minmax(0,1fr);grid-template-areas:"info" "skills" "summons" "horde" "experience";gap:5px;padding:13px 8px 8px}
++ #hud #top-left{grid-template-columns:auto auto auto 1fr;gap:4px;margin:0;padding-bottom:5px}#hud #wave-txt{grid-column:1/-1;grid-row:2;text-align:center;order:0;font-size:8px!important}#hud #sp-pts-txt{text-align:right}
++ #hud #spellbar{bottom:auto;gap:4px}#hud .spell-slot,#hud #summon-action{width:38px;height:47px;max-width:none;min-width:0}
++ #hud #summon-slots{border:0;padding:0;gap:4px}#hud .summon-group-slot{height:37px}#hud .summon-group-slot>span{font-size:17px}#hud .summon-group-slot>b{font-size:7px}
++ #hud .resource-vessel{height:107px}#hud .vessel-glass{height:67px;bottom:28px;left:4px;right:4px;border-width:3px}#hud .vessel-rune{font-size:22px;inset:16px 0 0}#hud .vessel-crown{font-size:18px}#hud .vessel-caption span{font-size:8px}#hud .vessel-caption strong{font-size:9px}
++ #summon-wheel{bottom:210px!important;max-height:calc(100vh - 230px)!important}#reanimate-hint{bottom:210px}#inv-bar{bottom:210px!important}#hub-npc-prompt{bottom:225px!important}
++}
++@media(max-width:420px){
++ #hud{--orb-size:56px;gap:5px;left:5px;right:5px}#hud .hud-core{padding-left:5px;padding-right:5px}
++ #hud #spellbar{gap:2px}#hud .spell-slot,#hud #summon-action{width:calc((100vw - 150px)/6);height:44px}#hud .spell-slot .s-icon{font-size:18px}#hud .spell-slot .s-key{font-size:7px}
++ #hud .vessel-glass{height:56px}#hud .resource-vessel{height:95px}#hud .summon-group-slot>span{font-size:15px}#hud #top-left>div{font-size:8px!important}
++}
++
++/* Two independent docks leave the center of the battlefield clear. */
++#hud{grid-template-columns:var(--orb-size) minmax(0,350px) minmax(30px,1fr) minmax(0,350px) var(--orb-size);gap:10px}
++#hp-vessel{grid-column:1}#mp-vessel{grid-column:5}
++.hud-left-dock,.hud-right-dock{position:relative;min-width:0;pointer-events:auto;background:linear-gradient(175deg,#30372b,#101a13 12%,#0b120e 80%,#30392a);border:1px solid #626b4f;border-radius:7px 7px 3px 3px;box-shadow:inset 0 1px #b1b19222,inset 0 -2px 5px #0008;padding:13px 10px 9px;display:grid;gap:7px}
++.hud-left-dock{grid-column:2;grid-template-areas:"info" "skills" "experience";align-items:center}
++.hud-right-dock{grid-column:4;grid-template-areas:"title" "summons" "horde";align-items:center}
++.summon-dock-title{grid-area:title;font-size:8px;color:#b8c5a3;letter-spacing:.13em;text-align:center;border-bottom:1px solid #61704b55;padding-bottom:6px}
++#hud #top-left{grid-template-columns:auto auto auto 1fr;gap:4px 7px;padding-bottom:6px}
++#hud #wave-txt{grid-row:2;grid-column:1/-1;text-align:left;order:0;font-size:8px!important}
++#hud #sp-pts-txt{text-align:right}
++#hud #spellbar{justify-content:flex-start;gap:5px}
++#hud .spell-slot,#hud #summon-action{width:calc((100% - 25px)/6);max-width:50px;min-width:0;height:54px}
++#hud #summon-slots{border:0;padding:0;gap:5px}
++#hud .summon-group-slot{height:49px}
++#hud .horde-meter{font-size:8px}
++#hud .experience-line{margin:0}
++@media(max-width:1000px){
++ #hud{gap:8px;grid-template-columns:var(--orb-size) minmax(0,330px) minmax(24px,1fr) minmax(0,330px) var(--orb-size)}
++ .hud-left-dock,.hud-right-dock{padding:12px 8px 8px;gap:6px}
++ #hud #spellbar{gap:4px}#hud .spell-slot,#hud #summon-action{width:calc((100% - 20px)/6);height:50px}
++ #hud #summon-slots{gap:4px}#hud .summon-group-slot{height:45px}#hud .summon-group-slot>span{font-size:19px}
++ #hud #top-left>div{font-size:8px!important}
++}
++@media(max-width:760px){
++ #hud{--orb-size:64px;gap:6px;grid-template-columns:var(--orb-size) minmax(0,1fr) 12px minmax(0,1fr) var(--orb-size)}
++ #hud #spellbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
++ #hud .spell-slot,#hud #summon-action{width:100%;max-width:none;height:42px}#hud .spell-slot .s-icon{font-size:18px;line-height:21px}
++ #hud #summon-slots{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}#hud .summon-group-slot{height:40px}#hud .summon-group-slot>span{font-size:18px}
++ #hud #top-left{grid-template-columns:1fr 1fr;gap:3px}#hud #wave-txt{grid-row:3}#hud #sp-pts-txt{text-align:right}
++ #hud .horde-meter{font-size:7px;line-height:1.4;text-align:center}#hud .hud-crest{left:4px;right:4px;font-size:6px;letter-spacing:.04em}.summon-dock-title{font-size:7px;letter-spacing:.04em}
++}
++@media(max-width:420px){
++ #hud{--orb-size:48px;gap:4px;left:5px;right:5px;grid-template-columns:var(--orb-size) minmax(0,1fr) 8px minmax(0,1fr) var(--orb-size)}
++ .hud-left-dock,.hud-right-dock{padding-left:5px;padding-right:5px}
++ #hud .spell-slot,#hud #summon-action{height:38px}#hud .spell-slot .s-key{font-size:6px}#hud .summon-group-slot{height:36px}#hud .summon-group-slot>span{font-size:14px}#hud .summon-group-slot>b{font-size:6px}#hud #top-left>div{font-size:7px!important}
++}
++
++/* The vessels are embedded in a continuous metal housing, not separate widgets. */
++#hud{grid-template-columns:minmax(0,454px) minmax(30px,1fr) minmax(0,454px);gap:10px;align-items:end}
++.hud-wing{position:relative;display:grid;align-items:center;gap:5px;min-width:0;min-height:150px;pointer-events:auto;border:1px solid #76805d;background:linear-gradient(175deg,#4a513e 0,#1e2c1f 4%,#0d1711 35%,#101a13 85%,#3d4932 100%);box-shadow:inset 0 1px #d0c99a44,inset 0 -2px 5px #000b,0 4px 12px #0007}
++.life-wing{grid-column:1;grid-template-columns:var(--orb-size) minmax(0,1fr);border-radius:62px 8px 5px 48px;padding:4px 10px 4px 5px}
++.mana-wing{grid-column:3;grid-template-columns:minmax(0,1fr) var(--orb-size);border-radius:8px 62px 48px 5px;padding:4px 5px 4px 10px}
++.hud-wing:before{content:'';position:absolute;top:3px;left:28px;right:28px;height:1px;background:linear-gradient(90deg,transparent,#b5b08766,transparent);pointer-events:none}
++#hud .hud-wing .hud-left-dock,#hud .hud-wing .hud-right-dock{grid-row:1;border:0;border-radius:0;background:transparent;box-shadow:none;padding:10px 3px 9px;min-width:0}
++#hud .life-wing #hp-vessel{grid-column:1;grid-row:1}#hud .life-wing .hud-left-dock{grid-column:2}
++#hud .mana-wing .hud-right-dock{grid-column:1}#hud .mana-wing #mp-vessel{grid-column:2;grid-row:1}
++#hud .hud-wing .resource-vessel{height:140px;width:var(--orb-size);margin:0}
++#hud .hud-wing .vessel-glass{left:3px;right:3px;bottom:29px;height:101px;border-radius:45% 45% 48% 48%;border:4px solid #596849;box-shadow:0 0 0 1px #b6ae83,inset 0 0 15px #000,0 0 0 4px #111e14}
++#hud .mana-wing .vessel-glass{border-color:#42645a;box-shadow:0 0 0 1px #a3b4a0,inset 0 0 15px #000,0 0 0 4px #101c17}
++#hud .hud-wing .vessel-caption{bottom:2px}.hud-wing .hud-crest{top:-12px;left:10px;right:10px}
++@media(max-width:1000px){
++ #hud{grid-template-columns:minmax(0,426px) minmax(24px,1fr) minmax(0,426px);gap:8px}
++ .hud-wing{min-height:132px}.life-wing{border-radius:52px 7px 4px 39px;padding-right:7px}.mana-wing{border-radius:7px 52px 39px 4px;padding-left:7px}
++ #hud .hud-wing .resource-vessel{height:122px}#hud .hud-wing .vessel-glass{height:82px}
++}
++@media(max-width:760px){
++ #hud{--orb-size:64px;grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr);gap:6px}
++ .hud-wing{min-height:138px;gap:4px}.life-wing{border-radius:37px 6px 4px 29px;padding:4px 6px 4px 4px}.mana-wing{border-radius:6px 37px 29px 4px;padding:4px 4px 4px 6px}
++ #hud .hud-wing .resource-vessel{height:105px}#hud .hud-wing .vessel-glass{height:66px;bottom:28px;left:3px;right:3px;border-width:3px}
++ #hud .hud-wing .hud-left-dock,#hud .hud-wing .hud-right-dock{padding:9px 2px 7px;gap:5px}.hud-wing .hud-crest{top:-10px;left:2px;right:2px}
++}
++@media(max-width:420px){
++ #hud{--orb-size:48px;grid-template-columns:minmax(0,1fr) 8px minmax(0,1fr);gap:4px}
++ .hud-wing{gap:3px}.life-wing{padding-right:4px}.mana-wing{padding-left:4px}
++ #hud .hud-wing .resource-vessel{height:94px}#hud .hud-wing .vessel-glass{height:54px;left:2px;right:2px;border-width:2px}
++}
++`; document.head.appendChild(st); }
+ if(CAMP.on&&!TITLE.active) campBoot(); else if(BOOT.mode==='new'&&!storySeen().intro) setTimeout(playIntro,350);
+ window.__g={CAMP,STG,campPlay,campLaunch,campMapOpen,get camp(){return CAMP;},get state(){return {gameState,sceneMode,wave,enemies,minions,player}}, keys, cam, necroGroup, spawnMinion, startMission, enterHub, enterField, castSpell, MISSION_TEMPLATES, hubNpcs:()=>hubNpcs};
+ </script>
