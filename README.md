@@ -11,23 +11,41 @@ Jogo de ação top-down feito em HTML5 Canvas 2D, em um único arquivo, sem depe
 | Tecla | Ação |
 |---|---|
 | `W A S D` | Mover o necromante |
-| Clique esquerdo / `1` | Lançar Raio Necrótico |
-| Clique direito / `2` | Lançar Mãos dos Mortos |
-| `3` / `4` | Lançar Chuva de Ossos / Explosão de Almas, quando aprendidas |
-| `ESPAÇO` | Escudo de Carne (15 MP + zumbi; sem zumbi, também consome HP) |
-| `Q` | Configurar um grupo de invocação |
+| Clique esquerdo / `1` | Ativar habilidade do slot 1 |
+| Clique direito / `2` | Ativar habilidade do slot 2 |
+| `Q` / `3` | Ativar habilidade do slot 3 |
+| `E` / `4` | Ativar habilidade do slot 4 |
+| `R` / `5` | Ativar habilidade do slot 5 |
+| `T` / `6` | Ativar habilidade do slot 6 |
+| Clique no botão do HUD | Escolher a habilidade daquele slot |
+| `C` | Dash, quando equipado em um slot |
 | `Shift` + clique direito | Reunir a horda (no chão) ou mandar atacar (no inimigo) |
-| `R` | Reanimar minion caído |
-| `E` | Portal / interagir |
+| `V` | Reanimar aliado caído, exceto sacrificado ou detonado |
+| `G` | Portal / interagir |
 | `F1`–`F5` | Usar itens do inventário |
 | `ESC` | Pausa: Personagem, Habilidades, Horda e Sistema |
 | `H` | Ajuda com controles e explicação dos recursos |
 
 Também dá para jogar com controle (gamepad).
 
-Na campanha, o Ato I libera **Raio Necrótico** na Cripta (mouse 1 ou `1`, 20 MP), **Zumbis** na Floresta (`Q`), **Mãos dos Mortos** na Trilha (mouse 2 ou `2`, 35 MP) e **Escudo de Carne** no Posto (`Espaço`, 15 MP). Mouse e teclas lançam suas habilidades diretamente, na direção da mira. No controle, LB/RB ainda escolhem a magia e A/RT lançam.
+### Dash e ataques especiais
 
-Mãos dos Mortos reduz a velocidade dos inimigos em 40% por uma área de 5 segundos (20% para o deslocamento normal de chefes). Escudo de Carne sacrifica o zumbi mais ferido e absorve 70% de seu HP máximo por 8 segundos. O zumbi ocupa seu espaço e recupera em 20 segundos; `R` não antecipa essa recuperação. Sem zumbi vivo, a habilidade cobra 15% do HP máximo por um escudo de 25%, sem permitir que o custo mate Zephyr.
+Zephyr começa com **Dash** (`C`, ou L3 no controle, quando equipado): percorre até 4,5 unidades em 0,18 s, com recarga de 3 s e sem custo de mana. Usa a direção do movimento; parado, usa a mira. Durante o deslocamento, evita dano. Obstáculos e limites da fase interrompem o dash.
+
+Os inimigos básicos preparam seus ataques especiais com avisos visuais:
+
+| Inimigo | Habilidade | Comportamento inicial |
+|---|---|---|
+| Guerreiro | Golpe pesado | Avisa por 0,65 s; dano de 1,6× em raio 2,1; recarga de 7 s |
+| Arqueiro | Tiro forte | Avisa a linha de tiro por 0,9 s; flecha de 1,9× de dano com direção fixa; recarga de 7 s |
+| Mago Vivo | Erupção de fogo | Marca o chão por 1 s; impacto de 1,2× e três pulsos de 0,3× em raio 2,2; recarga de 9 s |
+| Bruto | Salto devastador | Avisa o destino por 0,85 s; salta e causa 2× de dano em raio 2,6 ao cair; recarga de 8 s |
+
+Sair da região marcada evita o impacto. Inimigos mortos durante a preparação não completam a habilidade. Chefes mantêm suas habilidades próprias, e alvos de treino não usam esses ataques. Os valores são iniciais e ainda precisam de balanceamento em uma partida.
+
+As seis habilidades iniciais do painel são **Tiro de Osso**, **Muralha de Corpos**, **Zumbis**, **Abominação**, **Esqueletos arqueiros** e **Dash**. As opções ainda não aprendidas ficam bloqueadas até sua liberação na campanha ou árvore. Clique em qualquer slot para trocar sua habilidade; magias e evocações usam os mesmos seis espaços. No controle, LB/RB escolhem o slot e A/RT ativam.
+
+**Muralha de Corpos** custa 35 MP e ergue um muro por 5 segundos, com dano de contato. O muro impede a passagem de inimigos e intercepta seus projéteis. **Tiro de Osso** custa 20 MP. Escudo de Carne pode ser equipado entre as opções adicionais: sacrifica um zumbi e reserva seu lugar até a recuperação.
 
 Saves anteriores são migrados automaticamente. Upgrades removidos de Nova são reembolsados em almas, e Bastião devolve seu ponto para permitir escolher Carne Reforçada.
 
@@ -37,26 +55,25 @@ A horda só escolhe alvos a até 8 unidades de Zephyr. Ao ultrapassar essa regi�
 
 Na pausa, Personagem reúne status e melhorias gerais; Habilidades reúne árvore e evoluções; Horda reúne integrantes, invocação e melhorias; Sistema reúne controles, opções e saves. Loja e missões continuam disponíveis pelos serviços do mundo e mapa. O HUD distingue o vínculo reservado da mana e mostra os atalhos de cada habilidade.
 
-O HUD de combate usa o Relicário de Zephyr: reservatórios de vida e mana ladeiam as ações diretas, com experiência e nível na base. Abaixo das habilidades ficam os slots de grupos. A Ajuda (`H`) reúne as instruções, sem uma faixa permanente sobre o combate.
+O HUD de combate usa o Relicário de Zephyr: vida integrada ao painel esquerdo e mana ao direito, com um espaço livre entre os painéis. As seis habilidades ficam divididas entre os dois lados. A Ajuda (`H`) reúne as instruções.
 
-### Grupos de invocação
+### Evocações nos slots de habilidades
 
-Você começa com **3 slots de grupos**. Cada slot de **Zumbi invoca 3 zumbis**; cada slot de **Arqueiro Ósseo invoca 2 arqueiros**. Esqueleto guerreiro e Espectro começam com 1 por slot. O primeiro grupo de zumbis é concedido ao aprender invocação na campanha, ou ao começar o modo livre.
+Equipar uma evocação traz seu grupo automaticamente: **3 zumbis**, **2 esqueletos arqueiros** ou **1 abominação**. O grupo ocupa um único slot de habilidade. Ativar esse slot comanda a habilidade especial, liberada na árvore:
 
-Clique no slot para escolher seu tipo, reforçar unidades que faltam ou liberar o grupo. A troca valida os custos antes de remover os aliados anteriores. Mana e almas são cobradas por criatura nova; no hub, a mana não é cobrada. Criaturas caídas ou sacrificadas continuam vinculadas ao grupo, e sacrifícios bloqueiam a troca até sua recuperação.
+| Evocação | Comando | Recarga |
+|---|---|---:|
+| Zumbis | Explode apenas um zumbi vivo por ativação, próximo da mira | 1,2 s |
+| Esqueletos arqueiros | Cada arqueiro vivo dispara um tiro forte | 7 s |
+| Abominação | Salta e causa dano em área ao aterrissar | 8 s |
 
-| Marco | Slots disponíveis |
-|---|---:|
-| Inicial | 3 |
-| Conclusão do Ato I | +1 |
-| Nível 12 | +1 |
-| Nível 15 | +1 |
-| Nível 20 | +1 |
+O zumbi detonado permanece vinculado ao slot e aguarda o renascimento normal (12 segundos, modificado pelas melhorias). Se todos forem detonados, o comando aguarda até algum voltar. Reanimação manual, dispensa e troca de evocação não antecipam essa recuperação. Os tempos de recuperação também são salvos.
 
-Os marcos são independentes e permitem chegar a **7 slots**. A árvore contém Legião Putrefata e Maré dos Mortos (+1 zumbi por grupo cada) e Salva Sepulcral (+1 arqueiro por grupo). Depois de aprender uma expansão, clique no slot para reforçar o grupo.
+Legião Putrefata e Maré dos Mortos aumentam os zumbis por grupo; Salva Sepulcral aumenta os arqueiros. Grupos de saves antigos são migrados; os não equipados ficam em reserva. Os antigos marcos de grupos são preservados para compatibilidade, mas o painel de combate usa seis slots compartilhados entre magias e evocações.
 
-Slots de grupos substituem as antigas vagas individuais e o limite de vínculo. Saves anteriores agrupam os aliados existentes e reembolsam as melhorias removidas de vagas/vínculo. Grupos excedentes ficam em reserva e podem ser restaurados em um slot vazio. Configuração, HP e recuperação de sacrifício são salvos.
+### Vila, campanha e missões
 
+O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem perder o progresso. Interaja com `G`. As missões da vila podem oferecer arenas ou trilhas de rolagem lateral, com três emboscadas e chefe no trecho final. A recompensa é concedida uma vez; após a conclusão, `G` retorna à vila.
 
 ## Rodando localmente
 

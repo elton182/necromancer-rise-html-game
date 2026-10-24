@@ -1,0 +1,416 @@
+[
+  {
+    "index": 1,
+    "title": "O Reino de Valdoria",
+    "original": "assets/story/originals/01-o-reino-de-valdoria.webp",
+    "enhanced": "assets/story/enhanced/01-o-reino-de-valdoria.webp",
+    "original_size": [
+      884,
+      618
+    ],
+    "enhanced_size": [
+      2652,
+      1854
+    ],
+    "original_sha256": "0f6f72bed6b88c089cadeeb45eabc3bfc305f73aa46ecb79ae602c649f07da53",
+    "enhanced_sha256": "a2a66b962d5a13d524c1fa04f88441478a67295a88041f7dd600ffd906816ca6",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7941
+  },
+  {
+    "index": 2,
+    "title": "A perda da rainha",
+    "original": "assets/story/originals/02-a-perda-da-rainha.webp",
+    "enhanced": "assets/story/enhanced/02-a-perda-da-rainha.webp",
+    "original_size": [
+      852,
+      618
+    ],
+    "enhanced_size": [
+      2556,
+      1854
+    ],
+    "original_sha256": "57636d608ae701e93ff2086cad35252c47be57db912bd23a9bba1aea14d8e184",
+    "enhanced_sha256": "606b0bd08e701bbf221d66a1e19d5030616dbcf16efc07b0cf1115ebe729ce30",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7254
+  },
+  {
+    "index": 3,
+    "title": "O pedido do rei",
+    "original": "assets/story/originals/03-o-pedido-do-rei.webp",
+    "enhanced": "assets/story/enhanced/03-o-pedido-do-rei.webp",
+    "original_size": [
+      1320,
+      618
+    ],
+    "enhanced_size": [
+      3960,
+      1854
+    ],
+    "original_sha256": "d2343760c6184593d287f82ca573b08b4bc5510a12b3e874b5590a932416e27b",
+    "enhanced_sha256": "6dd351c090b0e4d6413df2b5b72452ef9e5c1d328ef040a0171fe2de4fac4a69",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.607
+  },
+  {
+    "index": 4,
+    "title": "O estudo proibido",
+    "original": "assets/story/originals/04-o-estudo-proibido.webp",
+    "enhanced": "assets/story/enhanced/04-o-estudo-proibido.webp",
+    "original_size": [
+      884,
+      648
+    ],
+    "enhanced_size": [
+      2652,
+      1944
+    ],
+    "original_sha256": "d0efdd890dcdf09228cfd023f00d62539a5c596f5156da85ebd1db2c13fa0cd6",
+    "enhanced_sha256": "af742845e267110a463a846d17b79d07614228da110a94bc3d1d72c8e6f62447",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.6727
+  },
+  {
+    "index": 5,
+    "title": "A fórmula da ressurreição",
+    "original": "assets/story/originals/05-a-formula-da-ressurreicao.webp",
+    "enhanced": "assets/story/enhanced/05-a-formula-da-ressurreicao.webp",
+    "original_size": [
+      738,
+      648
+    ],
+    "enhanced_size": [
+      2214,
+      1944
+    ],
+    "original_sha256": "cc026944d76ca1f02d392de36e30275ec7daeef2056223809192873c88e84be0",
+    "enhanced_sha256": "46023b2d530bba284bae328441bebea17134f287983dd4f53d36d8cd28dacac0",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.6567
+  },
+  {
+    "index": 6,
+    "title": "A traição",
+    "original": "assets/story/originals/06-a-traicao.webp",
+    "enhanced": "assets/story/enhanced/06-a-traicao.webp",
+    "original_size": [
+      730,
+      648
+    ],
+    "enhanced_size": [
+      2190,
+      1944
+    ],
+    "original_sha256": "d0aa45e6cddf5d9cf075ea644eb2a90a504218e077daeccb7be520df95a651e3",
+    "enhanced_sha256": "01bdbb4c80914e70c430060ee4dd005ed7878645f0d291339c42fa91f7e354ec",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.6445
+  },
+  {
+    "index": 7,
+    "title": "A prisão de Zephyr",
+    "original": "assets/story/originals/07-a-prisao-de-zephyr.webp",
+    "enhanced": "assets/story/enhanced/07-a-prisao-de-zephyr.webp",
+    "original_size": [
+      696,
+      648
+    ],
+    "enhanced_size": [
+      2088,
+      1944
+    ],
+    "original_sha256": "a3097964dd2e9cbf4431ba4385994becc6e52c07aced0e178a0f5d0274ee9dd3",
+    "enhanced_sha256": "dd8e564ba6015129919643938a2091ffccb6c406c14ff3a101b10a8b5c4e66d7",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.6818
+  },
+  {
+    "index": 8,
+    "title": "O juramento",
+    "original": "assets/story/originals/08-o-juramento.webp",
+    "enhanced": "assets/story/enhanced/08-o-juramento.webp",
+    "original_size": [
+      1102,
+      768
+    ],
+    "enhanced_size": [
+      3306,
+      2304
+    ],
+    "original_sha256": "ebdf274329d95a4bed2ee5ab487a6913b08f7a66493cebe1fbe1a93825e61b12",
+    "enhanced_sha256": "129c3049e9825e2140b9c3136102cf1f1518a85aeea2d77ffdbd3ba9134e141d",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5784
+  },
+  {
+    "index": 9,
+    "title": "Um ano depois",
+    "original": "assets/story/originals/09-um-ano-depois.webp",
+    "enhanced": "assets/story/enhanced/09-um-ano-depois.webp",
+    "original_size": [
+      520,
+      386
+    ],
+    "enhanced_size": [
+      1560,
+      1158
+    ],
+    "original_sha256": "f235206a4daa0e7818dfb40f673fc86b31dadf8e030190fea727f130c5138e80",
+    "enhanced_sha256": "b955fa64e13d71423da04179ca705317cb6f33d22f29625ad92c0298c143bf0c",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5891
+  },
+  {
+    "index": 10,
+    "title": "O despertar",
+    "original": "assets/story/originals/10-o-despertar.webp",
+    "enhanced": "assets/story/enhanced/10-o-despertar.webp",
+    "original_size": [
+      520,
+      380
+    ],
+    "enhanced_size": [
+      1560,
+      1140
+    ],
+    "original_sha256": "2763f85fb532918435f89b4896ac7473347bebcca841f19130d2d5b99ec45da3",
+    "enhanced_sha256": "90e8462712564f1fe483dc330feb65594b2485fde306b6aee4c428520141374a",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.4763
+  },
+  {
+    "index": 11,
+    "title": "O reino devastado",
+    "original": "assets/story/originals/11-o-reino-devastado.webp",
+    "enhanced": "assets/story/enhanced/11-o-reino-devastado.webp",
+    "original_size": [
+      652,
+      768
+    ],
+    "enhanced_size": [
+      1956,
+      2304
+    ],
+    "original_sha256": "e93e87eac5fdaf63c8359d40d75d0e8a941def227440d685bcd494a77796197a",
+    "enhanced_sha256": "f116261f342686f430a62c149db2ececcc07da0b44e860c0212057de2739df1b",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.6083
+  },
+  {
+    "index": 12,
+    "title": "O necromante errante",
+    "original": "assets/story/originals/12-o-necromante-errante.webp",
+    "enhanced": "assets/story/enhanced/12-o-necromante-errante.webp",
+    "original_size": [
+      774,
+      768
+    ],
+    "enhanced_size": [
+      2322,
+      2304
+    ],
+    "original_sha256": "c22047ef46a0ba31e49adde888312939456a5ecfa3ba50a0df2e216a046ce0ee",
+    "enhanced_sha256": "7dbcb3ebcf709a0da06fe443c74341d65b53e6c2790f19bfffa10031f2756a7d",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5268
+  },
+  {
+    "index": 13,
+    "title": "O cavaleiro derrotado",
+    "original": "assets/story/originals/13-o-cavaleiro-derrotado.webp",
+    "enhanced": "assets/story/enhanced/13-o-cavaleiro-derrotado.webp",
+    "original_size": [
+      1224,
+      604
+    ],
+    "enhanced_size": [
+      3672,
+      1812
+    ],
+    "original_sha256": "5367015e5be3c85b2dd6ff70ec5fcf9c30df8e9c6171d60c167565769b784f0f",
+    "enhanced_sha256": "5070f2c7f897e7f18b9c5e2b72d6c24f2ce959af38a9c556d73fe37b61f673d2",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7387
+  },
+  {
+    "index": 14,
+    "title": "A névoa recua",
+    "original": "assets/story/originals/14-a-nevoa-recua.webp",
+    "enhanced": "assets/story/enhanced/14-a-nevoa-recua.webp",
+    "original_size": [
+      988,
+      604
+    ],
+    "enhanced_size": [
+      2964,
+      1812
+    ],
+    "original_sha256": "df926344e2612bfc97a264dd8138c858fd18fea8ba1105979d877f5519b108b3",
+    "enhanced_sha256": "0e7f3cfe07fb49ed6c660400938c391f9d4f4dc1c9ea1909ffc4ffc92b447095",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5865
+  },
+  {
+    "index": 15,
+    "title": "O fim da corrupção",
+    "original": "assets/story/originals/15-o-fim-da-corrupcao.webp",
+    "enhanced": "assets/story/enhanced/15-o-fim-da-corrupcao.webp",
+    "original_size": [
+      798,
+      604
+    ],
+    "enhanced_size": [
+      2394,
+      1812
+    ],
+    "original_sha256": "a848ec0dd2a7715321c5063eb3f3adbc62ff3317a507c25b28a7addbbf39762d",
+    "enhanced_sha256": "872f0b051b4854c432c05e65936a9866d37bc15495ed862f37c8bdd35e42ca24",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7637
+  },
+  {
+    "index": 16,
+    "title": "A aldeia desperta",
+    "original": "assets/story/originals/16-a-aldeia-desperta.webp",
+    "enhanced": "assets/story/enhanced/16-a-aldeia-desperta.webp",
+    "original_size": [
+      834,
+      610
+    ],
+    "enhanced_size": [
+      2502,
+      1830
+    ],
+    "original_sha256": "8e81ffc64acdc1388ba488cef30c1f5e9270cc7c93ed460413b70a254f9bbd78",
+    "enhanced_sha256": "3e2376fdaac68d9c66a35d412b0df7509fb5e91166b6fca0b7d3081c7df38aa2",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.8389
+  },
+  {
+    "index": 17,
+    "title": "A gratidão do povo",
+    "original": "assets/story/originals/17-a-gratidao-do-povo.webp",
+    "enhanced": "assets/story/enhanced/17-a-gratidao-do-povo.webp",
+    "original_size": [
+      734,
+      610
+    ],
+    "enhanced_size": [
+      2202,
+      1830
+    ],
+    "original_sha256": "60ad10a15d4b9a4b60212c716e43b62c66454b87e02ab0af862fbb45cda53f44",
+    "enhanced_sha256": "65796bd4729d24d034060d7ac19d7336b0e1b335af4b07c659fdcfafc1cdeb99",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.733
+  },
+  {
+    "index": 18,
+    "title": "A resposta de Zephyr",
+    "original": "assets/story/originals/18-a-resposta-de-zephyr.webp",
+    "enhanced": "assets/story/enhanced/18-a-resposta-de-zephyr.webp",
+    "original_size": [
+      674,
+      610
+    ],
+    "enhanced_size": [
+      2022,
+      1830
+    ],
+    "original_sha256": "02300959f91cbb1867ed31d500690eae37c0c85c82329ae9266d71c1792add0b",
+    "enhanced_sha256": "71cf8d7e805fc6339db14f6214a6de15b7142ee6dfda802e9934adb7d9f8a7a0",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7003
+  },
+  {
+    "index": 19,
+    "title": "Um novo caminho",
+    "original": "assets/story/originals/19-um-novo-caminho.webp",
+    "enhanced": "assets/story/enhanced/19-um-novo-caminho.webp",
+    "original_size": [
+      768,
+      610
+    ],
+    "enhanced_size": [
+      2304,
+      1830
+    ],
+    "original_sha256": "a6407bbca0b7c0d0f6a39abba3969210d25f0e4899247eaaa476aa6602b45d18",
+    "enhanced_sha256": "c8f10bf0e55044894781f228b349844b0845c212488ab0f735fb07dc5d3c69cf",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7582
+  },
+  {
+    "index": 20,
+    "title": "Uma nova razão",
+    "original": "assets/story/originals/20-uma-nova-razao.webp",
+    "enhanced": "assets/story/enhanced/20-uma-nova-razao.webp",
+    "original_size": [
+      750,
+      584
+    ],
+    "enhanced_size": [
+      2250,
+      1752
+    ],
+    "original_sha256": "5c6506ffd66328b808cb7f4a873b5a891d3a6537fec16f9f669c5cfc60f52fd3",
+    "enhanced_sha256": "2d9e0aca4ae14bbf7419fef7f5e9c5e37917b505e6121cc31539ebe386cde01a",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5559
+  },
+  {
+    "index": 21,
+    "title": "O reino em ruínas",
+    "original": "assets/story/originals/21-o-reino-em-ruinas.webp",
+    "enhanced": "assets/story/enhanced/21-o-reino-em-ruinas.webp",
+    "original_size": [
+      880,
+      584
+    ],
+    "enhanced_size": [
+      2640,
+      1752
+    ],
+    "original_sha256": "c76e6a8526da66d23ca484d402a305e5c2b7ef360d634e4cbc8cc267e062a134",
+    "enhanced_sha256": "df0652197de06eb315318aa8e540875bffa217d219b6c39a83393e764ca7f67a",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.7169
+  },
+  {
+    "index": 22,
+    "title": "O próximo destino",
+    "original": "assets/story/originals/22-o-proximo-destino.webp",
+    "enhanced": "assets/story/enhanced/22-o-proximo-destino.webp",
+    "original_size": [
+      742,
+      584
+    ],
+    "enhanced_size": [
+      2226,
+      1752
+    ],
+    "original_sha256": "1d8d7a3f4d76cd222edc3ff0a5ba4756cf8aeafbb7756c594e954190976dde0d",
+    "enhanced_sha256": "2846a19efbf762f87aef189e0374c2d97b4d2041c9c51c7a79f6b8bb0aeac2a2",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.5912
+  },
+  {
+    "index": 23,
+    "title": "Ato I concluído",
+    "original": "assets/story/originals/23-ato-i-concluido.webp",
+    "enhanced": "assets/story/enhanced/23-ato-i-concluido.webp",
+    "original_size": [
+      634,
+      584
+    ],
+    "enhanced_size": [
+      1902,
+      1752
+    ],
+    "original_sha256": "68fb7e774a436e6d4a821b2686528cea6cedb00927c1b81632c030226416a1eb",
+    "enhanced_sha256": "6ce6795c8c4d3c413ce9ccd8b7f9eb3715319ebd2d418f0d76f29d0a1becf40d",
+    "method": "UnsharpMask(radius=0.6, percent=55, threshold=3), Lanczos 3x, WebP quality 97",
+    "mean_encoding_error_0_255": 0.2518
+  }
+]

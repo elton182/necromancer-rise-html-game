@@ -16,7 +16,8 @@ function fixture() {
   const context = vm.createContext({console});
   vm.runInContext(`
     const ABILITY_VERSION=1;
-    let handsAreas=[], boltsFx=[], enemies=[], minions=[], gameState='field',minionCommand=null,commandMarker=null,pendingCommand='auto',summonWheelOpen=false;
+    let handsAreas=[], boltsFx=[], enemies=[], minions=[], gameState='field',minionCommand=null,commandMarker=null,pendingCommand='auto',summonWheelOpen=false,mobZones=[];
+    const playerDash={time:0,cd:0};
     const TITLE={active:false,paused:false}, COMIC={active:false}, CAMP={map:false,on:false}, mouse={x:2,y:0};
     const screenToWorld=(x,z)=>({x,z});
     const toggleSummonWheel=()=>summonWheelOpen=!summonWheelOpen;
@@ -32,6 +33,9 @@ function fixture() {
     const document={getElementById:()=>null,querySelectorAll:()=>[]};
     const placeCommandMarker=(x,z,type)=>commandMarker={x,z,type}, removeCommandMarker=()=>commandMarker=null;
     const updateCombatInterface=()=>{};
+    const updateActionSystem=()=>{};
+    const closeSummonPicker=()=>summonWheelOpen=false;
+    const activateActionSlot=(i,x,y)=>castAssignedSpell(['raio','maos'][i],x,y);
     const syncSummonProgress=()=>{},renderSummonSlots=()=>{};
     const floatMsg=()=>{}, castAnim=()=>{},ring=()=>{},burst=()=>{},playSound=()=>{},updateHUD=()=>{},updateMinionPanel=()=>{},tutEvent=()=>{},spawnExplosaoFX=()=>{};
     const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -42,7 +46,7 @@ function fixture() {
     const dealDamageToEnemy=(e,d)=>{e.hp-=d;};
     function zombie(hp,maxHp,x=0){return {type:'zombie',hp,maxHp,x,y:0,dead:false,mesh:mkMesh2(x,0),spd:3.4,atkR:1.5,atkRate:1.2,atkTimer:0,orbitAngle:0,orbitRadius:2};}
   `, context);
-  for (const name of ['abilityReady','castHands','handsSpeed','resetAbilities','updateAbilities','castRaio','updateBolts','sacrificeCandidate','castBarrier','migrateAbilitySave','tryReanimate','dismissMinion','dealDamageToPlayer','minionTargetAllowed','localMinionTarget','moveMinionTo','updateMinionIntent','minionStateText','setCommand','applyRightClick','combatInputAllowed','castAssignedSpell','castHotkey','castSpell','selectSpell','handlePrimaryClick','handleSecondaryClick']) {
+  for (const name of ['abilityReady','castHands','handsSpeed','tickCorpseWalls','wallNearest','resetAbilities','updateAbilities','castRaio','updateBolts','sacrificeCandidate','castBarrier','migrateAbilitySave','tryReanimate','dismissMinion','dealDamageToPlayer','minionTargetAllowed','localMinionTarget','moveMinionTo','updateMinionIntent','minionStateText','setCommand','applyRightClick','combatInputAllowed','castAssignedSpell','castHotkey','castSpell','selectSpell','handlePrimaryClick','handleSecondaryClick','updateAllyLeap']) {
     vm.runInContext(fn(name), context);
   }
   return code => vm.runInContext(code, context);
@@ -63,13 +67,13 @@ test('Raio: distância de viagem limitada a 9', run => {
   assert.equal(run('bolt.mesh.position.x'),9);
   assert.equal(run('boltsFx.length'),0);
 });
-test('Mãos: alcance inválido não cobra; lentidão sai e não acumula', run => {
+test('Muralha: alcance inválido não cobra, duração e custo corretos, sem lentidão antiga', run => {
   run('castHands(10,0)'); assert.equal(run('player.mp'),80);
   run('castHands(2,0); const e={x:2,y:0};');
   assert.equal(run('player.mp'),45);
-  assert.equal(run('handsSpeed(e)'),.6);
-  assert.equal(run('handsSpeed({...e,isBoss:true})'),.8);
-  run('handsAreas.push({...handsAreas[0]})'); assert.equal(run('handsSpeed(e)'),.6);
+  assert.equal(run('handsSpeed(e)'),1);
+  assert.equal(run('handsAreas[0].half*2'),5);
+  run('handsAreas.push({...handsAreas[0]})'); assert.equal(run('handsSpeed(e)'),1);
   run('e.x=12'); assert.equal(run('handsSpeed(e)'),1);
   run('updateAbilities(5)'); assert.equal(run('handsAreas.length'),0);
   assert.equal(run('player.spellCooldowns.maos'),7);
@@ -183,10 +187,10 @@ test('Retorno acompanha Zephyr em movimento e alcança sua formação', run=>{
 });
 test('Textos diferenciam morte, sacrifício e retorno', run=>{
   run('const m=zombie(0,130); m.dead=true; m.deadTimer=12;');
-  assert.match(run('minionStateText(m)'),/R: 30 MP/);
+  assert.match(run('minionStateText(m)'),/V: 30 MP/);
   run('m.sacrificed=true');
   assert.match(run('minionStateText(m)'),/Sacrificado/);
-  assert.doesNotMatch(run('minionStateText(m)'),/R:/);
+  assert.doesNotMatch(run('minionStateText(m)'),/V:/);
 });
 test('Comando manual permanece ativo depois de restaurar o modo automático do cursor', run=>{
   run("pendingCommand='attack'; applyRightClick(5,0)");
@@ -268,10 +272,10 @@ class MenuElement {
   const document={createElement:tag=>new MenuElement(tag),getElementById:id=>[root,...root.querySelectorAll('*')].find(e=>e.id===id)||null};
   const context=vm.createContext({document,console,setTimeout:()=>{},MenuElement});
   vm.runInContext(`
-    const TITLE={paused:true},CAMP={on:false,inStage:false,map:false},PM={tab:'status',ov:false};
+    const TITLE={paused:true},CAMP={on:false,inStage:false,map:false},PM={tab:'status',ov:false},VILLAGE_ROUTE={on:false};
     const player={level:1,hp:100,maxHp:100,mp:80,maxMp:80,exp:0,expNext:100,souls:10,gold:5,skillPoints:1};
     const gameState='hub'; const pmBar=()=>'',pmStatusHtml=()=>'<p>Status</p>',pmControlsHtml=()=>'<p>Controles</p>';
-    const tBtn=()=>document.createElement('button'),tMsgEl=()=>{},setPause=()=>{},playSound=()=>{},tOptions=()=>{};
+    const tBtn=()=>document.createElement('button'),tMsgEl=()=>{},setPause=()=>{},playSound=()=>{},tOptions=()=>{},VILLAGE=()=>false;
     const buildUpgradeGrid=()=>{},buildSkillTree=()=>{},buildSpellUpgradesSection=()=>{},buildRosterSection=()=>{},buildSummonGrid=()=>{},buildMinionUpgradeGrid=()=>{};
   `,context);
   for(const name of ['restoreManagementPanels','mountManagementPanel','tScreen','tPause']) vm.runInContext(fn(name),context);
@@ -398,4 +402,266 @@ summonTest('Save de grupo preserva HP e recuperação do sacrifício',run=>{
   assert.equal(run('minions[1].hp'),40);
   assert.equal(run("configureSummonSlot(0,'zombie')"),false);
 });
+summonTest('Carregar save mantém o zumbi detonado indisponível pelo tempo restante',run=>{
+  run("restoreSummonGroups({summonLoadout:['zombie',null,null,null,null,null,null],summonGroups:[{slot:0,type:'zombie',count:3,members:[{hp:0,dead:true,exploded:true,deadTimer:8},{hp:130,dead:false},{hp:130,dead:false}]}]})");
+  assert.equal(run('minions[0].exploded'),true);
+  assert.equal(run('minions[0].dead'),true);
+  assert.equal(run('minions[0].deadTimer'),8);
+  assert.equal(run("configureSummonSlot(0,'zombie')"),false);
+  assert.equal(run('clearSummonSlot(0)'),false);
+});
+{
+  // Static story rendering should retain display density even when gameplay
+  // reduces its adaptive resolution. This does not alter gameplay's DPR.
+  for(const [density,expected] of [[1,1],[1.5,1.5],[2,2],[3,2]]){
+    const context=vm.createContext({window:{devicePixelRatio:density},QUAL:{dpr:1}});
+    vm.runInContext(fn('storyPixelRatio'),context);
+    assert.equal(vm.runInContext('storyPixelRatio()',context),expected);
+  }
+  checks++;console.log('OK História usa densidade da tela independentemente da qualidade do combate');
+}
+{
+  const path=require('node:path'),crypto=require('node:crypto');
+  const manifestPath=path.join(__dirname,'assets/story/manifest.json');
+  const entries=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+  const embedded=new Map([...html.matchAll(/\{title:'([^']+)',src:'data:image\/webp;base64,([^']+)'/g)].map(m=>[m[1],m[2]]));
+  assert.equal(entries.length,23);assert.equal(embedded.size,23);
+  for(const entry of entries){
+    for(const [file,hash] of [[entry.original,entry.original_sha256],[entry.enhanced,entry.enhanced_sha256]]){
+      const content=fs.readFileSync(path.join(__dirname,file));
+      assert.equal(crypto.createHash('sha256').update(content).digest('hex'),hash);
+    }
+    assert.deepEqual(entry.enhanced_size,entry.original_size.map(n=>n*3));
+    assert.ok(entry.mean_encoding_error_0_255<2);
+    const embeddedHash=crypto.createHash('sha256').update(Buffer.from(embedded.get(entry.title),'base64')).digest('hex');
+    assert.equal(embeddedHash,entry.enhanced_sha256,entry.title);
+  }
+  checks++;console.log('OK 23 painéis ampliados em 3x, originais intactos e imagens aprimoradas integradas');
+}
+function combatSkillsFixture(){
+  const context=vm.createContext({console});
+  const abilities=source.match(/const MOB_ABILITIES=(\{[\s\S]*?\n\});/);
+  assert.ok(abilities);
+  vm.runInContext('const MOB_ABILITIES='+abilities[1],context);
+  vm.runInContext(`
+    let mobZones=[],eshots=[],minions=[],particles=[],solids=[],gameState='field',sceneMode='field',summonWheelOpen=false,shake=0;
+    const playerDash={time:0,cd:0,dx:1,dy:0},player={hp:100,maxHp:100,mp:80,barrierT:0,barrier:0};
+    const P={x:0,y:0,deadT:0,face:1,phase:0},keys={},PAD={mx:0,mz:0},mouse={x:10,y:0};
+    const TITLE={active:false,paused:false},COMIC={active:false},CAMP={map:false};
+    const STG={on:false,clamp:q=>{q.x=Math.min(2,q.x);},clampE:q=>{q.x=Math.max(-20,Math.min(20,q.x));}};
+    const HUB_R=18,FIELD_R=100,innerWidth=800,innerHeight=600,document={getElementById:()=>null};
+    const ring=()=>{},burst=()=>{},playSound=()=>{},floatMsg=()=>{},updateHUD=()=>{},gameOver=()=>{},tutEvent=()=>{};
+    const screenToWorld=(x,z)=>({x,z}),rnd=(a,b)=>(a+b)/2;
+    const firstWallHit=()=>null;
+    const nearestMinion=(x,y)=>minions.filter(m=>!m.dead).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0]||null;
+    const dealDamageToMinion=(m,d)=>{m.hp-=d;if(m.hp<=0)m.dead=true;};
+    function enemy(name,x=-5,y=0){return {x,y,type:{name,sc:1},def:{sc:1},dmg:20,dead:false,face:1,atkTimer:0,abilityCd:0};}
+  `,context);
+  for(const name of ['collide','castDash','updateDashMovement','mobSkillTarget','clampMobLanding','mobAreaDamage','updateMobAbility','updateMobZones','segmentHitTime','updateHostileProjectile','dealDamageToPlayer'])vm.runInContext(fn(name),context);
+  return code=>vm.runInContext(code,context);
+}
+function combatTest(name,callback){callback(combatSkillsFixture());checks++;console.log('OK '+name);}
+combatTest('Dash básico percorre 4,5 unidades sem mana e respeita recarga',run=>{
+  assert.equal(run('castDash()'),true);
+  run('updateDashMovement(.18)');
+  assert.ok(Math.abs(run('P.x')-4.5)<1e-8);
+  assert.equal(run('player.mp'),80);
+  assert.equal(run('castDash()'),false);
+  run('updateDashMovement(3)');assert.equal(run('castDash()'),true);
+});
+combatTest('Dash usa direção do movimento e bloqueia pausa, morte e mapas',run=>{
+  run('keys.w=true;castDash();updateDashMovement(.18)');
+  assert.ok(Math.abs(run('P.y')+4.5)<1e-8);
+  assert.equal(run('P.x'),0);
+  run('playerDash.cd=0;TITLE.paused=true');assert.equal(run('castDash()'),false);
+  run('TITLE.paused=false;P.deadT=1');assert.equal(run('castDash()'),false);
+  run('P.deadT=0;CAMP.map=true');assert.equal(run('castDash()'),false);
+});
+combatTest('Dash não atravessa obstáculos nem limites de fase',run=>{
+  run('solids=[{x:2,y:0,r:.7}];castDash();updateDashMovement(.18)');
+  assert.ok(run('P.x')<1.1);
+  assert.equal(run('playerDash.time'),0);
+  run('solids=[];P.x=0;playerDash.cd=0;STG.on=true;castDash();updateDashMovement(.18)');
+  assert.ok(run('P.x')<=2);
+});
+combatTest('Invulnerabilidade do dash termina junto com o deslocamento',run=>{
+  run('castDash();dealDamageToPlayer(100)');assert.equal(run('player.hp'),100);
+  run('updateDashMovement(.18);dealDamageToPlayer(20)');assert.equal(run('player.hp'),80);
+});
+combatTest('Arqueiro prepara tiro forte com direção fixa e dano ampliado',run=>{
+  run("const e=enemy('Arqueiro');updateMobAbility(e,.01);updateMobAbility(e,.5)");
+  assert.equal(run('eshots.length'),0);
+  run('P.y=3;updateMobAbility(e,.4)');
+  assert.equal(run('eshots.length'),1);
+  assert.equal(run('eshots[0].dmg'),38);
+  assert.equal(run('eshots[0].vy'),0);
+  assert.equal(run('e.abilityCd'),7);
+  run('updateHostileProjectile(eshots[0],1)');assert.equal(run('player.hp'),100);
+});
+combatTest('Projétil rápido atinge só o primeiro alvo no trajeto',run=>{
+  run('P.x=8;minions=[{x:2,y:0,hp:100,dead:false}];const sh={x:0,y:0,vx:20,vy:0,life:1,dmg:30,kind:"arrow"};updateHostileProjectile(sh,1)');
+  assert.equal(run('minions[0].hp'),70);
+  assert.equal(run('player.hp'),100);
+  run('updateHostileProjectile(sh,1)');assert.equal(run('minions[0].hp'),70);
+});
+combatTest('Mago causa impacto de fogo e três pulsos na área; sair evita os pulsos',run=>{
+  run("const e=enemy('Mago Vivo');updateMobAbility(e,.01);updateMobAbility(e,1)");
+  assert.equal(run('player.hp'),76);
+  assert.equal(run('mobZones[0].element'),'fire');
+  run('updateMobZones(1)');assert.equal(run('player.hp'),70);
+  run('P.x=10;updateMobZones(2)');assert.equal(run('player.hp'),70);
+  assert.equal(run('mobZones.length'),0);
+});
+combatTest('Bruto salta para local avisado e causa dano em área só ao cair',run=>{
+  run("const e=enemy('Bruto');updateMobAbility(e,.01);P.x=10;minions=[{x:0,y:0,hp:100,dead:false}];updateMobAbility(e,.85)");
+  assert.equal(run('e.ability.phase'),'air');
+  assert.equal(run('minions[0].hp'),100);
+  run('updateMobAbility(e,.2)');assert.ok(run('e.jumpZ')>0);
+  run('updateMobAbility(e,.25)');
+  assert.equal(run('minions[0].hp'),60);
+  assert.equal(run('player.hp'),100);
+  assert.equal(run('e.jumpZ'),0);
+  assert.equal(run('e.ability'),null);
+});
+combatTest('Golpe pesado pode ser evitado saindo da área; bosses e dummies preservam IA própria',run=>{
+  run("const e=enemy('Guerreiro',-1,0);updateMobAbility(e,.01);P.x=8;updateMobAbility(e,.65)");
+  assert.equal(run('player.hp'),100);
+  assert.equal(run('e.abilityCd'),7);
+  run("const boss=enemy('Bruto');boss.isBoss=true;const dummy=enemy('Arqueiro');dummy.dummy=true;");
+  assert.equal(run('updateMobAbility(boss,1)'),false);
+  assert.equal(run('updateMobAbility(dummy,1)'),false);
+});
+combatTest('Inimigo morto durante a preparação não dispara sua habilidade',run=>{
+  run("const e=enemy('Arqueiro');updateMobAbility(e,.01);e.dead=true;updateMobAbility(e,2)");
+  assert.equal(run('eshots.length'),0);
+});
+function unifiedFixture(){
+  const context=vm.createContext({console});
+  const catalog=source.match(/const ACTION_SKILLS=(\{[\s\S]*?\n\});/);assert.ok(catalog);
+  vm.runInContext('const ACTION_SKILLS='+catalog[1],context);
+  vm.runInContext(`
+    const DEFAULT_ACTION_LOADOUT=['raio','maos','zombie','abom','archer','dash'];
+    const SUMMON_SLOT_MILESTONES=['Inicial','Inicial','Inicial','Ato I','12','15','20'];
+    const MINION_DEFS={zombie:{name:'Zumbi',unlockLv:1},archer:{name:'Arqueiro',unlockLv:4},abom:{name:'Abominação',unlockLv:1}};
+    const SW_COST={zombie:[0,20],archer:[15,30],abom:[0,25]},MINION_REVIVE_TIME=12,LEASH_DIST=8;
+    const player={level:20,hp:100,mp:1000,souls:1000,minionSlots:21,learnedSkills:new Set(['raio','maos','aura','zombie_burst','archer_power','abom_slam']),summonLoadout:Array(7).fill(null),summonReserve:[],actionLoadout:['raio','maos','empty','empty','empty','dash'],minionSkillCooldowns:{zombie:0,archer:0,abom:0}};
+    const P={x:0,y:0,deadT:0},CAMP={on:false,cleared:{4:1},map:false,summon:true},TITLE={active:false,paused:false},COMIC={active:false},STG={on:false};
+    const playerDash={time:0,cd:0},mouse={x:3,y:0},necroGroup={position:{x:0,z:0}};
+    let minions=[],enemies=[],eshots=[],handsAreas=[],particles=[],gameState='field',summonWheelOpen=false,actionSignature='',actionAvailabilitySignature='',summonSlotsSignature='',magicCasts=[],dashCasts=0;
+    const innerWidth=800,innerHeight=600,FIELD_R=100,scene={remove:()=>{}},document={getElementById:()=>null};
+    const renderActionSlots=()=>{},renderSummonSlots=()=>{},updateHUD=()=>{},updateMinionPanel=()=>{},floatMsg=()=>{},playSound=()=>{},ring=()=>{},burst=()=>{},collide=()=>{};
+    const screenToWorld=(x,z)=>({x,z}),hasPassive=id=>player.learnedSkills.has(id),rnd=(a,b)=>a;
+    const dealDamageToEnemy=(e,d)=>{e.hp-=d;if(e.hp<=0)e.dead=true;},dealDamageToPlayer=d=>player.hp-=d,dealDamageToMinion=(m,d)=>m.hp-=d;
+    const castDash=()=>{dashCasts++;return true;},castBarrier=()=>{},castAssignedSpell=id=>magicCasts.push(id);
+    const localMinionTarget=(x,y)=>enemies.filter(e=>!e.dead&&Math.hypot(e.x,e.y)<=8).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0]||null;
+    const spawnMinion=type=>{if(minions.length>=player.minionSlots)return null;const m={type,def:MINION_DEFS[type],hp:130,maxHp:130,dmg:20,spd:3,atkR:1.5,atkRate:1.2,spCost:20,x:0,y:0,face:1,dead:false,deadTimer:0,mesh:{traverse:()=>{}}};minions.push(m);return m;};
+    function enemy(x=0,y=0){return {x,y,type:{sc:1},def:{sc:1},hp:1000,dead:false};}
+  `,context);
+  for(const name of ['summonSlotCount','summonGroupSize','unlockedSummonIndices','summonAvailable','summonTypeAvailable','slotMembers','syncSummonProgress','summonGroupQuote','configureSummonSlot','clearSummonSlot','claimReservedGroup','actionSkillAvailable','actionGroupIndex','actionGroup','groupCannotLeave','parkActionGroup','reconcileActionSummons','loadActionState','equipActionSkill','activateEquippedSkill','activateActionSlot','activateSummonSkill','updateAllyLeap','updateFriendlyProjectile','wallNearest','tickCorpseWalls','blockByCorpseWalls','firstWallHit','segmentHitTime','updateHostileProjectile','killMinion','tryReanimate','dismissMinion','clampMobLanding'])vm.runInContext(fn(name),context);
+  return code=>vm.runInContext(code,context);
+}
+function unifiedTest(name,callback){callback(unifiedFixture());checks++;console.log('OK '+name);}
+unifiedTest('Seis slots podem trocar de posição sem duplicar a habilidade ou evocar novamente',run=>{
+  assert.equal(run("equipActionSkill(0,'dash')"),true);
+  assert.equal(run("player.actionLoadout[0]"),'dash');
+  assert.equal(run("player.actionLoadout[5]"),'raio');
+  assert.equal(run('player.mp'),1000);
+  run('activateActionSlot(0);activateActionSlot(5)');
+  assert.equal(run('dashCasts'),1);assert.equal(run('magicCasts[0]'),'raio');
+});
+unifiedTest('Alocar Zumbi, Arqueiro e Abominação evoca respectivamente 3, 2 e 1',run=>{
+  run("equipActionSkill(2,'zombie');equipActionSkill(3,'archer');equipActionSkill(4,'abom')");
+  assert.equal(run("actionGroup('zombie').length"),3);
+  assert.equal(run("actionGroup('archer').length"),2);
+  assert.equal(run("actionGroup('abom').length"),1);
+  assert.equal(run('player.mp'),855);
+  assert.equal(run('player.souls'),970);
+});
+unifiedTest('Cada ativação detona exatamente um zumbi e o grupo inteiro espera renascer',run=>{
+  run("equipActionSkill(2,'zombie');enemies=[enemy()]");
+  for(let n=1;n<=3;n++){
+    run("player.minionSkillCooldowns.zombie=0;activateActionSlot(2)");
+    assert.equal(run("actionGroup('zombie').filter(m=>m.dead).length"),n);
+  }
+  assert.equal(run("actionGroup('zombie').length"),3);
+  assert.equal(run("actionGroup('zombie').every(m=>m.exploded&&m.deadTimer===12)"),true);
+  run('player.minionSkillCooldowns.zombie=0');
+  assert.equal(run('activateActionSlot(2)'),false);
+  assert.equal(run("equipActionSkill(2,'empty')"),false);
+  assert.equal(run("configureSummonSlot(actionGroupIndex('zombie'),'zombie')"),false);
+});
+unifiedTest('Detonados não podem ser dispensados nem reanimados para contornar o respawn',run=>{
+  run("equipActionSkill(2,'zombie');activateActionSlot(2);const oldMp=player.mp;tryReanimate();dismissMinion(0)");
+  assert.equal(run('minions.length'),3);
+  assert.equal(run('minions[0].dead'),true);
+  assert.equal(run('player.mp===oldMp'),true);
+});
+unifiedTest('Habilidades das evocações exigem árvore; ataques básicos continuam disponíveis',run=>{
+  run("equipActionSkill(2,'zombie');player.learnedSkills.delete('zombie_burst')");
+  assert.equal(run('activateActionSlot(2)'),false);
+  assert.equal(run('minions.every(m=>!m.dead)'),true);
+});
+unifiedTest('Comando do grupo de arqueiros lança dois tiros fortes e respeita recarga',run=>{
+  run("equipActionSkill(3,'archer');enemies=[enemy(4,0)];activateActionSlot(3)");
+  assert.equal(run('eshots.length'),2);
+  assert.equal(run('eshots.every(s=>s.locked&&s.strong&&s.dmg===38)'),true);
+  assert.equal(run('activateActionSlot(3)'),false);
+  assert.equal(run('eshots.length'),2);
+});
+unifiedTest('Abominação equipada salta e só aplica o impacto ao aterrissar',run=>{
+  run("equipActionSkill(3,'abom');enemies=[enemy(3,0)];activateActionSlot(3);const m=actionGroup('abom')[0]");
+  assert.equal(run('enemies[0].hp'),1000);
+  run('updateAllyLeap(m,.2)');assert.ok(run('m.jumpZ')>0);
+  run('updateAllyLeap(m,.25)');assert.equal(run('enemies[0].hp'),956);
+  assert.equal(run('m.allyLeap'),null);
+});
+unifiedTest('Muralha causa dano de contato, bloqueia inimigos e intercepta tiros',run=>{
+  run('handsAreas=[{x:2,y:0,ux:0,uy:1,half:2.5,width:.65,life:5,tick:0,dmg:16}];const e=enemy(2,0);enemies=[e];tickCorpseWalls(.1);blockByCorpseWalls(e,.3)');
+  assert.equal(run('e.hp'),984);
+  assert.ok(Math.abs(run('e.x')-2)>=.625);
+  assert.ok(run('firstWallHit(0,0,4,0)')!==null);
+  run('enemies=[];P.x=4;const sh={x:0,y:0,vx:12,vy:0,dmg:30,kind:"arrow",life:1};updateHostileProjectile(sh,.5)');
+  assert.equal(run('player.hp'),100);assert.equal(run('sh.life'),0);
+  run('tickCorpseWalls(5)');assert.equal(run('handsAreas.length'),0);
+});
+unifiedTest('Trocar uma evocação por magia remove o grupo; não existe invocação fora dos slots',run=>{
+  run("equipActionSkill(2,'zombie');equipActionSkill(2,'empty')");
+  assert.equal(run("actionGroup('zombie').length"),0);
+  assert.equal(run('minions.length'),0);
+});
+unifiedTest('Migração de slots aceita somente seis habilidades conhecidas e mantém o padrão seguro',run=>{
+  run("loadActionState({actionLoadout:['raio','maos','zombie','abom','archer','dash']})");
+  assert.equal(run('player.actionLoadout[5]'),'dash');
+  run("loadActionState({actionLoadout:['unknown']})");
+  assert.equal(run('player.actionLoadout.length'),6);
+  assert.equal(run('player.actionLoadout[0]'),'raio');
+});
+{
+  const context=vm.createContext({console});
+  vm.runInContext(`
+    const VILLAGE_ROUTE={on:false,completed:false,token:0},CAMP={on:false,inStage:false,noWaves:false,cleared:{4:1}},STG={on:false},STRIP={L:150,YT:-3.4,YB:3,zones:[]};
+    const P={x:0,y:0},cam={},player={level:9,hp:200},TITLE={paused:false};
+    const W=1000,S=36,innerWidth=1000,innerHeight=700;
+    let enemies=[],currentMission=null,gameState='hub',wave=5,waveActive=false,spawnQueue=[],awards=0,saves=0;
+    const document={getElementById:()=>({style:{},textContent:''})};
+    const resetFieldState=()=>{enemies=[];currentMission=null;},clearHubScene=()=>{},campReviveMinions=()=>{},showWaveBanner=()=>{},floatMsg=()=>{};
+    const STAGE_KINDS={strip:{setup:()=>{STG.on=true;P.x=2.5;wave=0;}}};
+    const ENEMY_TYPES=[0,1,2,3].map(i=>({name:'Guard '+i,hp:40,dmg:10}));
+    const spawnEnemy=(type,x,y)=>{const e={type,x,y,dead:false};enemies.push(e);return e;};
+    const onMissionComplete=()=>{awards++;currentMission=null;},VILLAGE=()=>true,closeHubOverlay=()=>{},vilClose=()=>{},setPause=()=>{},campMapOpen=()=>{CAMP.map=true;},saveGame=()=>saves++;
+  `,context);
+  for(const name of ['startVillageRoute','spawnVillageRouteWave','updateVillageRoute','openCampaignFromVillage'])vm.runInContext(fn(name),context);
+  const run=code=>vm.runInContext(code,context);
+  run("startVillageRoute({label:'Trilha',enemyMult:1,boss:{name:'Chefe',hp:200,dmg:20}})");
+  assert.equal(run('CAMP.on'),false);assert.equal(run('VILLAGE_ROUTE.on'),true);assert.equal(run('wave'),0);
+  run('P.x=24;updateVillageRoute(.1);updateVillageRoute(.6)');
+  assert.ok(run('enemies.length')>0);assert.equal(run('STRIP.lockX'),24);
+  run("const bossZone={x:110,wi:0,waves:[['boss']]};spawnVillageRouteWave(bossZone)");
+  assert.equal(run('enemies[enemies.length-1].routeBoss'),true);
+  run('STRIP.zones.forEach(z=>{z.done=true;z.active=false;});P.x=149;updateVillageRoute(.1);updateVillageRoute(.1)');
+  assert.equal(run('awards'),1);assert.equal(run('VILLAGE_ROUTE.completed'),true);
+  run("gameState='hub';openCampaignFromVillage()");
+  assert.equal(run('CAMP.map'),true);assert.equal(run('CAMP.cleared[4]'),1);assert.equal(run('player.level'),9);assert.equal(run('saves'),1);
+  checks++;console.log('OK Missão lateral da vila tem emboscadas, chefe, recompensa única e retorno ao mapa preservando progresso');
+}
 console.log(`${checks} cenários aprovados; ${scripts.length} scripts com sintaxe válida.`);
