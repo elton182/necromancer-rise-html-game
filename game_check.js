@@ -40,7 +40,7 @@ function fixture() {
     const floatMsg=()=>{}, castAnim=()=>{},ring=()=>{},burst=()=>{},playSound=()=>{},updateHUD=()=>{},updateMinionPanel=()=>{},tutEvent=()=>{},spawnExplosaoFX=()=>{};
     const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
     let reinforced=false;
-    const hasPassive=()=>reinforced, spellBonus=()=>0;
+    const hasPassive=id=>id==='bastiao'?reinforced:player.learnedSkills.has(id), spellBonus=()=>0;
     const necroGroup={position:{x:0,z:0}};
     const mkMesh2=(x,z)=>({position:{x,z},rotation:{y:0},traverse:()=>{}});
     const dealDamageToEnemy=(e,d)=>{e.hp-=d;};
@@ -453,6 +453,7 @@ function combatSkillsFixture(){
     const ring=()=>{},burst=()=>{},playSound=()=>{},floatMsg=()=>{},updateHUD=()=>{},gameOver=()=>{},tutEvent=()=>{};
     const screenToWorld=(x,z)=>({x,z}),rnd=(a,b)=>(a+b)/2;
     const firstWallHit=()=>null;
+    const dashPassives=new Set(),hasPassive=id=>dashPassives.has(id);
     const nearestMinion=(x,y)=>minions.filter(m=>!m.dead).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0]||null;
     const dealDamageToMinion=(m,d)=>{m.hp-=d;if(m.hp<=0)m.dead=true;};
     function enemy(name,x=-5,y=0){return {x,y,type:{name,sc:1},def:{sc:1},dmg:20,dead:false,face:1,atkTimer:0,abilityCd:0};}
@@ -649,6 +650,7 @@ unifiedTest('Migração de slots aceita somente seis habilidades conhecidas e ma
     const ENEMY_TYPES=[0,1,2,3].map(i=>({name:'Guard '+i,hp:40,dmg:10}));
     const spawnEnemy=(type,x,y)=>{const e={type,x,y,dead:false};enemies.push(e);return e;};
     const onMissionComplete=()=>{awards++;currentMission=null;},VILLAGE=()=>true,closeHubOverlay=()=>{},vilClose=()=>{},setPause=()=>{},campMapOpen=()=>{CAMP.map=true;},saveGame=()=>saves++;
+    const enterHub=()=>{VILLAGE_ROUTE.on=false;gameState='hub';saves++;};
   `,context);
   for(const name of ['startVillageRoute','spawnVillageRouteWave','updateVillageRoute','openCampaignFromVillage'])vm.runInContext(fn(name),context);
   const run=code=>vm.runInContext(code,context);
@@ -660,8 +662,132 @@ unifiedTest('Migração de slots aceita somente seis habilidades conhecidas e ma
   assert.equal(run('enemies[enemies.length-1].routeBoss'),true);
   run('STRIP.zones.forEach(z=>{z.done=true;z.active=false;});P.x=149;updateVillageRoute(.1);updateVillageRoute(.1)');
   assert.equal(run('awards'),1);assert.equal(run('VILLAGE_ROUTE.completed'),true);
+  assert.equal(run('gameState'),'hub');assert.equal(run('VILLAGE_ROUTE.on'),false);
   run("gameState='hub';openCampaignFromVillage()");
-  assert.equal(run('CAMP.map'),true);assert.equal(run('CAMP.cleared[4]'),1);assert.equal(run('player.level'),9);assert.equal(run('saves'),1);
+  assert.equal(run('CAMP.map'),true);assert.equal(run('CAMP.cleared[4]'),1);assert.equal(run('player.level'),9);assert.equal(run('saves'),2);
   checks++;console.log('OK Missão lateral da vila tem emboscadas, chefe, recompensa única e retorno ao mapa preservando progresso');
+}
+combatTest('Ramo do Dash reduz recarga e aumenta distância sem alterar custo de mana',run=>{
+  run("dashPassives.add('dash_cooldown');dashPassives.add('dash_distance');castDash()");
+  assert.equal(run('playerDash.cd'),2.4);
+  run('updateDashMovement(.18)');
+  assert.ok(Math.abs(run('P.x')-6)<.001);
+  assert.equal(run('player.mp'),80);
+});
+test('Ramo da Muralha aplica duração e dano próprios',run=>{
+  run("player.learnedSkills.add('wall_duration');player.learnedSkills.add('wall_damage');castHands(2,0)");
+  assert.equal(run('handsAreas[0].life'),7);
+  assert.equal(run('handsAreas[0].dmg'),24);
+});
+unifiedTest('Ramo do Zumbi aumenta explosão mantendo um único consumo por ativação',run=>{
+  run("equipActionSkill(2,'zombie');player.learnedSkills.add('zombie_burst_damage');enemies=[enemy()];activateActionSlot(2)");
+  assert.equal(run('enemies[0].hp'),940);
+  assert.equal(run("actionGroup('zombie').filter(m=>m.dead).length"),1);
+});
+unifiedTest('Ramos de Arqueiro e Abominação melhoram somente seus comandos',run=>{
+  run("equipActionSkill(3,'archer');player.learnedSkills.add('archer_power_damage');enemies=[enemy(4,0)];activateActionSlot(3)");
+  assert.equal(run('eshots[0].dmg'),53);
+  run("equipActionSkill(4,'abom');player.learnedSkills.add('abom_impact');activateActionSlot(4);enemies=[enemy(7.5,0)];updateAllyLeap(actionGroup('abom')[0],.45)");
+  assert.equal(run('enemies[0].hp'),943);
+});
+{
+  const context=vm.createContext({console});
+  for(const name of ['SKILL_NODES','ACTION_SKILLS']){
+    const match=source.match(new RegExp('const '+name+' =? ?(\\{[\\s\\S]*?\\n\\});'))||source.match(new RegExp('const '+name+'=(\\{[\\s\\S]*?\\n\\});'));
+    assert.ok(match,name);vm.runInContext('const '+name+'='+match[1],context);
+  }
+  const branches=source.match(/const SKILL_BRANCHES=(\[[\s\S]*?\n\]);/);assert.ok(branches);
+  vm.runInContext('const SKILL_BRANCHES='+branches[1],context);
+  vm.runInContext(`
+    class Element{
+      constructor(){this.children=[];this.style={};this.attributes={};this.classList={remove:()=>{},add:()=>{}};}
+      appendChild(child){this.children.push(child);return child;}
+      set innerHTML(value){this.html=value;this.children=[];}
+      get innerHTML(){return this.html||'';}
+      setAttribute(key,value){this.attributes[key]=value;}
+    }
+    const roots={},document={createElement:()=>new Element(),getElementById:id=>roots[id]||(roots[id]=new Element())};
+    const player={skillPoints:10,learnedSkills:new Set(['raio']),activeSpell:'raio',spellUpgradeCount:{},souls:1000};
+    const CAMP={on:false},CAMP_GATE={},available=new Set(['dash','zombie','archer','abom']);
+    const actionSkillAvailable=id=>available.has(id),SPELL_UPGRADES={raio:[{id:'raio_d',name:'Dano',desc:'+12',icon:'',baseCost:50,mult:1.7,max:5}]};
+    let selectedSkillBranch='raio',selectedGraphNode=null;
+    const respecAllSkills=()=>{},unlearnSkill=()=>{},buySpellUpgrade=()=>{},playSound=()=>{},floatMsg=()=>{},showHubOverlay=()=>{};
+    const innerWidth=800,innerHeight=600;
+  `,context);
+  for(const name of ['skillNodeRequirementMet','skillGraphEntries','skillGraphLayout','renderSkillGraph','buildSkillTree','mkSkillNode','mkConnector','buildSpellUpgradesSection','learnSkill'])vm.runInContext(fn(name),context);
+  const run=code=>vm.runInContext(code,context);
+  assert.equal(run('new Set(SKILL_BRANCHES.flatMap(b=>b.nodes)).size'),run('Object.keys(SKILL_NODES).length'));
+  assert.equal(run('SKILL_BRANCHES.flatMap(b=>b.nodes).length'),run('Object.keys(SKILL_NODES).length'));
+  assert.equal(run("SKILL_BRANCHES.filter(b=>b.id!=='horde').every(b=>b.nodes.every(id=>!SKILL_NODES[id].req||b.nodes.includes(SKILL_NODES[id].req)))"),true);
+  run("learnSkill('archer_power')");
+  assert.equal(run("player.learnedSkills.has('archer_power')"),true);
+  assert.equal(run('player.skillPoints'),9);
+  assert.equal(run("player.learnedSkills.has('aura')"),false);
+  run("available.delete('zombie');learnSkill('zombie_burst')");
+  assert.equal(run("player.learnedSkills.has('zombie_burst')"),false);
+  run("learnSkill('dash_distance')");assert.equal(run('player.skillPoints'),9);
+  run("learnSkill('dash_cooldown');learnSkill('dash_distance')");assert.equal(run('player.skillPoints'),7);
+  run('buildSkillTree();buildSpellUpgradesSection()');
+  assert.equal(run("roots['skill-tree'].children[0].className"),'grimoire-heading');
+  assert.equal(run("roots['skill-tree'].children[2].children.length"),10);
+  assert.equal(run("roots['spell-upgrades-section'].children.length"),0);
+  assert.equal(run("skillGraphEntries(SKILL_BRANCHES[0]).length"),2);
+  assert.equal(run("skillGraphEntries(SKILL_BRANCHES[0])[1].parent"),'raio');
+  run("const zombieBranch=SKILL_BRANCHES.find(b=>b.id==='zombie');const graph=skillGraphEntries(zombieBranch);const positions=skillGraphLayout(graph).positions");
+  assert.equal(run("graph.find(e=>e.id==='zombie_burst_damage').parent"),'zombie_burst');
+  assert.equal(run("graph.find(e=>e.id==='horda_zumbi_2').parent"),'horda_zumbi');
+  assert.ok(run("positions.get('horda_zumbi_2').y>positions.get('horda_zumbi').y"));
+  assert.notEqual(run("positions.get('horda_zumbi').x"),run("positions.get('zombie_burst').x"));
+  run("roots['skill-tree'].children[2].children[2].onclick()");
+  assert.equal(run('selectedSkillBranch'),'zombie');
+  assert.equal(run("roots['spell-upgrades-section'].children.length"),0);
+  run('buildSkillTree()');assert.equal(run("roots['skill-tree'].children.length"),4);
+  assert.equal(run("player.learnedSkills.has('archer_power')"),true);
+  run("const panel=roots['skill-tree'].children[3];const workspace=panel.children[3];const board=workspace.children[0].children[0];const runes=board.children.slice(1);const damageRune=runes[graph.findIndex(e=>e.id==='zombie_burst_damage')];damageRune.onclick()");
+  assert.equal(run('selectedGraphNode'),'zombie_burst_damage');
+  assert.equal(run('player.skillPoints'),7);
+  assert.equal(run("damageRune.attributes['aria-pressed']"),'true');
+  assert.equal(run("workspace.children[1].children[0].textContent"),'💥 Carne Instável');
+  assert.ok(run("board.children[0].innerHTML.includes('<path')"));
+  checks++;console.log('OK Ramos desenham pré-requisitos, evoluções e detalhes sem gastar pontos ao selecionar um símbolo');
+}
+{
+  for(const [kind,village,expected] of [['strip',true,'village'],['strip',false,'map'],['arena',true,'map']]){
+    const context=vm.createContext({console,kind,village});
+    vm.runInContext(`
+      const CAMP={on:true,inStage:true,stage:3,cleared:village?{4:1}:{},unlocked:3,map:false};
+      const CAMP_STAGES=Array(5),TUT={on:true},player={souls:0,gold:0,skillPoints:0};
+      let waveActive=true,spawnQueue=[1],timers=[],destination='',xp=0,saves=0,stories=[];
+      const stageOf=()=>({kind,rew:{souls:30,gold:20,xp:10,sp:1}}),syncSummonProgress=()=>{},renderSummonSlots=()=>{},gainExp=n=>xp+=n;
+      const playSound=()=>{},showWaveBanner=()=>{},saveGame=()=>saves++,VILLAGE=()=>village;
+      const document={getElementById:()=>({style:{}}),body:{classList:{remove:()=>{}}}};
+      const setTimeout=f=>timers.push(f),playStory=(id,done)=>{stories.push(id);done();};
+      const campMapOpen=()=>{destination='map';CAMP.map=true;},campMapClose=()=>{CAMP.map=false;},enterHub=()=>{destination='village';saves++;};
+    `,context);
+    for(const name of ['campStageComplete','returnToVillageAfterStage'])vm.runInContext(fn(name),context);
+    const run=code=>vm.runInContext(code,context);
+    run('campStageComplete();campStageComplete()');
+    assert.equal(run('player.souls'),30);assert.equal(run('player.gold'),20);assert.equal(run('xp'),10);
+    assert.equal(run('timers.length'),1);
+    run('timers.shift()()');assert.equal(run('destination'),expected);
+    assert.equal(run('CAMP.cleared[3]'),1);
+    if(expected==='village')assert.equal(run('CAMP.on'),false);
+    run("destination='';CAMP.on=true;CAMP.map=false;CAMP.inStage=true;campStageComplete();CAMP.stage=4;timers.shift()()");
+    assert.equal(run('destination'),'');
+  }
+  checks++;console.log('OK Trilhas da campanha retornam à vila liberada, preservam história inicial e ignoram transições antigas');
+}
+{
+  const context=vm.createContext({console});
+  vm.runInContext(`
+    let currentMission={id:'route',route:true,rewardSouls:50,rewardExp:25},waveActive=true,bossEnemy={},missionWave=2;
+    const player={souls:0,gold:0},gainExp=n=>player.xp=n,playSound=()=>{},showWaveBanner=()=>{};
+    let timers=0;const setTimeout=()=>timers++;
+  `,context);
+  vm.runInContext(fn('onMissionComplete'),context);vm.runInContext('onMissionComplete()',context);
+  assert.equal(vm.runInContext('player.souls',context),50);
+  assert.equal(vm.runInContext('player.xp',context),25);
+  assert.equal(vm.runInContext('timers',context),0);
+  checks++;console.log('OK Missão lateral concede recompensa sem agendar aviso de retorno manual ou história atrasada');
 }
 console.log(`${checks} cenários aprovados; ${scripts.length} scripts com sintaxe válida.`);

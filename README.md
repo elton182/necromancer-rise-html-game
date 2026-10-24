@@ -69,11 +69,19 @@ Equipar uma evocação traz seu grupo automaticamente: **3 zumbis**, **2 esquele
 
 O zumbi detonado permanece vinculado ao slot e aguarda o renascimento normal (12 segundos, modificado pelas melhorias). Se todos forem detonados, o comando aguarda até algum voltar. Reanimação manual, dispensa e troca de evocação não antecipam essa recuperação. Os tempos de recuperação também são salvos.
 
+### Grimório de habilidades
+
+Na pausa, **Habilidades** abre o Grimório dos Mortos, com moldura de metal escuro e latão alinhada ao Relicário do HUD. Cada habilidade tem uma aba com seu próprio ramo, pré-requisitos e melhorias. As evoluções com almas aparecem somente na habilidade selecionada. Os bônus que afetam toda a horda ficam em uma aba geral, e os investimentos de saves anteriores são mantidos.
+
+Os ramos são diagramas gravados em pedra: símbolos quadrados ligados por trilhas mostram a progressão, com estados de bloqueio, disponibilidade e aprendizado. Selecione um símbolo para consultar descrição, pré-requisito e custo; o botão de aprender ou evoluir realiza a compra. As evoluções com almas fazem parte do mesmo diagrama. Em telas pequenas, os detalhes ficam abaixo da árvore.
+
+Muralha possui melhorias de duração (5 → 7 s) e dano (+50%); Dash, recarga (3 → 2,4 s) e distância (4,5 → 6 unidades). Zumbis podem melhorar o dano da explosão (+50%), arqueiros o tiro forte (+40%) e Abominação o impacto (+30% de dano e raio de 3 → 4 unidades). Cada melhoria custa um ponto e respeita os pré-requisitos exibidos no seu ramo.
+
 Legião Putrefata e Maré dos Mortos aumentam os zumbis por grupo; Salva Sepulcral aumenta os arqueiros. Grupos de saves antigos são migrados; os não equipados ficam em reserva. Os antigos marcos de grupos são preservados para compatibilidade, mas o painel de combate usa seis slots compartilhados entre magias e evocações.
 
 ### Vila, campanha e missões
 
-O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem perder o progresso. Interaja com `G`. As missões da vila podem oferecer arenas ou trilhas de rolagem lateral, com três emboscadas e chefe no trecho final. A recompensa é concedida uma vez; após a conclusão, `G` retorna à vila.
+O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem perder o progresso. Interaja com `G`. As missões da vila podem oferecer arenas ou trilhas de rolagem lateral, com três emboscadas e chefe no trecho final. A recompensa é concedida uma vez e, ao chegar ao final da trilha, o retorno à vila é automático. Fases laterais da campanha rejogadas após liberar a vila também retornam automaticamente, após a sequência de conclusão. Na primeira passagem do Ato I, a história mantém o retorno ao mapa até a vila ser liberada.
 
 ## Rodando localmente
 

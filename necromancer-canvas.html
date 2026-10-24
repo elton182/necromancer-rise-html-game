@@ -143,6 +143,75 @@ canvas { display:block; }
 .u-cost { font-size:11px; color:#a855f7; margin-top:3px; }
 
 /* Skill tree */
+
+/* Ramos gravados em pedra: símbolos compactos e trilhas de progressão. */
+#panel-skills .skill-graph-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10px;color:#858b7f;margin:12px 0}
+#panel-skills .skill-graph-legend .learned{color:#b9cb91}#panel-skills .skill-graph-legend .available{color:#d5bf82}
+.skill-graph-workspace{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:16px;align-items:start}
+.skill-graph-scroll{overflow-x:auto;border:1px solid #777461;border-radius:3px;box-shadow:0 0 0 2px #070d0a,inset 0 0 15px #000}
+.skill-stone-board{position:relative;min-width:280px;isolation:isolate;background:radial-gradient(ellipse at 28% 20%,#8a90751a,transparent 40%),repeating-linear-gradient(122deg,transparent 0 22px,#a4a48a06 23px 24px,transparent 26px 49px),repeating-linear-gradient(32deg,#151e19 0 2px,#202923 3px 6px,#19231d 7px 13px);box-shadow:inset 0 0 0 5px #121a14,inset 0 0 0 6px #666b5155,inset 0 0 36px #000b}
+.skill-stone-board:after{content:'✧';position:absolute;bottom:7px;left:0;right:0;text-align:center;color:#6c7258;font-size:15px;pointer-events:none}
+.skill-graph-lines{position:absolute;inset:0;z-index:-1;pointer-events:none}.skill-graph-lines svg{width:100%;height:100%;overflow:visible}
+.skill-graph-lines path{fill:none;stroke:#69705b;stroke-width:4px;vector-effect:non-scaling-stroke;filter:drop-shadow(2px 2px 1px #000);opacity:.65}
+.skill-graph-lines path.lit{stroke:#a0ac79;opacity:1;filter:drop-shadow(0 0 3px #a8bc5a33)}
+#panel-skills .skill-rune{position:absolute;width:124px;transform:translateX(-50%);padding:0;border:0;background:none;box-shadow:none;color:#abae9d;font-family:inherit;cursor:pointer;text-align:center;display:flex;align-items:center;flex-direction:column;gap:8px}
+.skill-rune-face{position:relative;box-sizing:border-box;width:72px;height:72px;display:flex;align-items:center;justify-content:center;border:2px solid #636c5c;background:radial-gradient(ellipse at 32% 25%,#49514255,transparent 65%),linear-gradient(135deg,#253026,#0a110e);box-shadow:inset 0 0 0 3px #0a100c,inset 0 0 0 4px #62695166,3px 4px 2px #0008;transition:border-color .15s,box-shadow .15s}
+.skill-rune-icon{font-size:33px;line-height:1;filter:grayscale(1) sepia(.2) brightness(.8);text-shadow:1px 2px #000}
+.skill-rune-face i{position:absolute;bottom:-6px;right:-6px;border:1px solid #69705a;background:#101912;color:#a9ae95;padding:2px 5px;font-size:9px;font-style:normal;min-width:12px}
+.skill-rune-name{font-size:10px;line-height:1.3;max-width:120px;text-shadow:0 2px 2px #000;background:#101812a0;padding:2px 4px}
+#panel-skills .skill-rune.locked{color:#81887c;opacity:.75}.skill-rune.locked .skill-rune-face{border-color:#454e42}.skill-rune.locked .skill-rune-icon{filter:grayscale(1) brightness(.5)}
+.skill-rune.available .skill-rune-face{border-color:#b09e69}.skill-rune.available .skill-rune-icon{filter:grayscale(1) sepia(.3) brightness(1.15)}
+.skill-rune.learned .skill-rune-face{border-color:#96ac77;background:radial-gradient(ellipse at 40% 25%,#586b3b77,#15251a 80%)}.skill-rune.learned .skill-rune-icon{filter:grayscale(1) sepia(.3) brightness(1.4)}
+#panel-skills .skill-rune.selected .skill-rune-face,#panel-skills .skill-rune:focus-visible .skill-rune-face{outline:1px solid #d3bf85;outline-offset:4px;box-shadow:inset 0 0 0 3px #0a100c,0 0 16px #ccb57025}
+#panel-skills .skill-rune:focus-visible{outline:none}
+.skill-graph-detail{padding:16px 14px;border:1px solid #6f6848;background:linear-gradient(140deg,#2e3726,#101c15);box-shadow:inset 0 0 0 3px #0b140e;position:sticky;top:10px;min-height:170px}
+.skill-graph-detail h4{margin:0 0 14px;font-family:Georgia,serif;font-size:17px;font-weight:normal;color:#e2d4a1;line-height:1.4}
+.skill-graph-detail p{font-size:12px;color:#c1c7b5;line-height:1.6;margin:10px 0}.skill-graph-detail small{display:block;font-size:10px;color:#a6ac96;line-height:1.5}.skill-graph-detail .skill-detail-status{border-top:1px solid #62644788;padding-top:12px;color:#d3c38c}.skill-detail-action{width:100%;font-size:10px!important;white-space:normal}
+@media(max-width:650px){.skill-graph-workspace{grid-template-columns:1fr}.skill-graph-detail{position:static;min-height:0}.skill-graph-scroll{max-height:440px;overflow:auto}.skill-rune-face{width:64px;height:64px}.skill-rune-icon{font-size:29px}}
+
+/* Moldura do grimório: mesmo metal, latão e magia do Relicário. */
+#panel-skills #skill-tree{align-items:stretch;width:100%;gap:12px}
+#panel-skills{position:relative;box-sizing:border-box;isolation:isolate;padding:26px 24px 22px!important;border:1px solid #82744c;border-radius:14px 3px 14px 3px;background:radial-gradient(ellipse at 50% 0,rgba(101,92,49,.16),transparent 56%),repeating-linear-gradient(115deg,transparent 0 6px,rgba(192,177,112,.015) 7px 8px),linear-gradient(130deg,#1f2a22,#0d1713 34%,#101914 72%,#273024);box-shadow:0 16px 45px #0008,inset 0 0 0 3px #080e0b,inset 0 0 0 4px #554f36,inset 0 0 0 8px #141d16,inset 0 0 28px #0009}
+#panel-skills::before,#panel-skills::after{content:'◆';position:absolute;top:8px;color:#b7a568;font-size:12px;line-height:16px;text-shadow:0 1px 3px #000;pointer-events:none}
+#panel-skills::before{left:10px}#panel-skills::after{right:10px}
+.grimoire-heading{display:flex;align-items:center;justify-content:center;gap:14px;text-align:left;padding:3px 0 16px;border-bottom:1px solid #74664588;margin-bottom:2px}
+.grimoire-heading small{font-size:8px;letter-spacing:3px;color:#a6ad91}
+.grimoire-heading h2{margin:5px 0 0;color:#e0d2a0;font-family:Georgia,serif;font-size:clamp(19px,3vw,27px);font-weight:normal;letter-spacing:1px;text-shadow:0 2px 3px #000}
+.grimoire-sigil{display:flex;align-items:center;justify-content:center;width:44px;height:44px;flex-shrink:0;border:1px solid #9b8958;outline:1px solid #4c523b;outline-offset:3px;border-radius:50%;color:#d1c58f;font-size:34px;background:radial-gradient(circle,#3f5040,#111e18 72%);box-shadow:inset 0 0 9px #000,0 0 18px #a8b57618}
+#panel-skills .skill-tree-toolbar{padding:5px 0 8px}
+#panel-skills .skill-tree-toolbar .btn{font-size:9px;letter-spacing:1px;padding:8px 10px;border-color:#716341;color:#c6b98d;background:#151d16}
+#panel-skills .skill-branch-tab{box-shadow:inset 0 0 0 2px #0d1711;background:linear-gradient(145deg,#2c3627,#141f18 50%,#111a15);border-color:#555b43;color:#b8bea6;line-height:1.5;transition:border-color .15s,background .15s}
+#panel-skills .skill-branch-tab:hover{border-color:#ad9a60;color:#e0d6b0}
+#panel-skills .skill-branch-tab.active{border-color:#b8a266;color:#f1dfa1;background:linear-gradient(145deg,#48503a,#29372a 52%,#1c2a21);box-shadow:inset 0 0 0 2px #142018,inset 0 -2px #b8a26666,0 0 10px #c2b07411}
+#panel-skills .skill-branch-panel{border-color:#716744;border-radius:3px 9px 3px 9px;background:radial-gradient(ellipse at 100% 0,#66795312,transparent 65%),linear-gradient(135deg,#0a130feb,#172018b8);box-shadow:inset 0 0 0 3px #080f0b99,inset 0 0 24px #0005}
+#panel-skills .skill-branch-panel h3{font-family:Georgia,serif;font-weight:normal;font-size:19px;padding-bottom:10px;border-bottom:1px solid #776a3c55}
+#panel-skills .skill-branch-root{border-color:#7b80517a;background:linear-gradient(90deg,#34492e55,transparent);color:#bccb9e}
+#panel-skills .st-node{border-radius:4px;background:linear-gradient(135deg,#253024,#101b15);border-color:#74745580;box-shadow:inset 0 0 0 2px #0a120d}
+#panel-skills .st-node.st-learned{border-color:#91a567;background:linear-gradient(135deg,#35472d,#1b2a20);box-shadow:inset 0 0 0 2px #101c12,0 0 10px #91a5670c}
+#panel-skills .st-node.st-active{border-color:#cab474}
+#panel-skills .st-node:focus-visible{outline:2px solid #d8c48b;outline-offset:3px}
+#panel-skills .st-name{color:#e0d7b6;font-size:12px}
+#panel-skills .st-cost{color:#b7cd97}
+#panel-skills #spell-upgrades-section:empty{display:none}
+#panel-skills #spell-upgrades-section .upgrade-card{max-width:none;background:linear-gradient(135deg,#283024,#121b15);border-color:#716744;color:#ddd0a1}
+@media(max-width:600px){#panel-skills{padding:22px 14px 16px!important}.skill-branch-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.skill-node-grid{grid-template-columns:1fr}.grimoire-heading{gap:10px}.grimoire-heading small{letter-spacing:2px}}
+
+#skill-tree{align-items:stretch;width:100%;gap:12px}
+.skill-tree-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#96c9b1;font-size:12px}
+.skill-branch-tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:6px}
+.skill-branch-tab{border:1px solid #454c3d;background:#151c18;color:#a7b19d;padding:10px 8px;text-align:left;cursor:pointer;font:inherit;font-size:11px;border-radius:4px}
+.skill-branch-tab.active{border-color:#c1aa65;background:#293327;color:#f1df9d}
+.skill-branch-tab:focus-visible{outline:2px solid #c1aa65;outline-offset:2px}
+.skill-branch-panel{border:1px solid #49503e;border-radius:7px;padding:16px;background:rgba(12,20,16,.85)}
+.skill-branch-panel h3{margin:0 0 8px;color:#e3d394;font-size:16px}
+.skill-branch-root{padding:10px;border:1px solid #57664b;color:#b6cf9e;margin:12px 0;font-size:12px}
+.skill-node-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:14px}
+.skill-node-path{display:flex;flex-direction:column;gap:7px}
+.skill-node-path>small{color:#b1ad93;font-size:10px}
+.skill-node-path .st-node{box-sizing:border-box;width:100%;max-width:none;min-width:0;height:100%;text-align:left}
+.skill-node-path .st-desc{color:#b4b7ac}
+.skill-node-path .st-locked{opacity:.55}
+
 #skill-tree { display:flex; flex-direction:column; align-items:center; gap:14px; }
 .st-node {
   background:rgba(10,0,25,.9); border:1px solid rgba(150,100,200,.3);
@@ -509,21 +578,28 @@ const SPELL_UPGRADES = {
 // Cada nó custa 1 ponto de habilidade
 const SKILL_NODES = {
   // Caminho Defesa
-  barreira: {name:'Escudo de Carne',icon:'🛡',desc:'[ESPAÇO] 15 MP + zumbi: escudo de 70% do HP máximo por 8s. Sem zumbi: 15% HP por 25% HP de escudo. Recarga: 12s.',path:'defense',req:'raio',spell:'barreira',passive:null},
+  barreira: {name:'Escudo de Carne',icon:'🛡',desc:'[ESPAÇO] 15 MP + zumbi: escudo de 70% do HP máximo por 8s. Sem zumbi: 15% HP por 25% HP de escudo. Recarga: 12s.',path:'defense',req:null,spell:'barreira',passive:null},
   bastiao:  {name:'Carne Reforçada',icon:'🏰',desc:'Escudo de Carne absorve 100% do HP máximo do zumbi. Alternativa sem zumbi permanece igual.',path:'defense',req:'barreira',spell:null,passive:'bastiao'},
   // Raiz — desbloqueada grátis
-  maos:     {name:'Muralha de Corpos',icon:'🖐',desc:'35 MP · muralha de 5 unidades por 5s; bloqueia inimigos e tiros e causa dano de contato. Recarga: 12s.',path:'magic',req:'raio',spell:'maos',passive:null},
+  maos:     {name:'Muralha de Corpos',icon:'🖐',desc:'35 MP · muralha de 5 unidades por 5s; bloqueia inimigos e tiros e causa dano de contato. Recarga: 12s.',path:'magic',req:null,spell:'maos',passive:null},
   // Caminho Magia
   raio:     {name:'Tiro de Osso',icon:'⚡',desc:'20 MP · 40 de dano base, alcance 9; um alvo. Recarga: 0,5s.',path:'base',req:null,spell:'raio',passive:null},
-  chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:'maos',   spell:'chuva',  passive:null},
-  explosao: {name:'Explosão de Almas',icon:'💥',desc:'AoE massiva — consome 40 almas.',path:'magic', req:'chuva',  spell:'explosao',passive:null},
+  chuva:    {name:'Chuva de Ossos',icon:'🦴',desc:'7 fragmentos em área.',             path:'magic', req:null,   spell:'chuva',  passive:null},
+  explosao: {name:'Explosão de Almas',icon:'💥',desc:'AoE massiva — consome 40 almas.',path:'magic', req:null,  spell:'explosao',passive:null},
+  wall_duration:{name:'Corpos Persistentes',icon:'⌛',desc:'Muralha dura 7s em vez de 5s.',path:'maos',req:'maos',passive:'wall_duration'},
+  wall_damage:{name:'Espinhos de Osso',icon:'▥',desc:'Muralha causa +50% de dano de contato.',path:'maos',req:'wall_duration',passive:'wall_damage'},
+  dash_cooldown:{name:'Passo Ágil',icon:'➶',desc:'Dash: recarga de 3s para 2,4s.',path:'dash',ability:'dash',req:null,passive:'dash_cooldown'},
+  dash_distance:{name:'Travessia Sombria',icon:'◈',desc:'Dash percorre 6 unidades em vez de 4,5.',path:'dash',ability:'dash',req:'dash_cooldown',passive:'dash_distance'},
+  zombie_burst_damage:{name:'Carne Instável',icon:'💥',desc:'Explosão comandada do zumbi causa +50% de dano. Ainda detona apenas um.',path:'zombie',req:'zombie_burst',passive:'zombie_burst_damage'},
+  archer_power_damage:{name:'Ponta Sepulcral',icon:'➹',desc:'Tiro forte dos arqueiros causa +40% de dano.',path:'archer',req:'archer_power',passive:'archer_power_damage'},
+  abom_impact:{name:'Cratera de Corpos',icon:'◉',desc:'Impacto do salto: raio de 3 para 4 unidades e +30% de dano.',path:'abom',req:'abom_slam',passive:'abom_impact'},
   // Caminho Invocação
-  zombie_burst:{name:'Explosão Cadavérica',icon:'💥',desc:'Ative o slot de Zumbi para detonar apenas 1. Ele só retorna pelo renascimento.',path:'summon',req:'aura',spell:null,passive:'zombie_burst'},
-  archer_power:{name:'Tiro Perfurante',icon:'🏹',desc:'Ative o slot dos arqueiros para uma salva de tiros fortes. Recarga: 7s.',path:'summon',req:'aura',spell:null,passive:'archer_power'},
-  abom_slam:{name:'Impacto da Abominação',icon:'👹',desc:'Ative o slot da Abominação para saltar na mira e causar dano em área. Recarga: 8s.',path:'summon',req:'aura',spell:null,passive:'abom_slam'},
-  horda_zumbi:{name:'Legião Putrefata',icon:'🧟',desc:'+1 zumbi por slot de Zumbi (3 → 4). Reforce o grupo pelo slot.',path:'summon',req:'aura',spell:null,passive:'horda_zumbi'},
+  zombie_burst:{name:'Explosão Cadavérica',icon:'💥',desc:'Ative o slot de Zumbi para detonar apenas 1. Ele só retorna pelo renascimento.',path:'summon',ability:'zombie',req:null,spell:null,passive:'zombie_burst'},
+  archer_power:{name:'Tiro Perfurante',icon:'🏹',desc:'Ative o slot dos arqueiros para uma salva de tiros fortes. Recarga: 7s.',path:'summon',ability:'archer',req:null,spell:null,passive:'archer_power'},
+  abom_slam:{name:'Impacto da Abominação',icon:'👹',desc:'Ative o slot da Abominação para saltar na mira e causar dano em área. Recarga: 8s.',path:'summon',ability:'abom',req:null,spell:null,passive:'abom_slam'},
+  horda_zumbi:{name:'Legião Putrefata',icon:'🧟',desc:'+1 zumbi por slot de Zumbi (3 → 4). Reforce o grupo pelo slot.',path:'summon',ability:'zombie',req:null,spell:null,passive:'horda_zumbi'},
   horda_zumbi_2:{name:'Maré dos Mortos',icon:'☠',desc:'+1 zumbi adicional por slot (4 → 5).',path:'summon',req:'horda_zumbi',spell:null,passive:'horda_zumbi_2'},
-  horda_arqueiro:{name:'Salva Sepulcral',icon:'🏹',desc:'+1 arqueiro por slot de Arqueiro Ósseo (2 → 3).',path:'summon',req:'aura',spell:null,passive:'horda_arqueiro'},
+  horda_arqueiro:{name:'Salva Sepulcral',icon:'🏹',desc:'+1 arqueiro por slot de Arqueiro Ósseo (2 → 3).',path:'summon',ability:'archer',req:null,spell:null,passive:'horda_arqueiro'},
   aura:     {name:'Aura das Sombras',icon:'🌑',desc:'Minions causam +30% dano.',       path:'summon',req:'raio',   spell:null,     passive:'aura'},
   pacto:    {name:'Pacto de Sangue', icon:'🩸',desc:'Minion morto explode causando dano.',path:'summon',req:'aura',spell:null,   passive:'pacto'},
   ritual:   {name:'Ritual da Morte', icon:'🕯',desc:'Minions recuperam 2 HP/s.',       path:'summon',req:'pacto',  spell:null,     passive:'ritual'},
@@ -2084,7 +2160,7 @@ function castHands(tx,tz){
   if(!Number.isFinite(tx)||!Number.isFinite(tz)||Math.hypot(tx-P.x,tz-P.y)>9){floatMsg('Fora de alcance (9)',innerWidth/2,innerHeight*.45,'#ff8844');return;}
   const dx=tx-P.x,dy=tz-P.y,d=Math.hypot(dx,dy)||1;
   player.mp-=35;player.spellCooldowns.maos=12;
-  handsAreas.push({x:tx,y:tz,ux:-dy/d||0,uy:dx/d||1,half:2.5,width:.65,life:5,tick:0,dmg:Math.max(1,Math.round(player.spellDmg*.4))});
+  handsAreas.push({x:tx,y:tz,ux:-dy/d||0,uy:dx/d||1,half:2.5,width:.65,life:hasPassive('wall_duration')?7:5,tick:0,dmg:Math.max(1,Math.round(player.spellDmg*.4*(hasPassive('wall_damage')?1.5:1)))});
   castAnim(tx,tz,'#a5b778');playSound('revive');updateHUD();tutEvent('maos');
 }
 function handsSpeed(e){
@@ -2392,9 +2468,10 @@ function onMissionComplete(){
   playSound('levelUp');
   showWaveBanner(`✓ MISSÃO CONCLUÍDA!`,`+${m.rewardSouls} almas · +${goldReward} gold · +${m.rewardExp} XP`,'#d4af37');
   waveActive=false;
-  // Botão de retorno ao hub aparece automaticamente (G ou botão)
-  setTimeout(()=>{ floatMsg('Pressione G para retornar ao Hub!',innerWidth/2,innerHeight*.45,'#d4af37'); },3000);
-  setTimeout(()=>playChapter(m.id),4200);
+  if(!m.route){
+    setTimeout(()=>{ floatMsg('Pressione G para retornar ao Hub!',innerWidth/2,innerHeight*.45,'#d4af37'); },3000);
+    setTimeout(()=>playChapter(m.id),4200);
+  }
   currentMission=null; bossEnemy=null; missionWave=0;
 }
 
@@ -2465,7 +2542,7 @@ function learnSkill(id){
   if(CAMP.on&&CAMP_GATE[id]&&!player.learnedSkills.has(id)){ floatMsg('🔒 '+CAMP_GATE[id],innerWidth/2,innerHeight*.4,'#a855f7'); return; }
   const node=SKILL_NODES[id];
   if(!node||player.skillPoints<=0||player.learnedSkills.has(id))return;
-  if(node.req&&!player.learnedSkills.has(node.req)){ floatMsg('Aprenda o pré-requisito primeiro!',innerWidth/2,innerHeight*.4,'#ff4444'); return; }
+  if(!skillNodeRequirementMet(node)){ floatMsg('Aprenda o pré-requisito primeiro!',innerWidth/2,innerHeight*.4,'#ff4444'); return; }
   player.skillPoints--;
   player.learnedSkills.add(id);
   if(node.spell) document.getElementById('slot-'+node.spell)?.classList.remove('locked');
@@ -2480,7 +2557,7 @@ function learnSkill(id){
 const MANAGEMENT_INFO={
   missions:['MISSÕES','Escolha uma missão e confira seus objetivos e recompensas.'],
   upgrades:['PERSONAGEM','Melhorias gerais são compradas com almas.'],
-  skills:['HABILIDADES','Desbloqueios usam pontos de habilidade; evoluções usam almas.'],
+  skills:['HABILIDADES','Cada habilidade tem seu ramo: desbloqueios e melhorias com pontos, evoluções com almas.'],
   summon:['HORDA','Cada slot contém um grupo. Caídos e sacrificados continuam vinculados a ele.'],
   minions:['MELHORIAS DA HORDA','Melhore os atributos de cada tipo de aliado usando almas.'],
   shop:['LOJA','Itens e consumíveis são comprados com ouro.']
@@ -2639,50 +2716,116 @@ function buyUpgrade(u,cost){
   showHubOverlay();
 }
 
+const SKILL_BRANCHES=[
+  {id:'raio',name:'Tiro de Osso',icon:'🦴',nodes:['raio']},
+  {id:'maos',name:'Muralha de Corpos',icon:'▥',nodes:['maos','wall_duration','wall_damage']},
+  {id:'zombie',name:'Zumbis',icon:'🧟',nodes:['zombie_burst','zombie_burst_damage','horda_zumbi','horda_zumbi_2']},
+  {id:'archer',name:'Esqueletos arqueiros',icon:'🏹',nodes:['archer_power','archer_power_damage','horda_arqueiro']},
+  {id:'abom',name:'Abominação',icon:'👹',nodes:['abom_slam','abom_impact']},
+  {id:'dash',name:'Dash',icon:'➶',nodes:['dash_cooldown','dash_distance']},
+  {id:'barreira',name:'Escudo de Carne',icon:'🛡',nodes:['barreira','bastiao']},
+  {id:'chuva',name:'Chuva de Ossos',icon:'🦴',nodes:['chuva']},
+  {id:'explosao',name:'Explosão de Almas',icon:'💥',nodes:['explosao']},
+  {id:'horde',name:'Bônus gerais da horda',icon:'🌑',nodes:['aura','pacto','ritual','ascensao']}
+];
+let selectedSkillBranch='raio';
+function skillNodeRequirementMet(node){
+  return (!node.req||player.learnedSkills.has(node.req))&&(!node.ability||actionSkillAvailable(node.ability));
+}
 function buildSkillTree(){
-  const container=document.getElementById('skill-tree'); container.innerHTML='';
-  const pts=document.createElement('div');
-  pts.style.cssText='color:#00ccaa;font-size:11px;letter-spacing:1px;margin-bottom:8px;text-align:center;';
-  pts.textContent=`✦ ${player.skillPoints} pts disponível(is)`;
-  container.appendChild(pts);
+  const container=document.getElementById('skill-tree');container.innerHTML='';
+  const crest=document.createElement('div');crest.className='grimoire-heading';
+  const sigil=document.createElement('span');sigil.className='grimoire-sigil';sigil.textContent='✧';sigil.setAttribute('aria-hidden','true');crest.appendChild(sigil);
+  const heading=document.createElement('div');heading.innerHTML='<small>O LEGADO DE ZEPHYR</small><h2>Grimório dos Mortos</h2>';crest.appendChild(heading);container.appendChild(crest);
+  const toolbar=document.createElement('div');toolbar.className='skill-tree-toolbar';
+  const pts=document.createElement('span');pts.textContent='✦ '+player.skillPoints+' pontos disponíveis';toolbar.appendChild(pts);
+  const reset=document.createElement('button');reset.className='btn';reset.textContent='↺ REDEFINIR PONTOS';reset.onclick=respecAllSkills;toolbar.appendChild(reset);container.appendChild(toolbar);
+  const tabs=document.createElement('div');tabs.className='skill-branch-tabs';tabs.setAttribute('role','tablist');
+  for(const branch of SKILL_BRANCHES){
+    const button=document.createElement('button');button.className='skill-branch-tab'+(selectedSkillBranch===branch.id?' active':'');button.setAttribute('role','tab');button.setAttribute('aria-selected',String(selectedSkillBranch===branch.id));
+    const count=branch.nodes.filter(id=>player.learnedSkills.has(id)).length;
+    button.textContent=branch.icon+' '+branch.name+' · '+count+'/'+branch.nodes.length;
+    button.onclick=()=>{selectedSkillBranch=branch.id;buildSkillTree();buildSpellUpgradesSection();};tabs.appendChild(button);
+  }
+  container.appendChild(tabs);
+  const branch=SKILL_BRANCHES.find(b=>b.id===selectedSkillBranch)||SKILL_BRANCHES[0];
+  const panel=document.createElement('div');panel.className='skill-branch-panel';panel.setAttribute('role','tabpanel');
+  const title=document.createElement('h3');title.textContent=branch.icon+' '+branch.name;panel.appendChild(title);
+  const note=document.createElement('p');note.className='section-note';
+  note.textContent=branch.id==='horde'?'Estes bônus afetam todos os aliados. As habilidades ativas de cada evocação estão nos seus próprios ramos.':ACTION_SKILLS[branch.id]?.summon?'Equipar invoca o grupo automaticamente. Aprenda o comando especial e as melhorias deste grupo.':branch.id==='dash'?'Habilidade base disponível ao equipar. Invista pontos para melhorar sua mobilidade.':'Desbloqueio e melhorias desta habilidade. As linhas mostram os pré-requisitos. Selecione um símbolo para ver sua melhoria e custo.';
+  panel.appendChild(note);
+  const legend=document.createElement('div');legend.className='skill-graph-legend';legend.innerHTML='<span class="learned">◆ Aprendida</span><span class="available">◇ Disponível</span><span>▣ Bloqueada</span>';panel.appendChild(legend);
+  renderSkillGraph(panel,branch);container.appendChild(panel);
+}
 
-  const rs=document.createElement('button'); rs.className='btn'; rs.style.cssText='display:block;margin:0 auto 10px;font-size:10px;'; rs.textContent='↺ REDEFINIR TODAS AS HABILIDADES'; rs.onclick=respecAllSkills; container.appendChild(rs);
-  // Base
-  container.appendChild(mkSkillNode('raio'));
-
-  // Divisor
-  const divRow=document.createElement('div');
-  divRow.style.cssText='display:flex;justify-content:center;gap:90px;margin:4px 0;';
-  divRow.innerHTML='<div style="color:#8844ff;font-size:9px;letter-spacing:2px;">MAGIA</div><div style="color:#00ccaa;font-size:9px;letter-spacing:2px;">HORDA</div><div style="color:#5ab8ff;font-size:9px;letter-spacing:2px;">DEFESA</div>';
-  container.appendChild(divRow);
-
-  // Branches lado a lado
-  const row=document.createElement('div');
-  row.className='st-row'; row.style.alignItems='flex-start';
-
-  const magicBranch=document.createElement('div'); magicBranch.className='st-branch';
-  ['maos','chuva','explosao'].forEach(id=>{
-    magicBranch.appendChild(mkConnector());
-    magicBranch.appendChild(mkSkillNode(id));
-  });
-
-  const summonBranch=document.createElement('div'); summonBranch.className='st-branch';
-  ['aura','zombie_burst','archer_power','abom_slam','horda_zumbi','horda_zumbi_2','horda_arqueiro','pacto','ritual','ascensao'].forEach(id=>{
-    summonBranch.appendChild(mkConnector());
-    summonBranch.appendChild(mkSkillNode(id));
-  });
-
-  const defBranch=document.createElement('div'); defBranch.className='st-branch';
-  ['barreira','bastiao'].forEach(id=>{ defBranch.appendChild(mkConnector()); defBranch.appendChild(mkSkillNode(id)); });
-  row.appendChild(magicBranch); row.appendChild(summonBranch); row.appendChild(defBranch);
-  container.appendChild(row);
+let selectedGraphNode=null;
+function skillGraphEntries(branch){
+  const base=branch.nodes.includes(branch.id)?branch.id:'base:'+branch.id;
+  const entries=[];
+  if(base.startsWith('base:'))entries.push({id:base,name:branch.name,icon:branch.icon,desc:branch.id==='horde'?'Melhorias que afetam todos os aliados.':'Habilidade base. Equipe em um dos seis slots para usar.',parent:null,state:branch.id==='horde'||actionSkillAvailable(branch.id)?'learned':'locked',status:branch.id==='horde'?'Bônus compartilhados':actionSkillAvailable(branch.id)?'Disponível para equipar':'Avance na campanha ou alcance o nível necessário.'});
+  for(const id of branch.nodes){
+    const node=SKILL_NODES[id],learned=player.learnedSkills.has(id),reqMet=skillNodeRequirementMet(node),gated=CAMP.on&&CAMP_GATE[id]&&!learned;
+    const parent=id===base?null:branch.nodes.includes(node.req)?node.req:base;
+    const permanent=id==='raio'||(CAMP.on&&['maos','barreira'].includes(id));
+    entries.push({id,name:node.name,icon:node.icon,desc:node.desc,parent,state:learned?'learned':!gated&&reqMet?'available':'locked',
+      status:learned?'Aprendida':gated?CAMP_GATE[id]:!reqMet?'Requer '+(node.req?SKILL_NODES[node.req].name:'a habilidade base disponível'):'Custo: 1 ponto de habilidade',
+      action:learned?permanent?null:()=>unlearnSkill(id):!gated&&reqMet&&player.skillPoints>0?()=>learnSkill(id):null,
+      actionLabel:learned?'Desaprender · +1 ponto':'Aprender · 1 ponto'});
+  }
+  for(const u of SPELL_UPGRADES[branch.id]||[]){
+    const count=player.spellUpgradeCount[u.id]||0,cost=Math.floor(u.baseCost*Math.pow(u.mult,count)),unlocked=player.learnedSkills.has(branch.id),maxed=count>=u.max;
+    entries.push({id:u.id,name:u.name,icon:u.icon,desc:u.desc,parent:base,state:maxed?'learned':unlocked?'available':'locked',rank:count+'/'+u.max,
+      status:!unlocked?'Aprenda '+branch.name+' primeiro':maxed?'Evolução máxima':'Custo: '+cost+' almas',
+      action:unlocked&&!maxed&&player.souls>=cost?()=>buySpellUpgrade(branch.id,u,cost):null,actionLabel:'Evoluir · '+cost+' almas'});
+  }
+  return entries;
+}
+function skillGraphLayout(entries){
+  const byId=new Map(entries.map(e=>[e.id,e]));
+  const depth=e=>e.parent&&byId.has(e.parent)?depth(byId.get(e.parent))+1:0;
+  const rows=new Map();
+  for(const e of entries){const d=depth(e);if(!rows.has(d))rows.set(d,[]);rows.get(d).push(e);}
+  const positions=new Map();
+  for(const [d,row] of rows)row.forEach((e,i)=>positions.set(e.id,{x:row.length===1?50:22+i*56/(row.length-1),y:20+d*146}));
+  return {positions,height:Math.max(260,rows.size*146+26)};
+}
+function renderSkillGraph(panel,branch){
+  const entries=skillGraphEntries(branch),layout=skillGraphLayout(entries);
+  if(!entries.some(e=>e.id===selectedGraphNode))selectedGraphNode=entries[0].id;
+  const workspace=document.createElement('div');workspace.className='skill-graph-workspace';
+  const scroll=document.createElement('div');scroll.className='skill-graph-scroll';
+  const board=document.createElement('div');board.className='skill-stone-board';board.style.height=layout.height+'px';
+  const lines=document.createElement('div');lines.className='skill-graph-lines';lines.setAttribute('aria-hidden','true');
+  let paths='';
+  for(const e of entries){if(!e.parent)continue;const from=layout.positions.get(e.parent),to=layout.positions.get(e.id);if(!from||!to)continue;
+    const x1=from.x*10,x2=to.x*10,y1=from.y+74,y2=to.y-6,mid=(y1+y2)/2;
+    paths+='<path class="'+(e.state==='learned'?'lit':'')+'" d="M '+x1+' '+y1+' V '+mid+' H '+x2+' V '+y2+'"/>';
+  }
+  lines.innerHTML='<svg viewBox="0 0 1000 '+layout.height+'" preserveAspectRatio="none">'+paths+'</svg>';board.appendChild(lines);
+  const detail=document.createElement('div');detail.className='skill-graph-detail';detail.setAttribute('aria-live','polite');
+  const buttons=new Map();
+  const select=entry=>{
+    selectedGraphNode=entry.id;buttons.forEach((b,id)=>{b.className='skill-rune '+entries.find(e=>e.id===id).state+(id===entry.id?' selected':'');b.setAttribute('aria-pressed',String(id===entry.id));});
+    detail.innerHTML='';const title=document.createElement('h4');title.textContent=entry.icon+' '+entry.name;detail.appendChild(title);
+    const desc=document.createElement('p');desc.textContent=entry.desc;detail.appendChild(desc);
+    if(entry.parent){const prereq=document.createElement('small');prereq.textContent='Requer: '+entries.find(e=>e.id===entry.parent).name;detail.appendChild(prereq);}
+    const status=document.createElement('p');status.className='skill-detail-status';status.textContent=(entry.rank?'Nível '+entry.rank+' · ':'')+entry.status;detail.appendChild(status);
+    if(entry.action){const action=document.createElement('button');action.className='btn skill-detail-action';action.textContent=entry.actionLabel;action.onclick=entry.action;detail.appendChild(action);}
+    else if(entry.state==='available'){const hint=document.createElement('small');hint.textContent='Recursos insuficientes para esta melhoria.';detail.appendChild(hint);}
+  };
+  for(const entry of entries){
+    const pos=layout.positions.get(entry.id),button=document.createElement('button');button.className='skill-rune '+entry.state;button.style.left=pos.x+'%';button.style.top=pos.y+'px';button.setAttribute('aria-label',entry.name+' · '+entry.status);button.setAttribute('aria-pressed','false');
+    button.innerHTML='<span class="skill-rune-face"><span class="skill-rune-icon">'+entry.icon+'</span><i>'+(entry.rank|| (entry.state==='learned'?'◆':entry.state==='locked'?'▣':'◇'))+'</i></span><span class="skill-rune-name">'+entry.name+'</span>';
+    button.onclick=()=>select(entry);buttons.set(entry.id,button);board.appendChild(button);
+  }
+  scroll.appendChild(board);workspace.appendChild(scroll);workspace.appendChild(detail);panel.appendChild(workspace);select(entries.find(e=>e.id===selectedGraphNode));
 }
 
 function unlearnSkill(id){
   if(CAMP.on&&['raio','maos','barreira'].includes(id)) return;
   const node=SKILL_NODES[id];
   if(!node||!player.learnedSkills.has(id))return;
-  if(id==='raio'){ floatMsg('O Tiro de Osso é a raiz e não pode ser desaprendida',innerWidth/2,innerHeight*.4,'#ff8844'); return; }
+  if(id==='raio'){ floatMsg('O Tiro de Osso é uma habilidade base e não pode ser desaprendida',innerWidth/2,innerHeight*.4,'#ff8844'); return; }
   const deps=Object.keys(SKILL_NODES).filter(k=>SKILL_NODES[k].req===id&&player.learnedSkills.has(k));
   if(deps.length){ floatMsg('Desaprenda antes: '+deps.map(k=>SKILL_NODES[k].name).join(', '),innerWidth/2,innerHeight*.4,'#ff8844'); return; }
   player.learnedSkills.delete(id); player.skillPoints++;
@@ -2708,14 +2851,15 @@ function mkConnector(){ const d=document.createElement('div'); d.className='st-c
 function mkSkillNode(id){
   const node=SKILL_NODES[id];
   const learned=player.learnedSkills.has(id);
-  const reqMet=!node.req||player.learnedSkills.has(node.req);
+  const reqMet=skillNodeRequirementMet(node);
   const gated=CAMP.on&&CAMP_GATE[id]&&!learned;
   const canLearn=!gated&&!learned&&reqMet&&player.skillPoints>0;
   const div=document.createElement('div');
   div.className='st-node'+(learned?' st-learned':reqMet&&!learned?' ':'  st-locked')+(id===player.activeSpell?' st-active':'');
-  div.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${node.icon}</div><div class="st-name">${node.name}</div><div class="st-desc">${node.desc}</div>${!learned?`<div class="st-cost">${gated?CAMP_GATE[id]:canLearn?'1 ponto — clique para aprender':reqMet?'1 ponto (aprenda pré-req. primeiro)':'🔒 Bloqueado'}</div>`:`<div class="st-cost" style="color:#00ccaa">✓ Aprendida${id==='raio'||(CAMP.on&&['maos','barreira'].includes(id))?'':' <span style="color:#ff9966">· clique para desaprender</span>'}</div>`}`;
+  div.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${node.icon}</div><div class="st-name">${node.name}</div><div class="st-desc">${node.desc}</div>${!learned?`<div class="st-cost">${gated?CAMP_GATE[id]:canLearn?'1 ponto — clique para aprender':reqMet?'1 ponto · sem pontos disponíveis':'🔒 Requer habilidade base ou melhoria anterior'}</div>`:`<div class="st-cost" style="color:#00ccaa">✓ Aprendida${id==='raio'||(CAMP.on&&['maos','barreira'].includes(id))?'':' <span style="color:#ff9966">· clique para desaprender</span>'}</div>`}`;
   if(canLearn) div.onclick=()=>learnSkill(id);
   else if(learned&&id!=='raio'&&!(CAMP.on&&['maos','barreira'].includes(id))){ div.onclick=()=>unlearnSkill(id); div.style.cursor='pointer'; div.title='Desaprender e recuperar 1 ponto'; }
+  if(div.onclick){div.setAttribute('role','button');div.tabIndex=0;div.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();div.onclick();}};}
   return div;
 }
 
@@ -2816,39 +2960,17 @@ function buyMinionUpgrade(mType, u, cost){
 
 // ── Upgrades de Magia ─────────────────────────────────────
 function buildSpellUpgradesSection(){
-  const sec=document.getElementById('spell-upgrades-section'); sec.innerHTML='';
-  const learnedSpells=Object.keys(SPELL_UPGRADES).filter(s=>player.learnedSkills.has(s));
-  if(!learnedSpells.length) return;
-  const title=document.createElement('div');
-  title.style.cssText='color:#8844ff;font-size:10px;letter-spacing:2px;margin-bottom:14px;';
-  title.textContent='✦ UPGRADES DE MAGIA ✦';
-  sec.appendChild(title);
-  // Layout: todas as magias lado a lado em grid
-  const grid=document.createElement('div');
-  grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;';
-  const SPELL_NAMES={maos:'🖐 Muralha de Corpos',raio:'⚡ Tiro de Osso',chuva:'🦴 Chuva de Ossos',explosao:'💥 Explosão'};
-  learnedSpells.forEach(spell=>{
-    const ups=SPELL_UPGRADES[spell];
-    ups.forEach(u=>{
-      const c=player.spellUpgradeCount[u.id]||0;
-      const cost=Math.floor(u.baseCost*Math.pow(u.mult,c));
-      const maxed=c>=u.max;
-      const card=document.createElement('div');
-      card.className='upgrade-card'+(maxed?'':player.souls<cost?' disabled':'');
-      card.innerHTML=`<div class="u-name">${u.icon} ${u.name} <span style="color:#444;font-size:9px">${c}/${u.max}</span></div><div class="u-desc" style="color:#556;">${SPELL_NAMES[spell]}</div><div class="u-desc">${u.desc}</div><div class="u-cost">${maxed?'✓ MAX':'💀 '+cost}</div>`;
-      if(!maxed&&player.souls>=cost) card.onclick=()=>buySpellUpgrade(spell,u,cost);
-      grid.appendChild(card);
-    });
-  });
-  sec.appendChild(grid);
+  // As evoluções agora são nós do próprio ramo; o recipiente antigo segue nos saves de interface.
+  const sec=document.getElementById('spell-upgrades-section');if(sec)sec.innerHTML='';
 }
 
 function buySpellUpgrade(spell, u, cost){
-  if(player.souls<cost)return;
+  const current=player.spellUpgradeCount[u.id]||0;
+  if(!player.learnedSkills.has(spell)||current>=u.max||cost!==Math.floor(u.baseCost*Math.pow(u.mult,current))||player.souls<cost)return;
   player.souls-=cost;
   player.spellUpgradeCount[u.id]=(player.spellUpgradeCount[u.id]||0)+1;
   playSound('click'); floatMsg(`✓ ${u.name}!`,innerWidth/2,innerHeight*.4,'#8844ff');
-  showHubOverlay();
+  showHubOverlay('skills');
 }
 
 // ── Summon Wheel (campo) ──────────────────────────────────
@@ -3395,7 +3517,7 @@ function castDash(){
   if(!dx&&!dy){dx=PAD.mx||0;dy=PAD.mz||0;}
   if(Math.hypot(dx,dy)<.1){const aim=screenToWorld(mouse.x,mouse.y);dx=aim.x-P.x;dy=aim.z-P.y;}
   const d=Math.hypot(dx,dy); if(d<.01){dx=P.face||1;dy=0;}
-  const length=Math.hypot(dx,dy);playerDash.dx=dx/length;playerDash.dy=dy/length;playerDash.time=.18;playerDash.cd=3;
+  const length=Math.hypot(dx,dy);playerDash.dx=dx/length;playerDash.dy=dy/length;playerDash.time=.18;playerDash.cd=hasPassive('dash_cooldown')?2.4:3;
   ring(P.x,P.y,.8,'#84c8bd',.35);playSound('raio');return true;
 }
 function updateDashMovement(dt){
@@ -3404,7 +3526,7 @@ function updateDashMovement(dt){
   if(badge){badge.style.display=playerDash.cd>0?'flex':'none';badge.textContent=playerDash.cd.toFixed(1);}
   if(playerDash.time<=0)return false;
   if(P.deadT>0){playerDash.time=0;return false;}
-  const travel=25*Math.min(dt,playerDash.time), steps=Math.max(1,Math.ceil(travel/.15)), step=travel/steps;
+  const travel=(hasPassive('dash_distance')?6/.18:25)*Math.min(dt,playerDash.time), steps=Math.max(1,Math.ceil(travel/.15)), step=travel/steps;
   for(let i=0;i<steps;i++){
     const x=P.x+playerDash.dx*step,y=P.y+playerDash.dy*step,q={x,y};
     if(STG.on&&sceneMode==='field') STG.clamp(q,.35);
@@ -4753,7 +4875,7 @@ function tPause(tab){
       body.innerHTML=pmStatusHtml()+'<h3 class="section-title">MELHORIAS DO PERSONAGEM · ALMAS</h3>';
       mountManagementPanel('upgrades',body); buildUpgradeGrid();
     } else if(PM.tab==='skills'){
-      body.innerHTML='<p class="section-note">Aprenda com pontos de habilidade; evolua suas magias com almas.</p>';
+      body.innerHTML='<p class="section-note">Escolha uma habilidade para ver seu ramo. Melhorias usam pontos; evoluções adicionais usam almas.</p>';
       mountManagementPanel('skills',body); buildSkillTree(); buildSpellUpgradesSection();
     } else if(PM.tab==='horde'){
       if(CAMP.on&&!CAMP.summon) body.innerHTML='<p class="section-note">A invocação será aprendida na Floresta de Eldrin.</p>';
@@ -5093,11 +5215,19 @@ function campStageComplete(){
   const g=document.getElementById('go-arrow'); if(g) g.style.display='none';
   document.getElementById('tut').style.display='none'; TUT.on=false;
   try{ saveGame(); }catch(e){}
-  setTimeout(()=>{ if(CAMP.map||!CAMP.on) return;
-    const after=()=>{ if(n===CAMP_STAGES.length-1&&first) playStory('camp_end',()=>campMapOpen()); else campMapOpen(); };
+  setTimeout(()=>{ if(CAMP.map||!CAMP.on||CAMP.stage!==n||CAMP.inStage) return;
+    const after=()=>{
+      if(s.kind==='strip'&&VILLAGE()){returnToVillageAfterStage();return;}
+      if(n===CAMP_STAGES.length-1&&first) playStory('camp_end',()=>campMapOpen()); else campMapOpen();
+    };
     if(first) playStory('camp_post'+n,after); else after(); },3400);
 }
 function campBossDown(){ setTimeout(campStageComplete,1800); }
+function returnToVillageAfterStage(){
+  CAMP.on=false;CAMP.inStage=false;campMapClose();
+  document.body.classList.remove('camp','camp-nosum');
+  enterHub();
+}
 function campToFree(){
   CAMP.on=false; document.body.classList.remove('camp','camp-nosum'); campMapClose(); setPause(false);
   try{ saveGame(); }catch(e){} location.reload();   // recarrega como Modo Livre usando o mesmo save
@@ -6554,11 +6684,11 @@ function activateSummonSkill(type,x,y){
   if(type==='zombie'){
     const z=group.slice().sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0];
     const px=z.x,py=z.y;z.exploded=true;killMinion(z);
-    enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-px,e.y-py)<=2.5)dealDamageToEnemy(e,Math.round(z.dmg*2));});
+    enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-px,e.y-py)<=2.5)dealDamageToEnemy(e,Math.round(z.dmg*2*(hasPassive('zombie_burst_damage')?1.5:1)));});
     ring(px,py,2.5,'#99c46a',.6);burst(px,py,'#9dbf68',26,3);
   }else if(type==='archer'){
     const target=localMinionTarget(x,y,necroGroup.position);if(!target)return false;
-    for(const m of group){const dx=target.x-m.x,dy=target.y-m.y,d=Math.hypot(dx,dy)||1;eshots.push({friendly:true,locked:true,strong:true,x:m.x,y:m.y,vx:dx/d*18,vy:dy/d*18,dmg:Math.round(m.dmg*1.9),kind:'arrow',life:1.3,z:1.1});m.swing=.28;}
+    for(const m of group){const dx=target.x-m.x,dy=target.y-m.y,d=Math.hypot(dx,dy)||1;eshots.push({friendly:true,locked:true,strong:true,x:m.x,y:m.y,vx:dx/d*18,vy:dy/d*18,dmg:Math.round(m.dmg*1.9*(hasPassive('archer_power_damage')?1.4:1)),kind:'arrow',life:1.3,z:1.1});m.swing=.28;}
   }else if(type==='abom'){
     const target=localMinionTarget(x,y,necroGroup.position),m=group[0];let tx=target?target.x:x,ty=target?target.y:y;
     let dx=tx-P.x,dy=ty-P.y,d=Math.hypot(dx,dy)||1;if(d>LEASH_DIST){tx=P.x+dx/d*LEASH_DIST;ty=P.y+dy/d*LEASH_DIST;}
@@ -6570,7 +6700,7 @@ function activateSummonSkill(type,x,y){
 function updateAllyLeap(m,dt){
   const a=m.allyLeap;if(!a)return false;
   a.time+=dt;const k=Math.min(1,a.time/.45);m.x=a.sx+(a.x-a.sx)*k;m.y=a.sy+(a.y-a.sy)*k;m.jumpZ=Math.sin(k*Math.PI)*2.6;
-  if(k>=1){m.jumpZ=0;m.allyLeap=null;enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-m.x,e.y-m.y)<=3)dealDamageToEnemy(e,Math.round(m.dmg*2.2));});ring(m.x,m.y,3,'#aac679',.6);burst(m.x,m.y,'#a7c98a',25,3);}
+  if(k>=1){const radius=hasPassive('abom_impact')?4:3;m.jumpZ=0;m.allyLeap=null;enemies.slice().forEach(e=>{if(!e.dead&&Math.hypot(e.x-m.x,e.y-m.y)<=radius)dealDamageToEnemy(e,Math.round(m.dmg*2.2*(hasPassive('abom_impact')?1.3:1)));});ring(m.x,m.y,radius,'#aac679',.6);burst(m.x,m.y,'#a7c98a',25,3);}
   return true;
 }
 function updateFriendlyProjectile(sh,dt){
@@ -6582,7 +6712,7 @@ function updateFriendlyProjectile(sh,dt){
 }
 function drawAllyLeapWarnings(){
   ctx.save();ctx.strokeStyle='#a8d18c';ctx.lineWidth=2;ctx.globalAlpha=.65;
-  for(const m of minions)if(!m.dead&&m.allyLeap){const a=m.allyLeap;ctx.beginPath();ctx.ellipse(sx(a.x),sy(a.y),3*S,3*S*.6,0,0,Math.PI*2);ctx.stroke();}ctx.restore();
+  for(const m of minions)if(!m.dead&&m.allyLeap){const a=m.allyLeap;ctx.beginPath();ctx.ellipse(sx(a.x),sy(a.y),(hasPassive('abom_impact')?4:3)*S,(hasPassive('abom_impact')?4:3)*S*.6,0,0,Math.PI*2);ctx.stroke();}ctx.restore();
 }
 function wallNearest(w,x,y){const along=Math.max(-w.half,Math.min(w.half,(x-w.x)*w.ux+(y-w.y)*w.uy));return {x:w.x+w.ux*along,y:w.y+w.uy*along};}
 function tickCorpseWalls(dt){
@@ -6655,7 +6785,7 @@ function updateVillageRoute(dt){
       else if(!enemies.some(e=>!e.dead&&e.room==='vroute')){if(z.wi>=z.waves.length){z.done=true;z.active=false;STRIP.lockX=null;STRIP.lockMax=null;STRIP.goT=5;}else z.pend=1;}}
   }
   if(STRIP.goT>0)STRIP.goT-=dt;if(arrow)arrow.style.display=STRIP.lockX===null&&STRIP.goT>0?'block':'none';
-  if(P.x>STRIP.L-5&&STRIP.zones.every(z=>z.done)){VILLAGE_ROUTE.completed=true;STRIP.fin=true;if(arrow)arrow.style.display='none';onMissionComplete();floatMsg('G · retornar à vila',innerWidth/2,innerHeight*.4,'#d7c690');}
+  if(P.x>STRIP.L-5&&STRIP.zones.every(z=>z.done)){VILLAGE_ROUTE.completed=true;STRIP.fin=true;if(arrow)arrow.style.display='none';onMissionComplete();enterHub();}
 }
 // Legacy containers remain as compatibility anchors, but all visible actions use six slots.
 renderSummonSlots=function(){renderActionSlots();};
