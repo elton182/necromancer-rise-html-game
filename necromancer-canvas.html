@@ -3423,6 +3423,7 @@ function render(){
     if(e.spawnT>0) ctx.globalAlpha=1-e.spawnT/.6;
     if(e.def.name==='Hidra Pútrida') hydraDraw(e); else person(Object.assign({ref:e,sc,seed:e.phase},styleOf(e.def)));
     if(e.isBoss){ ctx.globalCompositeOperation='lighter'; glow(sx(e.x),sy(e.y)-S*sc*.8,S*sc*1.3,e.def.head,.25); ctx.globalCompositeOperation='source-over'; }
+    if(e.shield){ const pu=.5+.5*Math.sin(performance.now()/160); ctx.save(); ctx.globalAlpha=.25+.2*pu; ctx.fillStyle='#66ccff'; ctx.strokeStyle='#bfeaff'; ctx.lineWidth=3; ctx.beginPath(); ctx.ellipse(sx(e.x),sy(e.y)-S*sc*.8,S*sc*1.05,S*sc*1.5,0,0,6.283); ctx.fill(); ctx.globalAlpha=.8; ctx.stroke(); ctx.restore(); }
     ctx.globalAlpha=1;
     hpBar(sx(e.x),sy(e.y)-(e.def.name==='Hidra Pútrida'?2.3:2.5)*S*sc,34*sc,e.hp/e.maxHp,e.isBoss?'#ff2244':'#ff2200');
   }}));
@@ -4106,6 +4107,22 @@ function goMainMenu(){ try{ sessionStorage.removeItem('nr_start'); }catch(e){} l
 #tl .pmhero{display:flex;align-items:center;gap:14px;margin:2px 0 8px}
 #tl .pmhero img{width:76px;height:76px;border-radius:50%;border:3px solid #d4af37;box-shadow:0 0 18px rgba(155,107,255,.55);object-fit:cover;background:#0b0612}
 #tl .pmhero b{display:block;font-size:20px;letter-spacing:.2em;color:#ffe9b0}#tl .pmhero small{font-size:11px;letter-spacing:.22em;color:#9b6bff}
+#tl .pm{width:min(1040px,96vw);display:grid;grid-template-columns:270px minmax(0,1fr);grid-template-areas:"t t" "s m" "f f";gap:10px 22px;align-items:start}
+#tl .pm .pt{grid-area:t;text-align:center;margin:0}
+#tl .pm .foot{grid-area:f;margin:2px 0 0}
+#tl .pmside{grid-area:s;display:flex;flex-direction:column;gap:8px}
+#tl .pmcardh{border:1px solid #5a3a90;border-top:3px solid #d4af37;background:linear-gradient(180deg,rgba(30,12,56,.92),rgba(10,4,22,.92));border-radius:4px;padding:10px;box-shadow:0 8px 30px #000a}
+#tl .pmcardh img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:3px;border:2px solid #d4af37;box-shadow:0 0 22px rgba(155,107,255,.5);background:#0b0612}
+#tl .pmcardh b{display:block;margin-top:8px;font-size:21px;letter-spacing:.24em;color:#ffe9b0;text-align:center}
+#tl .pmcardh small{display:block;text-align:center;font-size:11px;letter-spacing:.22em;color:#9b6bff;margin-bottom:6px}
+#tl .pmcardh .pmrow{margin:4px 0;font-size:10px}#tl .pmcardh .pmrow>span{width:38px}
+#tl .pmside .tb{width:100%;box-sizing:border-box}
+#tl .pmmain{grid-area:m;min-width:0;display:flex;flex-direction:column}
+#tl .pmmain .pmtabs{justify-content:flex-start;margin:0 0 10px;gap:5px}#tl .pmmain button.pmtab{font-size:11px;padding:7px 8px;letter-spacing:.06em}#tl .pmmain .pmsep{width:6px}
+#tl .pmmain .pmbody{max-height:calc(94vh - 190px);overflow:auto;padding-right:4px}
+#tl .pmsys{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+#tl .pmsys .tb{width:100%;box-sizing:border-box;min-height:54px}
+@media(max-width:760px){#tl .pm{grid-template-columns:1fr;grid-template-areas:"t" "s" "m" "f"}#tl .pmcardh{display:grid;grid-template-columns:96px 1fr;gap:0 12px;align-items:center}#tl .pmcardh img{grid-row:1/4}#tl .pmcardh b{margin-top:0;text-align:left}#tl .pmcardh small{text-align:left}#tl .pmmain .pmbody{max-height:none}}
 body.titling #hud,body.titling #top-left,body.titling #minion-panel,body.titling #spellbar,body.titling #vol-ctrl,
 body.titling #cmd-bar,body.titling #inv-bar,body.titling #hint,body.titling #reanimate-hint,body.titling #hub-npc-prompt{display:none!important}
 `;
@@ -4210,12 +4227,13 @@ function tOptions(){
       <div class="row" style="margin-top:8px"><span>Música</span><input type="range" min="0" max="100" value="${Math.round((o.mv??.7)*100)}" id="o-mus"></div>`;
     m.appendChild(r1);
     m.appendChild(tBtn(_muted?'🔇 SOM: DESLIGADO':'🔊 SOM: LIGADO',()=>{ toggleMute(); tOptions(); }));
+    m.appendChild(tBtn('🎮 CALIBRAR CONTROLE',()=>{ if(typeof padCalibrate==='function') padCalibrate(); }));
     m.appendChild(tBtn('⛶ TELA CHEIA',()=>{ try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }catch(e){} }));
     m.appendChild(tBtn(SPR.on?'🧙 NECROMANTE: SPRITE 3D':'🧙 NECROMANTE: DESENHADO',()=>{ SPR.on=!SPR.on; const oo=optsLoad(); oo.ns=SPR.on?1:0; optsSave(oo); tOptions(); }));
     if(TITLE.active&&!TITLE.paused){ const d=saveInfo();
       m.appendChild(tBtn('📂 IMPORTAR SAVE',()=>document.getElementById('tl-file').click()));
       m.appendChild(tBtn('💾 EXPORTAR SAVE',exportSave,{dis:!d}));
-      m.appendChild(tBtn('📖 HISTÓRIA',()=>{ TITLE.view='story'; showStoryMenu(); }));
+      m.appendChild(tBtn('📖 HISTÓRIA',()=>{ TITLE.view='story'; startComic([].concat(STORY.camp_intro||[],(CAMP.cleared&&CAMP.cleared[4]&&STORY.camp_end)||[])); }));
       if(d) m.appendChild(tBtn('🗑 APAGAR SAVE',()=>tConfirm('Apagar o save permanentemente?','APAGAR',()=>{ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} tMain(); },tOptions),{dng:true})); }
     m.appendChild(tBtn('← VOLTAR',tBack));
     const v=r1.querySelector('#o-vol'), q=r1.querySelector('#o-q'); q.value=o.q||'auto';
@@ -4280,36 +4298,44 @@ function pmControlsHtml(){
   const R=(k,t)=>`<div class="pmkey"><kbd>${k}</kbd><span>${t}</span></div>`;
   return `<div class="pmgrid"><div class="pmcard"><h4>MOVIMENTO E MAGIA</h4>${R('W A S D','Mover o necromante')}${R('Clique esq.','Lançar a magia selecionada')}${R('1 2 3 4','Trocar de magia')}${R('ESPAÇO','Barreira Arcana')}${R('F1–F5','Usar itens do inventário')}</div>
     <div class="pmcard"><h4>MINIONS</h4>${R('Q','Círculo de invocação')}${R('Clique dir.','Reunir (chão) ou atacar (inimigo)')}${R('R','Reanimar minion caído')}${R('E','Portal / interagir')}${R('ESC','Pausa e menu')}</div></div>
-    <div class="pmcard" style="margin-top:10px"><h4>🎮 CONTROLE</h4>${R('Analógico esq.','Mover')}${R('Analógico dir.','Mirar (auto-mira no inimigo)')}${R('A / RT','Lançar magia')}${R('LB / RB','Trocar de magia')}${R('LT','Comandar minions')}${R('X','Barreira Arcana')}${R('Y','Círculo de invocação')}${R('B','Portal / interagir')}${R('Back / R3','Reanimar minion')}${R('Start','Pausa')}</div>`;
+    <div class="pmcard" style="margin-top:10px"><h4>🎮 CONTROLE</h4>${R('Analógico esq.','Mover')}${R('Analógico dir.','Mirar e atirar (empurre para lançar magia continuamente)')}${R('A / RT','Lançar magia na mira')}${R('LB / RB','Trocar de magia')}${R('LT','Comandar minions')}${R('X','Barreira Arcana')}${R('Y','Círculo de invocação')}${R('B','Portal / interagir')}${R('Back / R3','Reanimar minion')}${R('Start','Pausa')}</div>`;
 }
 function tPause(tab){
   TITLE.view='pause'; if(typeof tab==='string') PM.tab=tab;
   tScreen(w=>{
     const root=document.createElement('div'); root.className='pm'; w.appendChild(root);
     const h=document.createElement('div'); h.className='pt'; h.textContent='— PAUSA —'; root.appendChild(h);
-    { const hero=document.createElement('div'); hero.className='pmhero'; const im=(typeof PORT!=='undefined'&&PORT.zt)?PORT.zt.img.src:''; hero.innerHTML=(im?`<img src="${im}" alt="Zephyr">`:'')+`<div><b>ZEPHYR</b><small>NÍVEL ${player.level} · NECROMANTE</small></div>`; root.appendChild(hero); }
-    const tabs=document.createElement('div'); tabs.className='pmtabs'; root.appendChild(tabs);
+    const hub=gameState==='hub'; const canSave=hub||CAMP.on;
+    // coluna esquerda: foto grande + ações principais
+    const side=document.createElement('div'); side.className='pmside'; root.appendChild(side);
+    { const hero=document.createElement('div'); hero.className='pmcardh'; const im=(typeof PORT!=='undefined'&&PORT.zt)?PORT.zt.img.src:'';
+      hero.innerHTML=(im?`<img src="${im}" alt="Zephyr">`:'')+`<b>${CAMP.on?'ZEPHYR':'NECROMANTE'}</b><small>NÍVEL ${player.level} · NECROMANTE</small>
+      <div class="pmrow"><span>HP</span>${pmBar(player.hp,player.maxHp,'#c0392b')}</div><div class="pmrow"><span>MANA</span>${pmBar(player.mp,player.maxMp,'#6c6cff')}</div><div class="pmrow"><span>EXP</span>${pmBar(player.exp,player.expNext,'#d4af37')}</div>`;
+      side.appendChild(hero); }
+    side.appendChild(tBtn('▶ CONTINUAR',()=>setPause(false),{pri:true,sub:'ESC'}));
+    if(CAMP.on&&CAMP.inStage&&!CAMP.map) side.appendChild(tBtn('🗺 VOLTAR AO MAPA',()=>tConfirm('Voltar ao <b>mapa</b> da campanha?<br>O progresso desta fase será perdido.','VOLTAR AO MAPA',()=>{ setPause(false); campMapOpen(); },tPause)));
+    side.appendChild(tBtn('⌂ MENU PRINCIPAL',()=>{
+      if(canSave&&(hub||CAMP.map)){ saveGame(); goMainMenu(); }
+      else tConfirm('Sair para o menu principal?<br>O <b>progresso da '+(CAMP.on?'fase':'missão')+' atual será perdido</b>.','SAIR',()=>{ if(CAMP.on){ try{ saveGame(); }catch(e){} } goMainMenu(); },tPause);
+    },{dng:true}));
+    // coluna direita: abas + conteúdo
+    const main=document.createElement('div'); main.className='pmmain'; root.appendChild(main);
+    const tabs=document.createElement('div'); tabs.className='pmtabs'; main.appendChild(tabs);
     const T=(id,lab)=>{ const b=document.createElement('button'); b.className='pmtab'+(PM.tab===id?' on':''); b.textContent=lab; b.onclick=()=>{ try{playSound('click');}catch(e){} tPause(id); }; tabs.appendChild(b); };
     T('status','📊 STATUS'); T('controls','⌨ CONTROLES'); T('system','☰ SISTEMA');
     const sep=document.createElement('span'); sep.className='pmsep'; tabs.appendChild(sep);
     const O=(tabId,lab)=>{ const b=document.createElement('button'); b.className='pmtab ov'; b.textContent=lab; b.onclick=()=>{ try{playSound('click');}catch(e){} pmOpenOverlay(tabId); }; tabs.appendChild(b); };
     O('skills','🔮 HABILIDADES'); O('upgrades','⚗ UPGRADES'); O('minions','💀 MINIONS'); O('shop','🛒 LOJA'); if(!CAMP.on||CAMP.summon) O('summon','🧟 INVOCAR');
-    const body=document.createElement('div'); body.className='pmbody'; root.appendChild(body);
+    const body=document.createElement('div'); body.className='pmbody'; main.appendChild(body);
     if(PM.tab==='status') body.innerHTML=pmStatusHtml();
     else if(PM.tab==='controls') body.innerHTML=pmControlsHtml();
     else {
-      const m=document.createElement('div'); m.className='menu'; m.style.margin='0 auto'; body.appendChild(m);
-      const hub=gameState==='hub'; const canSave=hub||CAMP.on;
-      m.appendChild(tBtn('▶ CONTINUAR',()=>setPause(false),{pri:true,sub:'ESC'}));
+      const m=document.createElement('div'); m.className='pmsys'; body.appendChild(m);
       m.appendChild(tBtn('💾 SALVAR',()=>{ saveGame(); tMsg('✓ Jogo salvo.'); },{dis:!canSave,sub:canSave?'':'só no hub'}));
       m.appendChild(tBtn('⬇ EXPORTAR SAVE',()=>{ if(canSave) saveGame(); exportSave(); },{dis:!canSave&&!saveInfo()}));
-      m.appendChild(tBtn('📖 HISTÓRIA',()=>{ TITLE.view='story'; showStoryMenu(); }));
+      m.appendChild(tBtn('📖 HISTÓRIA',()=>{ if(CAMP.on&&!CAMP.map) tMsg('Reveja a história pelo mapa da campanha.'); else if(!CAMP.on&&gameState==='field') tMsg('Reveja a história no hub ou na Vila.'); else { setPause(false); campStoryOpen(); } }));
       m.appendChild(tBtn('⚙ OPÇÕES',tOptions));
-      m.appendChild(tBtn('⌂ MENU PRINCIPAL',()=>{
-        if(canSave&&(hub||CAMP.map)){ saveGame(); goMainMenu(); }
-        else tConfirm('Sair para o menu principal?<br>O <b>progresso da '+(CAMP.on?'fase':'missão')+' atual será perdido</b>.','SAIR',()=>{ if(CAMP.on){ try{ saveGame(); }catch(e){} } goMainMenu(); },tPause);
-      },{dng:true}));
-      tMsgEl(w);
+      tMsgEl(body);
     }
     const f=document.createElement('div'); f.className='foot'; f.textContent='ESC para voltar ao jogo'; root.appendChild(f);
   });
@@ -4543,7 +4569,8 @@ function campMapRender(){
   bar.appendChild(mk('⚗ UPGRADES',()=>pmOpenOverlay('upgrades')));
   bar.appendChild(mk('💀 MINIONS',()=>pmOpenOverlay('minions')));
   bar.appendChild(mk('🛒 LOJA',()=>pmOpenOverlay('shop')));
-  bar.appendChild(mk('🏕 MODO LIVRE',()=>tConfirm((CAMP.cleared[4]?'Ir para a <b>Vila de Eldrin</b>: mercador, missões dos moradores e a Arena Infinita, com este mesmo personagem?':'Ir para o <b>Modo Livre</b> (hub e waves infinitas) com este mesmo personagem?')+'<br>O progresso da campanha fica salvo.','IR PARA O HUB',()=>campToFree(),()=>{ setPause(false); })));
+  bar.appendChild(mk('📖 HISTÓRIA',()=>campStoryOpen()));
+  bar.appendChild(mk('🏕 MODO LIVRE',()=>{ setPause(true); tConfirm((CAMP.cleared[4]?'Ir para a <b>Vila de Eldrin</b>: mercador, missões dos moradores e a Arena Infinita, com este mesmo personagem?':'Ir para o <b>Modo Livre</b> (hub e waves infinitas) com este mesmo personagem?')+'<br>O progresso da campanha fica salvo.','IR PARA O HUB',()=>campToFree(),()=>{ setPause(false); }); }));
   el.appendChild(bar);
   CAMP_STAGES.slice(1).forEach(s=>{
     const n=s.n, lock=n>CAMP.unlocked, done=!!CAMP.cleared[n];
@@ -5029,7 +5056,7 @@ function stripProps(){
 }
 
 // ═══════════════ 4. CHEFE — CAPITÃO DA GUARDA ═════════════════
-const CAPTAIN={name:'Capitão da Guarda',col:0x1a3a6a,hCol:0x4a90e2,hp:900,dmg:22,spd:2.0,xp:300,souls:160,sc:2.2,isBoss:true};
+const CAPTAIN={name:'Capitão da Guarda',col:0x1a3a6a,hCol:0x4a90e2,hp:20000,dmg:22,spd:2.0,xp:300,souls:160,sc:2.2,isBoss:true};
 CHAR['Capitão da Guarda']={skin:'#d9a37c',cloth:'#1a3a6a',dark:'#0e2144',legCol:'#222a3a',weapon:'sword',shield:true,head:'helmet',armor:'#a8b4cc',bulk:1.3,cape:'#1a3a6a',boot:'#1a1a22',belt:'#d4af37',crown:false};
 STAGE_KINDS.boss={
   setup(s){
@@ -5041,19 +5068,23 @@ STAGE_KINDS.boss={
   }
 };
 function spawnCaptain(){
-  const m=stageMul(), hp=Math.round(CAPTAIN.hp*(1+(player.level-1)*.06));
+  const m=stageMul(), hp=CAPTAIN.hp;
   waveActive=true; enemiesLeft=1; spawnQueue=[];
   showWaveBanner('💀 CAPITÃO DA GUARDA','Ele não vai recuar — prepare-se!','#ff2244'); try{ playSound('waveStart'); }catch(e){}
   document.getElementById('wave-txt').textContent='👑 BOSS: Capitão da Guarda';
   const mesh=mkMesh2(0,-12);
   const obj=bindXY({type:CAPTAIN,def:defOf(CAPTAIN),hp,maxHp:hp,dmg:Math.round(CAPTAIN.dmg*m.dmg),spd:CAPTAIN.spd,xp:CAPTAIN.xp,souls:CAPTAIN.souls,dropChance:1,dead:false,deadTimer:0,isBoss:true,target:null,atkTimer:0,atkR:1.9*1.3,atkRate:1.3,mesh,face:1,phase:0,amp:0,hit:0,swing:0,spawnT:1,kx:0,ky:0});
-  obj.cap=true; obj.cs='chase'; obj.ct=0; obj.chargeCd=5; obj.slamCd=9; obj.phase2=false; obj.phase3=false; obj.xAI=capAI; obj.hitSet=null;
+  obj.cap=true; obj.cs='chase'; obj.ct=0; obj.chargeCd=5; obj.slamCd=9; obj.ph=0; obj.shield=false; obj.adds=[]; obj.xAI=capAI; obj.hitSet=null;
   enemies.push(obj); bossEnemy=obj; ring(0,-12,4,'#4a90e2',1); shake=.5;
 }
 function capTarget(e){ const nm=nearestMinion(e.x,e.y); if(nm&&dist2(e.x,e.y,nm.x,nm.y)<20) return {x:nm.x,y:nm.y,m:nm}; return {x:P.x,y:P.y,m:null}; }
+const CAP_TH=[.75,.5,.25];
 function capReinforce(e){
-  showWaveBanner('REFORÇOS!','O Capitão convocou a guarda!','#ff8844'); try{ playSound('waveStart'); }catch(_){}
-  for(let i=0;i<4;i++){ const a=i/4*6.283+Math.random(), x=e.x+Math.cos(a)*4, y=e.y+Math.sin(a)*3; const r=Math.hypot(x,y); const k=r>FIELD_R-2?(FIELD_R-2)/r:1; const en=campE(i%3===2?1:0,x*k,y*k,'g'); en.spawnT=.8; }
+  const n=[6,8,10][Math.min(2,e.ph-1)]; e.adds=[];
+  showWaveBanner('REFORÇOS!','A guarda do Capitão chegou!','#ff8844'); try{ playSound('waveStart'); }catch(_){}
+  for(let i=0;i<n;i++){ const a=i/n*6.283+Math.random()*.4, rr=6+Math.random()*3; let x=Math.cos(a)*rr, y=-6+Math.sin(a)*rr*.8; const r=Math.hypot(x,y); const k=r>FIELD_R-2?(FIELD_R-2)/r:1;
+    const en=campE((e.ph>=2&&i%3===2)?1:(i%4===3?1:0),x*k,y*k,'g'); en.spawnT=.8+i*.08; en.capAdd=true; e.adds.push(en); ring(x*k,y*k,1.2,'#ff8844',.6); }
+  enemiesLeft+=n;
 }
 function capHit(e,tx,ty,rad,dmg,flag){
   if(P.deadT===0&&Math.hypot(P.x-tx,P.y-ty)<rad&&!(e.hitSet&&e.hitSet.p)){ dealDamageToPlayer(dmg); if(e.hitSet&&flag) e.hitSet.p=1; }
@@ -5061,31 +5092,75 @@ function capHit(e,tx,ty,rad,dmg,flag){
 }
 function capAI(e,dt){
   const f=e.hp/e.maxHp;
-  if(!e.phase2&&f<.66){ e.phase2=true; capReinforce(e); }
-  if(!e.phase3&&f<.33){ e.phase3=true; capReinforce(e); e.spd=CAPTAIN.spd*1.25; }
+  // ── escudo / fases ──
+  if(e.shield){
+    e.hp=e.lockHp; e.amp=0;
+    if(e.cs==='shieldIn'){
+      const dx=0-e.x, dy=-6-e.y, d=Math.hypot(dx,dy);
+      if(d>.4){ e.x+=dx/d*9*dt; e.y+=dy/d*9*dt; e.phase+=dt*10; }
+      e.ct-=dt; if(e.ct<=0){ e.cs='shield'; e.ct=3; e.sh=0; capReinforce(e); shake=.5; }
+    } else {
+      e.ct-=dt; e.sh=(e.sh||0)+dt; if(e.sh>1.4){ e.sh=0; ring(e.x,e.y,3,'#66ccff',.7); }
+      e.adds=e.adds.filter(a=>!a.dead);
+      if(e.ct<=0&&e.adds.length===0){
+        e.shield=false; e.cs='stun'; e.ct=2.2; e.hitSet=null; e.chargeCd=3; e.slamCd=4;
+        e.spd=CAPTAIN.spd*(1+.12*e.ph); ring(e.x,e.y,5,'#ffdd66',1); burst(e.x,e.y,'#ffdd66',26,4); shake=.5;
+        showWaveBanner('ESCUDO QUEBRADO!','Ataque agora — o Capitão está exposto!','#ffcc33'); floatMsg('💥 Exposto!',innerWidth/2,innerHeight*.3,'#ffcc33');
+      }
+    }
+    return;
+  }
+  if(e.ph<3&&f<CAP_TH[e.ph]){
+    e.ph++; e.shield=true; e.lockHp=e.hp; e.cs='shieldIn'; e.ct=1.2; e.hitSet=null;
+    showWaveBanner('💀 FASE '+(e.ph+1),['Ele vai se proteger e chamar a guarda!','Mais forte e mais rápido!','Fúria final!'][e.ph-1],'#ff2244'); try{ playSound('waveStart'); }catch(_){}
+    CAMP.fx.push({kind:'circle',x:e.x,y:e.y,r:4,t:0,life:1});
+    return;
+  }
+  const ph=e.ph;
   const tg=capTarget(e), dx=tg.x-e.x, dy=tg.y-e.y, d=Math.hypot(dx,dy)||1;
   if(Math.abs(dx)>.2) e.face=dx>0?1:-1;
   e.chargeCd-=dt; e.slamCd-=dt;
   if(e.cs==='chase'){
     if(d>e.atkR){ e.x+=dx/d*e.spd*dt; e.y+=dy/d*e.spd*dt; e.phase+=dt*8; stepDust(e,dt,true); }
-    else { e.atkTimer-=dt; if(e.atkTimer<=0){ e.atkTimer=e.atkRate; e.swing=.28; if(tg.m) dealDamageToMinion(tg.m,e.dmg); else if(P.deadT===0) dealDamageToPlayer(e.dmg); } }
-    if(e.chargeCd<=0&&d>4.5){ e.cs='tele'; e.ct=.95; e.dx=dx/d; e.dy=dy/d; CAMP.fx.push({kind:'line',x:e.x,y:e.y,dx:e.dx,dy:e.dy,len:13,w:1.3,t:0,life:.95}); try{ playSound('click'); }catch(_){} }
-    else if(e.phase2&&e.slamCd<=0&&d<9){ e.cs='slam'; e.ct=1.0; e.sx=tg.x; e.sy=tg.y; CAMP.fx.push({kind:'circle',x:e.sx,y:e.sy,r:3.3,t:0,life:1.0}); e.slamCd=e.phase3?7:10; }
+    else { e.atkTimer-=dt; if(e.atkTimer<=0){ e.atkTimer=e.atkRate*(ph>=2?.8:1); e.swing=.28; if(tg.m) dealDamageToMinion(tg.m,e.dmg); else if(P.deadT===0) dealDamageToPlayer(e.dmg); } }
+    if(e.chargeCd<=0&&d>4.5){ e.cs='tele'; e.ct=ph>=2?.75:.95; e.dx=dx/d; e.dy=dy/d; CAMP.fx.push({kind:'line',x:e.x,y:e.y,dx:e.dx,dy:e.dy,len:13,w:1.3,t:0,life:e.ct}); try{ playSound('click'); }catch(_){} }
+    else if(ph>=1&&e.slamCd<=0&&d<9){ e.cs='slam'; e.ct=1.0; e.sx=tg.x; e.sy=tg.y; CAMP.fx.push({kind:'circle',x:e.sx,y:e.sy,r:3.3,t:0,life:1.0});
+      e.ex=null; if(ph>=3){ e.ex=[[e.sx+4,e.sy+1],[e.sx-4,e.sy-1]]; e.ex.forEach(p=>CAMP.fx.push({kind:'circle',x:p[0],y:p[1],r:3,t:0,life:1.0})); }
+      e.slamCd=ph>=3?6:ph>=2?8:10; }
   } else if(e.cs==='tele'){
     e.ct-=dt; e.phase+=dt*5; if(e.ct<=0){ e.cs='dash'; e.ct=.6; e.hitSet={}; shake=Math.max(shake,.25); }
   } else if(e.cs==='dash'){
     e.ct-=dt; e.x+=e.dx*15*dt; e.y+=e.dy*15*dt; e.phase+=dt*16; e.swing=.2; capHit(e,e.x,e.y,1.5,Math.round(e.dmg*1.5),true);
     if(Math.random()<.6) particles.push({x:e.x,y:e.y,z:.1,vx:rnd(-.5,.5),vy:rnd(-.3,.3),vz:1,life:.4,max:.4,col:'#9ab4e0',size:3});
     const r=Math.hypot(e.x,e.y); if(r>FIELD_R-2){ e.x*=(FIELD_R-2)/r; e.y*=(FIELD_R-2)/r; e.ct=0; shake=.4; burst(e.x,e.y,'#ffcc66',14,3); }
-    if(e.ct<=0){ e.cs='stun'; e.ct=1.5; e.hitSet=null; e.chargeCd=e.phase3?4.5:7; floatMsg('💫 Exposto!',innerWidth/2,innerHeight*.3,'#ffcc33'); }
+    if(e.ct<=0){
+      e.hitSet=null;
+      if(ph>=2&&!e.chain){ e.chain=true; e.cs='chase'; e.chargeCd=0; } // segunda investida em cadeia
+      else { e.chain=false; e.cs='stun'; e.ct=ph>=3?1.0:1.5; e.chargeCd=ph>=3?4.5:ph>=2?5.5:7; floatMsg('💫 Exposto!',innerWidth/2,innerHeight*.3,'#ffcc33'); }
+    }
   } else if(e.cs==='slam'){
-    e.ct-=dt; if(e.ct<=0){ ring(e.sx,e.sy,3.3,'#ff6644',.8); burst(e.sx,e.sy,'#ffaa55',22,4); shake=.45; capHit(e,e.sx,e.sy,3.3,Math.round(e.dmg*1.6),false); e.cs='chase'; e.atkTimer=.6; }
+    e.ct-=dt; if(e.ct<=0){ [[e.sx,e.sy,3.3]].concat((e.ex||[]).map(p=>[p[0],p[1],3])).forEach(([x,y,r])=>{ ring(x,y,r,'#ff6644',.8); burst(x,y,'#ffaa55',22,4); capHit(e,x,y,r,Math.round(e.dmg*1.6),false); }); shake=.45; e.cs='chase'; e.atkTimer=.6; }
   } else if(e.cs==='stun'){
     e.ct-=dt; e.amp=0; if(e.ct<=0) e.cs='chase';
   }
   const r=Math.hypot(e.x,e.y); if(r>FIELD_R-1.5){ e.x*=(FIELD_R-1.5)/r; e.y*=(FIELD_R-1.5)/r; }
 }
+// escudo: dano ignorado e sem pular de fase com um único golpe
+const _ddeCap=dealDamageToEnemy;
+dealDamageToEnemy=function(e,dmg){
+  if(e&&e.cap){
+    if(e.shield){ if(Math.random()<.3) floatMsg('🛡 Imune',innerWidth/2,innerHeight*.26,'#66ccff'); return; }
+    const th=e.ph<3?CAP_TH[e.ph]*e.maxHp:null;
+    if(th!=null&&e.hp-Math.floor(dmg)<th) dmg=Math.max(1,e.hp-th+1);
+  }
+  return _ddeCap(e,dmg);
+};
 
+
+const _ubb=updateBossHpBar;
+updateBossHpBar=function(){ _ubb(); const b=bossEnemy; if(!b||b.dead||!b.cap) return;
+  document.getElementById('boss-name').textContent=`👑 ${b.type.name} — Fase ${(b.ph||0)+1}/4${b.shield?'  🛡 ESCUDO':''}`;
+  const fl=document.getElementById('boss-hp-fill'); if(fl) fl.style.filter=b.shield?'saturate(.2) brightness(1.4)':''; };
 
 // ═══════════════════════════════════════════════════════════
 // HISTÓRIA DA CAMPANHA — Ato I: O Despertar de Zephyr
@@ -5495,10 +5570,47 @@ function startEndless(){
   };
 })();
 
+// ── mensagem de fim da demo ao voltar ao mapa após o Ato I ──
+(function(){
+  const _cmo=campMapOpen;
+  campMapOpen=function(){
+    _cmo.apply(this,arguments);
+    if(!CAMP.on||!CAMP.cleared||!CAMP.cleared[4]||CAMP.story.demo) return;
+    CAMP.story.demo=1; try{ saveGame(); }catch(e){}
+    setTimeout(()=>{
+      const m=VIL.modal; VIL.open='demo'; m.style.display='flex';
+      m.innerHTML=`<div class="vc"><div class="vh"><span class="vi">🏆</span><div><b>Parabéns!</b><small>FIM DA DEMO · ATO I</small></div></div>
+      <p class="say">Você terminou a demo de <b>Zephyr — O Despertar do Necromante</b>.</p>
+      <div class="offer"><h3>Mini endgame liberado</h3>
+      <p>🏘 <b>Vila de Eldrin</b> — fale com os moradores e aceite missões aleatórias, com recompensas de almas, XP e ouro.</p>
+      <p>♾ <b>Arena Infinita</b> — ondas sem fim, cada vez mais fortes. Bata o seu recorde de waves!</p>
+      <p>⚔ Continue evoluindo o necromante, seus minions e habilidades. Os próximos atos estão a caminho.</p></div>
+      <div class="vb"><button class="pri" id="vm-go">🏘 IR PARA A VILA</button><button id="vm-x">CONTINUAR NO MAPA</button></div></div>`;
+      m.querySelector('#vm-x').onclick=vilClose;
+      m.querySelector('#vm-go').onclick=()=>{ vilClose(); campToFree(); };
+    },700);
+  };
+})();
+
+// ── rever história (lista de cenas liberadas) ──
+window.campStoryOpen=function(){
+  const m=VIL.modal; VIL.open='story'; m.style.display='flex';
+  const sc=[['camp_intro','📜','Abertura','O Reino de Valdoria',true],['camp_end','🌅','Final do Ato I','O fim da corrupção',!!(CAMP.cleared&&CAMP.cleared[4])]];
+  m.innerHTML=`<div class="vc"><div class="vh"><span class="vi">📖</span><div><b>História</b><small>CENAS LIBERADAS</small></div></div>
+  <div class="vb" style="flex-direction:column;gap:8px">${sc.map(([id,ic,t,sub,ok])=>`<button data-id="${id}" ${ok?'':'disabled style="opacity:.4;cursor:not-allowed"'} style="text-align:left;padding:12px 14px"><span style="font-size:20px">${ok?ic:'🔒'}</span>&nbsp; <b style="color:#ffe9b0">${t}</b><br><small style="color:#9b8bb8">${ok?sub:'Conclua o Ato I para liberar'}</small></button>`).join('')}
+  <button id="vm-x" class="pri">FECHAR</button></div></div>`;
+  m.querySelector('#vm-x').onclick=vilClose;
+  m.querySelectorAll('button[data-id]:not([disabled])').forEach(b=>b.onclick=()=>{ const id=b.dataset.id; vilClose(); if(CAMP.on){ campMapClose(); gameState='hub'; playStory(id,()=>campMapOpen()); } else playStory(id); });
+};
+
+// "História" em qualquer lugar (pausa, hub, missões) abre a lista de cenas da campanha
+showStoryMenu=function(){ try{ if(document.getElementById('hub-overlay').style.display==='flex') closeHubOverlay(); }catch(e){} campStoryOpen(); };
+
 // ═══════════════════════════════════════════════════════════
 // MENU DE INVOCAÇÃO moderno (tecla Q) + ajustes dos minions
 // ═══════════════════════════════════════════════════════════
 MINION_DEFS.zombie.hp=130; MINION_DEFS.zombie.dmg=11;          // zumbi inicial mais resistente
+MINION_DEFS.zombie.spd=3.4; MINION_DEFS.skeleton.spd=3.8; MINION_DEFS.archer.spd=3.2; MINION_DEFS.specter.spd=4.6;   // minions mais rápidos que os inimigos comuns
 // no Ato I da campanha só o zumbi pode ser invocado
 ['skeleton','archer','specter'].forEach(k=>{ const d=MINION_DEFS[k], base=d.unlockLv; Object.defineProperty(d,'unlockLv',{get(){ return CAMP.on?99:base; },configurable:true,enumerable:true}); });
 (function(){ const _sm=spawnMinion; spawnMinion=function(type){ if(CAMP.on&&type!=='zombie'){ floatMsg('Só o Zumbi responde ao chamado neste Ato',innerWidth/2,innerHeight*.4,'#a855f7'); return null; } return _sm.apply(this,arguments); }; })();
@@ -5589,7 +5701,7 @@ function swStats(key){
 // ═══════════════════════════════════════════════════════════
 // GAMEPAD — mapeamento "standard" (Xbox/PlayStation/Switch Pro)
 // ═══════════════════════════════════════════════════════════
-const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null,fc:null,lastUI:'',cd:0,rt:0};
+const PAD={map:(function(){ try{ return (JSON.parse(localStorage.getItem('nr_opts')||'{}')).pm||null; }catch(e){ return null; } })(),cal:false,on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null,fc:null,lastUI:'',cd:0,rt:0};
 (function(){
   const DZ=.22;
   const ret=document.createElement('div'); ret.id='pad-ret';
@@ -5599,8 +5711,21 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
   const st=document.createElement('style');
   st.textContent='.pad-focus{outline:3px solid #ffe08a!important;outline-offset:2px;box-shadow:0 0 18px rgba(255,224,138,.65)!important;filter:brightness(1.25)}#pad-hint{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:100000;font:11px/1 monospace;letter-spacing:.12em;color:#cdbfe6;background:rgba(10,4,20,.82);border:1px solid #4a2a7a;padding:6px 12px;border-radius:3px;pointer-events:none;display:none;white-space:nowrap}';
   document.head.appendChild(st);
+  const lst=document.createElement('style');
+  lst.textContent='#pad-leg{position:fixed;z-index:100000;display:none;pointer-events:none;font:12px/1.2 Georgia,serif;letter-spacing:.04em;color:#e6dcf5;background:rgba(10,4,20,.84);border:1px solid #4a2a7a;border-radius:6px;padding:7px 10px;gap:5px}#pad-leg.col{left:10px;bottom:10px;flex-direction:column;max-width:250px}#pad-leg.row{left:50%;bottom:12px;transform:translateX(-50%);flex-direction:row;flex-wrap:wrap;justify-content:center;gap:6px 16px;max-width:92vw;padding:8px 14px}#pad-leg .it{display:flex;align-items:center;gap:7px;white-space:nowrap}#pad-leg i{font-style:normal;font-weight:bold;font-family:system-ui,sans-serif;font-size:11px;min-width:22px;height:22px;padding:0 6px;box-sizing:border-box;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:#3a3350;color:#fff;border:1px solid #6b5f8a}#pad-leg i.a{background:#2f9e44;border-color:#8be09b}#pad-leg i.b{background:#c92a2a;border-color:#ff9b9b}#pad-leg i.x{background:#1c7ed6;border-color:#8cc8ff}#pad-leg i.y{background:#e8a317;border-color:#ffe08a;color:#2a1a00}#pad-leg b{color:#ffe9b0;font-weight:normal}body.padmode #hint,body.padmode #cmd-bar{display:none!important}';
+  document.head.appendChild(lst);
+  const leg=document.createElement('div'); leg.id='pad-leg'; document.body.appendChild(leg);
+  let _legK='';
+  const BADGE={A:'a',B:'b',X:'x',Y:'y'};
+  function legend(mode,items){
+    const k=mode+JSON.stringify(items); if(k===_legK) return; _legK=k;
+    if(!items){ leg.style.display='none'; document.body.classList.remove('padmode'); return; }
+    leg.className=mode; leg.style.display='flex'; document.body.classList.add('padmode');
+    leg.innerHTML=items.map(([b,t])=>`<div class="it"><i class="${BADGE[b]||''}">${b}</i><span>${t}</span></div>`).join('');
+  }
   const hint=document.createElement('div'); hint.id='pad-hint'; document.body.appendChild(hint);
-  const fire=(key,code)=>window.dispatchEvent(new KeyboardEvent('keydown',{key,code:code||('Key'+key.toUpperCase()),bubbles:true,cancelable:true}));
+  hint.style.display='none';
+  const fire=(key,code)=>(document.body||window).dispatchEvent(new KeyboardEvent('keydown',{key,code:code||('Key'+key.toUpperCase()),bubbles:true,cancelable:true}));
   const vis=el=>{ if(!el) return false; const r=el.getBoundingClientRect(); if(r.width<2||r.height<2) return false; const cs=getComputedStyle(el); return cs.visibility!=='hidden'&&cs.display!=='none'&&cs.pointerEvents!=='none'; };
   const shown=id=>{ const e=document.getElementById(id); return !!e&&getComputedStyle(e).display!=='none'&&vis(e); };
   function uiRoot(){
@@ -5613,7 +5738,17 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
     return null;
   }
   function cands(root){
-    return [...root.querySelectorAll('button:not(:disabled),.node:not(.lock),.sw-btn:not(.sw-disabled),input[type=range],select,[onclick]')].filter(e=>vis(e)&&!e.closest('.pm-skip'));
+    const out=[]; const BT='button,a,[role=button],input[type=range],select';
+    root.querySelectorAll('*').forEach(e=>{
+      if(!vis(e)||e.closest('.pm-skip')||e.disabled||e.matches('.lock,.sw-disabled,.disabled,[disabled],.pad-skip')) return;
+      if(e.matches('input[type=range],select')){ out.push(e); return; }
+      if(e.matches('button,a,[role=button]')){ out.push(e); return; }
+      if(getComputedStyle(e).cursor!=='pointer') return;
+      const p=e.parentElement; if(p&&p!==root&&getComputedStyle(p).cursor==='pointer') return;
+      if(e.querySelector(BT)) return;
+      out.push(e);
+    });
+    return out;
   }
   const ctr=e=>{ const r=e.getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; };
   function setFocus(el){
@@ -5645,17 +5780,28 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
     const i=Math.max(0,l.indexOf(player.activeSpell)); selectSpell(l[(i+d+l.length)%l.length]);
     try{ floatMsg('🔮 '+player.activeSpell.toUpperCase(),innerWidth/2,innerHeight*.3,'#c9a0ff'); }catch(e){}
   }
-  function aimUpdate(gx,gz,mag){
-    let ax,az,r;
-    if(mag>DZ){ const l=Math.hypot(gx,gz)||1; ax=gx/l; az=gz/l; r=3+Math.min(1,mag)*5; PAD.ax=ax; PAD.az=az; }
-    else {
-      let best=null,bd=81; enemies.forEach(e=>{ if(e.dead) return; const d=(e.x-P.x)**2+(e.y-P.y)**2; if(d<bd){ bd=d; best=e; } });
-      if(best){ const l=Math.sqrt(bd)||1; ax=(best.x-P.x)/l; az=(best.y-P.y)/l; r=l; }
-      else { ax=P.face||1; az=0; r=4; }
-    }
-    const wx=P.x+ax*r, wz=P.y+az*r;
+  const angD=(a,b)=>{ let d=a-b; while(d>Math.PI) d-=6.2832; while(d<-Math.PI) d+=6.2832; return d; };
+  const line=document.createElement('div'); line.id='pad-line';
+  line.style.cssText='position:fixed;height:0;border-top:2px dotted rgba(212,175,55,.55);transform-origin:0 50%;pointer-events:none;z-index:29;display:none';
+  document.body.appendChild(line);
+  PAD.ang=0; PAD.idle=9; PAD.lock=null; PAD.off={x:6,z:0};
+  // Mira estilo "dual stick": direção = analógico direito; trava suave no inimigo próximo à linha de mira
+  function aimUpdate(gx,gz,mag,dt){
+    const act=mag>DZ;
+    if(act){ PAD.ang=Math.atan2(gz,gx); PAD.idle=0; }
+    else { PAD.idle+=dt; if(PAD.idle>1.5&&(PAD.mx||PAD.mz)){ const t=Math.atan2(PAD.mz,PAD.mx); PAD.ang+=angD(t,PAD.ang)*Math.min(1,dt*3); } }
+    PAD.lock=null;
+    if(act){ let best=null,bs=1e9; enemies.forEach(e=>{ if(e.dead||e.spawnT>0) return; const dx=e.x-P.x, dz=e.y-P.y, d=Math.hypot(dx,dz); if(d>12||d<.4) return; const da=Math.abs(angD(Math.atan2(dz,dx),PAD.ang)); if(da>.3) return; const sc=da*d+d*.06; if(sc<bs){ bs=sc; best=e; } }); PAD.lock=best; }
+    const r=act?Math.min(9,5+mag*3):6;
+    const tx=PAD.lock?PAD.lock.x-P.x:Math.cos(PAD.ang)*r, tz=PAD.lock?PAD.lock.y-P.y:Math.sin(PAD.ang)*r;
+    const k=1-Math.exp(-dt*(act?30:10)); PAD.off.x+=(tx-PAD.off.x)*k; PAD.off.z+=(tz-PAD.off.z)*k;
+    const wx=P.x+PAD.off.x, wz=P.y+PAD.off.z;
     const sx=(wx-cam.x)*S+W/2, sy=(wz-cam.y)*S+H/2; mouse.x=sx; mouse.y=sy;
     ret.style.left=sx+'px'; ret.style.top=sy+'px';
+    ret.style.opacity=act||PAD.idle<1.5?1:.5; ret.style.borderColor=PAD.lock?'#ff5577':'#d4af37'; ret.style.transform=PAD.lock?'scale(1.35)':'scale(1)';
+    const px=(P.x-cam.x)*S+W/2, py=(P.y-cam.y)*S+H/2-S*.6, ddx=sx-px, ddy=sy-py;
+    line.style.left=px+'px'; line.style.top=py+'px'; line.style.width=Math.hypot(ddx,ddy)+'px'; line.style.transform='rotate('+Math.atan2(ddy,ddx)+'rad)'; line.style.opacity=act?.9:.35;
+    if(act&&Math.abs(Math.cos(PAD.ang))>.2) P.face=Math.cos(PAD.ang)>0?1:-1;
     return {x:wx,z:wz};
   }
   let last=performance.now();
@@ -5663,9 +5809,12 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
     requestAnimationFrame(poll);
     const dt=Math.min(.1,(now-last)/1000); last=now;
     const gp=(navigator.getGamepads?[...navigator.getGamepads()]:[]).find(g=>g&&g.connected);
-    if(!gp){ PAD.mx=PAD.mz=0; PAD.spdk=1; ret.style.display='none'; hint.style.display='none'; return; }
+    if(!gp){ PAD.mx=PAD.mz=0; PAD.spdk=1; ret.style.display='none'; line.style.display='none'; legend('col',null); return; }
+    if(PAD.cal){ PAD.mx=PAD.mz=0; return; }
     const b=gp.buttons, ax=gp.axes;
-    const lx=ax[0]||0, ly=ax[1]||0, rx=ax[2]||0, ry=ax[3]||0;
+    const lx=ax[0]||0, ly=ax[1]||0;
+    // mapeamento "standard": direito = eixos 2/3. Fora do padrão (Xbox/PS em alguns navegadores): eixo 2 = LT, 5 = RT e o direito = 3/4
+    const std=gp.mapping==='standard'||ax.length<5; const pm=PAD.map; const rx=(pm?ax[pm.rx]:(std?ax[2]:ax[3]))||0, ry=(pm?ax[pm.ry]:(std?ax[3]:ax[4]))||0;
     const dU=press(12,b),dD=press(13,b),dL=press(14,b),dR=press(15,b);
     const edge=i=>{ const n=press(i,b); const o=!!PAD.prev[i]; PAD.prev[i]=n; return n&&!o; };
     // direção "digital" para menus (stick esq. + dpad) com repetição
@@ -5680,10 +5829,10 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
     const lt=!!PAD.prev[6]; PAD.prev[6]=!!LT; const ltE=LT&&!lt;
     if(anyAct&&A) { try{ ac(); }catch(e){} }
     // ── HQ / cutscene
-    if(COMIC.active){ PAD.mx=PAD.mz=0; ret.style.display='none'; if(A||RB||ltE||udx===1&&PAD.rep.c!==1) { fire(' ','Space'); } if(Start||B) { window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true})); } PAD.rep.c=udx; hint.style.display='none'; return; }
+    if(COMIC.active){ PAD.mx=PAD.mz=0; ret.style.display=line.style.display='none'; if(A||RB||ltE||udx===1&&PAD.rep.c!==1) { fire(' ','Space'); } if(udx===-1&&PAD.rep.c!==-1) fire('ArrowLeft','ArrowLeft'); if(Start||B) { fire('Escape','Escape'); } PAD.rep.c=udx; legend(PAD.used?'row':'x',PAD.used?[['A','Avançar'],['◀','Voltar'],['B','Pular']]:null); return; }
     const root=uiRoot();
     if(root){
-      PAD.mx=PAD.mz=0; ret.style.display='none';
+      PAD.mx=PAD.mz=0; ret.style.display=line.style.display='none';
       const sig=root.id+'|'+(root.className||'');
       // repetição de direção
       const dk=udx+','+udy;
@@ -5693,11 +5842,10 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
       if(A&&PAD.fe){ PAD.fe.click(); PAD.fc=ctr(PAD.fe); }
       if(B||Start){ fire('Escape','Escape'); }
       if(LB||RB){ const tabs=[...root.querySelectorAll('.pmtab:not(.ov),.tab,.hub-tab')]; if(tabs.length>1){ const cur=tabs.findIndex(t=>t.classList.contains('on')||t.classList.contains('active')); const n=tabs[(Math.max(0,cur)+(RB?1:-1)+tabs.length)%tabs.length]; n.click(); } }
-      hint.textContent='◀▶▲▼ NAVEGAR · A CONFIRMAR · B VOLTAR'; hint.style.display=PAD.used?'block':'none';
+      { const tb=root.querySelector('.pmtab:not(.ov),.tab,.hub-tab'); legend(PAD.used?'row':'x',PAD.used?[['✥','Navegar'],['A','Confirmar'],['B','Voltar']].concat(tb?[['LB','Aba anterior'],['RB','Próxima aba']]:[]).concat([['Start','Fechar']]):null); }
       return;
     }
     PAD.lastUI=''; if(PAD.fe){ PAD.fe.classList.remove('pad-focus'); PAD.fe=null; }
-    hint.style.display='none';
     // ── jogo
     if(gameState!=='field'&&gameState!=='hub'){ PAD.mx=PAD.mz=0; return; }
     // movimento
@@ -5705,13 +5853,19 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
     else if(dL||dR||dU||dD){ PAD.mx=(dR?1:0)-(dL?1:0); PAD.mz=(dD?1:0)-(dU?1:0); const l=Math.hypot(PAD.mx,PAD.mz)||1; PAD.mx/=l; PAD.mz/=l; PAD.spdk=1; }
     else { PAD.mx=PAD.mz=0; PAD.spdk=1; }
     if(Start){ fire('Escape','Escape'); return; }
-    if(gameState==='hub'){ ret.style.display='none'; if(A||B) fire('e'); return; }
+    { const near=(typeof nearbyNpc!=='undefined'&&nearbyNpc&&gameState==='hub')?nearbyNpc:null;
+      legend(PAD.used?'col':'x',!PAD.used?null: gameState==='hub'
+        ? [['L','Mover']].concat(near?[['A','Falar: '+String(near.label||'NPC').replace(/<[^>]+>/g,'')]]:[['A','Interagir (perto de um NPC)']]).concat([['Start','Pausa']])
+        : [['L','Mover'],['R','Mirar'],['RT','Lançar magia'],['A','Lançar na mira'],['LB','Magia anterior'],['RB','Próxima magia'],['X','Barreira'],['Y','Invocar'],['LT','Comandar minions'],['B','Portal / interagir'],['Select','Reanimar'],['Start','Pausa']]);
+      const pr=document.getElementById('hub-npc-prompt'); if(PAD.used&&pr&&pr.style.display!=='none'&&/\[E\]/.test(pr.textContent)) pr.innerHTML=pr.innerHTML.replace(/\[E\]/g,'[A]'); }
+    if(gameState==='hub'){ ret.style.display=line.style.display='none'; if(A||B) fire('e'); return; }
     // mira
     const rm=Math.hypot(rx,ry);
-    const tg=aimUpdate(rx,ry,rm);
-    ret.style.display=(PAD.used&&!P.deadT)?'block':'none';
+    const tg=aimUpdate(rx,ry,rm,dt);
+    ret.style.display=line.style.display=(PAD.used&&!P.deadT)?'block':'none';
     if(A||B&&false){ castSpell(tg.x,tg.z); }
-    if(RT){ PAD.rt-=dt; if(PAD.rt<=0){ PAD.rt=.32; castSpell(tg.x,tg.z); } } else PAD.rt=0;
+    const shoot=RT;
+    if(shoot){ PAD.rt-=dt; if(PAD.rt<=0){ PAD.rt=.28; castSpell(tg.x,tg.z); } } else PAD.rt=0;
     if(ltE&&minions.length) applyRightClick(tg.x,tg.z);
     if(LB||edge(14)) cycleSpell(-1);
     if(RB||edge(15)) cycleSpell(1);
@@ -5723,10 +5877,44 @@ const PAD={on:false,used:false,mx:0,mz:0,spdk:1,ax:0,az:0,prev:[],rep:{},fe:null
   }
   window.addEventListener('gamepadconnected',e=>{ PAD.on=true; PAD.used=true; try{ floatMsg('🎮 Controle conectado',innerWidth/2,innerHeight*.3,'#d4af37'); }catch(_){} });
   window.addEventListener('gamepaddisconnected',()=>{ PAD.on=false; PAD.mx=PAD.mz=0; });
-  cv.addEventListener('mousemove',()=>{ PAD.used=false; ret.style.display='none'; });
+  cv.addEventListener('mousemove',()=>{ PAD.used=false; ret.style.display=line.style.display='none'; });
   window.addEventListener('keydown',e=>{ if(e.isTrusted) PAD.used=false; },true);
   requestAnimationFrame(poll);
 })();
+
+// ── calibração do analógico direito (mapeamento diferente entre controles/navegadores) ──
+function padCalibrate(){
+  const gp0=()=>(navigator.getGamepads?[...navigator.getGamepads()]:[]).find(g=>g&&g.connected);
+  const el=document.createElement('div'); el.id='pad-cal';
+  el.style.cssText='position:fixed;inset:0;z-index:100002;background:rgba(5,2,12,.94);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;color:#e6dcf5';
+  el.innerHTML='<div style="width:min(520px,92vw);border:1px solid #5a3a90;border-top:3px solid #d4af37;background:#120a24;padding:18px 20px;border-radius:4px"><div style="font-size:19px;letter-spacing:.14em;color:#ffe9b0">🎮 CALIBRAR ANALÓGICO DIREITO</div><p id="pc-t" style="line-height:1.5;color:#cdbfe6;margin:10px 0">Gire o <b>analógico direito</b> em círculos completos por alguns segundos. <b>Não toque nos gatilhos.</b></p><div id="pc-ax" style="font:11px monospace;line-height:1.7"></div><div id="pc-m" style="margin-top:8px;color:#8fe3a8"></div><div style="margin-top:12px;display:flex;gap:8px"><button id="pc-def" style="font:inherit;padding:8px 12px;background:#2a1a4a;color:#cdbfe6;border:1px solid #4a2a7a;cursor:pointer">PADRÃO</button><button id="pc-x" style="font:inherit;padding:8px 12px;background:#4a2a7a;color:#fff3c4;border:1px solid #d4af37;cursor:pointer">FECHAR (ESC)</button></div></div>';
+  document.body.appendChild(el); PAD.cal=true;
+  const mn=[],mx=[]; let t0=0, raf=0, done=false;
+  const close=()=>{ cancelAnimationFrame(raf); PAD.cal=false; el.remove(); window.removeEventListener('keydown',kd,true); };
+  const kd=e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopImmediatePropagation(); close(); } };
+  window.addEventListener('keydown',kd,true);
+  el.querySelector('#pc-x').onclick=close;
+  el.querySelector('#pc-def').onclick=()=>{ PAD.map=null; try{ const o=optsLoad(); delete o.pm; optsSave(o); }catch(e){} el.querySelector('#pc-m').textContent='Mapeamento padrão restaurado.'; };
+  const loop=()=>{
+    raf=requestAnimationFrame(loop);
+    const gp=gp0(); const box=el.querySelector('#pc-ax');
+    if(!gp){ box.textContent='Nenhum controle detectado — mova um analógico ou aperte um botão.'; return; }
+    const ax=gp.axes; let h='mapping: '+(gp.mapping||'(não padrão)')+' · '+ax.length+' eixos<br>';
+    ax.forEach((v,i)=>{ if(mn[i]==null){ mn[i]=v; mx[i]=v; } mn[i]=Math.min(mn[i],v); mx[i]=Math.max(mx[i],v);
+      h+='eixo '+i+' '+(v>=0?'+':'')+v.toFixed(2)+' <span style="display:inline-block;width:'+Math.round(Math.abs(v)*80)+'px;height:6px;background:'+(v>=0?'#d4af37':'#6b3fd0')+';vertical-align:middle"></span><br>'; });
+    box.innerHTML=h;
+    const mv=ax.some((v,i)=>i>=2&&Math.abs(v-(mn[i]+mx[i])/2)>.45&&(mx[i]-mn[i])>.6);
+    if(mv&&!t0) t0=performance.now();
+    if(t0&&!done&&performance.now()-t0>3200){
+      // escolhe os dois eixos (≥2) com maior amplitude que cruzam o zero (analógico, não gatilho)
+      const c=ax.map((v,i)=>({i,r:mx[i]-mn[i],z:mn[i]<-.35&&mx[i]>.35})).filter(o=>o.i>=2&&o.z).sort((a,b)=>b.r-a.r).slice(0,2).sort((a,b)=>a.i-b.i);
+      if(c.length===2){ done=true; PAD.map={rx:c[0].i,ry:c[1].i}; try{ const o=optsLoad(); o.pm=PAD.map; optsSave(o); }catch(e){}
+        el.querySelector('#pc-m').textContent='✓ Calibrado: X = eixo '+c[0].i+', Y = eixo '+c[1].i+'. Pode fechar e testar a mira.'; }
+      else { t0=0; el.querySelector('#pc-m').style.color='#ff9b9b'; el.querySelector('#pc-m').textContent='Não consegui identificar dois eixos — gire de novo, bem até as bordas.'; }
+    }
+  };
+  loop();
+}
 
 // ═══ MÚSICA PROCEDURAL (Web Audio, sem arquivos) ═══
 const MU={

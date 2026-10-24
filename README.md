@@ -4,7 +4,7 @@ Jogo de ação top-down feito em HTML5 Canvas 2D, em um único arquivo, sem depe
 
 ### ▶ [Jogar agora](https://elton182.github.io/necromancer-rise-html-game/)
 
-![Personagens renderizados no Blender](blender/preview_mobs.png)
+[![Tela inicial do jogo](docs/tela-inicial.jpg)](https://elton182.github.io/necromancer-rise-html-game/)
 
 ## Como jogar
 
@@ -40,6 +40,8 @@ Não precisa de build nem servidor: basta abrir `necromancer-canvas.html` no nav
 ### Pipeline de sprites (Blender)
 
 Os personagens (necromante, zumbi e esqueleto) são modelados e animados por script no Blender e renderizados como spritesheets de 8 direções com shader toon:
+
+![Personagens renderizados no Blender](blender/preview_mobs.png)
 
 - `necromante.py`, `mob.py` — constroem modelo, rig e animações (`.blend` / `.glb`)
 - `sprites.py` — renderiza o spritesheet (`*_sheet.webp`) e os metadados (`*_sheet.json`)
