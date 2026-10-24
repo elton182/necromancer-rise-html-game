@@ -145,7 +145,7 @@ function skillRemoveUnavailable(){
  if(!skillUnlocked(player.activeSpell))player.activeSpell='raio';
 }
 function skillDamage(m,commandBonus=0){
- const stats=skillMinionStats(m.type),aura=Math.hypot(m.x-P.x,m.y-P.y)<=LEASH_DIST?skillEffect('Dano da horda próxima'):0;
+ const stats=skillMinionStats(m.type),aura=Math.hypot(m.x-P.x,m.y-P.y)<=8?skillEffect('Dano da horda próxima'):0;
  return stats.baseDmg*(1+(stats.damageBonus+aura+commandBonus)/100);
 }
 function skillCastCurse(x,y){

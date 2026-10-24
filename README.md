@@ -28,6 +28,8 @@ Jogo de ação top-down feito em HTML5 Canvas 2D, em um único arquivo, sem depe
 
 Também dá para jogar com controle (gamepad).
 
+O **Filtro de loot**, em **Opções** e no **Inventário (I)**, permite mostrar todos os equipamentos, mágico ou superior, raro ou superior ou apenas épico. Peças abaixo do filtro ficam ocultas no chão e não são coletadas, inclusive ao sair da fase. Reduzir o filtro volta a exibir as peças enquanto você estiver na mesma área. A preferência fica salva no navegador; ouro e orbes não são afetados.
+
 ### Dash e ataques especiais
 
 Zephyr começa com **Dash** (`C`, ou L3 no controle, quando equipado): percorre até 4,5 unidades em 0,18 s, com recarga de 3 s e sem custo de mana. Usa a direção do movimento; parado, usa a mira. Durante o deslocamento, evita dano. Obstáculos e limites da fase interrompem o dash.
@@ -55,11 +57,15 @@ Saves anteriores são migrados automaticamente: os pontos são recalculados como
 
 Para verificar sintaxe e regras das habilidades: `node game_check.js`.
 
-A horda só escolhe alvos a até 8 unidades de Zephyr. Ao ultrapassar essa região ou perder um alvo que se afasta, os aliados retornam até chegar a 3 unidades do personagem. Comandos de ataque e reunião respeitam o mesmo limite. Separações extremas, como em transições, recuperam o aliado perto do personagem.
+A distância da horda pode ser configurada em **Pausa → Horda** ou **Opções**: Próximo (8 unidades), Amplo (16, padrão) e Distante (24). Cada aliado reavalia o inimigo mais próximo dele a cada 0,3 segundo, dentro da região de Zephyr. Comandos de ataque priorizam a região indicada; ataque, reunião e esquiva respeitam o alcance escolhido. Ao ultrapassar o limite, os aliados retornam até chegar a 3 unidades do personagem. Separações extremas, como em transições, recuperam o aliado perto do personagem. A aura de dano próximo mantém seu raio de 8 unidades.
+
+Em **Opções**, desmarque **Pausar ao perder foco** para continuar jogando ao alternar de janela. A preferência e o alcance da horda ficam salvos no navegador. Abas ocultas ainda podem ter a execução reduzida pelo navegador.
+
+No campo de waves, os inimigos calculam uma rota ao redor das árvores e construções quando o caminho direto está bloqueado. A rota é recalculada quando o alvo se afasta ou a multidão desloca o inimigo para fora do caminho.
 
 Os minions têm 50% mais vida base e ganham 6 HP por nível do personagem antes dos bônus da árvore e dos itens. Regeneram 1% da vida máxima por segundo. **Vida da horda** nos equipamentos melhora a vida e a regeneração de aliados já invocados; esse atributo pode sair em todos os tipos de peça e tem faixas maiores nos novos drops. **Vida máxima de Zephyr** beneficia apenas o personagem.
 
-Zumbis, esqueletos guerreiros e arqueiros tentam sair de áreas anunciadas, fogo persistente e trajetórias de projéteis hostis. A reação tem atraso e intervalo, respeita obstáculos e o vínculo de 8 unidades, e não concede invulnerabilidade.
+Zumbis, esqueletos guerreiros e arqueiros tentam sair de áreas anunciadas, fogo persistente e trajetórias de projéteis hostis. A reação tem atraso e intervalo, respeita obstáculos e o alcance configurado da horda, e não concede invulnerabilidade.
 
 **V**, o aviso clicável do HUD ou **Pausa → Horda** reanimam um caído comum por 30 MP, com 60% da vida. O retorno automático traz 50%. Sacrificados e detonados continuam aguardando a recuperação própria; seus tempos agora também avançam na vila, enquanto o jogo estiver sem pausa.
 
@@ -134,6 +140,14 @@ Abra [o Grimório de builds](build-simulator/index.html) para planejar as árvor
 Não precisa de build nem servidor: basta abrir `necromancer-canvas.html` no navegador.
 
 ## Estrutura
+
+O [roadmap de animações e inimigos](docs/roadmap-combate-visual.md) organiza a
+esteira de produção, o backlog de skills e os três lotes propostos de novos inimigos.
+O primeiro pacote inclui o [guia visual do combate](docs/guia-visual-combate.md)
+e o Tiro de Osso redesenhado. Para abrir a arena de comparação, execute
+`node tools/combat-lab-server.js` e acesse `http://127.0.0.1:4173/tools/combat-lab.html`.
+Após editar `scripts/skill-vfx.js`, execute `node scripts/sync-skill-vfx.js`
+para atualizar o HTML independente.
 
 | Arquivo | Descrição |
 |---|---|

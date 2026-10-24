@@ -13,10 +13,10 @@ function fn(name) {
   return source.slice(start, end + 2);
 }
 function fixture() {
-  const context = vm.createContext({console});
+  const context = vm.createContext({console,BoneBoltVFX:require('./scripts/skill-vfx.js')});
   vm.runInContext(`
     const ABILITY_VERSION=1;
-    let handsAreas=[], boltsFx=[], enemies=[], minions=[], gameState='field',minionCommand=null,commandMarker=null,pendingCommand='auto',summonWheelOpen=false,mobZones=[];
+    let handsAreas=[], boltsFx=[], spellFx=[], enemies=[], minions=[], gameState='field',minionCommand=null,commandMarker=null,pendingCommand='auto',summonWheelOpen=false,mobZones=[];
     const playerDash={time:0,cd:0};
     const TITLE={active:false,paused:false}, COMIC={active:false}, CAMP={map:false,on:false}, mouse={x:2,y:0};
     const screenToWorld=(x,z)=>({x,z});
@@ -249,6 +249,7 @@ class MenuElement {
   }
   set innerHTML(value) {this.html=value; for(const child of this.children) child.parentNode=null; this.children=[];}
   get innerHTML() {return this.html||'';}
+  insertAdjacentHTML(position,value) {this.html=(this.html||'')+value;}
   appendChild(child) {return this.insertBefore(child,null);}
   insertBefore(child,before) {
     if(child.parentNode) child.parentNode.children.splice(child.parentNode.children.indexOf(child),1);
@@ -276,6 +277,7 @@ class MenuElement {
     const player={level:1,hp:100,maxHp:100,mp:80,maxMp:80,exp:0,expNext:100,souls:10,gold:5,skillPoints:1};
     const gameState='hub'; const pmBar=()=>'',pmStatusHtml=()=>'<p>Status</p>',pmControlsHtml=()=>'<p>Controles</p>';
     const tBtn=()=>document.createElement('button'),tMsgEl=()=>{},setPause=()=>{},playSound=()=>{},tOptions=()=>{},VILLAGE=()=>false,gearReturnToStory=()=>{};
+    const hordeRangeControl=()=>document.createElement('label');
     const buildUpgradeGrid=()=>{},buildSkillTree=()=>{},buildSpellUpgradesSection=()=>{},buildRosterSection=()=>{},buildSummonGrid=()=>{},buildMinionUpgradeGrid=()=>{};
   `,context);
   for(const name of ['restoreManagementPanels','mountManagementPanel','tScreen','tPause']) vm.runInContext(fn(name),context);
@@ -439,12 +441,12 @@ summonTest('Carregar save mantém o zumbi detonado indisponível pelo tempo rest
   checks++;console.log('OK 23 painéis ampliados em 3x, originais intactos e imagens aprimoradas integradas');
 }
 function combatSkillsFixture(){
-  const context=vm.createContext({console});
+  const context=vm.createContext({console,BoneBoltVFX:require('./scripts/skill-vfx.js')});
   const abilities=source.match(/const MOB_ABILITIES=(\{[\s\S]*?\n\});/);
   assert.ok(abilities);
   vm.runInContext('const MOB_ABILITIES='+abilities[1],context);
   vm.runInContext(`
-    let mobZones=[],eshots=[],minions=[],particles=[],solids=[],gameState='field',sceneMode='field',summonWheelOpen=false,shake=0;
+    let mobZones=[],eshots=[],minions=[],particles=[],spellFx=[],solids=[],gameState='field',sceneMode='field',summonWheelOpen=false,shake=0;
     const playerDash={time:0,cd:0,dx:1,dy:0},player={hp:100,maxHp:100,mp:80,barrierT:0,barrier:0};
     const P={x:0,y:0,deadT:0,face:1,phase:0},keys={},PAD={mx:0,mz:0},mouse={x:10,y:0};
     const TITLE={active:false,paused:false},COMIC={active:false},CAMP={map:false};

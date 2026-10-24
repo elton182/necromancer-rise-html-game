@@ -19,7 +19,12 @@ sc.render.resolution_x=448
 sc.render.resolution_y=448
 sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG'; sc.render.image_settings.color_mode='RGBA'
-toon.toonify(sc,thick=1.5,line=(0,0,0))
+# At gameplay size, black crease lines swallowed the ribs, fingers and bow.
+# Keep a thin, colored silhouette; let the toon shading describe the surfaces.
+toon.toonify(sc,thick=.65,line=(.12,.15,.20))
+lines=bpy.context.view_layer.freestyle_settings.linesets[0]
+lines.select_crease=False
+lines.select_border=False
 bpy.ops.object.camera_add(); cam=bpy.context.object; sc.camera=cam
 cam.data.type='ORTHO'; cam.data.ortho_scale=3.1 if preview else 4
 p=math.radians(35); fwd=Vector((0,math.cos(p),-math.sin(p)))

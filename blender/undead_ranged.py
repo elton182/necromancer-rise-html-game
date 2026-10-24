@@ -159,10 +159,9 @@ def attack(t):
 def death(t):
     e=min(1,t/.8); e=e*e*(3-2*e)
     if KIND=='archer':
-        R('root',math.pi*.4*e); C.PB['root'].location=(0,.12*e,0)
+        R('root',math.pi*.48*e); C.PB['root'].location=(0,.12*e,0)
         R('spine',.2*e); R('head',.3*e,0,.2*e)
         R('arm.L',-.4*e,0,-.7*e); R('arm.R',.2*e,0,.7*e)
-        R('hand.L',0,0,math.pi*.5*e)
         R('thigh.L',-.5*e); R('shin.L',.6*e)
     else:
         C.PB['root'].location=(0,-.55*e,0)

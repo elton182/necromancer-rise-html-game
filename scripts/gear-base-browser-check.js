@@ -18,8 +18,8 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   });
   assert.deepEqual(result,{spell:120,hit:90,preview:90});
   await page.evaluate(()=>{gearSelected={slot:'staff'};tPause('equipment');});
-  assert.match(await page.locator('.gear-base').innerText(),/\+25 Dano mágico base/);
-  assert.match(await page.locator('.gear-detail').innerText(),/\+10% Dano mágico/);
+  assert.match(await page.locator('.gear-base-row').innerText(),/Dano mágico base\s*\+25/);
+  assert.match(await page.locator('[data-affix="spell:"]').innerText(),/Dano mágico\s*\+10%/);
   const migrated=await page.evaluate(()=>{
    const legacy={...player.equipment.staff,version:1,base:{stat:'spell',value:9.28}};
    player.equipment.staff=legacy;saveGame();loadGame();

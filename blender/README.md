@@ -6,6 +6,10 @@ as animações para reutilização. O arqueiro mantém a base óssea do guerreir
 com olhos azuis, arco, aljava e manto de couro. O espectro usa um capuz azul,
 rosto escuro, garras claras e uma mortalha flutuante sem pernas.
 
+Os sprites usam contorno fino em azul acinzentado e sem linhas de quina internas.
+O couro, o interior do tórax e as sombras do capuz usam tons médios para evitar
+manchas pretas na escala de jogo.
+
 Execute a partir da raiz do repositório, com Blender no PATH:
 
 ```powershell

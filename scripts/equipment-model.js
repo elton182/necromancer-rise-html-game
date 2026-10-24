@@ -9,7 +9,7 @@ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const waveNumber=n=>clamp(Math.floor(Number(n)||1),1,MAX_WAVE);
 function waveStats(n){n=waveNumber(n);return {wave:n,hp:1.12**(n-1),damage:1.08**(n-1),xp:1.04**(n-1),itemLevel:n,maxEnemies:60};}
 function progress(raw={}){const best=clamp(Math.floor(Number(raw.best)||0),0,MAX_WAVE),unlocked=Math.min(MAX_WAVE,best+1);return {best,unlocked,selected:clamp(Math.floor(Number(raw.selected)||1),1,unlocked)};}
-function complete(raw,n){const p=progress(raw);if(!Number.isInteger(n)||n<1||n>p.unlocked)return p;n=waveNumber(n);p.best=Math.max(p.best,n);return progress(p);}
+function complete(raw,n){const p=progress(raw);if(!Number.isInteger(n)||n<1||n>p.unlocked)return p;n=waveNumber(n);if(n>p.best){p.best=n;p.selected=Math.min(MAX_WAVE,n+1);}return progress(p);}
 function price(level){return 25+10*waveNumber(level);}
 function sellPrice(item){return Math.floor(price(item.level)*.15);}
 function generate(level,tree,random=Math.random,type,boss=false,id,options={}){
@@ -62,7 +62,10 @@ function migrate(data,tree){
  const read=raw=>{const i=validate(raw,tree);if(!i||seen.has(i.id))return null;seen.add(i.id);return i;};
  for(const slot of Object.keys(slots)){const i=read(data.equipment?.[slot]);if(i&&(i.type===slot||slot.startsWith('ring')&&i.type.startsWith('ring')))equipment[slot]=i;}
  const gearBag=[];for(const raw of (Array.isArray(data.gearBag)?data.gearBag:[]).slice(0,CAPACITY)){const i=read(raw);if(i)gearBag.push(i);}
- Object.assign(data,{equipmentVersion:VERSION,equipment,gearBag,waveProgress:progress(data.waveProgress||{best:data.camp?.eb||0})});return data;
+ // The arena record predates waveProgress and can be newer in existing saves.
+ const saved=progress(data.waveProgress||{}),arena=progress({best:data.camp?.eb});
+ const waveProgress=progress({...saved,best:Math.max(saved.best,arena.best)});
+ Object.assign(data,{equipmentVersion:VERSION,equipment,gearBag,waveProgress});return data;
 }
 function items(data){return Object.values(data.equipment||{});}
 function bonuses(data){const out={};for(const i of items(data))for(const a of [i.base,...i.affixes])if(attributes[a.stat])out[a.stat]=(out[a.stat]||0)+a.value;out.move=Math.min(30,out.move||0);out.cooldown=Math.min(50,out.cooldown||0);return out;}

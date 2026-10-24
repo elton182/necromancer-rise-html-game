@@ -3,9 +3,11 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const Model=require('./equipment-model.js'),Tree=require('../build-simulator/model.js');
 let serial=0;
 function item(level=12,type='staff',boss=false){return Model.generate(level,Tree,Math.random,type,boss,'test-'+(++serial));}
-function fixture(){
+function fixture(options={}){
  const context=vm.createContext({EquipmentModel:Model,BuildModel:Tree,console,innerWidth:1200,innerHeight:800});
+ context.storedOptions={...options};
  vm.runInContext(`
+ const optsLoad=()=>({...storedOptions}),optsSave=o=>storedOptions={...o};
  const player={level:12,hp:85,maxHp:210,mp:60,maxMp:135,skillRanks:{bolt:5,zombie:2,vigor:2},skillGrants:[],gold:1000,spellDmg:84,skillPoints:0,spellCooldowns:{raio:0},minionSkillCooldowns:{},inventory:[],equipment:{},gearBag:[],waveProgress:EquipmentModel.progress()};
  const MINION_DEFS={zombie:{name:'Zumbi',hp:130,dmg:11,spd:3.4,atkR:1.5,atkRate:1.2}},ACTION_SKILLS={archer:{cooldown:7}},P={x:0,y:0,deadT:0},CAMP={on:false,map:false,stage:1},TITLE={active:false,paused:false},COMIC={active:false},PM={},ENDLESS={best:0},VIL={},playerDash={cd:0};
  const MOB_ABILITIES={Guerreiro:{windup:.65,cooldown:7},Arqueiro:{windup:.9,cooldown:7},'Mago Vivo':{windup:1,cooldown:9},Bruto:{windup:.85,cooldown:8}};
@@ -28,6 +30,27 @@ function fixture(){
  vm.runInContext(fs.readFileSync(path.join(__dirname,'equipment.js'),'utf8'),context);
  return {context,run:code=>vm.runInContext(code,context)};
 }
+test('loot thresholds include higher rarities, preserve other drops and persist across reloads',()=>{
+ const {run}=fixture({pauseOnBlur:false});
+ for(const [index,rarity]of ['common','magic','rare','epic'].entries()){
+  run(`setLootMinRarity('${rarity}')`);
+  assert.equal(run('storedOptions.lootMinRarity'),rarity);assert.equal(run('storedOptions.pauseOnBlur'),false);
+  for(const [rank,candidate]of ['common','magic','rare','epic'].entries())assert.equal(run(`lootDropAllowed({type:'equipment',item:{rarity:'${candidate}'}})`),rank>=index);
+  for(const type of ['hp','mp','gold'])assert.equal(run(`lootDropAllowed({type:'${type}'})`),true);
+ }
+ assert.equal(fixture({lootMinRarity:'rare'}).run('lootMinRarity'),'rare');
+ assert.equal(fixture({lootMinRarity:'invalid'}).run('lootMinRarity'),'common');
+ run("setLootMinRarity('invalid')");assert.equal(run('lootMinRarity'),'common');
+});
+
+test('hidden loot skips proximity and exit collection, remains recoverable and never blocks leaving',()=>{
+ const {run}=fixture();
+ run("const hidden={type:'equipment',item:{...EquipmentModel.generate(1,BuildModel,()=>0,'staff'),rarity:'common'},mesh:mkMesh2(0,0),life:Infinity,t:0};droppedItems=[hidden];setLootMinRarity('rare');checkPickups(.1);gearCollectAvailable();");
+ assert.equal(run('player.gearBag.length'),0);assert.equal(run('droppedItems[0]===hidden'),true);assert.equal(run('gearNoticeAt'),0);
+ run('player.gearBag=Array(60).fill(hidden.item);let left=false;gearLeave(()=>left=true)');assert.equal(run('left'),true);assert.equal(run('confirmation'),null);
+ run("player.gearBag=[];setLootMinRarity('common');checkPickups(.1)");assert.equal(run('player.gearBag.length'),1);assert.equal(run('droppedItems.length'),0);
+});
+
 test('generated pieces validate at every rarity, slot and level; boss never common',()=>{
  const seen=new Set();for(let n=0;n<3000;n++){const i=item(n%100+1,Object.keys(Model.slots)[n%7]);assert.deepEqual(Model.validate(i,Tree),i);seen.add(i.rarity);assert.equal(i.affixes.length,Model.rarities[i.rarity].count);assert.equal(new Set(i.affixes.map(a=>a.stat)).size,i.affixes.length);assert.notEqual(item(8,'staff',true).rarity,'common');}assert.equal(seen.size,4);
 });
@@ -89,6 +112,35 @@ test('waves unlock only on valid completion; regression preserves best and lower
  let p=Model.progress();p=Model.complete(p,9);assert.equal(p.best,0);p=Model.complete(p,1);assert.equal(p.unlocked,2);
  p=Model.complete(p,2);p.selected=1;p=Model.progress(p);assert.equal(p.best,2);assert.equal(p.selected,1);
  assert.ok(Model.waveStats(1).hp<Model.waveStats(3).hp);assert.equal(Model.waveStats(1).itemLevel,1);
+});
+
+test('new wave records advance the next start; replaying an earlier wave preserves the chosen start',()=>{
+ let p=Model.progress({best:4,selected:5});
+ for(let n=5;n<=9;n++){p=Model.complete(p,n);assert.equal(p.selected,n+1);assert.equal(p.unlocked,n+1);}
+ assert.deepEqual(p,{best:9,unlocked:10,selected:10});
+ p=Model.complete(p,10);assert.deepEqual(p,{best:10,unlocked:11,selected:11});
+ p.selected=5;p=Model.complete(p,5);assert.deepEqual(p,{best:10,unlocked:11,selected:5});
+ p=Model.complete(Model.progress({best:999,selected:1000}),1000);assert.deepEqual(p,{best:1000,unlocked:1000,selected:1000});
+});
+
+test('loading reconciles a stale wave selector with the saved arena record without trusting the global wave',()=>{
+ const state={wave:99,camp:{eb:9},waveProgress:{best:4,selected:5}};
+ Model.migrate(state,Tree);assert.deepEqual(state.waveProgress,{best:9,unlocked:10,selected:5});
+ const once=JSON.stringify(state);Model.migrate(state,Tree);assert.equal(JSON.stringify(state),once);
+ state.camp.eb=2;Model.migrate(state,Tree);assert.equal(state.waveProgress.best,9);
+ const campaign={wave:99,camp:{cleared:{1:1,2:1,3:1,4:1}}};Model.migrate(campaign,Tree);assert.deepEqual(campaign.waveProgress,{best:0,unlocked:1,selected:1});
+});
+
+test('progressing from wave 5 to 10 survives saving and starts the arena at wave 10',()=>{
+ const {context,run}=fixture();
+ run('player.waveProgress=EquipmentModel.progress({best:4,selected:5});startEndless();for(let n=5;n<=9;n++){wave=missionWave=n;waveActive=true;endWave();}');
+ assert.equal(run('player.waveProgress.selected'),10);assert.equal(run('saves'),5);
+ // Arriving at wave 10 does not mark it completed; a reload resumes that unlocked wave.
+ run('wave=missionWave=10;waveActive=true;');
+ context.saved=JSON.parse(run('JSON.stringify({wave,camp:{eb:ENDLESS.best},waveProgress:player.waveProgress})'));
+ Model.migrate(context.saved,Tree);
+ run('player.waveProgress=saved.waveProgress;startEndless();wave++;missionWave++;');
+ assert.equal(run('wave'),10);assert.equal(run('missionWave'),10);assert.equal(run('player.waveProgress.best'),9);
 });
 test('equip and unequip affect actual skill stats without healing or altering ranks/cooldowns',()=>{
  const {context,run}=fixture();context.piece=item(12,'body');
