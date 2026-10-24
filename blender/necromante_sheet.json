@@ -1,0 +1,1 @@
+{"cell": 224, "ppu": 56, "anchorX": 112, "anchorY": 165, "dirs": 8, "anims": {"idle": {"n": 8, "fps": 6, "loop": true, "row": 0}, "walk": {"n": 10, "fps": 12, "loop": true, "row": 8}, "cast": {"n": 8, "fps": 16, "loop": false, "row": 16}, "death": {"n": 10, "fps": 12, "loop": false, "row": 24}}}
