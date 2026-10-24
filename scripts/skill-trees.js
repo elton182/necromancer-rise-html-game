@@ -176,6 +176,7 @@ function skillWallAbsorb(sh,x,y){
   // The old projectile adds this bridge to spellDmg; scale the complete hit, including bonuses.
   if(id==='raio_d')return player.spellDmg*COMBAT_TUNING.boltMultiplier*skillPercent('Dano do Tiro de Osso')-player.spellDmg;
   if(id==='raio_s')return skillEffect('Alvos perfurados adicionais')*.3;
+  if(id==='raio_n')return skillRank('shards')?2:0;
   if(id==='chuva_d')return player.spellDmg*.7*skillEffect('Dano da Chuva de Ossos')/100;
   if(id==='exp_d')return player.spellDmg*2.5*(skillEffect('Dano da Explosão Necrótica')+skillEffect('Dano das explosões de Zumbi e Necrótica'))/100;
   return 0;

@@ -40,7 +40,8 @@ function fixture() {
     const floatMsg=()=>{}, castAnim=()=>{},ring=()=>{},burst=()=>{},playSound=()=>{},updateHUD=()=>{},updateMinionPanel=()=>{},tutEvent=()=>{},spawnExplosaoFX=()=>{};
     const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
     let reinforced=false;
-    const hasPassive=id=>id==='bastiao'?reinforced:player.learnedSkills.has(id), spellBonus=()=>0;
+    const hasPassive=id=>id==='bastiao'?reinforced:player.learnedSkills.has(id);
+    let spellBonus=()=>0;
     const necroGroup={position:{x:0,z:0}};
     const mkMesh2=(x,z)=>({position:{x,z},rotation:{y:0},traverse:()=>{}});
     const dealDamageToEnemy=(e,d)=>{e.hp-=d;};
@@ -65,6 +66,16 @@ test('Raio: custo, recarga, dano, primeiro alvo e colisão com passo longo', run
 test('Raio: distância de viagem limitada a 9', run => {
   run('castRaio(50,0); const bolt=boltsFx[0]; updateBolts(2)');
   assert.equal(run('bolt.mesh.position.x'),9);
+  assert.equal(run('boltsFx.length'),0);
+});
+test('Raio com Estilhaços: leque de 3 ossos, cada inimigo atingido uma vez por disparo', run => {
+  run(`spellBonus=(s,id)=>id==='raio_n'?2:0; enemies=[{x:3,y:0,hp:100,mesh:mkMesh2(3,0)},{x:6,y:1.6,hp:100,mesh:mkMesh2(6,1.6)},{x:6,y:-1.6,hp:100,mesh:mkMesh2(6,-1.6)}]; castRaio(9,0);`);
+  assert.equal(run('player.mp'),60);
+  assert.equal(run('boltsFx.length'),3);
+  assert.equal(run('boltsFx.every(b=>b.shard&&b.hitEnemies===boltsFx[0].hitEnemies)'),true);
+  assert.equal(run('boltsFx.map(b=>Math.atan2(b.vz,b.vx).toFixed(2)).join()'),'-0.26,0.00,0.26');
+  run('for(let i=0;i<60;i++) updateBolts(1/60)');
+  assert.equal(run('enemies.map(e=>e.hp).join()'),'60,60,60');
   assert.equal(run('boltsFx.length'),0);
 });
 test('Muralha: alcance inválido não cobra, duração e custo corretos, sem lentidão antiga', run => {

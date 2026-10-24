@@ -5,7 +5,7 @@ const source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m
 const integration=fs.readFileSync(require('node:path').join(__dirname,'skill-trees.js'),'utf8');
 function fn(name){const start=source.indexOf('function '+name+'('),end=source.indexOf('\n}',start);assert.ok(start>=0,name);return source.slice(start,end+2);}
 function fixture(){
- const c=vm.createContext({BuildModel,console});
+ const c=vm.createContext({BuildModel,console,BoneBoltVFX:require('./skill-vfx.js')});
  vm.runInContext(`
  const player={level:1,hp:100,maxHp:100,mp:80,maxMp:80,exp:0,expNext:100,spellDmg:40,spellRadius:2.5,mpRegen:4,hpRegen:0,maxSp:60,minionSlots:30,souls:900,skillPoints:0,learnedSkills:new Set(['raio']),skillRanks:{},skillGrants:[],actionLoadout:['raio','zombie','dash','empty','empty','empty'],minionSkillCooldowns:{},spellCooldowns:{},barrierCd:0,summonLoadout:Array(7).fill(null),summonReserve:[],upgradeCount:{},minionUpgradeCount:{},spellUpgradeCount:{},inventory:[]};
  const MINION_DEFS={zombie:{hp:130,dmg:11,spd:3.4,atkR:1.5,atkRate:1.2,spCost:20,name:'Zumbi'},abom:{hp:400,dmg:30,spd:2.7,atkR:2.1,atkRate:1.25,spCost:40,name:'Abominação'},skeleton:{hp:50,dmg:14,spd:3.8,atkR:1.6,atkRate:.9,spCost:35},archer:{hp:40,dmg:13,spd:3.2,atkR:7.5,atkRate:1.1,spCost:30},specter:{hp:35,dmg:22,spd:4.6,atkR:2,atkRate:.7,spCost:55}};
@@ -55,7 +55,12 @@ test('Zumbi e Carne Reanimada modificam stats reais da Abominação',()=>{
 });
 test('Tiro e Chuva recebem sinergias e perfuração sem consumir souls',()=>{
  const run=fixture();run('setup(30,{bolt:5,pierce:3,rain:4,shards:2});castRaio(2,0);');
- assert.equal(run('boltsFx[0].maxPierce'),4);assert.ok(Math.abs(run('boltsFx[0].dmg')-138.84)<1e-8);run('player.mp=100;castChuva(2,0);');assert.ok(Math.abs(run('spellFx[0].dmg')-187.824)<1e-8);assert.equal(run('player.mp'),60);
+ assert.equal(run('boltsFx[0].maxPierce'),4);assert.ok(Math.abs(run('boltsFx[0].dmg')-138.84)<1e-8);run('player.mp=100;castChuva(2,0);');assert.ok(Math.abs(run('spellFx.find(f=>f.kind==="bone").dmg')-187.824)<1e-8);assert.equal(run('player.mp'),60);
+});
+test('Estilhaços liberam o leque de 3 ossos do Tiro de Osso',()=>{
+ const run=fixture();run('setup(30,{bolt:2,pierce:2,shards:1});player.mp=80;castRaio(2,0);');
+ assert.equal(run('boltsFx.length'),3);assert.equal(run('boltsFx.every(b=>b.shard)'),true);assert.equal(run('player.mp'),60);
+ run('boltsFx=[];player.skillRanks={bolt:2};skillSync();player.spellCooldowns.raio=0;player.mp=80;castRaio(2,0);');assert.equal(run('boltsFx.length'),1);assert.equal(run('boltsFx[0].shard'),false);
 });
 test('Tiro sem equipamento exige dois acertos no guerreiro inicial e cinco no bruto',()=>{
  const run=fixture();run('setup(1,{});castRaio(2,0);');assert.equal(run('boltsFx[0].dmg'),20);assert.equal(Math.ceil(40/run('boltsFx[0].dmg')),2);assert.equal(Math.ceil(100/run('boltsFx[0].dmg')),5);

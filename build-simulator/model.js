@@ -37,7 +37,7 @@ school('spells','osso','Ossos',['Lança Perfurante','Tempestade Óssea'],[
  ['bolt','Tiro de Osso','Desbloqueia o projétil principal. Sinergia: +4% ao dano da Chuva por ponto direto.','➶',{'Dano do Tiro de Osso':10,'Dano da Chuva de Ossos':4}],
  ['pierce','Perfuração','Cada ponto permite atravessar um alvo adicional.','➳',{'Alvos perfurados adicionais':1}],
  ['rain','Chuva de Ossos','Desbloqueia dano em área. Sinergia: +4% ao dano do Tiro por ponto direto.','☄',{'Dano da Chuva de Ossos':10,'Dano do Tiro de Osso':4}],
- ['shards','Estilhaços','Melhora o dano de Tiro e Chuva de Ossos.','✧',{'Dano do Tiro de Osso':6,'Dano da Chuva de Ossos':6}],
+ ['shards','Estilhaços','Tiro de Osso dispara 3 estilhaços em leque, cobrindo uma área maior; cada inimigo é atingido uma vez por disparo. Melhora o dano de Tiro e Chuva de Ossos.','✧',{'Dano do Tiro de Osso':6,'Dano da Chuva de Ossos':6}],
  ['wall','Muralha de Corpos','Desbloqueia a muralha e amplia sua duração e resistência a projéteis.','▥',{'Duração da Muralha':10,'Resistência da Muralha':10}],
  ['lance','Lança Sepulcral','Especialização: projétil de alto dano. Exclui Tempestade Óssea.','➳',{'Dano do Tiro de Osso':60}],
  ['storm','Tempestade Óssea','Especialização: amplia área e dano da Chuva. Exclui Lança Sepulcral.','☄',{'Área da Chuva de Ossos':30,'Dano da Chuva de Ossos':35}]

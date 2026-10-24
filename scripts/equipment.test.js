@@ -112,6 +112,9 @@ test('waves unlock only on valid completion; regression preserves best and lower
  let p=Model.progress();p=Model.complete(p,9);assert.equal(p.best,0);p=Model.complete(p,1);assert.equal(p.unlocked,2);
  p=Model.complete(p,2);p.selected=1;p=Model.progress(p);assert.equal(p.best,2);assert.equal(p.selected,1);
  assert.ok(Model.waveStats(1).hp<Model.waveStats(3).hp);assert.equal(Model.waveStats(1).itemLevel,1);
+ // From wave 10 kills pay a 50% bonus that grows 10% per wave (capped at wave 60).
+ assert.equal(Model.waveStats(9).xp,1.04**8);assert.equal(Model.waveStats(10).xp,1.04**9*1.5);
+ assert.ok(Model.waveStats(20).xp>8&&Model.waveStats(61).xp/Model.waveStats(60).xp<1.05);
 });
 
 test('new wave records advance the next start; replaying an earlier wave preserves the chosen start',()=>{

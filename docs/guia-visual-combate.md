@@ -40,6 +40,16 @@ Custo de 20 MP, recarga de 0,5 s, velocidade de 14 u/s, alcance de 9 unidades,
 regra de colisão, perfuração e cálculo de dano foram preservados. O caso sem
 equipamentos testado no navegador mantém 20 de dano sobre a base mágica 40.
 
+## Tiro de Osso com Estilhaços — SK-01b
+
+- Três projéteis em leque (15° entre si) saindo do mesmo ponto, cada um com acento de saída.
+- Corpo modelado no Blender (`blender/bone_shard.py`): osso partido, uma saliência
+  larga e ponta em lascas, para diferenciar do osso inteiro do tiro comum.
+  Mesma paleta marfim e borda fina; rastro de até 0,6 unidade, mais curto que o do tiro único.
+- Giro em torno do eixo a 14 quadros/s; na qualidade baixa o giro para.
+- Custo, recarga, velocidade, alcance e dano por acerto iguais ao tiro comum.
+  Os três compartilham o registro de acertos: cada inimigo é atingido uma vez por disparo.
+
 ## Arena e fluxo de atualização
 
 Execute `node tools/combat-lab-server.js` e abra

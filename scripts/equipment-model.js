@@ -7,7 +7,7 @@ const attributes={hp:{name:'Vida máxima de Zephyr',base:12},mp:{name:'Mana máx
 const pools={staff:['spell','mp','regen','horde','hordeHp','cooldown'],grimoire:['horde','hordeHp','mp','regen','spell'],body:['hp','mp','hordeHp','regen','cooldown'],head:['mp','hp','regen','spell','horde','hordeHp'],boots:['move','hp','mp','regen','hordeHp','cooldown'],ring1:['hp','mp','spell','horde','hordeHp','regen','cooldown'],ring2:['hp','mp','spell','horde','hordeHp','regen','cooldown']};
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const waveNumber=n=>clamp(Math.floor(Number(n)||1),1,MAX_WAVE);
-function waveStats(n){n=waveNumber(n);return {wave:n,hp:1.12**(n-1),damage:1.08**(n-1),xp:1.04**(n-1),itemLevel:n,maxEnemies:60};}
+function waveStats(n){n=waveNumber(n);return {wave:n,hp:1.12**(n-1),damage:1.08**(n-1),xp:1.04**(n-1)*(n<10?1:1.5*1.1**(Math.min(n,60)-10)),itemLevel:n,maxEnemies:60};}
 function progress(raw={}){const best=clamp(Math.floor(Number(raw.best)||0),0,MAX_WAVE),unlocked=Math.min(MAX_WAVE,best+1);return {best,unlocked,selected:clamp(Math.floor(Number(raw.selected)||1),1,unlocked)};}
 function complete(raw,n){const p=progress(raw);if(!Number.isInteger(n)||n<1||n>p.unlocked)return p;n=waveNumber(n);if(n>p.best){p.best=n;p.selected=Math.min(MAX_WAVE,n+1);}return progress(p);}
 function price(level){return 25+10*waveNumber(level);}
@@ -92,7 +92,7 @@ function snapshot(tree,data,defs,tuning,equipment=data.equipment||{}){
  const rows=[],factor=1-(b.cooldown||0)/100,cd=(base,skill=1)=>Math.max(base*.5,base*skill*factor),grants=data.skillGrants||['raio','dash'],loadout=data.actionLoadout||[];
  const learned=(node,action)=>!!ranks[node]||grants.includes(action);
  function row(id,name,damage,cooldown,mana,note='',continuous){rows.push({id,name,damage,cooldown,mana,note,equipped:loadout.includes(id),dps:damage===null?null:damage/cooldown,sustained:damage===null?null:continuous??damage/Math.max(cooldown,mana?mana/stat.regen:0)});}
- if(learned('bolt','raio'))row('raio','Tiro de Osso',Math.floor(stat.spell+(stat.spell*tuning.boltMultiplier*pct('Dano do Tiro de Osso')-stat.spell)),cd(.5),20,'Um alvo; perfuração não multiplica o dano no mesmo alvo.');
+ if(learned('bolt','raio'))row('raio','Tiro de Osso',Math.floor(stat.spell+(stat.spell*tuning.boltMultiplier*pct('Dano do Tiro de Osso')-stat.spell)),cd(.5),20,ranks.shards?'3 estilhaços em leque; cada inimigo é atingido uma vez por disparo.':'Um alvo; perfuração não multiplica o dano no mesmo alvo.');
  if(learned('rain','chuva'))row('chuva','Chuva de Ossos',7*Math.floor(stat.spell*.7+stat.spell*.7*(e['Dano da Chuva de Ossos']||0)/100),cd(5),40,'Teto de dano: os 7 fragmentos acertando o mesmo alvo.');
  if(learned('nova','explosao'))row('explosao','Explosão Necrótica',Math.floor(stat.spell*2.5+stat.spell*2.5*((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100),cd(8),60,'Dano por alvo na área.');
  if(learned('wall','maos')){const duration=5*pct('Duração da Muralha'),hit=Math.max(1,Math.round(stat.spell*.4));row('maos','Muralha de Corpos',hit*Math.ceil(duration/.5),cd(12),35,'Estimativa: contato contínuo por '+duration.toFixed(1)+' s, pulsos de 0,5 s.');}

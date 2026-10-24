@@ -30,3 +30,26 @@ direções, 56 pixels por unidade e âncora `(112, 165)`.
 Para conferir uma imagem antes de renderizar todas as animações, acrescente
 `preview` ao comando de `render_undead.py`. `preview_undead.png` reúne seis poses
 dos dois modelos após o empacotamento. As pastas `frames_*` e os logs são temporários.
+
+# Estilhaço de osso (Tiro de Osso com Estilhaços)
+
+`bone_shard.blend` / `.glb` contêm o osso partido usado pelos três projéteis do
+Tiro de Osso quando o nó Estilhaços está ativo: uma saliência larga atrás, haste
+marfim (`#f1e5c4`) e ponta partida em três lascas, com borda fina `#697b80`,
+seguindo o guia em `docs/guia-visual-combate.md`.
+
+```powershell
+blender --background --threads 4 --python blender/bone_shard.py
+blender --background --threads 4 --python blender/render_bone_shard.py
+python blender/pack_bone_shard.py
+node game_check.js
+```
+
+O projétil voa na altura do peito e a tela não tem perspectiva vertical, então o
+osso é renderizado no plano da imagem: 16 direções de tela × 6 quadros de giro,
+células de 96 px, 56 pixels por unidade e âncora no centro `(48, 48)`. O
+empacotador grava `bone_shard_sheet.webp`, `preview_bone_shard.png` e atualiza
+somente o registro `SPR.load('boneShard', ...)` no HTML. `BoneBoltVFX.shard`
+escolhe a direção mais próxima e gira o resto; sem o sheet, usa o osso desenhado
+em escala menor. Acrescente `preview` ao render para gerar só o primeiro quadro
+de cada direção. A pasta `frames_bone_shard` é temporária.
