@@ -7,10 +7,10 @@ function school(tree,id,name,paths,rows){
  rows.forEach((r,i)=>nodes.push({id:r[0],name:r[1],description:r[2],icon:r[3],effects:r[4],school:id,tree,tier:i===0?0:Math.ceil(i/2),side:i===0?0:i%2===1?-1:1,max:i>=5?1:5,level:i===0?1:i<=2?6:i<=4?12:24,requires:i===0?null:rows[i<=2?0:i-2][0],exclusive:i>=5?rows[i===5?6:5][0]:null}));
 }
 school('minions','flesh','Carne',['Colosso de Carne','Horda Explosiva'],[
- ['zombie','Zumbis','Evoca 3 zumbis. Cada ponto fortalece Zumbis e Abominações.','☠',{'Dano de Zumbis e Abominações':4}],
+ ['zombie','Zumbis','Evoca 3 zumbis. Cada ponto dá +4% de dano e +3% de vida a Zumbis e Abominações.','☠',{'Dano de Zumbis e Abominações':4,'Vida de Zumbis e Abominações':3}],
  ['vigor','Carne Reanimada','Aumenta a vida de Zumbis e Abominações.','♥',{'Vida de Zumbis e Abominações':10}],
- ['burst','Explosão Cadavérica','Desbloqueia o comando de detonar um zumbi e aumenta seu dano.','✹',{'Dano da explosão de Zumbi':12}],
- ['abom','Abominação','Evolução do ramo Zumbi, equipada como evocação própria. Recebe as sinergias de Carne.','♜',{'Dano da Abominação':10}],
+ ['burst','Explosão Cadavérica','Desbloqueia a detonação e aumenta seu dano. Cada ponto investido também dá +4% ao Salto Devastador da Abominação.','✹',{'Dano da explosão de Zumbi':12,'Dano do Salto Devastador':4}],
+ ['abom','Abominação','Evocação própria: +10% de dano por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões.','♜',{'Dano da Abominação':10,'Dano de Zumbis':4,'Vida de Zumbis':6}],
  ['unstable','Carne Instável','Sinergia entre a explosão dos Zumbis e Explosão Necrótica da árvore Profana.','✷',{'Dano das explosões de Zumbi e Necrótica':8}],
  ['colossus','Colosso de Carne','Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva.','♜',{'Vida da Abominação':60,'Dano do Salto Devastador':40}],
  ['plague','Horda Explosiva','Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne.','✹',{'Zumbis adicionais':2,'Dano da explosão de Zumbi':40}]
@@ -61,6 +61,7 @@ school('spells','shadow','Sombras',['Caminhante do Véu','Senhor da Horda'],[
  ['aura','Aura das Sombras','Especialização: aumenta o dano de toda a horda próxima. Exclui Caminhante do Véu.','☽',{'Dano da horda próxima':30}]
 ]);
 const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
+const directSynergies={bolt:['Dano da Chuva de Ossos'],rain:['Dano do Tiro de Osso'],abom:['Dano de Zumbis','Vida de Zumbis'],burst:['Dano do Salto Devastador']};
 const budget=level=>3*(level-1), spent=r=>Object.values(r).reduce((a,b)=>a+b,0);
 function reason(n,r,level){
  if(level<n.level)return `Requer nível ${n.level}.`;
@@ -84,7 +85,7 @@ function prune(state){let changed=true;while(changed){changed=false;for(const n 
 function refund(state,id){const before=spent(state.ranks);if(state.ranks[id]){state.ranks[id]--;if(!state.ranks[id])delete state.ranks[id];prune(state);}return before-spent(state.ranks);}
 function setLevel(state,level){state.level=Math.max(1,Math.min(60,Math.round(Number(level)||1)));prune(state);for(const n of [...nodes].reverse()){while(state.ranks[n.id]&&spent(state.ranks)>budget(state.level))refund(state,n.id);}return state;}
 function effects(ranks){const out={};for(const n of nodes)for(const [key,value] of Object.entries(n.effects)){if(ranks[n.id])out[key]=(out[key]||0)+value*ranks[n.id];}return out;}
-function effective(r){const e=effects(r);return {...e,'Dano total da Abominação':(e['Dano de Zumbis e Abominações']||0)+(e['Dano da Abominação']||0)+(e['Dano da horda próxima']||0),'Dano total da explosão de Zumbi':(e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)+(e['Dano de Zumbis e Abominações']||0)+(e['Dano da horda próxima']||0),'Dano total da Explosão Necrótica':(e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)};}
+function effective(r){const e=effects(r);return {...e,'Dano total da Abominação':(e['Dano de Zumbis e Abominações']||0)+(e['Dano da Abominação']||0)+(e['Dano da horda próxima']||0),'Dano total da explosão de Zumbi':(e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)+(e['Dano de Zumbis e Abominações']||0)+(e['Dano de Zumbis']||0)+(e['Dano da horda próxima']||0),'Dano total da Explosão Necrótica':(e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0)};}
 const presets={
  tank:{name:'Colosso Imortal',level:30,ranks:{zombie:5,vigor:5,abom:5,colossus:1,shield:5,vitality:5,pact:5,bastion:1,dash:2}},
  bomber:{name:'Horda Explosiva',level:30,ranks:{zombie:5,burst:5,unstable:5,plague:1,shield:2,nova:5,ritual:5,detonation:1,dash:2}},
@@ -92,6 +93,6 @@ const presets={
  caster:{name:'Tempestade de Ossos',level:30,ranks:{bolt:5,rain:5,wall:5,storm:1,dash:5,stride:5,veil:5,walker:1,shield:2,vitality:3}},
  hybrid:{name:'Ceifador Híbrido',level:30,ranks:{zombie:4,vigor:3,abom:3,specter:5,drain:3,bond:3,vampire:1,bolt:5,rain:4,dash:3,meditate:4,curse:2,aura:1}}
 };
-const api={nodes,schools,byId,budget,spent,reason,validate,invest,refund,setLevel,effects,effective,presets};
+const api={nodes,schools,byId,directSynergies,budget,spent,reason,validate,invest,refund,setLevel,effects,effective,presets};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.BuildModel=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

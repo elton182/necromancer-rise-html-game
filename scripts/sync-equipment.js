@@ -3,12 +3,23 @@
 const fs=require('node:fs'),path=require('node:path');
 require('./sync-skill-trees.js');
 const root=path.resolve(__dirname,'..'),target=path.join(root,'necromancer-canvas.html');
-let html=fs.readFileSync(target,'utf8');
+let html=fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n');
 function patch(before,after){if(html.includes(after))return;if(html.includes(before))html=html.replace(before,after);else throw Error('Equipment bridge missing: '+before.slice(0,90));}
 patch('gold:player.gold,inventory:player.inventory,ts:Date.now(),','gold:player.gold,inventory:player.inventory,ts:Date.now(),\n    equipmentVersion:EquipmentModel.VERSION,gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress,');
 patch('    campLoad(d); wave=d.wave||0;', '    Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress});\n    campLoad(d); wave=d.wave||0;');
-patch('const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1);','const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1)*(1+gearBonus(\'move\')/100);');
+if(html.includes('const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1);'))html=html.replace('const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1);',"const spd=EquipmentModel.moveSpeed(EquipmentModel.bonuses(player))*(PAD.mx||PAD.mz?PAD.spdk:1);");
+patch("const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1)*(1+gearBonus('move')/100);","const spd=EquipmentModel.moveSpeed(EquipmentModel.bonuses(player))*(PAD.mx||PAD.mz?PAD.spdk:1);");
 patch('e.atkTimer=1.9; e.swing=.28;', 'e.atkTimer=e.atkRate; e.swing=.28;');
+patch("if(signature===actionSignature)return;actionSignature=signature;roots.forEach(r=>r.innerHTML='');", "if(signature===actionSignature)return;actionSignature=signature; // Preserve slot buttons across HUD refreshes.");
+patch("const b=document.createElement('button');b.className='action-equipped'", "const host=roots[i<3?0:1];let b=host.querySelector('[data-action-slot=\"'+i+'\"]');if(!b){b=document.createElement('button');b.type='button';b.dataset.actionSlot=String(i);b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-controls','summon-wheel');b.onclick=e=>{e.preventDefault();e.stopPropagation();openActionPicker(i);};b.addEventListener('pointerdown',e=>e.stopPropagation());b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')e.stopPropagation();});host.appendChild(b);}b.className='action-equipped'");
+patch("b.onclick=()=>openActionPicker(i);roots[i<3?0:1].appendChild(b);", "// Keep the same button between pointerdown and click while mana/cooldowns refresh.");
+patch('<div id="reanimate-hint">R — reanimar agora (30 MP)</div>','<button type="button" id="reanimate-hint" onclick="tryReanimate()" aria-label="Reanimar aliado caído por 30 MP">V · Reanimar agora (30 MP)</button>');
+patch("if(e.key.toLowerCase()==='v') tryReanimate();","if(e.key.toLowerCase()==='v'&&!e.repeat) tryReanimate();");
+patch('const dead=minions.some(m=>m.dead&&!m.sacrificed);','const dead=minions.some(m=>m.dead&&!m.sacrificed&&!m.exploded);');
+patch("      if(m.sacrificed&&gameState!=='field') return;","      // Recovery continues in the village; pause still freezes world time.");
+patch('m.hp=Math.floor(m.maxHp*.3); m.deadTimer=0;','m.hp=Math.floor(m.maxHp*COMBAT_TUNING.autoReviveHealth); m.deadTimer=0;');
+patch("if(gameState!=='hub'||!VILLAGE())return false;", "if(gameState!=='hub')return false;");
+patch("if(gameState==='hub'&&VILLAGE())m.appendChild(tBtn('🗺 MAPA DA CAMPANHA',openCampaignFromVillage));", "if(gameState==='hub'&&!CAMP.on)m.appendChild(tBtn('🗺 MAPA DA CAMPANHA',gearReturnToStory));");
 // Raise boss base damage once; their existing level/stage and special multipliers still apply.
 patch('hp:350,dmg:15,spd:1.6', 'hp:350,dmg:19.5,spd:1.6');
 patch('hp:600,dmg:25,spd:2.0', 'hp:600,dmg:32.5,spd:2.0');
@@ -21,11 +32,13 @@ patch("ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;","ctx.fillRect(dx-2,y-3,2,
 for(const [name,content,anchor,runtime]of [
  ['EQUIPMENT_MODEL','<script>\n'+fs.readFileSync(path.join(__dirname,'equipment-model.js'),'utf8')+'\n</script>','</head>',false],
  ['EQUIPMENT_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'equipment.css'),'utf8')+'\n</style>','</head>',false],
- ['EQUIPMENT_RULES',fs.readFileSync(path.join(__dirname,'equipment.js'),'utf8'),'const hasSave=bootGame();',true]
+ ['MENU_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'menu.css'),'utf8')+'\n</style>','</head>',false],
+ ['EQUIPMENT_RULES',fs.readFileSync(path.join(__dirname,'equipment.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['MINION_CARE',fs.readFileSync(path.join(__dirname,'minion-care.js'),'utf8'),'const hasSave=bootGame();',true]
 ]){
  const start=runtime?'/* '+name+'_BEGIN */':'<!-- '+name+'_BEGIN -->',end=runtime?'/* '+name+'_END */':'<!-- '+name+'_END -->';
  const block=start+'\n'+content+'\n'+end+'\n',a=html.indexOf(start),b=html.indexOf(end);
  if(a>=0&&b>=a)html=html.slice(0,a)+block+html.slice(b+end.length).replace(/^\r?\n/,'');
  else {if(!html.includes(anchor))throw Error('Missing anchor '+anchor);html=html.replace(anchor,()=>block+anchor);}
 }
-fs.writeFileSync(target,html);console.log('Embedded equipment and wave progression updated.');
+if(fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n')!==html.replace(/\r\n/g,'\n')){const temporary=target+'.sync-'+process.pid+'.tmp';fs.writeFileSync(temporary,html);try{try{fs.renameSync(temporary,target);}catch(error){if(!['EPERM','EACCES'].includes(error.code))throw error;fs.copyFileSync(temporary,target);}}finally{if(fs.existsSync(temporary))fs.unlinkSync(temporary);}}console.log('Embedded equipment and wave progression updated.');

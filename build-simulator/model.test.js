@@ -26,7 +26,7 @@ test('diminuir nível remove skills indisponíveis e respeita o novo orçamento'
 });
 test('sinergia de Zumbi afeta Abominação; pontes de explosão somam sem recursão',()=>{
  const e=M.effective({zombie:5,abom:3,unstable:2,ritual:3,nova:2,burst:1});
- assert.equal(e['Dano total da Abominação'],50);assert.equal(e['Dano total da Explosão Necrótica'],64);assert.equal(e['Dano total da explosão de Zumbi'],72);
+ assert.equal(e['Dano total da Abominação'],50);assert.equal(e['Dano total da Explosão Necrótica'],64);assert.equal(e['Dano total da explosão de Zumbi'],84);
 });
 test('códigos inválidos não aceitam excesso de pontos, skills falsas ou pré-requisitos ausentes',()=>{
  assert.throws(()=>M.validate({version:1,level:1,ranks:{zombie:1}}),/excede/);

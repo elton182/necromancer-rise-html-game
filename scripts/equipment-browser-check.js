@@ -14,9 +14,28 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
    player.waveProgress=EquipmentModel.progress({best:5,selected:3});
    gearOpen();
   });
+  assert.equal(await page.locator('.gear-cell').count(),30);assert.equal(await page.locator('.gear-slot').count(),7);assert.equal(await page.locator('.gear-silhouette').count(),1);
+  await page.getByRole('button',{name:'Bolsa II',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:'Espaço vazio 31',exact:true}).count(),1);
+  await page.getByRole('button',{name:'Bolsa I',exact:true}).click();
+  const frames=[],panes=[];
+  for(const name of ['PERSONAGEM','HABILIDADES','HORDA','SISTEMA','EQUIPAMENTOS','WAVES']){
+   await page.getByRole('button',{name,exact:true}).click();frames.push(await page.locator('.pm').boundingBox());panes.push(await page.locator('.pmbody').boundingBox());
+   if(['PERSONAGEM','HABILIDADES'].includes(name))await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/menu-'+name.toLowerCase()+'-standard.png'),fullPage:true});
+  }
+  for(const rect of frames)for(const key of ['x','y','width','height'])assert.ok(Math.abs(rect[key]-frames[0][key])<1,'Tab frame differs: '+key);
+  for(const rect of panes)for(const key of ['x','y','width','height'])assert.ok(Math.abs(rect[key]-panes[0][key])<1,'Tab content frame differs: '+key);
+  await page.getByRole('button',{name:'HABILIDADES',exact:true}).click();
+  const pointsBefore=await page.evaluate(()=>player.skillPoints);await page.getByRole('button',{name:'+ Investir ponto',exact:true}).click();
+  assert.equal(await page.evaluate(()=>player.skillPoints),pointsBefore-1);assert.match(await page.locator('.menu-summary').innerText(),new RegExp((pointsBefore-1)+' pontos'));
+  await page.getByRole('button',{name:'EQUIPAMENTOS',exact:true}).click();
   await page.getByRole('button',{name:/Comprar Cajado/}).click();
   assert.equal(await page.evaluate(()=>player.gearBag.length),1);
+  const preview=await page.evaluate(()=>EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING,{...player.equipment,staff:player.gearBag[0]}));
+  assert.equal(await page.locator('.gear-stat-table [data-stat="spell"]').count(),1);assert.ok(await page.locator('.gear-skill-table [data-skill="raio"]').count());
   await page.getByRole('button',{name:'Equipar · Cajado',exact:true}).click();
+  const live=await page.evaluate(()=>({hp:player.maxHp,mp:player.maxMp,spell:player.spellDmg,bolt:Math.floor(player.spellDmg+spellBonus('raio','raio_d'))}));
+  assert.equal(live.hp,preview.attributes.hp);assert.equal(live.mp,preview.attributes.mp);assert.equal(live.spell,preview.attributes.spell);assert.equal(live.bolt,preview.skills.find(s=>s.id==='raio').damage);
   assert.equal(await page.evaluate(()=>Object.keys(player.equipment).length),1);
   assert.equal(await page.evaluate(()=>player.gearBag.length),0);
   await page.getByRole('button',{name:'Desequipar',exact:true}).click();
@@ -30,7 +49,14 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
    gearSelected={id:player.gearBag[0].id};tPause('equipment');
   });
   await page.getByRole('button',{name:'Equipar · Cajado',exact:true}).click();
-  await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/equipment-menu.png'),fullPage:true});
+  const equipmentBeforeRing=await page.evaluate(()=>JSON.stringify(player.equipment));
+  await page.getByRole('button',{name:/Anel esquerdo .*Nv.12/}).click();
+  await page.getByRole('button',{name:'Comparar anel direito',exact:true}).click();
+  assert.match(await page.locator('.gear-stat-heading').innerText(),/anel direito/i);assert.equal(await page.evaluate(()=>JSON.stringify(player.equipment)),equipmentBeforeRing);
+  await page.evaluate(()=>{gearSelected={slot:'staff'};tPause('equipment');});
+  await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/equipment-menu-standard.png'),fullPage:true});
+  await page.locator('.gear-dps').evaluate(el=>el.scrollIntoView({block:'start'}));
+  await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/equipment-stats-standard.png'),fullPage:true});
   await page.getByRole('button',{name:'WAVES',exact:true}).click();
   await page.getByRole('button',{name:'Selecionar wave 2',exact:true}).click();
   assert.equal(await page.evaluate(()=>player.waveProgress.selected),2);
@@ -59,8 +85,19 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   await page.setViewportSize({width:390,height:844});
   const overflow=await page.evaluate(()=>{const el=document.querySelector('.pmbody');return el.scrollWidth-el.clientWidth;});
   assert.ok(overflow<=2,'Equipment panel overflows mobile width by '+overflow);
-  await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/equipment-menu-mobile.png'),fullPage:true});
+  await page.screenshot({path:path.resolve(__dirname,'../docs/concepts/equipment-menu-mobile-standard.png'),fullPage:true});
+  for(const name of ['PERSONAGEM','HABILIDADES','HORDA','SISTEMA','EQUIPAMENTOS','WAVES']){
+   await page.getByRole('button',{name,exact:true}).click();
+   const overflow=await page.locator('.pmbody').evaluate(el=>el.scrollWidth-el.clientWidth);assert.ok(overflow<=2,name+' overflows mobile width by '+overflow);
+  }
+  await page.evaluate(()=>{CAMP.cleared={1:1};CAMP.unlocked=2;CAMP.story={intro:1,pre1:1};tPause('status');});
+  assert.equal(await page.evaluate(()=>VILLAGE()),false);
+  const beforeStory=await page.evaluate(()=>({level:player.level,bag:player.gearBag.map(i=>i.id).sort(),staff:player.equipment.staff.id,gold:player.gold}));
+  await Promise.all([page.waitForEvent('load'),page.getByRole('button',{name:'Voltar à história',exact:true}).click()]);
+  await page.waitForFunction(()=>typeof CAMP!=='undefined'&&CAMP.on&&CAMP.map);
+  const afterStory=await page.evaluate(()=>({level:player.level,bag:player.gearBag.map(i=>i.id).sort(),staff:player.equipment.staff.id,gold:player.gold}));
+  assert.deepEqual(afterStory,beforeStory);assert.equal(await page.evaluate(()=>CAMP.cleared[1]),1);assert.equal(await page.evaluate(()=>CAMP.unlocked),2);
   assert.deepEqual(errors,[]);
-  console.log('Browser OK: gear, waves, save/load, mobile, reduced bone shot and faster enemies.');
+  console.log('Browser OK: gear, waves, save/load, mobile, combat and free-mode return to story before village unlock.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

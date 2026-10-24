@@ -34,6 +34,16 @@ test('level one has no free minions; the first invested zombie point enables the
   assert.equal(M.stats(1, 'horde', [], source).minions.length, 0);
   assert.equal(M.stats(2, 'horde', [], source).minions.length, 3);
 });
+
+test('simulation applies flat weapon bases before percentage damage just like the game preview',()=>{
+ const staff={type:'staff',base:{stat:'spellFlat',value:11},affixes:[{stat:'spell',value:4}]};
+ const s=M.stats(12,'hybrid',[staff],source),ranks=M.buildRanks(12,'hybrid');
+ const preview=Gear.snapshot(Tree,{level:12,skillRanks:ranks,equipment:{staff}},source.minions,source.combatTuning);
+ assert.equal(s.bolt,preview.skills.find(s=>s.id==='raio').damage);
+ const grimoire={type:'grimoire',base:{stat:'hordeFlat',value:4},affixes:[{stat:'horde',value:4}]};
+ const h=M.stats(12,'horde',[grimoire],source),p=Gear.snapshot(Tree,{level:12,skillRanks:h.ranks,equipment:{grimoire}},source.minions,source.combatTuning);
+ assert.equal(h.minions.filter(m=>m.type==='zombie').reduce((sum,m)=>sum+m.damage,0),p.skills.find(s=>s.id==='zombie').damage);
+});
 test('item points stack above investment cap, keep cross synergy direct and do not unlock nodes', () => {
   const ranks = { bolt: 5, rain: 2 };
   const items = [item('skill', 'bolt', 2), item('school', 'osso')];

@@ -57,6 +57,12 @@ Para verificar sintaxe e regras das habilidades: `node game_check.js`.
 
 A horda só escolhe alvos a até 8 unidades de Zephyr. Ao ultrapassar essa região ou perder um alvo que se afasta, os aliados retornam até chegar a 3 unidades do personagem. Comandos de ataque e reunião respeitam o mesmo limite. Separações extremas, como em transições, recuperam o aliado perto do personagem.
 
+Os minions têm 50% mais vida base e ganham 6 HP por nível do personagem antes dos bônus da árvore e dos itens. Regeneram 1% da vida máxima por segundo. **Vida da horda** nos equipamentos melhora a vida e a regeneração de aliados já invocados; esse atributo pode sair em todos os tipos de peça e tem faixas maiores nos novos drops. **Vida máxima de Zephyr** beneficia apenas o personagem.
+
+Zumbis, esqueletos guerreiros e arqueiros tentam sair de áreas anunciadas, fogo persistente e trajetórias de projéteis hostis. A reação tem atraso e intervalo, respeita obstáculos e o vínculo de 8 unidades, e não concede invulnerabilidade.
+
+**V**, o aviso clicável do HUD ou **Pausa → Horda** reanimam um caído comum por 30 MP, com 60% da vida. O retorno automático traz 50%. Sacrificados e detonados continuam aguardando a recuperação própria; seus tempos agora também avançam na vila, enquanto o jogo estiver sem pausa.
+
 Na pausa, Personagem reúne os atributos; Habilidades abre as árvores; Horda reúne integrantes e configuração das invocações; Sistema reúne controles, opções e saves. As melhorias avulsas foram removidas. Loja e missões continuam disponíveis pelos serviços do mundo e mapa. Clique no contador de pontos do HUD para abrir diretamente o Grimório.
 
 O HUD de combate usa o Relicário de Zephyr: vida integrada ao painel esquerdo e mana ao direito, com um espaço livre entre os painéis. As seis habilidades ficam divididas entre os dois lados. A Ajuda (`H`) reúne as instruções.
@@ -77,6 +83,8 @@ O zumbi detonado permanece vinculado ao slot e aguarda o renascimento normal (12
 
 ### Grimório de habilidades
 
+O botão **Devolver ponto** informa custo, dependentes e motivo de bloqueio. A devolução continua custando 20 ouro por ponto e pode ser feita na vila, no mapa ou pausado entre waves, sem inimigos. Aliados detonados/sacrificados precisam terminar a recuperação; feche a pausa para o tempo avançar.
+
 Na pausa, **Habilidades** abre o Grimório dos Mortos. **Minions** contém Carne, Ossos e Espíritos; **Profana** contém Ossos, Sangue e Sombras. São 42 habilidades e 12 talentos finais. Cada escola começa em uma raiz e se bifurca em duas especializações; os caminhos intermediários podem ser combinados, mas os dois talentos finais da mesma escola são exclusivos.
 
 Cada subida de nível concede **3 pontos** compartilhados entre as duas árvores, até o nível 60. Ao chegar ao nível 2, um tutorial rápido explica como abrir o Grimório e investir os três primeiros pontos. Skills comuns aceitam 5 pontos; talentos finais, 1. As etapas abrem nos níveis 1, 6, 12 e 24 e cada ligação exige 2 pontos no nó anterior. Selecione um símbolo para consultar os efeitos e investir. Redistribuição custa **20 de ouro por ponto devolvido**, na vila ou no mapa, após a recuperação dos aliados sacrificados ou detonados. Remover um pré-requisito também devolve e cobra os pontos dos descendentes; o custo aparece antes da ação.
@@ -93,6 +101,8 @@ O modelo é compartilhado com o simulador. Para atualizar o HTML independente ap
 
 ### Vila, campanha e missões
 
+No Modo Livre, **ESC → Voltar à história** retoma a campanha com o mesmo personagem, equipamentos e fases concluídas, mesmo antes de liberar a vila. Durante uma tentativa, o jogo pede confirmação para encerrá-la. A opção **Sistema → Mapa da Campanha** também está disponível no hub inicial.
+
 O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem perder o progresso. Interaja com `G`. As missões da vila podem oferecer arenas ou trilhas de rolagem lateral, com três emboscadas e chefe no trecho final. A recompensa é concedida uma vez e, ao chegar ao final da trilha, o retorno à vila é automático. Fases laterais da campanha rejogadas após liberar a vila também retornam automaticamente, após a sequência de conclusão. Na primeira passagem do Ato I, a história mantém o retorno ao mapa até a vila ser liberada.
 
 ## Rodando localmente
@@ -101,13 +111,21 @@ O quadro **Mapa da Campanha** na vila permite voltar ao mapa e rejogar fases sem
 
 Use **I** ou **ESC → Equipamentos** para abrir a mochila: cajado, grimório, vestimenta, capuz, botas e dois anéis. Peças comuns têm apenas o atributo base; mágicas têm 2 atributos aleatórios, raras 3 e épicas 4. Bônus de pontos fortalecem habilidades ou escolas já aprendidas sem alterar os pontos investidos, liberar pré-requisitos ou mudar a aparência de Zephyr.
 
+Todos os itens têm uma base em valores brutos, separada dos afixos. Cajados de nível 1 rolam +10, +11 ou +12 de dano mágico base; grimórios rolam +3 a +5 de dano base para cada aliado. A base cresce com o nível do item, independentemente da raridade. Vida, mana, regeneração e movimento também usam bases brutas. Afixos podem continuar concedendo percentuais: `dano mágico = arredondar((40 + 4 × (nível do personagem − 1) + dano base do cajado) × (1 + bônus percentual / 100))`; o multiplicador da habilidade é aplicado depois. O grimório entra antes dos bônus de dano da horda e dos comandos. Exemplo: dano do personagem 84, cajado +25 e afixo +10% resultam em 120 de dano mágico. Itens antigos são convertidos para o formato 2 ao carregar, preservando identidade, raridade e afixos. Mantém-se a quantidade de afixos por raridade: comum 0, mágico 2, raro 3 e épico 4.
+
+O inventário usa uma grade à esquerda, com duas bolsas de 30 espaços, e uma silhueta à direita com os equipamentos em suas posições. Ícones e bordas indicam o tipo e a raridade; selecionar uma peça abre atributos, comparação e ações abaixo. Em telas pequenas, os painéis ficam empilhados. **Descartar tudo da mochila** remove as peças das duas bolsas após confirmação, preservando equipamentos vestidos e consumíveis. O retrato de Zephyr aparece no resumo de todas as abas do menu.
+
+Os seis slots de habilidades preservam seus botões durante atualizações de mana e recarga, evitando cliques perdidos. Na escola Carne, cada ponto em Zumbi concede +4% de dano e +3% de vida a Zumbis e Abominações. Cada ponto investido em Abominação concede também +4% de dano e +6% de vida aos zumbis; cada ponto investido em Explosão Cadavérica dá +4% ao Salto Devastador. As sinergias diretas de Abominação e Explosão Cadavérica contam apenas pontos investidos, sem multiplicação por bônus temporários de equipamento. As prévias de equipamentos e os simuladores usam essas mesmas regras.
+
+Todas as abas da pausa usam a mesma janela, cabeçalho, resumo do personagem, navegação e área de rolagem. No inventário, **Status do personagem** compara os valores atuais com a prévia de equipar ou desequipar a peça; anéis permitem escolher o lado da comparação. A tabela de habilidades mostra dano por uso, recarga, DPS potencial e DPS contínuo limitado pela regeneração de mana. As estimativas avaliam cada habilidade separadamente, com acertos ideais em um alvo; horda viva e próxima, Chuva com todos os fragmentos acertando e explosão de zumbi limitada pelo renascimento são hipóteses indicadas na tela.
+
 Monstros comuns têm 16% de chance de deixar equipamento; chefes garantem uma peça mágica ou melhor. Orbes de mana têm 12% de chance e orbes de vida 4%, sem sorteios extras na campanha. Equipamento e orbe são sorteados independentemente. A coleta é por proximidade, e peças permanecem no chão enquanto a tentativa durar. A mochila comporta 60 peças. Trocas preservam a proporção de vida/mana e não reiniciam recargas ou recuperações da horda.
 
 Na vila, o menu de equipamentos vende peças e oferece relíquias aleatórias por tipo, com nível/preço definidos pela maior wave desbloqueada. **ESC → Waves** ou a **Pedra do Infinito** permite selecionar uma wave já liberada. Concluir a maior disponível libera a seguinte. Repetir anteriores preserva o recorde e reduz a dificuldade e o nível do loot. Na campanha, o nível das peças acompanha a fase.
 
 A arena usa +12% de vida e +8% de dano compostos por wave, XP dos monstros +4% e até 60 inimigos por wave. São valores iniciais sujeitos a balanceamento. Saves anteriores recebem mochila vazia e preservam o recorde existente.
 
-Fontes: `scripts/equipment-model.js`, `scripts/equipment.js` e `scripts/equipment.css`. Após editar, execute `node scripts/sync-equipment.js` para atualizar o HTML distribuído. Verificações: `node --test scripts/equipment.test.js scripts/skill-trees.test.js build-simulator/model.test.js balance-simulator/model.test.js` e `node game_check.js`. O simulador compartilha geração de itens, bônus e curvas de waves com o jogo; `legacy` mantém a comparação com as curvas anteriores.
+Fontes: `scripts/equipment-model.js`, `scripts/equipment.js`, `scripts/minion-care.js`, `scripts/equipment.css` e `scripts/menu.css`. Após editar, execute `node scripts/sync-equipment.js` para atualizar o HTML distribuído. Verificações: `node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/skill-trees.test.js build-simulator/model.test.js balance-simulator/model.test.js` e `node game_check.js`. O simulador compartilha geração de itens, bônus e curvas de waves com o jogo; `legacy` mantém a comparação com as curvas anteriores.
 
 ### Simulador de builds
 

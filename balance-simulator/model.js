@@ -44,16 +44,16 @@ function stats(level, build, items, source) {
   const mods = {};
   for (const a of items.flatMap(i => [i.base, ...i.affixes])) if (!['skill', 'school'].includes(a.stat)) mods[a.stat] = (mods[a.stat] || 0) + a.value;
   const percent = key => 1 + (e[key] || 0) / 100;
-  const spell = Math.round((40 + 4 * (level - 1)) * (1 + (mods.spell || 0) / 100));
+  const spell = Gear.spellDamage(level,mods);
   const minions = [];
   const allowed = build === 'caster' ? [] : build === 'horde' ? ['zombie', 'skeleton', 'archer'] : ['zombie', 'archer'];
   for (const type of allowed) {
     if (!ranks[type]) continue;
     const d = source.minions[type], bone = ['skeleton', 'archer'].includes(type);
     const count = type === 'zombie' ? 3 : type === 'skeleton' ? 3 + (e['Guerreiros adicionais'] || 0) : 2 + (e['Arqueiros adicionais'] || 0);
-    const damage = (e[bone ? 'Dano de Esqueletos e Arqueiros' : 'Dano de Zumbis e Abominações'] || 0) + (type === 'archer' ? e['Dano dos Arqueiros'] || 0 : 0);
-    const hp = Math.round(d.hp * (percent(bone ? 'Vida de Esqueletos e Arqueiros' : 'Vida de Zumbis e Abominações') + (mods.hordeHp || 0) / 100));
-    for (let i = 0; i < count; i++) minions.push({ type, hp, maxHp: hp, damage: Math.round((d.dmg + level - 1) * (1 + (damage + (mods.horde || 0)) / 100)), interval: d.atkRate });
+    const damage = (e[bone ? 'Dano de Esqueletos e Arqueiros' : 'Dano de Zumbis e Abominações'] || 0) + (type === 'archer' ? e['Dano dos Arqueiros'] || 0 : type==='zombie'?e['Dano de Zumbis']||0:0);
+    const hp = Math.round((d.hp*source.combatTuning.minionHpMultiplier+(level-1)*source.combatTuning.minionHpPerLevel) * (percent(bone ? 'Vida de Esqueletos e Arqueiros' : 'Vida de Zumbis e Abominações') + ((mods.hordeHp || 0)+(type==='zombie'?e['Vida de Zumbis']||0:0)) / 100));
+    for (let i = 0; i < count; i++) minions.push({ type, hp, maxHp: hp, regen:hp*source.combatTuning.minionRegen,reviveHealth:source.combatTuning.autoReviveHealth,damage: Math.round((d.dmg + level - 1 + (mods.hordeFlat || 0)) * (1 + (damage + (mods.horde || 0)) / 100)), interval: d.atkRate });
   }
   return {
     level, ranks, bonusRanks, effects: e,
@@ -62,7 +62,7 @@ function stats(level, build, items, source) {
     regen: (4 + 0.3 * (level - 1)) * percent('Regeneração de mana') + (mods.regen || 0), hpRegen: 0.2 * (level - 1),
     bolt: Math.floor(spell * percent('Dano do Tiro de Osso') * source.combatTuning.boltMultiplier), rain: Math.floor(spell * 0.7 * percent('Dano da Chuva de Ossos')),
     pierce: 1 + (e['Alvos perfurados adicionais'] || 0),
-    cooldown: 1 - Math.min(0.5, (mods.cooldown || 0) / 100), move: Math.min(30, mods.move || 0), minions
+    cooldown: 1 - Math.min(0.5, (mods.cooldown || 0) / 100), move: 100*(Gear.moveSpeed(mods)/4-1), minions
   };
 }
 function weighted(weights, random) {
@@ -137,7 +137,8 @@ function simulateCombat(s, encounter, profile, config, random) {
     hp = Math.min(s.hp, hp + s.hpRegen * c.step); mp = Math.min(s.mp, mp + s.regen * c.step);
     let active = enemies.filter(e => e.hp > 0 && e.spawn <= time);
     for (const m of minions) {
-      if (m.hp <= 0 && time >= m.revive) m.hp = m.maxHp;
+      if (m.hp <= 0 && time >= m.revive) m.hp = Math.floor(m.maxHp*(m.reviveHealth??1));
+      if (m.hp > 0) m.hp=Math.min(m.maxHp,m.hp+(m.regen||0)*c.step);
       if (m.hp <= 0 || time < m.attack || !active.length) continue;
       m.attack = time + m.interval / c.minionUptime;
       if (random() < profile.accuracy) damage(active[0], m.damage);

@@ -7,12 +7,13 @@ function fixture(){
  const context=vm.createContext({EquipmentModel:Model,BuildModel:Tree,console,innerWidth:1200,innerHeight:800});
  vm.runInContext(`
  const player={level:12,hp:85,maxHp:210,mp:60,maxMp:135,skillRanks:{bolt:5,zombie:2,vigor:2},skillGrants:[],gold:1000,spellDmg:84,skillPoints:0,spellCooldowns:{raio:0},minionSkillCooldowns:{},inventory:[],equipment:{},gearBag:[],waveProgress:EquipmentModel.progress()};
- const MINION_DEFS={zombie:{hp:130,dmg:11,spd:3.4,atkR:1.5}},ACTION_SKILLS={archer:{cooldown:7}},P={x:0,y:0,deadT:0},CAMP={on:false,map:false,stage:1},TITLE={active:false,paused:false},COMIC={active:false},PM={},ENDLESS={best:0},VIL={},playerDash={cd:0};
+ const MINION_DEFS={zombie:{name:'Zumbi',hp:130,dmg:11,spd:3.4,atkR:1.5,atkRate:1.2}},ACTION_SKILLS={archer:{cooldown:7}},P={x:0,y:0,deadT:0},CAMP={on:false,map:false,stage:1},TITLE={active:false,paused:false},COMIC={active:false},PM={},ENDLESS={best:0},VIL={},playerDash={cd:0};
  const MOB_ABILITIES={Guerreiro:{windup:.65,cooldown:7},Arqueiro:{windup:.9,cooldown:7},'Mago Vivo':{windup:1,cooldown:9},Bruto:{windup:.85,cooldown:8}};
  let minions=[],enemies=[],droppedItems=[],gameState='hub',currentMission=null,wave=0,missionWave=0,waveActive=false;
- let minionHpBonus=0,minionDmgBonus=0,minionRegenBonus=0,actionSignature='',actionAvailabilitySignature='',summonSlotsSignature='',_mpSig='',saves=0,ends=0;
+ let minionHpBonus=0,minionDmgBonus=0,minionRegenBonus=0,actionSignature='',actionAvailabilitySignature='',summonSlotsSignature='',_mpSig='',saves=0,ends=0,confirmation=null,campaignReturns=0;
  const document={getElementById:()=>({textContent:'',style:{display:'none'}}),querySelector:()=>null},window={addEventListener(){}};
- const updateHUD=()=>{},updateMinionPanel=()=>{},floatMsg=()=>{},playSound=()=>{},saveGame=()=>{saves++;},setPause=()=>{},tConfirm=()=>{},mkMesh2=(x,z)=>({position:{x,z}});
+ const updateHUD=()=>{},updateMinionPanel=()=>{},floatMsg=()=>{},playSound=()=>{},saveGame=()=>{saves++;},setPause=()=>{},tConfirm=(text,label,action,cancel)=>{confirmation={text,action,cancel};},mkMesh2=(x,z)=>({position:{x,z}});
+ function campToCampaign(){CAMP.on=true;campaignReturns++;}
  function tPause(){}function pmControlsHtml(){return '';}function buildSkillTree(){}function buildShopGrid(){}function closeHubOverlay(){}function campNewChar(){}function loadGame(){return false;}function enterHub(){gameState='hub';droppedItems=[];}function campMapOpen(){}function vilOpen(){}function vilClose(){}
  function startEndless(){wave=0;missionWave=0;currentMission={endless:true};gameState='field';}
  function endWave(){ends++;waveActive=false;player.gold+=10;}
@@ -35,6 +36,47 @@ test('migration rejects invalid values, duplicate IDs, wrong slots and malformed
  const state={equipment:{staff:a,boots:a},gearBag:[a,bad,{...a,id:'invalid',base:{stat:'spell',value:1e99}}],camp:{eb:8}};
  Model.migrate(state,Tree);assert.equal(state.equipment.staff.id,a.id);assert.equal(state.equipment.boots,undefined);assert.equal(state.gearBag.length,0);assert.deepEqual(state.waveProgress,{best:8,unlocked:9,selected:1});
  const once=JSON.stringify(state);Model.migrate(state,Tree);assert.equal(JSON.stringify(state),once);
+});
+
+test('all item bases are flat; staff starts at 10–12 and scales independently of rarity',()=>{
+ const seen=new Set();
+ for(let n=0;n<600;n++){
+  const i=Model.generate(1,Tree,()=>n%100/100,'staff');seen.add(i.base.value);
+  assert.equal(i.base.stat,'spellFlat');assert.ok(i.base.value>=10&&i.base.value<=12);assert.equal(Number.isInteger(i.base.value),true);
+  assert.equal(Model.attributes[i.base.stat].percent,undefined);assert.deepEqual(Model.validate(i,Tree),i);
+ }
+ assert.deepEqual([...seen].sort((a,b)=>a-b),[10,11,12]);
+ for(const slot of Object.keys(Model.slots)){const i=item(20,slot);assert.ok(!Model.attributes[i.base.stat].percent);}
+ const low=Model.generate(1,Tree,()=>.5,'staff'),high=Model.generate(20,Tree,()=>.5,'staff');assert.ok(high.base.value>low.base.value);
+ assert.match(Model.describe(low.base,Tree),/\+11 Dano mágico base/);assert.doesNotMatch(Model.describe(low.base,Tree),/%/);
+});
+
+test('old saves convert percentage bases once while preserving affixes, slots and identities',()=>{
+ const staff={...item(12),version:1,rarity:'magic',base:{stat:'spell',value:9.28},affixes:[{stat:'spell',value:9.28},{stat:'mp',value:10}]};
+ const grimoire={...item(12,'grimoire'),version:1,rarity:'common',base:{stat:'horde',value:9.28},affixes:[]};
+ const boots={...item(12,'boots'),version:1,rarity:'common',base:{stat:'move',value:2.32},affixes:[]};
+ const data={equipment:{staff,boots},gearBag:[grimoire]};Model.migrate(data,Tree);
+ assert.equal(data.equipmentVersion,2);assert.equal(data.equipment.staff.base.stat,'spellFlat');assert.equal(data.equipment.staff.base.value,26);assert.deepEqual(data.equipment.staff.affixes,staff.affixes);assert.equal(data.equipment.staff.id,staff.id);
+ assert.equal(data.equipment.boots.base.stat,'moveFlat');assert.equal(data.gearBag[0].base.stat,'hordeFlat');assert.equal(data.gearBag[0].id,grimoire.id);
+ const once=JSON.stringify(data);Model.migrate(data,Tree);assert.equal(JSON.stringify(data),once);
+ assert.equal(Model.validate({...staff,base:{stat:'spell',value:1e99}},Tree),null);
+});
+
+test('staff flat damage is added before percent and skill multipliers in live combat and preview',()=>{
+ const {context,run}=fixture();context.piece={...item(),rarity:'magic',base:{stat:'spellFlat',value:25},affixes:[{stat:'spell',value:10},{stat:'mp',value:10}]};
+ assert.ok(Model.validate(context.piece,Tree));
+ run('skillSync();const naked=player.spellDmg;player.gearBag=[piece];gearEquip(piece.id,"staff");const preview=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING);');
+ assert.equal(run('naked'),84);assert.equal(run('player.spellDmg'),120);assert.equal(run('preview.attributes.spell'),120);
+ assert.equal(run('preview.skills.find(s=>s.id==="raio").damage'),90);
+ run('gearUnequip("staff")');assert.equal(run('player.spellDmg'),84);
+});
+
+test('grimoire flat damage feeds basic attacks, commanded explosions and the status preview',()=>{
+ const {context,run}=fixture();context.piece={...item(12,'grimoire'),rarity:'magic',base:{stat:'hordeFlat',value:9},affixes:[{stat:'horde',value:10},{stat:'mp',value:10}]};
+ run('player.skillRanks.burst=2;player.gearBag=[piece];gearEquip(piece.id,"grimoire");const s=skillMinionStats("zombie");const estimate=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING);');
+ assert.equal(run('s.baseDmg'),31);assert.equal(run('s.dmg'),37);assert.equal(run('estimate.skills.find(s=>s.id==="zombie").damage'),111);
+ assert.equal(run('estimate.skills.find(s=>s.id==="zombie-burst").damage'),154);
+ assert.ok(Math.abs(Model.moveSpeed({moveFlat:.2,move:10})-4.62)<1e-10);assert.equal(Model.moveSpeed({moveFlat:9,move:30}),5.2);
 });
 test('temporary skill and school ranks stack; no unlock, budget change, finals or direct synergies',()=>{
  const a=item();a.affixes=[{stat:'skill',target:'bolt',value:2},{stat:'school',target:'osso',value:1}];
@@ -60,10 +102,34 @@ test('existing dead minions stay dead and retain recovery on equipment changes',
  const {context,run}=fixture();context.piece=item();run('minions=[{type:"zombie",hp:0,maxHp:130,dead:true,deadTimer:9,exploded:true}];player.gearBag=[piece];gearEquip(piece.id,"staff");');
  assert.equal(run('minions[0].hp'),0);assert.equal(run('minions[0].deadTimer'),9);assert.equal(run('minions[0].exploded'),true);
 });
+test('horde-life equipment increases existing allies HP and regen without restoring full health',()=>{
+ const {context,run}=fixture();context.piece=Model.generate(12,Tree,()=>.65,'body',false,'horde-coat');
+ run('piece.rarity="magic";piece.affixes=[{stat:"hordeHp",value:20},{stat:"mp",value:10}];const s=skillMinionStats("zombie");const m={type:"zombie",hp:150,maxHp:s.hp,dead:false,deadTimer:0};minions=[m];player.gearBag=[piece];const ratio=m.hp/m.maxHp;gearEquip(piece.id,"body")');
+ assert.equal(run('m.maxHp'),381);assert.equal(run('m.hpRegen'),3.81);assert.ok(run('m.hp/m.maxHp')<=run('ratio'));assert.ok(run('m.hp')<run('m.maxHp'));assert.equal(run('m.deadTimer'),0);
+});
 test('rings swap either hand, full bag cannot unequip, and equipped items cannot be sold',()=>{
  const {context,run}=fixture();context.piece=item(10,'ring1');run('player.gearBag=[piece]');
  assert.equal(run('gearEquip(piece.id,"ring2")'),true);assert.equal(run('gearSell(piece.id)'),false);
  run('player.gearBag=Array(60).fill(piece)');assert.equal(run('gearUnequip("ring2")'),false);
+});
+
+test('discard all requires confirmation, preserves worn gear/consumables and only removes listed items',()=>{
+ const {context,run}=fixture();context.bagItem=item();context.worn=item(12,'body');context.later=item();
+ run('player.gearBag=[bagItem];player.equipment={body:worn};player.inventory=[{type:"hp",count:2}];const protectedState=JSON.stringify([player.equipment,player.inventory,player.gold]);gearSelected={id:bagItem.id};gearPage=1;');
+ assert.equal(run('gearDiscardAll()'),true);assert.equal(run('player.gearBag.length'),1);
+ run('confirmation.cancel()');assert.equal(run('player.gearBag.length'),1);
+ run('gearDiscardAll();player.gearBag.push(later);confirmation.action()');
+ assert.equal(run('player.gearBag.length'),1);assert.equal(run('player.gearBag[0].id'),context.later.id);assert.equal(run('gearSelected'),null);assert.equal(run('gearPage'),0);assert.equal(run('saves'),1);
+ assert.equal(run('JSON.stringify([player.equipment,player.inventory,player.gold])'),run('protectedState'));
+ run('player.gearBag=[]');assert.equal(run('gearDiscardAll()'),false);
+});
+
+test('equipment boosts primary skills without multiplying invested cross synergies',()=>{
+ const piece=item();piece.affixes=[{stat:'skill',target:'abom',value:2},{stat:'skill',target:'burst',value:2}];
+ const ranks={zombie:2,vigor:2,abom:2,burst:2,colossus:1};
+ const base=Model.effects(Tree,ranks,{}).effects,boost=Model.effects(Tree,ranks,{staff:piece}).effects;
+ for(const key of ['Dano de Zumbis','Vida de Zumbis','Dano do Salto Devastador'])assert.equal(boost[key],base[key]);
+ assert.equal(boost['Dano da Abominação'],base['Dano da Abominação']+20);assert.equal(boost['Dano da explosão de Zumbi'],base['Dano da explosão de Zumbi']+24);
 });
 test('shop checks village, gold and capacity before payment; buy/sell never creates profit',()=>{
  const {run}=fixture();run('player.gold=0');assert.equal(run('gearBuy("staff")'),false);
@@ -104,7 +170,31 @@ test('save migration recomputes equipped stats without accumulating bonuses',()=
 });
 test('released HTML embeds sources once, orders equipment after trees, and has save bridges',()=>{
  const html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8');
- for(const [name,file]of [['EQUIPMENT_MODEL','equipment-model.js'],['EQUIPMENT_RULES','equipment.js'],['EQUIPMENT_STYLE','equipment.css']]){assert.equal(html.split(name+'_BEGIN').length,2);assert.ok(html.includes(fs.readFileSync(path.join(__dirname,file),'utf8')));}
+ for(const [name,file]of [['EQUIPMENT_MODEL','equipment-model.js'],['EQUIPMENT_RULES','equipment.js'],['EQUIPMENT_STYLE','equipment.css'],['MENU_STYLE','menu.css'],['MINION_CARE','minion-care.js']]){assert.equal(html.split(name+'_BEGIN').length,2);assert.ok(html.replace(/\r\n/g,'\n').includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n')));}
  assert.ok(html.indexOf('/* EQUIPMENT_RULES_BEGIN */')>html.indexOf('/* SKILL_TREE_RULES_END */'));
  assert.ok(html.includes('gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress'));
+});
+test('free hub can resume story before village unlock, preserving campaign and equipment',()=>{
+ const {context,run}=fixture();context.piece=item();run('CAMP.cleared={1:1};CAMP.unlocked=2;player.gearBag=[piece];const ranks=JSON.stringify(player.skillRanks);');
+ assert.equal(run('gearReturnToStory()'),true);assert.equal(run('campaignReturns'),1);assert.equal(run('CAMP.cleared[1]'),1);assert.equal(run('CAMP.unlocked'),2);assert.equal(run('player.gearBag[0].id'),context.piece.id);assert.equal(run('JSON.stringify(player.skillRanks)'),run('ranks'));
+});
+test('return from a wave requires confirmation; cancel preserves free mode and success collects drops',()=>{
+ const {context,run}=fixture();context.piece=item();run('gameState="field";droppedItems=[{type:"equipment",item:piece,mesh:mkMesh2(4,0)}];gearReturnToStory();');
+ assert.equal(run('campaignReturns'),0);run('confirmation.cancel()');assert.equal(run('CAMP.on'),false);assert.equal(run('droppedItems.length'),1);
+ run('gearReturnToStory();confirmation.action()');assert.equal(run('campaignReturns'),1);assert.equal(run('player.gearBag.length'),1);assert.equal(run('droppedItems.length'),0);
+});
+test('status preview matches equipped stats without changing HP, ranks, loadout or cooldowns',()=>{
+ const {context,run}=fixture();context.piece=Model.generate(12,Tree,()=>.1,'staff',false,'snapshot-staff');
+ run('piece.rarity="magic";piece.affixes=[{stat:"skill",target:"bolt",value:2},{stat:"cooldown",value:1}];player.actionLoadout=["raio","zombie"];skillSync();player.spellCooldowns.raio=3;const before=JSON.stringify(player);const preview=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING,{staff:piece});');
+ assert.equal(run('JSON.stringify(player)'),run('before'));
+ run('player.gearBag=[piece];gearEquip(piece.id,"staff")');
+ assert.equal(run('preview.attributes.hp'),run('player.maxHp'));assert.equal(run('preview.attributes.mp'),run('player.maxMp'));assert.equal(run('preview.attributes.spell'),run('player.spellDmg'));assert.equal(run('preview.attributes.regen'),run('player.mpRegen'));
+ assert.equal(run('preview.skills.find(s=>s.id==="raio").damage'),run('Math.floor(player.spellDmg*COMBAT_TUNING.boltMultiplier*skillPercent("Dano do Tiro de Osso"))'));assert.equal(run('player.spellCooldowns.raio'),3);
+ assert.ok(run('preview.skills.find(s=>s.id==="raio").sustained')<run('preview.skills.find(s=>s.id==="raio").dps'));
+});
+test('DPS separates summon attacks, burst and revive limits; utility skills have no invented damage',()=>{
+ const {run}=fixture();run('player.skillRanks={zombie:2,burst:2};player.actionLoadout=["zombie","dash"];skillSync();const estimate=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING);');
+ assert.equal(run('estimate.attributes.hordeDps'),60);assert.equal(run('estimate.attributes.hordeHp'),831);
+ assert.equal(run('estimate.skills.find(s=>s.id==="zombie-burst").damage'),102);assert.equal(run('estimate.skills.find(s=>s.id==="zombie-burst").sustained'),25.5);
+ assert.equal(run('estimate.skills.find(s=>s.id==="dash").dps'),null);
 });

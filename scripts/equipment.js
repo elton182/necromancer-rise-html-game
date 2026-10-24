@@ -1,7 +1,8 @@
 // Embedded after the skill rules, before bootGame(). Source of runtime equipment integration.
-let gearSelected=null,gearShopType='staff',gearSerial=0,gearNoticeAt=0;
+let gearSelected=null,gearShopType='staff',gearSerial=0,gearNoticeAt=0,gearPage=0,gearCompareSlot='ring1';
 const gearVillage=()=>gameState==='hub'&&!CAMP.on;
 const gearBonus=key=>EquipmentModel.bonuses(player)[key]||0;
+function menuUpdateSummary(){const summary=document.querySelector('.menu-summary');if(summary){const portrait=typeof PORT!=='undefined'&&PORT.zt?PORT.zt.img.src:'';summary.innerHTML=(portrait?'<img class="menu-portrait" src="'+portrait+'" alt="Retrato de Zephyr">':'')+'<b>ZEPHYR · NÍVEL '+player.level+'</b><span>Vida '+Math.ceil(player.hp)+' / '+player.maxHp+'</span><span>Mana '+Math.ceil(player.mp)+' / '+player.maxMp+'</span><span>'+player.gold+' ouro</span><span>'+player.skillPoints+' pontos</span>';}}
 function gearEnsure(){player.equipment||={};player.gearBag||=[];player.waveProgress||=EquipmentModel.progress();}
 function gearName(item){return EquipmentModel.slots[item.type].name+' '+EquipmentModel.rarities[item.rarity].name;}
 function gearCurrentWave(){return EquipmentModel.waveNumber(currentMission?.endless?wave:CAMP.on?CAMP.stage:currentMission?.difficulty||1);}
@@ -9,7 +10,7 @@ function gearRefresh(){
  const hp=player.hp/player.maxHp,mp=player.mp/player.maxMp,allies=minions.map(m=>({m,hp:m.hp/maxHpSafe(m)}));
  skillSync();player.hp=hp<=0?0:Math.max(1,Math.floor(player.maxHp*hp+1e-8));player.mp=Math.max(0,Math.floor(player.maxMp*mp+1e-8));
  for(const {m,hp:ratio}of allies)m.hp=m.dead?0:Math.max(1,Math.floor(m.maxHp*ratio+1e-8));
- updateHUD();updateMinionPanel();buildSkillTree();saveGame();
+ updateHUD();updateMinionPanel();buildSkillTree();menuUpdateSummary();saveGame();
 }
 function maxHpSafe(m){return Math.max(1,m.maxHp||1);}
 function gearEquip(id,slot){
@@ -17,13 +18,17 @@ function gearEquip(id,slot){
  if(item.type!==slot&&!(item.type.startsWith('ring')&&slot.startsWith('ring')))return false;
  const old=player.equipment[slot];player.gearBag.splice(index,1);if(old)player.gearBag.push(old);player.equipment[slot]=item;gearSelected={slot};gearRefresh();return true;
 }
-function gearUnequip(slot){gearEnsure();if(!player.equipment[slot]||player.gearBag.length>=EquipmentModel.CAPACITY)return false;const item=player.equipment[slot];player.gearBag.push(item);delete player.equipment[slot];gearSelected={id:item.id};gearRefresh();return true;}
+function gearUnequip(slot){gearEnsure();if(!player.equipment[slot]||player.gearBag.length>=EquipmentModel.CAPACITY)return false;const item=player.equipment[slot];player.gearBag.push(item);gearPage=Math.floor((player.gearBag.length-1)/30);delete player.equipment[slot];gearSelected={id:item.id};gearRefresh();return true;}
 function gearSell(id){if(!gearVillage())return false;const index=player.gearBag.findIndex(i=>i.id===id);if(index<0)return false;player.gold+=EquipmentModel.sellPrice(player.gearBag[index]);player.gearBag.splice(index,1);gearSelected=null;updateHUD();saveGame();return true;}
+function gearDiscardAll(){
+ gearEnsure();if(!player.gearBag.length)return false;const ids=new Set(player.gearBag.map(i=>i.id)),count=ids.size;
+ tConfirm('Descartar '+count+' equipamento(s) da mochila? Esta ação não pode ser desfeita. Itens equipados e consumíveis serão mantidos.','DESCARTAR '+count+' PEÇAS',()=>{player.gearBag=player.gearBag.filter(i=>!ids.has(i.id));if(gearSelected?.id&&ids.has(gearSelected.id))gearSelected=null;gearPage=0;saveGame();tPause('equipment');},()=>tPause('equipment'));return true;
+}
 function gearBuy(type){
  gearEnsure();if(!gearVillage()||!EquipmentModel.slots[type]||player.gearBag.length>=EquipmentModel.CAPACITY)return false;
  const level=player.waveProgress.unlocked,cost=EquipmentModel.price(level);if(player.gold<cost)return false;
  const item=EquipmentModel.generate(level,BuildModel,Math.random,type,false,'eq-'+Date.now().toString(36)+'-'+(++gearSerial));
- player.gold-=cost;player.gearBag.push(item);gearSelected={id:item.id};updateHUD();saveGame();playSound('pickupMp');return true;
+ player.gold-=cost;player.gearBag.push(item);gearPage=Math.floor((player.gearBag.length-1)/30);gearSelected={id:item.id};updateHUD();saveGame();playSound('pickupMp');return true;
 }
 function gearPickup(drop){gearEnsure();if(player.gearBag.length>=EquipmentModel.CAPACITY)return false;player.gearBag.push(drop.item);floatMsg('+'+gearName(drop.item),innerWidth/2,innerHeight*.42,EquipmentModel.rarities[drop.item.rarity].color);playSound('pickupMp');return true;}
 function gearCollectAvailable(){let collected=false;for(let i=droppedItems.length-1;i>=0;i--)if(droppedItems[i].type==='equipment'&&gearPickup(droppedItems[i])){droppedItems.splice(i,1);collected=true;}if(collected)saveGame();}
@@ -36,18 +41,54 @@ function gearLeave(next){
 }
 function gearSelectWave(n){gearEnsure();if(!gearVillage())return false;n=Math.floor(Number(n));if(!Number.isFinite(n)||n<1||n>player.waveProgress.unlocked)return false;player.waveProgress.selected=n;saveGame();return true;}
 function gearOpen(tab='equipment'){if(TITLE.active||COMIC.active||CAMP.map||P.deadT>0)return;setPause(true);tPause(tab);}
+function gearReturnToStory(){
+ if(CAMP.on||TITLE.active||COMIC.active||P.deadT>0||!['hub','field'].includes(gameState))return false;
+ const resume=()=>gearLeave(()=>campToCampaign());
+ if(gameState==='field')tConfirm('Voltar à história encerra a tentativa atual. Seu personagem, equipamentos e progresso da campanha serão preservados.','VOLTAR À HISTÓRIA',resume,()=>tPause());
+ else resume();
+ return true;
+}
+function gearIcon(type){
+ const paths={staff:'M12 56 34 12M30 15c-12-1-11-15-2-14 12 1 14 18 3 20M11 51l7 4M8 55l8 5',grimoire:'M9 12 33 8 39 13 39 51 15 56 9 51ZM15 17l24-4M15 17v39M9 12l6 5M23 26l8-2 4 8-7 10-7-7Z',body:'M18 9l6 5 7-5 12 11-6 11-5-4 5 29H11l5-29-5 4-6-11ZM18 9l6 17 7-17M18 40h13',head:'M6 43c0-24 6-35 18-38 12 3 18 14 18 38l-10 9H16ZM15 36c0-13 3-20 9-23 6 3 9 10 9 23l-9 7ZM6 43l18 15 18-15',boots:'M9 10h13v24l-7 8H6v13h20V10M29 10h13v28l-7 6h-8v12h20M9 17h13M29 17h13',ring1:'M24 13 32 21 24 29 16 21ZM18 28c-15 5-13 28 6 28s21-23 6-28M12 37c7 5 17 5 24 0',ring2:'M24 13 32 21 24 29 16 21ZM18 28c-15 5-13 28 6 28s21-23 6-28M12 37c7 5 17 5 24 0'};
+ return '<svg viewBox="0 0 48 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+paths[type]+'"/></svg>';
+}
+function gearSilhouette(){return '<svg class="gear-silhouette" viewBox="0 0 240 380" aria-hidden="true"><g fill="#28302a" stroke="#777759" stroke-width="1.5"><path d="M82 81Q80 29 120 15q40 14 38 66l-18 30H100Z"/><path d="M100 87 62 108 42 197 61 211 82 143 75 270 55 344q65 30 130 0l-20-74-7-127 21 68 19-14-20-89-38-21-20 19Z"/><path d="m84 144 10 125-20 69m82-194-10 125 20 69M100 104l20 158 20-158M76 219q44 15 88 0"/><path d="m61 205-16 29-10-4 7-33m137 8 16 29 10-4-7-33M91 347v22h24l5-19m29-3v22h-24l-5-19"/><ellipse cx="120" cy="66" rx="21" ry="27" fill="#111711"/><path d="m107 63 8 2m10 0 8-2m-18 15h10" stroke="#c4c69a"/></g><circle cx="120" cy="181" r="63" fill="none" stroke="#8a8055" stroke-dasharray="2 7" opacity=".25"/></svg>';}
+function gearRenderStats(host,chosen){
+ const current=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING),next={...player.equipment};let comparison='Selecione uma peça para prever a troca.';
+ if(chosen){if(gearSelected?.slot){delete next[gearSelected.slot];comparison='Prévia ao desequipar '+EquipmentModel.slots[gearSelected.slot].name+'.';}else{const slot=chosen.type.startsWith('ring')?gearCompareSlot:chosen.type;next[slot]=chosen;comparison='Prévia ao equipar em '+EquipmentModel.slots[slot].name+'.';}}
+ const preview=chosen?EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING,next):current;
+ const num=n=>n===null||n===undefined?'—':Number(n).toLocaleString('pt-BR',{maximumFractionDigits:2});
+ const delta=(a,b,inverse=false)=>{if(a===null||b===null||!chosen)return '';const d=b-a;if(Math.abs(d)<.005)return '<span class="stat-neutral">=</span>';return '<span class="'+((inverse?d<0:d>0)?'stat-up':'stat-down')+'">'+(d>0?'+':'')+num(d)+'</span>';};
+ host.innerHTML='<div class="gear-stat-heading"><h3>Status do personagem</h3><span>'+comparison+'</span></div><div class="gear-stat-target"></div><table class="gear-stat-table"><thead><tr><th>Atributo</th><th>Atual</th><th>Prévia</th><th>Dif.</th></tr></thead><tbody></tbody></table><section class="gear-dps"><h3>Dano e DPS das habilidades</h3><p class="gear-dps-note">Potencial por alvo, sem erro ou resistência. Cada skill é avaliada sozinha. DPS por recarga usa mana disponível; DPS contínuo usa apenas a regeneração. Chuva considera os 7 fragmentos acertando; horda considera todos vivos e próximos. Não some estas colunas como DPS total da build.</p><div class="gear-skill-table-wrap"><table class="gear-skill-table"><thead><tr><th>Habilidade</th><th>Dano / uso</th><th>Recarga</th><th>DPS potencial</th><th>DPS contínuo</th></tr></thead><tbody></tbody></table></div></section>';
+ if(chosen&&!gearSelected?.slot&&chosen.type.startsWith('ring'))for(const slot of ['ring1','ring2']){const b=document.createElement('button');b.className='btn';b.textContent='Comparar '+EquipmentModel.slots[slot].name.toLowerCase();b.setAttribute('aria-pressed',String(gearCompareSlot===slot));b.onclick=()=>{gearCompareSlot=slot;tPause('equipment');};host.querySelector('.gear-stat-target').append(b);}
+ const labels={hp:['Vida máxima',''],mp:['Mana máxima',''],spell:['Base de dano mágico',''],regen:['Regeneração de mana','/s'],hpRegen:['Regeneração de vida','/s'],move:['Movimento',' u/s'],cooldown:['Redução de recarga dos itens','%'],hordeHp:['Vida da horda equipada',''],hordeRegen:['Regeneração da horda equipada','/s'],hordeDps:['DPS básico da horda equipada','']};
+ for(const [key,[label,unit]]of Object.entries(labels)){const a=current.attributes[key],b=preview.attributes[key];host.querySelector('.gear-stat-table tbody').insertAdjacentHTML('beforeend','<tr data-stat="'+key+'"><th>'+label+'</th><td>'+num(a)+unit+'</td><td>'+num(b)+unit+'</td><td>'+delta(a,b)+'</td></tr>');}
+ const value=(a,b,inverse=false)=>'<span>'+num(a)+'</span>'+(chosen&&a!==null&&b!==null&&Math.abs(b-a)>=.005?'<span class="stat-arrow"> → </span><strong>'+num(b)+'</strong> '+delta(a,b,inverse):'');
+ for(const skill of current.skills){const after=preview.skills.find(s=>s.id===skill.id)||skill;host.querySelector('.gear-skill-table tbody').insertAdjacentHTML('beforeend','<tr data-skill="'+skill.id+'"><th>'+skill.name+'<small>'+(skill.equipped?'Equipada':'Não equipada')+' · '+skill.mana+' MP<br>'+skill.note+'</small></th><td>'+value(skill.damage,after.damage)+'</td><td>'+value(skill.cooldown,after.cooldown,true)+' s</td><td>'+value(skill.dps,after.dps)+'</td><td>'+value(skill.sustained,after.sustained)+'</td></tr>');}
+}
 function gearRender(body){
- gearEnsure();body.innerHTML='<div class="gear-header"><div><small>RELICÁRIO DE ZEPHYR</small><h2>Equipamentos</h2></div><span>'+player.gearBag.length+'/'+EquipmentModel.CAPACITY+' peças · '+player.gold+' ouro</span></div><p class="section-note">Selecione uma peça para comparar. Os equipamentos modificam atributos e habilidades; a aparência de Zephyr permanece a mesma.</p><div class="gear-layout"><section class="gear-slots" aria-label="Equipados"></section><section class="gear-bag" aria-label="Mochila"></section><section class="gear-detail" aria-live="polite"></section></div><div class="gear-totals"></div><section class="gear-merchant"></section>';
+ gearEnsure();body.innerHTML='<div class="gear-header"><div><small>RELICÁRIO DE ZEPHYR</small><h2>Inventário</h2></div><span>'+player.gearBag.length+'/'+EquipmentModel.CAPACITY+' peças · '+player.gold+' ouro</span></div><div class="gear-layout"><section class="gear-bag gear-frame" aria-label="Mochila"></section><section class="gear-character gear-frame" aria-label="Equipamentos do personagem"><h3>Personagem</h3><div class="gear-paperdoll">'+gearSilhouette()+'<div class="gear-slots" aria-label="Equipados"></div></div><p class="gear-character-note">ZEPHYR · NÍVEL '+player.level+'</p></section><section class="gear-detail" aria-live="polite"></section></div><div class="gear-totals"></div><section class="gear-merchant"></section>';
  const button=(host,text,action,disabled=false)=>{const b=document.createElement('button');b.type='button';b.className='btn';b.textContent=text;b.disabled=disabled;b.onclick=()=>{action();tPause('equipment');};host.append(b);return b;};
  const slots=body.querySelector('.gear-slots'),bag=body.querySelector('.gear-bag'),detail=body.querySelector('.gear-detail');
- slots.innerHTML='<h3>Equipados</h3>';bag.innerHTML='<h3>Mochila</h3>';
+ const close=document.createElement('button');close.className='btn gear-close';close.textContent='Fechar · I';close.onclick=()=>setPause(false);body.querySelector('.gear-header').append(close);
+ const title=document.querySelector('.pt');if(title)title.textContent='— INVENTÁRIO —';
+ bag.innerHTML='<h3>Mochila <small>'+player.gearBag.length+'/'+EquipmentModel.CAPACITY+'</small></h3><div class="gear-grid" role="group" aria-label="Células da mochila"></div><div class="gear-pages" aria-label="Bolsas"></div>';
  for(const [slot,def]of Object.entries(EquipmentModel.slots)){
   const item=player.equipment[slot],b=button(slots,def.icon+' '+def.name+' · '+(item?EquipmentModel.rarities[item.rarity].name+' Nv.'+item.level:'vazio'),()=>{gearSelected={slot};});
-  if(item)b.style.borderColor=b.style.color=EquipmentModel.rarities[item.rarity].color;if(gearSelected?.slot===slot)b.setAttribute('aria-pressed','true');
+  b.classList.add('gear-slot','gear-slot-'+slot);b.title=b.textContent;b.setAttribute('aria-label',b.textContent);b.innerHTML=gearIcon(slot)+'<span>'+def.name+'</span>'+(item?'<em>'+item.level+'</em>':'');
+  if(item){b.classList.add('filled');b.style.setProperty('--gear-color',EquipmentModel.rarities[item.rarity].color);}if(gearSelected?.slot===slot)b.setAttribute('aria-pressed','true');
  }
- if(!player.gearBag.length)bag.insertAdjacentHTML('beforeend','<p class="section-note">Encontre equipamentos nos monstros ou compre relíquias na vila.</p>');
- for(const item of player.gearBag){const b=button(bag,EquipmentModel.slots[item.type].icon+' '+gearName(item)+' · Nv.'+item.level,()=>{gearSelected={id:item.id};});b.style.borderColor=b.style.color=EquipmentModel.rarities[item.rarity].color;if(gearSelected?.id===item.id)b.setAttribute('aria-pressed','true');}
+ gearPage=Math.max(0,Math.min(1,gearPage));const grid=bag.querySelector('.gear-grid');
+ for(let index=gearPage*30;index<(gearPage+1)*30;index++){
+  const item=player.gearBag[index],b=button(grid,item?gearName(item)+' · Nv.'+item.level:'Espaço vazio '+(index+1),()=>{if(item)gearSelected={id:item.id};},!item);
+  b.classList.add('gear-cell');b.setAttribute('aria-label',b.textContent);b.title=item?b.textContent:'';b.innerHTML=item?gearIcon(item.type)+'<span class="gear-item-level">'+item.level+'</span>':'';
+  if(item){b.style.setProperty('--gear-color',EquipmentModel.rarities[item.rarity].color);b.classList.add('filled');if(gearSelected?.id===item.id)b.setAttribute('aria-pressed','true');}
+ }
+ for(let page=0;page<2;page++){const b=button(bag.querySelector('.gear-pages'),'Bolsa '+(page===0?'I':'II'),()=>{gearPage=page;gearSelected=null;});b.setAttribute('aria-pressed',String(gearPage===page));}
+ const discard=document.createElement('button');discard.type='button';discard.className='btn gear-discard-all';discard.textContent='Descartar tudo da mochila';discard.disabled=!player.gearBag.length;discard.onclick=gearDiscardAll;bag.append(discard);
+ bag.insertAdjacentHTML('beforeend','<p class="gear-bag-note">Selecione uma peça para comparar e equipar.</p>');
  const chosen=gearSelected?.slot?player.equipment[gearSelected.slot]:player.gearBag.find(i=>i.id===gearSelected?.id);
+ const stats=document.createElement('section');stats.className='gear-stats gear-frame';stats.setAttribute('aria-label','Status e prévia de equipamentos');body.querySelector('.gear-layout').insertBefore(stats,detail);gearRenderStats(stats,chosen);body.querySelector('.gear-layout').insertBefore(stats.querySelector('.gear-dps'),detail);
  function card(item,title){
   const rarity=EquipmentModel.rarities[item.rarity];
   const dormant=a=>a.stat==='skill'&&!skillRank(a.target)||a.stat==='school'&&!BuildModel.nodes.some(n=>n.school===a.target&&n.max>1&&skillRank(n.id));
@@ -97,8 +138,16 @@ function installEquipment(){
  const pause=tPause;tPause=function(tab){pause(tab);const tabs=document.querySelector('.pmtabs'),body=document.querySelector('.pmbody');if(!tabs||!body)return;
   for(const [id,name]of [['equipment','EQUIPAMENTOS'],['waves','WAVES']]){if(id==='waves'&&!gearVillage())continue;const b=document.createElement('button');b.className='pmtab'+(PM.tab===id?' on':'');b.textContent=name;b.onclick=()=>tPause(id);tabs.append(b);}
   if(PM.tab==='equipment')gearRender(body);if(PM.tab==='waves')gearRenderWaves(body);
+  if(!CAMP.on&&['hub','field'].includes(gameState)){const b=document.createElement('button');b.className='btn';b.textContent='Voltar à história';b.onclick=gearReturnToStory;document.querySelector('.pmside')?.append(b);}
   if(currentMission?.endless){const b=document.createElement('button');b.className='btn';b.textContent='Voltar à vila';b.onclick=()=>{setPause(false);enterHub();};document.querySelector('.pmside')?.append(b);}
+  const root=document.querySelector('.pm');if(root){
+   root.classList.add('menu-standard');root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-labelledby','pause-dialog-title');
+   const title=root.querySelector('.pt');if(title){title.id='pause-dialog-title';title.textContent='— RELICÁRIO DE ZEPHYR —';}
+   const summary=document.createElement('div');summary.className='menu-summary';root.insertBefore(summary,root.querySelector('.pmmain'));menuUpdateSummary();
+   const side=root.querySelector('.pmside'),actions=document.createElement('div');actions.className='menu-actions';if(side){for(const child of [...side.children])if(child.tagName==='BUTTON')actions.append(child);side.remove();}root.append(actions);
+  }
  };
+ const refreshSkills=skillRefresh;skillRefresh=function(){const result=refreshSkills();menuUpdateSummary();return result;};
  const controls=pmControlsHtml;pmControlsHtml=function(){return controls()+'<p class="section-note">I · Equipamentos. Na vila, abra WAVES para escolher a dificuldade e EQUIPAMENTOS para comprar ou vender.</p>';};
  const shop=buildShopGrid;buildShopGrid=function(){shop();const host=document.getElementById('shop-grid');if(!host||!gearVillage()||host.querySelector?.('.gear-world-shop'))return;const b=document.createElement('button');b.className='btn gear-world-shop';b.textContent='Relíquias · Comprar equipamentos';b.onclick=()=>{closeHubOverlay();gearOpen('equipment');};host.prepend(b);};
  const tree=buildSkillTree;buildSkillTree=function(){tree();const detail=document.querySelector('.lg-detail');if(!detail)return;const rank=skillRank(skillTreeSelected),n=EquipmentModel.effects(BuildModel,player.skillRanks||{},player.equipment).extra[skillTreeSelected]||0;const p=document.createElement('p');p.className='gear-skill-bonus';p.textContent=rank+' investidos + '+n+' de equipamento = '+(rank+n)+' efetivos. Equipamentos não liberam pré-requisitos.';detail.prepend(p);};

@@ -58,6 +58,7 @@ function readSource(root = path.resolve(__dirname, '..')) {
         'Rain resolves as seven fragments spread over configurable targets, without geometry or delayed impacts.',
         'Captain reinforcements are emitted at 75%, 50%, 25% HP; captain AI specials/shield are not modeled.',
         'Minion commands, dash invulnerability, shields, curses, walls, lifesteal and movement geometry are not modeled.',
+        'Minion health scaling, regeneration and 50% auto-revive health use live tuning. Manual revival and positional dodging are validated in game, not simulated.',
         'Campaign traversal time is excluded; encounter intervals are counted. XP/min is combat-based.',
         'Campaign enemy scaling is fixed at phase entry; levels/points are updated between ambushes.',
         'Equipment generator and skill bonuses are shared with the game. Selection utility and combat behavior remain assumptions.'

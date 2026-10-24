@@ -2,7 +2,7 @@
 // BuildModel is also embedded: the released game remains a standalone HTML file.
 const SKILL_TREE_VERSION=1;
 // Shared with the simulator through its source adapter. Keep pressure readable and dodgeable.
-const COMBAT_TUNING={boltMultiplier:.5,zombieBurstMultiplier:3.5,zombieBurstRadius:3.5,enemySpeed:1.15,meleeInterval:1.1,rangedInterval:1.3,specialDelayMin:.75,specialDelayMax:1.25,gearChance:.16,orbChance:.16,hpOrbShare:.25,specials:{Guerreiro:{windup:.5,cooldown:5},Arqueiro:{windup:.65,cooldown:5},'Mago Vivo':{windup:.75,cooldown:6.5},Bruto:{windup:.65,cooldown:6}}};
+const COMBAT_TUNING={boltMultiplier:.5,zombieBurstMultiplier:3.5,zombieBurstRadius:3.5,minionHpMultiplier:1.5,minionHpPerLevel:6,minionRegen:.01,manualReviveHealth:.6,autoReviveHealth:.5,enemySpeed:1.15,meleeInterval:1.1,rangedInterval:1.3,specialDelayMin:.75,specialDelayMax:1.25,gearChance:.16,orbChance:.16,hpOrbShare:.25,specials:{Guerreiro:{windup:.5,cooldown:5},Arqueiro:{windup:.65,cooldown:5},'Mago Vivo':{windup:.75,cooldown:6.5},Bruto:{windup:.65,cooldown:6}}};
 const TREE_ACTIONS={bolt:'raio',rain:'chuva',wall:'maos',shield:'barreira',nova:'explosao',dash:'dash',zombie:'zombie',skeleton:'skeleton',archer:'archer',specter:'specter',abom:'abom',curse:'maldicao'};
 const TREE_PASSIVES={zombie_burst:'burst',archer_power:'shot',abom_slam:'colossus',aura:'aura'};
 let skillTreeTab='minions',skillTreeSelected='zombie';
@@ -71,7 +71,7 @@ function skillMigrateSave(d){
  d.maxMp=Math.round((80+5*(level-1))*(1+(effects['Mana máxima']||0)/100)+(gear.mp||0));
  d.hp=Math.max(1,Math.min(d.maxHp,Math.round((d.hp??oldHp)/oldHp*d.maxHp)));
  d.mp=Math.max(0,Math.min(d.maxMp,Math.round((d.mp??oldMp)/oldMp*d.maxMp)));
- d.spellDmg=Math.round((40+4*(level-1))*(1+(gear.spell||0)/100));d.spellRadius=2.5;d.mpRegen=(4+.3*(level-1))*(1+(effects['Regeneração de mana']||0)/100)+(gear.regen||0);d.hpRegen=.2*(level-1);
+ d.spellDmg=Math.round((40+4*(level-1)+(gear.spellFlat||0))*(1+(gear.spell||0)/100));d.spellRadius=2.5;d.mpRegen=(4+.3*(level-1))*(1+(effects['Regeneração de mana']||0)/100)+(gear.regen||0);d.hpRegen=.2*(level-1);
  d.learnedSkills=[...new Set([...grants,...Object.entries(TREE_ACTIONS).filter(([node])=>ranks[node]).map(([,action])=>action),...Object.keys(ranks)])];
  d.skillEquipTutorialSeen=Array.isArray(d.skillEquipTutorialSeen)?[...new Set(d.skillEquipTutorialSeen.filter(id=>Object.values(TREE_ACTIONS).includes(id)))]:[];
  const allowed=id=>id==='empty'||d.learnedSkills.includes(id);
@@ -93,8 +93,11 @@ function skillMinionStats(type){
  if(type==='abom'){hp+=e['Vida da Abominação']||0;damage+=e['Dano da Abominação']||0;}
  if(type==='skeleton')hp+=e['Vida dos Guerreiros']||0;
  if(type==='archer')damage+=e['Dano dos Arqueiros']||0;
+ if(type==='zombie'){hp+=e['Vida de Zumbis']||0;damage+=e['Dano de Zumbis']||0;}
  hp+=skillGearStat('hordeHp');damage+=skillGearStat('horde');
- return {hp:Math.round(def.hp*(1+hp/100)),dmg:Math.round((def.dmg+player.level-1)*(1+damage/100)),baseDmg:def.dmg+player.level-1,damageBonus:damage,spd:def.spd,regen:0,rng:def.atkR};
+ const maxHp=Math.round((def.hp*COMBAT_TUNING.minionHpMultiplier+(player.level-1)*COMBAT_TUNING.minionHpPerLevel)*(1+hp/100));
+ const baseDmg=def.dmg+player.level-1+skillGearStat('hordeFlat');
+ return {hp:maxHp,dmg:Math.round(baseDmg*(1+damage/100)),baseDmg,damageBonus:damage,spd:def.spd,regen:maxHp*COMBAT_TUNING.minionRegen,rng:def.atkR};
 }
 function skillApplyMinion(m){
  const stats=skillMinionStats(m.type),ratio=m.maxHp?m.hp/m.maxHp:1;
@@ -109,21 +112,27 @@ function skillSync(recalculate=true){
   const hpRatio=player.hp/player.maxHp,mpRatio=player.mp/player.maxMp;
   player.maxHp=Math.round((100+10*(player.level-1))*skillPercent('Vida de Zephyr')+skillGearStat('hp'));player.maxMp=Math.round((80+5*(player.level-1))*skillPercent('Mana máxima')+skillGearStat('mp'));
   player.hp=Math.min(player.maxHp,Math.max(1,Math.round(player.maxHp*hpRatio)));player.mp=Math.min(player.maxMp,Math.max(0,Math.round(player.maxMp*mpRatio)));
-  player.spellDmg=Math.round((40+4*(player.level-1))*(1+skillGearStat('spell')/100));player.mpRegen=(4+.3*(player.level-1))*skillPercent('Regeneração de mana')+skillGearStat('regen');player.hpRegen=.2*(player.level-1);
+  player.spellDmg=Math.round((40+4*(player.level-1)+skillGearStat('spellFlat'))*(1+skillGearStat('spell')/100));player.mpRegen=(4+.3*(player.level-1))*skillPercent('Regeneração de mana')+skillGearStat('regen');player.hpRegen=.2*(player.level-1);
   minionHpBonus=0;minionDmgBonus=0;minionRegenBonus=0;
   player.upgradeCount={};player.minionUpgradeCount={};player.spellUpgradeCount={};minions.forEach(skillApplyMinion);
  }
  const pts=document.getElementById('sp-pts-txt');if(pts)pts.textContent=`✦ ${player.skillPoints} pts`;
  actionSignature='';actionAvailabilitySignature='';summonSlotsSignature='';_mpSig='';
 }
-function skillCanRefund(){return (gameState==='hub'||CAMP.map)&&!minions.some(m=>m.exploded||m.sacrificed);}
+function skillRefundReason(){
+ const safe=gameState==='hub'||CAMP.map||(TITLE.paused&&gameState==='field'&&(typeof waveActive==='undefined'||!waveActive)&&!enemies.some(e=>!e.dead));
+ if(!safe)return 'Devolva pontos na vila, no mapa ou pausado entre waves, sem inimigos.';
+ if(minions.some(m=>m.exploded||m.sacrificed))return 'Há aliados detonados ou sacrificados em recuperação. Feche a pausa para o tempo avançar e tente novamente.';
+ return '';
+}
+function skillCanRefund(){return !skillRefundReason();}
 function skillRefresh(){skillSync();syncSummonProgress();reconcileActionSummons();updateHUD();updateMinionPanel();buildSkillTree();const footer=document.querySelector?.('.pm:has(.live-grimoire) .pmside>.section-note');if(footer)footer.textContent=(player.gold||0)+' ouro · '+player.skillPoints+' pontos';if(gameState==='hub'||CAMP.map)saveGame();}
 function skillInvest(id){
  try{const action=TREE_ACTIONS[id],wasUnlocked=action&&skillUnlocked(action),s=skillState();BuildModel.invest(s,id);player.skillRanks=s.ranks;if(player.skillTutorialState==='allocating'&&BuildModel.spent(s.ranks)>=3)skillTutorialComplete();if(action&&!wasUnlocked)skillEquipTutorialQueue(action);skillRefresh();playSound('levelUp');}
  catch(e){floatMsg(e.message,innerWidth/2,innerHeight*.4,'#d7a68e');}
 }
 function skillRefund(id){
- if(!skillCanRefund()){floatMsg('Redistribua na vila ou no mapa, após os aliados se recuperarem.',innerWidth/2,innerHeight*.4,'#d7a68e');return;}
+ if(!skillCanRefund()){floatMsg(skillRefundReason(),innerWidth/2,innerHeight*.4,'#d7a68e');return;}
  const quote=skillRefundQuote(id);if(!quote.points||!skillPayRefund(quote.cost))return;player.skillRanks=quote.ranks;skillRemoveUnavailable();skillRefresh();
 }
 function skillRemoveUnavailable(){
@@ -242,7 +251,7 @@ function skillWallAbsorb(sh,x,y){
  buyUpgrade=buyMinionUpgrade=buySpellUpgrade=function(){return false;};
  fuseZombies=function(){floatMsg('Abominação é desbloqueada no ramo dos Zumbis.',innerWidth/2,innerHeight*.4,'#bdc79f');return null;};
  learnSkill=skillInvest;unlearnSkill=skillRefund;
- respecAllSkills=function(){if(!skillCanRefund()){floatMsg('Redistribua na vila ou no mapa após a recuperação dos aliados.',innerWidth/2,innerHeight*.4,'#d7a68e');return;}const cost=skillResetCost();if(!cost||!skillPayRefund(cost))return;player.skillRanks={};skillRemoveUnavailable();skillRefresh();};
+ respecAllSkills=function(){if(!skillCanRefund()){floatMsg(skillRefundReason(),innerWidth/2,innerHeight*.4,'#d7a68e');return;}const cost=skillResetCost();if(!cost||!skillPayRefund(cost))return;player.skillRanks={};skillRemoveUnavailable();skillRefresh();};
  MANAGEMENT_INFO.upgrades[1]='Atributos e equipamentos de Zephyr.';MANAGEMENT_INFO.skills[1]='Minions e Profana · bifurcações, sinergias e 3 pontos por nível.';
  const pointButton=document.getElementById('sp-pts-txt');
  if(pointButton?.setAttribute){
@@ -272,10 +281,10 @@ function buildSkillTree(){
   list.forEach((n,i)=>{const b=document.createElement('button'),rank=skillRank(n.id),blocked=BuildModel.reason(n,player.skillRanks,player.level);b.className='lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(n.max===1?' final':'')+(n.id===skillTreeSelected?' selected':'');b.style.left=positions[i][0]+'%';b.style.top=positions[i][1]+'px';b.setAttribute('aria-label',n.name+', '+rank+' de '+n.max+' pontos');b.setAttribute('aria-pressed',String(n.id===skillTreeSelected));b.innerHTML=`<span class="lg-seal"><i>${n.icon}</i><em>${rank}/${n.max}</em></span><span>${n.name}</span>`;b.onclick=()=>{skillTreeSelected=n.id;buildSkillTree();};graph.append(b);});shell.querySelector('.lg-schools').append(section);
  }
  const n=BuildModel.byId[skillTreeSelected],rank=skillRank(n.id),error=BuildModel.reason(n,player.skillRanks,player.level),detail=shell.querySelector('.lg-detail'),e=skillEffects();
- detail.innerHTML=`<small>${skillTreeTab==='minions'?'MINIONS':'PROFANA'} · ${BuildModel.schools.find(s=>s.id===n.school).name}</small><h3>${n.icon} ${n.name}</h3><b>${rank}/${n.max} pontos</b><p>${n.description}</p><div class="lg-requirement">${error||`Nível ${n.level}${n.requires?' · 2 pontos em '+BuildModel.byId[n.requires].name:''}`}</div>${TREE_ACTIONS[n.id]&&(player.skillGrants||[]).includes(TREE_ACTIONS[n.id])?'<p class="lg-note">Habilidade base já disponível. Investir aprimora e abre os próximos nós.</p>':''}${n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+BuildModel.byId[n.exclusive].name+'.</p>':''}<h4>Por ponto investido</h4><ul>${Object.entries(n.effects).map(([k,v])=>`<li>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'} ${k.toLowerCase()}</li>`).join('')}</ul><div class="lg-invest"><button class="btn invest">+ Investir ponto</button><button class="btn refund">−</button></div><h4>Sinergias da build</h4><div class="lg-bonuses">${Object.entries(e).map(([k,v])=>`<div><span>${k}</span><b>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'}</b></div>`).join('')||'Invista pontos para fortalecer sua build.'}</div><p class="lg-note">Bônus para habilidades ainda não aprendidas ficam dormentes. Redistribuição apenas na vila ou no mapa, sem aliados em recuperação.</p>`;
+ detail.innerHTML=`<small>${skillTreeTab==='minions'?'MINIONS':'PROFANA'} · ${BuildModel.schools.find(s=>s.id===n.school).name}</small><h3>${n.icon} ${n.name}</h3><b>${rank}/${n.max} pontos</b><p>${n.description}</p><div class="lg-requirement">${error||`Nível ${n.level}${n.requires?' · 2 pontos em '+BuildModel.byId[n.requires].name:''}`}</div>${TREE_ACTIONS[n.id]&&(player.skillGrants||[]).includes(TREE_ACTIONS[n.id])?'<p class="lg-note">Habilidade base já disponível. Investir aprimora e abre os próximos nós.</p>':''}${n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+BuildModel.byId[n.exclusive].name+'.</p>':''}<h4>Por ponto investido</h4><ul>${Object.entries(n.effects).map(([k,v])=>`<li>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'} ${k.toLowerCase()}</li>`).join('')}</ul><div class="lg-invest"><button class="btn invest">+ Investir ponto</button><button class="btn refund">−</button></div><h4>Sinergias da build</h4><div class="lg-bonuses">${Object.entries(e).map(([k,v])=>`<div><span>${k}</span><b>${v>0?'+':''}${v}${/adicionais/.test(k)?'':'%'}</b></div>`).join('')||'Invista pontos para fortalecer sua build.'}</div><p class="lg-note">Bônus para habilidades ainda não aprendidas ficam dormentes. Devolução na vila, no mapa ou pausado entre waves. Aliados detonados/sacrificados precisam terminar a recuperação.</p>`;
  const invest=detail.querySelector('.invest');invest.disabled=!!error||rank>=n.max||player.skillPoints<=0;invest.onclick=()=>skillInvest(n.id);
- const refund=detail.querySelector('.refund'),quote=skillRefundQuote(n.id);refund.disabled=!rank||!skillCanRefund()||(player.gold||0)<quote.cost;refund.setAttribute('aria-label','Devolver ponto de '+n.name+' por '+quote.cost+' ouro');refund.title='Devolve '+quote.points+' ponto(s), incluindo dependentes · '+quote.cost+' ouro';refund.onclick=()=>skillRefund(n.id);
- if(rank){const price=document.createElement('p');price.className='lg-note';price.textContent='Devolver este ponto e dependentes: '+quote.cost+' ouro ('+quote.points+' pontos).';detail.querySelector('.lg-invest').after(price);}
+ const refund=detail.querySelector('.refund'),quote=skillRefundQuote(n.id);refund.disabled=!rank||!skillCanRefund()||(player.gold||0)<quote.cost;refund.textContent='− Devolver ponto';refund.setAttribute('aria-label','Devolver ponto de '+n.name+' por '+quote.cost+' ouro');refund.title='Devolve '+quote.points+' ponto(s), incluindo dependentes · '+quote.cost+' ouro';refund.onclick=()=>skillRefund(n.id);
+ {const price=document.createElement('p');price.className='lg-note lg-refund-feedback';price.setAttribute('role','status');price.textContent=skillRefundReason()||(!rank?'Este nó não tem pontos investidos para devolver.':(player.gold||0)<quote.cost?'Ouro insuficiente: precisa de '+quote.cost+' ouro para devolver '+quote.points+' ponto(s), incluindo dependentes. Seu saldo: '+(player.gold||0)+'.':'Devolve '+quote.points+' ponto(s), incluindo dependentes, por '+quote.cost+' ouro.');detail.querySelector('.lg-invest').after(price);}
  const bonus=detail.querySelector('.lg-bonuses'),bonusTitle=bonus.previousElementSibling,fold=document.createElement('details');fold.className='lg-bonus-fold';fold.innerHTML='<summary>Bônus acumulados da build</summary>';bonusTitle.replaceWith(fold);fold.append(bonus);
  const action=TREE_ACTIONS[n.id];if(action&&skillUnlocked(action)&&!player.actionLoadout.includes(action)){
   const equip=document.createElement('button');equip.className='btn lg-equip-help';equip.textContent='Alocar em um slot';equip.onclick=()=>{player.skillEquipTutorialPending=action;skillEquipTutorialOpen();};detail.querySelector('.lg-invest').after(equip);

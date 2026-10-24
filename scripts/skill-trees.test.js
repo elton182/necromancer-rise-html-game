@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const BuildModel=require('../build-simulator/model.js');
-const html=fs.readFileSync(require('node:path').join(__dirname,'../necromancer-canvas.html'),'utf8');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
 const source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 const integration=fs.readFileSync(require('node:path').join(__dirname,'skill-trees.js'),'utf8');
 function fn(name){const start=source.indexOf('function '+name+'('),end=source.indexOf('\n}',start);assert.ok(start>=0,name);return source.slice(start,end+2);}
@@ -29,6 +29,14 @@ function fixture(){
  vm.runInContext(integration,c);
  return code=>vm.runInContext(code,c);
 }
+test('Zumbi e Abominação fortalecem vida e dano um do outro e retiram bônus ao devolver pontos',()=>{
+ const run=fixture();run('setup(30,{zombie:2,vigor:2,burst:2,abom:2,colossus:1});const z=skillMinionStats("zombie"),a=skillMinionStats("abom");player.skillRanks.abom=3;skillSync();');
+ assert.ok(run('skillMinionStats("zombie").hp>z.hp'));assert.ok(run('skillMinionStats("zombie").dmg>z.dmg'));
+ run('player.skillRanks.abom=2;player.skillRanks.zombie=3;skillSync();');
+ assert.ok(run('skillMinionStats("abom").hp>a.hp'));assert.ok(run('skillMinionStats("abom").dmg>a.dmg'));
+ run('player.skillRanks.zombie=2;skillSync();');assert.equal(run('skillMinionStats("zombie").hp'),run('z.hp'));assert.equal(run('skillMinionStats("abom").dmg'),run('a.dmg'));
+});
+
 test('migração redistribui exatamente o orçamento e remove souls e upgrades antigos',()=>{
  const run=fixture();run(`const old={level:12,mode:'campaign',hp:180,maxHp:300,mp:50,maxMp:150,souls:900,skillPoints:98,learnedSkills:['raio','maos','barreira','aura'],upgradeCount:{mhp:5},spellUpgradeCount:{raio_d:5},actionLoadout:['raio','maos','abom','archer','dash','barreira']};const migrated=skillMigrateSave(old);`);
  assert.equal(run('migrated.skillPoints'),33);assert.equal(run('migrated.souls'),0);assert.equal(run('Object.keys(migrated.upgradeCount).length'),0);assert.equal(run('migrated.maxHp'),210);assert.equal(run('migrated.actionLoadout[2]'),'empty');assert.equal(run('migrated.learnedSkills.includes("barreira")'),false);
@@ -43,7 +51,7 @@ test('uma subida dá 3 pontos sem bônus por alma ou marcos de campanha',()=>{
 });
 test('Zumbi e Carne Reanimada modificam stats reais da Abominação',()=>{
  const run=fixture();run('setup(30,{zombie:5,vigor:5,abom:5,colossus:1}); const a=spawnMinion("abom");');
- assert.equal(run('a.maxHp'),840);assert.equal(run('a.dmg'),100);assert.equal(run('summonTypeAvailable("archer")'),false);assert.equal(run('summonTypeAvailable("abom")'),true);
+ assert.equal(run('a.maxHp'),1742);assert.equal(run('a.dmg'),100);assert.equal(run('summonTypeAvailable("archer")'),false);assert.equal(run('summonTypeAvailable("abom")'),true);assert.equal(run('a.hpRegen'),17.42);
 });
 test('Tiro e Chuva recebem sinergias e perfuração sem consumir souls',()=>{
  const run=fixture();run('setup(30,{bolt:5,pierce:3,rain:4,shards:2});castRaio(2,0);');
@@ -75,7 +83,7 @@ test('Dash, defesa após Dash e muralha usam os ranks reais',()=>{
 });
 test('arquivo final inclui exatamente o modelo e as regras atuais, com sintaxe válida',()=>{
  for(const match of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
- assert.ok(html.includes(integration));assert.ok(html.includes(fs.readFileSync(require('node:path').join(__dirname,'../build-simulator/model.js'),'utf8')));
+ assert.ok(html.includes(integration.replace(/\r\n/g,'\n')));assert.ok(html.includes(fs.readFileSync(require('node:path').join(__dirname,'../build-simulator/model.js'),'utf8').replace(/\r\n/g,'\n')));
 });
 test('Aura soma com a escola e com o comando, respeitando distância do personagem',()=>{
  const run=fixture();run('setup(30,{zombie:5,vigor:2,abom:3,dash:2,meditate:2,curse:2,aura:1});const m=spawnMinion("abom");m.x=1;m.y=0;');
@@ -83,6 +91,12 @@ test('Aura soma com a escola e com o comando, respeitando distância do personag
 });
 test('refund é bloqueado em combate e durante recuperação de sacrifício',()=>{
  const run=fixture();assert.equal(run('skillCanRefund()'),false);run('gameState="hub";setup(2,{zombie:1});');assert.equal(run('skillCanRefund()'),true);run('const m=spawnMinion("zombie");m.sacrificed=true;');assert.equal(run('skillCanRefund()'),false);
+});
+test('refund is available while paused between waves and explains gold or recovery restrictions',()=>{
+ const run=fixture();run('TITLE.paused=true;gameState="field";enemies=[];setup(2,{bolt:1});player.gold=0;');assert.equal(run('skillCanRefund()'),true);
+ run('skillRefresh=()=>skillSync();skillRefund("bolt")');assert.equal(run('skillRank("bolt")'),1);run('player.gold=20;skillRefund("bolt")');assert.equal(run('skillRank("bolt")'),0);assert.equal(run('player.gold'),0);
+ run('enemies=[enemy()];');assert.equal(run('skillCanRefund()'),false);assert.match(run('skillRefundReason()'),/sem inimigos/);
+ run('gameState="hub";minions=[{exploded:true}];');assert.equal(run('skillCanRefund()'),false);assert.match(run('skillRefundReason()'),/Feche a pausa/);
 });
 test('drenagem do Espectro cura a si mesmo e compartilha a cura efetiva com Zephyr',()=>{
  const run=fixture();run('setup(30,{specter:2,drain:5,bond:5,vampire:1});const m=spawnMinion("specter");m.hp=1;player.hp=100;const target=enemy();minionStrike(m,target);');

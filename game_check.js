@@ -275,7 +275,7 @@ class MenuElement {
     const TITLE={paused:true},CAMP={on:false,inStage:false,map:false},PM={tab:'status',ov:false},VILLAGE_ROUTE={on:false};
     const player={level:1,hp:100,maxHp:100,mp:80,maxMp:80,exp:0,expNext:100,souls:10,gold:5,skillPoints:1};
     const gameState='hub'; const pmBar=()=>'',pmStatusHtml=()=>'<p>Status</p>',pmControlsHtml=()=>'<p>Controles</p>';
-    const tBtn=()=>document.createElement('button'),tMsgEl=()=>{},setPause=()=>{},playSound=()=>{},tOptions=()=>{},VILLAGE=()=>false;
+    const tBtn=()=>document.createElement('button'),tMsgEl=()=>{},setPause=()=>{},playSound=()=>{},tOptions=()=>{},VILLAGE=()=>false,gearReturnToStory=()=>{};
     const buildUpgradeGrid=()=>{},buildSkillTree=()=>{},buildSpellUpgradesSection=()=>{},buildRosterSection=()=>{},buildSummonGrid=()=>{},buildMinionUpgradeGrid=()=>{};
   `,context);
   for(const name of ['restoreManagementPanels','mountManagementPanel','tScreen','tPause']) vm.runInContext(fn(name),context);
