@@ -234,7 +234,17 @@ function installEquipment(){
  const load=loadGame;loadGame=function(){const result=load();if(result)ENDLESS.best=player.waveProgress.best;return result;};
  const spawn=spawnEnemy;spawnEnemy=function(type,x,z){const e=spawn(type,x,z);e.gearWave=gearCurrentWave();if(!e.isBoss){e.spd=(e.spd??type.spd??0)*COMBAT_TUNING.enemySpeed;e.atkRate=['Arqueiro','Mago Vivo'].includes(type.name)?COMBAT_TUNING.rangedInterval:COMBAT_TUNING.meleeInterval;e.abilityCd=COMBAT_TUNING.specialDelayMin+Math.random()*(COMBAT_TUNING.specialDelayMax-COMBAT_TUNING.specialDelayMin);}if(currentMission?.endless&&!CAMP.on){const s=EquipmentModel.waveStats(wave);e.hp=e.maxHp=Math.round(type.hp*s.hp);e.dmg=Math.round(type.dmg*s.damage);e.xp=Math.round(type.xp*s.xp);}return e;};
  spawnDrop=function(x,z){const hp=Math.random()<COMBAT_TUNING.hpOrbShare;droppedItems.push({mesh:mkMesh2(x+(Math.random()-.5)*.6,z+(Math.random()-.5)*.6),type:hp?'hp':'mp',life:22,t:0});};
- const death=killEnemy;killEnemy=function(e,x,z){if(e.dead)return;e.dropChance=COMBAT_TUNING.orbChance;const reward=!e.dummy&&(e.isBoss||Math.random()<COMBAT_TUNING.gearChance),level=e.gearWave||gearCurrentWave();if(reward){const item=EquipmentModel.generate(level,BuildModel,Math.random,undefined,!!e.isBoss,'eq-'+Date.now().toString(36)+'-'+(++gearSerial));droppedItems.push({type:'equipment',item,mesh:mkMesh2(x,z),life:Infinity,t:0});}return death(e,x,z);};
+ const death=killEnemy;killEnemy=function(e,x,z){
+  if(e.dead)return;e.dropChance=COMBAT_TUNING.orbChance;
+  const tier=e.expedition?ExpeditionModel.tiers[e.lootTier]:null;
+  const reward=!e.dummy&&(e.isBoss||Math.random()<(tier?.chance??COMBAT_TUNING.gearChance)),level=e.gearWave||gearCurrentWave();
+  if(reward){
+   const roll=EquipmentModel.dropRoll(player.equipment,level),weights=e.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:tier?ExpeditionModel.lootWeights(e.lootTier):undefined;
+   const item=EquipmentModel.generate(roll.level,BuildModel,Math.random,roll.type,!!e.isBoss,'eq-'+Date.now().toString(36)+'-'+(++gearSerial),weights?{loot:{weights}}:{});
+   droppedItems.push({type:'equipment',item,upgrade:roll.upgrade,mesh:mkMesh2(x,z),life:Infinity,t:0});
+  }
+  return death(e,x,z);
+ };
  const pickup=checkPickups;checkPickups=function(dt){
   const equipment=droppedItems.filter(d=>d.type==='equipment');droppedItems=droppedItems.filter(d=>d.type!=='equipment');pickup(dt);let changed=false;
   for(const d of equipment){d.t+=dt;if(lootDropAllowed(d)&&Math.hypot(d.mesh.position.x-P.x,d.mesh.position.z-P.y)<1.8){if(gearPickup(d)){changed=true;continue;}if(Date.now()>gearNoticeAt){floatMsg('Mochila cheia · I para equipamentos',innerWidth/2,innerHeight*.4,'#e8c777');gearNoticeAt=Date.now()+3000;}}droppedItems.push(d);}if(changed)saveGame();

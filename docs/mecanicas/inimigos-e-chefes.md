@@ -15,10 +15,13 @@ Fontes: `necromancer-canvas.html` (`ENEMY_TYPES`, `MOB_ABILITIES`, `startWave`,
 | Arqueiro | 25 | 12 | 3,2 | 7,5 (tiro) | 15 | 5 |
 | Bruto | 100 | 18 | 1,4 | Corpo a corpo | 30 | 11 |
 | Mago Vivo | 30 | 20 | 2,5 | 6,5 (tiro) | 25 | 9 |
+| Cão de Cripta | 32 | 7 | 3,68 | 1 (mordida) | 16 | 6 |
 
 \* Já com o aumento de 15% aplicado a todos os monstros comuns.
 
-- Ataque básico corpo a corpo a cada **1,1 s**; tiros comuns a cada **1,3 s**.
+- Ataque básico corpo a corpo a cada **1,1 s**; tiros comuns a cada **1,3 s**. O Cão de Cripta morde a cada **1,2 s**.
+- Acertos comuns não empurram os inimigos: causam dano e reação visual de impacto
+  sem afastar o alvo dos ataques corpo a corpo da horda.
 - Vida e dano mudam conforme o modo (veja [Escala de dificuldade](#escala-de-dificuldade)).
 - No campo de waves, os inimigos calculam uma rota em volta de árvores e
   construções quando o caminho direto está bloqueado. A rota é recalculada quando
@@ -27,7 +30,7 @@ Fontes: `necromancer-canvas.html` (`ENEMY_TYPES`, `MOB_ABILITIES`, `startWave`,
 ### Ataques especiais
 
 Cada inimigo comum tem um especial com preparação visível. A primeira habilidade
-fica pronta 0,75–1,25 s após o inimigo aparecer.
+fica pronta 0,75–1,25 s após o inimigo aparecer; para o Cão de Cripta, após 2 s de atividade.
 
 | Inimigo | Especial | Aviso | Recarga | Alcance | Efeito |
 |---|---|---:|---:|---|---|
@@ -35,6 +38,7 @@ fica pronta 0,75–1,25 s após o inimigo aparecer.
 | Arqueiro | Tiro forte | 0,65 s | 5 s | 12 | Linha de tiro marcada; flecha de 1,9× com direção fixa, acerta o primeiro alvo |
 | Mago Vivo | Erupção de fogo | 0,75 s | 6,5 s | 9 | Marca o chão; impacto de 1,2× e área de fogo por 3 s com pulsos de 0,3× por segundo, raio 2,2 |
 | Bruto | Salto devastador | 0,65 s | 6 s | 2,5–7 | Marca o destino, salta e causa 2× ao cair, raio 2,6 |
+| Cão de Cripta | Investida da Cripta | 0,75 s | 7 s após recuperação | 2,5–7 | Corredor de 1 u, direção fixa, até 6 u a 12 u/s; primeiro alvo recebe 1,6×; recuperação imóvel de 1 s. Para no cenário e na Muralha; Dash protege Zephyr. |
 
 - Sair da região marcada evita o golpe; sair do fogo evita os pulsos seguintes.
 - Inimigos mortos durante a preparação não completam a habilidade.
@@ -50,6 +54,11 @@ Usada nas missões, na arena da campanha e na Arena Infinita.
   onde `W` é o contador de waves. Na Arena Infinita, limitada a **60**.
 - **Tipos**: cada inimigo sorteia um tipo entre os liberados pela wave:
 
+  Na campanha, os quatro tipos originais mantêm chances iguais entre os liberados.
+  Fora da campanha, a wave 4 começa com um Cão e depois Guerreiros (4 s até o próximo spawn);
+  a wave 5 mistura dois Cães e Guerreiros. Da wave 6 em diante, `piso(total × 0,2)`
+  vagas são Cães; as demais sorteiam os quatro tipos originais com chances iguais.
+
 | Wave | Tipos possíveis |
 |---|---|
 | 1 | Guerreiro |
@@ -57,7 +66,8 @@ Usada nas missões, na arena da campanha e na Arena Infinita.
 | 4–5 | + Bruto |
 | 6+ | + Mago Vivo |
 
-- Os inimigos entram um a um, a cada 0,6–1,2 s.
+- Nas expedições, waves 1–3 mantêm a composição original. Na wave 4, o primeiro grupo tem um Cão à frente e cinco Guerreiros; o segundo tem dois Cães e seis Guerreiros. Da wave 5 em diante, cada grupo substitui `piso(tamanho × 0,2)` integrantes por Cães, preservando raridade e semente.
+- Os inimigos entram um a um, a cada 0,6–1,2 s (exceto a introdução isolada do Cão).
 - Entre waves há uma pausa de cerca de 5 s.
 
 ## Escala de dificuldade
@@ -140,3 +150,23 @@ Depois de uma investida, o Capitão fica exposto (atordoado) por 1,5 s (1 s na f
 
 A primeira sala da Cripta tem três esqueletos de treino (28 de vida), que não
 atacam, não se movem e não deixam ouro nem equipamento.
+
+## Carcereiro das Almas — expedições
+
+Chefe exclusivo do final das expedições, com modelo, rig e sete animações
+produzidos no Blender. Os chefes das missões e da campanha continuam em seus
+encontros. Atributos base: 480 HP, 20 de dano, velocidade 1,45; vida, dano e XP
+recebem a progressão da wave. Fica inativo até Zephyr ou a horda se aproximarem.
+
+- **Sentença do Carcereiro:** martelada em círculo de raio 2,8, com aviso de
+  1,2 s e dano de 1,8 vezes o ataque. O ponto marcado fica fixo: sair evita o golpe.
+- **Almas Condenadas:** leque de cinco projéteis após 1,35 s de aviso; cada
+  projétil causa 0,8 vezes o ataque e respeita a colisão normal com a horda e muralhas.
+- **Jaula rompida:** aos 50% de vida, o leque passa a sete projéteis, as recargas
+  caem a 78% e o ciclo ganha **Selos da Prisão**: três círculos de raio 2,
+  anunciados por 1,5 s, com dano de 1,35 vezes o ataque.
+
+A horda reconhece os avisos e tenta esquivar. O Dash protege contra impactos
+durante sua invulnerabilidade. Morrer cancela ataques e projéteis restantes do
+chefe, garante o loot raro ou épico da expedição e libera o portal para o próximo
+bioma. Modelo editável: `blender/boss_soulWarden.blend`.

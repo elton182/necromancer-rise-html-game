@@ -20,6 +20,8 @@ patch("      if(m.sacrificed&&gameState!=='field') return;","      // Recovery c
 patch('m.hp=Math.floor(m.maxHp*.3); m.deadTimer=0;','m.hp=Math.floor(m.maxHp*COMBAT_TUNING.autoReviveHealth); m.deadTimer=0;');
 patch("if(gameState!=='hub'||!VILLAGE())return false;", "if(gameState!=='hub')return false;");
 patch("if(gameState==='hub'&&VILLAGE())m.appendChild(tBtn('🗺 MAPA DA CAMPANHA',openCampaignFromVillage));", "if(gameState==='hub'&&!CAMP.on)m.appendChild(tBtn('🗺 MAPA DA CAMPANHA',gearReturnToStory));");
+// Sprite sheets draw through cached per-row strips (scripts/sprite-cache.js).
+patch('  ctx.drawImage(sh.img,f*C,(A[an].row+di)*C,C,C,x-m.anchorX*k,y-m.anchorY*k,C*k,C*k);','  spriteDraw(sh,f,A[an].row+di,x-m.anchorX*k,y-m.anchorY*k,C*k);');
 // Raise boss base damage once; their existing level/stage and special multipliers still apply.
 patch('hp:350,dmg:15,spd:1.6', 'hp:350,dmg:19.5,spd:1.6');
 patch('hp:600,dmg:25,spd:2.0', 'hp:600,dmg:32.5,spd:2.0');
@@ -28,17 +30,26 @@ patch('hp:20000,dmg:27.5,spd:2.0', 'hp:20000,dmg:35.75,spd:2.0');
 patch('if(CAMP.on&&!e.isBoss){ e.dropChance=e.dummy?1:Math.max(e.dropChance||0,.55); if(!e.dummy&&(e.maxHp||e.hp)>=100&&Math.random()<.7) spawnDrop(hx,hz); }', '// Orb chance is applied once by the final combat rules, including campaign enemies.');
 patch('const count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);','let count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);\n  if(currentMission&&currentMission.endless)count=Math.min(count,EquipmentModel.waveStats(wave).maxEnemies);');
 patch("c=d.type==='gold'?'#e4be58':d.type==='hp'?'#e74c3c':'#6c6cff'","c=d.type==='equipment'?EquipmentModel.rarities[d.item.rarity].color:d.type==='gold'?'#e4be58':d.type==='hp'?'#e74c3c':'#6c6cff'");
-patch("ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;","ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;\n    if(d.type==='equipment'){ctx.save();ctx.font='bold 12px Georgia';ctx.textAlign='center';ctx.strokeStyle='#080e08';ctx.lineWidth=3;const label=EquipmentModel.slots[d.item.type].icon+' '+EquipmentModel.rarities[d.item.rarity].name+' Nv.'+d.item.level;ctx.strokeText(label,dx,y-15);ctx.fillStyle=c;ctx.fillText(label,dx,y-15);ctx.restore();}");
+patch("ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;","ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;\n    if(d.type==='equipment'){ctx.save();ctx.font='bold 12px Georgia';ctx.textAlign='center';ctx.strokeStyle='#080e08';ctx.lineWidth=3;const label=EquipmentModel.slots[d.item.type].icon+' '+EquipmentModel.rarities[d.item.rarity].name+' Nv.'+d.item.level+(d.upgrade?' ▲':'');ctx.strokeText(label,dx,y-15);ctx.fillStyle=c;ctx.fillText(label,dx,y-15);ctx.restore();}");
 for(const [name,content,anchor,runtime]of [
  ['EQUIPMENT_MODEL','<script>\n'+fs.readFileSync(path.join(__dirname,'equipment-model.js'),'utf8')+'\n</script>','</head>',false],
  ['EQUIPMENT_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'equipment.css'),'utf8')+'\n</style>','</head>',false],
  ['MENU_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'menu.css'),'utf8')+'\n</style>','</head>',false],
  ['EQUIPMENT_RULES',fs.readFileSync(path.join(__dirname,'equipment.js'),'utf8'),'const hasSave=bootGame();',true],
- ['MINION_CARE',fs.readFileSync(path.join(__dirname,'minion-care.js'),'utf8'),'const hasSave=bootGame();',true]
+ ['MINION_CARE',fs.readFileSync(path.join(__dirname,'minion-care.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['MINION_ABILITIES',fs.readFileSync(path.join(__dirname,'minion-abilities.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['SPRITE_CACHE',fs.readFileSync(path.join(__dirname,'sprite-cache.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['EXPEDITION_MODEL',fs.readFileSync(path.join(__dirname,'expedition-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['SOUL_WARDEN_MODEL',fs.readFileSync(path.join(__dirname,'soul-warden-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['EXPEDITION_RULES',fs.readFileSync(path.join(__dirname,'expedition.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['CRYPT_HOUND_MODEL',fs.readFileSync(path.join(__dirname,'crypt-hound-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['CRYPT_HOUND_RULES',fs.readFileSync(path.join(__dirname,'crypt-hound.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['SOUL_WARDEN_RULES',fs.readFileSync(path.join(__dirname,'soul-warden.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['SKILL_MASTERY_RULES',fs.readFileSync(path.join(__dirname,'skill-mastery.js'),'utf8'),'const hasSave=bootGame();',true]
 ]){
  const start=runtime?'/* '+name+'_BEGIN */':'<!-- '+name+'_BEGIN -->',end=runtime?'/* '+name+'_END */':'<!-- '+name+'_END -->';
  const block=start+'\n'+content+'\n'+end+'\n',a=html.indexOf(start),b=html.indexOf(end);
  if(a>=0&&b>=a)html=html.slice(0,a)+block+html.slice(b+end.length).replace(/^\r?\n/,'');
  else {if(!html.includes(anchor))throw Error('Missing anchor '+anchor);html=html.replace(anchor,()=>block+anchor);}
 }
-if(fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n')!==html.replace(/\r\n/g,'\n')){const temporary=target+'.sync-'+process.pid+'.tmp';fs.writeFileSync(temporary,html);try{try{fs.renameSync(temporary,target);}catch(error){if(!['EPERM','EACCES'].includes(error.code))throw error;fs.copyFileSync(temporary,target);}}finally{if(fs.existsSync(temporary))fs.unlinkSync(temporary);}}console.log('Embedded equipment and wave progression updated.');
+if(fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n')!==html.replace(/\r\n/g,'\n')){const temporary=target+'.sync-'+process.pid+'.tmp';fs.writeFileSync(temporary,html);try{try{fs.renameSync(temporary,target);}catch(error){if(!['EPERM','EACCES'].includes(error.code))throw error;const fd=fs.openSync(target,'r+');try{fs.writeFileSync(fd,html);fs.ftruncateSync(fd,Buffer.byteLength(html));}finally{fs.closeSync(fd);}}}finally{if(fs.existsSync(temporary))fs.unlinkSync(temporary);}}console.log('Embedded equipment and wave progression updated.');

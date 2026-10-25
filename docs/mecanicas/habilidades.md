@@ -36,6 +36,11 @@ o Escudo de Carne, desde que estejam equipados em algum slot.
 
 ## Magias
 
+Todas as habilidades equipáveis também possuem [maestria própria](maestrias.md):
+nível 1–20, XP ao jogar com a habilidade equipada, crescimento automático e
+uma árvore com pontos exclusivos. As fórmulas abaixo são a base anterior aos
+multiplicadores da maestria. Abra **Habilidades → Maestrias** para investir.
+
 `D` = dano mágico base ([Personagem](personagem-e-progressao.md#atributos)).
 Os bônus "%" vêm do Grimório e dos pontos extras dos equipamentos. Todas as magias
 com alvo têm **alcance 9**; fora dele, não são lançadas nem cobram mana.
@@ -68,7 +73,9 @@ Detalhes por habilidade:
   dano do projétil; ao zerar, o muro cai antes do tempo.
 - **Escudo de Carne**: sacrifica o **zumbi vivo com menor proporção de vida**
   (empate: o mais próximo).
-  - Absorção = `70% da vida máxima do zumbi × (1 + Absorção %)` por 8 s.
+  - Absorção = `70% da vida máxima do zumbi × (1 + Absorção %)`.
+  - Não expira com o tempo: dura até absorver todo esse dano. O HUD mostra o
+    quanto ainda resta; o escudo pisca quando sobra menos de 20%.
   - O zumbi sacrificado fica indisponível por **20 s** e não ativa Pacto de Sangue.
   - Sem zumbi vivo: custa 15% da vida máxima de Zephyr e gera escudo de 25% da
     vida máxima. Não pode ser usado se o custo mataria Zephyr.

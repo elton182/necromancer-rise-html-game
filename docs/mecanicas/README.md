@@ -23,6 +23,7 @@ fechado por partidas completas.
 | [Personagem e progressão](personagem-e-progressao.md) | Atributos, fórmulas, XP, pontos, morte, consumíveis, orbes e ouro |
 | [Habilidades e slots](habilidades.md) | Seis slots, todas as magias, Dash, comandos das evocações, recargas |
 | [Grimório dos Mortos](grimorio.md) | Regras das árvores, os 42 nós com efeitos, devolução de pontos |
+| [Maestrias](maestrias.md) | Níveis e XP das 12 habilidades, bônus automáticos e árvores com pontos próprios |
 | [Horda](horda.md) | Tipos de evocação, atributos, IA, alcance, reanimação, comandos |
 | [Inimigos e chefes](inimigos-e-chefes.md) | Tipos, especiais, composição e escala das waves, chefes e Capitão |
 | [Equipamentos e loot](equipamentos-e-loot.md) | Espaços, raridades, afixos, drops, filtro, inventário, mercador |

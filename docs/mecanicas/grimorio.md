@@ -25,7 +25,7 @@ Fontes: `build-simulator/model.js` (grafo, efeitos, validação; compartilhado c
               |                  |
         Ramo A2 (nível 12)  Ramo B2 (nível 12)
               |                  |
-        Final A (nível 24) ✕ Final B (nível 24)
+        Final A (nível 22) ✕ Final B (nível 22)
   ```
 
 - **Pré-requisito**: cada nó exige o nível indicado e **2 pontos** no nó anterior.
@@ -90,10 +90,10 @@ Ramos: **Colosso de Carne** e **Horda Explosiva**.
 | ☠ **Zumbis** (raiz) | 1 | 5 | — | +4% dano de zumbis e abominações; +3% vida de zumbis e abominações | Evoca 3 zumbis. Cada ponto dá +4% de dano e +3% de vida a Zumbis e Abominações. |
 | ♥ **Carne Reanimada** | 6 | 5 | 2 em Zumbis | +10% vida de zumbis e abominações | Aumenta a vida de Zumbis e Abominações. |
 | ✹ **Explosão Cadavérica** | 6 | 5 | 2 em Zumbis | +12% dano da explosão de zumbi; +4% dano do salto devastador | Desbloqueia a detonação e aumenta seu dano. Cada ponto investido também dá +4% ao Salto Devastador da Abominação. |
-| ♜ **Abominação** | 12 | 5 | 2 em Carne Reanimada | +10% dano da abominação; +4% dano de zumbis; +6% vida de zumbis | Evocação própria: +10% de dano por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões. |
+| ♜ **Abominação** | 12 | 5 | 2 em Carne Reanimada | +10% dano da abominação; +15% vida da abominação; +4% dano de zumbis; +6% vida de zumbis | Evocação própria: +10% de dano e +15% de vida por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões. |
 | ✷ **Carne Instável** | 12 | 5 | 2 em Explosão Cadavérica | +8% dano das explosões de zumbi e necrótica | Sinergia entre a explosão dos Zumbis e Explosão Necrótica da árvore Profana. |
-| ♜ **Colosso de Carne** (final) | 24 | 1 | 2 em Abominação | +60% vida da abominação; +40% dano do salto devastador | Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva. |
-| ✹ **Horda Explosiva** (final) | 24 | 1 | 2 em Carne Instável | +2 zumbis adicionais; +40% dano da explosão de zumbi | Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne. |
+| ♜ **Colosso de Carne** (final) | 22 | 1 | 2 em Abominação | +60% vida da abominação; +40% dano do salto devastador | Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva. |
+| ✹ **Horda Explosiva** (final) | 22 | 1 | 2 em Carne Instável | +2 zumbis adicionais; +40% dano da explosão de zumbi | Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne. |
 
 ### Ossos (Minions)
 
@@ -106,8 +106,8 @@ Ramos: **Guarda Sepulcral** e **Legião de Arqueiros**.
 | ➶ **Arqueiros** | 6 | 5 | 2 em Esqueletos | +10% dano dos arqueiros | Desbloqueia 2 arqueiros e aprimora seu dano. |
 | ⚔ **Ossos Afiados** | 12 | 5 | 2 em Armadura Óssea | +8% dano de esqueletos e arqueiros | Aprimora ataques dos dois tipos de esqueletos. |
 | ➶ **Tiro Sepulcral** | 12 | 5 | 2 em Arqueiros | +15% dano do tiro sepulcral | Desbloqueia o disparo comandado dos arqueiros. |
-| ⛨ **Guarda Sepulcral** (final) | 24 | 1 | 2 em Ossos Afiados | +60% vida dos guerreiros; +1 guerreiros adicionais | Especialização: guerreiros ganham resistência e +1 integrante. Exclui Salva Sepulcral. |
-| ➶ **Salva Sepulcral** (final) | 24 | 1 | 2 em Tiro Sepulcral | +2 arqueiros adicionais; +40% dano do tiro sepulcral | Especialização: +2 arqueiros e tiro comandado mais forte. Exclui Guarda Sepulcral. |
+| ⛨ **Guarda Sepulcral** (final) | 22 | 1 | 2 em Ossos Afiados | +60% vida dos guerreiros; +1 guerreiros adicionais | Especialização: guerreiros ganham resistência e +1 integrante. Exclui Salva Sepulcral. |
+| ➶ **Salva Sepulcral** (final) | 22 | 1 | 2 em Tiro Sepulcral | +2 arqueiros adicionais; +40% dano do tiro sepulcral | Especialização: +2 arqueiros e tiro comandado mais forte. Exclui Guarda Sepulcral. |
 
 ### Espíritos (Minions)
 
@@ -120,8 +120,8 @@ Ramos: **Drenagem Vital** e **Cortejo Espectral**.
 | ◇ **Essência Etérea** | 6 | 5 | 2 em Espectros | +8% vida dos espectros; +5% dano dos espectros | Aumenta a vida e o dano dos espectros. |
 | ♥ **Vínculo Vital** | 12 | 5 | 2 em Drenar Vida | +3% cura compartilhada com zephyr | A cura produzida pelos espectros também ajuda Zephyr. |
 | ➤ **Passo Espectral** | 12 | 5 | 2 em Essência Etérea | -5% recarga do passo espectral | Desbloqueia o comando de reposicionamento e aumenta sua frequência. |
-| ♥ **Ceifadores Vitais** (final) | 24 | 1 | 2 em Vínculo Vital | +15% roubo de vida dos espectros | Especialização: amplia a drenagem de vida. Exclui Cortejo dos Mortos. |
-| ♧ **Cortejo dos Mortos** (final) | 24 | 1 | 2 em Passo Espectral | +2 espectros adicionais; -25% tempo de renascimento dos espectros | Especialização: +2 espectros e recuperação mais rápida. Exclui Ceifadores Vitais. |
+| ♥ **Ceifadores Vitais** (final) | 22 | 1 | 2 em Vínculo Vital | +15% roubo de vida dos espectros | Especialização: amplia a drenagem de vida. Exclui Cortejo dos Mortos. |
+| ♧ **Cortejo dos Mortos** (final) | 22 | 1 | 2 em Passo Espectral | +2 espectros adicionais; -25% tempo de renascimento dos espectros | Especialização: +2 espectros e recuperação mais rápida. Exclui Ceifadores Vitais. |
 
 ### Ossos (Profana)
 
@@ -134,8 +134,8 @@ Ramos: **Lança Perfurante** e **Tempestade Óssea**.
 | ☄ **Chuva de Ossos** | 6 | 5 | 2 em Tiro de Osso | +10% dano da chuva de ossos; +4% dano do tiro de osso | Desbloqueia dano em área. Sinergia: +4% ao dano do Tiro por ponto direto. |
 | ✧ **Estilhaços** | 12 | 5 | 2 em Perfuração | +6% dano do tiro de osso; +6% dano da chuva de ossos | Tiro de Osso dispara 3 estilhaços em leque, cobrindo uma área maior; cada inimigo é atingido uma vez por disparo. Melhora o dano de Tiro e Chuva de Ossos. |
 | ▥ **Muralha de Corpos** | 12 | 5 | 2 em Chuva de Ossos | +10% duração da muralha; +10% resistência da muralha | Desbloqueia a muralha e amplia sua duração e resistência a projéteis. |
-| ➳ **Lança Sepulcral** (final) | 24 | 1 | 2 em Estilhaços | +60% dano do tiro de osso | Especialização: projétil de alto dano. Exclui Tempestade Óssea. |
-| ☄ **Tempestade Óssea** (final) | 24 | 1 | 2 em Muralha de Corpos | +30% área da chuva de ossos; +35% dano da chuva de ossos | Especialização: amplia área e dano da Chuva. Exclui Lança Sepulcral. |
+| ➳ **Lança Sepulcral** (final) | 22 | 1 | 2 em Estilhaços | +60% dano do tiro de osso | Especialização: projétil de alto dano. Exclui Tempestade Óssea. |
+| ☄ **Tempestade Óssea** (final) | 22 | 1 | 2 em Muralha de Corpos | +30% área da chuva de ossos; +35% dano da chuva de ossos | Especialização: amplia área e dano da Chuva. Exclui Lança Sepulcral. |
 
 ### Sangue (Profana)
 
@@ -148,8 +148,8 @@ Ramos: **Bastião de Carne** e **Ritual de Detonação**.
 | ✹ **Explosão Necrótica** | 6 | 5 | 2 em Escudo de Carne | +12% dano da explosão necrótica | Desbloqueia explosão em área com mana, sem coleta de souls. |
 | ♱ **Pacto de Sangue** | 12 | 5 | 2 em Vitalidade Profana | +1% vida máxima recuperada por morte de aliado | Morte comum de aliado recupera vida de Zephyr. Não ativa em sacrifícios ou detonações. |
 | ✷ **Ritual Instável** | 12 | 5 | 2 em Explosão Necrótica | +8% dano das explosões de zumbi e necrótica | Melhora Explosão Necrótica e Explosão Cadavérica. |
-| ⛨ **Bastião de Carne** (final) | 24 | 1 | 2 em Pacto de Sangue | +60% absorção do escudo de carne | Especialização: amplia a absorção do escudo. Exclui Detonação Profana. |
-| ✹ **Detonação Profana** (final) | 24 | 1 | 2 em Ritual Instável | +40% dano das explosões de zumbi e necrótica | Especialização: amplia as duas explosões. Exclui Bastião de Carne. |
+| ⛨ **Bastião de Carne** (final) | 22 | 1 | 2 em Pacto de Sangue | +60% absorção do escudo de carne | Especialização: amplia a absorção do escudo. Exclui Detonação Profana. |
+| ✹ **Detonação Profana** (final) | 22 | 1 | 2 em Ritual Instável | +40% dano das explosões de zumbi e necrótica | Especialização: amplia as duas explosões. Exclui Bastião de Carne. |
 
 ### Sombras (Profana)
 
@@ -162,8 +162,8 @@ Ramos: **Caminhante do Véu** e **Senhor da Horda**.
 | ◈ **Meditação Sombria** | 6 | 5 | 2 em Dash | +8% mana máxima; +8% regeneração de mana | Aumenta reserva e regeneração de mana. |
 | ◇ **Véu Noturno** | 12 | 5 | 2 em Passo Prolongado | +10% duração da proteção após dash | A evasão deixa uma proteção breve. |
 | ☽ **Maldição da Fraqueza** | 12 | 5 | 2 em Meditação Sombria | +3% redução de dano da maldição | Desbloqueia maldição que reduz o dano dos inimigos afetados. |
-| ➤ **Caminhante do Véu** (final) | 24 | 1 | 2 em Véu Noturno | -25% recarga do dash; +25% distância do dash | Especialização: Dash mais frequente e longo. Exclui Aura das Sombras. |
-| ☽ **Aura das Sombras** (final) | 24 | 1 | 2 em Maldição da Fraqueza | +30% dano da horda próxima | Especialização: aumenta o dano de toda a horda próxima. Exclui Caminhante do Véu. |
+| ➤ **Caminhante do Véu** (final) | 22 | 1 | 2 em Véu Noturno | -25% recarga do dash; +25% distância do dash | Especialização: Dash mais frequente e longo. Exclui Aura das Sombras. |
+| ☽ **Aura das Sombras** (final) | 22 | 1 | 2 em Maldição da Fraqueza | +30% dano da horda próxima | Especialização: aumenta o dano de toda a horda próxima. Exclui Caminhante do Véu. |
 
 ## O que cada nó desbloqueia
 

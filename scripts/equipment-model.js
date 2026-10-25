@@ -29,6 +29,15 @@ function generate(level,tree,random=Math.random,type,boss=false,id,options={}){
  }
  return {version:VERSION,id:id||'eq-'+Date.now().toString(36)+'-'+random().toString(36).slice(2,12),type,level,originWave:level,rarity,base,affixes};
 }
+// Catch-up: while worn gear trails the drop level (empty slots count as 0), some drops roll above it,
+// and half of those are cut for the weakest slot. The further behind, the likelier and bigger the jump.
+function dropRoll(equipment,level,random=Math.random){
+ level=waveNumber(level);
+ const worn=Object.keys(slots).map(slot=>({slot,level:equipment?.[slot]?.level||0})),deficit=level-worn.reduce((s,w)=>s+w.level,0)/worn.length;
+ if(deficit<1||random()>=Math.min(.6,.15+.05*deficit))return {level,type:undefined,upgrade:false};
+ const bonus=1+Math.floor(random()*Math.min(10,Math.ceil(deficit/2))),weakest=worn.reduce((a,b)=>b.level<a.level?b:a);
+ return {level:waveNumber(level+bonus),type:random()<.5?weakest.slot:undefined,upgrade:true};
+}
 function validate(item,tree){
  // Upgrade old percentage bases deterministically; retain identity, rarity and affixes.
  if(item?.version===1){
@@ -87,15 +96,17 @@ function targetLabel(a,tree){if(a.stat==='skill')return tree.byId[a.target]?.nam
 function describe(a,tree){return ['skill','school'].includes(a.stat)?'+'+a.value+' em '+(a.stat==='school'?'toda a escola ':'')+targetLabel(a,tree):'+'+Number(a.value.toFixed(2))+(attributes[a.stat].percent?'%':'')+' '+attributes[a.stat].name+(a.stat==='regen'?'/s':'');}
 // Read-only estimates: one stationary target, all hits connect, each skill evaluated alone.
 function snapshot(tree,data,defs,tuning,equipment=data.equipment||{}){
+ const masteryModel=root.SkillMasteryModel||(typeof module!=='undefined'&&module.exports?require('./skill-mastery-model.js'):null);
+ const mastery=id=>masteryModel?masteryModel.bonus(id,data.skillMastery?.[id]):{},mf=(id,key)=>1+(mastery(id)[key]||0)/100,mc=id=>1-(mastery(id).cooldown||0)/100;
  const level=Math.max(1,Number(data.level)||1),ranks=data.skillRanks||{},e=effects(tree,ranks,equipment).effects,b=bonuses({equipment}),pct=k=>1+(e[k]||0)/100;
  const stat={hp:Math.round((100+10*(level-1))*pct('Vida de Zephyr')+(b.hp||0)),mp:Math.round((80+5*(level-1))*pct('Mana máxima')+(b.mp||0)),spell:spellDamage(level,b),regen:(4+.3*(level-1))*pct('Regeneração de mana')+(b.regen||0),hpRegen:.2*(level-1),move:moveSpeed(b),cooldown:b.cooldown||0,hordeDps:0,hordeHp:0,hordeRegen:0};
  const rows=[],factor=1-(b.cooldown||0)/100,cd=(base,skill=1)=>Math.max(base*.5,base*skill*factor),grants=data.skillGrants||['raio','dash'],loadout=data.actionLoadout||[];
  const learned=(node,action)=>!!ranks[node]||grants.includes(action);
  function row(id,name,damage,cooldown,mana,note='',continuous){rows.push({id,name,damage,cooldown,mana,note,equipped:loadout.includes(id),dps:damage===null?null:damage/cooldown,sustained:damage===null?null:continuous??damage/Math.max(cooldown,mana?mana/stat.regen:0)});}
- if(learned('bolt','raio'))row('raio','Tiro de Osso',Math.floor(stat.spell+(stat.spell*tuning.boltMultiplier*pct('Dano do Tiro de Osso')-stat.spell)),cd(.5),20,ranks.shards?'3 estilhaços em leque; cada inimigo é atingido uma vez por disparo.':'Um alvo; perfuração não multiplica o dano no mesmo alvo.');
- if(learned('rain','chuva'))row('chuva','Chuva de Ossos',7*Math.floor(stat.spell*.7+stat.spell*.7*(e['Dano da Chuva de Ossos']||0)/100),cd(5),40,'Teto de dano: os 7 fragmentos acertando o mesmo alvo.');
- if(learned('nova','explosao'))row('explosao','Explosão Necrótica',Math.floor(stat.spell*2.5+stat.spell*2.5*((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100),cd(8),60,'Dano por alvo na área.');
- if(learned('wall','maos')){const duration=5*pct('Duração da Muralha'),hit=Math.max(1,Math.round(stat.spell*.4));row('maos','Muralha de Corpos',hit*Math.ceil(duration/.5),cd(12),35,'Estimativa: contato contínuo por '+duration.toFixed(1)+' s, pulsos de 0,5 s.');}
+ if(learned('bolt','raio'))row('raio','Tiro de Osso',Math.floor(stat.spell*tuning.boltMultiplier*pct('Dano do Tiro de Osso')*mf('raio','damage')),cd(.5)*mc('raio'),20,ranks.shards?'3 estilhaços em leque; cada inimigo é atingido uma vez por disparo.':'Um alvo; perfuração não multiplica o dano no mesmo alvo.');
+ if(learned('rain','chuva'))row('chuva','Chuva de Ossos',7*Math.floor(stat.spell*.7*pct('Dano da Chuva de Ossos')*mf('chuva','damage')),cd(5)*mc('chuva'),40,'Teto de dano: os 7 fragmentos acertando o mesmo alvo.');
+ if(learned('nova','explosao'))row('explosao','Explosão Necrótica',Math.floor((stat.spell*2.5+stat.spell*2.5*((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100)*mf('explosao','damage')),cd(8)*mc('explosao'),60,'Dano por alvo na área.');
+ if(learned('wall','maos')){const duration=5*pct('Duração da Muralha')*mf('maos','duration'),hit=Math.round(Math.max(1,Math.round(stat.spell*.4))*mf('maos','damage'));row('maos','Muralha de Corpos',hit*Math.ceil(duration/.5),cd(12)*mc('maos'),35,'Estimativa: contato contínuo por '+duration.toFixed(1)+' s, pulsos de 0,5 s.');}
  const groups={};
  for(const type of ['zombie','skeleton','archer','specter','abom']){
   if(!ranks[type]||!defs[type])continue;
@@ -103,18 +114,19 @@ function snapshot(tree,data,defs,tuning,equipment=data.equipment||{}){
   const hpBonus=(e[flesh?'Vida de Zumbis e Abominações':bone?'Vida de Esqueletos e Arqueiros':'Vida dos Espectros']||0)+(type==='abom'?e['Vida da Abominação']||0:type==='skeleton'?e['Vida dos Guerreiros']||0:type==='zombie'?e['Vida de Zumbis']||0:0)+(b.hordeHp||0);
   const damageBonus=(e[flesh?'Dano de Zumbis e Abominações':bone?'Dano de Esqueletos e Arqueiros':'Dano dos Espectros']||0)+(type==='abom'?e['Dano da Abominação']||0:type==='archer'?e['Dano dos Arqueiros']||0:type==='zombie'?e['Dano de Zumbis']||0:0)+(b.horde||0)+(e['Dano da horda próxima']||0);
   const count=type==='zombie'?3+(e['Zumbis adicionais']||0):type==='skeleton'?3+(e['Guerreiros adicionais']||0):type==='archer'?2+(e['Arqueiros adicionais']||0):type==='specter'?2+(e['Espectros adicionais']||0):1;
-  const raw=bonus=>(d.dmg+level-1+(b.hordeFlat||0))*(1+(damageBonus+bonus)/100),damage=Math.round(raw(0));
+  const raw=bonus=>(d.dmg+level-1+(b.hordeFlat||0))*mf(type,'damage')*(1+(damageBonus+bonus)/100),damage=Math.round(raw(0));
   groups[type]={count,raw};row(type,d.name+' · ataques',count*damage,d.atkRate,0,count+' aliados vivos, atacando sem interrupção e dentro da aura.');
-  if(loadout.includes(type)){const hp=Math.round((d.hp*tuning.minionHpMultiplier+(level-1)*tuning.minionHpPerLevel)*(1+hpBonus/100));stat.hordeDps+=count*damage/d.atkRate;stat.hordeHp+=count*hp;stat.hordeRegen+=count*hp*tuning.minionRegen;}
+  if(loadout.includes(type)){const hp=Math.round(Math.round((d.hp*tuning.minionHpMultiplier+(level-1)*tuning.minionHpPerLevel)*(1+hpBonus/100))*mf(type,'hp'));stat.hordeDps+=count*damage/d.atkRate;stat.hordeHp+=count*hp;stat.hordeRegen+=count*hp*tuning.minionRegen*mf(type,'regen');}
  }
  if(groups.zombie&&ranks.burst){const g=groups.zombie,damage=Math.round(g.raw((e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))*tuning.zombieBurstMultiplier),cooldown=cd(1.2);row('zombie-burst','Explosão do Zumbi',damage,cooldown,0,'Um zumbi; raio '+tuning.zombieBurstRadius+'. Contínuo: grupo limitado pelo renascimento de 12 s.',damage/Math.max(cooldown,12/g.count));rows.at(-1).equipped=loadout.includes('zombie');}
  if(groups.archer&&ranks.shot){const g=groups.archer;row('archer-shot','Tiro Sepulcral',g.count*Math.round(g.raw(e['Dano do Tiro Sepulcral']||0)*1.9),cd(7),0,'Salva do grupo por alvo; separado dos ataques básicos.');rows.at(-1).equipped=loadout.includes('archer');}
  if(groups.abom&&ranks.colossus){const g=groups.abom;row('abom-impact','Salto Devastador',Math.round(g.raw(e['Dano do Salto Devastador']||0)*2.2),cd(8),0,'Impacto por alvo; separado dos ataques básicos.');rows.at(-1).equipped=loadout.includes('abom');}
- if(learned('dash','dash'))row('dash','Dash',null,cd(3,pct('Recarga do Dash')),0,'Mobilidade, sem dano direto.');
- if(learned('shield','barreira'))row('barreira','Escudo de Carne',null,cd(12),15,'Defesa; absorção depende do aliado sacrificado.');
- if(learned('curse','maldicao'))row('maldicao','Maldição',null,cd(8),25,'Reduz o dano inimigo em '+(e['Redução de dano da Maldição']||0)+'%.');
+ for(const r of rows){const id={'zombie-burst':'zombie','archer-shot':'archer','abom-impact':'abom'}[r.id];if(!id)continue;r.cooldown*=mc(id);r.dps=r.damage/r.cooldown;r.sustained=id==='zombie'?r.damage/Math.max(r.cooldown,12/groups.zombie.count):r.dps;}
+ if(learned('dash','dash'))row('dash','Dash',null,cd(3,pct('Recarga do Dash'))*mc('dash'),0,'Mobilidade, sem dano direto.');
+ if(learned('shield','barreira'))row('barreira','Escudo de Carne',null,cd(12)*mc('barreira'),15,'Defesa; absorção depende do aliado sacrificado.');
+ if(learned('curse','maldicao'))row('maldicao','Maldição',null,cd(8)*mc('maldicao'),25,'Reduz o dano inimigo em '+Math.min(75,(e['Redução de dano da Maldição']||0)+(mastery('maldicao').curse||0))+'%.');
  return {attributes:stat,skills:rows};
 }
-const api={VERSION,CAPACITY,MAX_WAVE,slots,rarities,attributes,pools,waveNumber,waveStats,progress,complete,price,sellPrice,generate,validate,migrate,items,bonuses,spellDamage,moveSpeed,effects,describe,snapshot};
+const api={VERSION,CAPACITY,MAX_WAVE,slots,rarities,attributes,pools,waveNumber,waveStats,progress,complete,price,sellPrice,generate,dropRoll,validate,migrate,items,bonuses,spellDamage,moveSpeed,effects,describe,snapshot};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.EquipmentModel=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

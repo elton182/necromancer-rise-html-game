@@ -14,7 +14,7 @@ function minionHazards(){
  const hazards=[];
  for(const e of enemies){
   if(e.dead)continue;const a=e.ability,d=MOB_ABILITIES[e.type?.name];
-  if(a&&d){if(d.kind==='powerShot')hazards.push({x:e.x,y:e.y,bx:e.x+a.dx*15,by:e.y+a.dy*15,r:.85});else hazards.push({x:a.tx,y:a.ty,r:d.radius+.45});}
+  if(a&&d){if(d.kind==='charge'){if(a.phase!=='recover')hazards.push({x:a.sx,y:a.sy,bx:a.tx,by:a.ty,r:d.width/2+.45});}else if(d.kind==='powerShot')hazards.push({x:e.x,y:e.y,bx:e.x+a.dx*15,by:e.y+a.dy*15,r:.85});else hazards.push({x:a.tx,y:a.ty,r:d.radius+.45});}
   if(e.cap&&['tele','dash'].includes(e.cs))hazards.push({x:e.x,y:e.y,bx:e.x+e.dx*13,by:e.y+e.dy*13,r:1.1});
   if(e.cap&&e.cs==='slam'){hazards.push({x:e.sx,y:e.sy,r:3.75});for(const p of e.ex||[])hazards.push({x:p[0],y:p[1],r:3.45});}
  }
@@ -60,6 +60,10 @@ function minionCarePanel(){
  if(!minions.length)section.insertAdjacentHTML('beforeend','<p>Equipe uma evocação para trazer seu grupo.</p>');body.append(section);
 }
 (function installMinionCare(){
+ const damage=dealDamageToMinion;dealDamageToMinion=function(m,amount){
+  const frontline=['zombie','skeleton','abom'].includes(m.type),multiplier=COMBAT_TUNING.frontlineDamageTaken??1;
+  return damage(m,frontline&&amount>0?Math.max(1,Math.round(amount*multiplier)):amount);
+ };
  tryReanimate=()=>minionRevive();
  const hud=updateHUD;updateHUD=function(){const result=hud(),hint=document.getElementById?.('reanimate-hint');if(hint){const ready=gameState==='field'&&minions.some(m=>m.dead&&!m.sacrificed&&!m.exploded);hint.disabled=!ready||player.mp<30;hint.style.pointerEvents=ready?'auto':'none';hint.textContent='V · Reanimar agora (30 MP)'+(ready&&player.mp<30?' · mana insuficiente':'');}return result;};
  const intent=updateMinionIntent;updateMinionIntent=function(m,index,dt,npos){if(!minionEvade(m,index,dt,npos))return intent(m,index,dt,npos);};

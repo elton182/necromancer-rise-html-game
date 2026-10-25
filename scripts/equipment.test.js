@@ -205,7 +205,9 @@ test('normal enemies move and attack faster and prepare specials earlier without
  assert.equal(run('MOB_ABILITIES.Guerreiro.windup'),.5);assert.equal(run('MOB_ABILITIES.Bruto.cooldown'),6);
 });
 test('boss drops exactly one magical-or-better piece and repeat deaths never duplicate it',()=>{
- const {run}=fixture();run('const e={hp:0,dead:false,isBoss:true,gearWave:8};killEnemy(e,1,1);killEnemy(e,1,1);');assert.equal(run('droppedItems.length'),1);assert.equal(run('droppedItems[0].item.level'),8);assert.notEqual(run('droppedItems[0].item.rarity'),'common');
+ const {run}=fixture();run('player.equipment=Object.fromEntries(Object.keys(EquipmentModel.slots).map(s=>[s,{level:8}]));const e={hp:0,dead:false,isBoss:true,gearWave:8};killEnemy(e,1,1);killEnemy(e,1,1);');assert.equal(run('droppedItems.length'),1);assert.equal(run('droppedItems[0].item.level'),8);
+ // Without worn gear the catch-up roll may lift the piece above the wave, never below.
+ run('player.equipment={};droppedItems=[];const r={hp:0,dead:false,isBoss:true,gearWave:8};killEnemy(r,1,1);');assert.ok(run('droppedItems[0].item.level')>=8);assert.equal(run('droppedItems[0].upgrade'),run('droppedItems[0].item.level>8'));assert.notEqual(run('droppedItems[0].item.rarity'),'common');
 });
 test('equipment chance doubles while orb rules favor mana and suppress extra campaign rolls',()=>{
  const {run}=fixture();assert.equal(run('COMBAT_TUNING.gearChance'),.16);assert.equal(run('COMBAT_TUNING.orbChance*COMBAT_TUNING.hpOrbShare'),.04);assert.equal(run('COMBAT_TUNING.orbChance*(1-COMBAT_TUNING.hpOrbShare)'),.12);
@@ -225,7 +227,7 @@ test('save migration recomputes equipped stats without accumulating bonuses',()=
 });
 test('released HTML embeds sources once, orders equipment after trees, and has save bridges',()=>{
  const html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8');
- for(const [name,file]of [['EQUIPMENT_MODEL','equipment-model.js'],['EQUIPMENT_RULES','equipment.js'],['EQUIPMENT_STYLE','equipment.css'],['MENU_STYLE','menu.css'],['MINION_CARE','minion-care.js']]){assert.equal(html.split(name+'_BEGIN').length,2);assert.ok(html.replace(/\r\n/g,'\n').includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n')));}
+ for(const [name,file]of [['EQUIPMENT_MODEL','equipment-model.js'],['EQUIPMENT_RULES','equipment.js'],['EQUIPMENT_STYLE','equipment.css'],['MENU_STYLE','menu.css'],['MINION_CARE','minion-care.js'],['MINION_ABILITIES','minion-abilities.js'],['SPRITE_CACHE','sprite-cache.js']]){assert.equal(html.split(name+'_BEGIN').length,2);assert.ok(html.replace(/\r\n/g,'\n').includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n')));}
  assert.ok(html.indexOf('/* EQUIPMENT_RULES_BEGIN */')>html.indexOf('/* SKILL_TREE_RULES_END */'));
  assert.ok(html.includes('gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress'));
 });
@@ -252,4 +254,19 @@ test('DPS separates summon attacks, burst and revive limits; utility skills have
  assert.equal(run('estimate.attributes.hordeDps'),60);assert.equal(run('estimate.attributes.hordeHp'),831);
  assert.equal(run('estimate.skills.find(s=>s.id==="zombie-burst").damage'),102);assert.equal(run('estimate.skills.find(s=>s.id==="zombie-burst").sustained'),25.5);
  assert.equal(run('estimate.skills.find(s=>s.id==="dash").dps'),null);
+});
+test('catch-up drops: gear at wave level never rolls above it; lagging gear rolls higher, more often, toward the weakest slot',()=>{
+ const worn=level=>Object.fromEntries(Object.keys(Model.slots).map(slot=>[slot,{level}]));
+ assert.deepEqual(Model.dropRoll(worn(20),20,()=>0),{level:20,type:undefined,upgrade:false});
+ assert.deepEqual(Model.dropRoll(worn(25),20,()=>0),{level:20,type:undefined,upgrade:false});
+ // Average worn level ~8.9 at wave 20 (deficit ~11): 60% chance, up to +6 levels, half aimed at the weakest slot.
+ const lagging={...worn(10),boots:{level:2}};
+ assert.equal(Model.dropRoll(lagging,20,()=>.59).upgrade,true);assert.equal(Model.dropRoll(lagging,20,()=>.61).upgrade,false);
+ const seq=values=>{let i=0;return ()=>values[i++];};
+ assert.deepEqual(Model.dropRoll(lagging,20,seq([0,.99,.1])),{level:26,type:'boots',upgrade:true});
+ assert.deepEqual(Model.dropRoll(lagging,20,seq([0,0,.9])),{level:21,type:undefined,upgrade:true});
+ // A small deficit gives a small chance and a +1 jump; empty slots count as level 0.
+ assert.equal(Model.dropRoll(worn(19),20,()=>.19).upgrade,true);assert.equal(Model.dropRoll(worn(19),20,()=>.21).upgrade,false);
+ assert.equal(Model.dropRoll({},3,seq([0,.99,.9])).level,5);assert.equal(Model.dropRoll(worn(1000),1000,()=>0).level,1000);
+ const upgraded=Model.generate(Model.dropRoll(lagging,20,seq([0,.99,.1])).level,Tree,Math.random,'boots',false,'catch-up');assert.ok(Model.validate(upgraded,Tree));
 });

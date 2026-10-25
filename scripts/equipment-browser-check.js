@@ -60,6 +60,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   await page.getByRole('button',{name:'WAVES',exact:true}).click();
   await page.getByRole('button',{name:'Selecionar wave 2',exact:true}).click();
   assert.equal(await page.evaluate(()=>player.waveProgress.selected),2);
+  await page.getByLabel('Modelo de waves').selectOption('classic');
   await page.getByRole('button',{name:'Entrar na wave 2',exact:true}).click();
   await page.waitForFunction(()=>wave===2&&waveActive===true);
   const waveResult=await page.evaluate(()=>{

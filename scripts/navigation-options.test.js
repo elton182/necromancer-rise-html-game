@@ -12,7 +12,7 @@ function fixture(){
  function mob(x,y,sc=1){return {x,y,type:{sc}};}
  function ally(x,y){return {x,y,mesh:{position:{x,z:y},rotation:{}},spd:3,atkR:1,orbitRadius:2,orbitAngle:0};}
  `,c);
- for(const name of ['collide','terrainLineClear','terrainPath','moveEnemyTo','setHordeRange','handleGameBlur','minionTargetAllowed','localMinionTarget','moveMinionTo','updateMinionIntent'])vm.runInContext(source(name),c);
+ for(const name of ['collide','terrainLineClear','terrainPath','moveEnemyTo','setHordeRange','handleGameBlur','minionTargetAllowed','localMinionTarget','minionGuardTarget','moveMinionTo','updateMinionIntent'])vm.runInContext(source(name),c);
  return s=>vm.runInContext(s,c);
 }
 test('enemies walk around a centered tree and overlapping building colliders without crossing terrain',()=>{

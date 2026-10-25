@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: fixed windup, straight charge, first hit and full recovery
+ok 1 - fixed windup, straight charge, first hit and full recovery
+  ---
+  duration_ms: 1.6435
+  ...
+# Subtest: swept collision is independent of frame size and damages once
+ok 2 - swept collision is independent of frame size and damages once
+  ---
+  duration_ms: 1.5419
+  ...
+# Subtest: solids and corpse walls stop charge before a target; wall wins ties
+ok 3 - solids and corpse walls stop charge before a target; wall wins ties
+  ---
+  duration_ms: 0.3672
+  ...
+# Subtest: earliest living target is hit even when targets are passed in reverse order
+ok 4 - earliest living target is hit even when targets are passed in reverse order
+  ---
+  duration_ms: 0.1275
+  ...
+# Subtest: first availability, activation range, death and boundary stop
+ok 5 - first availability, activation range, death and boundary stop
+  ---
+  duration_ms: 0.2567
+  ...
+# Subtest: arena introduces hounds without changing totals or campaign composition
+ok 6 - arena introduces hounds without changing totals or campaign composition
+  ---
+  duration_ms: 0.6563
+  ...
+# Subtest: expedition introductions retain seed geometry, tiers and mob counts
+ok 7 - expedition introductions retain seed geometry, tiers and mob counts
+  ---
+  duration_ms: 3.8468
+  ...
+# Subtest: frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+ok 8 - frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+  ---
+  duration_ms: 10.2706
+  ...
+# Subtest: manual revive spends 30 mana once, restores visibility and places ally beside hero
+ok 9 - manual revive spends 30 mana once, restores visibility and places ally beside hero
+  ---
+  duration_ms: 1.4799
+  ...
+# Subtest: sacrificed/exploded allies and insufficient mana cannot bypass recovery
+ok 10 - sacrificed/exploded allies and insufficient mana cannot bypass recovery
+  ---
+  duration_ms: 1.5484
+  ...
+# Subtest: paused keyboard revive is blocked; explicit paid action in Horde menu works
+ok 11 - paused keyboard revive is blocked; explicit paid action in Horde menu works
+  ---
+  duration_ms: 1.6231
+  ...
+# Subtest: zombies and skeletons react after a delay and move out of warned area without invulnerability
+ok 12 - zombies and skeletons react after a delay and move out of warned area without invulnerability
+  ---
+  duration_ms: 5.8652
+  ...
+# Subtest: hostile projectiles are dodged; friendly projectiles do not trigger evasion
+ok 13 - hostile projectiles are dodged; friendly projectiles do not trigger evasion
+  ---
+  duration_ms: 2.2146
+  ...
+# Subtest: dodge respects collision constraints and does not replace return-to-hero or leap AI
+ok 14 - dodge respects collision constraints and does not replace return-to-hero or leap AI
+  ---
+  duration_ms: 2.9673
+  ...
+# Subtest: no hazard preserves normal AI and killing an ally clears dodge state
+ok 15 - no hazard preserves normal AI and killing an ally clears dodge state
+  ---
+  duration_ms: 1.11
+  ...
+# Subtest: revive HUD cannot intercept clicks while hidden and explains insufficient mana
+ok 16 - revive HUD cannot intercept clicks while hidden and explains insufficient mana
+  ---
+  duration_ms: 1.3135
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 149.3385

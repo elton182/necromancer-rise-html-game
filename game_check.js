@@ -47,7 +47,7 @@ function fixture() {
     const dealDamageToEnemy=(e,d)=>{e.hp-=d;};
     function zombie(hp,maxHp,x=0){return {type:'zombie',hp,maxHp,x,y:0,dead:false,mesh:mkMesh2(x,0),spd:3.4,atkR:1.5,atkRate:1.2,atkTimer:0,orbitAngle:0,orbitRadius:2};}
   `, context);
-  for (const name of ['abilityReady','castHands','handsSpeed','tickCorpseWalls','wallNearest','resetAbilities','updateAbilities','castRaio','updateBolts','sacrificeCandidate','castBarrier','migrateAbilitySave','tryReanimate','dismissMinion','dealDamageToPlayer','minionTargetAllowed','localMinionTarget','moveMinionTo','updateMinionIntent','minionStateText','setCommand','applyRightClick','combatInputAllowed','castAssignedSpell','castHotkey','castSpell','selectSpell','handlePrimaryClick','handleSecondaryClick','updateAllyLeap']) {
+  for (const name of ['abilityReady','castHands','handsSpeed','tickCorpseWalls','wallNearest','resetAbilities','updateAbilities','castRaio','updateBolts','sacrificeCandidate','castBarrier','migrateAbilitySave','tryReanimate','dismissMinion','dealDamageToPlayer','minionTargetAllowed','localMinionTarget','minionGuardTarget','moveMinionTo','updateMinionIntent','minionStateText','setCommand','applyRightClick','combatInputAllowed','castAssignedSpell','castHotkey','castSpell','selectSpell','handlePrimaryClick','handleSecondaryClick','updateAllyLeap']) {
     vm.runInContext(fn(name), context);
   }
   return code => vm.runInContext(code, context);
@@ -96,7 +96,7 @@ test('Escudo: sacrifica menor proporção de HP e usa HP máximo', run => {
   assert.equal(run('minions[0].dead'),false);
   assert.equal(run('minions[1].sacrificed'),true);
   assert.equal(run('minions[1].deadTimer'),20);
-  assert.equal(run('player.barrierT'),8);
+  assert.equal(run('player.barrierT'),1); // ativo até absorver; não expira por tempo
   run('castBarrier()'); assert.equal(run('player.mp'),65);
 });
 test('Escudo: empate por distância e Carne Reforçada explícita', run => {
@@ -159,12 +159,49 @@ test('Progressão concede Raio, invocação, Mãos e Escudo nas quatro fases', r
   const stages = vm.runInNewContext(match[1]);
   assert.deepEqual(Array.from(stages.slice(1), s=>s.grant), ['raio','summon','maos','barreira']);
 });
+test('Todos os mobs mantêm posição sob golpes comuns sem perder dano ou impacto visual',()=>{
+  const c=vm.createContext({});vm.runInContext(`
+    const P={x:0,y:0},worldToScreen=()=>({x:0,y:0}),floatMsg=()=>{},playSound=()=>{},updateEnemyHpBar=()=>{};
+    const killEnemy=e=>{e.dead=true;};
+    function foe(name,boss=false){return {type:{name},isBoss:boss,hp:1000,x:4,y:0,mesh:{position:{x:4,y:0,z:0}}};}
+    const brute=foe('Bruto'),soldier=foe('Guerreiro'),archer=foe('Arqueiro'),mage=foe('Mago Vivo'),boss=foe('Capitão',true);
+  `,c);vm.runInContext(fn('dealDamageToEnemy'),c);
+  vm.runInContext('for(let i=0;i<20;i++)for(const e of [brute,soldier,archer,mage,boss])dealDamageToEnemy(e,5);',c);
+  assert.equal(vm.runInContext('brute.hp',c),900);
+  assert.equal(vm.runInContext('brute.hit',c),.18);
+  assert.equal(vm.runInContext('brute.kx||0',c),0);
+  for(const name of ['brute','soldier','archer','mage','boss']){
+    assert.equal(vm.runInContext(name+'.kx||0',c),0);
+    assert.equal(vm.runInContext(name+'.ky||0',c),0);
+    assert.equal(vm.runInContext(name+'.hp',c),900);
+  }
+  assert.equal(vm.runInContext('boss.kx||0',c),0);
+  vm.runInContext('brute.kx=9;dealDamageToEnemy(brute,5)',c);
+  assert.equal(vm.runInContext('brute.kx',c),9);
+  vm.runInContext('dealDamageToEnemy(brute,1000)',c);
+  assert.equal(vm.runInContext('brute.dead',c),true);
+});
+test('Waves liberam os tipos gradualmente e não concentram sorteios excedentes no mago',()=>{
+  for(const [number,available]of [[1,1],[2,2],[4,3],[6,4],[27,4],[1000,4]]){
+    const c=vm.createContext({CryptHoundModel:require('./scripts/crypt-hound-model.js')});vm.runInContext(`
+      const VILLAGE_ROUTE={on:false},CAMP={on:false},gameState='field',currentMission={endless:true,enemyMult:1,wavesGoal:1e9};
+      const ENEMY_TYPES=['Guerreiro','Arqueiro','Bruto','Mago Vivo'];
+      const EquipmentModel={waveStats:()=>({maxEnemies:60})};
+      let wave=${number-1},missionWave=wave,waveActive=false,waveEndTimer=0,enemiesLeft=0,spawnQueue=[],spawnTimer=0,sample=0;
+      Math.random=()=>((sample++%${available})+.5)/${available};
+      const playSound=()=>{},showWaveBanner=()=>{},document={getElementById:()=>({})};
+    `,c);vm.runInContext(fn('startWave'),c);vm.runInContext('startWave()',c);
+    assert.equal(vm.runInContext('new Set(spawnQueue).size',c),available);
+    const count=vm.runInContext('spawnQueue.length',c);assert.ok(count<=60);
+    if(number>=27)for(const type of ['Guerreiro','Arqueiro','Bruto','Mago Vivo'])assert.equal(vm.runInContext(`spawnQueue.filter(t=>t==='${type}').length`,c),15);
+  }
+});
 test('Horda ignora inimigos fora da região de Zephyr', run=>{
   run('const m=zombie(130,130,2); enemies=[{mesh:mkMesh2(30,0)}]; updateMinionIntent(m,0,.05,necroGroup.position)');
   assert.equal(run('m.target'),null);
   assert.ok(run('Math.hypot(m.mesh.position.x,m.mesh.position.z)')<3);
 });
-test('Retorno continua após cruzar o limite, sem readquirir alvo até chegar perto', run=>{
+test('Retorno retoma combate com margem dentro da região, antes de chegar à formação', run=>{
   run('const m=zombie(130,130,9); enemies=[{mesh:mkMesh2(7,0)}]; updateMinionIntent(m,0,.1,necroGroup.position)');
   assert.equal(run('m.returning'),true);
   run('for(let i=0;i<4;i++) updateMinionIntent(m,0,.1,necroGroup.position)');
@@ -173,14 +210,38 @@ test('Retorno continua após cruzar o limite, sem readquirir alvo até chegar pe
   assert.equal(run('m.target'),null);
   run('for(let i=0;i<20&&m.returning;i++) updateMinionIntent(m,0,.1,necroGroup.position)');
   assert.equal(run('m.returning'),false);
-  assert.ok(run('m.mesh.position.x')<=3);
+  assert.ok(run('m.mesh.position.x')>3);
+  assert.ok(run('m.mesh.position.x')<=8*.7+.34);
+  assert.equal(run('m.target===enemies[0]'),true);
 });
 test('Alvo que sai da região é abandonado; inimigo próximo continua sendo atacado', run=>{
   run('const m=zombie(130,130,5); const e={mesh:mkMesh2(5.5,0)}; enemies=[e]; m.target=e; updateMinionIntent(m,0,.1,necroGroup.position)');
   assert.equal(run('strikes'),1);
   run('e.mesh.position.x=10; updateMinionIntent(m,0,.1,necroGroup.position)');
-  assert.equal(run('m.returning'),true);
+  assert.equal(run('!!m.returning'),false);
   assert.equal(run('m.target'),null);
+  run('const nearby={mesh:mkMesh2(5.7,0)};enemies.push(nearby);updateMinionIntent(m,0,.1,necroGroup.position)');
+  assert.equal(run('m.target===nearby'),true);
+});
+test('Linha de frente troca perseguição distante por ameaça perto de Zephyr',run=>{
+  run("const m=zombie(130,130,7);const distant={mesh:mkMesh2(7.3,0)},threat={mesh:mkMesh2(2,0)};enemies=[distant,threat];m.target=distant;updateMinionIntent(m,0,.1,necroGroup.position)");
+  assert.equal(run('m.target===threat'),true);
+  assert.ok(run('m.mesh.position.x')<7);
+  run("m.type='abom';m.target=distant;m._targetScan=0;updateMinionIntent(m,0,.1,necroGroup.position)");
+  assert.equal(run('m.target===threat'),true);
+});
+test('Arqueiros preservam alvo próximo e comando de ataque prevalece sobre proteção',run=>{
+  run("const m=zombie(130,130,7);const distant={mesh:mkMesh2(7.3,0)},threat={mesh:mkMesh2(2,0)};enemies=[distant,threat];m.type='archer';updateMinionIntent(m,0,.1,necroGroup.position)");
+  assert.equal(run('m.target===distant'),true);
+  run("m.type='zombie';minionCommand={type:'attack',x:7.3,z:0};updateMinionIntent(m,0,.1,necroGroup.position)");
+  assert.equal(run('m.target===distant'),true);
+});
+test('Retorno sem ameaça recupera formação; separação extrema continua corrigida',run=>{
+  run('const m=zombie(130,130,9);for(let i=0;i<30;i++)updateMinionIntent(m,0,.1,necroGroup.position)');
+  assert.equal(run('m.returning'),false);
+  assert.ok(run('Math.abs(m.mesh.position.x)')<=3);
+  run('m.mesh.position.x=40;updateMinionIntent(m,0,.1,necroGroup.position)');
+  assert.ok(run('Math.hypot(m.mesh.position.x,m.mesh.position.z)')<=3);
 });
 test('Comando distante de ataque não autoriza perseguir fora da região', run=>{
   run("const m=zombie(130,130,2); enemies=[{mesh:mkMesh2(20,0)}]; minionCommand={type:'attack',x:20,z:0}; updateMinionIntent(m,0,.1,necroGroup.position)");
@@ -445,6 +506,8 @@ summonTest('Carregar save mantém o zumbi detonado indisponível pelo tempo rest
       assert.equal(crypto.createHash('sha256').update(content).digest('hex'),hash);
     }
     assert.deepEqual(entry.enhanced_size,entry.original_size.map(n=>n*3));
+    // Generative refinement may rewrite letters; captions must be restored from the original.
+    assert.ok(entry.text_boxes.length&&entry.text_boxes.every(([x0,y0,x1,y1])=>0<=x0&&x0<x1&&x1<=entry.original_size[0]&&0<=y0&&y0<y1&&y1<=entry.original_size[1]),entry.title);
     assert.ok(entry.mean_encoding_error_0_255<2);
     const embeddedHash=crypto.createHash('sha256').update(Buffer.from(embedded.get(entry.title),'base64')).digest('hex');
     assert.equal(embeddedHash,entry.enhanced_sha256,entry.title);

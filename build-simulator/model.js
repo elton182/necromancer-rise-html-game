@@ -4,13 +4,13 @@
 const nodes=[], schools=[];
 function school(tree,id,name,paths,rows){
  schools.push({tree,id,name,paths});
- rows.forEach((r,i)=>nodes.push({id:r[0],name:r[1],description:r[2],icon:r[3],effects:r[4],school:id,tree,tier:i===0?0:Math.ceil(i/2),side:i===0?0:i%2===1?-1:1,max:i>=5?1:5,level:i===0?1:i<=2?6:i<=4?12:24,requires:i===0?null:rows[i<=2?0:i-2][0],exclusive:i>=5?rows[i===5?6:5][0]:null}));
+ rows.forEach((r,i)=>nodes.push({id:r[0],name:r[1],description:r[2],icon:r[3],effects:r[4],school:id,tree,tier:i===0?0:Math.ceil(i/2),side:i===0?0:i%2===1?-1:1,max:i>=5?1:5,level:i===0?1:i<=2?6:i<=4?12:22,requires:i===0?null:rows[i<=2?0:i-2][0],exclusive:i>=5?rows[i===5?6:5][0]:null}));
 }
 school('minions','flesh','Carne',['Colosso de Carne','Horda Explosiva'],[
  ['zombie','Zumbis','Evoca 3 zumbis. Cada ponto dá +4% de dano e +3% de vida a Zumbis e Abominações.','☠',{'Dano de Zumbis e Abominações':4,'Vida de Zumbis e Abominações':3}],
  ['vigor','Carne Reanimada','Aumenta a vida de Zumbis e Abominações.','♥',{'Vida de Zumbis e Abominações':10}],
  ['burst','Explosão Cadavérica','Desbloqueia a detonação e aumenta seu dano. Cada ponto investido também dá +4% ao Salto Devastador da Abominação.','✹',{'Dano da explosão de Zumbi':12,'Dano do Salto Devastador':4}],
- ['abom','Abominação','Evocação própria: +10% de dano por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões.','♜',{'Dano da Abominação':10,'Dano de Zumbis':4,'Vida de Zumbis':6}],
+ ['abom','Abominação','Evocação própria: +10% de dano e +15% de vida por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões.','♜',{'Dano da Abominação':10,'Vida da Abominação':15,'Dano de Zumbis':4,'Vida de Zumbis':6}],
  ['unstable','Carne Instável','Sinergia entre a explosão dos Zumbis e Explosão Necrótica da árvore Profana.','✷',{'Dano das explosões de Zumbi e Necrótica':8}],
  ['colossus','Colosso de Carne','Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva.','♜',{'Vida da Abominação':60,'Dano do Salto Devastador':40}],
  ['plague','Horda Explosiva','Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne.','✹',{'Zumbis adicionais':2,'Dano da explosão de Zumbi':40}]

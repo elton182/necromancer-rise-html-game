@@ -53,7 +53,7 @@ function stats(level, build, items, source) {
     const count = type === 'zombie' ? 3 : type === 'skeleton' ? 3 + (e['Guerreiros adicionais'] || 0) : 2 + (e['Arqueiros adicionais'] || 0);
     const damage = (e[bone ? 'Dano de Esqueletos e Arqueiros' : 'Dano de Zumbis e Abominações'] || 0) + (type === 'archer' ? e['Dano dos Arqueiros'] || 0 : type==='zombie'?e['Dano de Zumbis']||0:0);
     const hp = Math.round((d.hp*source.combatTuning.minionHpMultiplier+(level-1)*source.combatTuning.minionHpPerLevel) * (percent(bone ? 'Vida de Esqueletos e Arqueiros' : 'Vida de Zumbis e Abominações') + ((mods.hordeHp || 0)+(type==='zombie'?e['Vida de Zumbis']||0:0)) / 100));
-    for (let i = 0; i < count; i++) minions.push({ type, hp, maxHp: hp, regen:hp*source.combatTuning.minionRegen,reviveHealth:source.combatTuning.autoReviveHealth,damage: Math.round((d.dmg + level - 1 + (mods.hordeFlat || 0)) * (1 + (damage + (mods.horde || 0)) / 100)), interval: d.atkRate });
+    for (let i = 0; i < count; i++) minions.push({ type, hp, maxHp: hp, regen:hp*source.combatTuning.minionRegen,damageTakenMultiplier:['zombie','skeleton','abom'].includes(type)?source.combatTuning.frontlineDamageTaken??1:1,reviveHealth:source.combatTuning.autoReviveHealth,damage: Math.round((d.dmg + level - 1 + (mods.hordeFlat || 0)) * (1 + (damage + (mods.horde || 0)) / 100)), interval: d.atkRate });
   }
   return {
     level, ranks, bonusRanks, effects: e,
@@ -112,10 +112,8 @@ function scaleEnemy(enemy, wave, rules, config, { campaign = false, stage = 1, l
 function makeEncounter(wave, rules, config, source, random, context = {}) {
   const count = Math.floor((4 + wave * 2 + Math.floor(wave / 3)) * (context.mult || 1));
   const cap=rules==='current'&&source.liveEquipment&&!context.campaign?Gear.waveStats(wave).maxEnemies:rules==='proposed'?config.proposed.maxEnemies:Infinity;
-  const enemies = Array.from({ length: Math.min(count,cap) }, () => {
-    const index = Math.min(Math.floor(random() * (1 + Math.floor(wave / 2))), source.enemies.length - 1);
-    return scaleEnemy(source.enemies[index], wave, rules, config, {...context,liveEquipment:source.liveEquipment});
-  });
+  const composition=require('../scripts/crypt-hound-model.js').arenaTypes(wave,Math.min(count,cap),source.enemies,random,!!context.campaign||rules==='legacy');
+  const enemies=composition.map(e=>scaleEnemy(e,wave,rules,config,{...context,liveEquipment:source.liveEquipment}));
   return { enemies, wave, id: 'wave-' + wave, rewardXp: context.campaign ? 0 : 20 + wave * 8, rewardGold: context.campaign ? 0 : 3 + wave * 2, campaign: !!context.campaign };
 }
 
@@ -166,13 +164,13 @@ function simulateCombat(s, encounter, profile, config, random) {
         if (random() >= accuracy) return;
         const live = minions.filter(m => m.hp > 0);
         if (live.length && random() < c.aggroToMinions) {
-          const m = live[Math.floor(random() * live.length)]; m.hp -= value;
+          const m = live[Math.floor(random() * live.length)]; m.hp -= value>0?Math.max(1,Math.round(value*(m.damageTakenMultiplier??1))):value;
           if (m.hp <= 0) { deaths++; m.revive = time + c.reviveSeconds; }
         } else { const hit = Math.min(hp, value); hp -= hit; taken += hit; }
       }
       if (time >= e.attack) { e.attack = time + e.interval; receive(e.damage, profile.enemyAccuracy); }
       if (time >= e.special && !e.isBoss && e.damage > 0 && e.ability) {
-        e.special = time + e.ability.cooldown + e.ability.windup;
+        e.special = time + e.ability.cooldown + e.ability.windup + (e.ability.recovery||0) + (e.ability.kind==='charge'?e.ability.distance/e.ability.speed:0);
         // Fire assumes all three residual pulses connect; coverage remains configurable.
         receive(e.damage * (e.ability.mult + (e.ability.kind === 'fire' ? 0.9 : 0)), profile.specialAccuracy);
       }

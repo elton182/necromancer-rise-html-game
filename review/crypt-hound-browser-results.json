@@ -1,0 +1,37 @@
+{
+  "result": {
+    "stats": {
+      "hp": 32,
+      "dmg": 7,
+      "spd": 3.6799999999999997,
+      "interval": 1.2,
+      "range": 1,
+      "cd": 2
+    },
+    "dashSafe": true,
+    "stop": 5.4999400000000005,
+    "phase": "recover",
+    "cooldown": 7,
+    "dodged": true,
+    "wall": true,
+    "solid": true,
+    "cancelled": true,
+    "intro": true,
+    "counts": 3,
+    "scales": true,
+    "reset": true
+  },
+  "combat": {
+    "bite": true,
+    "stopped": true,
+    "phase": "recover",
+    "hp": 9977
+  },
+  "allyHit": {
+    "target": 3,
+    "allyDamaged": true,
+    "playerSafe": true,
+    "stopped": true
+  },
+  "errors": []
+}

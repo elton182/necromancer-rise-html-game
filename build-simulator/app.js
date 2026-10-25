@@ -39,7 +39,7 @@ function isDormant(key,r){
 function summary(){
  const ranks=state.ranks,raw=M.effects(ranks),effective=M.effective(ranks),count=M.spent(ranks);
  const sum=t=>M.nodes.filter(n=>n.tree===t).reduce((v,n)=>v+(ranks[n.id]||0),0),min=sum('minions'),sp=sum('spells');$('minions-count').textContent=min;$('spells-count').textContent=sp;
- const caps=M.nodes.filter(n=>n.max===1&&ranks[n.id]).map(n=>n.name);$('identity').textContent=caps.length?caps.join(' + '):count?`${min&&sp?'Híbrido de invocações e magias':min?'Invocador em formação':'Conjurador em formação'} · escolha suas especializações a partir do nível 24.`:'O grimório aguarda sua primeira escolha.';
+ const caps=M.nodes.filter(n=>n.max===1&&ranks[n.id]).map(n=>n.name);$('identity').textContent=caps.length?caps.join(' + '):count?`${min&&sp?'Híbrido de invocações e magias':min?'Invocador em formação':'Conjurador em formação'} · escolha suas especializações a partir do nível 22.`:'O grimório aguarda sua primeira escolha.';
  $('distribution').innerHTML=count?`<span class="dist" style="flex:${min}" title="Minions: ${min} pontos"></span><span class="dist spells" style="flex:${sp}" title="Profana: ${sp} pontos"></span>`:'';
  let items=Object.entries(raw);
  if(ranks.abom){items=items.filter(([k])=>k!=='Dano da Abominação');items.unshift(['Dano total da Abominação',effective['Dano total da Abominação']]);}

@@ -10,7 +10,7 @@ e verificadas à distância antes de avançar para o próximo lote.
 ## Ponto de partida
 
 - O jogo usa Canvas 2D em um HTML independente, com sprites do Blender embutidos.
-- Os quatro inimigos comuns atuais são Guerreiro, Arqueiro, Bruto e Mago Vivo.
+- Os cinco inimigos comuns atuais são Guerreiro, Arqueiro, Bruto, Mago Vivo e Cão de Cripta.
   Seus especiais já têm preparação e formas de esquiva. Chefes existentes entram
   em uma etapa posterior de revisão.
 - As ações equipáveis estão em `ACTION_SKILLS` e `TREE_ACTIONS`: Tiro de Osso,
@@ -67,7 +67,7 @@ lotes, sem contar chefes ou variações cosméticas como inimigos novos.
 | BASE-02 | P0 | Arena de teste visual | Selecionar skill/inimigo, repetir ações, alternar fundo e zoom, comparar isolado e em grupo; disponível apenas para desenvolvimento | Concluído |
 | SK-01 | P1 | Tiro de Osso | Preparação curta, projétil com direção legível, impacto localizado e rastro discreto | Concluído |
 | SK-02 | P1 | Dash | Início, deslocamento e saída reconhecíveis; efeito acompanha a trajetória real e termina com a invulnerabilidade | Pronto |
-| EN-01 | P1 | Cão de Cripta | Perseguidor rápido com investida anunciada e recuperação explorável | Backlog |
+| EN-01 | P1 | Cão de Cripta | Perseguidor rápido com investida anunciada e recuperação explorável | Concluído |
 | EN-02 | P1 | Acólito de Guerra | Suporte que fortalece aliados em uma área visível; efeito termina quando a fonte morre | Backlog |
 | SK-03 | P1 | Chuva de Ossos | Área marcada, queda e impacto separados; borda da área de dano continua visível | Backlog |
 | SK-04 | P1 | Explosão Necrótica | Expansão curta, centro identificável e dissipação rápida sem cobrir o chão por muito tempo | Backlog |
@@ -160,7 +160,7 @@ quando novos personagens forem integrados.
 4. Conferir leitura pequena e sincronização com colisão/dano.
 5. Integrar ao HTML, validar e registrar evidências no cartão SK-01.
 
-Depois: SK-02, EN-01 e EN-02. Atualizar estados neste documento ao iniciar e
+Depois: SK-02 e EN-02; EN-01 concluído. Atualizar estados neste documento ao iniciar e
 concluir cada pacote. Este roadmap organiza o trabalho; não agenda execuções automáticas.
 
 ### Evidência da entrega de 24/10/2026
@@ -181,3 +181,12 @@ concluir cada pacote. Este roadmap organiza o trabalho; não agenda execuções 
   nesta máquina. A meta local inicial é 4 ms; isso não mede o quadro completo do jogo.
 - QA-01 permanece contínuo; as próximas skills e os novos inimigos ainda precisam
   de suas próprias verificações e evidências.
+
+
+## EN-01 — Cão de Cripta concluído
+
+- Quadrúpede ósseo com modelo/rig Blender e sete animações em oito direções (272 quadros sem recorte).
+- Mordida, investida em linha fixa com colisão contínua, pausa vulnerável e cancelamento por morte/reset. A horda reconhece o corredor como perigo.
+- Introdução nas waves e expedições a partir da wave 4; campanha e índices originais preservados.
+- HTML independente atualizado; modelos e teste do simulador acompanham a composição nova. Esquiva lateral e colisão continuam aproximações no simulador matemático.
+- Evidências e reprodução: [validação do Cão](../review/crypt-hound-validation.md). EN-02 permanece no backlog.

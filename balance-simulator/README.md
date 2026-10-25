@@ -74,3 +74,6 @@ XP e novas skills são aplicadas depois de cada encontro; não existe cura de le
 Alertas destacam baixa sobrevivência, encontros rápidos/lentos, chefe demorado, poucos acertos suportados, saltos de dificuldade, estagnação de nível, dependência dos itens e farm mais eficiente que avanço. Ajuste os alvos em `targets`; não trate a ausência de alertas como certificação de equilíbrio. Compare percentis entre sementes e confira amostras em partidas antes de alterar os números do jogo.
 
 As próximas etapas são ampliar a fidelidade dos efeitos necessários às builds e conferir os relatórios em partidas reais. Itens, bônus de escolas e curva atual de waves já usam uma fonte compartilhada com o jogo.
+
+
+O Cão de Cripta (`cryptHound`, índice 4) participa da arena atual a partir da wave 4; a composição usa o mesmo módulo do jogo. A primeira investida considera espera de 2 s após aparecer e preparação de 0,75 s; as seguintes incluem avanço, recuperação e recarga. O dano usa a precisão configurada de especiais: a simulação matemática não resolve colisões com paredes, parada no primeiro alvo ou esquiva lateral. Campanha e comparação legacy mantêm os quatro arquétipos originais.

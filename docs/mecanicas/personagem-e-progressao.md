@@ -58,10 +58,14 @@ preservam a proporção atual. Trocar itens não cura nem reinicia recargas.
 | 24 → 25 | 229 585 |
 
 > Observação de balanceamento: a curva de 1,4× por nível cresce muito depressa.
-> Os nós finais do Grimório exigem nível 24, o que hoje depende de um volume de XP
+> Os nós finais do Grimório exigem nível 22, o que hoje depende de um volume de XP
 > muito acima do que a campanha e as primeiras waves entregam.
 
 ## Pontos de habilidade
+
+Além desta progressão, cada habilidade equipável tem [maestria independente](maestrias.md),
+com XP, nível e pontos próprios. Esses pontos não alteram o orçamento do Grimório.
+No nível 60 do personagem, as habilidades equipadas continuam evoluindo.
 
 - Orçamento total: **3 × (N − 1)** pontos, compartilhados entre Minions e Profana.
 - Pontos não gastos aparecem no contador `✦ N pts` do HUD; clicar nele abre o Grimório.

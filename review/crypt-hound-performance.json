@@ -1,0 +1,15 @@
+{
+  "metrics": {
+    "scene": "32 enemies + 6 allies + 2 main characters, 24 px/u, low quality, Edge headless; one panel, draw dispatch only, excludes GPU completion and full game update",
+    "samples": 120,
+    "before": {
+      "medianMs": 0.699999988079071,
+      "p95Ms": 1.100000023841858
+    },
+    "after": {
+      "medianMs": 0.699999988079071,
+      "p95Ms": 1.0999999940395355
+    }
+  },
+  "errors": []
+}

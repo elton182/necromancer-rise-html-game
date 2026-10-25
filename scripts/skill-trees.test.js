@@ -51,7 +51,7 @@ test('uma subida dá 3 pontos sem bônus por alma ou marcos de campanha',()=>{
 });
 test('Zumbi e Carne Reanimada modificam stats reais da Abominação',()=>{
  const run=fixture();run('setup(30,{zombie:5,vigor:5,abom:5,colossus:1}); const a=spawnMinion("abom");');
- assert.equal(run('a.maxHp'),1742);assert.equal(run('a.dmg'),100);assert.equal(run('summonTypeAvailable("archer")'),false);assert.equal(run('summonTypeAvailable("abom")'),true);assert.equal(run('a.hpRegen'),17.42);
+ assert.equal(run('a.maxHp'),2322);assert.equal(run('a.dmg'),100);assert.equal(run('summonTypeAvailable("archer")'),false);assert.equal(run('summonTypeAvailable("abom")'),true);assert.equal(run('a.hpRegen'),23.22);
 });
 test('Tiro e Chuva recebem sinergias e perfuração sem consumir souls',()=>{
  const run=fixture();run('setup(30,{bolt:5,pierce:3,rain:4,shards:2});castRaio(2,0);');

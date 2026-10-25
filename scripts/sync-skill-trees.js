@@ -12,6 +12,8 @@ if(!html.includes('skillEquipTutorialSeen:player.skillEquipTutorialSeen'))replac
 if(!html.includes('level:d.level,souls:0,maxSp:'))replace('level:d.level,souls:d.souls,maxSp:', 'skillTreeVersion:d.skillTreeVersion,skillRanks:d.skillRanks,skillGrants:d.skillGrants,\n      level:d.level,souls:0,maxSp:');
 if(!html.includes('skillTutorialState:d.skillTutorialState'))replace('skillGrants:d.skillGrants,','skillGrants:d.skillGrants,skillTutorialState:d.skillTutorialState,');
 if(!html.includes('skillEquipTutorialSeen:d.skillEquipTutorialSeen'))replace('skillTutorialState:d.skillTutorialState,','skillTutorialState:d.skillTutorialState,skillEquipTutorialSeen:d.skillEquipTutorialSeen,skillEquipTutorialPending:d.skillEquipTutorialPending,');
+if(!html.includes('skillMastery:player.skillMastery'))replace('skillTreeVersion:SKILL_TREE_VERSION,skillRanks:player.skillRanks,','skillMasteryVersion:SkillMasteryModel.VERSION,skillMastery:player.skillMastery,\n    skillTreeVersion:SKILL_TREE_VERSION,skillRanks:player.skillRanks,');
+if(!html.includes('skillMastery:d.skillMastery'))replace('skillTreeVersion:d.skillTreeVersion,skillRanks:d.skillRanks,','skillMasteryVersion:d.skillMasteryVersion,skillMastery:d.skillMastery,\n      skillTreeVersion:d.skillTreeVersion,skillRanks:d.skillRanks,');
 html=html.replace(/(?:skillSync\(false\); ){2,}/g,'skillSync(false); ');
 if(!html.includes('skillSync(false); restoreSummonGroups(d); loadActionState(d);'))replace('restoreSummonGroups(d); loadActionState(d);','skillSync(false); restoreSummonGroups(d); loadActionState(d);');
 replace("const cost=60, soulCost=40;","const cost=60;");
@@ -44,9 +46,11 @@ html=html.replace(/\+\$\{(?:m\.rewardSouls|s\.rew\.souls|o\.rewardSouls|s)\} alm
 html=html.replaceAll('Explosão de Almas','Explosão Necrótica').replaceAll('EXPLOSÃO DE ALMAS','EXPLOSÃO NECRÓTICA').replaceAll('Cada wave concluída rende almas, XP e ouro.','Cada wave concluída rende XP e ouro.').replaceAll('com recompensas de almas, XP e ouro.','com recompensas de XP e ouro.').replaceAll('sempre há mais almas a colher...','novos poderes aguardam nas árvores...');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const blocks=[
+ ['SKILL_MASTERY_MODEL',`<script>\n${read('scripts/skill-mastery-model.js')}\n</script>`, '</head>'],
+ ['SKILL_MASTERY_STYLE',`<style>\n${read('scripts/skill-mastery.css')}\n</style>`, '</head>'],
  ['SKILL_TREE_MODEL',`<script>\n${read('build-simulator/model.js')}\n</script>`, '</head>'],
  ['SKILL_TREE_STYLE',`<style>\n${read('scripts/skill-trees.css')}\n</style>`, '</head>'],
  ['SKILL_TREE_RULES',read('scripts/skill-trees.js'),'const hasSave=bootGame();']
 ];
 for(const [name,content,anchor] of blocks){const start=`/* ${name}_BEGIN */`,end=`/* ${name}_END */`;const block=name==='SKILL_TREE_RULES'?`${start}\n${content}\n${end}\n`:`<!-- ${name}_BEGIN -->\n${content}\n<!-- ${name}_END -->\n`;const pattern=name==='SKILL_TREE_RULES'?/\/\* SKILL_TREE_RULES_BEGIN \*\/[\s\S]*?\/\* SKILL_TREE_RULES_END \*\/\r?\n/:new RegExp(`<!-- ${name}_BEGIN -->[\\s\\S]*?<!-- ${name}_END -->\\r?\\n`);if(pattern.test(html))html=html.replace(pattern,()=>block);else {if(!html.includes(anchor))throw Error('Missing anchor '+anchor);html=html.replace(anchor,()=>block+anchor);}}
-if(fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n')!==html.replace(/\r\n/g,'\n')){const temporary=target+'.sync-'+process.pid+'.tmp';fs.writeFileSync(temporary,html);try{try{fs.renameSync(temporary,target);}catch(error){if(!['EPERM','EACCES'].includes(error.code))throw error;fs.copyFileSync(temporary,target);}}finally{if(fs.existsSync(temporary))fs.unlinkSync(temporary);}}console.log('Embedded skill trees updated.');
+if(fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n')!==html.replace(/\r\n/g,'\n')){const temporary=target+'.sync-'+process.pid+'.tmp';fs.writeFileSync(temporary,html);try{try{fs.renameSync(temporary,target);}catch(error){if(!['EPERM','EACCES'].includes(error.code))throw error;const fd=fs.openSync(target,'r+');try{fs.writeFileSync(fd,html);fs.ftruncateSync(fd,Buffer.byteLength(html));}finally{fs.closeSync(fd);}}}finally{if(fs.existsSync(temporary))fs.unlinkSync(temporary);}}console.log('Embedded skill trees updated.');

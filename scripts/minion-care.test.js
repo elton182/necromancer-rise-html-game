@@ -4,13 +4,22 @@ function fixture(){
  const c=vm.createContext({console});vm.runInContext(`
  let gameState='field',minions=[],enemies=[],eshots=[],mobZones=[],fallbacks=0;
  const player={mp:100},P={x:0,y:0,deadT:0},TITLE={active:false,paused:false},COMIC={active:false},PM={tab:'status'},LEASH_DIST=8,innerWidth=1200,innerHeight=800;
- const COMBAT_TUNING={manualReviveHealth:.6},MOB_ABILITIES={'Mago Vivo':{kind:'fire',radius:2.2},Arqueiro:{kind:'powerShot'},Guerreiro:{kind:'heavy',radius:2.1}};
+ const COMBAT_TUNING={manualReviveHealth:.6,frontlineDamageTaken:.8},MOB_ABILITIES={'Mago Vivo':{kind:'fire',radius:2.2},Arqueiro:{kind:'powerShot'},Guerreiro:{kind:'heavy',radius:2.1}};
  const document={querySelector:()=>null},floatMsg=()=>{},playSound=()=>{},updateMinionPanel=()=>{},menuUpdateSummary=()=>{},blockByCorpseWalls=()=>{};function updateHUD(){}
  let clampMobLanding=(x,y)=>({x,y});
- function tryReanimate(){}function updateMinionIntent(){fallbacks++;}function killMinion(m){m.dead=true;}function tPause(){}
+ function tryReanimate(){}function updateMinionIntent(){fallbacks++;}function killMinion(m){m.dead=true;}function tPause(){}function dealDamageToMinion(m,amount){if(m.dead)return;m.hp-=amount;if(m.hp<=0)killMinion(m);}
  function ally(type='zombie',x=0,y=0){const material={opacity:.1,transparent:true},m={type,dead:false,hp:100,maxHp:300,spd:3.4,deadTimer:9,mesh:{position:{x,y:0,z:y,set(x,y,z){Object.assign(this,{x,y,z});}},traverse(cb){cb({material});}},material};Object.defineProperties(m,{x:{get(){return this.mesh.position.x},set(v){this.mesh.position.x=v}},y:{get(){return this.mesh.position.z},set(v){this.mesh.position.z=v}}});return m;}
  `,c);vm.runInContext(fs.readFileSync(path.join(__dirname,'minion-care.js'),'utf8'),c);return s=>vm.runInContext(s,c);
 }
+test('frontline takes 20% less damage; ranged and spirits retain full damage and lethality',()=>{
+ for(const type of ['zombie','skeleton','abom','archer','specter']){
+  const run=fixture();run(`const m=ally('${type}');dealDamageToMinion(m,100)`);
+  assert.equal(run('m.hp'),['zombie','skeleton','abom'].includes(type)?20:0);
+  assert.equal(run('m.dead'),!['zombie','skeleton','abom'].includes(type));
+ }
+ const run=fixture();run('const m=ally();dealDamageToMinion(m,0);dealDamageToMinion(m,1)');assert.equal(run('m.hp'),99);
+ run('COMBAT_TUNING.frontlineDamageTaken=1;dealDamageToMinion(m,20)');assert.equal(run('m.hp'),79);
+});
 test('manual revive spends 30 mana once, restores visibility and places ally beside hero',()=>{
  const run=fixture();run('const m=ally();m.dead=true;m.mesh.position.y=-.4;minions=[m]');assert.equal(run('tryReanimate()'),true);assert.equal(run('player.mp'),70);assert.equal(run('m.hp'),180);assert.equal(run('m.deadTimer'),0);assert.equal(run('m.mesh.position.y'),.1);assert.equal(run('m.material.transparent'),false);assert.ok(run('Math.hypot(m.x-P.x,m.y-P.y)')<=2);assert.equal(run('tryReanimate()'),false);assert.equal(run('player.mp'),70);
 });
@@ -25,6 +34,13 @@ test('zombies and skeletons react after a delay and move out of warned area with
 });
 test('hostile projectiles are dodged; friendly projectiles do not trigger evasion',()=>{
  const run=fixture();run('const m=ally();eshots=[{x:-4,y:0,vx:12,vy:0,life:1,friendly:true}];');assert.equal(run('minionHazards().length'),0);run('eshots[0].friendly=false;for(let i=0;i<15;i++)updateMinionIntent(m,0,.05,{x:0,z:0})');assert.ok(run('Math.abs(m.y)')>.8);
+});
+
+test('hound charge exposes a finite line hazard, removed during recovery',()=>{
+ const run=fixture();
+ run("MOB_ABILITIES['Cão de Cripta']={kind:'charge',width:1};enemies=[{type:{name:'Cão de Cripta'},x:0,y:0,ability:{phase:'windup',sx:0,sy:0,tx:6,ty:0}}]");
+ assert.equal(run('minionHazards()[0].r'),.95);assert.ok(run('minionDanger(3,0,minionHazards())')>0);assert.equal(run('minionDanger(3,2,minionHazards())'),0);
+ run("enemies[0].ability.phase='recover'");assert.equal(run('minionHazards().length'),0);
 });
 test('dodge respects collision constraints and does not replace return-to-hero or leap AI',()=>{
  const run=fixture();run('const m=ally();m.returning=true;enemies=[{type:{name:"Mago Vivo"},x:4,y:0,ability:{tx:0,ty:0}}]');assert.equal(run('minionEvade(m,0,.3,{x:0,z:0})'),false);run('m.returning=false;m.allyLeap={}');assert.equal(run('minionEvade(m,0,.3,{x:0,z:0})'),false);run('m.allyLeap=null;clampMobLanding=(x,y)=>({x:Math.max(-.5,Math.min(.5,x)),y:Math.max(-.5,Math.min(.5,y))});for(let i=0;i<25;i++)updateMinionIntent(m,0,.05,{x:0,z:0})');assert.ok(run('Math.abs(m.x)')<=.5);assert.ok(run('Math.abs(m.y)')<=.5);

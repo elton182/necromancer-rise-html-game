@@ -53,3 +53,43 @@ somente o registro `SPR.load('boneShard', ...)` no HTML. `BoneBoltVFX.shard`
 escolhe a direção mais próxima e gira o resto; sem o sheet, usa o osso desenhado
 em escala menor. Acrescente `preview` ao render para gerar só o primeiro quadro
 de cada direção. A pasta `frames_bone_shard` é temporária.
+
+
+# Cão de Cripta
+
+`crypt_hound.py` gera `mob_cryptHound.blend` e `.glb` com rig quadrúpede e sete ações: idle, walk, attack, windup, charge, recover e death. `render_crypt_hound.py` usa o renderizador de estúdio do Blender, materiais do modelo, contorno cinza e fundo transparente. O atlas mantém células de 224 px, oito direções, 56 px/u e âncora (112, 165). O empacotador valida os 272 quadros e incorpora o WebP ao HTML independente.
+
+```powershell
+blender --background --threads 4 --python blender/crypt_hound.py
+blender --background --threads 4 --python blender/render_crypt_hound.py
+python blender/pack_crypt_hound.py
+node scripts/sync-equipment.js
+node scripts/crypt-hound-browser-check.js
+```
+
+Se Blender não estiver no PATH, use o executável da instalação local. `preview_crypt_hound.png` mostra todas as direções e as sete ações.
+
+# Carcereiro das Almas — boss das expedições
+
+`soul_warden.py` constrói um chefe original com armadura, crânio coroado,
+martelo de execução e jaula de almas. `boss_soulWarden.blend` é o modelo
+editável; `boss_soulWarden.glb` inclui rig e as sete ações: idle, walk,
+windup, attack, cast, recover e death.
+
+```powershell
+blender --background --threads 4 --python blender/soul_warden.py
+blender --background --threads 4 --python blender/render_soul_warden.py
+python blender/pack_soul_warden.py
+node scripts/sync-equipment.js
+node --test scripts/soul-warden.test.js
+node scripts/soul-warden-browser-check.js
+```
+
+O render gera 320 quadros transparentes em oito direções, com validação contra
+cortes em todas as poses. O empacotador reduz os mestres de 320 px a células
+de 288 px (50,4 px/u, âncora 144 / 211,5), mantendo o atlas abaixo do limite
+WebP de 16384 px, e incorpora o sprite ao HTML independente.
+`preview_soul_warden.png` reúne as sete ações e oito direções.
+
+O chefe aparece ao final de cada expedição, com atributos escalados pela wave.
+Suas regras ficam em `scripts/soul-warden-model.js` e `scripts/soul-warden.js`.

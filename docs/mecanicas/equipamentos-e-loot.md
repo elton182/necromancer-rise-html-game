@@ -97,6 +97,30 @@ O **nível da peça** depende de onde ela caiu:
 | Missões do Modo Livre e da vila | Dificuldade da missão (1–3) |
 | Mercador de relíquias | Maior wave desbloqueada |
 
+### Recuperação de nível
+
+Quando o equipamento vestido está atrasado em relação ao nível do drop, parte das
+peças cai **acima** desse nível (`EquipmentModel.dropRoll`). Vale para monstros e
+chefes; o mercador não muda.
+
+```text
+Atraso  = nível do drop − média do nível dos 7 espaços (espaço vazio conta 0)
+Chance  = 15% + 5% por nível de atraso, até 60%   (só com atraso ≥ 1)
+Nível   = nível do drop + 1 a ⌈atraso ÷ 2⌉, até +10
+Espaço  = 50% de chance de ser o espaço mais fraco; senão, aleatório
+```
+
+| Média vestida na wave 20 | Atraso | Chance acima | Nível possível |
+|---:|---:|---:|---|
+| 20 ou mais | 0 | 0% | 20 |
+| 19 | 1 | 20% | 21 |
+| 15 | 5 | 40% | 21–23 |
+| 10 | 10 | 60% | 21–25 |
+| 0 (nada vestido) | 20 | 60% | 21–30 |
+
+Peças acima do nível aparecem no chão com **▲** ao lado do nível. O filtro de loot
+continua valendo para elas.
+
 - Peças no chão permanecem enquanto durar a tentativa (não expiram).
 - Coleta automática a menos de 1,8 u. Com a mochila cheia, a peça fica no chão e
   aparece o aviso **Mochila cheia · I para equipamentos**.

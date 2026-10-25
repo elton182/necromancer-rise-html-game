@@ -121,6 +121,35 @@ Liberada ao concluir o Ato I, substitui o hub e mantém os serviços dele. Acres
 
 ## Arena Infinita
 
+O seletor **Modelo de waves** em **ESC → Waves** oferece **Expedição** (padrão)
+e **Arena clássica** (o sistema anterior, preservado). A preferência fica salva
+nas opções do navegador. Ambos compartilham recorde, desbloqueios e personagem.
+
+### Expedição
+
+- Cada wave gera um mapa de 156 × 80 unidades, com câmera acompanhando o jogador,
+  uma trilha livre até o chefe e áreas laterais para explorar.
+- O ciclo de biomas é cemitério, floresta, deserto, tundra e vila. O traçado,
+  posições dos encontros e cenário mudam com a wave, inclusive ao repetir o ciclo.
+- Há 12 grupos de 6–8 inimigos (84 monstros) e um boss, todos posicionados na entrada. Os inimigos
+  só entram em combate ao detectar Zephyr, seus minions ou sofrer dano. Não há
+  spawns periódicos, perseguidores surgindo com o tempo nem objetivos para liberar o boss.
+- Mágicos: vida ×1,9, dano ×1,3, velocidade ×1,08 e XP ×2; chance de equipamento
+  de 55%, sempre mágico ou melhor. Raros: vida ×3,4, dano ×1,65, velocidade ×1,12
+  e XP ×4; equipamento garantido, raro (85%) ou épico (15%). Comuns: 16% de drop.
+  Os multiplicadores são aplicados sobre a escala da wave. Cor e rótulo identificam cada elite.
+- O boss usa um dos três chefes existentes e garante equipamento raro (75%) ou
+  épico (25%). Sua morte conclui a wave, concede a recompensa e libera a seguinte;
+  não é preciso eliminar os outros grupos.
+- Depois do boss, continue explorando ou use **G no portal final** para avançar.
+  Os minions seguem com a mesma vida, atributos e recuperação; a transição não
+  cura nem ressuscita aliados. Equipamentos são recolhidos antes da troca; se a
+  mochila encher, libere espaço antes de avançar. A wave 1000 encerra a sequência.
+- O portal inicial e a pausa permitem retornar à vila. O minimapa mostra a
+  trilha, os encontros, o boss e os portais. O HUD indica a distância até o boss.
+
+### Arena clássica
+
 Acessada pela **Pedra do Infinito** na vila ou pela aba **ESC → Waves** em
 qualquer hub do Modo Livre.
 

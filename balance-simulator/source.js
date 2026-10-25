@@ -41,7 +41,7 @@ function readSource(root = path.resolve(__dirname, '..')) {
   const goldDrops = html.includes('Math.max(2,Math.round((e.xp||10)*.35))*(e.isBoss?3:1)');
   if (!goldDrops) throw Error('Gold rule changed; update source adapter.');
   return {
-    enemies: constant('ENEMY_TYPES').map(e => ({ ...e, dropChance:combatTuning.orbChance,hpOrbShare:combatTuning.hpOrbShare,spd:e.spd*combatTuning.enemySpeed,interval:['Arqueiro','Mago Vivo'].includes(e.name)?combatTuning.rangedInterval:combatTuning.meleeInterval,specialDelayMin:.6+combatTuning.specialDelayMin,specialDelayMax:.6+combatTuning.specialDelayMax,ability: abilities[e.name] })), combatTuning,minions, stages: constant('CAMP_STAGES').filter(Boolean),liveEquipment:html.includes('/* EQUIPMENT_RULES_BEGIN */'),
+    enemies: constant('ENEMY_TYPES').map(e => ({ ...e, dropChance:combatTuning.orbChance,hpOrbShare:combatTuning.hpOrbShare,spd:e.spd*combatTuning.enemySpeed,interval:e.id==='cryptHound'?1.2:['Arqueiro','Mago Vivo'].includes(e.name)?combatTuning.rangedInterval:combatTuning.meleeInterval,specialDelayMin:e.id==='cryptHound'?2.6:.6+combatTuning.specialDelayMin,specialDelayMax:e.id==='cryptHound'?2.6:.6+combatTuning.specialDelayMax,ability: abilities[e.name] })), combatTuning,minions, stages: constant('CAMP_STAGES').filter(Boolean),liveEquipment:html.includes('/* EQUIPMENT_RULES_BEGIN */'),
     missions: constant('MISSION_TEMPLATES'), captain: constant('CAPTAIN'),
     rooms: rooms.flatMap(r => r.waves), strip: strip.flatMap(z => z.waves),
     provenance: {
@@ -50,6 +50,7 @@ function readSource(root = path.resolve(__dirname, '..')) {
       equipmentSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'scripts/equipment-model.js'))).digest('hex'),
       currentRules: 'Live equipment model supplies current endless scaling, item generation and skill bonuses. Legacy formulas remain available under rules=legacy; campaign keeps stageMul.',
       assumptions: [
+        'Crypt Hound uses arena composition; charge collision and lateral dodging remain approximations.',
         'Combat is a positional abstraction: accuracy, engagement, area coverage and aggro are configurable.',
         'XP and skill allocation apply after each encounter; no mid-encounter level-up healing.',
         'Each encounter starts with full player resources and living minions (village/reset assumption).',

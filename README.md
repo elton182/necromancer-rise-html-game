@@ -17,11 +17,13 @@ navegador, com teclado e mouse ou controle, e salva o progresso localmente.
 |---|---|
 | Campanha — Ato I | 4 fases (salas, arena, rolagem lateral e chefe), quadrinhos de história e mapa para rejogar |
 | Modo Livre e Vila de Eldrin | Hub com missões, moradores com pedidos, trilhas laterais e mercador |
-| Arena Infinita | Waves selecionáveis até 1000, recorde e escala exponencial |
+| Pedra do Infinito | Expedições por mapas e biomas, elites e boss por wave; Arena clássica preservada; seleção até 1000 |
 | Habilidades | 6 slots compartilhados entre 6 magias, Dash e 5 evocações com comandos próprios |
 | Grimório | 2 árvores, 6 escolas, 42 nós e 12 especializações finais; 3 pontos por nível até o 60 |
-| Horda | Zumbis, esqueletos guerreiros e arqueiros, espectros e Abominação, com IA, esquiva e reanimação |
-| Inimigos | 4 tipos comuns com especiais anunciados, 3 chefes de missão e o Capitão da Guarda (4 fases) |
+| Maestrias | 12 habilidades com XP e níveis próprios até 20, bônus automáticos e árvores com até 19 pontos exclusivos |
+| Horda | Zumbis, esqueletos guerreiros e arqueiros, espectros e Abominação, com IA, esquiva, reanimação e uma habilidade automática com recarga por tipo |
+| Inimigos | 5 tipos comuns com especiais anunciados, 3 chefes de missão e o Capitão da Guarda (4 fases) |
+| Boss das expedições | Carcereiro das Almas: modelo e rig no Blender, sete animações em oito direções, duas fases e três ataques anunciados |
 | Equipamentos | 7 espaços, 4 raridades, afixos, pontos de habilidade, mochila de 60 peças e filtro de loot |
 | Visual | Sprites renderizados no Blender em 8 direções, novo Tiro de Osso e arena de comparação de efeitos |
 
@@ -29,7 +31,7 @@ Os valores de combate ainda são **iniciais** e precisam de balanceamento com
 partidas completas. Em andamento no working tree: o sprite próprio dos
 **Estilhaços** do Tiro de Osso (`blender/bone_shard.*`, `scripts/skill-vfx.js`).
 O próximo cartão do [roadmap visual](docs/roadmap-combate-visual.md) é o Dash
-(SK-02), seguido dos primeiros inimigos novos.
+(SK-02), com o Cão de Cripta (EN-01) já disponível nas waves e expedições a partir da wave 4.
 
 ## Como jogar
 
@@ -72,7 +74,7 @@ A referência completa, com fórmulas e tabelas, está em
 - **[Grimório dos Mortos](docs/mecanicas/grimorio.md)**
   - **Minions** (Carne, Ossos, Espíritos) e **Profana** (Ossos, Sangue, Sombras).
   - Cada escola tem raiz, dois ramos e duas especializações finais exclusivas.
-  - Etapas nos níveis 1, 6, 12 e 24; cada ligação exige 2 pontos no nó anterior.
+  - Etapas nos níveis 1, 6, 12 e 22; cada ligação exige 2 pontos no nó anterior.
   - Devolver pontos custa 20 de ouro por ponto.
 - **[Horda](docs/mecanicas/horda.md)**
   - Uma evocação ocupa um slot e traz o grupo inteiro (3 zumbis, 3 guerreiros,
@@ -105,6 +107,10 @@ Não precisa de build nem servidor: abra `necromancer-canvas.html` no navegador.
 O progresso fica no `localStorage` do navegador (chave `necromancer_v2`). Use
 **Opções → Exportar/Importar save** para backup.
 
+Para diagnosticar combate com sua build, exporte em **Esc → Sistema → Exportar save**
+e use a [simulação de save no motor real](balance-simulator/SAVE-SIMULATION.md).
+Ela roda tentativas reproduzíveis em navegador isolado, preservando seu progresso.
+
 ## Desenvolvimento
 
 ### Estrutura
@@ -130,7 +136,9 @@ arquivos separados e copiados para dentro dele:
 | Fonte | Sistema | Sincronizar com |
 |---|---|---|
 | `build-simulator/model.js`, `scripts/skill-trees.js`, `scripts/skill-trees.css` | Grimório e regras de combate (`COMBAT_TUNING`) | `node scripts/sync-skill-trees.js` |
-| `scripts/equipment-model.js`, `scripts/equipment.js`, `scripts/minion-care.js`, `scripts/equipment.css`, `scripts/menu.css` | Equipamentos, loot, waves, reanimação e esquiva da horda, menu | `node scripts/sync-equipment.js` (também roda o anterior) |
+| `scripts/equipment-model.js`, `scripts/equipment.js`, `scripts/minion-care.js`, `scripts/minion-abilities.js`, `scripts/sprite-cache.js`, `scripts/equipment.css`, `scripts/menu.css` | Equipamentos, loot, waves, reanimação, esquiva e habilidades automáticas da horda, cache de sprites, menu | `node scripts/sync-equipment.js` (também roda o anterior) |
+| `scripts/expedition-model.js`, `scripts/expedition.js` | Mapas de expedição, biomas por wave, elites, boss e seleção entre Expedição e Arena clássica | `node scripts/sync-equipment.js` |
+| `scripts/crypt-hound-model.js`, `scripts/crypt-hound.js` | Composição da arena e combate do Cão de Cripta | `node scripts/sync-equipment.js` |
 | `scripts/skill-vfx.js` | Efeitos do Tiro de Osso e do Dash | `node scripts/sync-skill-vfx.js` |
 
 Edite a fonte e rode o script; não edite o bloco embutido direto no HTML.
@@ -142,7 +150,7 @@ node game_check.js
 ```
 
 ```bash
-node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/skill-trees.test.js scripts/navigation-options.test.js build-simulator/model.test.js balance-simulator/model.test.js
+node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/minion-abilities.test.js scripts/sprite-cache.test.js scripts/skill-trees.test.js scripts/navigation-options.test.js build-simulator/model.test.js balance-simulator/model.test.js
 ```
 
 - `game_check.js` valida a sintaxe e roda os 71 cenários de regras.

@@ -2,7 +2,7 @@
 // BuildModel is also embedded: the released game remains a standalone HTML file.
 const SKILL_TREE_VERSION=1;
 // Shared with the simulator through its source adapter. Keep pressure readable and dodgeable.
-const COMBAT_TUNING={boltMultiplier:.5,zombieBurstMultiplier:3.5,zombieBurstRadius:3.5,minionHpMultiplier:1.5,minionHpPerLevel:6,minionRegen:.01,manualReviveHealth:.6,autoReviveHealth:.5,enemySpeed:1.15,meleeInterval:1.1,rangedInterval:1.3,specialDelayMin:.75,specialDelayMax:1.25,gearChance:.16,orbChance:.16,hpOrbShare:.25,specials:{Guerreiro:{windup:.5,cooldown:5},Arqueiro:{windup:.65,cooldown:5},'Mago Vivo':{windup:.75,cooldown:6.5},Bruto:{windup:.65,cooldown:6}}};
+const COMBAT_TUNING={boltMultiplier:.5,zombieBurstMultiplier:3.5,zombieBurstRadius:3.5,minionHpMultiplier:1.5,minionHpPerLevel:6,minionRegen:.01,frontlineDamageTaken:.8,manualReviveHealth:.6,autoReviveHealth:.5,enemySpeed:1.15,meleeInterval:1.1,rangedInterval:1.3,specialDelayMin:.75,specialDelayMax:1.25,gearChance:.16,orbChance:.16,hpOrbShare:.25,specials:{Guerreiro:{windup:.5,cooldown:5},Arqueiro:{windup:.65,cooldown:5},'Mago Vivo':{windup:.75,cooldown:6.5},Bruto:{windup:.65,cooldown:6}}};
 const TREE_ACTIONS={bolt:'raio',rain:'chuva',wall:'maos',shield:'barreira',nova:'explosao',dash:'dash',zombie:'zombie',skeleton:'skeleton',archer:'archer',specter:'specter',abom:'abom',curse:'maldicao'};
 const TREE_PASSIVES={zombie_burst:'burst',archer_power:'shot',abom_slam:'colossus',aura:'aura'};
 let skillTreeTab='minions',skillTreeSelected='zombie';
@@ -152,8 +152,9 @@ function skillCastCurse(x,y){
  if(!skillUnlocked('maldicao')||!abilityReady('maldicao',25))return false;
  if(!Number.isFinite(x)||!Number.isFinite(y)||Math.hypot(x-P.x,y-P.y)>9)return false;
  player.mp-=25;player.spellCooldowns.maldicao=8;
- enemies.forEach(e=>{if(e.dead||Math.hypot(e.x-x,e.y-y)>4)return;e._uncursedDmg=e._uncursedDmg??e.dmg;e.dmg=e._uncursedDmg*(1-skillEffect('Redução de dano da Maldição')/100);e.skillCurseT=6;});
- ring(x,y,4,'#b69ad2',1);castAnim(x,y,'#b69ad2');playSound('raio');updateHUD();return true;
+ const radius=4*Math.sqrt(skillPercent('Área da Maldição')),duration=6*skillPercent('Duração da Maldição');
+ enemies.forEach(e=>{if(e.dead||Math.hypot(e.x-x,e.y-y)>radius)return;e._uncursedDmg=e._uncursedDmg??e.dmg;e.dmg=e._uncursedDmg*(1-skillEffect('Redução de dano da Maldição')/100);e.skillCurseT=duration;});
+ ring(x,y,radius,'#b69ad2',1);castAnim(x,y,'#b69ad2');playSound('raio');updateHUD();return true;
 }
 function skillWallAbsorb(sh,x,y){
  const wall=handsAreas.find(w=>{const q=wallNearest(w,x,y);return Math.hypot(q.x-x,q.y-y)<w.width/2+.3;});

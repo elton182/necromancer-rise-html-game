@@ -16,6 +16,16 @@ test('as duas rotas intermediárias coexistem, finais da escola são exclusivos'
  M.invest(s,'colossus');assert.throws(()=>M.invest(s,'plague'),/Incompatível/);
  M.refund(s,'colossus');M.invest(s,'plague');assert.equal(s.ranks.plague,1);
 });
+test('as 12 especializações finais abrem no nível 22, mantendo pré-requisitos',()=>{
+ const finals=M.nodes.filter(n=>n.tier===3);assert.equal(finals.length,12);
+ for(const n of finals){
+  const s=fresh(21);for(let id=n.requires;id;id=M.byId[id].requires)s.ranks[id]=2;
+  assert.equal(n.level,22);
+  assert.throws(()=>M.invest(s,n.id),/nível 22/);
+  M.setLevel(s,22);M.invest(s,n.id);assert.equal(s.ranks[n.id],1);M.validate(s);
+  assert.match(M.reason(n,{},22),/Requer 2 pontos/);
+ }
+});
 test('remover pré-requisito devolve descendentes, preservando outra bifurcação',()=>{
  const s=M.validate({version:1,level:30,ranks:{zombie:2,vigor:2,burst:2,abom:3,unstable:2,colossus:1}});
  assert.equal(M.refund(s,'vigor'),5);assert.equal(s.ranks.abom,undefined);assert.equal(s.ranks.colossus,undefined);assert.equal(s.ranks.unstable,2);M.validate(s);
