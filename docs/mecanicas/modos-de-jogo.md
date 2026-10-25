@@ -60,7 +60,7 @@ Trocas de modo:
 
 ## Modo Livre (hub)
 
-Antes de concluir o Ato I, o hub é uma área circular com:
+O Modo Livre começa na Vila de Eldrin, mesmo sem concluir o Ato I. O hub mantém:
 
 | Ponto | Interação (`G`) |
 |---|---|
@@ -72,7 +72,7 @@ Antes de concluir o Ato I, o hub é uma área circular com:
 
 Na pausa do hub também ficam as abas **Equipamentos** (mercador de relíquias e
 venda de peças) e **Waves** (entrada na Arena Infinita pela wave escolhida). Essas
-funções existem em qualquer hub do Modo Livre, antes ou depois da vila, mas não
+funções existem desde o início do Modo Livre, mas não
 durante a campanha.
 
 ## Missões
@@ -96,7 +96,8 @@ Três modelos, oferecidos pelo quadro do hub e pelos moradores da vila:
 
 ## Vila de Eldrin
 
-Liberada ao concluir o Ato I, substitui o hub e mantém os serviços dele. Acrescenta:
+Disponível desde o início no Modo Livre e liberada ao concluir o Ato I na campanha,
+mantém os serviços do hub. Acrescenta:
 
 | Ponto | Função |
 |---|---|

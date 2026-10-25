@@ -5886,7 +5886,7 @@ function campMapRender(){
   bar.appendChild(mk('💀 MINIONS',()=>pmOpenOverlay('minions')));
   bar.appendChild(mk('🛒 LOJA',()=>pmOpenOverlay('shop')));
   bar.appendChild(mk('📖 HISTÓRIA',()=>campStoryOpen()));
-  bar.appendChild(mk('🏕 MODO LIVRE',()=>{ setPause(true); tConfirm((CAMP.cleared[4]?'Ir para a <b>Vila de Eldrin</b>: mercador, missões dos moradores e a Arena Infinita, com este mesmo personagem?':'Ir para o <b>Modo Livre</b> (hub e waves infinitas) com este mesmo personagem?')+'<br>O progresso da campanha fica salvo.','IR PARA O HUB',()=>campToFree(),()=>{ setPause(false); }); }));
+  bar.appendChild(mk('🏕 MODO LIVRE',()=>{ setPause(true); tConfirm('Ir para a <b>Vila de Eldrin</b>: mercador, missões dos moradores e a Arena Infinita, com este mesmo personagem?<br>O progresso da campanha fica salvo.','IR PARA A VILA',()=>campToFree(),()=>{ setPause(false); }); }));
   el.appendChild(bar);
   CAMP_STAGES.slice(1).forEach(s=>{
     const n=s.n, lock=n>CAMP.unlocked, done=!!CAMP.cleared[n];
@@ -6710,10 +6710,10 @@ HQ_END.forEach(f=>{ const i=new Image(); i.src=f.src; f.img=i; });
 STORY.camp_end=HQ_END.map((f,k)=>({slide:f,idx:k,n:HQ_END.length}));
 
 // ═══════════════════════════════════════════════════════════
-// VILA DE ELDRIN — primeira cidade (liberada ao fim do Ato I)
+// VILA DE ELDRIN — hub do Modo Livre, também liberado ao fim do Ato I
 // liga a campanha ao Modo Livre: NPCs com missões aleatórias + Arena Infinita
 // ═══════════════════════════════════════════════════════════
-const VILLAGE=()=>!!(CAMP.cleared&&CAMP.cleared[4]);
+const VILLAGE=()=>!CAMP.on||!!(CAMP.cleared&&CAMP.cleared[4]);
 const ENDLESS={best:0};
 const VIL={offers:{},arena:null,crypt:null,open:null};
 BIOMES.eldrin=Object.assign({},BIOMES.forestday,{id:'eldrin',name:'Vila de Eldrin',icon:'🏘️',bg:'#2a4a1c',dark:'rgba(40,22,10,.20)',vig:'rgba(20,10,0,.38)',mm:'rgba(40,70,30,.72)'});
@@ -7317,7 +7317,7 @@ function muCtx(){
       if(currentMission&&currentMission.endless) return 'endless';
       return 'field';
     }
-    if(sceneMode==='hub') return (!CAMP.on&&CAMP.cleared&&CAMP.cleared[4])?'village':'hub';
+    if(sceneMode==='hub') return VILLAGE()?'village':'hub';
   }catch(e){}
   return 'keep';
 }

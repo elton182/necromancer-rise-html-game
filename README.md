@@ -96,7 +96,7 @@ A referência completa, com fórmulas e tabelas, está em
   - Compra de relíquias e venda no hub.
 - **[Modos de jogo](docs/mecanicas/modos-de-jogo.md)**
   - Campanha e Modo Livre compartilham o mesmo personagem.
-  - Concluir o Ato I libera a Vila de Eldrin e a Pedra do Infinito.
+  - O Modo Livre começa na Vila de Eldrin, com moradores e Pedra do Infinito, sem exigir a conclusão do Ato I.
   - Na Arena Infinita, a maior wave desbloqueada define o nível do loot vendido.
 
 ## Rodando localmente
