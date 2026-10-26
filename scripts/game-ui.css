@@ -1,0 +1,38 @@
+/* Shared game UI: readable content, clear actions, and consistent input feedback. */
+:root{--ui-text:#e2e8d9;--ui-muted:#b0bca5;--ui-gold:#e4c887;--ui-line:#687354;--ui-panel:#172017}
+#hub-overlay{box-sizing:border-box;padding:24px clamp(12px,3vw,48px);background:radial-gradient(ellipse at top,#202b20f5,#080d0bf7 70%);color:var(--ui-text);font-family:Georgia,serif}
+#hub-overlay h1{color:var(--ui-gold);text-shadow:none;font-size:26px;letter-spacing:2px;margin:0 0 8px}
+#management-desc,#hub-souls-disp,#hub-stat{font-size:13px!important;line-height:1.6;letter-spacing:.3px!important}
+#hub-overlay>.hub-tabs,#hub-overlay>.hub-panel,#hub-overlay>.hub-actions{width:100%;max-width:1480px;box-sizing:border-box}
+#hub-overlay>.hub-tabs{margin-top:20px;gap:6px;padding:8px;background:#101911;border:1px solid var(--ui-line);border-radius:6px}
+.hub-tab{min-height:44px;padding:10px 20px;color:#c2ceba;font-size:13px;letter-spacing:.5px;border-radius:3px}
+.hub-tab.active{background:#35432b;color:#ffdfa0;border-bottom:3px solid #e4c887}
+#hub-overlay>.hub-panel{padding:16px 0}
+#hub-overlay .live-grimoire{padding:20px;border-color:var(--ui-line);background:linear-gradient(135deg,#1b2519,#101810);box-shadow:0 12px 40px #0005}
+.lg-layout{grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:20px}
+.lg-schools{gap:14px}.lg-school{min-width:0;background:#142013;border-color:#536343}
+.lg-school>h3{font-size:18px;letter-spacing:1px;color:#e2cf99;padding:12px 4px}
+.lg-paths{font-size:12px;line-height:1.4;min-height:44px;padding:8px 5px;color:#b6c4a7}
+.lg-graph{height:390px}.lg-node{font-size:12px;line-height:1.35;min-height:80px;gap:9px;color:#d6e1ca}
+.lg-node.locked .lg-seal{opacity:.62}.lg-node.locked>span:last-child{color:#a1ad95}
+.lg-node.selected .lg-seal{outline:3px solid #f0ce80;outline-offset:4px;background:#3c4a28}
+.lg-seal{width:46px;height:46px}.lg-seal em{font-size:11px;padding:2px 5px}
+.lg-detail{position:sticky;top:0;max-height:none;padding:18px;background:#202b1b;border-color:#69794f}
+.lg-detail p,.lg-detail ul{font-size:14px;line-height:1.65;color:#d3ddc6}.lg-detail>small,.lg-detail>b{font-size:12px}.lg-detail>h3{font-size:24px}.lg-detail h4{font-size:15px}
+.lg-note{font-size:12px!important;color:#b6c2a7!important}.lg-requirement{font-size:12px;line-height:1.5;background:#10180e;padding:10px}
+.lg-invest{display:grid;grid-template-columns:1fr;gap:8px}.lg-invest .btn,#tl.pz .pm.menu-standard .lg-invest .btn{font:14px/1.4 Georgia,serif!important;letter-spacing:.2px!important;min-height:44px;white-space:normal;padding:10px 12px}
+.lg-invest .invest{border-color:#d5b46b;background:linear-gradient(#826b35,#544420);color:#fff0c9}.lg-invest .refund{background:#182015;border-color:#778266;color:#d2dcc6}
+.lg-tabs button,.lg-reset,.lg-equip-help{min-height:44px;font-size:13px!important;letter-spacing:.3px!important}.lg-toolbar{gap:12px;margin:16px 0}.lg-heading h2{font-size:26px}.lg-heading small{font-size:11px}.lg-heading{padding-bottom:12px}
+#tl.pz .pm.menu-standard .pmmain button.pmtab{min-height:44px;font-size:12px;letter-spacing:.3px}
+#tl.pz .pm.menu-standard .pmcard{padding:18px;color:var(--ui-text)}.menu-summary{font-size:13px}.menu-actions>button{min-height:44px!important;font-size:12px!important}
+:where(.btn,.hub-tab,.pmtab,.cb,.lg-node,summary):focus-visible{outline:3px solid #ffe1a1!important;outline-offset:4px}
+:where(.btn,.hub-tab,.pmtab,.cb):not(:disabled):hover{filter:brightness(1.18);border-color:#ddc58b}
+:where(.btn,.hub-tab,.pmtab,.cb):disabled{cursor:not-allowed;filter:saturate(.3)}
+@media(max-width:1100px){.lg-layout{grid-template-columns:minmax(0,1fr)}.lg-detail{position:static}.lg-paths{font-size:11px}#hub-overlay .live-grimoire{padding:14px}}
+@media(max-width:650px){#hub-overlay{padding:16px 12px 24px}#hub-overlay h1{font-size:22px}.hub-tab{flex:1;padding:10px 8px;font-size:12px}.lg-schools{grid-template-columns:1fr;gap:16px}.lg-graph{max-width:360px;margin:auto}.lg-paths{max-width:360px;margin:auto;font-size:12px}.lg-node{font-size:13px}.lg-detail{padding:16px}.lg-heading{flex-wrap:wrap;gap:12px}.lg-heading h2{font-size:23px}.lg-toolbar{align-items:stretch}.lg-tabs{display:flex;flex-wrap:wrap;gap:6px}.lg-reset{margin-left:0}.lg-gold{align-self:center}.menu-actions>button{min-height:44px!important}}
+@media(prefers-reduced-motion:reduce){.hub-tab,.btn,.lg-node{transition:none!important;animation:none!important}}
+#hub-overlay>.hub-actions{position:sticky;bottom:0;z-index:3;padding:12px;margin-top:12px;background:#101810f5;border:1px solid #687354;box-shadow:0 -8px 24px #0006;justify-content:flex-start}
+#hub-overlay>.hub-actions .btn{min-height:44px;font-size:13px;letter-spacing:.4px;padding:10px 18px}
+#hub-overlay>.hub-actions .btn:first-child{margin-right:auto;background:#34432b;border-color:#b9a26b;color:#f5deb0}
+/* Utility text uses an interface face; ornamental headings retain the game's identity. */
+.lg-detail p,.lg-detail ul,.lg-note,.lg-paths,.lg-node,.menu-summary,.gear-stat-table,.gear-item-comparison{font-family:system-ui,sans-serif}

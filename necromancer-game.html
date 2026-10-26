@@ -93,6 +93,51 @@ canvas { display:block; }
 /* ── REANIMATE HINT ── */
 #reanimate-hint { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); font-size:11px; color:#8844ff; letter-spacing:1px; pointer-events:none; z-index:10; opacity:0; transition:opacity .3s; text-shadow:0 0 8px #8844ff; }
 
+/* ── DIÁLOGO DE NPC ── */
+#npc-dialog {
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:60;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);
+}
+#npc-dialog .dialog-shell {
+  width:min(92vw, 720px); border-radius:14px; border:1px solid rgba(180,100,255,0.5);
+  background:linear-gradient(180deg, rgba(36,10,48,.96), rgba(24,8,38,.96));
+  box-shadow:0 18px 50px rgba(0,0,0,.55); overflow:hidden;
+}
+#npc-dialog .dialog-top {
+  display:flex; align-items:center; gap:18px; padding:18px 18px 12px; border-bottom:1px solid rgba(255,255,255,.08);
+}
+#npc-dialog .portrait {
+  width:120px; height:120px; border-radius:12px; border:2px solid rgba(212,175,55,.5);
+  background:radial-gradient(circle at 30% 25%, #f1d9a3 0%, #d9b77a 15%, #7d4e2d 30%, #1d0f18 100%);
+  position:relative; display:block; object-fit:cover; padding:0; overflow:hidden;
+  box-shadow:inset 0 0 24px rgba(0,0,0,.35), 0 0 20px rgba(212,175,55,.15);
+}
+#npc-dialog .portrait::after {
+  content:""; position:absolute; inset:10px 16px auto auto; width:18px; height:18px; border-radius:50%;
+  background:rgba(255,224,168,.4); box-shadow:0 0 20px rgba(255,224,168,.5);
+}
+#npc-dialog .npc-meta { flex:1; }
+#npc-dialog .npc-name { font-size:17px; letter-spacing:2px; color:#f0d284; text-transform:uppercase; }
+#npc-dialog .npc-role { font-size:10px; letter-spacing:2px; color:#a0a0a0; margin-top:6px; }
+#npc-dialog .dialog-body { padding:18px; color:#e9d4ff; }
+#npc-dialog .dialog-quote {
+  font-size:15px; line-height:1.6; color:#f4e8ff; font-style:italic; margin-bottom:18px;
+}
+#npc-dialog .mission-card { background:rgba(255,255,255,.03); border:1px solid rgba(212,175,55,.18); border-radius:8px; padding:14px 16px; margin-bottom:18px; }
+#npc-dialog .mission-title { color:#d4af37; letter-spacing:2px; font-size:12px; margin-bottom:8px; }
+#npc-dialog .mission-meta { font-size:12px; color:#d9d9d9; line-height:1.7; }
+#npc-dialog .mission-reward { color:#8fe3a8; font-size:12px; margin-top:8px; }
+#npc-dialog .dialog-actions { display:flex; gap:12px; justify-content:space-between; padding:0 18px 18px; }
+#npc-dialog .dialog-btn {
+  flex:1; padding:12px 16px; border-radius:6px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.04);
+  color:#f2f2f2; cursor:pointer; font-family:inherit; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+}
+#npc-dialog .dialog-btn.primary {
+  background:linear-gradient(180deg, rgba(126,80,180,.4), rgba(86,40,122,.35));
+  border-color:rgba(180,100,255,.8); color:#f8e7ff;
+}
+#npc-dialog .dialog-btn.secondary { color:#d9d9d9; }
+
 /* ── HUB OVERLAY ── */
 #hub-overlay {
   position:fixed; inset:0; z-index:40; display:none;
@@ -251,6 +296,8 @@ canvas { display:block; }
 .cmd-btn:hover { border-color:#d4af37; color:#d4af37; }
 .cmd-btn.active { border-color:#d4af37; color:#d4af37; background:rgba(50,30,0,.8); box-shadow:0 0 8px rgba(212,175,55,.3); }
 </style>
+<script src="scripts/npc-dialogue.js"></script>
+<link rel="stylesheet" href="scripts/game-ui.css">
 </head>
 <body>
 
@@ -357,11 +404,35 @@ canvas { display:block; }
 <div id="overlay-msg"><h2 id="ov-title"></h2><p id="ov-sub"></p></div>
 
 <!-- HUB NPC PROMPT -->
-<div id="hub-npc-prompt" style="display:none;position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;pointer-events:none;">
+<div id="hub-npc-prompt" style="display:none;position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:20;text-align:center;pointer-events:auto;cursor:pointer;" onclick="if (nearbyNpc && nearbyNpc.id === 'ferreiro') openFerreiroDialog(); else if(nearbyNpc && nearbyNpc.id==='shop') openMerchantDialog(); else if (nearbyNpc) { if(nearbyNpc.isPortal){ showHubOverlay('missions'); } else { showHubOverlay(nearbyNpc.tab); } }">
   <div style="background:rgba(10,0,30,0.88);border:1px solid rgba(180,100,255,0.5);border-radius:8px;padding:10px 22px;backdrop-filter:blur(4px);">
     <div id="hub-npc-icon" style="font-size:22px;margin-bottom:2px;">📜</div>
     <div id="hub-npc-label" style="color:#d4af37;font-size:13px;letter-spacing:2px;font-weight:bold;"></div>
     <div id="hub-npc-hint" style="color:#a855f7;font-size:11px;margin-top:3px;letter-spacing:1px;"></div>
+  </div>
+</div>
+
+<div id="npc-dialog" aria-modal="true" role="dialog">
+  <div class="dialog-shell">
+    <div class="dialog-top">
+      <img class="portrait" alt="Bran, o ferreiro" src="assets/npc-portraits/bram-painted.png">
+      <div class="npc-meta">
+        <div class="npc-name">Bran, o ferreiro</div>
+        <div class="npc-role">Morador da Vila de Eldrin</div>
+      </div>
+    </div>
+    <div class="dialog-body">
+      <div class="dialog-quote">“Meu martelo não dá conta de tanto reparo... os mortos continuam rondando a mata.”</div>
+      <div class="mission-card">
+        <div class="mission-title">⚔ Horda Infernal · Tundra Gelada</div>
+        <div class="mission-meta">6 waves densas + Lich Guerreiro.<br>O ferreiro quer reforçar as defesas da vila antes do próximo ataque.</div>
+        <div class="mission-reward">🎁 +475 XP · +130 almas · +75 gold</div>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="dialog-btn primary" onclick="acceptFerreiroMission()">Aceitar missão</button>
+      <button class="dialog-btn secondary" onclick="closeNpcDialog()">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -373,7 +444,6 @@ canvas { display:block; }
   <div class="hub-tabs">
     <button class="hub-tab active" onclick="showTab('missions',this)">📜 MISSÕES</button>
     <button class="hub-tab" onclick="showTab('summon',this)">🧟 INVOCAR</button>
-    <button class="hub-tab" onclick="showTab('shop',this)">🛒 LOJA</button>
     <button class="hub-tab" onclick="showTab('upgrades',this)">⚗ UPGRADES</button>
     <button class="hub-tab" onclick="showTab('skills',this)">🔮 HABILIDADES</button>
     <button class="hub-tab" onclick="showTab('minions',this)">💀 MINIONS</button>
@@ -1344,34 +1414,91 @@ function buildHubScene(){
   }
 
   // NPCs — funções auxiliares
-  function mkNpcMesh(color){
+  function mkNpcMesh(def={}){
     const g=new THREE.Group();
-    const mat=new THREE.MeshStandardMaterial({color,roughness:.7});
-    // corpo
-    g.add(new THREE.Mesh(new THREE.CylinderGeometry(.25,.3,.9,8),mat));
-    // cabeça
-    const head=new THREE.Mesh(new THREE.SphereGeometry(.22,8,8),mat);
-    head.position.y=.7; g.add(head);
-    // brilho
-    const glow=new THREE.PointLight(color,2,2.5); glow.position.y=.7; g.add(glow);
+    const skin=def.skin||0xf1d0a1;
+    const hair=def.hair||0x2a1f1a;
+    const outfit=def.outfit||def.color||0x7f5b3b;
+    const accent=def.accent||0xd4af37;
+    const trim=def.trim||0x201713;
+
+    const skinMat=new THREE.MeshStandardMaterial({color:skin,roughness:.9});
+    const hairMat=new THREE.MeshStandardMaterial({color:hair,roughness:.9});
+    const outfitMat=new THREE.MeshStandardMaterial({color:outfit,roughness:.75});
+    const accentMat=new THREE.MeshStandardMaterial({color:accent,roughness:.8});
+    const trimMat=new THREE.MeshStandardMaterial({color:trim,roughness:.9});
+
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(.28,.34,.88,8),outfitMat);
+    body.position.y=.58; g.add(body);
+    const shoulders=new THREE.Mesh(new THREE.SphereGeometry(.28,8,8),outfitMat);
+    shoulders.position.y=.96; shoulders.scale.set(1.25,.7,1.1); g.add(shoulders);
+
+    const head=new THREE.Mesh(new THREE.SphereGeometry(.23,12,10),skinMat);
+    head.position.y=1.36; g.add(head);
+
+    const hairCap=new THREE.Mesh(new THREE.SphereGeometry(.25,12,10,0,Math.PI*2,0,Math.PI/2),hairMat);
+    hairCap.position.y=1.52; hairCap.scale.set(1.1,.75,1.05); g.add(hairCap);
+
+    const leftArm=new THREE.Mesh(new THREE.CylinderGeometry(.08,.09,.5,8),outfitMat); leftArm.position.set(-.38,.72,.06); leftArm.rotation.z=.75; g.add(leftArm);
+    const rightArm=new THREE.Mesh(new THREE.CylinderGeometry(.08,.09,.5,8),outfitMat); rightArm.position.set(.38,.72,.06); rightArm.rotation.z=-.75; g.add(rightArm);
+    const leftLeg=new THREE.Mesh(new THREE.CylinderGeometry(.09,.10,.48,8),trimMat); leftLeg.position.set(-.11,.06,0); g.add(leftLeg);
+    const rightLeg=new THREE.Mesh(new THREE.CylinderGeometry(.09,.10,.48,8),trimMat); rightLeg.position.set(.11,.06,0); g.add(rightLeg);
+
+    if(def.beard){
+      const beard=new THREE.Mesh(new THREE.ConeGeometry(.16,.28,12),hairMat);
+      beard.position.set(0,1.12,.13); beard.rotation.x=Math.PI; g.add(beard);
+    }
+
+    if(def.accessory==='hammer'){
+      const hammer=new THREE.Group();
+      const handle=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,.54,8),new THREE.MeshStandardMaterial({color:0x8b5e2a,roughness:.8}));
+      handle.rotation.z=Math.PI/2; handle.position.set(.54,.82,0); hammer.add(handle);
+      const headBox=new THREE.Mesh(new THREE.BoxGeometry(.18,.15,.12),accentMat); headBox.position.set(.8,.82,0); hammer.add(headBox);
+      g.add(hammer); g.userData.accessory=hammer;
+    }
+    if(def.accessory==='scroll'){
+      const scroll=new THREE.Mesh(new THREE.BoxGeometry(.18,.12,.02),accentMat); scroll.position.set(.58,.9,.16); scroll.rotation.y=.7; g.add(scroll);
+    }
+    if(def.accessory==='ledger'){
+      const ledger=new THREE.Mesh(new THREE.BoxGeometry(.16,.12,.03),accentMat); ledger.position.set(.54,.9,.18); ledger.rotation.y=.6; g.add(ledger);
+    }
+    if(def.accessory==='staff'){
+      const staff=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,.7,8),new THREE.MeshStandardMaterial({color:0x8d6d4e,roughness:.8}));
+      staff.position.set(.62,.82,0); g.add(staff);
+      const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.09),new THREE.MeshStandardMaterial({color:0xccb0ff,emissive:0x7e5aff,emissiveIntensity:1.2}));
+      gem.position.set(.62,1.3,0); g.add(gem);
+    }
+
+    const glow=new THREE.PointLight(def.color||outfit,2,2.5); glow.position.y=1.1; g.add(glow);
     g.userData.glow=glow;
+    g.userData.body=body;
+    g.userData.shoulders=shoulders;
+    g.userData.head=head;
+    g.userData.hairCap=hairCap;
+    g.userData.leftArm=leftArm;
+    g.userData.rightArm=rightArm;
+    g.userData.leftLeg=leftLeg;
+    g.userData.rightLeg=rightLeg;
+    g.userData.baseY=0;
     return g;
   }
 
   const NPC_DEFS=[
-    {label:'Quadro de Missões', icon:'📜', tab:'missions',  pos:[0,0,-9],   color:0xff8844, hint:'[E] Ver Missões'},
-    {label:'Mercador',          icon:'🛒', tab:'shop',      pos:[-7,0,-4],  color:0xd4af37, hint:'[E] Abrir Loja'},
-    {label:'Altar dos Upgrades',icon:'⚗',  tab:'upgrades',  pos:[7,0,-4],   color:0x8844ff, hint:'[E] Upgrades & Habilidades'},
-    {label:'Cemitério',         icon:'🧟', tab:'summon',    pos:[0,0,-5],   color:0x00ccaa, hint:'[E] Gerenciar Minions'},
+    {id:'missions', label:'Quadro de Missões', icon:'📜', tab:'missions', pos:[0,0,-9], color:0xff8844, skin:0xf1d0a1, hair:0x2b1a1e, outfit:0xa6613a, accent:0xf6d07a, accessory:'scroll', hint:'[E] Ver Missões'},
+    {id:'shop', label:'Mercador', icon:'🛒', tab:'shop', pos:[-7,0,-4], color:0xd4af37, skin:0xf0c79a, hair:0x372521, outfit:0x345f48, accent:0xc8b36a, accessory:'ledger', hint:'[E] Abrir Loja'},
+    {id:'upgrades', label:'Altar dos Upgrades', icon:'⚗', tab:'upgrades', pos:[7,0,-4], color:0x8844ff, skin:0xe7c6a1, hair:0x2d1c29, outfit:0x4a3d7a, accent:0xd7b8ff, accessory:'staff', hint:'[E] Upgrades & Habilidades'},
+    {id:'summon', label:'Cemitério', icon:'🧟', tab:'summon', pos:[0,0,-5], color:0x00ccaa, skin:0xe6d7c8, hair:0x1e1b1d, outfit:0x355c5d, accent:0x7ae6d2, accessory:'scroll', hint:'[E] Gerenciar Minions'},
+    {id:'ferreiro', label:'Bran, o ferreiro', icon:'🧔', tab:'ferreiro', pos:[-4,0,2], color:0x7f5b3b, skin:0xf0c999, hair:0x2e211e, outfit:0x5d3824, accent:0xd7a64b, accessory:'hammer', beard:true, hint:'[E] Falar com o ferreiro'}
   ];
 
   NPC_DEFS.forEach(def=>{
-    const mesh=mkNpcMesh(def.color);
+    const mesh=mkNpcMesh(def);
     mesh.position.set(def.pos[0],0,def.pos[2]);
+    mesh.userData.baseY=0;
     scene.add(mesh); hubObjects.push(mesh);
 
     // Label 3D (billboard via sprite nativo não disponível em r128 sem extras — uso float div)
-    hubNpcs.push({mesh, pos:{x:def.pos[0],z:def.pos[2]}, label:def.label, icon:def.icon, tab:def.tab, hint:def.hint});
+    hubNpcs.push({id:def.id, mesh, pos:{x:def.pos[0],z:def.pos[2]}, label:def.label, icon:def.icon, tab:def.tab, hint:def.hint});
   });
 
   // Portal de saída (para o campo)
@@ -1465,6 +1592,43 @@ function showHubOverlay(tab){
     const btn=document.querySelector(`.hub-tab[onclick*="'${actualTab}'"]`);
     showTab(actualTab, btn);
   }
+}
+
+let smithDialogMarkup=null;
+function openMerchantDialog(){
+  const dialog=document.getElementById('npc-dialog');
+  if(smithDialogMarkup===null)smithDialogMarkup=dialog.innerHTML;
+  dialog.innerHTML=`<div class="dialog-shell"><div class="dialog-top"><img class="portrait" alt="Mercador com roupas verdes, medalhão e livro de contas" src="assets/npc-portraits/merchant-painted.png"><div class="npc-meta"><div class="npc-name">Mercador</div><div class="npc-role">Comerciante de Eldrin</div></div></div><div class="dialog-body"><div class="dialog-quote">“Estradas perigosas, mercadorias raras. Veja o que trouxe para sua próxima jornada.”</div></div><div class="dialog-actions"><button class="dialog-btn primary" onclick="closeNpcDialog();showHubOverlay('shop')">Ver mercadorias</button><button class="dialog-btn secondary" onclick="closeNpcDialog()">Fechar</button></div></div>`;
+  dialog.style.display='flex';dialog.querySelector('button').focus();NpcDialogue.mount(dialog,'merchant');
+}
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('npc-dialog').style.display==='flex'){closeNpcDialog();e.preventDefault();e.stopImmediatePropagation();}},true);
+function openFerreiroDialog(){
+  NpcDialogue.dispose(document.getElementById('npc-dialog'));
+  if(smithDialogMarkup!==null)document.getElementById('npc-dialog').innerHTML=smithDialogMarkup;
+  const dialog=document.getElementById('npc-dialog');
+  if(!dialog) return;
+  if(smithDialogMarkup===null)smithDialogMarkup=dialog.innerHTML;
+  dialog.style.display='flex';NpcDialogue.mount(dialog,'bram');
+}
+
+function closeNpcDialog(){
+  const dialog=document.getElementById('npc-dialog');
+  if(dialog){NpcDialogue.dispose(dialog);dialog.style.display='none';}
+}
+
+document.addEventListener('click', (event) => {
+  const dialog = document.getElementById('npc-dialog');
+  if(dialog && dialog.style.display === 'flex' && event.target === dialog){
+    closeNpcDialog();
+  }
+});
+
+function acceptFerreiroMission(){
+  closeNpcDialog();
+  if(!availableMissions.length) generateMissions();
+  const mission = availableMissions.find(m => m.id === 'horde') || availableMissions[1] || availableMissions[0];
+  if(mission) startMission(mission);
+  else floatMsg('Nenhuma missão disponível no momento.',innerWidth/2,innerHeight*.4,'#ff4444');
 }
 
 function showTab(id, btn){
@@ -1836,8 +2000,9 @@ window.addEventListener('keydown',e=>{
   if(e.key.toLowerCase()==='q') toggleSummonWheel();
   if(e.key.toLowerCase()==='e'){
     if(gameState==='hub'&&nearbyNpc){
-      // NPC é portal → abre board de missões
-      if(nearbyNpc.isPortal){ showHubOverlay('missions'); }
+      if(nearbyNpc.id === 'ferreiro'){ openFerreiroDialog(); }
+      else if(nearbyNpc.id==='shop'){ openMerchantDialog(); }
+      else if(nearbyNpc.isPortal){ showHubOverlay('missions'); }
       else { showHubOverlay(nearbyNpc.tab); }
     } else if(gameState==='field'){
       tryPortal();
@@ -2110,12 +2275,32 @@ function animate(){
     if(pdx*pdx+pdz*pdz<9) floatMsg('Pressione E para descansar',innerWidth/2,innerHeight*.35,'#aa55ff');
   }
 
-  // Hub: animação de cristais + detecção de NPC
+  // Hub: animação de cristais + NPC idle + detecção
   if(gameState==='hub'){
     // Rotaciona cristais nos pilares (os itens pares na lista hubObjects são cristais)
     hubObjects.forEach(o=>{
       if(o.geometry&&o.geometry.type==='OctahedronGeometry') o.rotation.y+=dt*.8;
     });
+
+    hubNpcs.forEach((npc, idx)=>{
+      const mesh=npc.mesh;
+      if(!mesh||!mesh.userData) return;
+      const idleTime=time*(0.9+idx*0.08);
+      mesh.userData.baseY = mesh.userData.baseY ?? mesh.position.y;
+      mesh.position.y = mesh.userData.baseY + Math.sin(idleTime*2.2)*0.08;
+      mesh.rotation.y = Math.sin(idleTime*1.4)*0.22;
+      if(mesh.userData.body){ mesh.userData.body.rotation.z = Math.sin(idleTime*2.0)*0.08; }
+      if(mesh.userData.shoulders){ mesh.userData.shoulders.rotation.z = Math.sin(idleTime*1.8)*0.05; }
+      if(mesh.userData.head){ mesh.userData.head.rotation.y = Math.sin(idleTime*1.7)*0.18; mesh.userData.head.rotation.x = Math.sin(idleTime*1.3)*0.06; }
+      if(mesh.userData.hairCap){ mesh.userData.hairCap.rotation.z = Math.sin(idleTime*1.5)*0.04; }
+      if(mesh.userData.leftArm){ mesh.userData.leftArm.rotation.z = .75 + Math.sin(idleTime*2.4)*0.16; }
+      if(mesh.userData.rightArm){ mesh.userData.rightArm.rotation.z = -.75 - Math.sin(idleTime*2.4)*0.16; }
+      if(mesh.userData.leftLeg){ mesh.userData.leftLeg.rotation.x = Math.sin(idleTime*2.4)*0.12; }
+      if(mesh.userData.rightLeg){ mesh.userData.rightLeg.rotation.x = -Math.sin(idleTime*2.4)*0.12; }
+      if(mesh.userData.glow){ mesh.userData.glow.intensity = 1.8 + Math.sin(idleTime*3.2)*0.7; }
+      if(mesh.userData.accessory){ mesh.userData.accessory.rotation.x = Math.sin(idleTime*2.1)*0.18; }
+    });
+
     // Detecção de proximidade de NPC
     let found=null, foundDist=99;
     hubNpcs.forEach(npc=>{

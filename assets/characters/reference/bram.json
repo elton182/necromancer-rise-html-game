@@ -1,0 +1,1 @@
+{"cell":320,"ppu":100,"anchorX":160,"anchorY":286,"dirs":1,"anims":{"idle":{"n":1,"fps":1,"loop":true,"row":0}},"source":"blender/examples/image.png","sourceBounds":[30,34,224,298],"sourceOffset":[63,22],"staticReference":true,"parts":{"body":{"row":1},"hammer":{"row":2,"pivot":[137,88]},"freeArm":{"row":3,"pivot":[217,88]}}}

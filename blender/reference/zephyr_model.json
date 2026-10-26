@@ -1,0 +1,22 @@
+{
+  "id": "zephyr",
+  "vertices": 735,
+  "triangles": 1313,
+  "bones": 18,
+  "uvLayers": 1,
+  "actions": [
+    "idle",
+    "walk",
+    "cast",
+    "summon",
+    "hurt",
+    "death",
+    "nova",
+    "channel",
+    "dash"
+  ],
+  "origin": "feet",
+  "up": "Z in Blender; Y in GLB",
+  "rig": "humanoid",
+  "weights": "Rigid anatomical sections; articulated joints. No automatic heat weights."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "archer",
+  "vertices": 2083,
+  "triangles": 3701,
+  "bones": 16,
+  "uvLayers": 1,
+  "actions": [
+    "idle",
+    "walk",
+    "attack",
+    "hurt",
+    "death",
+    "spawn"
+  ],
+  "origin": "feet",
+  "up": "Z in Blender; Y in GLB",
+  "rig": "humanoid",
+  "weights": "Rigid anatomical sections; articulated joints. No automatic heat weights."
+}
