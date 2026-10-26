@@ -1,0 +1,173 @@
+{
+ "runtime": {
+  "cell": 144,
+  "ppu": 38,
+  "anchorX": 72,
+  "anchorY": 124,
+  "dirs": 8,
+  "source": "blender/scripts/pack_bram_2_5d.py",
+  "anims": {
+   "idle": {
+    "n": 7,
+    "fps": 2,
+    "loop": true,
+    "row": 0
+   },
+   "talk": {
+    "n": 7,
+    "fps": 3,
+    "loop": true,
+    "row": 8
+   },
+   "attack": {
+    "n": 7,
+    "fps": 3,
+    "loop": true,
+    "row": 8
+   },
+   "walk": {
+    "n": 7,
+    "fps": 2,
+    "loop": true,
+    "row": 0
+   },
+   "idle_variation": {
+    "n": 7,
+    "fps": 2,
+    "loop": true,
+    "row": 0
+   }
+  }
+ },
+ "combat": [
+  {
+   "animation": "talk",
+   "row": "talk",
+   "selector": "VIL.open===id (attacking:true no drawHubProp)"
+  }
+ ],
+ "drawScale": 1.1025,
+ "validation": {
+  "key": "smith",
+  "source": "blender/spritesheets/bram_2_5d_source.png",
+  "frames": 112,
+  "atlasSize": [
+   1008,
+   2304
+  ],
+  "decodedBytes": 9289728,
+  "webpBytes": 532586,
+  "idleFootBottomByDirection": {
+   "0": 131,
+   "1": 131,
+   "2": 132,
+   "3": 132,
+   "4": 132,
+   "5": 132,
+   "6": 132,
+   "7": 132
+  },
+  "views": {
+   "idle": [
+    [
+     1,
+     0,
+     6,
+     1
+    ],
+    [
+     1,
+     0,
+     6,
+     1
+    ],
+    [
+     0,
+     0,
+     12,
+     2
+    ],
+    [
+     6,
+     7,
+     13,
+     1
+    ],
+    [
+     6,
+     7,
+     13,
+     1
+    ],
+    [
+     2,
+     7,
+     13,
+     1
+    ],
+    [
+     2,
+     0,
+     6,
+     1
+    ],
+    [
+     2,
+     0,
+     6,
+     1
+    ]
+   ],
+   "talk": [
+    [
+     8,
+     0,
+     6,
+     1
+    ],
+    [
+     8,
+     0,
+     6,
+     1
+    ],
+    [
+     7,
+     0,
+     12,
+     2
+    ],
+    [
+     8,
+     7,
+     13,
+     1
+    ],
+    [
+     8,
+     7,
+     13,
+     1
+    ],
+    [
+     9,
+     7,
+     13,
+     1
+    ],
+    [
+     9,
+     0,
+     6,
+     1
+    ],
+    [
+     9,
+     0,
+     6,
+     1
+    ]
+   ]
+  }
+ }
+}

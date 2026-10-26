@@ -245,9 +245,54 @@ As capturas `review/stylized-characters-in-game.png` e
 verificam carregamento, rig/animações e comportamento; a avaliação de semelhança
 artística é feita pelas imagens, separadamente desses testes funcionais.
 
+## Lote 1 low-poly: zumbi, arqueiro inimigo e Bram
+
+`scripts/lowpoly_cast.py` modela, cria rig e ações e renderiza os três personagens.
+Ele grava `models/lowpoly_<id>.blend`, `exports/lowpoly_<id>.glb` e os quadros mestres
+em `frames/lowpoly_<id>/`. `scripts/pack_lowpoly_cast.py` valida e empacota esses quadros:
+- grava `spritesheets/lowpoly_<id>_sheet.webp/.json`, com os metadados de impacto no bloco `combat`;
+- grava `spritesheets/lowpoly_validation.json` e a prancha `previews/lowpoly_lote1_comparison.png`;
+- substitui somente os registros `zombie`, `earcher` e `smith`.
+
+Execute na raiz:
+
+```sh
+blender -b -t 8 --python blender/scripts/lowpoly_cast.py -- --only=zombie,earcher,bram --preview
+# Inspecionar frames/lowpoly_<id>_preview/ antes do lote completo.
+blender -b -t 8 --python blender/scripts/lowpoly_cast.py -- --only=zombie,earcher,bram
+python3 blender/scripts/pack_lowpoly_cast.py --only=zombie,earcher,bram
+node game_check.js
+node scripts/lowpoly-cast-browser-check.js
+```
+
+Contratos:
+- Zumbi e arqueiro mantêm 224 px, 56 px/u e âncora (112, 165).
+- Bram mantém a célula de 296 px e a altura na tela, com 96 px/u e âncora (148, 262), para caber em 8 direções.
+
+O Bram ativo não vem mais deste lote: veja a seção seguinte. Rodar `pack_lowpoly_cast.py`
+com `bram` grava `smith` e substitui o Bram 2.5D; use `--only=zombie,earcher`. Detalhes e pendências:
+[`../docs/character-regeneration-review.md`](../docs/character-regeneration-review.md).
+
+## Bram 2.5D a partir do atlas do usuário
+
+`scripts/pack_bram_2_5d.py` fatia `spritesheets/bram_2_5d_source.png` (14 × 10 figuras, fundo
+transparente) em 8 direções e grava `spritesheets/bram_2_5d_sheet.webp/.json` e
+`previews/bram_2_5d_comparison.png`. Ele substitui somente o registro `smith`:
+
+```sh
+python3 blender/scripts/pack_bram_2_5d.py
+node game_check.js
+node scripts/cast-animations-browser-check.js
+```
+
+A tabela de vistas, o contrato (célula 144, 38 px/u, âncora (72, 124)) e o alinhamento estão em
+[`../docs/character-regeneration-review.md`](../docs/character-regeneration-review.md#11-bram-a-partir-do-atlas-25d-do-usuário).
+`pack_village_npcs.py`, `pack_reference_characters.py --only=bram` e `pack_lowpoly_cast.py --only=bram`
+também gravam `smith` e desfazem este Bram.
+
 ## Elenco da referência: fluxo atual
 
-A implementação atual de Bram, Zephyr, esqueletos e variantes propostas está em
+A implementação atual de Zephyr, esqueletos e variantes propostas (o Bram ativo vem do atlas 2.5D, acima) está em
 [`reference/README.md`](reference/README.md). Use `reference_characters.py` e
 `pack_reference_characters.py` para regenerar esses personagens; os empacotadores
 anteriores ficam como histórico e podem sobrescrever o visual atual.

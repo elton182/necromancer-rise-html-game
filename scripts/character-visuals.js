@@ -52,6 +52,21 @@ function animateStaticSprite(key,ref,o){
  ctx.restore();ctx.imageSmoothingEnabled=smooth;
  if(ref.hit>0)ctx.filter='none';
 }
+// Mordida Pútrida restarts the ability cooldown on the same frame that sets the swing.
+function freshBite(ref){
+ const cooldown=(typeof MINION_ABILITIES!=='undefined'&&MINION_ABILITIES.zombie?.cooldown)||7;
+ return (ref._abilityCd||0)>cooldown-.55;
+}
+// Occasional idle fidget after 2.5 s without moving, attacking or holding a live target.
+function idleVariation(ref,state,clip,o){
+ const length=clip.n/clip.fps,busy=o.attacking||ref.swing>0||ref.spawn>0||(ref.__s?.amp||0)>=.3||(ref.target&&!ref.target.dead);
+ if(busy)state.busyAt=time;
+ if(state.variationAt===undefined)state.variationAt=time+4+Math.random()*8;
+ if(busy||time-(state.busyAt??-Infinity)<2.5){if(time>=state.variationAt)state.variationAt=time+2+Math.random()*4;return false;}
+ if(time<state.variationAt)return false;
+ if(time-state.variationAt<length)return true;
+ state.variationAt=time+7+Math.random()*8;return false;
+}
 const draw=drawSprite;
 drawSprite=function(key,ref,options){
  let o=options||{};const originalKey=key;
@@ -65,6 +80,11 @@ drawSprite=function(key,ref,options){
  if(originalKey==='cryptHound'&&ref.ability&&!ref.dead&&!o.deadT){
   const ability=ref.ability;o={...o,anim:ability.phase==='charge'?'charge':ability.phase==='recover'?'recover':'windup',animTime:ability.time,face:Math.atan2(ability.dy,ability.dx)};
  }
+ // Tiro forte: the draw spans the tuned windup, so the release row starts when the arrow really leaves.
+ if(originalKey==='earcher'&&a.windup&&ref.ability?.phase==='windup'&&!ref.dead&&!o.deadT){
+  const ability=ref.ability,windup=(typeof MOB_ABILITIES!=='undefined'&&MOB_ABILITIES['Arqueiro']?.windup)||.65;
+  o={...o,anim:'windup',animTime:Math.min(.999,ability.time/windup)*a.windup.n/a.windup.fps,face:Math.atan2(ability.dy,ability.dx)};
+ }
  if(!o.anim){
   if(o.dead&&a.death){const duration=ref._reviveTime||MINION_REVIVE_TIME;const elapsed=Math.max(0,duration-(ref.deadTimer||0));o={...o,dead:false,deadT:Math.max(.001,elapsed)};}
   else if(!o.deadT&&!ref.dead){
@@ -73,9 +93,16 @@ drawSprite=function(key,ref,options){
     const anim=['#ff5522','#a65465'].includes(lastCastColor)?'nova':['#e8e0c0','#a5b778'].includes(lastCastColor)?'channel':'cast';
     if(a[anim])o={...o,anim,animTime:Math.max(0,Math.min(1,1-ref.swing/.28))*(a[anim].n-.01)/a[anim].fps};
    }
+   else if(originalKey==='zombie'&&a.attack_secondary&&ref.swing>0&&freshBite(ref))o={...o,anim:'attack_secondary',animTime:Math.max(0,Math.min(1,1-ref.swing/.5))*(a.attack_secondary.n-.01)/a.attack_secondary.fps};
    else if(a.spawn&&ref.spawn>0)o={...o,anim:'spawn',animTime:Math.max(0,.6-ref.spawn)};
    else if(originalKey==='necro'&&a.summon&&time-summonedAt<.5)o={...o,anim:'summon',animTime:Math.max(0,time-summonedAt)};
    else if(a.hurt&&time-state.hurtAt<.22)o={...o,anim:'hurt',animTime:Math.max(0,time-state.hurtAt)};
+   else if(originalKey==='smith'&&a.talk){
+    // Atlas 2.5D: só respiração parada e fala (sem bigorna/marteladas). animTime reduzido deixa o loop mais lento que o fps bruto.
+    const pace=.45;
+    if(o.attacking)o={...o,anim:'talk',animTime:time*pace,attacking:false};
+    else o={...o,anim:'idle',animTime:time*pace};
+   }
    else if(originalKey==='smith'){
     // One facing. Idle and the wave travel out and back, so the last pose does not snap to the first.
     const facing=sheet.meta.dirs===1?0:o.face;
@@ -96,6 +123,7 @@ drawSprite=function(key,ref,options){
     else if(a.idle)o={...o,anim:'idle',animTime:swing(a.idle,time),face:facing};
     else o={...o,face:facing};
    }
+   else if(a.idle_variation&&idleVariation(ref,state,a.idle_variation,o))o={...o,anim:'idle_variation',animTime:time-state.variationAt};
   }
  }
  return draw(key,ref,o);

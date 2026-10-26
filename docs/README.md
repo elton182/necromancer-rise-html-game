@@ -20,6 +20,9 @@ Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.m
 |---|---|
 | [arvores-habilidades-implementacao.md](arvores-habilidades-implementacao.md) | Integração das árvores ao jogo, migração de saves e verificação |
 | [guia-visual-combate.md](guia-visual-combate.md) | Escala, contraste e regras visuais dos efeitos; arena de comparação |
+| [refactoring-baseline.md](refactoring-baseline.md) | Linha de base da refatoração: testes, fontes do HTML, dependências externas e problemas registrados |
+| [character-regeneration-inventory.md](character-regeneration-inventory.md) | Inventário dos personagens para a regeneração low-poly: fontes, atlas, animações, contratos e pipelines |
+| [character-regeneration-review.md](character-regeneration-review.md) | Revisão do Lote 1 (zumbi, arqueiro inimigo, Bram): metadados de impacto, testes, antes/depois e pendências |
 | [../build-simulator/README.md](../build-simulator/README.md) | Simulador de builds (Grimório) |
 | [../balance-simulator/README.md](../balance-simulator/README.md) | Simulador matemático de equipamentos e waves |
 

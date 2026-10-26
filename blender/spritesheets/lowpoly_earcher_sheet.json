@@ -1,0 +1,136 @@
+{
+ "runtime": {
+  "cell": 224,
+  "ppu": 56,
+  "anchorX": 112.0,
+  "anchorY": 165,
+  "dirs": 8,
+  "source": "blender/scripts/lowpoly_cast.py",
+  "anims": {
+   "idle": {
+    "n": 6,
+    "fps": 6,
+    "loop": true,
+    "row": 0
+   },
+   "idle_variation": {
+    "n": 6,
+    "fps": 5,
+    "loop": false,
+    "row": 8
+   },
+   "walk": {
+    "n": 6,
+    "fps": 10,
+    "loop": true,
+    "row": 16
+   },
+   "attack": {
+    "n": 6,
+    "fps": 20,
+    "loop": false,
+    "row": 24
+   },
+   "windup": {
+    "n": 6,
+    "fps": 9.23,
+    "loop": false,
+    "row": 32
+   },
+   "hurt": {
+    "n": 3,
+    "fps": 12,
+    "loop": false,
+    "row": 40
+   },
+   "death": {
+    "n": 6,
+    "fps": 10,
+    "loop": false,
+    "row": 48
+   }
+  }
+ },
+ "combat": [
+  {
+   "animation": "attack_primary",
+   "row": "attack",
+   "duration": 0.28,
+   "impact_time": 0,
+   "recovery_time": 0.28,
+   "damage_event": "projectile_spawn",
+   "range": 7.5,
+   "damage_type": "físico (flecha 12 u/s)",
+   "cooldown": 1.9,
+   "vfx": "flecha",
+   "interruptible": false,
+   "directions": 8,
+   "cancelable": false
+  },
+  {
+   "animation": "cast",
+   "row": "windup",
+   "ability": "Tiro forte",
+   "duration": 0.65,
+   "impact_time": 0.65,
+   "recovery_time": 0.93,
+   "damage_event": "power_shot_spawn",
+   "range": 12,
+   "damage_type": "físico 1,9× (flecha 18 u/s, direção fixa)",
+   "cooldown": 5,
+   "vfx": "linha de aviso do motor",
+   "interruptible": "morte limpa e.ability",
+   "directions": 8,
+   "cancelable": false,
+   "selector": "e.ability.phase==='windup'; duração lida de MOB_ABILITIES['Arqueiro'].windup"
+  },
+  {
+   "animation": "hurt",
+   "row": "hurt",
+   "duration": 0.22,
+   "selector": "aumento de ref.hit"
+  },
+  {
+   "animation": "death",
+   "row": "death",
+   "duration": 0.8,
+   "selector": "deadT/0,8"
+  }
+ ],
+ "drawScale": 1.16025,
+ "validation": {
+  "key": "earcher",
+  "frames": 312,
+  "atlasSize": [
+   1344,
+   12544
+  ],
+  "decodedBytes": 67436544,
+  "webpBytes": 804808,
+  "idleFootBottomByDirection": {
+   "0": 174,
+   "1": 175,
+   "2": 173,
+   "3": 175,
+   "4": 174,
+   "5": 173,
+   "6": 169,
+   "7": 173
+  },
+  "idleFootSpreadPx": 6,
+  "model": {
+   "vertices": 1066,
+   "triangles": 1867,
+   "bones": 18,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "walk",
+    "attack",
+    "windup",
+    "hurt",
+    "death"
+   ]
+  }
+ }
+}

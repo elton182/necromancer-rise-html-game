@@ -1,4 +1,4 @@
-// Exercise real sprite selection, lazy encounter defaults and the supplied single-pose Bram.
+// Exercise real sprite selection, lazy encounter defaults, the 2.5D Bram atlas and the low-poly Lote 1 cast (zombie, enemy archer).
 'use strict';
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
 (async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
@@ -20,18 +20,24 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
    }
    P.swing=0;playerDash.time=.09;playerDash.dx=1;playerDash.dy=0;watched='dash';drawSprite('necro',P,{});expected.push(['dash',SPR.sheets.necro.meta.anims.dash.row]);playerDash.time=0;
    const before=JSON.stringify([player.hp,player.mp,P.swing]);
-   const greetRow=SPR.sheets.smith.meta.anims.greet.row;
-   for(let i=0;i<8;i++){watched='bram';drawSprite('smith',dummy,{face:i*Math.PI/4,attacking:true});}
+   const talkRow=SPR.sheets.smith.meta.anims.talk.row;
+   for(let i=0;i<8;i++){watched='bram'+i;drawSprite('smith',dummy,{face:i*Math.PI/4,attacking:true});}
    if(JSON.stringify([player.hp,player.mp,P.swing])!==before)throw new Error('Drawing changed actor resources');
-   if(rows.filter(r=>r.label==='bram').some(r=>r.row!==greetRow))throw new Error('Invented Bram direction');
+   for(let i=0;i<8;i++)if(!rows.some(r=>r.label==='bram'+i&&r.row===talkRow+i))throw new Error('Bram talk direction '+i);
+   // Mordida Pútrida: swing plus a freshly restarted ability cooldown selects the bite row.
+   const zombie={x:-6,y:3,phase:0,hit:0,swing:.4,spawn:0,_abilityCd:6.8};watched='bite';drawSprite('zombie',zombie,{});expected.push(['bite',SPR.sheets.zombie.meta.anims.attack_secondary.row]);
+   const archer={x:-5,y:3,phase:0,hit:0,swing:0,ability:{phase:'windup',time:.3,dx:1,dy:0}};watched='windup';drawSprite('earcher',archer,{scale:1.16});expected.push(['windup',SPR.sheets.earcher.meta.anims.windup.row]);
   }finally{spriteDraw=draw;P.swing=0;playerDash.time=0;}
   for(const [label,start]of expected)if(!rows.some(r=>r.label===label&&r.row>=start&&r.row<start+8))throw new Error('Missing clip '+label);
   const smithAnims=SPR.sheets.smith.meta.anims;
-  if(SPR.sheets.smith.meta.dirs!==1||smithAnims.idle.n!==21||smithAnims.hammer.n!==15||smithAnims.greet.n!==21)throw new Error('Bram clips missing');
+  if(SPR.sheets.smith.meta.dirs!==8||SPR.sheets.smith.meta.cell!==144||!smithAnims.idle||!smithAnims.idle_variation||!smithAnims.talk)throw new Error('Bram clips missing');
+  for(const [key,clips]of [['zombie',['idle','idle_variation','walk','attack','attack_secondary','spawn','hurt','death']],['earcher',['idle','idle_variation','walk','attack','windup','hurt','death']]]){
+   const m=SPR.sheets[key].meta;if(m.dirs!==8||m.cell!==224||m.ppu!==56||m.anchorY!==165||clips.some(c=>!m.anims[c]))throw new Error('Lote 1 contract '+key);
+  }
   if(SPR.sheets.skeleton.meta.anims.attack.n!==8||SPR.sheets.archer.meta.anims.attack.n!==8)throw new Error('Minion clips not updated');
   if(JSON.stringify([ENEMY_TYPES,MINION_DEFS])!==definitions)throw new Error('Combat definitions changed');
   const canvas=document.createElement('canvas');canvas.width=canvas.height=224;const painter=canvas.getContext('2d',{willReadFrequently:true});let checked=0;
-  for(const key of ['necro','skeleton','archer',...new Set(Object.values(CharacterVisuals.active()))]){
+  for(const key of ['necro','skeleton','archer','zombie','earcher','smith',...new Set(Object.values(CharacterVisuals.active()))]){
    const sh=SPR.sheets[key],m=sh.meta,C=m.cell;
    for(const anim of Object.values(m.anims))for(let direction=0;direction<m.dirs;direction++)for(let frame=0;frame<anim.n;frame++){
     painter.clearRect(0,0,224,224);painter.drawImage(sh.img,frame*C,(anim.row+direction)*C,C,C,0,0,224,224);const rgba=painter.getImageData(0,0,224,224).data;let visible=0;for(let i=3;i<rgba.length;i+=4)if(rgba[i]>128)visible++;if(visible<30)throw new Error('Empty frame '+key+'/'+anim.row+'/'+direction+'/'+frame);checked++;
