@@ -5,7 +5,7 @@ const source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m
 const integration=fs.readFileSync(require('node:path').join(__dirname,'skill-trees.js'),'utf8');
 function fn(name){const start=source.indexOf('function '+name+'('),end=source.indexOf('\n}',start);assert.ok(start>=0,name);return source.slice(start,end+2);}
 function fixture(){
- const c=vm.createContext({BuildModel,console,BoneBoltVFX:require('./skill-vfx.js')});
+ const c=vm.createContext({BuildModel,EquipmentModel:require('./equipment-model.js'),console,BoneBoltVFX:require('./skill-vfx.js')});
  vm.runInContext(`
  const player={level:1,hp:100,maxHp:100,mp:80,maxMp:80,exp:0,expNext:100,spellDmg:40,spellRadius:2.5,mpRegen:4,hpRegen:0,maxSp:60,minionSlots:30,souls:900,skillPoints:0,learnedSkills:new Set(['raio']),skillRanks:{},skillGrants:[],actionLoadout:['raio','zombie','dash','empty','empty','empty'],minionSkillCooldowns:{},spellCooldowns:{},barrierCd:0,summonLoadout:Array(7).fill(null),summonReserve:[],upgradeCount:{},minionUpgradeCount:{},spellUpgradeCount:{},inventory:[]};
  const MINION_DEFS={zombie:{hp:130,dmg:11,spd:3.4,atkR:1.5,atkRate:1.2,spCost:20,name:'Zumbi'},abom:{hp:400,dmg:30,spd:2.7,atkR:2.1,atkRate:1.25,spCost:40,name:'Abominação'},skeleton:{hp:50,dmg:14,spd:3.8,atkR:1.6,atkRate:.9,spCost:35},archer:{hp:40,dmg:13,spd:3.2,atkR:7.5,atkRate:1.1,spCost:30},specter:{hp:35,dmg:22,spd:4.6,atkR:2,atkRate:.7,spCost:55}};

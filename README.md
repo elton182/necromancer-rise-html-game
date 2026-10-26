@@ -18,18 +18,19 @@ navegador, com teclado e mouse ou controle, e salva o progresso localmente.
 | Campanha — Ato I | 4 fases (salas, arena, rolagem lateral e chefe), quadrinhos de história e mapa para rejogar |
 | Modo Livre e Vila de Eldrin | Hub com missões, moradores com pedidos, trilhas laterais e mercador |
 | Pedra do Infinito | Expedições por mapas e biomas, elites e boss por wave; Arena clássica preservada; seleção até 1000 |
+| Conquista de Valdoria | Mapa com 17 áreas e 6 biomas até a torre; influência, 6 maldições e 2 tenentes; dificuldade sem teto, novo mapa ao trocar de nível e seleção automática da maior liberada; acesso em Esc → VALDORIA na vila |
 | Habilidades | 6 slots compartilhados entre 6 magias, Dash e 5 evocações com comandos próprios |
 | Grimório | 2 árvores, 6 escolas, 42 nós e 12 especializações finais; 3 pontos por nível até o 60 |
-| Maestrias | 12 habilidades com XP e níveis próprios até 20, bônus automáticos e árvores com até 19 pontos exclusivos |
+| Maestrias | 6 especializações vinculadas à barra, escolhidas entre 12 habilidades; níveis até 20 e árvores com até 19 pontos próprios |
 | Horda | Zumbis, esqueletos guerreiros e arqueiros, espectros e Abominação, com IA, esquiva, reanimação e uma habilidade automática com recarga por tipo |
-| Inimigos | 5 tipos comuns com especiais anunciados, 3 chefes de missão e o Capitão da Guarda (4 fases) |
+| Inimigos | 6 tipos comuns com especiais anunciados, 3 chefes de missão e o Capitão da Guarda (4 fases) |
 | Boss das expedições | Carcereiro das Almas: modelo e rig no Blender, sete animações em oito direções, duas fases e três ataques anunciados |
 | Equipamentos | 7 espaços, 4 raridades, afixos, pontos de habilidade, mochila de 60 peças e filtro de loot |
 | Visual | Sprites renderizados no Blender em 8 direções, novo Tiro de Osso e arena de comparação de efeitos |
 
 Os valores de combate ainda são **iniciais** e precisam de balanceamento com
 partidas completas. Em andamento no working tree: o sprite próprio dos
-**Estilhaços** do Tiro de Osso (`blender/bone_shard.*`, `scripts/skill-vfx.js`).
+**Estilhaços** do Tiro de Osso (`blender/models/bone_shard.blend`, `scripts/skill-vfx.js`).
 O próximo cartão do [roadmap visual](docs/roadmap-combate-visual.md) é o Dash
 (SK-02), com o Cão de Cripta (EN-01) já disponível nas waves e expedições a partir da wave 4.
 
@@ -86,6 +87,7 @@ A referência completa, com fórmulas e tabelas, está em
 - **[Inimigos](docs/mecanicas/inimigos-e-chefes.md)**
   - Guerreiro, Arqueiro, Bruto e Mago Vivo anunciam seus especiais; sair da área
     marcada evita o golpe.
+  - Acólito de Guerra fortalece inimigos próximos com uma litania interrompida pela morte; aparece a partir da wave 6 na Arena e nas Expedições.
   - Missões terminam com Guardião dos Ossos, Lich Guerreiro ou Hidra Pútrida.
   - O Ato I termina no Capitão da Guarda, com escudo e reforços a cada 25% de vida.
 - **[Equipamentos](docs/mecanicas/equipamentos-e-loot.md)**
@@ -138,6 +140,8 @@ arquivos separados e copiados para dentro dele:
 | `build-simulator/model.js`, `scripts/skill-trees.js`, `scripts/skill-trees.css` | Grimório e regras de combate (`COMBAT_TUNING`) | `node scripts/sync-skill-trees.js` |
 | `scripts/equipment-model.js`, `scripts/equipment.js`, `scripts/minion-care.js`, `scripts/minion-abilities.js`, `scripts/sprite-cache.js`, `scripts/equipment.css`, `scripts/menu.css` | Equipamentos, loot, waves, reanimação, esquiva e habilidades automáticas da horda, cache de sprites, menu | `node scripts/sync-equipment.js` (também roda o anterior) |
 | `scripts/expedition-model.js`, `scripts/expedition.js` | Mapas de expedição, biomas por wave, elites, boss e seleção entre Expedição e Arena clássica | `node scripts/sync-equipment.js` |
+| `scripts/endgame-model.js`, `scripts/endgame.js`, `scripts/endgame-map.js`, `scripts/endgame-screen.js`, `scripts/endgame.css` | Tela dedicada e mapa territorial em Canvas 2D, conquista regional, maldições, líderes do pântano e Osso Carcomido/Podridão | `node scripts/sync-equipment.js` |
+| `scripts/war-acolyte-model.js`, `scripts/war-acolyte.js` | Acólito de Guerra, aura de dano e composição de grupos | `node scripts/sync-equipment.js` |
 | `scripts/crypt-hound-model.js`, `scripts/crypt-hound.js` | Composição da arena e combate do Cão de Cripta | `node scripts/sync-equipment.js` |
 | `scripts/skill-vfx.js` | Efeitos do Tiro de Osso e do Dash | `node scripts/sync-skill-vfx.js` |
 
@@ -176,7 +180,7 @@ Personagens e efeitos são modelados e animados por script no Blender e
 renderizados como spritesheets com shader toon: 8 direções para personagens e
 16 para o estilhaço de osso. Detalhes em [blender/README.md](blender/README.md).
 
-![Personagens renderizados no Blender](blender/preview_mobs.png)
+![Personagens renderizados no Blender](blender/previews/preview_mobs.png)
 
 - `necromante.py`, `mob.py`, `undead_ranged.py` e `bone_shard.py` constroem modelo,
   rig e animações (`.blend` / `.glb`).
@@ -187,5 +191,5 @@ renderizados como spritesheets com shader toon: 8 direções para personagens e
 - `render.py` gera previews; `toon.py` e `common.py` são utilitários compartilhados.
 
 ```bash
-blender -b -P blender/sprites.py -- blender/necromante.blend blender necromante
+blender -b -P blender/scripts/sprites.py -- blender/models/necromante.blend blender/spritesheets necromante
 ```

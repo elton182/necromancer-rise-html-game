@@ -28,6 +28,8 @@ function castMinionAbility(m,npos){
  if(m.type==='zombie'){
   if(d>reach)return false;
   dealDamageToEnemy(t,minionAbilityDamage(m,1.5));minionSlowEnemy(t,.35,3);burst(t.x,t.y,def.color,12,2);
+  const decay=typeof masteryBonus==='function'?masteryBonus('zombie').decay||0:0;
+  if(decay>0&&!t.dead)t.minionDecay={damage:Math.max(minionAbilityDamage(m,decay/100),t.minionDecay?.damage||0),remaining:4,tick:t.minionDecay?.tick||0};
  }else if(m.type==='skeleton'){
   const foes=minionAbilityFoes(m.x,m.y,2.2);if(d>reach||!foes.length)return false;
   const damage=minionAbilityDamage(m,1.3);foes.forEach(e=>dealDamageToEnemy(e,damage));ring(m.x,m.y,2.2,def.color,.45);
@@ -60,6 +62,13 @@ function minionAbilityTick(m,index,dt,npos){
  if(m._abilityCd<=0)castMinionAbility(m,npos);
 }
 function minionAbilityStatus(dt){
+ for(const e of enemies){
+  const decay=e.minionDecay;if(!decay)continue;
+  if(e.dead){delete e.minionDecay;continue;}
+  const elapsed=Math.min(Math.max(0,dt),decay.remaining);decay.remaining-=elapsed;decay.tick+=elapsed;
+  while(decay.tick>=1&&!e.dead){decay.tick-=1;dealDamageToEnemy(e,decay.damage);}
+  if(decay.remaining<=0||e.dead)delete e.minionDecay;
+ }
  for(const e of enemies)if(e.minionSlowT>0){e.minionSlowT=Math.max(0,e.minionSlowT-dt);if(e.minionSlowT<=0)e.minionSlow=0;}
  for(const l of minionAbilityLabels)l.t-=dt;minionAbilityLabels=minionAbilityLabels.filter(l=>l.t>0&&!l.m.dead);
 }

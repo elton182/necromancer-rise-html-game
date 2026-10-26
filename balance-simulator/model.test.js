@@ -11,9 +11,13 @@ const source = readSource();
 const scenario = { rules: 'current', build: 'hybrid', gear: 'loot', profile: 'normal', route: 'advance' };
 const item = (stat, target, value = 1) => ({ type: 'staff', level: 1, rarity: 'magic', base: { stat: 'spell', value: 0 }, affixes: [{ stat, target, value }] });
 const enemy = (hp = 40, damage = 8) => ({ name: 'Guerreiro', hp, maxHp: hp, damage, interval: 1.5, xp: 12, dropChance: 0 });
-test('late waves reserve 20% for hounds and sample original types uniformly',()=>{
+test('late waves preserve hounds and reserve support slots using the shared composition',()=>{
   let i=0;const encounter=M.makeEncounter(27,'current',config,source,()=>((i++%4)+.5)/4);
-  for(const type of source.enemies)assert.equal(encounter.enemies.filter(e=>e.name===type.name).length,12);
+  const expected=require('../scripts/war-acolyte-model.js').arenaTypes(27,
+    require('../scripts/crypt-hound-model.js').arenaTypes(27,60,source.enemies,(()=>{let n=0;return ()=>((n++%4)+.5)/4;})()),source.enemies);
+  assert.equal(encounter.enemies.filter(e=>e.id==='cryptHound').length,12);
+  assert.equal(encounter.enemies.filter(e=>e.id==='warAcolyte').length,3);
+  for(const type of source.enemies)assert.equal(encounter.enemies.filter(e=>e.name===type.name).length,expected.filter(e=>e.name===type.name).length);
   const early=M.makeEncounter(1,'current',config,source,()=>.999);
   assert.ok(early.enemies.every(e=>e.name==='Guerreiro'));
   const s=M.stats(20,'horde',[],source);

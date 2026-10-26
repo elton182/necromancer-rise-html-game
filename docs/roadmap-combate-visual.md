@@ -10,7 +10,7 @@ e verificadas à distância antes de avançar para o próximo lote.
 ## Ponto de partida
 
 - O jogo usa Canvas 2D em um HTML independente, com sprites do Blender embutidos.
-- Os cinco inimigos comuns atuais são Guerreiro, Arqueiro, Bruto, Mago Vivo e Cão de Cripta.
+- Os seis inimigos comuns atuais são Guerreiro, Arqueiro, Bruto, Mago Vivo, Cão de Cripta e Acólito de Guerra.
   Seus especiais já têm preparação e formas de esquiva. Chefes existentes entram
   em uma etapa posterior de revisão.
 - As ações equipáveis estão em `ACTION_SKILLS` e `TREE_ACTIONS`: Tiro de Osso,
@@ -68,7 +68,7 @@ lotes, sem contar chefes ou variações cosméticas como inimigos novos.
 | SK-01 | P1 | Tiro de Osso | Preparação curta, projétil com direção legível, impacto localizado e rastro discreto | Concluído |
 | SK-02 | P1 | Dash | Início, deslocamento e saída reconhecíveis; efeito acompanha a trajetória real e termina com a invulnerabilidade | Pronto |
 | EN-01 | P1 | Cão de Cripta | Perseguidor rápido com investida anunciada e recuperação explorável | Concluído |
-| EN-02 | P1 | Acólito de Guerra | Suporte que fortalece aliados em uma área visível; efeito termina quando a fonte morre | Backlog |
+| EN-02 | P1 | Acólito de Guerra | Suporte que fortalece aliados em uma área visível; efeito termina quando a fonte morre | Concluído |
 | SK-03 | P1 | Chuva de Ossos | Área marcada, queda e impacto separados; borda da área de dano continua visível | Backlog |
 | SK-04 | P1 | Explosão Necrótica | Expansão curta, centro identificável e dissipação rápida sem cobrir o chão por muito tempo | Backlog |
 | SK-05 | P1 | Muralha de Corpos | Formação, permanência e dissolução; extensão visual corresponde à colisão | Backlog |
@@ -190,3 +190,12 @@ concluir cada pacote. Este roadmap organiza o trabalho; não agenda execuções 
 - Introdução nas waves e expedições a partir da wave 4; campanha e índices originais preservados.
 - HTML independente atualizado; modelos e teste do simulador acompanham a composição nova. Esquiva lateral e colisão continuam aproximações no simulador matemático.
 - Evidências e reprodução: [validação do Cão](../review/crypt-hound-validation.md). EN-02 permanece no backlog.
+
+## EN-02 — Acólito de Guerra
+
+Concluído em 25/10/2026: modelo e rig originais, seis animações em oito direções,
+ritual anunciado e aura de dano sem acúmulo, integração na Arena e Expedições
+a partir da wave 6. Morte/reset/perda de alerta removem a contribuição da fonte.
+Fontes editáveis em `blender/scripts/war_acolyte.py` e módulos `scripts/war-acolyte*`.
+Evidências, comandos, medição local e limites do simulador estão em
+[review/war-acolyte-validation.md](../review/war-acolyte-validation.md).

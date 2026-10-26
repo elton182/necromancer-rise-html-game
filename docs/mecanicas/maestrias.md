@@ -4,6 +4,13 @@ Cada uma das **12 habilidades equipáveis** tem nível e experiência próprios,
 além da progressão do personagem, do Grimório e dos equipamentos. Acesso:
 **ESC → Habilidades → Maestrias**. O nível também aparece nos slots do HUD.
 
+Há **seis slots de especialização, vinculados diretamente aos seis slots da
+barra de combate**. Somente as habilidades aprendidas que ocupam esses slots
+ganham XP, permitem distribuir pontos próprios e ativam os bônus de maestria.
+Trocar uma habilidade na barra troca também a especialização daquele slot.
+A tela mostra os seis slots no topo e a árvore do slot selecionado abaixo;
+slots vazios permitem escolher uma habilidade pelo seletor já usado no HUD.
+
 Fontes: `scripts/skill-mastery-model.js`, `scripts/skill-mastery.js` e
 `scripts/skill-mastery.css`. O jogo publicado continua num HTML independente;
 `node scripts/sync-equipment.js` incorpora os módulos e as pontes de save.
@@ -25,6 +32,8 @@ Fontes: `scripts/skill-mastery-model.js`, `scripts/skill-mastery.js` e
   progressão do personagem encerrada.
 - Desequipar, morrer ou devolver o desbloqueio no Grimório preserva o nível,
   a XP e os pontos próprios. Ao reaprender, a habilidade recupera a maestria.
+  Fora da barra, o progresso fica congelado e os bônus de maestria ficam
+  dormentes. Reequipar reativa a mesma progressão, sem pagar ou reiniciar níveis.
 - Nas evocações, o progresso pertence à habilidade do grupo inteiro. Morte,
   explosão, sacrifício e renascimento dos aliados não retiram experiência.
 
@@ -99,3 +108,7 @@ destes nós.
 - `node scripts/skill-mastery-browser-check.js` (Playwright disponível via
   `NODE_PATH`): interface, combate, árvores, redistribuição, tela pequena,
   recarregamento de save e progressão no nível máximo do personagem.
+
+### Decomposição dos zumbis
+
+O nó avançado `power_deep` substitui Ferocidade por Decomposição. A Mordida Pútrida passa a aplicar 20% do dano do zumbi por segundo por ponto, durante 4 segundos. Novas mordidas renovam a duração sem acumular efeitos; vale também contra chefes. Pontos já investidos são preservados. O fundamento Fome dos Mortos mantém +4% de dano por ponto.

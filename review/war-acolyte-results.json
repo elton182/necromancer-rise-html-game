@@ -1,0 +1,35 @@
+{
+  "result": {
+    "stats": {
+      "hp": 38,
+      "dmg": 6,
+      "spd": 2.07,
+      "interval": 1.5
+    },
+    "warning": true,
+    "buff": true,
+    "realHit": 10,
+    "noStack": true,
+    "leftArea": true,
+    "oneSource": true,
+    "killed": true,
+    "reset": true,
+    "staff": 6,
+    "expeditionCount": 1,
+    "scaling": true,
+    "count": 1
+  },
+  "visual": {
+    "directions": 8,
+    "animations": [
+      "idle",
+      "walk",
+      "attack",
+      "windup",
+      "channel",
+      "death"
+    ],
+    "drawMs": 52.400000005960464
+  },
+  "errors": []
+}

@@ -6,7 +6,7 @@ const settings=()=>({skill:$('skill').value,enemy:$('enemy').value,crowd:Number(
 async function loadSprites(){
   if(location.protocol==='file:')throw Error('Inicie com node tools/combat-lab-server.js e abra http://127.0.0.1:4173/tools/combat-lab.html');
   const response=await fetch('../necromancer-canvas.html');if(!response.ok)throw Error('Não foi possível carregar o HTML do jogo.');
-  const html=await response.text(),wanted=new Set(['necro','zombie','archer','specter','soldier','earcher','brute','mage','cryptHound']);
+  const html=await response.text(),wanted=new Set(['necro','zombie','archer','specter','soldier','earcher','brute','mage','cryptHound','warAcolyte']);
   const jobs=[];
   for(const match of html.matchAll(/SPR\.load\('([^']+)',(\{[^\n]+?\}),\s*'([^']+)'\);/g)){
     const [,key,raw,b64]=match;if(!wanted.has(key))continue;
@@ -46,6 +46,7 @@ function drawScene(ctx,version,t,config){
     }
     for(let i=0;i<6;i++)sprite(ctx,['zombie','archer','specter'][i%3],start+u*(i%3-.6),y+u*(i<3?1.4:-1.3),u,t+i,'walk',0);
   }
+  if(config.skill==='acolyte'){drawAcolyteScene(ctx,version,t,config,y);return;}
   if(config.skill==='hound'){drawHoundScene(ctx,version,t,config,start,y);return;}
   sprite(ctx,'necro',start,y,u,t,t<.35?'cast':'idle',0);
   sprite(ctx,enemy,target,y,u,t,'idle',4);
@@ -78,21 +79,40 @@ function drawHoundScene(ctx,version,t,config,start,y){
   sprite(ctx,'cryptHound',start+dog.x*u,y+dog.y*u*.6,u*.85,a?.time||t,anim,0);
   ctx.fillStyle=light?'#34494b':'#d3dfdb';ctx.font='12px system-ui';ctx.fillText((a?.phase==='windup'?'PREPARAÇÃO':a?.phase==='charge'?'INVESTIDA':a?'RECUPERAÇÃO':'PRONTO')+(damage?' · ACERTO':''),18,ctx.canvas.height-18);
 }
+function drawAcolyteScene(ctx,version,t,config,y){
+  const M=WarAcolyteModel,{u,light}=config,x=ctx.canvas.width/2;
+  const priest={type:{id:'warAcolyte'},x:0,y:0,abilityCd:0},allies=[{type:{id:'soldier'},x:-2,y:1},{type:{id:'soldier'},x:2,y:1}];
+  for(let elapsed=0;elapsed<Math.min(t,version==='new'?2:t);){const step=Math.min(1/120,t-elapsed);M.update(priest,step,{target:()=>({x:-6,y:0}),allies:()=>allies});elapsed+=step;}
+  if(version==='new'&&t>=2){priest.dead=true;priest.ability=null;}
+  const a=priest.ability;
+  if(a){ctx.save();ctx.strokeStyle=M.skill.color;ctx.fillStyle=M.skill.color;ctx.lineWidth=2;ctx.globalAlpha=.08;
+    ctx.beginPath();ctx.ellipse(x,y,u*M.skill.radius,u*M.skill.radius*.6,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.7;
+    if(a.phase==='windup')ctx.setLineDash([6,6]);ctx.stroke();ctx.restore();}
+  sprite(ctx,'necro',x-6*u,y,u,t,'idle',0);
+  for(const e of allies){
+    const px=x+e.x*u,py=y+e.y*u*.6;sprite(ctx,'soldier',px,py,u,t,'attack',4);
+    if(M.supported(e,[priest])){ctx.strokeStyle=M.skill.color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(px-5,py-2*u);ctx.lineTo(px,py-2*u-6);ctx.lineTo(px+5,py-2*u);ctx.stroke();}
+  }
+  sprite(ctx,'warAcolyte',x,y,u,priest.dead?t-2:a?.time||t,priest.dead?'death':a?.phase||'idle',2);
+  ctx.fillStyle=light?'#34494b':'#d3dfdb';ctx.font='12px system-ui';
+  ctx.fillText(priest.dead?'FONTE ELIMINADA · BÔNUS REMOVIDO':a?.phase==='channel'?'LITANIA · +30% DANO':a?'PREPARAÇÃO · 1 s':'RECARGA',18,ctx.canvas.height-18);
+}
 function frame(now){
   const dt=Math.min(.05,(now-last)/1000);last=now;
   if(ready){
     const begin=performance.now(),config=settings();
-    const duration=config.skill==='hound'?2.7:1.2;
+    const duration=config.skill==='acolyte'?6:config.skill==='hound'?2.7:1.2;
     if($('repeat').checked){clock=(clock+dt)%duration;$('scrub').value=clock/duration;}
     const t=Number($('scrub').value)*duration;
     drawScene(canvases[0].getContext('2d'),'old',t,config);drawScene(canvases[1].getContext('2d'),'new',t,config);
     for(const cv of document.querySelectorAll('[data-size]')){
       const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);
-      if(config.skill==='hound'||config.enemy==='cryptHound')sprite(ctx,'cryptHound',cv.width/2,cv.height*.8,Number(cv.dataset.size)*.6,t,'walk',1);
+      if(config.skill==='acolyte'||config.enemy==='warAcolyte')sprite(ctx,'warAcolyte',cv.width/2,cv.height*.8,Number(cv.dataset.size)*.6,t,'channel',1);
+      else if(config.skill==='hound'||config.enemy==='cryptHound')sprite(ctx,'cryptHound',cv.width/2,cv.height*.8,Number(cv.dataset.size)*.6,t,'walk',1);
       else BoneBoltVFX.projectile(ctx,{x:cv.width*.60,y:cv.height/2,angle:0,scale:Number(cv.dataset.size)*.7,travel:.6,low:config.low});
     }
     samples.push(performance.now()-begin);if(samples.length>120)samples.shift();
-    if(samples.length%20===0){const sorted=[...samples].sort((a,b)=>a-b);$('metrics').textContent=`Desenho P95: ${sorted[Math.floor((sorted.length-1)*.95)].toFixed(2)} ms · ${config.crowd+2+(config.crowd?6:0)} personagens / painel · ${samples.length} amostras`;}
+    if(samples.length%20===0){const sorted=[...samples].sort((a,b)=>a-b);$('metrics').textContent=`Desenho P95: ${sorted[Math.floor((sorted.length-1)*.95)].toFixed(2)} ms · ${config.crowd+(config.skill==='acolyte'?4:2)+(config.crowd?6:0)} personagens / painel · ${samples.length} amostras`;}
   }
   requestAnimationFrame(frame);
 }
@@ -100,9 +120,9 @@ $('fire').onclick=()=>{$('repeat').checked=true;clock=0;};
 $('scrub').oninput=()=>{$('repeat').checked=false;clock=Number($('scrub').value)*1.2;};
 for(const el of document.querySelectorAll('select'))el.onchange=()=>{
  samples.length=0;clock=0;
- const hound=$('skill').value==='hound',titles=document.querySelectorAll('.panel-title');
- titles[0].innerHTML=hound?'<b>Alvo parado</b><span>Investida com direção fixa</span>':'<b>Antes</b><span>Esfera, brilho e rastro verde</span>';
- titles[1].innerHTML=hound?'<b>Esquiva lateral</b><span>Saia do corredor e puna a recuperação</span>':'<b>Redesenho</b><span>Osso, rastro curto e impacto localizado</span>';
+ const hound=$('skill').value==='hound',acolyte=$('skill').value==='acolyte',titles=document.querySelectorAll('.panel-title');
+ titles[0].innerHTML=acolyte?'<b>Suporte vivo</b><span>Aliados na área recebem +30% de dano</span>':hound?'<b>Alvo parado</b><span>Investida com direção fixa</span>':'<b>Antes</b><span>Esfera, brilho e rastro verde</span>';
+ titles[1].innerHTML=acolyte?'<b>Suporte eliminado</b><span>A litania termina com a fonte aos 2 s</span>':hound?'<b>Esquiva lateral</b><span>Saia do corredor e puna a recuperação</span>':'<b>Redesenho</b><span>Osso, rastro curto e impacto localizado</span>';
 };
 window.CombatLab={settings,drawScene,get ready(){return ready;},get samples(){return [...samples];}};
 loadSprites().catch(e=>{$('error').textContent=e.message;$('status').textContent='Prévia indisponível.';});

@@ -16,6 +16,7 @@ Fontes: `necromancer-canvas.html` (`ENEMY_TYPES`, `MOB_ABILITIES`, `startWave`,
 | Bruto | 100 | 18 | 1,4 | Corpo a corpo | 30 | 11 |
 | Mago Vivo | 30 | 20 | 2,5 | 6,5 (tiro) | 25 | 9 |
 | Cão de Cripta | 32 | 7 | 3,68 | 1 (mordida) | 16 | 6 |
+| Acólito de Guerra | 38 | 6 | 2,07 | 1,3 (cajado) | 22 | 8 |
 
 \* Já com o aumento de 15% aplicado a todos os monstros comuns.
 
@@ -46,6 +47,26 @@ fica pronta 0,75–1,25 s após o inimigo aparecer; para o Cão de Cripta, após
   (veja [Horda](horda.md#comportamento-ia)).
 - Chefes usam suas próprias IAs; alvos de treino não atacam.
 
+### Acólito de Guerra — Litania
+
+O suporte prepara a **Litania de Guerra por 1 s**, depois fica imóvel canalizando
+por **4 s**. Um círculo âmbar de **5,5 unidades** delimita a área e uma marca acima
+dos inimigos identifica quem recebe **+30% de dano**, arredondado ao inteiro mais
+próximo. O jogador pode priorizar o Acólito ou separar o grupo para tirar seus
+aliados da área. O ritual não causa dano direto ao jogador nem aos minions.
+
+- Primeira tentativa após 2 s de atividade; recarga de 7 s após o canal terminar.
+- Só inicia com outro inimigo elegível na área e uma ameaça a até 10 unidades.
+- Não fortalece a si mesmo, outros Acólitos, chefes, alvos de treino ou mortos.
+- Duas litanias não acumulam bônus. Sair da área remove o bônus imediatamente;
+  voltar durante o canal o reaplica. Morte, reset e perda de alerta da fonte
+  encerram sua contribuição; outra fonte viva ainda pode sustentar o bônus.
+- O dano é calculado na execução do ataque ou criação do projétil. Projéteis já
+  disparados conservam o dano capturado, mesmo após a morte do Acólito.
+- Fora do ritual, usa ataque básico de cajado a cada 1,5 s. Não anda nem ataca
+  durante preparação/canal; recebe dano normalmente.
+- Fontes: `scripts/war-acolyte-model.js` e `scripts/war-acolyte.js`.
+
 ## Composição das waves
 
 Usada nas missões, na arena da campanha e na Arena Infinita.
@@ -57,7 +78,10 @@ Usada nas missões, na arena da campanha e na Arena Infinita.
   Na campanha, os quatro tipos originais mantêm chances iguais entre os liberados.
   Fora da campanha, a wave 4 começa com um Cão e depois Guerreiros (4 s até o próximo spawn);
   a wave 5 mistura dois Cães e Guerreiros. Da wave 6 em diante, `piso(total × 0,2)`
-  vagas são Cães; as demais sorteiam os quatro tipos originais com chances iguais.
+  vagas são Cães. A wave 6 reserva uma vaga para Acólito, a 7 reserva duas;
+  da 8 em diante, reserva `mínimo(3, máximo(1, piso(total × 0,1)))` vagas.
+  Os Acólitos substituem posições distribuídas entre os tipos originais,
+  preservando as vagas dos Cães e o total de inimigos. Campanha mantém sua composição.
 
 | Wave | Tipos possíveis |
 |---|---|
@@ -67,6 +91,7 @@ Usada nas missões, na arena da campanha e na Arena Infinita.
 | 6+ | + Mago Vivo |
 
 - Nas expedições, waves 1–3 mantêm a composição original. Na wave 4, o primeiro grupo tem um Cão à frente e cinco Guerreiros; o segundo tem dois Cães e seis Guerreiros. Da wave 5 em diante, cada grupo substitui `piso(tamanho × 0,2)` integrantes por Cães, preservando raridade e semente.
+- Nas expedições, a wave 6 apresenta um Acólito no primeiro grupo. Da wave 7 em diante, os grupos 1, 4, 7 e 10 recebem um Acólito no lugar do último integrante, preservando geometria, raridade e vagas dos Cães.
 - Os inimigos entram um a um, a cada 0,6–1,2 s (exceto a introdução isolada do Cão).
 - Entre waves há uma pausa de cerca de 5 s.
 
@@ -169,4 +194,4 @@ recebem a progressão da wave. Fica inativo até Zephyr ou a horda se aproximare
 A horda reconhece os avisos e tenta esquivar. O Dash protege contra impactos
 durante sua invulnerabilidade. Morrer cancela ataques e projéteis restantes do
 chefe, garante o loot raro ou épico da expedição e libera o portal para o próximo
-bioma. Modelo editável: `blender/boss_soulWarden.blend`.
+bioma. Modelo editável: `blender/models/boss_soulWarden.blend`.

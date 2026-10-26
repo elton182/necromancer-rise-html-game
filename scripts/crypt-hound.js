@@ -13,7 +13,7 @@ updateMobAbility=function(e,dt){
   sweep:(ax,ay,bx,by)=>CryptHoundModel.sweep(ax,ay,bx,by,solids,handsAreas,
    [...(P.deadT===0?[{x:P.x,y:P.y,player:true}]:[]),...minions.filter(m=>!m.dead)]),
   bound:(x,y)=>{const q={x,y};if(STG.on)STG.clampE(q,.5);else{const d=Math.hypot(x,y),r=FIELD_R-1.5;if(d>r){q.x*=r/d;q.y*=r/d;}}return q;},
-  damage:(target,damage)=>{if(target.player)dealDamageToPlayer(damage);else dealDamageToMinion(target,damage);}
+  damage:(target,damage)=>{if(target.player)dealDamageToPlayer(damage,e);else dealDamageToMinion(target,damage);}
  });
 };
 const death=killEnemy;

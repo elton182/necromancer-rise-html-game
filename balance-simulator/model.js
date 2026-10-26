@@ -56,7 +56,7 @@ function stats(level, build, items, source) {
     for (let i = 0; i < count; i++) minions.push({ type, hp, maxHp: hp, regen:hp*source.combatTuning.minionRegen,damageTakenMultiplier:['zombie','skeleton','abom'].includes(type)?source.combatTuning.frontlineDamageTaken??1:1,reviveHealth:source.combatTuning.autoReviveHealth,damage: Math.round((d.dmg + level - 1 + (mods.hordeFlat || 0)) * (1 + (damage + (mods.horde || 0)) / 100)), interval: d.atkRate });
   }
   return {
-    level, ranks, bonusRanks, effects: e,
+    level, ranks, bonusRanks, effects: e, defense:mods.defense||0,
     hp: Math.round((100 + 10 * (level - 1)) * percent('Vida de Zephyr') + (mods.hp || 0)),
     mp: Math.round((80 + 5 * (level - 1)) * percent('Mana máxima') + (mods.mp || 0)),
     regen: (4 + 0.3 * (level - 1)) * percent('Regeneração de mana') + (mods.regen || 0), hpRegen: 0.2 * (level - 1),
@@ -112,7 +112,8 @@ function scaleEnemy(enemy, wave, rules, config, { campaign = false, stage = 1, l
 function makeEncounter(wave, rules, config, source, random, context = {}) {
   const count = Math.floor((4 + wave * 2 + Math.floor(wave / 3)) * (context.mult || 1));
   const cap=rules==='current'&&source.liveEquipment&&!context.campaign?Gear.waveStats(wave).maxEnemies:rules==='proposed'?config.proposed.maxEnemies:Infinity;
-  const composition=require('../scripts/crypt-hound-model.js').arenaTypes(wave,Math.min(count,cap),source.enemies,random,!!context.campaign||rules==='legacy');
+  const original=require('../scripts/crypt-hound-model.js').arenaTypes(wave,Math.min(count,cap),source.enemies,random,!!context.campaign||rules==='legacy');
+  const composition=require('../scripts/war-acolyte-model.js').arenaTypes(wave,original,source.enemies,!!context.campaign||rules==='legacy');
   const enemies=composition.map(e=>scaleEnemy(e,wave,rules,config,{...context,liveEquipment:source.liveEquipment}));
   return { enemies, wave, id: 'wave-' + wave, rewardXp: context.campaign ? 0 : 20 + wave * 8, rewardGold: context.campaign ? 0 : 3 + wave * 2, campaign: !!context.campaign };
 }
@@ -166,7 +167,7 @@ function simulateCombat(s, encounter, profile, config, random) {
         if (live.length && random() < c.aggroToMinions) {
           const m = live[Math.floor(random() * live.length)]; m.hp -= value>0?Math.max(1,Math.round(value*(m.damageTakenMultiplier??1))):value;
           if (m.hp <= 0) { deaths++; m.revive = time + c.reviveSeconds; }
-        } else { const hit = Math.min(hp, value); hp -= hit; taken += hit; }
+        } else { const hit = Math.min(hp, value*(1-Gear.defenseReduction(s.defense,encounter.wave))); hp -= hit; taken += hit; }
       }
       if (time >= e.attack) { e.attack = time + e.interval; receive(e.damage, profile.enemyAccuracy); }
       if (time >= e.special && !e.isBoss && e.damage > 0 && e.ability) {
