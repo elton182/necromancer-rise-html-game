@@ -6897,11 +6897,13 @@ function drawVesperNpc(p){
   ctx.save();ctx.translate(x,y+bob);
   ctx.globalCompositeOperation='lighter';glow(0,-1.45*u,1.8*u,`rgba(106,218,255,${.28+.12*Math.sin(time*2)})`);ctx.globalCompositeOperation='source-over';
   // Silhueta baixa em polígonos: manto, rosto e cauda translúcida.
-  ctx.beginPath();ctx.moveTo(-.48*u,-1.12*u);ctx.lineTo(-.34*u,-2.05*u);ctx.lineTo(0,-2.38*u);ctx.lineTo(.38*u,-2.0*u);ctx.lineTo(.5*u,-1.08*u);ctx.lineTo(.26*u,-.22*u);ctx.lineTo(0,.08*u);ctx.lineTo(-.28*u,-.18*u);ctx.closePath();
-  const mantle=ctx.createLinearGradient(0,-2.4*u,0,.1*u);mantle.addColorStop(0,'#d9fbff');mantle.addColorStop(.45,'#78cfe2');mantle.addColorStop(1,'rgba(52,136,202,0)');outlined(mantle,1.6);
-  ctx.beginPath();ctx.moveTo(-.32*u,-1.95*u);ctx.lineTo(0,-2.25*u);ctx.lineTo(.33*u,-1.95*u);ctx.lineTo(.2*u,-1.22*u);ctx.lineTo(-.22*u,-1.22*u);ctx.closePath();outlined('#335778',1.35);
+  ctx.beginPath();ctx.moveTo(-.48*u,-1.12*u);ctx.lineTo(-.34*u,-2.05*u);ctx.lineTo(0,-2.38*u);ctx.lineTo(.38*u,-2.0*u);ctx.lineTo(.5*u,-1.08*u);ctx.lineTo(.31*u,-.38*u);ctx.lineTo(.08*u,.1*u);ctx.lineTo(-.14*u,-.3*u);ctx.lineTo(-.38*u,-.06*u);ctx.closePath();
+  const mantle=ctx.createLinearGradient(0,-2.4*u,0,.1*u);mantle.addColorStop(0,'#eefeff');mantle.addColorStop(.42,'#9ce5f0');mantle.addColorStop(.72,'#52aecb');mantle.addColorStop(1,'rgba(52,136,202,0)');outlined(mantle,1.8);
+  // As duas faces do manto conservam o acabamento low-poly da referência.
+  ctx.beginPath();ctx.moveTo(-.48*u,-1.1*u);ctx.lineTo(-.34*u,-2.05*u);ctx.lineTo(0,-2.38*u);ctx.lineTo(-.03*u,-.22*u);ctx.lineTo(-.38*u,-.06*u);ctx.closePath();ctx.fillStyle='rgba(255,255,255,.25)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(-.32*u,-1.95*u);ctx.lineTo(0,-2.25*u);ctx.lineTo(.33*u,-1.95*u);ctx.lineTo(.2*u,-1.22*u);ctx.lineTo(-.22*u,-1.22*u);ctx.closePath();outlined('#253d63',1.45);
   ctx.fillStyle='#091326';ctx.beginPath();ctx.ellipse(0,-1.66*u,.19*u,.25*u,0,0,6.283);ctx.fill();eyeGlow(-.07*u,-1.66*u,.035*u,'#eaffff');eyeGlow(.08*u,-1.66*u,.035*u,'#eaffff');
-  ctx.strokeStyle='#d7faff';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(.3*u,-1.18*u);ctx.quadraticCurveTo(.6*u,-1.0*u,.7*u,-.72*u);ctx.stroke();
+  ctx.strokeStyle='#d7faff';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(.3*u,-1.18*u);ctx.quadraticCurveTo(.57*u,-1.02*u,.72*u,-.78*u);ctx.lineTo(.82*u,-.8*u);ctx.moveTo(.72*u,-.78*u);ctx.lineTo(.77*u,-.66*u);ctx.stroke();
   for(let i=0;i<3;i++){const a=time*1.2+i*2.1;ctx.globalCompositeOperation='lighter';glow(Math.cos(a)*.72*u,-1.25*u+Math.sin(a)*.38*u,.12*u,'rgba(205,255,255,.95)');ctx.globalCompositeOperation='source-over';}
   ctx.restore();ctx.font='20px serif';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText('👻',x,y-3.15*u+Math.sin(time*2+p.seed)*3);
 }
@@ -7003,7 +7005,7 @@ function vilOffer(id,force){
       m.querySelector('#vm-go').onclick=()=>{vilClose();_sho('shop');};
     } else {
       const n=VIL_NPC[id], o=vilOffer(id);
-      const portrait=id==='vesper'?'<span class="vi" aria-hidden="true">👻</span>':`<img class="npc-portrait" src="assets/npc-portraits/${id}-painted.png" alt="${id==='bram'?'Bram, ferreiro forte com avental de couro e martelo':id==='lysa'?'Lysa, anciã de cabelos prateados com xale e cajado':'Tilda, jovem aldeã com tranças e roupas simples'}">`;
+      const portrait=id==='vesper'?'<div class="npc-portrait ghost-portrait" role="img" aria-label="Vesper, espírito azul de capuz, olhos brancos e cauda etérea"><i class="ghost-tail"></i><i class="ghost-cloak"></i><i class="ghost-hood"><b></b></i><i class="ghost-hand">⌁</i><i class="ghost-mote m1"></i><i class="ghost-mote m2"></i></div>':`<img class="npc-portrait" src="assets/npc-portraits/${id}-painted.png" alt="${id==='bram'?'Bram, ferreiro forte com avental de couro e martelo':id==='lysa'?'Lysa, anciã de cabelos prateados com xale e cajado':'Tilda, jovem aldeã com tranças e roupas simples'}">`;
       const role=id==='bram'?'FERREIRO DE ELDRIN':id==='lysa'?'ANCIÃ DE ELDRIN':id==='vesper'?'ESPÍRITO GUARDIÃO DE ELDRIN':'MORADORA DE ELDRIN';
       m.innerHTML=`<div class="vc"><div class="vh">${portrait}<div><b>${n.name}</b><small>${role}</small></div></div>
       <p class="say">“${o.say}”</p>
