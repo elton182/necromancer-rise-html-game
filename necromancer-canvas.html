@@ -1207,7 +1207,9 @@ function updateZombieIdleScene(dt){
     return;
   }
   ZOMBIE_IDLE_SCENE.cooldown=Math.max(0,ZOMBIE_IDLE_SCENE.cooldown-dt);ZOMBIE_IDLE_SCENE.quiet+=dt;
-  if(gameState!=='field'||ZOMBIE_IDLE_SCENE.quiet<10||ZOMBIE_IDLE_SCENE.cooldown>0)return;
+  // A vila também é um espaço seguro: o detalhe deve tocar lá, não apenas
+  // entre ondas no campo.
+  if(!['field','hub'].includes(gameState)||ZOMBIE_IDLE_SCENE.quiet<10||ZOMBIE_IDLE_SCENE.cooldown>0)return;
   const candidates=minions.filter(m=>m.type==='zombie'&&!m.dead&&!m.returning&&!m.target);
   if(!candidates.length)return;
   candidates.sort((a,b)=>(a._armLast||0)-(b._armLast||0));const actor=candidates[0];actor._idleAct={t:0};
