@@ -2422,17 +2422,19 @@ function drawGraveyardNpc(p){
 }
 function drawPortal(p){
   const x=sx(p.x), y=sy(p.y), u=S, t=time;
-  ctx.fillStyle='rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(x,y,1.3*u,.35*u,0,0,6.283); ctx.fill();
-  ctx.globalCompositeOperation='lighter'; glow(x,y-1.35*u,2.6*u,`rgba(150,60,255,${.35+.1*Math.sin(t*3)})`); ctx.globalCompositeOperation='source-over';
-  const cy=y-1.35*u, rx=.95*u, ry=1.35*u;
+  ctx.fillStyle='rgba(0,0,0,.48)'; ctx.beginPath(); ctx.ellipse(x,y,1.8*u,.44*u,0,0,6.283); ctx.fill();
+  const cy=y-1.48*u, rx=1.05*u, ry=1.46*u;
+  ctx.globalCompositeOperation='lighter'; glow(x,cy,3.2*u,`rgba(141,62,255,${.32+.12*Math.sin(t*3)})`); ctx.globalCompositeOperation='source-over';
+  // Arco em cinco blocos baixos: o portal parece uma estrutura da vila, não um decalque.
+  const blocks=[[-1.3,-.18,.42,.5],[-1.27,-.72,.4,.58],[-1.1,-1.28,.46,.52],[1.3,-.18,.42,.5],[1.27,-.72,.4,.58],[1.1,-1.28,.46,.52]];
+  blocks.forEach(([dx,dy,w,h],i)=>{ctx.beginPath();ctx.moveTo(x+(dx-w)*u,y+(dy+h)*u);ctx.lineTo(x+(dx+w)*u,y+(dy+h)*u);ctx.lineTo(x+(dx+w*.8)*u,y+(dy-h)*u);ctx.lineTo(x+(dx-w*.8)*u,y+(dy-h)*u);ctx.closePath();outlined(i%2?'#44345c':'#5b4a73',1.7);});
+  ctx.beginPath();ctx.moveTo(x-1.26*u,y-1.72*u);ctx.lineTo(x-.66*u,y-2.93*u);ctx.lineTo(x,y-3.28*u);ctx.lineTo(x+.66*u,y-2.93*u);ctx.lineTo(x+1.26*u,y-1.72*u);ctx.lineTo(x+.98*u,y-1.58*u);ctx.lineTo(x+.48*u,y-2.55*u);ctx.lineTo(x,y-2.82*u);ctx.lineTo(x-.48*u,y-2.55*u);ctx.lineTo(x-.98*u,y-1.58*u);ctx.closePath();outlined('#4d3c68',2);
   ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); const g=ctx.createRadialGradient(x,cy,0,x,cy,ry); g.addColorStop(0,'#c58cff'); g.addColorStop(.5,'#5a14c8'); g.addColorStop(1,'#14003a'); ctx.fillStyle=g; ctx.fill();
   ctx.save(); ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); ctx.clip(); ctx.strokeStyle='rgba(230,200,255,.55)'; ctx.lineWidth=2;
   for(let k=0;k<5;k++){ ctx.beginPath(); for(let a=0;a<12;a+=.25){ const r=(a/12)*ry*(.2+k*.2); const th=a*.9+t*(1.5+k*.3)+k; const px=x+Math.cos(th)*r*(rx/ry), py=cy+Math.sin(th)*r; a?ctx.lineTo(px,py):ctx.moveTo(px,py); } ctx.stroke(); }
   ctx.restore();
-  ctx.strokeStyle=OUT; ctx.lineWidth=(.2*u)+3; ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); ctx.stroke();
-  ctx.strokeStyle='#6b3fd0'; ctx.shadowColor='#a060ff'; ctx.shadowBlur=14; ctx.lineWidth=.2*u; ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); ctx.stroke(); ctx.shadowBlur=0;
-  for(const dx of [-1.15,1.15]){ ctx.beginPath(); ctx.rect(x+dx*u-.18*u,y-2.9*u,.36*u,2.9*u); outlined('#3a3050',1.6); }
-  ctx.beginPath(); ctx.rect(x-1.4*u,y-3.05*u,2.8*u,.28*u); outlined('#4a3c68',1.6);
+  ctx.strokeStyle=OUT; ctx.lineWidth=3; ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); ctx.stroke();
+  ctx.strokeStyle='#b279ff'; ctx.shadowColor='#a060ff'; ctx.shadowBlur=14; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(x,cy,rx,ry,0,0,6.283); ctx.stroke(); ctx.shadowBlur=0;
   if(Math.random()<.3) particles.push({x:p.x+rnd(-.6,.6),y:p.y,z:rnd(.3,2.4),vx:0,vy:0,vz:.8,life:.9,max:.9,col:'#c58cff',size:2.4});
 }
 function drawHubProp(p){
@@ -5308,11 +5310,15 @@ function drawHouse(p){ const x=sx(p.x), y=sy(p.y), u=S; ctx.globalAlpha=behindFa
   for(const wx of [-1.15,.0]){ if(wx===0) continue; ctx.beginPath(); ctx.rect(x+wx*u-.28*u,y-1.2*u,.56*u,.56*u); outlined('#ffc86a',1.5); ctx.strokeStyle='#2c1c10'; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(x+wx*u,y-1.2*u); ctx.lineTo(x+wx*u,y-.64*u); ctx.moveTo(x+wx*u-.28*u,y-.92*u); ctx.lineTo(x+wx*u+.28*u,y-.92*u); ctx.stroke(); }
   ctx.globalCompositeOperation='lighter'; glow(x-1.15*u,y-.9*u,1.3*u,`rgba(255,170,70,${.26+.06*Math.sin(time*3+p.seed*9)})`); ctx.globalCompositeOperation='source-over'; ctx.globalAlpha=1; }
 function drawWell(p){ const x=sx(p.x), y=sy(p.y), u=S; shE(x+.2*u,y,.95*u,.3*u,.4);
-  ctx.beginPath(); ctx.moveTo(x-.7*u,y-.55*u); ctx.lineTo(x-.7*u,y-.05*u); ctx.quadraticCurveTo(x,y+.3*u,x+.7*u,y-.05*u); ctx.lineTo(x+.7*u,y-.55*u); ctx.closePath(); outlined(lgr(x-.7*u,0,x+.7*u,0,'#8a8a96','#4a4a5c'),1.8);
-  ctx.beginPath(); ctx.ellipse(x,y-.55*u,.7*u,.24*u,0,0,6.283); outlined('#1a2a3a',1.6);
-  for(const dx of [-.6,.6]){ ctx.beginPath(); ctx.rect(x+dx*u-.05*u,y-1.7*u,.1*u,1.2*u); outlined('#4a3018',1.2); }
-  ctx.beginPath(); ctx.moveTo(x-.85*u,y-1.62*u); ctx.lineTo(x,y-2.05*u); ctx.lineTo(x+.85*u,y-1.62*u); ctx.closePath(); outlined('#6a2a22',1.6);
-  line(x,y-1.62*u,x,y-.9*u,1.4,'#c8b080'); ctx.beginPath(); ctx.rect(x-.1*u,y-.95*u,.2*u,.18*u); outlined('#5a3a1c',1.1); }
+  // Pedras facetadas e telhado de madeira: volume simples e leitura clara no zoom do jogo.
+  for(let row=0;row<2;row++)for(let col=0;col<4;col++){const bx=x+(-.61+col*.4+(row&1)*.08)*u,by=y-(.2+row*.25)*u;ctx.beginPath();ctx.moveTo(bx-.22*u,by);ctx.lineTo(bx-.12*u,by-.22*u);ctx.lineTo(bx+.22*u,by-.2*u);ctx.lineTo(bx+.17*u,by+.08*u);ctx.closePath();outlined((row+col)%2?'#6e7181':'#9294a0',1);}
+  ctx.beginPath(); ctx.moveTo(x-.72*u,y-.6*u); ctx.lineTo(x-.62*u,y-.04*u); ctx.quadraticCurveTo(x,y+.3*u,x+.72*u,y-.04*u); ctx.lineTo(x+.72*u,y-.6*u); ctx.closePath(); ctx.strokeStyle=OUT;ctx.lineWidth=1.8;ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(x,y-.6*u,.72*u,.25*u,0,0,6.283); outlined('#172b3b',1.8);
+  ctx.beginPath(); ctx.ellipse(x,y-.61*u,.48*u,.13*u,0,0,6.283); ctx.fillStyle='#43a9c7';ctx.fill();ctx.strokeStyle='#a9efff';ctx.lineWidth=1;ctx.stroke();
+  for(const dx of [-.7,.7]){ ctx.beginPath();ctx.moveTo(x+dx*u-.11*u,y-.58*u);ctx.lineTo(x+dx*u-.08*u,y-1.9*u);ctx.lineTo(x+dx*u+.11*u,y-1.95*u);ctx.lineTo(x+dx*u+.12*u,y-.58*u);ctx.closePath();outlined('#5b351c',1.4); }
+  ctx.beginPath();ctx.moveTo(x-.98*u,y-1.78*u);ctx.lineTo(x,y-2.32*u);ctx.lineTo(x+.98*u,y-1.78*u);ctx.lineTo(x+.72*u,y-1.62*u);ctx.lineTo(x,y-2.04*u);ctx.lineTo(x-.72*u,y-1.62*u);ctx.closePath();outlined('#8b402e',1.8);
+  line(x,y-1.78*u,x,y-.95*u,1.4,'#d1b77a');ctx.beginPath();ctx.rect(x-.12*u,y-.98*u,.24*u,.2*u);outlined('#67421f',1.1);
+  ctx.globalCompositeOperation='lighter';glow(x,y-.72*u,1.15*u,`rgba(73,210,255,${.18+.08*Math.sin(time*2+p.seed)})`);ctx.globalCompositeOperation='source-over'; }
 function drawStall(p){ const x=sx(p.x), y=sy(p.y), u=S; ctx.globalAlpha=behindFade(p,1.6,4); shE(x+.3*u,y,1.5*u,.34*u,.4);
   for(const dx of [-1.15,1.15]){ ctx.beginPath(); ctx.rect(x+dx*u-.06*u,y-1.8*u,.12*u,1.8*u); outlined('#4a3018',1.3); }
   ctx.beginPath(); ctx.rect(x-1.2*u,y-.8*u,2.4*u,.8*u); outlined(lgr(0,y-.8*u,0,y,'#7a5430','#3c2612'),1.6);
@@ -6881,8 +6887,24 @@ const VIL_NPC={
     say:['Sinto algo se agitando sob a terra, jovem mago.','Os espíritos estão inquietos. Pode acalmá-los... do seu jeito?']},
   tilda:{name:'Tilda',icon:'🧒',pos:[-6,8],sc:.72,style:{skin:'#e0b090',cloth:'#9a3a2a',dark:'#5a1a10',legCol:'#5a3a2a',belt:'#d4af37'},kinds:['ext','horde'],
     say:['Você é o moço dos mortos? Que legal!','Tem uns monstros perto do poço. Por favor, ajuda a gente?']},
+  vesper:{name:'Vesper, o espírito guardião',icon:'👻',pos:[0,5.9],sc:1,style:{},kinds:['horde','elim'],
+    say:['A névoa me prendeu a Eldrin. Toda criatura que você afasta torna esta praça um pouco mais viva.','Não temo seus mortos, necromante. Eles obedecem a alguém que ainda escolhe proteger os vivos.']},
 };
 const VIL_BIOMES=['forest','village','desert','snow','grave'];
+function drawVesperNpc(p){
+  const x=sx(p.x),y=sy(p.y),u=S,bob=Math.sin(time*2.4+p.seed)*.11*u;
+  shE(x,y,.72*u,.2*u,.3);
+  ctx.save();ctx.translate(x,y+bob);
+  ctx.globalCompositeOperation='lighter';glow(0,-1.45*u,1.8*u,`rgba(106,218,255,${.28+.12*Math.sin(time*2)})`);ctx.globalCompositeOperation='source-over';
+  // Silhueta baixa em polígonos: manto, rosto e cauda translúcida.
+  ctx.beginPath();ctx.moveTo(-.48*u,-1.12*u);ctx.lineTo(-.34*u,-2.05*u);ctx.lineTo(0,-2.38*u);ctx.lineTo(.38*u,-2.0*u);ctx.lineTo(.5*u,-1.08*u);ctx.lineTo(.26*u,-.22*u);ctx.lineTo(0,.08*u);ctx.lineTo(-.28*u,-.18*u);ctx.closePath();
+  const mantle=ctx.createLinearGradient(0,-2.4*u,0,.1*u);mantle.addColorStop(0,'#d9fbff');mantle.addColorStop(.45,'#78cfe2');mantle.addColorStop(1,'rgba(52,136,202,0)');outlined(mantle,1.6);
+  ctx.beginPath();ctx.moveTo(-.32*u,-1.95*u);ctx.lineTo(0,-2.25*u);ctx.lineTo(.33*u,-1.95*u);ctx.lineTo(.2*u,-1.22*u);ctx.lineTo(-.22*u,-1.22*u);ctx.closePath();outlined('#335778',1.35);
+  ctx.fillStyle='#091326';ctx.beginPath();ctx.ellipse(0,-1.66*u,.19*u,.25*u,0,0,6.283);ctx.fill();eyeGlow(-.07*u,-1.66*u,.035*u,'#eaffff');eyeGlow(.08*u,-1.66*u,.035*u,'#eaffff');
+  ctx.strokeStyle='#d7faff';ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(.3*u,-1.18*u);ctx.quadraticCurveTo(.6*u,-1.0*u,.7*u,-.72*u);ctx.stroke();
+  for(let i=0;i<3;i++){const a=time*1.2+i*2.1;ctx.globalCompositeOperation='lighter';glow(Math.cos(a)*.72*u,-1.25*u+Math.sin(a)*.38*u,.12*u,'rgba(205,255,255,.95)');ctx.globalCompositeOperation='source-over';}
+  ctx.restore();ctx.font='20px serif';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText('👻',x,y-3.15*u+Math.sin(time*2+p.seed)*3);
+}
 function vilOffer(id,force){
   if(!force&&VIL.offers[id]) return VIL.offers[id];
   const n=VIL_NPC[id], pool=MISSION_TEMPLATES.filter(t=>n.kinds.includes(t.id)), t=pool[Math.floor(Math.random()*pool.length)];
@@ -6927,6 +6949,7 @@ function vilOffer(id,force){
     if(p.type==='villager'){
       if(!p.ref) p.ref={x:p.x,y:p.y,px:p.x,py:p.y,face:1,phase:p.seed*5,amp:0,hit:0,swing:0};
       p.ref.face=P.x>p.x?1:-1;
+      if(p.id==='vesper'){ drawVesperNpc(p); return; }
       { const NK={bram:'smith',lysa:'elder',tilda:'tilda'}, sk=NK[p.id];
         if(sk&&SPR.ready(sk)){ drawSprite(sk,p.ref,{scale:1.05*p.sc,shadow:.45*p.sc,face:p.x>0?Math.PI*.75:Math.PI*.25,attacking:VIL.open===p.id,prog:(time*.65)%1}); }
         else person(Object.assign({ref:p.ref,sc:p.sc,seed:p.seed},p.style)); }
@@ -6934,13 +6957,14 @@ function vilOffer(id,force){
     }
     if(p.type==='obelisk'){
       const x=sx(p.x), y=sy(p.y), u=S, pulse=.6+.4*Math.sin(time*2.2);
-      shE(x,y+.05*u,1.6*u,.4*u,.5);
-      ctx.save(); ctx.fillStyle='#2b2438'; ctx.strokeStyle='#0b0612'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(x-.9*u,y); ctx.lineTo(x-.6*u,y-2.9*u); ctx.lineTo(x,y-3.6*u); ctx.lineTo(x+.6*u,y-2.9*u); ctx.lineTo(x+.9*u,y); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,.07)'; ctx.beginPath(); ctx.moveTo(x-.9*u,y); ctx.lineTo(x-.6*u,y-2.9*u); ctx.lineTo(x-.1*u,y-3.4*u); ctx.lineTo(x-.2*u,y); ctx.closePath(); ctx.fill();
+      shE(x,y+.05*u,1.85*u,.48*u,.5);
+      ctx.save(); ctx.strokeStyle='#0b0612'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(x-.98*u,y); ctx.lineTo(x-.62*u,y-3*u); ctx.lineTo(x,y-3.82*u); ctx.lineTo(x+.68*u,y-2.85*u); ctx.lineTo(x+.98*u,y); ctx.closePath(); ctx.fillStyle='#29233a'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x-.62*u,y-3*u); ctx.lineTo(x,y-3.82*u); ctx.lineTo(x+.03*u,y-.08*u); ctx.lineTo(x-.98*u,y); ctx.closePath(); ctx.fillStyle='#51466d'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x,y-3.82*u); ctx.lineTo(x+.68*u,y-2.85*u); ctx.lineTo(x+.98*u,y); ctx.lineTo(x+.03*u,y-.08*u); ctx.closePath(); ctx.fillStyle='#1b1730'; ctx.fill(); ctx.stroke();
       ctx.shadowColor='#9b6bff'; ctx.shadowBlur=14*pulse; ctx.strokeStyle=`rgba(170,120,255,${.5+.5*pulse})`; ctx.lineWidth=2.4; ctx.beginPath();
       ctx.moveTo(x-.3*u,y-2.2*u); ctx.bezierCurveTo(x-.8*u,y-2.9*u,x-.8*u,y-1.5*u,x,y-2.2*u); ctx.bezierCurveTo(x+.8*u,y-2.9*u,x+.8*u,y-1.5*u,x+.3*u,y-2.2*u); ctx.stroke();
       ctx.restore();
-      ctx.font='20px serif'; ctx.textAlign='center'; ctx.globalAlpha=.9; ctx.fillStyle='#fff'; ctx.fillText('♾',x,y-4.1*u+Math.sin(time*2+p.seed)*3); ctx.globalAlpha=1; return;
+      ctx.font='20px serif'; ctx.textAlign='center'; ctx.globalAlpha=.9; ctx.fillStyle='#fff'; ctx.fillText('♾',x,y-4.3*u+Math.sin(time*2+p.seed)*3); ctx.globalAlpha=1; return;
     }
     return _dhp(p);
   };
@@ -6979,7 +7003,9 @@ function vilOffer(id,force){
       m.querySelector('#vm-go').onclick=()=>{vilClose();_sho('shop');};
     } else {
       const n=VIL_NPC[id], o=vilOffer(id);
-      m.innerHTML=`<div class="vc"><div class="vh"><img class="npc-portrait" src="assets/npc-portraits/${id}-painted.png" alt="${id==='bram'?'Bram, ferreiro forte com avental de couro e martelo':id==='lysa'?'Lysa, anciã de cabelos prateados com xale e cajado':'Tilda, jovem aldeã com tranças e roupas simples'}"><div><b>${n.name}</b><small>${id==='bram'?'FERREIRO DE ELDRIN':id==='lysa'?'ANCIÃ DE ELDRIN':'MORADORA DE ELDRIN'}</small></div></div>
+      const portrait=id==='vesper'?'<span class="vi" aria-hidden="true">👻</span>':`<img class="npc-portrait" src="assets/npc-portraits/${id}-painted.png" alt="${id==='bram'?'Bram, ferreiro forte com avental de couro e martelo':id==='lysa'?'Lysa, anciã de cabelos prateados com xale e cajado':'Tilda, jovem aldeã com tranças e roupas simples'}">`;
+      const role=id==='bram'?'FERREIRO DE ELDRIN':id==='lysa'?'ANCIÃ DE ELDRIN':id==='vesper'?'ESPÍRITO GUARDIÃO DE ELDRIN':'MORADORA DE ELDRIN';
+      m.innerHTML=`<div class="vc"><div class="vh">${portrait}<div><b>${n.name}</b><small>${role}</small></div></div>
       <p class="say">“${o.say}”</p>
       <div class="offer"><h3>${o.icon} ${o.label}</h3><div class="tg">${stars(o.difficulty)} · 📍 ${BIOMES[o.biome].icon||''} ${BIOMES[o.biome].name}</div>
       <p>${o.desc}</p><p class="rw">🎁 +${o.rewardExp} XP · ouro</p></div>

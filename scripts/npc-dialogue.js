@@ -29,6 +29,15 @@
    'Queria ver o mundo além da mata. Mas primeiro preciso aprender a não me perder entre as casas.',
    'Quando você sai, eu fico de olho no portão. Alguém precisa dar boas-vindas aos heróis!'
   ],
+  vesper:[
+   'Meu nome foi quase levado pela névoa. Vesper basta; é o nome que escolhi guardar.',
+   'Não pertenço à sua horda, Zephyr. Fico porque esta vila ainda tem pessoas para proteger.',
+   'A água do poço lembra cada rosto que se inclina sobre ela. Por isso sua luz nunca se apaga.',
+   'O portal não é mau por si só. É uma porta — e portas precisam de quem vigie os dois lados.',
+   'Quando as lanternas de Eldrin voltarem a ficar acesas até tarde, talvez eu consiga descansar.',
+   'Se encontrar espíritos perdidos na estrada, diga que há um lugar seguro aqui. Eles entenderão.',
+   'Sua magia chama os mortos. A sua escolha de defender os vivos é o que a torna diferente.'
+  ],
   merchant:[
    'Já negociei em castelos e encruzilhadas. Uma conversa honesta abre mais portas que uma bolsa cheia.',
    'A estrada anda perigosa. Por isso conto cada roda da carroça antes de sair e depois de chegar.',
