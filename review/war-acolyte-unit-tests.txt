@@ -1,0 +1,210 @@
+TAP version 13
+# Subtest: late waves preserve hounds and reserve support slots using the shared composition
+ok 1 - late waves preserve hounds and reserve support slots using the shared composition
+  ---
+  duration_ms: 12.7113
+  ...
+# Subtest: source adapter captures live overrides, campaign layouts and captain
+ok 2 - source adapter captures live overrides, campaign layouts and captain
+  ---
+  duration_ms: 0.7164
+  ...
+# Subtest: XP crosses multiple levels and caps exactly at 60
+ok 3 - XP crosses multiple levels and caps exactly at 60
+  ---
+  duration_ms: 2.5916
+  ...
+# Subtest: all generated builds obey prerequisites and point budget at all levels
+ok 4 - all generated builds obey prerequisites and point budget at all levels
+  ---
+  duration_ms: 24.5589
+  ...
+# Subtest: level one has no free minions; the first invested zombie point enables the group
+ok 5 - level one has no free minions; the first invested zombie point enables the group
+  ---
+  duration_ms: 1.5155
+  ...
+# Subtest: simulation applies flat weapon bases before percentage damage just like the game preview
+ok 6 - simulation applies flat weapon bases before percentage damage just like the game preview
+  ---
+  duration_ms: 13.5585
+  ...
+# Subtest: item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+ok 7 - item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+  ---
+  duration_ms: 1.4064
+  ...
+# Subtest: finals and unlearned skills ignore item bonuses
+ok 8 - finals and unlearned skills ignore item bonuses
+  ---
+  duration_ms: 1.1041
+  ...
+# Subtest: rarities have exact unique affix count and boss drops exclude common
+ok 9 - rarities have exact unique affix count and boss drops exclude common
+  ---
+  duration_ms: 182.7116
+  ...
+# Subtest: legacy endless preserves original factors; current adapter uses the shared live wave model
+ok 10 - legacy endless preserves original factors; current adapter uses the shared live wave model
+  ---
+  duration_ms: 1.5874
+  ...
+# Subtest: completion rewards are unique when requested; defeats never reward
+ok 11 - completion rewards are unique when requested; defeats never reward
+  ---
+  duration_ms: 1.6705
+  ...
+# Subtest: hand-computable kill uses actual hit damage and awards no overkill XP twice
+ok 12 - hand-computable kill uses actual hit damage and awards no overkill XP twice
+  ---
+  duration_ms: 2.6748
+  ...
+# Subtest: mana depletion constrains sustained combat and cooldown constrains bursts
+ok 13 - mana depletion constrains sustained combat and cooldown constrains bursts
+  ---
+  duration_ms: 3.1112
+  ...
+# Subtest: minion deaths and revival reduce damage contribution
+ok 14 - minion deaths and revival reduce damage contribution
+  ---
+  duration_ms: 3.9145
+  ...
+# Subtest: merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+ok 15 - merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+  ---
+  duration_ms: 2.4148
+  ...
+# Subtest: campaign completion XP is actually credited after final encounter
+ok 16 - campaign completion XP is actually credited after final encounter
+  ---
+  duration_ms: 66.1785
+  ...
+# Subtest: failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+ok 17 - failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+  ---
+  duration_ms: 16.0536
+  ...
+# Subtest: reports are reproducible, finite, escape CSV and interpolate percentiles
+ok 18 - reports are reproducible, finite, escape CSV and interpolate percentiles
+  ---
+  duration_ms: 69.7684
+  ...
+# Subtest: configuration rejects invalid scenarios and dangerous numeric bounds
+ok 19 - configuration rejects invalid scenarios and dangerous numeric bounds
+  ---
+  duration_ms: 1.4875
+  ...
+# Subtest: summary detects stagnant levels, difficulty jumps and more efficient farming
+ok 20 - summary detects stagnant levels, difficulty jumps and more efficient farming
+  ---
+  duration_ms: 1.5274
+  ...
+# Subtest: fixed windup, straight charge, first hit and full recovery
+ok 21 - fixed windup, straight charge, first hit and full recovery
+  ---
+  duration_ms: 4.3599
+  ...
+# Subtest: swept collision is independent of frame size and damages once
+ok 22 - swept collision is independent of frame size and damages once
+  ---
+  duration_ms: 5.1212
+  ...
+# Subtest: solids and corpse walls stop charge before a target; wall wins ties
+ok 23 - solids and corpse walls stop charge before a target; wall wins ties
+  ---
+  duration_ms: 1.5812
+  ...
+# Subtest: earliest living target is hit even when targets are passed in reverse order
+ok 24 - earliest living target is hit even when targets are passed in reverse order
+  ---
+  duration_ms: 0.9083
+  ...
+# Subtest: first availability, activation range, death and boundary stop
+ok 25 - first availability, activation range, death and boundary stop
+  ---
+  duration_ms: 1.1741
+  ...
+# Subtest: arena introduces hounds without changing totals or campaign composition
+ok 26 - arena introduces hounds without changing totals or campaign composition
+  ---
+  duration_ms: 1.9265
+  ...
+# Subtest: expedition introductions retain seed geometry, tiers and mob counts
+ok 27 - expedition introductions retain seed geometry, tiers and mob counts
+  ---
+  duration_ms: 12.4452
+  ...
+# Subtest: maps are reproducible, change terrain and biome, and keep the boss directly reachable
+ok 28 - maps are reproducible, change terrain and biome, and keep the boss directly reachable
+  ---
+  duration_ms: 293.8736
+  ...
+# Subtest: magic and rare encounters trade increased attributes for higher drop rates and rarity floors
+ok 29 - magic and rare encounters trade increased attributes for higher drop rates and rarity floors
+  ---
+  duration_ms: 17.9782
+  ...
+# Subtest: slam locks its target, warns for 1.2s, hits once and waits through recovery
+ok 30 - slam locks its target, warns for 1.2s, hits once and waits through recovery
+  ---
+  duration_ms: 7.2607
+  ...
+# Subtest: phase two happens once, adds seven projectiles and three locked seals
+ok 31 - phase two happens once, adds seven projectiles and three locked seals
+  ---
+  duration_ms: 1.3012
+  ...
+# Subtest: dead boss cannot execute an armed hit; reset cancels it and restores the opener
+ok 32 - dead boss cannot execute an armed hit; reset cancels it and restores the opener
+  ---
+  duration_ms: 1.1739
+  ...
+# Subtest: target range and first phase projectile count are bounded
+ok 33 - target range and first phase projectile count are bounded
+  ---
+  duration_ms: 0.7256
+  ...
+# Subtest: windup grants no bonus, channel lasts four seconds, cooldown begins after it
+ok 34 - windup grants no bonus, channel lasts four seconds, cooldown begins after it
+  ---
+  duration_ms: 3.9908
+  ...
+# Subtest: phase boundaries survive long frames and do not cast multiple times
+ok 35 - phase boundaries survive long frames and do not cast multiple times
+  ---
+  duration_ms: 4.1408
+  ...
+# Subtest: source death, departure, disengagement and reset end live bonus immediately
+ok 36 - source death, departure, disengagement and reset end live bonus immediately
+  ---
+  duration_ms: 0.5317
+  ...
+# Subtest: auras never stack and never buff self, other acolytes, bosses or dummies
+ok 37 - auras never stack and never buff self, other acolytes, bosses or dummies
+  ---
+  duration_ms: 1.4634
+  ...
+# Subtest: no ritual without allies or nearby threat; death during windup cancels
+ok 38 - no ritual without allies or nearby threat; death during windup cancels
+  ---
+  duration_ms: 0.8988
+  ...
+# Subtest: arena introduction preserves dog quota, old waves, campaign and list size
+ok 39 - arena introduction preserves dog quota, old waves, campaign and list size
+  ---
+  duration_ms: 3.0343
+  ...
+# Subtest: expedition introduction preserves geometry, tiers and seeded original plans
+ok 40 - expedition introduction preserves geometry, tiers and seeded original plans
+  ---
+  duration_ms: 8.9269
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1541.9052

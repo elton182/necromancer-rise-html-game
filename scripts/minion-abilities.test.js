@@ -47,3 +47,10 @@ test('specter dashes through its target and the abomination slows crowds without
  run('updateAbilities(2)');assert.equal(run('handsSpeed(x)'),1);
  run('minionSlowEnemy(boss,.35,3)');assert.equal(run('handsSpeed(boss)'),1);
 });
+
+test('decomposition ticks for four seconds and repeated bites refresh without stacking',()=>{
+ const run=fixture();run('function masteryBonus(){return {decay:20}};var z=ally("zombie"),e=foe("a",1,0,{isBoss:true});z.target=e;enemies=[e];castMinionAbility(z,npos);hits=[]');
+ run('minionAbilityStatus(.5)');assert.equal(run('hits.length'),0);
+ run('castMinionAbility(z,npos);hits=[];minionAbilityStatus(.5)');assert.deepEqual(run('hits'),[['a',2]]);
+ run('minionAbilityStatus(4)');assert.equal(run('hits.length'),4);assert.equal(run('e.minionDecay'),undefined);
+});

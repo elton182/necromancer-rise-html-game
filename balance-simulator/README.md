@@ -77,3 +77,12 @@ As próximas etapas são ampliar a fidelidade dos efeitos necessários às build
 
 
 O Cão de Cripta (`cryptHound`, índice 4) participa da arena atual a partir da wave 4; a composição usa o mesmo módulo do jogo. A primeira investida considera espera de 2 s após aparecer e preparação de 0,75 s; as seguintes incluem avanço, recuperação e recarga. O dano usa a precisão configurada de especiais: a simulação matemática não resolve colisões com paredes, parada no primeiro alvo ou esquiva lateral. Campanha e comparação legacy mantêm os quatro arquétipos originais.
+
+O Acólito de Guerra (`warAcolyte`, índice 5) usa a composição compartilhada da
+arena atual: um na wave 6, dois na 7 e até três depois, preservando as vagas dos
+Cães e o total. O adaptador lê atributos e intervalo básico de 1,5 s. A simulação
+matemática **não modela a aura posicional de +30% nem a pausa de ataques do
+Acólito durante preparação/canal**; o relatório declara essa limitação e pode
+subestimar o dano dos grupos. Use os testes de navegador ou a simulação no motor
+real para investigar o efeito integrado. Campanha e comparação legacy preservam
+a composição anterior.

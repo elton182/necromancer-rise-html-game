@@ -13,7 +13,7 @@ function fn(name) {
   return source.slice(start, end + 2);
 }
 function fixture() {
-  const context = vm.createContext({console,BoneBoltVFX:require('./scripts/skill-vfx.js')});
+  const context = vm.createContext({console,EquipmentModel:require('./scripts/equipment-model.js'),BoneBoltVFX:require('./scripts/skill-vfx.js')});
   vm.runInContext(`
     const ABILITY_VERSION=1;
     let handsAreas=[], boltsFx=[], spellFx=[], enemies=[], minions=[], gameState='field',minionCommand=null,commandMarker=null,pendingCommand='auto',summonWheelOpen=false,mobZones=[];
@@ -183,7 +183,7 @@ test('Todos os mobs mantêm posição sob golpes comuns sem perder dano ou impac
 });
 test('Waves liberam os tipos gradualmente e não concentram sorteios excedentes no mago',()=>{
   for(const [number,available]of [[1,1],[2,2],[4,3],[6,4],[27,4],[1000,4]]){
-    const c=vm.createContext({CryptHoundModel:require('./scripts/crypt-hound-model.js')});vm.runInContext(`
+    const c=vm.createContext({CryptHoundModel:require('./scripts/crypt-hound-model.js'),WarAcolyteModel:require('./scripts/war-acolyte-model.js')});vm.runInContext(`
       const VILLAGE_ROUTE={on:false},CAMP={on:false},gameState='field',currentMission={endless:true,enemyMult:1,wavesGoal:1e9};
       const ENEMY_TYPES=['Guerreiro','Arqueiro','Bruto','Mago Vivo'];
       const EquipmentModel={waveStats:()=>({maxEnemies:60})};
@@ -515,7 +515,7 @@ summonTest('Carregar save mantém o zumbi detonado indisponível pelo tempo rest
   checks++;console.log('OK 23 painéis ampliados em 3x, originais intactos e imagens aprimoradas integradas');
 }
 function combatSkillsFixture(){
-  const context=vm.createContext({console,BoneBoltVFX:require('./scripts/skill-vfx.js')});
+  const context=vm.createContext({console,EquipmentModel:require('./scripts/equipment-model.js'),BoneBoltVFX:require('./scripts/skill-vfx.js')});
   const abilities=source.match(/const MOB_ABILITIES=(\{[\s\S]*?\n\});/);
   assert.ok(abilities);
   vm.runInContext('const MOB_ABILITIES='+abilities[1],context);

@@ -5,7 +5,7 @@ Implementado no HTML independente com ID `cryptHound` e índice 4. Os quatro ín
 ## Arte e leitura
 
 - Blender 5.2: modelo, rig e GLB com sete ações, oito direções e 272 quadros. Todos os quadros têm conteúdo e margem transparente, verificados durante o empacotamento.
-- [Direções e ações](../blender/preview_crypt_hound.png), [cena isolada e miniaturas 32/48/64 px](crypt-hound-isolated.png).
+- [Direções e ações](../blender/previews/preview_crypt_hound.png), [cena isolada e miniaturas 32/48/64 px](crypt-hound-isolated.png).
 - Grupo com 32 inimigos e seis aliados, a 24 px/u e qualidade baixa: [preparação escura](crypt-hound-dark-windup.png), [investida escura](crypt-hound-dark-charge.png), [recuperação escura](crypt-hound-dark-recovery.png), [preparação clara](crypt-hound-light-windup.png), [investida clara](crypt-hound-light-charge.png), [recuperação clara](crypt-hound-light-recovery.png).
 - [Aviso no jogo](crypt-hound-game.png). A arena permite repetir e examinar a investida, comparando alvo parado e esquiva lateral com o modelo de combate real.
 

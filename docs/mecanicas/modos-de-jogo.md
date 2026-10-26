@@ -122,6 +122,11 @@ mantém os serviços do hub. Acrescenta:
 
 ## Arena Infinita
 
+O Modo Livre também oferece a [Conquista de Valdoria](conquista-valdoria.md),
+pela aba **VALDORIA** da pausa ou pela Pedra do Infinito. O primeiro território
+é um pântano de decomposição, com influência, maldições, tenentes e fortaleza.
+Sua progressão é independente do recorde da Arena descrito abaixo.
+
 O seletor **Modelo de waves** em **ESC → Waves** oferece **Expedição** (padrão)
 e **Arena clássica** (o sistema anterior, preservado). A preferência fica salva
 nas opções do navegador. Ambos compartilham recorde, desbloqueios e personagem.

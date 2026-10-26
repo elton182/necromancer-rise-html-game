@@ -6,7 +6,10 @@ const root=path.resolve(__dirname,'..'),target=path.join(root,'necromancer-canva
 let html=fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n');
 function patch(before,after){if(html.includes(after))return;if(html.includes(before))html=html.replace(before,after);else throw Error('Equipment bridge missing: '+before.slice(0,90));}
 patch('gold:player.gold,inventory:player.inventory,ts:Date.now(),','gold:player.gold,inventory:player.inventory,ts:Date.now(),\n    equipmentVersion:EquipmentModel.VERSION,gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress,');
-patch('    campLoad(d); wave=d.wave||0;', '    Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress});\n    campLoad(d); wave=d.wave||0;');
+patch('    campLoad(d); wave=d.wave||0;', '    Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress,conquest:d.conquest});\n    campLoad(d); wave=d.wave||0;');
+patch('waveProgress:player.waveProgress,\n    mode:', 'waveProgress:player.waveProgress,\n    conquest:player.conquest,\n    mode:');
+patch('Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress});','Object.assign(player,{gearBag:d.gearBag,equipment:d.equipment,waveProgress:d.waveProgress,conquest:d.conquest});');
+patch('dealDamageToEnemy(e,Math.floor(b.dmg));','dealDamageToEnemy(e,Math.floor(b.dmg));\n      if(typeof endgameBoneHit===\'function\')endgameBoneHit(e,b);');
 if(html.includes('const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1);'))html=html.replace('const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1);',"const spd=EquipmentModel.moveSpeed(EquipmentModel.bonuses(player))*(PAD.mx||PAD.mz?PAD.spdk:1);");
 patch("const spd=4*(PAD.mx||PAD.mz?PAD.spdk:1)*(1+gearBonus('move')/100);","const spd=EquipmentModel.moveSpeed(EquipmentModel.bonuses(player))*(PAD.mx||PAD.mz?PAD.spdk:1);");
 patch('e.atkTimer=1.9; e.swing=.28;', 'e.atkTimer=e.atkRate; e.swing=.28;');
@@ -31,10 +34,13 @@ patch('if(CAMP.on&&!e.isBoss){ e.dropChance=e.dummy?1:Math.max(e.dropChance||0,.
 patch('const count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);','let count = Math.floor((4+wave*2+Math.floor(wave/3))*mult);\n  if(currentMission&&currentMission.endless)count=Math.min(count,EquipmentModel.waveStats(wave).maxEnemies);');
 patch("c=d.type==='gold'?'#e4be58':d.type==='hp'?'#e74c3c':'#6c6cff'","c=d.type==='equipment'?EquipmentModel.rarities[d.item.rarity].color:d.type==='gold'?'#e4be58':d.type==='hp'?'#e74c3c':'#6c6cff'");
 patch("ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;","ctx.fillRect(dx-2,y-3,2,2); ctx.globalAlpha=1;\n    if(d.type==='equipment'){ctx.save();ctx.font='bold 12px Georgia';ctx.textAlign='center';ctx.strokeStyle='#080e08';ctx.lineWidth=3;const label=EquipmentModel.slots[d.item.type].icon+' '+EquipmentModel.rarities[d.item.rarity].name+' Nv.'+d.item.level+(d.upgrade?' ▲':'');ctx.strokeText(label,dx,y-15);ctx.fillStyle=c;ctx.fillText(label,dx,y-15);ctx.restore();}");
+patch("  {id:'cryptHound',name:'Cão de Cripta',col:0x786450,hCol:0xe4ad64,hp:32,dmg:7,spd:3.2,xp:16,souls:10,dropChance:.3,sc:.85},", "  {id:'cryptHound',name:'Cão de Cripta',col:0x786450,hCol:0xe4ad64,hp:32,dmg:7,spd:3.2,xp:16,souls:10,dropChance:.3,sc:.85},\n  {id:'warAcolyte',name:'Acólito de Guerra',col:0x9a4543,hCol:0xe9b46b,hp:38,dmg:6,spd:1.8,xp:22,souls:12,dropChance:.35,sc:1.0},");
+patch('spawnQueue=CryptHoundModel.arenaTypes(wave,count,ENEMY_TYPES,Math.random,CAMP.on);','spawnQueue=WarAcolyteModel.arenaTypes(wave,CryptHoundModel.arenaTypes(wave,count,ENEMY_TYPES,Math.random,CAMP.on),ENEMY_TYPES,CAMP.on);');
 for(const [name,content,anchor,runtime]of [
  ['EQUIPMENT_MODEL','<script>\n'+fs.readFileSync(path.join(__dirname,'equipment-model.js'),'utf8')+'\n</script>','</head>',false],
  ['EQUIPMENT_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'equipment.css'),'utf8')+'\n</style>','</head>',false],
  ['MENU_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'menu.css'),'utf8')+'\n</style>','</head>',false],
+ ['ENDGAME_STYLE','<style>\n'+fs.readFileSync(path.join(__dirname,'endgame.css'),'utf8')+'\n</style>','</head>',false],
  ['EQUIPMENT_RULES',fs.readFileSync(path.join(__dirname,'equipment.js'),'utf8'),'const hasSave=bootGame();',true],
  ['MINION_CARE',fs.readFileSync(path.join(__dirname,'minion-care.js'),'utf8'),'const hasSave=bootGame();',true],
  ['MINION_ABILITIES',fs.readFileSync(path.join(__dirname,'minion-abilities.js'),'utf8'),'const hasSave=bootGame();',true],
@@ -45,7 +51,13 @@ for(const [name,content,anchor,runtime]of [
  ['CRYPT_HOUND_MODEL',fs.readFileSync(path.join(__dirname,'crypt-hound-model.js'),'utf8'),'const hasSave=bootGame();',true],
  ['CRYPT_HOUND_RULES',fs.readFileSync(path.join(__dirname,'crypt-hound.js'),'utf8'),'const hasSave=bootGame();',true],
  ['SOUL_WARDEN_RULES',fs.readFileSync(path.join(__dirname,'soul-warden.js'),'utf8'),'const hasSave=bootGame();',true],
- ['SKILL_MASTERY_RULES',fs.readFileSync(path.join(__dirname,'skill-mastery.js'),'utf8'),'const hasSave=bootGame();',true]
+ ['WAR_ACOLYTE_MODEL',fs.readFileSync(path.join(__dirname,'war-acolyte-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['WAR_ACOLYTE_RULES',fs.readFileSync(path.join(__dirname,'war-acolyte.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['SKILL_MASTERY_RULES',fs.readFileSync(path.join(__dirname,'skill-mastery.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['ENDGAME_MODEL',fs.readFileSync(path.join(__dirname,'endgame-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['ENDGAME_MAP',fs.readFileSync(path.join(__dirname,'endgame-map.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['ENDGAME_RULES',fs.readFileSync(path.join(__dirname,'endgame.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['ENDGAME_SCREEN',fs.readFileSync(path.join(__dirname,'endgame-screen.js'),'utf8'),'const hasSave=bootGame();',true]
 ]){
  const start=runtime?'/* '+name+'_BEGIN */':'<!-- '+name+'_BEGIN -->',end=runtime?'/* '+name+'_END */':'<!-- '+name+'_END -->';
  const block=start+'\n'+content+'\n'+end+'\n',a=html.indexOf(start),b=html.indexOf(end);

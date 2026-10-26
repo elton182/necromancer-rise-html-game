@@ -43,7 +43,7 @@ equipamentos testado no navegador mantém 20 de dano sobre a base mágica 40.
 ## Tiro de Osso com Estilhaços — SK-01b
 
 - Três projéteis em leque (15° entre si) saindo do mesmo ponto, cada um com acento de saída.
-- Corpo modelado no Blender (`blender/bone_shard.py`): osso partido, uma saliência
+- Corpo modelado no Blender (`blender/scripts/bone_shard.py`): osso partido, uma saliência
   larga e ponta em lascas, para diferenciar do osso inteiro do tiro comum.
   Mesma paleta marfim e borda fina; rastro de até 0,6 unidade, mais curto que o do tiro único.
 - Giro em torno do eixo a 14 quadros/s; na qualidade baixa o giro para.

@@ -36,12 +36,12 @@ function expeditionStartMap(n){
  expeditionBuildScenery();expeditionPlaceArmy();
  for(const group of EXPEDITION.map.groups)for(const mob of group.mobs){
   const e=spawnEnemy(ENEMY_TYPES[mob.type],mob.x,mob.y),t=ExpeditionModel.tiers[group.tier];
-  e.expedition=true;e.lootTier=group.tier;e.home={x:mob.x,y:mob.y};e.alert=false;
+  e.gearWave=n;e.expedition=true;e.lootTier=group.tier;e.home={x:mob.x,y:mob.y};e.alert=false;
   e.hp=e.maxHp=Math.round(e.maxHp*t.hp);e.dmg=Math.round(e.dmg*t.damage);e.spd*=t.speed;e.xp=Math.round(e.xp*t.xp);e.souls=Math.round(e.souls*t.xp);
  }
  const base=SoulWardenModel.type,p=EXPEDITION.map.exit;
  const boss=spawnEnemy({...base},p.x-4,p.y);
- boss.isBoss=true;boss.expedition=true;boss.expeditionBoss=true;boss.home={x:boss.x,y:boss.y};boss.alert=false;
+ boss.gearWave=n;boss.isBoss=true;boss.expedition=true;boss.expeditionBoss=true;boss.home={x:boss.x,y:boss.y};boss.alert=false;
  boss.atkRate=1.8;boss.atkR=1.8;bossEnemy=boss;EXPEDITION.boss=boss;
  enemiesLeft=enemies.length;
  showWaveBanner('EXPEDIÇÃO · WAVE '+n,BIOME.name+' · Explore ou siga até o boss','#d4af37');
@@ -50,7 +50,7 @@ function expeditionStartMap(n){
 function expeditionBuildScenery(){
  const m=EXPEDITION.map,rr=ExpeditionModel.random(wave*3571);
  props=[];solids=[];torches=[];fogs=[];motes=[];
- const kinds={grave:['tomb','column','skulls'],forest:['oak','pine','bush'],desert:['cactus','rock','ruin'],snow:['pine','ice','rock'],village:['house','barrel','crate']}[m.biome];
+ const kinds={grave:['tomb','column','skulls'],forest:['oak','pine','bush'],swamp:['bush','skulls','tomb','oak'],river:['bush','rock','oak'],mountain:['rock','ruin','pine'],desert:['cactus','rock','ruin'],snow:['pine','ice','rock'],village:['house','barrel','crate']}[m.biome];
  for(let i=0;i<190;i++){
   const x=3+rr()*(m.width-6),y=3+rr()*(m.height-6);
   if(Math.abs(y-ExpeditionModel.routeY(m.route,x))<5||Math.hypot(x-m.entry.x,y-m.entry.y)<7||Math.hypot(x-m.exit.x,y-m.exit.y)<9||m.groups.some(g=>Math.hypot(x-g.x,y-g.y)<5))continue;
@@ -85,7 +85,7 @@ function expeditionDrawMarkers(){
  if(EXPEDITION.cleared)drawPortal({x:m.exit.x,y:m.exit.y});
  ctx.save();ctx.textAlign='center';ctx.font='bold 13px Georgia';ctx.fillStyle='#dfce96';
  ctx.fillText('G · Voltar à vila',sx(m.entry.x),sy(m.entry.y)-65);
- if(EXPEDITION.cleared)ctx.fillText(wave>=EquipmentModel.MAX_WAVE?'G · Retornar à vila':'G · Próximo bioma',sx(m.exit.x),sy(m.exit.y)-65);
+ if(EXPEDITION.cleared)ctx.fillText(currentMission?.conquest||wave>=EquipmentModel.MAX_WAVE?'G · Retornar à vila':'G · Próximo bioma',sx(m.exit.x),sy(m.exit.y)-65);
  for(const e of enemies){
   if(e.dead||!e.expedition||e.lootTier==='common'||Math.abs(e.x-cam.x)>W/S/2+3||Math.abs(e.y-cam.y)>H/S/2+3)continue;
   const tier=ExpeditionModel.tiers[e.lootTier],color=e.isBoss?'#ff7755':tier?.color||'#ff7755';

@@ -86,9 +86,10 @@ Ordem de absorção de um golpe em Zephyr:
 
 1. Durante o deslocamento do **Dash**, o dano é ignorado.
 2. Com **Véu Noturno** ativo após o dash, o dano é multiplicado por 0,75.
-3. O **Escudo de Carne** absorve até esgotar; só o excedente passa.
-4. O consumível **Escudo de Ossos** bloqueia um golpe inteiro.
-5. O restante sai da vida.
+3. A **Defesa** reduz o dano conforme o nível do monstro, até 70%.
+4. O **Escudo de Carne** absorve até esgotar; só o excedente passa.
+5. O consumível **Escudo de Ossos** bloqueia um golpe inteiro.
+6. O restante sai da vida.
 
 Com vida 0:
 
@@ -123,3 +124,25 @@ de inventário):
 
 A coleta é automática por proximidade: orbes a menos de ~1,3 unidade; ouro e
 equipamentos a menos de 1,8. Ouro e orbes não passam pelo [filtro de loot](equipamentos-e-loot.md#filtro-de-loot).
+
+
+## Defesa de Zephyr
+
+Capuzes, vestimentas e botas podem sortear o atributo adicional **Defesa**.
+Os pontos das peças equipadas são somados; sem equipamento com esse atributo, a defesa é zero.
+Itens antigos continuam válidos, sem ganhar atributos retroativamente.
+
+A redução é `mínimo(70%; Defesa / (Defesa + K))`, com `K = 20 + 5 × (nível do monstro − 1)`.
+O intervalo útil vai de zero até `7/3 × K` pontos, quando atinge o teto; pontos acima disso
+não aumentam a redução contra aquele nível. Por exemplo, 20 pontos reduzem 50% contra nível 1,
+33,3% contra nível 5 e 23,5% contra nível 10.
+
+O nível usa a referência de progressão do inimigo (`gearWave`): fase na campanha,
+wave na Arena e nível regional na Conquista. Ataques sem fonte usam a progressão da cena.
+Projéteis mantêm a fonte e áreas persistentes guardam seu nível.
+A defesa atua em todo dano recebido por Zephyr, após o Véu Noturno e antes do Escudo de Carne.
+Dash e Escudo de Ossos preservam suas proteções. A mitigação de 70% limita apenas a defesa;
+outras proteções continuam funcionando em conjunto.
+
+O inventário compara pontos de defesa e mitigação contra um monstro do nível do jogador.
+A estimativa de combate do simulador também aplica defesa; não substitui validação da IA no jogo.

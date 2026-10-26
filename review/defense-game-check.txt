@@ -1,0 +1,77 @@
+OK Raio: custo, recarga, dano, primeiro alvo e colisão com passo longo
+OK Raio: distância de viagem limitada a 9
+OK Raio com Estilhaços: leque de 3 ossos, cada inimigo atingido uma vez por disparo
+OK Muralha: alcance inválido não cobra, duração e custo corretos, sem lentidão antiga
+OK Escudo: sacrifica menor proporção de HP e usa HP máximo
+OK Escudo: empate por distância e Carne Reforçada explícita
+OK Escudo sem zumbi: custo de vida, absorção e proteção contra morte
+OK Mana insuficiente não sacrifica nem começa recarga
+OK Migração da campanha: desbloqueios, reembolso e idempotência
+OK Migração de modo livre mantém a habilidade adquirida no antigo slot 2
+OK Reset remove áreas, proteção e recargas temporárias
+OK Sacrifício não permite reanimar com R nem dispensar para liberar capacidade
+OK Absorção aplica apenas o excedente à vida e não acumula escudo
+OK Progressão concede Raio, invocação, Mãos e Escudo nas quatro fases
+OK Todos os mobs mantêm posição sob golpes comuns sem perder dano ou impacto visual
+OK Waves liberam os tipos gradualmente e não concentram sorteios excedentes no mago
+OK Horda ignora inimigos fora da região de Zephyr
+OK Retorno retoma combate com margem dentro da região, antes de chegar à formação
+OK Alvo que sai da região é abandonado; inimigo próximo continua sendo atacado
+OK Linha de frente troca perseguição distante por ameaça perto de Zephyr
+OK Arqueiros preservam alvo próximo e comando de ataque prevalece sobre proteção
+OK Retorno sem ameaça recupera formação; separação extrema continua corrigida
+OK Comando distante de ataque não autoriza perseguir fora da região
+OK Ponto de reunião distante é limitado à região do personagem
+OK Retorno acompanha Zephyr em movimento e alcança sua formação
+OK Textos diferenciam morte, sacrifício e retorno
+OK Comando manual permanece ativo depois de restaurar o modo automático do cursor
+OK Clique de reunião distante mantém seu marcador dentro do limite
+OK Mouse 1 sempre dispara Raio, mesmo após usar Mãos
+OK Mouse 2 lança Mãos sem precisar de minions
+OK Shift + Mouse 2 comanda a horda sem lançar magia
+OK Atalhos lançam diretamente e bloqueiam efeitos durante a pausa
+OK Fechar invocação com o mouse não dispara uma magia acidentalmente
+OK Navegação repetida da pausa preserva os painéis, sem duplicar ou perder conteúdo
+OK Grupos base: 3 zumbis e 2 arqueiros ocupam um slot cada
+OK Slots são liberados pelo Ato I e níveis 12, 15 e 20 sem duplicar
+OK Nível 12 libera seu próprio slot mesmo sem completar o Ato I
+OK Invocação cobra o grupo, impede slot bloqueado e não cobra novamente grupo completo
+OK Troca para arqueiros valida custos antes de remover o grupo antigo
+OK Sacrifício impede troca e liberação de todo o slot durante a recuperação
+OK Árvore amplia grupos e reforça somente as unidades que faltam
+OK Migração preserva criaturas, reserva excedentes e reembolsa uma única vez
+OK Redefinir a árvore ajusta tamanho do grupo preservando o sacrificado
+OK Tipos adicionais ficam disponíveis na campanha após concluir o Ato I
+OK Save de grupo preserva HP e recuperação do sacrifício
+OK Carregar save mantém o zumbi detonado indisponível pelo tempo restante
+OK História usa densidade da tela independentemente da qualidade do combate
+OK 23 painéis ampliados em 3x, originais intactos e imagens aprimoradas integradas
+OK Dash básico percorre 4,5 unidades sem mana e respeita recarga
+OK Dash usa direção do movimento e bloqueia pausa, morte e mapas
+OK Dash não atravessa obstáculos nem limites de fase
+OK Invulnerabilidade do dash termina junto com o deslocamento
+OK Arqueiro prepara tiro forte com direção fixa e dano ampliado
+OK Projétil rápido atinge só o primeiro alvo no trajeto
+OK Mago causa impacto de fogo e três pulsos na área; sair evita os pulsos
+OK Bruto salta para local avisado e causa dano em área só ao cair
+OK Golpe pesado pode ser evitado saindo da área; bosses e dummies preservam IA própria
+OK Inimigo morto durante a preparação não dispara sua habilidade
+OK Seis slots podem trocar de posição sem duplicar a habilidade ou evocar novamente
+OK Alocar Zumbi, Arqueiro e Abominação evoca respectivamente 3, 2 e 1
+OK Cada ativação detona exatamente um zumbi e o grupo inteiro espera renascer
+OK Detonados não podem ser dispensados nem reanimados para contornar o respawn
+OK Habilidades das evocações exigem árvore; ataques básicos continuam disponíveis
+OK Comando do grupo de arqueiros lança dois tiros fortes e respeita recarga
+OK Abominação equipada salta e só aplica o impacto ao aterrissar
+OK Muralha causa dano de contato, bloqueia inimigos e intercepta tiros
+OK Trocar uma evocação por magia remove o grupo; não existe invocação fora dos slots
+OK Migração de slots aceita somente seis habilidades conhecidas e mantém o padrão seguro
+OK Missão lateral da vila tem emboscadas, chefe, recompensa única e retorno ao mapa preservando progresso
+OK Ramo do Dash reduz recarga e aumenta distância sem alterar custo de mana
+OK Ramo da Muralha aplica duração e dano próprios
+OK Ramo do Zumbi aumenta explosão mantendo um único consumo por ativação
+OK Ramos de Arqueiro e Abominação melhoram somente seus comandos
+OK Ramos desenham pré-requisitos, evoluções e detalhes sem gastar pontos ao selecionar um símbolo
+OK Trilhas da campanha retornam à vila liberada, preservam história inicial e ignoram transições antigas
+OK Missão lateral concede recompensa sem agendar aviso de retorno manual ou história atrasada
+76 cenários aprovados; 5 scripts com sintaxe válida.

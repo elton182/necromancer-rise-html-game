@@ -1,7 +1,6 @@
 ﻿Claude outputs/
 
-blender/frames_*/
-blender/*-build.log
-blender/*-render.log
-blender/*.blend1
-blender/__pycache__/
+blender/frames/
+blender/logs/
+blender/backups/
+blender/**/__pycache__/

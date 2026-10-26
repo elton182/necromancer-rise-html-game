@@ -62,7 +62,7 @@ Detalhes por habilidade:
   - **Estilhaços** (com ao menos 1 ponto): dispara 3 ossos em leque, separados por
     ~15°, compartilhando a lista de acertos: cada inimigo leva no máximo um
     acerto por disparo. *(Comportamento e sprite próprios em finalização no
-    working tree; ver `blender/bone_shard.py`.)*
+    working tree; ver `blender/scripts/bone_shard.py`.)*
   - Exemplo sem equipamento, nível 1: 20 de dano; derruba um Guerreiro (40 HP) em
     dois tiros e um Bruto (100 HP) em cinco.
 - **Chuva de Ossos**: os fragmentos começam a cair 0,1 s após o lançamento, um a

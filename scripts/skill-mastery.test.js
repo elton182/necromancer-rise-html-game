@@ -1,6 +1,11 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const M=require('./skill-mastery-model.js'),Equipment=require('./equipment-model.js'),Build=require('../build-simulator/model.js');
+test('specializations mirror exactly six bar slots and reject duplicates or unknown skills',()=>{
+ assert.deepEqual(M.specializations(['raio','zombie','dash','chuva','maos','explosao','barreira']),['raio','zombie','dash','chuva','maos','explosao']);
+ assert.deepEqual(M.specializations(['raio','raio','bogus','empty',null,'dash']),['raio',null,null,null,null,'dash']);
+ assert.equal(M.specializations([],[]).length,6);
+});
 test('standalone release embeds current mastery sources and persists the progression fields',()=>{
  const fs=require('node:fs'),path=require('node:path'),html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
  for(const file of ['skill-mastery-model.js','skill-mastery.js','skill-mastery.css'])assert.ok(html.includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n').trim()),'Missing embedded source: '+file);
@@ -42,4 +47,6 @@ test('equipment previews include mastery without consuming or modifying either p
  assert.ok(preview.skills.find(s=>s.id==='raio').cooldown<baseline.skills.find(s=>s.id==='raio').cooldown);
  assert.ok(preview.attributes.hordeHp>baseline.attributes.hordeHp);assert.ok(preview.attributes.hordeRegen>baseline.attributes.hordeRegen);
  assert.equal(JSON.stringify(data),before);
+ data.actionLoadout=['dash'];const inactive=Equipment.snapshot(Build,data,defs,tuning);
+ assert.equal(inactive.skills.find(s=>s.id==='raio').damage,baseline.skills.find(s=>s.id==='raio').damage);
 });

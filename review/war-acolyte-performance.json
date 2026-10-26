@@ -1,0 +1,15 @@
+{
+  "metrics": {
+    "scene": "42 characters per panel: 32 enemies, 6 allies, priest, 2 supported soldiers and player; 24 px/u, low quality, Edge headless. CPU draw dispatch; excludes GPU completion and full game update.",
+    "samples": 120,
+    "active": {
+      "medianMs": 1,
+      "p95Ms": 1.5
+    },
+    "interrupted": {
+      "medianMs": 0.9000000059604645,
+      "p95Ms": 1.5999999940395355
+    }
+  },
+  "errors": []
+}

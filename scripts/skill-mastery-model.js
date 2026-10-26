@@ -1,7 +1,7 @@
 // Shared, deterministic mastery rules. No character/Grimoire points are consumed here.
 (function(root){
 'use strict';
-const VERSION=1,MAX_LEVEL=20;
+const VERSION=1,MAX_LEVEL=20,SPECIALIZATION_SLOTS=6;
 const labels={damage:'dano',hp:'vida dos aliados',regen:'regeneração dos aliados',speed:'movimento dos aliados',cooldown:'redução de recarga',area:'área',duration:'duração',absorb:'absorção',distance:'distância do Dash',pierce:'alvos perfurados adicionais',resistance:'resistência da muralha',curse:'redução de dano inimigo'};
 function branch(id,name,stat,value,childName,childStat,childValue,max=5){return [
  {id,name,stat,value,max,level:1},
@@ -20,6 +20,8 @@ for(const [id,name,power,body,motion] of [
  branch('body',body,'hp',6,'Reconstituição','regen',12),
  branch('command',motion,'cooldown',3,'Perseguição','speed',4)
 ]);
+Object.assign(skills.zombie.nodes.find(n=>n.id==='power_deep'),{name:'Decomposição',stat:'decay',value:20});
+labels.decay='do dano do zumbi por segundo em decomposição (4 s; mordidas renovam sem acumular)';
 skills.raio=define('Tiro de Osso',{damage:3},[
  branch('power','Osso Afiado','damage',4,'Fragmento Mortal','damage',6),
  branch('rhythm','Ritmo Fúnebre','cooldown',2,'Disparo Instintivo','cooldown',3),
@@ -51,6 +53,10 @@ skills.maldicao=define('Maldição da Fraqueza',{duration:2},[
  branch('rhythm','Liturgia Breve','cooldown',2,'Condenação Contínua','cooldown',3)
 ]);
 const ids=Object.keys(skills),integer=(v,min,max)=>Math.max(min,Math.min(max,Math.floor(Number(v)||0)));
+function specializations(input,fallback=['raio','dash']){
+ const source=Array.isArray(input)?input:Array.isArray(fallback)?fallback:[],seen=new Set();
+ return Array.from({length:SPECIALIZATION_SLOTS},(_,i)=>{const id=source[i];if(!ids.includes(id)||seen.has(id))return null;seen.add(id);return id;});
+}
 function xpNext(level){return level>=MAX_LEVEL?0:Math.floor(80*Math.pow(Math.max(1,level),1.65));}
 function spent(state){return Object.values(state.ranks||{}).reduce((sum,n)=>sum+n,0);}
 function points(state){return Math.max(0,state.level-1-spent(state));}
@@ -94,6 +100,6 @@ function gain(id,input,amount,characterLevel=1){
  }
  if(state.level===MAX_LEVEL)state.xp=0;return {state,levels:state.level-before};
 }
-const api={VERSION,MAX_LEVEL,skills,ids,labels,xpNext,spent,points,normalize,migrate,reason,invest,bonus,gain};
+const api={VERSION,MAX_LEVEL,SPECIALIZATION_SLOTS,specializations,skills,ids,labels,xpNext,spent,points,normalize,migrate,reason,invest,bonus,gain};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SkillMasteryModel=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

@@ -28,6 +28,7 @@ fechado por partidas completas.
 | [Inimigos e chefes](inimigos-e-chefes.md) | Tipos, especiais, composição e escala das waves, chefes e Capitão |
 | [Equipamentos e loot](equipamentos-e-loot.md) | Espaços, raridades, afixos, drops, filtro, inventário, mercador |
 | [Modos de jogo e mundo](modos-de-jogo.md) | Campanha, Modo Livre, missões, Vila de Eldrin, trilhas, Arena Infinita |
+| [Conquista de Valdoria](conquista-valdoria.md) | Pântano, influência, maldições sorteadas, tenentes, fortaleza, fragmento e Podridão |
 | [Interface, controles e saves](interface-e-saves.md) | Teclado, controle, HUD, pausa, opções, saves e migração |
 
 ## Convenções

@@ -210,7 +210,7 @@ function skillWallAbsorb(sh,x,y){
  const nova=castExplosao;castExplosao=function(x,y){if(!abilityReady('explosao',60)||!Number.isFinite(x)||!Number.isFinite(y)||Math.hypot(x-P.x,y-P.y)>9)return;nova(x,y);player.spellCooldowns.explosao=8;};
  const barrier=castBarrier;castBarrier=function(){const mp=player.mp;barrier();if(player.mp<mp){player.barrier=Math.round(player.barrier*skillPercent('Absorção do Escudo de Carne'));player.barrierMax=player.barrier;}};
  const dash=castDash;castDash=function(){const ok=dash();if(ok){playerDash.cd=3*skillPercent('Recarga do Dash');if(skillRank('veil'))player.skillVeilT=.18+skillPercent('Duração da proteção após Dash');}return ok;};
- const damage=dealDamageToPlayer;dealDamageToPlayer=function(v){damage(v*((player.skillVeilT||0)>0?.75:1));};
+ const damage=dealDamageToPlayer;dealDamageToPlayer=function(v,source){return damage(v*((player.skillVeilT||0)>0?.75:1),source);};
  const kill=killMinion;killMinion=function(m){if(m.dead)return;if(!m.sacrificed&&!m.exploded&&skillRank('pact'))player.hp=Math.min(player.maxHp,player.hp+player.maxHp*skillEffect('Vida máxima recuperada por morte de aliado')/100);kill(m);};
  const enemyDeath=killEnemy;killEnemy=function(e,x,y){if(e.dead)return;if(!e.dummy){const amount=Math.max(2,Math.round((e.xp||10)*.35))*(e.isBoss?3:1);droppedItems.push({mesh:mkMesh2(x,y),type:'gold',amount,life:45,t:0});}return enemyDeath(e,x,y);};
  const pickup=checkPickups;checkPickups=function(dt){

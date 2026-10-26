@@ -10,7 +10,7 @@ const ability=updateMobAbility;updateMobAbility=function(e,dt){
  return SoulWardenModel.update(e,dt,{
   target:()=>mobSkillTarget(e),bound:(x,y)=>clampMobLanding(x,y,e),
   enrage:()=>{ring(e.x,e.y,3,'#eeac69',.8);floatMsg('Carcereiro · Jaula rompida!',W/2,H*.22,'#efb46f');},
-  area:(x,y,r,damage,color)=>{mobAreaDamage(x,y,r,damage);ring(x,y,r,color,.6);burst(x,y,color,14,2.5);shake=Math.max(shake,.18);},
+  area:(x,y,r,damage,color)=>{mobAreaDamage(x,y,r,damage,e);ring(x,y,r,color,.6);burst(x,y,color,14,2.5);shake=Math.max(shake,.18);},
   projectile:(x,y,vx,vy,damage)=>eshots.push({x,y,vx,vy,dmg:damage,kind:'magic',strong:true,life:1.9,z:1.4,warden:true,owner:e})
  });
 };

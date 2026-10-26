@@ -32,7 +32,7 @@
     ctx.beginPath();ctx.moveTo(-u*.20,-u*.025);ctx.lineTo(u*.21,-u*.02);ctx.stroke();
     ctx.restore();
   }
-  // Estilhaços: Blender sheet (blender/render_bone_shard.py) with 16 screen directions
+  // Estilhaços: Blender sheet (blender/scripts/render_bone_shard.py) with 16 screen directions
   // and a spin around the bone axis; the nearest direction is turned to the exact aim.
   function shard(ctx,{x,y,angle,scale,travel=1,time=0,low=false,sheet=null}){
     if(!sheet)return projectile(ctx,{x,y,angle,scale:scale*.8,travel,low});

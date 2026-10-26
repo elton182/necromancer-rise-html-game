@@ -11,6 +11,7 @@ Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.m
 - [Inimigos e chefes](mecanicas/inimigos-e-chefes.md)
 - [Equipamentos e loot](mecanicas/equipamentos-e-loot.md)
 - [Modos de jogo e mundo](mecanicas/modos-de-jogo.md)
+- [Conquista de Valdoria](mecanicas/conquista-valdoria.md)
 - [Interface, controles e saves](mecanicas/interface-e-saves.md)
 
 ## Implementação e ferramentas
@@ -29,6 +30,7 @@ o estado atual está nos guias de mecânicas.
 
 | Documento | Conteúdo | Situação |
 |---|---|---|
+| [plano-endgame-valdoria.md](plano-endgame-valdoria.md) | Conquista territorial, influência, maldições e pântano de decomposição | Primeira região jogável; expansão e alquimia planejadas |
 | [roadmap-combate-visual.md](roadmap-combate-visual.md) | Roadmap de animações de skills e novos inimigos | Ativo: primeiro pacote concluído, próximo é SK-02 (Dash) |
 | [plano-equipamentos-waves.md](plano-equipamentos-waves.md) | Plano de equipamentos, loot e waves | Primeira versão jogável implementada |
 | [zephyr-habilidades-ato-1-revisao.md](zephyr-habilidades-ato-1-revisao.md) | Revisão das habilidades do Ato I | Histórico: a campanha não concede mais skills |

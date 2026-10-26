@@ -14,6 +14,8 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
    gainExp(600);setPause(true);tPause('skills');
   });
   await page.getByRole('tab',{name:'✦ Maestrias',exact:true}).click();
+  assert.equal(await page.locator('[data-mastery-slot]').count(),6);
+  await page.locator('[data-mastery-slot="1"]').click();
   assert.equal(await page.locator('.mastery-branch').count(),3);assert.equal(await page.locator('.mastery-node').count(),6);
   const before=await page.evaluate(()=>({points:player.skillPoints,damage:skillMinionStats('zombie').dmg,life:skillMinionStats('zombie').hp,mastery:masteryState('zombie').level}));
   assert.ok(before.mastery>1);assert.equal(await page.evaluate(()=>masteryState('maldicao').level),1);
@@ -21,9 +23,14 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   assert.equal(await page.evaluate(()=>player.skillPoints),before.points);assert.equal(await page.evaluate(()=>masteryState('zombie').ranks.power),1);
   assert.ok(await page.evaluate(()=>skillMinionStats('zombie').dmg)>before.damage);
   await page.screenshot({path:path.resolve(__dirname,'../review/skill-mastery-desktop.png'),fullPage:true});
-  await page.getByRole('button',{name:/Maldição da Fraqueza · 1/}).click();
+  await page.locator('[data-mastery-slot="3"]').click();
   assert.equal(await page.locator('.mastery-invest:enabled').count(),0);assert.ok(await page.locator('.mastery-locked').isVisible());
-  await page.getByRole('button',{name:/Zumbis · /}).click();
+  await page.getByRole('button',{name:'Escolher habilidade para slot 4',exact:true}).click();
+  await page.locator('#summon-wheel .group-choice').filter({hasText:'Tiro de Osso'}).click();
+  assert.equal(await page.evaluate(()=>player.actionLoadout[3]),'raio');
+  assert.match(await page.locator('[data-mastery-slot="3"]').innerText(),/Tiro de Osso/);
+  assert.match(await page.locator('[data-mastery-slot="0"]').innerText(),/Vazio/);
+  await page.locator('[data-mastery-slot="1"]').click();
   await page.getByRole('button',{name:'Redistribuir maestria · grátis',exact:true}).click();
   assert.equal(await page.evaluate(()=>SkillMasteryModel.spent(masteryState('zombie'))),0);assert.equal(await page.evaluate(()=>masteryState('zombie').level),before.mastery);
   await page.locator('[data-mastery-node="body"]').click();
@@ -50,6 +57,19 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
   });assert.deepEqual(result,{bolt:2,dash:2,zombie:1,legacy:1,grimoire:2});
   await page.evaluate(()=>{
    const check=(condition,message)=>{if(!condition)throw Error(message);};
+   player.level=60;player.skillRanks={bolt:1,rain:1,wall:1,shield:1,nova:1,curse:1,zombie:1,skeleton:1,archer:1,specter:1,abom:1};
+   player.actionLoadout=['raio','zombie','dash','chuva','maos','explosao'];player.skillMastery=SkillMasteryModel.migrate();
+   for(const id of SkillMasteryModel.ids)player.skillMastery[id]=SkillMasteryModel.normalize(id,{level:2});
+   masteryGain(40);
+   for(const id of SkillMasteryModel.ids)check(masteryState(id).xp===(player.actionLoadout.includes(id)?80:0),'Only six equipped specializations may earn XP: '+id);
+   const inactive=JSON.stringify(masteryState('barreira'));masteryInvest('barreira','body');check(JSON.stringify(masteryState('barreira'))===inactive,'Unequipped skills must reject point investment');
+   player.skillMastery.raio=SkillMasteryModel.normalize('raio',{level:12,ranks:{power:5}});const active=masteryBonus('raio').damage,saved=JSON.stringify(masteryState('raio'));
+   player.actionLoadout[0]='empty';check(!masteryBonus('raio').damage,'Unequipped mastery bonuses must be dormant');
+   masteryGain(40);check(JSON.stringify(masteryState('raio'))===saved,'Unequipped progress must be frozen and preserved');
+   player.actionLoadout[0]='raio';check(masteryBonus('raio').damage===active,'Reequip must restore mastery bonuses');
+  });
+  await page.evaluate(()=>{
+   const check=(condition,message)=>{if(!condition)throw Error(message);};
    TITLE.active=false;TITLE.paused=false;COMIC.active=false;CAMP.map=false;P.deadT=0;gameState='field';player.level=30;
    player.skillRanks={bolt:3,rain:2,nova:2,wall:2,shield:2,curse:2,zombie:2,burst:2};player.actionLoadout=['raio','chuva','explosao','maos','barreira','dash'];player.skillMastery=SkillMasteryModel.migrate();skillSync();
    const make=(id,ranks)=>{player.skillMastery[id]=SkillMasteryModel.normalize(id,{level:20,ranks});};
@@ -61,7 +81,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
    make('maos',{power:5,duration:5,duration_deep:5,body:4});start();castHands(P.x+2,P.y);const wall=handsAreas.at(-1);check(wall.hp>160&&wall.life>5&&wall.dmg>Math.round(player.spellDmg*.4),'Wall mastery must scale resistance, duration and damage');
    make('barreira',{body:5,rhythm:5,rhythm_deep:5,pact:4});start();player.hp=player.maxHp;castBarrier();check(player.barrier>player.maxHp*.25,'Shield mastery absorption');check(player.barrierCd<12,'Shield cooldown');
    make('dash',{distance:5,rhythm:5,rhythm_deep:5,escape:4});start();check(castDash(),'Dash success');check(playerDash.cd<3&&skillPercent('Distância do Dash')>1,'Dash mastery');
-   make('maldicao',{curse:5,curse_deep:5,area:5,area_deep:4});start();const foe=spawnEnemy(ENEMY_TYPES[0],P.x+4.5,P.y);foe.hp=foe.maxHp=100000;foe.dmg=100;
+   player.actionLoadout[5]='maldicao';make('maldicao',{curse:5,curse_deep:5,area:5,area_deep:4});start();const foe=spawnEnemy(ENEMY_TYPES[0],P.x+4.5,P.y);foe.hp=foe.maxHp=100000;foe.dmg=100;
    skillCastCurse(P.x,P.y);check(foe.skillCurseT>6&&foe.dmg<100,'Curse radius, duration and strength');
    make('explosao',{power:5,power_deep:5,area:5,rhythm:4});start();const hp=foe.hp;castExplosao(P.x,P.y);check(foe.hp<hp&&player.spellCooldowns.explosao<8,'Nova live damage and cooldown');
    const snap=EquipmentModel.snapshot(BuildModel,player,MINION_DEFS,COMBAT_TUNING),preview=snap.skills.find(s=>s.id==='raio');

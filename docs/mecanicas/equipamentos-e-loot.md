@@ -187,3 +187,25 @@ Cada peça salva ID, versão (2), tipo, raridade, nível, wave de origem, base e
 afixos já sorteados. Recarregar não sorteia de novo. Peças do formato 1 (base em
 percentual) são convertidas mantendo identidade, raridade e afixos. Peças
 inválidas ou duplicadas são descartadas ao carregar.
+
+
+## Defesa de Zephyr
+
+Capuzes, vestimentas e botas podem sortear o atributo adicional **Defesa**.
+Os pontos das peças equipadas são somados; sem equipamento com esse atributo, a defesa é zero.
+Itens antigos continuam válidos, sem ganhar atributos retroativamente.
+
+A redução é `mínimo(70%; Defesa / (Defesa + K))`, com `K = 20 + 5 × (nível do monstro − 1)`.
+O intervalo útil vai de zero até `7/3 × K` pontos, quando atinge o teto; pontos acima disso
+não aumentam a redução contra aquele nível. Por exemplo, 20 pontos reduzem 50% contra nível 1,
+33,3% contra nível 5 e 23,5% contra nível 10.
+
+O nível usa a referência de progressão do inimigo (`gearWave`): fase na campanha,
+wave na Arena e nível regional na Conquista. Ataques sem fonte usam a progressão da cena.
+Projéteis mantêm a fonte e áreas persistentes guardam seu nível.
+A defesa atua em todo dano recebido por Zephyr, após o Véu Noturno e antes do Escudo de Carne.
+Dash e Escudo de Ossos preservam suas proteções. A mitigação de 70% limita apenas a defesa;
+outras proteções continuam funcionando em conjunto.
+
+O inventário compara pontos de defesa e mitigação contra um monstro do nível do jogador.
+A estimativa de combate do simulador também aplica defesa; não substitui validação da IA no jogo.
