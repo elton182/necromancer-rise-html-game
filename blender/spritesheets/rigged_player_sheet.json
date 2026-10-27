@@ -1,0 +1,36 @@
+{
+  "cell": 224,
+  "ppu": 56,
+  "anchorX": 112,
+  "anchorY": 165,
+  "dirs": 8,
+  "source": "purple_hooded_mage.glb",
+  "staticPrototype": false,
+  "artVersion": "black-outline-layered-staff-v4",
+  "anims": {
+    "idle": {
+      "n": 4,
+      "fps": 4,
+      "loop": true,
+      "row": 0
+    },
+    "walk": {
+      "n": 8,
+      "fps": 12,
+      "loop": true,
+      "row": 8
+    },
+    "cast": {
+      "n": 6,
+      "fps": 16,
+      "loop": false,
+      "row": 16
+    },
+    "death": {
+      "n": 6,
+      "fps": 7.5,
+      "loop": false,
+      "row": 24
+    }
+  }
+}

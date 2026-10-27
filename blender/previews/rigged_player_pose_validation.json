@@ -1,0 +1,25 @@
+{
+  "footGap": 0.10686055198311806,
+  "walkRightFootDelta": -0.20629023015499115,
+  "walkLeftHandDelta": -0.166546992957592,
+  "walkLeftFootDelta": 0.20628995448350906,
+  "walkRightHandDelta": -0.007693648338317871,
+  "castForwardReach": -0.23506378289312124,
+  "palmNormal": [
+    9.254399913061206e-08,
+    -1.0,
+    6.772008731559254e-08
+  ],
+  "fingerDirection": [
+    -7.386550748833542e-08,
+    2.1210679790328868e-07,
+    1.0
+  ],
+  "shader": "cel-three-bands-v1",
+  "actions": [
+    "cast",
+    "death",
+    "idle",
+    "walk"
+  ]
+}

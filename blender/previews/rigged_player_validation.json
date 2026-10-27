@@ -1,0 +1,11 @@
+{
+  "frames": 192,
+  "minimumMargin": 26,
+  "animatedDirections": 8,
+  "anims": [
+    "idle",
+    "walk",
+    "cast",
+    "death"
+  ]
+}
