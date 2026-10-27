@@ -1,0 +1,16 @@
+{
+  "bramSource": "blender/examples/image.png",
+  "sourceSha256": "9459c0a5f1f50384310edd05bedb51ec564012e0bfc59c8d0815095acf5df3c3",
+  "bramOriginalRGBPixelsChecked": 30054,
+  "bramLosslessVisiblePixelsAndAlpha": true,
+  "bramPoses": 1,
+  "zephyrFrames": 456,
+  "skeletonFrames": 264,
+  "archerFrames": 264,
+  "skeletonMageFrames": 264,
+  "directionsAnimated": 8,
+  "browserFramesChecked": 2104,
+  "gameplayScenarios": 76,
+  "glbModelsValidated": 8,
+  "newCombatTypes": false
+}

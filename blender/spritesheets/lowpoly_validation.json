@@ -1,0 +1,104 @@
+{
+ "zombie": {
+  "key": "zombie",
+  "frames": 360,
+  "atlasSize": [
+   1344,
+   14336
+  ],
+  "decodedBytes": 77070336,
+  "webpBytes": 818676,
+  "idleFootBottomByDirection": {
+   "0": 173,
+   "1": 174,
+   "2": 172,
+   "3": 175,
+   "4": 173,
+   "5": 172,
+   "6": 169,
+   "7": 172
+  },
+  "idleFootSpreadPx": 6,
+  "model": {
+   "vertices": 1283,
+   "triangles": 2284,
+   "bones": 17,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "walk",
+    "attack",
+    "attack_secondary",
+    "spawn",
+    "hurt",
+    "death"
+   ]
+  }
+ },
+ "earcher": {
+  "key": "earcher",
+  "frames": 312,
+  "atlasSize": [
+   1344,
+   12544
+  ],
+  "decodedBytes": 67436544,
+  "webpBytes": 804808,
+  "idleFootBottomByDirection": {
+   "0": 174,
+   "1": 175,
+   "2": 173,
+   "3": 175,
+   "4": 174,
+   "5": 173,
+   "6": 169,
+   "7": 173
+  },
+  "idleFootSpreadPx": 6,
+  "model": {
+   "vertices": 1066,
+   "triangles": 1867,
+   "bones": 18,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "walk",
+    "attack",
+    "windup",
+    "hurt",
+    "death"
+   ]
+  }
+ },
+ "bram": {
+  "key": "smith",
+  "frames": 192,
+  "atlasSize": [
+   2368,
+   7104
+  ],
+  "decodedBytes": 67289088,
+  "webpBytes": 1451204,
+  "idleFootBottomByDirection": {
+   "0": 283,
+   "1": 287,
+   "2": 277,
+   "3": 287,
+   "4": 283,
+   "5": 280,
+   "6": 269,
+   "7": 280
+  },
+  "idleFootSpreadPx": 18,
+  "model": {
+   "vertices": 1372,
+   "triangles": 2475,
+   "bones": 16,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "talk"
+   ]
+  }
+ }
+}

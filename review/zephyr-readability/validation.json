@@ -1,0 +1,29 @@
+{
+  "geometryWeightsAndActionsUnchanged": true,
+  "bones": 18,
+  "lights": 3,
+  "world": true,
+  "emission": {
+    "reference_crystal": 0.3499999940395355,
+    "reference_eyes": 0.44999998807907104
+  },
+  "glbReimport": true,
+  "sampledPoses": 18,
+  "savedSceneMatchesMasterPixels": true,
+  "bramAndProtectedFilesUnchanged": true,
+  "htmlChangesOnlyNecroRecord": true,
+  "frames": 248,
+  "directions": 8,
+  "atlasSize": [
+    1344,
+    10752
+  ],
+  "cell": 224,
+  "ppu": 34.3,
+  "gameplayScale": 1.12,
+  "overlayChanged": false,
+  "browserErrors": [],
+  "gameplayScenariosPassed": 76,
+  "browserDecodedEndpointsChecked": 784,
+  "browserMovementAndBramInteraction": true
+}

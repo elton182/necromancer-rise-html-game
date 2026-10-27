@@ -1,0 +1,149 @@
+{
+ "runtime": {
+  "cell": 224,
+  "ppu": 56,
+  "anchorX": 112.0,
+  "anchorY": 165,
+  "dirs": 8,
+  "source": "blender/scripts/lowpoly_cast.py",
+  "anims": {
+   "idle": {
+    "n": 6,
+    "fps": 6,
+    "loop": true,
+    "row": 0
+   },
+   "idle_variation": {
+    "n": 6,
+    "fps": 5,
+    "loop": false,
+    "row": 8
+   },
+   "walk": {
+    "n": 6,
+    "fps": 10,
+    "loop": true,
+    "row": 16
+   },
+   "attack": {
+    "n": 6,
+    "fps": 12,
+    "loop": false,
+    "row": 24
+   },
+   "attack_secondary": {
+    "n": 6,
+    "fps": 12,
+    "loop": false,
+    "row": 32
+   },
+   "spawn": {
+    "n": 6,
+    "fps": 10,
+    "loop": false,
+    "row": 40
+   },
+   "hurt": {
+    "n": 3,
+    "fps": 12,
+    "loop": false,
+    "row": 48
+   },
+   "death": {
+    "n": 6,
+    "fps": 10,
+    "loop": false,
+    "row": 56
+   }
+  }
+ },
+ "combat": [
+  {
+   "animation": "attack_primary",
+   "row": "attack",
+   "duration": 0.5,
+   "impact_time": 0,
+   "recovery_time": 0.5,
+   "damage_event": "primary_hit",
+   "range": "m.atkR (corpo a corpo, ~1,5 u)",
+   "damage_type": "físico",
+   "cooldown": 1.2,
+   "vfx": "nenhum",
+   "interruptible": false,
+   "directions": 8,
+   "cancelable": false
+  },
+  {
+   "animation": "attack_secondary",
+   "row": "attack_secondary",
+   "ability": "Mordida Pútrida",
+   "duration": 0.5,
+   "impact_time": 0,
+   "recovery_time": 0.5,
+   "damage_event": "minion_ability",
+   "range": "alcance corpo a corpo do zumbi",
+   "damage_type": "150% + 35% de lentidão por 3 s",
+   "cooldown": 7,
+   "vfx": "burst '#9dbf68'",
+   "interruptible": false,
+   "directions": 8,
+   "cancelable": false,
+   "selector": "swing>0 e _abilityCd recém-reiniciado"
+  },
+  {
+   "animation": "spawn",
+   "row": "spawn",
+   "duration": 0.6,
+   "selector": "ref.spawn>0"
+  },
+  {
+   "animation": "hurt",
+   "row": "hurt",
+   "duration": 0.22,
+   "selector": "aumento de ref.hit"
+  },
+  {
+   "animation": "death",
+   "row": "death",
+   "duration": 0.8,
+   "selector": "deadT/0,8; morto mantém o último quadro"
+  }
+ ],
+ "drawScale": 1.05,
+ "validation": {
+  "key": "zombie",
+  "frames": 360,
+  "atlasSize": [
+   1344,
+   14336
+  ],
+  "decodedBytes": 77070336,
+  "webpBytes": 818676,
+  "idleFootBottomByDirection": {
+   "0": 173,
+   "1": 174,
+   "2": 172,
+   "3": 175,
+   "4": 173,
+   "5": 172,
+   "6": 169,
+   "7": 172
+  },
+  "idleFootSpreadPx": 6,
+  "model": {
+   "vertices": 1283,
+   "triangles": 2284,
+   "bones": 17,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "walk",
+    "attack",
+    "attack_secondary",
+    "spawn",
+    "hurt",
+    "death"
+   ]
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "shadow_wolf",
+  "vertices": 601,
+  "triangles": 1050,
+  "bones": 14,
+  "uvLayers": 1,
+  "actions": [
+    "idle",
+    "walk",
+    "attack",
+    "hurt",
+    "death",
+    "spawn",
+    "windup",
+    "charge",
+    "recover"
+  ],
+  "origin": "feet",
+  "up": "Z in Blender; Y in GLB",
+  "rig": "quadruped",
+  "weights": "Rigid anatomical sections; articulated joints. No automatic heat weights."
+}

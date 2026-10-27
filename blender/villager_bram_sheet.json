@@ -1,0 +1,1 @@
+{"cell":296,"ppu":108,"anchorX":156,"anchorY":294,"dirs":1,"anims":{"idle":{"n":21,"fps":10,"loop":true,"row":0},"hammer":{"n":15,"fps":11,"loop":false,"row":1},"greet":{"n":21,"fps":10,"loop":true,"row":2},"recover":{"n":13,"fps":10,"loop":false,"row":3,"pickup":7}}}

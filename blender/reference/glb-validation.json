@@ -1,0 +1,133 @@
+{
+  "archer": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "attack_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "spawn_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 18,
+    "maxExtent": 2.24
+  },
+  "bram": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "greet_Rig",
+      "hammer_Rig",
+      "idle_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 9,
+    "maxExtent": 2.593
+  },
+  "corrupted": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "attack_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "spawn_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 18,
+    "maxExtent": 2.282
+  },
+  "raider": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "attack_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "spawn_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 18,
+    "maxExtent": 2.314
+  },
+  "shadow_wolf": {
+    "reimported": true,
+    "bones": 14,
+    "actions": [
+      "attack_Rig",
+      "charge_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "recover_Rig",
+      "spawn_Rig",
+      "walk_Rig",
+      "windup_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 27,
+    "maxExtent": 1.721
+  },
+  "skeleton": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "attack_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "spawn_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 18,
+    "maxExtent": 2.235
+  },
+  "skeleton_mage": {
+    "reimported": true,
+    "bones": 16,
+    "actions": [
+      "attack_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "spawn_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 18,
+    "maxExtent": 2.606
+  },
+  "zephyr": {
+    "reimported": true,
+    "bones": 18,
+    "actions": [
+      "cast_Rig",
+      "channel_Rig",
+      "dash_Rig",
+      "death_Rig",
+      "hurt_Rig",
+      "idle_Rig",
+      "nova_Rig",
+      "summon_Rig",
+      "walk_Rig"
+    ],
+    "uv": true,
+    "normalizedWeights": true,
+    "sampledPoses": 27,
+    "maxExtent": 2.794
+  }
+}

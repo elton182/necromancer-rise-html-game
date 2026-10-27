@@ -1,0 +1,72 @@
+{
+  "bram": {
+    "frames": 1,
+    "atlasSize": [
+      320,
+      1280
+    ],
+    "source": "blender/examples/image.png",
+    "staticReference": true,
+    "parts": [
+      "body",
+      "hammer",
+      "freeArm"
+    ]
+  },
+  "zephyr": {
+    "frames": 456,
+    "decodedBytes": 115605504,
+    "atlasSize": [
+      1792,
+      16128
+    ]
+  },
+  "skeleton": {
+    "frames": 264,
+    "decodedBytes": 77070336,
+    "atlasSize": [
+      1792,
+      10752
+    ]
+  },
+  "archer": {
+    "frames": 264,
+    "decodedBytes": 77070336,
+    "atlasSize": [
+      1792,
+      10752
+    ]
+  },
+  "skeleton_mage": {
+    "frames": 264,
+    "decodedBytes": 77070336,
+    "atlasSize": [
+      1792,
+      10752
+    ]
+  },
+  "raider": {
+    "frames": 248,
+    "decodedBytes": 57802752,
+    "atlasSize": [
+      1344,
+      10752
+    ]
+  },
+  "corrupted": {
+    "frames": 248,
+    "decodedBytes": 57802752,
+    "atlasSize": [
+      1344,
+      10752
+    ]
+  },
+  "shadow_wolf": {
+    "frames": 360,
+    "decodedBytes": 86704128,
+    "atlasSize": [
+      1344,
+      16128
+    ]
+  }
+}

@@ -1,0 +1,87 @@
+{
+ "runtime": {
+  "cell": 296,
+  "ppu": 96,
+  "anchorX": 148.0,
+  "anchorY": 262,
+  "dirs": 8,
+  "source": "blender/scripts/lowpoly_cast.py",
+  "anims": {
+   "idle": {
+    "n": 8,
+    "fps": 6,
+    "loop": true,
+    "row": 0
+   },
+   "idle_variation": {
+    "n": 8,
+    "fps": 5,
+    "loop": false,
+    "row": 8
+   },
+   "talk": {
+    "n": 8,
+    "fps": 8,
+    "loop": true,
+    "row": 16
+   },
+   "attack": {
+    "n": 8,
+    "fps": 8,
+    "loop": true,
+    "row": 16
+   },
+   "walk": {
+    "n": 8,
+    "fps": 6,
+    "loop": true,
+    "row": 0
+   }
+  }
+ },
+ "combat": [
+  {
+   "animation": "talk",
+   "row": "talk",
+   "selector": "VIL.open===id (attacking:true no drawHubProp)"
+  },
+  {
+   "animation": "idle_variation",
+   "row": "idle_variation",
+   "duration": 1.6,
+   "selector": "parado, a cada 9–15 s"
+  }
+ ],
+ "drawScale": 1.1025,
+ "validation": {
+  "key": "smith",
+  "frames": 192,
+  "atlasSize": [
+   2368,
+   7104
+  ],
+  "decodedBytes": 67289088,
+  "webpBytes": 1451204,
+  "idleFootBottomByDirection": {
+   "0": 283,
+   "1": 287,
+   "2": 277,
+   "3": 287,
+   "4": 283,
+   "5": 280,
+   "6": 269,
+   "7": 280
+  },
+  "idleFootSpreadPx": 18,
+  "model": {
+   "vertices": 1372,
+   "triangles": 2475,
+   "bones": 16,
+   "actions": [
+    "idle",
+    "idle_variation",
+    "talk"
+   ]
+  }
+ }
+}
