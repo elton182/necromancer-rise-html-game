@@ -57,7 +57,10 @@ for(const [name,content,anchor,runtime]of [
  ['ENDGAME_MODEL',fs.readFileSync(path.join(__dirname,'endgame-model.js'),'utf8'),'const hasSave=bootGame();',true],
  ['ENDGAME_MAP',fs.readFileSync(path.join(__dirname,'endgame-map.js'),'utf8'),'const hasSave=bootGame();',true],
  ['ENDGAME_RULES',fs.readFileSync(path.join(__dirname,'endgame.js'),'utf8'),'const hasSave=bootGame();',true],
- ['ENDGAME_SCREEN',fs.readFileSync(path.join(__dirname,'endgame-screen.js'),'utf8'),'const hasSave=bootGame();',true]
+ ['ENDGAME_SCREEN',fs.readFileSync(path.join(__dirname,'endgame-screen.js'),'utf8'),'const hasSave=bootGame();',true],
+ // Por último: o Rei Caído envolve as IAs de chefe de todos os módulos acima.
+ ['FALLEN_KING_MODEL',fs.readFileSync(path.join(__dirname,'fallen-king-model.js'),'utf8'),'const hasSave=bootGame();',true],
+ ['FALLEN_KING_RULES',fs.readFileSync(path.join(__dirname,'fallen-king.js'),'utf8'),'const hasSave=bootGame();',true]
 ]){
  const start=runtime?'/* '+name+'_BEGIN */':'<!-- '+name+'_BEGIN -->',end=runtime?'/* '+name+'_END */':'<!-- '+name+'_END -->';
  const block=start+'\n'+content+'\n'+end+'\n',a=html.indexOf(start),b=html.indexOf(end);

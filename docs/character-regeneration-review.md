@@ -206,7 +206,7 @@ Os testes de navegador usam Chrome headless com páginas novas, sem armazenament
 4. **`command`/`acknowledge`.** Não criados: não há estado visual de resposta a comando. A detonação consome o zumbi.
 5. **`stagger`.** Não criado: não há estado de atordoamento para inimigos comuns.
 6. **Memória.** Resolvido com o atlas 2.5D: 13,9 MB decodificado, contra 67,3 MB do Bram Blender e 29,4 MB do pintado.
-7. **Sobrescrita por pipelines antigos.** `blender/pack_village_npcs.py` e `blender/pack_reference_characters.py --only=bram` gravam o registro `smith`. Rodá-los desfaz o Bram atual; `pack_lowpoly_cast.py --only=bram` também o substitui pelo Bram Blender. Use `blender/scripts/pack_bram_2_5d.py`.
+7. **Sobrescrita por pipelines antigos.** `blender/scripts/pack_village_npcs.py` e `blender/scripts/pack_reference_characters.py --only=bram` gravam o registro `smith`. Rodá-los desfaz o Bram atual; `pack_lowpoly_cast.py --only=bram` também o substitui pelo Bram Blender. Use `blender/scripts/pack_bram_2_5d.py`.
 8. **Tiro básico do arqueiro (pré-existente, não alterado).** `scripts/sync-equipment.js` tenta trocar `e.atkTimer=1.9; e.swing=.28;` por `e.atkTimer=e.atkRate; e.swing=.28;`. A substituição para porque esse texto já existe no ataque corpo a corpo. Por isso o arqueiro atira a cada 1,9 s, e não a cada 1,3 s (`COMBAT_TUNING.rangedInterval`).
 9. **Testes desatualizados** (`stylized-characters`, `undead-sprites`) continuam aguardando decisão, conforme a linha de base.
 

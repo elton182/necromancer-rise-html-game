@@ -1,0 +1,39 @@
+{
+  "stage": "E1",
+  "browser": "Microsoft Edge headless",
+  "viewport": "1440x900",
+  "checks": [
+    "HTML copiado abre sozinho por file://",
+    "quatro GLBs animados",
+    "movimento",
+    "magia com dano",
+    "pausa e retomada com botão focado",
+    "64 aliados e qualidade baixa",
+    "reinício sem crescimento de geometria/textura",
+    "perda de foco pausa",
+    "save anterior intacto",
+    "nenhuma requisição HTTP",
+    "sem erros de página",
+    "diagnóstico sem WebGL2",
+    "diagnóstico de animação ausente"
+  ],
+  "counts": [
+    {
+      "actors": 74,
+      "geometries": 31,
+      "textures": 817
+    },
+    {
+      "actors": 74,
+      "geometries": 31,
+      "textures": 817
+    },
+    {
+      "actors": 74,
+      "geometries": 31,
+      "textures": 817
+    }
+  ],
+  "errors": [],
+  "remote": []
+}

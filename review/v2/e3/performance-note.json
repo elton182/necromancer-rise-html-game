@@ -1,0 +1,9 @@
+{
+  "environment": "Edge headless, 1440x900, qualidade baixa",
+  "actors": 74,
+  "allies": 64,
+  "waitSeconds": 3,
+  "observedFps": 60,
+  "paused": false,
+  "limitations": "Observacao pontual apos carregar clones; nao e benchmark de hardware nem criterio de aceite da E11."
+}

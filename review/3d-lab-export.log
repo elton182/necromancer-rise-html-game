@@ -1,0 +1,24 @@
+00:05.594  blend            | Read blend: "C:\projects\games\necromancer-rise-html-game\blender\models\rigged_player.blend"
+Extensions: writing cache failed ([Errno 13] Permission denied: 'C:\\Users\\elton\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\extensions\\.cache\\compat.dat').
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+16:52:44 | INFO: Starting glTF 2.0 export
+16:52:44 | INFO: Extracting primitive: tripo_mesh_09d62f83-80ba-4bfa-b972-ed68c0922ca4
+16:52:44 | INFO: Primitives created: 1
+16:52:44 | INFO: Extracting primitive: tripo_mesh_c89ea7d8-76bc-438e-817c-fae5296298ab
+16:52:44 | INFO: Primitives created: 1
+16:52:44 | INFO: Finished glTF 2.0 export in 0.772747278213501 s
+00:07.563  blend            | Read blend: "C:\projects\games\necromancer-rise-html-game\blender\models\boss_fallenKing_v4.blend"
+
+LAB_EXPORT {"source": "rigged_player", "target": "lab_player_current", "actions": ["cast", "death", "idle", "walk"]}
+16:52:45 | INFO: Starting glTF 2.0 export
+16:52:45 | INFO: Extracting primitive: tripo_mesh_8cda5904-e7d1-4ea1-8394-ed96ecaa5636
+16:52:45 | INFO: Primitives created: 1
+16:52:45 | INFO: Extracting primitive: tripo_mesh_10dd61c5-2c2f-4eb4-9965-02fbf797a9e0
+16:52:45 | INFO: Primitives created: 1
+16:52:47 | INFO: Finished glTF 2.0 export in 2.836449384689331 s
+
+LAB_EXPORT {"source": "boss_fallenKing_v4", "target": "lab_fallen_king_v4", "actions": ["attack", "cast", "death", "idle", "recover", "slam", "slam_recover", "slam_windup", "walk", "windup"]}
+Blender 5.2.3 LTS (hash e13b728c6880 built 2026-10-22 01:37:16)
+
+Blender quit

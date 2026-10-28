@@ -4,3 +4,4 @@ blender/frames/
 blender/logs/
 blender/backups/
 blender/**/__pycache__/
+blender/**/*.blend1

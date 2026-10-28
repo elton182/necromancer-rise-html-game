@@ -1,0 +1,34 @@
+{
+  "cell": 256,
+  "ppu": 44.800000000000004,
+  "anchorX": 128.0,
+  "anchorY": 172.0,
+  "dirs": 8,
+  "anims": {
+    "slam_windup": {
+      "n": 6,
+      "fps": 6,
+      "loop": false,
+      "row": 0
+    },
+    "slam": {
+      "n": 9,
+      "fps": 12.5,
+      "loop": false,
+      "row": 8
+    },
+    "slam_recover": {
+      "n": 6,
+      "fps": 8,
+      "loop": false,
+      "row": 16
+    },
+    "idle": {
+      "n": 6,
+      "fps": 3,
+      "loop": true,
+      "row": 24
+    }
+  },
+  "source": "models/boss_fallenKing_v4.blend"
+}

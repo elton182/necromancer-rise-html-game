@@ -1,7 +1,7 @@
 # Elenco baseado na referência
 
 Atualização: Bram no mapa agora usa o recorte de pixels de `../examples/image.png`,
-extraído por `../bram_sprite_reference.py`. É uma única pose, sem animações ou
+extraído por `../scripts/bram_sprite_reference.py`. É uma única pose, sem animações ou
 vistas inventadas. Seus BLEND/GLB continuam como versões anteriores, não como
 a origem do sprite exibido. O empacotador atual preserva esse recorte.
 
@@ -37,21 +37,21 @@ A pele usa pesos rígidos normalizados por seção anatômica, articulações vo
 Na raiz do projeto, com Blender 4.3.2 e Python com Pillow:
 
 ```sh
-blender -b -t 4 --python-exit-code 1 --python blender/reference_characters.py -- --only=bram,zephyr,skeleton --preview
+blender -b -t 4 --python-exit-code 1 --python blender/scripts/reference_characters.py -- --only=bram,zephyr,skeleton --preview
 # Inspecionar os três primeiros antes de gerar as variantes.
-blender -b -t 4 --python-exit-code 1 --python blender/reference_characters.py
-python3 blender/pack_reference_characters.py
-blender -b -t 4 --python-exit-code 1 --python blender/validate_reference_characters.py
-blender -b -t 4 --python-exit-code 1 --python blender/reference_review.py
+blender -b -t 4 --python-exit-code 1 --python blender/scripts/reference_characters.py
+python3 blender/scripts/pack_reference_characters.py
+blender -b -t 4 --python-exit-code 1 --python blender/scripts/validate_reference_characters.py
+blender -b -t 4 --python-exit-code 1 --python blender/scripts/reference_review.py
 ```
 
 Nesta máquina o Blender está em `/tmp/blender-4.3.2-linux-x64/blender`. A opção `--only=bram,zephyr,skeleton` também funciona na geração completa e no empacotador. `--preview` escreve somente vistas de repouso em alta resolução; gere todos os quadros do personagem antes de empacotá-lo, para não misturar resoluções.
 
-Os modelos são exportados antes da conversão de materiais para toon. Zephyr conserva os materiais foscos e o estúdio salvo definidos em `../zephyr_materials.py`. O `.blend` e GLB conservam materiais PBR editáveis; os sprites usam sombreamento facetado, sem bloom. Os quadros de Zephyr têm área mestre maior para acomodar o cajado durante a morte. Todos os atlas de jogo têm células de 224 px com âncoras e escala compensadas.
+Os modelos são exportados antes da conversão de materiais para toon. Zephyr conserva os materiais foscos e o estúdio salvo definidos em `../scripts/zephyr_materials.py`. O `.blend` e GLB conservam materiais PBR editáveis; os sprites usam sombreamento facetado, sem bloom. Os quadros de Zephyr têm área mestre maior para acomodar o cajado durante a morte. Todos os atlas de jogo têm células de 224 px com âncoras e escala compensadas.
 
 ## Camada visual
 
-`blender/pack_reference_characters.py` troca somente os quatro registros `SPR.load` correspondentes no jogo principal. Os scripts de equipamentos/habilidades continuam independentes. Não execute os empacotadores de personagens antigos depois deste sem reexecutar o novo: eles substituem os mesmos registros de sprites.
+`blender/scripts/pack_reference_characters.py` troca somente os quatro registros `SPR.load` correspondentes no jogo principal. Os scripts de equipamentos/habilidades continuam independentes. Não execute os empacotadores de personagens antigos depois deste sem reexecutar o novo: eles substituem os mesmos registros de sprites.
 
 `scripts/character-visuals.js` escolhe animações a partir dos estados existentes e ativa os visuais da referência sob demanda. Não modifica dano, IA, custo de mana, colisores, seleção, posições de projéteis, tabelas de inimigos ou saves. As variantes não criam encontros, não renomeiam classes e não adicionam poderes ao Espectro.
 

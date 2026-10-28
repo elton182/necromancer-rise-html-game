@@ -30,6 +30,27 @@
 
 O sincronizador de equipamentos também executa o de árvores. Consulte sua lista de módulos para confirmar a cobertura; novos módulos precisam ser registrados explicitamente. Empacotadores de sprites têm seu próprio passo de incorporação ao HTML.
 
+## Onde salvar arquivos
+
+Cada arquivo novo vai para a pasta do seu tipo. Não salve assets, testes, capturas ou rascunhos na raiz do projeto nem na raiz de `blender/`.
+
+| Tipo de arquivo | Destino |
+| --- | --- |
+| Módulos de runtime, modelos de regra, testes, sincronizadores e `*-browser-check.js` | `scripts/` |
+| Páginas de teste, atalhos `?playerModel=` e ferramentas de inspeção | `tools/` |
+| Assets carregados pelo jogo fora do HTML (retratos, vila, catálogos de personagens) | `assets/<área>/` |
+| Scripts Blender, cenas, exports, atlas, quadros, prévias e notas de asset | Subpastas de `blender/`, conforme `blender/AGENTS.md` |
+| Evidências de validação: capturas, logs de teste e JSON de resultado | `review/`; use uma subpasta quando a entrega tiver muitos arquivos |
+| Documentação | `docs/` (regras vigentes em `docs/mecanicas/`, conceitos em `docs/concepts/`) |
+| Backups do HTML e arquivos à espera de remoção | `blender/backups/` (ignorado, usado pelos empacotadores) ou `_to_delete/` |
+| Saídas temporárias e rascunhos | Diretório temporário fora do repositório |
+
+- A raiz do projeto contém apenas `necromancer-canvas.html`, `index.html`, as versões antigas já existentes, `game_check.js`, `README.md`, `AGENTS.md` e configuração. Não acrescente páginas, backups ou imagens nela.
+- Siga a convenção de nomes da pasta: `kebab-case` em `scripts/`, `tools/`, `docs/`, `review/` e `assets/`; `snake_case` em `blender/`.
+- Prefira o Git a cópias como `*-backup`, `*-old` ou `*.before-*` ao lado da fonte atual. Quando um empacotador precisar de backup local, grave em pasta ignorada.
+- Pastas ignoradas como `Claude outputs/` não são fonte nem destino de entrega.
+- Ao mover um arquivo, use `git mv` se ele for versionado. Procure o caminho antigo em `scripts/`, `blender/`, `tools/`, `docs/`, `assets/` e nos README; atualize os scripts que resolvem o caminho e os comandos documentados. Não reescreva relatórios antigos em `review/` nem retratos históricos em `docs/` só para refletir a mudança.
+
 ## Como desenvolver uma mecânica
 
 1. Leia a implementação e o guia atual da área. Identifique a regra vigente antes de usar números de propostas antigas.

@@ -121,6 +121,44 @@ Referência da Arena Infinita:
 | 20 | ×8,61 | ×4,32 | ×2,11 | 50 |
 | 30 | ×26,75 | ×9,32 | ×3,12 | 60 (limite) |
 
+## Rei Caído — chefe único (atual)
+
+Por enquanto, todos os encontros de chefe usam o **Rei Caído**: as três missões,
+a emboscada final das trilhas da vila, o Capitão da Guarda (fase 4 da campanha),
+o Carcereiro das Almas (fim das expedições) e os líderes da Conquista. Cada
+encontro **mantém a vida, o dano, a XP, o loot e o fluxo** do chefe que ele
+substitui (por exemplo, 20 000 de vida na fase 4 e a escala de wave nas
+expedições). Mudam o nome, o sprite e os golpes. As tabelas das seções abaixo
+continuam valendo para os números de cada encontro; as IAs, fases, escudos,
+reforços e mecânicas regionais descritas nelas ficam desativadas. Abrir o jogo
+com `?bosses=classic` restaura os chefes anteriores.
+
+Fora dos golpes, ele persegue e usa o ataque corpo a corpo comum (alcance 2,2,
+a cada 1,6 s). Depois de cada golpe há 0,9 s antes do próximo. Direção e ponto
+de cada golpe são travados no início: andar para fora da marca ou usar o Dash
+durante o impacto evita o dano.
+
+| Golpe | Quando | Aviso | Efeito | Recarga |
+|---|---|---:|---|---:|
+| Corte Real | Alvo a até 2,8 u | 0,8 s | Cone de 120° e 2,8 u à frente; 1,5× o dano no quadro de contato (0,09 s após o aviso); 0,7 s de recuperação | 4,5 s |
+| Queda do Rei | Alvo entre 2,5 e 9 u | 1 s | Marca um círculo de raio 2,6 no ponto do alvo (até 7 u de distância), salta por 0,55 s e causa 2× ao pousar; fica 1 s exposto | 7 s |
+| Chamado da Coroa | Abaixo de 50% de vida, até 4 erguidos vivos | 1,2 s | Ergue dois Guerreiros ao lado dele | 14 s |
+
+- Aos 50% de vida, a coroa desperta uma vez: as recargas passam a 80% e o
+  Chamado da Coroa entra no ciclo.
+- Os Guerreiros erguidos contam para o fim da wave e se desfazem, sem
+  recompensa, quando o rei morre. Morrer cancela qualquer golpe armado.
+- A horda reconhece o cone do corte e o círculo do salto como perigo e tenta se
+  afastar.
+- Fontes: `scripts/fallen-king-model.js` (regras) e `scripts/fallen-king.js`
+  (conversão dos encontros, dano, avisos e desenho). Modelo editável:
+  `blender/models/boss_fallenKing_v4.blend`; pipeline em
+  [`blender/README.md`](../../blender/README.md#rei-caído--chefe-único).
+
+> Observação de balanceamento: os números dos golpes são a primeira proposta e
+> não passaram pelo `balance-simulator/`. A vida de cada encontro foi mantida,
+> então a fase 4 continua com 20 000 de vida, agora sem as fases de escudo.
+
 ## Chefes de missão
 
 Aparecem depois da última wave da missão. Usam IA corpo a corpo simples e têm

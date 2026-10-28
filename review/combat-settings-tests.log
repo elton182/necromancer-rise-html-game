@@ -1,0 +1,185 @@
+TAP version 13
+# Subtest: loot thresholds include higher rarities, preserve other drops and persist across reloads
+ok 1 - loot thresholds include higher rarities, preserve other drops and persist across reloads
+  ---
+  duration_ms: 16.8725
+  ...
+# Subtest: hidden loot skips proximity and exit collection, remains recoverable and never blocks leaving
+ok 2 - hidden loot skips proximity and exit collection, remains recoverable and never blocks leaving
+  ---
+  duration_ms: 5.0703
+  ...
+# Subtest: generated pieces validate at every rarity, slot and level; boss never common
+ok 3 - generated pieces validate at every rarity, slot and level; boss never common
+  ---
+  duration_ms: 52.8463
+  ...
+# Subtest: migration rejects invalid values, duplicate IDs, wrong slots and malformed bonuses
+ok 4 - migration rejects invalid values, duplicate IDs, wrong slots and malformed bonuses
+  ---
+  duration_ms: 1.2406
+  ...
+# Subtest: all item bases are flat; staff starts at 10–12 and scales independently of rarity
+ok 5 - all item bases are flat; staff starts at 10–12 and scales independently of rarity
+  ---
+  duration_ms: 6.1917
+  ...
+# Subtest: old saves convert percentage bases once while preserving affixes, slots and identities
+ok 6 - old saves convert percentage bases once while preserving affixes, slots and identities
+  ---
+  duration_ms: 0.5787
+  ...
+# Subtest: staff flat damage is added before percent and skill multipliers in live combat and preview
+ok 7 - staff flat damage is added before percent and skill multipliers in live combat and preview
+  ---
+  duration_ms: 12.0856
+  ...
+# Subtest: grimoire flat damage feeds basic attacks, commanded explosions and the status preview
+ok 8 - grimoire flat damage feeds basic attacks, commanded explosions and the status preview
+  ---
+  duration_ms: 5.3117
+  ...
+# Subtest: temporary skill and school ranks stack; no unlock, budget change, finals or direct synergies
+ok 9 - temporary skill and school ranks stack; no unlock, budget change, finals or direct synergies
+  ---
+  duration_ms: 0.5414
+  ...
+# Subtest: waves unlock only on valid completion; regression preserves best and lowers loot and threat
+ok 10 - waves unlock only on valid completion; regression preserves best and lowers loot and threat
+  ---
+  duration_ms: 0.4311
+  ...
+# Subtest: new wave records advance the next start; replaying an earlier wave preserves the chosen start
+ok 11 - new wave records advance the next start; replaying an earlier wave preserves the chosen start
+  ---
+  duration_ms: 0.2133
+  ...
+# Subtest: loading reconciles a stale wave selector with the saved arena record without trusting the global wave
+ok 12 - loading reconciles a stale wave selector with the saved arena record without trusting the global wave
+  ---
+  duration_ms: 0.5309
+  ...
+# Subtest: progressing from wave 5 to 10 survives saving and starts the arena at wave 10
+ok 13 - progressing from wave 5 to 10 survives saving and starts the arena at wave 10
+  ---
+  duration_ms: 2.9804
+  ...
+# Subtest: equip and unequip affect actual skill stats without healing or altering ranks/cooldowns
+ok 14 - equip and unequip affect actual skill stats without healing or altering ranks/cooldowns
+  ---
+  duration_ms: 4.8852
+  ...
+# Subtest: existing dead minions stay dead and retain recovery on equipment changes
+ok 15 - existing dead minions stay dead and retain recovery on equipment changes
+  ---
+  duration_ms: 4.1462
+  ...
+# Subtest: horde-life equipment increases existing allies HP and regen without restoring full health
+ok 16 - horde-life equipment increases existing allies HP and regen without restoring full health
+  ---
+  duration_ms: 6.9642
+  ...
+# Subtest: rings swap either hand, full bag cannot unequip, and equipped items cannot be sold
+ok 17 - rings swap either hand, full bag cannot unequip, and equipped items cannot be sold
+  ---
+  duration_ms: 4.3685
+  ...
+# Subtest: discard all requires confirmation, preserves worn gear/consumables and only removes listed items
+ok 18 - discard all requires confirmation, preserves worn gear/consumables and only removes listed items
+  ---
+  duration_ms: 5.1894
+  ...
+# Subtest: equipment boosts primary skills without multiplying invested cross synergies
+ok 19 - equipment boosts primary skills without multiplying invested cross synergies
+  ---
+  duration_ms: 0.472
+  ...
+# Subtest: shop checks village, gold and capacity before payment; buy/sell never creates profit
+ok 20 - shop checks village, gold and capacity before payment; buy/sell never creates profit
+  ---
+  duration_ms: 5.1469
+  ...
+# Subtest: spawn replaces legacy multipliers exactly once with active wave difficulty
+ok 21 - spawn replaces legacy multipliers exactly once with active wave difficulty
+  ---
+  duration_ms: 4.9275
+  ...
+# Subtest: completion updates record and guards duplicate rewards
+ok 22 - completion updates record and guards duplicate rewards
+  ---
+  duration_ms: 3.3855
+  ...
+# Subtest: normal enemies move and attack faster and prepare specials earlier without touching damage
+ok 23 - normal enemies move and attack faster and prepare specials earlier without touching damage
+  ---
+  duration_ms: 3.2819
+  ...
+# Subtest: boss drops exactly one magical-or-better piece and repeat deaths never duplicate it
+ok 24 - boss drops exactly one magical-or-better piece and repeat deaths never duplicate it
+  ---
+  duration_ms: 4.0274
+  ...
+# Subtest: equipment chance doubles while orb rules favor mana and suppress extra campaign rolls
+ok 25 - equipment chance doubles while orb rules favor mana and suppress extra campaign rolls
+  ---
+  duration_ms: 176.4624
+  ...
+# Subtest: collector isolates equipment from potions; full bags leave items on ground
+ok 26 - collector isolates equipment from potions; full bags leave items on ground
+  ---
+  duration_ms: 3.2909
+  ...
+# Subtest: cooldown applies only to successful casts and never resets an existing cooldown
+ok 27 - cooldown applies only to successful casts and never resets an existing cooldown
+  ---
+  duration_ms: 6.236
+  ...
+# Subtest: save migration recomputes equipped stats without accumulating bonuses
+ok 28 - save migration recomputes equipped stats without accumulating bonuses
+  ---
+  duration_ms: 5.0976
+  ...
+# Subtest: released HTML embeds sources once, orders equipment after trees, and has save bridges
+ok 29 - released HTML embeds sources once, orders equipment after trees, and has save bridges
+  ---
+  duration_ms: 708.4637
+  ...
+# Subtest: free hub can resume story before village unlock, preserving campaign and equipment
+ok 30 - free hub can resume story before village unlock, preserving campaign and equipment
+  ---
+  duration_ms: 4.0809
+  ...
+# Subtest: return from a wave requires confirmation; cancel preserves free mode and success collects drops
+ok 31 - return from a wave requires confirmation; cancel preserves free mode and success collects drops
+  ---
+  duration_ms: 4.2752
+  ...
+# Subtest: status preview matches equipped stats without changing HP, ranks, loadout or cooldowns
+ok 32 - status preview matches equipped stats without changing HP, ranks, loadout or cooldowns
+  ---
+  duration_ms: 5.4654
+  ...
+# Subtest: DPS separates summon attacks, burst and revive limits; utility skills have no invented damage
+ok 33 - DPS separates summon attacks, burst and revive limits; utility skills have no invented damage
+  ---
+  duration_ms: 3.579
+  ...
+# Subtest: catch-up drops: gear at wave level never rolls above it; lagging gear rolls higher, more often, toward the weakest slot
+ok 34 - catch-up drops: gear at wave level never rolls above it; lagging gear rolls higher, more often, toward the weakest slot
+  ---
+  duration_ms: 0.6078
+  ...
+# Subtest: test settings scale existing enemies once, preserve health and restore zero damage
+ok 35 - test settings scale existing enemies once, preserve health and restore zero damage
+  ---
+  duration_ms: 3.1803
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1311.0787

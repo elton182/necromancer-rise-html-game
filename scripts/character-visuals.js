@@ -67,12 +67,38 @@ function idleVariation(ref,state,clip,o){
  if(time-state.variationAt<length)return true;
  state.variationAt=time+7+Math.random()*8;return false;
 }
+// Measure once per atlas in a neutral pose; never resize from an attack/death frame.
+const visualHeights=new WeakMap();
+function visibleHeight(sheet){
+ if(visualHeights.has(sheet))return visualHeights.get(sheet);
+ const m=sheet.meta,c=m.cell,canvas=document.createElement('canvas');canvas.width=canvas.height=c;
+ const painter=canvas.getContext('2d',{willReadFrequently:true}),heights=[];
+ for(let d=0;d<(m.dirs||8);d++){
+  painter.clearRect(0,0,c,c);painter.drawImage(sheet.img,0,(m.anims.idle.row+d)*c,c,c,0,0,c,c);
+  const pixels=painter.getImageData(0,0,c,c).data;let top=c;
+  for(let y=0;y<m.anchorY;y++){let count=0;for(let x=0;x<c;x++)if(pixels[(y*c+x)*4+3]>160)count++;
+   if(count>=Math.max(3,c*.025)){top=y;break;}}
+  if(top<m.anchorY)heights.push((m.anchorY-top)/m.ppu);
+ }
+ heights.sort((a,b)=>a-b);const height=heights[Math.floor(heights.length/2)]||2;
+ visualHeights.set(sheet,height);return height;
+}
+function equalizedScale(key,sheet,o){
+ const playerSheet=SPR.sheets.necro;
+ if(key==='necro'||!playerSheet?.ok||!sheet.ok)return o;
+ const target=visibleHeight(playerSheet)*ALLY_VISUAL_SCALE.necro;
+ // Keep recognizable large creatures, compressing the previous scale differences.
+ const large=['abom','brute','reference_corrupted','soulWarden'].includes(key)?1.18:1;
+ const low=['cryptHound','reference_shadow_wolf'].includes(key)?.70:1;
+ return {...o,scale:target*large*low/visibleHeight(sheet)};
+}
 const draw=drawSprite;
 drawSprite=function(key,ref,options){
  let o=options||{};const originalKey=key;
  if(defaults[key]&&!overrides.has(key)&&!disabled.has(key))ensure(key);
  key=overrides.get(key)||key;
  const sheet=SPR.sheets[key],a=sheet?.meta.anims;if(!a)return draw(key,ref,o);
+ o=equalizedScale(key,sheet,o);
  // The supplied Bram sheet contains exactly one real pose, never fabricated directions.
  if(sheet.meta.staticReference){animateStaticSprite(key,ref,o);return;}
  let state=states.get(ref);if(!state){state={hit:0,hurtAt:-Infinity};states.set(ref,state);}
@@ -123,9 +149,11 @@ drawSprite=function(key,ref,options){
     else if(a.idle)o={...o,anim:'idle',animTime:swing(a.idle,time),face:facing};
     else o={...o,face:facing};
    }
-   else if(a.idle_variation&&idleVariation(ref,state,a.idle_variation,o))o={...o,anim:'idle_variation',animTime:time-state.variationAt};
+   else if((originalKey!=='zombie'||gameState==='hub')&&a.idle_variation&&idleVariation(ref,state,a.idle_variation,o))o={...o,anim:'idle_variation',animTime:time-state.variationAt};
   }
  }
- return draw(key,ref,o);
+ ctx.save();
+ if(originalKey!=='necro'&&!(ref.hit>0))ctx.filter='saturate(1.16) contrast(1.06)';
+ try{return draw(key,ref,o);}finally{ctx.restore();}
 };
 })();

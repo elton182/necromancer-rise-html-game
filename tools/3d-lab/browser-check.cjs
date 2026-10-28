@@ -1,0 +1,24 @@
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url');
+(async()=>{const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],remote=[];
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d-lab.html')).href);
+ await page.waitForFunction(()=>!!window.lab3d,{timeout:60000});
+ assert.equal(await page.evaluate(()=>lab3d.actors.length),16);
+ assert.deepEqual(await page.evaluate(()=>Object.keys(lab3d.models)),['necromante','mob_skeleton','mob_zombie','fallen_king']);
+ assert.ok(await page.evaluate(()=>lab3d.actors.find(a=>a.team==='player').actions.cast));
+ assert.ok(await page.evaluate(()=>lab3d.actors.find(a=>a.boss).actions.slam));
+ const before=await page.evaluate(()=>lab3d.playerPos.toArray());await page.keyboard.down('KeyD');await page.waitForTimeout(400);await page.keyboard.up('KeyD');assert.notDeepEqual(await page.evaluate(()=>lab3d.playerPos.toArray()),before);
+ await page.evaluate(()=>{lab3d.aim.copy(lab3d.actors.find(a=>a.team==='enemy').pivot.position);lab3d.cast();});await page.waitForTimeout(600);assert.ok(await page.evaluate(()=>lab3d.hits>0));
+ await page.screenshot({path:path.resolve(__dirname,'../../review/3d-lab-dark.png')});
+ await page.selectOption('#horde','64');await page.selectOption('#ground','light');await page.selectOption('#quality','low');await page.waitForTimeout(1000);assert.equal(await page.evaluate(()=>lab3d.actors.length),74);assert.equal(await page.evaluate(()=>lab3d.renderer.shadowMap.enabled),false);
+ await page.screenshot({path:path.resolve(__dirname,'../../review/3d-lab-light-horde-low.png')});
+ await page.click('#reset');assert.equal(await page.evaluate(()=>lab3d.hp),100);
+ await page.evaluate(()=>{for(const a of lab3d.actors)if(a.team!=='player'&&!a.boss)a.hp=0;const b=lab3d.actors.find(a=>a.boss);b.pivot.position.copy(lab3d.playerPos).add({x:0,y:0,z:-2});});
+ await page.waitForTimeout(1100);assert.equal(await page.evaluate(()=>lab3d.hp),75);
+ await page.screenshot({path:path.resolve(__dirname,'../../review/3d-lab-fallen-king.png')});
+ await page.click('#reset');await page.evaluate(()=>{for(const a of lab3d.actors)if(a.team!=='player'&&!a.boss)a.hp=0;lab3d.actors.find(a=>a.boss).pivot.position.copy(lab3d.playerPos).add({x:0,y:0,z:-2});});
+ await page.waitForTimeout(200);await page.evaluate(()=>lab3d.playerPos.x+=6);await page.waitForTimeout(900);assert.equal(await page.evaluate(()=>lab3d.hp),100);
+ assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
+ console.log('OK: file:// offline, modelos, movimento, magia com dano, 64 aliados, fundo claro, qualidade baixa, reinício e ausência de erros.');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

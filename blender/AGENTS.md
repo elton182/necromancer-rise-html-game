@@ -6,18 +6,24 @@ Estas regras complementam o `AGENTS.md` da raiz para arquivos em `blender/`. Con
 
 | Pasta | Conteúdo |
 | --- | --- |
-| `scripts/` | Geradores Python de modelos, rigs, ações, render e empacotamento |
+| `scripts/` | Todos os scripts Python: modelos, rigs, ações, render, empacotamento, validação e inspeção |
 | `models/` | Cenas editáveis `.blend` |
 | `exports/` | Exportações `.glb` |
-| `spritesheets/` | Atlas `.webp` e metadados `.json` |
-| `previews/` | Pranchas e imagens de conferência |
-| `frames/` | Quadros intermediários de render |
+| `spritesheets/` | Atlas `.webp`, metadados `.json` e atlas 2D de origem a fatiar |
+| `previews/` | Pranchas, GIFs, imagens de conferência e JSON de validação de prévia |
+| `frames/<asset>/` | Quadros intermediários de render e o `render.json` que os descreve |
+| `reference/` | Pipeline dos personagens de referência, com estrutura própria descrita em `reference/README.md` |
+| `examples/` | Imagens fornecidas pelo usuário e poses pintadas que os scripts leem |
+| `notes/` | Notas de estudo e de teste de assets, com caminhos relativos a `blender/` |
 | `logs/`, `backups/` | Logs e backups locais |
 
-- Preserve esta estrutura. Scripts devem resolver caminhos a partir de sua localização, como os geradores atuais, e funcionar quando invocados da raiz do projeto.
+- Preserve esta estrutura. A raiz de `blender/` contém só `README.md`, `AGENTS.md` e as pastas acima; não grave scripts, cenas, exports, atlas, quadros ou prévias nela.
+- Scripts ficam em `scripts/` e resolvem caminhos a partir de sua localização (`Path(__file__).resolve().parents[1]` é `blender/`), funcionando quando invocados da raiz do projeto. Não use o diretório atual nem caminhos absolutos.
+- `frames/`, `logs/`, `backups/` e os `.blend1` automáticos do Blender são ignorados pelo Git. Os quadros `frames/frames_villager_*` e `frames/frames_stylized_*` já eram versionados como fonte dos atlas da vila e continuam assim; não versione quadros novos.
+- Iterações experimentais (`_v2`, `_teste`) seguem as mesmas pastas. Ao aprovar uma versão, registre no `README.md` qual é a atual; não apague as anteriores sem pedido.
 - Entregue a fonte editável e um caminho reproduzível de geração. Não entregue apenas uma imagem achatada para substituir um personagem animado.
 - Use `scripts/common.py` para os utilitários compatíveis de malha, rig, materiais, animação e exportação. Confira os exemplos atuais antes de inventar outra estrutura.
-- Não apague cenas, exports ou backups existentes como parte de uma geração. Quadros intermediários e logs são ignorados pelo Git; não inclua milhares de frames na entrega.
+- Não apague cenas, exports ou backups existentes como parte de uma geração. Não inclua milhares de frames na entrega.
 
 ## Direção visual
 

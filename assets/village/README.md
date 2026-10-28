@@ -1,6 +1,6 @@
 # Vila de Eldrin — cenário modular feito no Blender
 
-A fonte editável é `blender/village_eldrin.blend`. As coleções `KIT_*` guardam
+A fonte editável é `blender/models/village_eldrin.blend`. As coleções `KIT_*` guardam
 peças reutilizáveis; `VILLAGE_LAYOUT` usa instâncias e `GROUND` contém o piso.
 A câmera elevada, os materiais, as luzes de janela/lanterna e as sombras estão
 configurados no arquivo. A imagem `village-preview.png` é um render real dessa
@@ -10,8 +10,8 @@ como fundo do jogo.
 ## Produção
 
 ```sh
-blender -b -t 4 --python blender/village_environment.py
-python3 blender/pack_village_environment.py
+blender -b -t 4 --python blender/scripts/village_environment.py
+python3 blender/scripts/pack_village_environment.py
 node scripts/village-environment-browser-check.js
 node scripts/npc-dialog-browser-check.js
 node game_check.js

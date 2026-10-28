@@ -20,6 +20,8 @@ Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.m
 |---|---|
 | [arvores-habilidades-implementacao.md](arvores-habilidades-implementacao.md) | Integração das árvores ao jogo, migração de saves e verificação |
 | [guia-visual-combate.md](guia-visual-combate.md) | Escala, contraste e regras visuais dos efeitos; arena de comparação |
+| [v2-saves.md](v2-saves.md) | Cenas, contrato de save da v2, importação preservada e limites da integração |
+| [v2-movimento.md](v2-movimento.md) | Colisões, navegação, câmera/mira, poses e controle da v2 |
 | [refactoring-baseline.md](refactoring-baseline.md) | Linha de base da refatoração: testes, fontes do HTML, dependências externas e problemas registrados |
 | [character-regeneration-inventory.md](character-regeneration-inventory.md) | Inventário dos personagens para a regeneração low-poly: fontes, atlas, animações, contratos e pipelines |
 | [character-regeneration-review.md](character-regeneration-review.md) | Revisão do Lote 1 (zumbi, arqueiro inimigo, Bram): metadados de impacto, testes, antes/depois e pendências |
@@ -33,6 +35,7 @@ o estado atual está nos guias de mecânicas.
 
 | Documento | Conteúdo | Situação |
 |---|---|---|
+| [../v2/plano-migracao.md](../v2/plano-migracao.md) | Migração completa para modelos 3D: etapas, critérios, fontes e ponto de retomada | E3 concluída: movimento, câmera, colisões e animações; próxima etapa E4 |
 | [plano-endgame-valdoria.md](plano-endgame-valdoria.md) | Conquista territorial, influência, maldições e pântano de decomposição | Primeira região jogável; expansão e alquimia planejadas |
 | [roadmap-combate-visual.md](roadmap-combate-visual.md) | Roadmap de animações de skills e novos inimigos | Ativo: primeiro pacote concluído, próximo é SK-02 (Dash) |
 | [plano-equipamentos-waves.md](plano-equipamentos-waves.md) | Plano de equipamentos, loot e waves | Primeira versão jogável implementada |

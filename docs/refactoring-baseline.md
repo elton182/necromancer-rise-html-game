@@ -115,8 +115,8 @@ Aprovados (20): `brute`, `cast-animations`, `crypt-hound`, `defense`, `endgame`,
 | `game_check.js` | Cenários de regras: extrai funções do HTML e roda em `vm` |
 | `index.html` | Redireciona para `necromancer-canvas.html` (GitHub Pages) |
 | `necromancer-game.html`, `necromancer-demo.html` | Versões antigas. `necromancer-game.html` também referencia `scripts/npc-dialogue.js` |
-| `necromancer-canvas.sprites-backup.html`, `_to_delete/` | Backups; não são fontes |
-| `blender/` | Pipeline organizado (`scripts/`, `models/`, `spritesheets/`) e pipeline dos NPCs da vila na raiz da pasta |
+| `_to_delete/` | Backups (inclui `necromancer-canvas.sprites-backup.html`); não são fontes |
+| `blender/` | Pipeline organizado (`scripts/`, `models/`, `exports/`, `spritesheets/`, `previews/`, `frames/`); regras em `blender/AGENTS.md` |
 | `review/` | Evidências gravadas pelos testes de navegador |
 | `AGENTS.md`, `scripts/AGENTS.md`, `docs/AGENTS.md`, `blender/AGENTS.md` | Regras do repositório |
 
@@ -135,10 +135,10 @@ Cada marcador aparece exatamente uma vez no HTML.
 Atualizam a linha `SPR.load('<chave>',…)` correspondente:
 
 - `blender/scripts/pack_undead.py`, `pack_bone_shard.py`, `pack_crypt_hound.py`, `pack_soul_warden.py`, `pack_war_acolyte.py`.
-- `blender/pack_village_npcs.py`, `pack_stylized_characters.py`, `pack_reference_characters.py`.
+- `blender/scripts/pack_village_npcs.py`, `pack_stylized_characters.py`, `pack_reference_characters.py`.
 
-`blender/pack_village_environment.py` gera `assets/village/*` e `scripts/village-kit-data.js`.
-`assets/characters/reference/catalog.js` (3,4 MB) é gerado por `blender/pack_reference_characters.py`.
+`blender/scripts/pack_village_environment.py` gera `assets/village/*` e `scripts/village-kit-data.js`.
+`assets/characters/reference/catalog.js` (3,4 MB) é gerado por `blender/scripts/pack_reference_characters.py`.
 
 ## 5. Dependências externas
 

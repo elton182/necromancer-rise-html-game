@@ -1,0 +1,62 @@
+{
+  "player": {
+    "path": "blender/exports/lab_player_current.glb",
+    "source": "blender/models/rigged_player.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "cast",
+      "death"
+    ],
+    "durations": {
+      "idle": 1,
+      "walk": 0.6666666667,
+      "cast": 0.375,
+      "death": 0.8
+    },
+    "stride": 1.5
+  },
+  "skeleton": {
+    "path": "blender/reference/skeleton.glb",
+    "source": "blender/reference/skeleton.glb",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "zombie": {
+    "path": "blender/exports/lowpoly_zombie.glb",
+    "source": "blender/models/lowpoly_zombie.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "stride": 1.2
+  },
+  "fallenKing": {
+    "path": "blender/exports/lab_fallen_king_v4.glb",
+    "source": "blender/models/boss_fallenKing_v4.blend",
+    "height": 3.2,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "windup",
+      "attack",
+      "recover",
+      "cast",
+      "death",
+      "slam_windup",
+      "slam",
+      "slam_recover"
+    ],
+    "stride": 1.8
+  }
+}

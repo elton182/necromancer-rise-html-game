@@ -1,0 +1,90 @@
+{
+  "stage": "E3",
+  "threeVersion": "0.180.0",
+  "inputs": [
+    {
+      "path": "tools/3d-lab/vendor/three.core.js",
+      "sha256": "eb077d2417f61d3e6d9264c317cabc4ea35769ed6b0ab533067292a550784c20"
+    },
+    {
+      "path": "tools/3d-lab/vendor/three.module.js",
+      "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a"
+    },
+    {
+      "path": "tools/3d-lab/vendor/BufferGeometryUtils.js",
+      "sha256": "fda7e946b8e0b5ab39b779206589e7a1079a22eb24efb89d7223e03fdfb1f751"
+    },
+    {
+      "path": "tools/3d-lab/vendor/GLTFLoader.js",
+      "sha256": "67ac5551fdafa6e349bd80c8f8e5e39c136d6b2fb1ad647db9abb21dc86f9e4a"
+    },
+    {
+      "path": "tools/3d-lab/vendor/SkeletonUtils.js",
+      "sha256": "0761b1e003917b215d25dd81439d854b36034b5a57ce84c2cfe3b02428d7b253"
+    },
+    {
+      "path": "v2/scripts/terrain.mjs",
+      "sha256": "c29cccde9e37015e360f4fc1f2ce04f16b006487061408b492bb5619499db8fc"
+    },
+    {
+      "path": "v2/scripts/gamepad.mjs",
+      "sha256": "22422453780123490405103a86cbbc4182a539225024a08a613c23625788ef3f"
+    },
+    {
+      "path": "v2/scripts/training-model.mjs",
+      "sha256": "ddfe4f52e64932d66c1462311e0971829133e82e6abbf6ad6a575276cf5df93e"
+    },
+    {
+      "path": "v2/scripts/renderer.mjs",
+      "sha256": "698ac94fa11ee8ccfac3f003e4bd82bcdb8c05c220094c1cffab0c85e3920583"
+    },
+    {
+      "path": "v2/scripts/input.mjs",
+      "sha256": "a09d07bc099d857db2db3afeb62a1796379e71d243894c30b24f353cf0718b94"
+    },
+    {
+      "path": "v2/scripts/save-model.mjs",
+      "sha256": "e61254bcb020b17edb6038ba2d532398a5472e069f6dde0c61e83f38e5459589"
+    },
+    {
+      "path": "v2/scripts/session.mjs",
+      "sha256": "7bb8fbaff3fdacb53f855d645c972e00635e3fe2b747cc756293e50acbef484e"
+    },
+    {
+      "path": "v2/scripts/app.mjs",
+      "sha256": "65de72aced4a56a6ea84f2a20ee1cdfc2a17a58187353320d8a58c5cd17ad8da"
+    },
+    {
+      "path": "v2/assets/models.json",
+      "sha256": "702f4a2bbf1216fd940d6d0851bae767b32b8c2a2373c1251a54ad71b80967d9"
+    },
+    {
+      "path": "blender/exports/lab_player_current.glb",
+      "sha256": "06d3d7c2ea36b7a87c02d5cddd78eb16646b3efed61ea6110aa48fae2f3dd17c"
+    },
+    {
+      "path": "blender/reference/skeleton.glb",
+      "sha256": "212195bfd45e5ee5fabbb15116fe40d19fea470a9b04e4ceafcefa1e9f57833c"
+    },
+    {
+      "path": "blender/exports/lowpoly_zombie.glb",
+      "sha256": "57db10f03d8cb6006c691409d68acec04f018bc51b0b991fcd676678d136dcef"
+    },
+    {
+      "path": "blender/exports/lab_fallen_king_v4.glb",
+      "sha256": "6045be8069de506d84a4a3c601348af7304f870ddbe6de0c9e268e577cb585a7"
+    },
+    {
+      "path": "v2/tools/template.html",
+      "sha256": "3ae37969157b8f71b4a5b030cb74998e9ddd673ff23e6edf836c2216023d9c83"
+    },
+    {
+      "path": "v2/scripts/game.css",
+      "sha256": "2eca62b3f335aee6fd20c44fa6a302997dabb7f0a491caa53e44363ffc529cad"
+    },
+    {
+      "path": "v2/scripts/save.css",
+      "sha256": "30cef48c50ba8dae228c417a4d337503569c04b0b893e00f9eb92c3c874b448f"
+    }
+  ]
+}

@@ -82,6 +82,41 @@ node scripts/crypt-hound-browser-check.js
 
 Se Blender não estiver no PATH, use o executável da instalação local. `previews/preview_crypt_hound.png` mostra todas as direções e as sete ações.
 
+# Rei Caído — chefe único
+
+Modelo e espada importados (`models/boss_fallenKing_v3_teste.blend`) com dez
+ações recriadas por `scripts/animate_fallen_king_v4.py`: idle, walk, windup,
+attack, recover, cast, death e o golpe saltado com as duas mãos (slam_windup,
+slam, slam_recover). As pernas usam IK com o joelho sobre o pé, cada quadro é
+travado no chão e o quadro de impacto fica registrado na ação (`attack` 5,
+`slam` 14). O mesmo gerador realça a textura (saturação, contraste e brilho
+ciano nas runas) e usa a transformação de cor Standard. O resultado é
+`models/boss_fallenKing_v4.blend`; o relatório de contato fica em
+`previews/fallen_king_v4_validation.json`.
+
+```powershell
+blender --background --python blender/scripts/animate_fallen_king_v4.py
+blender --background --threads 4 --python blender/scripts/render_fallen_king_v4_review.py -- preview
+blender --background --threads 4 --python blender/scripts/render_fallen_king_v4_review.py
+python blender/scripts/pack_fallen_king_v4_review.py
+blender --background --threads 4 --python blender/scripts/render_fallen_king.py -- preview
+blender --background --threads 4 --python blender/scripts/render_fallen_king.py
+python blender/scripts/pack_fallen_king.py
+node scripts/sync-equipment.js
+node --test scripts/fallen-king.test.js
+node scripts/fallen-king-browser-check.js
+```
+
+Os GIFs de revisão (`previews/fallen_king_v4_*.gif`) usam câmera fixa por grupo
+e sombra no chão só para conferir contato. Os sprites usam Cycles com os
+materiais realçados da cena, não o toon compartilhado. O corpo é normalizado
+para 2,25 u; os mestres têm 320 px, 56 px/u e âncora (160, 215). O
+empacotador reduz para células de 256 px (44,8 px/u, âncora 128 / 172), valida
+quadros vazios, cortados ou repetidos e grava dois atlas para respeitar o
+limite de 16384 px: `fallenKing` (sete ações) e `fallenKingSlam` (golpe saltado,
+mais uma cópia de idle exigida por `drawSprite`). `previews/preview_fallen_king.png`
+mostra todas as ações nas oito direções.
+
 # Carcereiro das Almas — boss das expedições
 
 `scripts/soul_warden.py` constrói um chefe original com armadura, crânio coroado,
@@ -113,14 +148,14 @@ Suas regras ficam em `scripts/soul-warden-model.js` e `scripts/soul-warden.js`.
 
 # Retratos de diálogo dos NPCs
 
-`npc_portraits.py` cria quatro bustos exclusivos para as conversas: Bram (ferreiro
+`scripts/npc_portraits.py` cria quatro bustos exclusivos para as conversas: Bram (ferreiro
 forte, avental de couro e martelo), Lysa (anciã de xale e cajado), Tilda (aldeã
 jovem com tranças) e mercador (roupas verdes, medalhão e livro de contas).
-Os modelos `npc_*.blend` incluem materiais, câmera e iluminação editáveis.
+Os modelos `models/npc_*.blend` incluem materiais, câmera e iluminação editáveis.
 Não substituem os sprites dos personagens no mapa.
 
 ```sh
-blender --background --threads 4 --python blender/npc_portraits.py
+blender --background --threads 4 --python blender/scripts/npc_portraits.py
 node game_check.js
 node scripts/npc-dialog-browser-check.js
 ```
@@ -134,17 +169,16 @@ versão. Prompts e detalhes das imagens atuais: `assets/npc-portraits/README.md`
 
 # Moradores animados no mapa
 
-`village_npcs.py` gera os quatro personagens de corpo inteiro em
-`villager_bram.blend`, `villager_lysa.blend`, `villager_tilda.blend` e
-`villager_merchant.blend`, com esqueleto, materiais, câmera e ações `idle` e
+`scripts/village_npcs.py` gera os quatro personagens de corpo inteiro em
+`models/villager_<id>.blend` (`bram`, `lysa`, `tilda` e `merchant`), com esqueleto, materiais, câmera e ações `idle` e
 `greet`. Os GLB incluem as animações. A roupa e os traços seguem os retratos:
 camisa de linho, barba e avental no ferreiro; cabelos prateados, xale e cajado
 na anciã; tranças e vestido vermelho em Tilda; casaco verde e livro no mercador.
 As pinturas dos diálogos permanecem estáticas; as animações são dos NPCs no mapa.
 
 ```sh
-blender -b -t 4 --python blender/village_npcs.py
-python3 blender/pack_village_npcs.py
+blender -b -t 4 --python blender/scripts/village_npcs.py
+python3 blender/scripts/pack_village_npcs.py
 node scripts/npc-dialog-browser-check.js
 node game_check.js
 ```
@@ -153,28 +187,28 @@ São 512 quadros transparentes: quatro moradores × duas ações × oito direç�
 oito quadros. O empacotador verifica movimento e recortes, grava os WebP e
 substitui somente os registros existentes `smith`, `elder`, `tilda` e `merch`.
 A ação `greet` ocupa a entrada `attack` do renderizador existente e aparece
-quando o jogador se aproxima. `preview_village_npcs.png` permite comparar as
+quando o jogador se aproxima. `previews/preview_village_npcs.png` permite comparar as
 poses. Acrescente `-- --preview` ao comando Blender para renderizar só a frente
 de cada personagem; execute a renderização completa antes de empacotar.
 
-Bram tem uma linha extra, `recover` (`frames_villager_bram/03_*.png`), que liga o
+Bram tem uma linha extra, `recover` (`frames/frames_villager_bram/03_*.png`), que liga o
 descanso no martelo à respiração: os quadros reais do descanso em ordem inversa
-(ele se endireita) e três poses pintadas em `bram_recover_keys/` (ergue o
+(ele se endireita) e três poses pintadas em `examples/bram_recover_keys/` (ergue o
 martelo, passa-o pela frente do avental e baixa-o ao lado da mão do repouso).
 O jogo toca as poses pintadas também ao contrário antes do descanso, para pegar
 o martelo. Para refazer:
 
 ```sh
-python3 blender/bram_recover_frames.py
-python3 blender/pack_village_npcs.py --only=bram
+python3 blender/scripts/bram_recover_frames.py
+python3 blender/scripts/pack_village_npcs.py --only=bram
 ```
 
 # Cenário modular da Vila de Eldrin
 
-`village_environment.py` cria a cena editável `village_eldrin.blend`, com casas
+`scripts/village_environment.py` cria a cena editável `models/village_eldrin.blend`, com casas
 modulares de madeira e reboco, telhados em volume com telhas, forja, poço,
 banca, quadros de aviso, lanternas, árvores, flores, cercas e pavimento organizado.
-`pack_village_environment.py` valida os renders e produz WebP e metadados para
+`scripts/pack_village_environment.py` valida os renders e produz WebP e metadados para
 o Canvas, preservando o layout e a posição das interações. A fonte usa câmera
 elevada, luz ambiente, luz quente de janelas e lanternas e sombras suaves.
 
@@ -183,9 +217,8 @@ Instruções e detalhes: `assets/village/README.md`.
 # Estilo atual dos personagens — referência low poly com contorno
 
 A versão atual dos quatro NPCs e de Zephyr é gerada por
-`stylized_characters.py`. Os arquivos `stylized_bram.blend`,
-`stylized_lysa.blend`, `stylized_tilda.blend`, `stylized_merchant.blend` e
-`stylized_zephyr.blend` incluem malhas facetadas, materiais foscos, câmera e
+`scripts/stylized_characters.py`. Os arquivos `models/stylized_<id>.blend` (`bram`,
+`lysa`, `tilda`, `merchant` e `zephyr`) incluem malhas facetadas, materiais foscos, câmera e
 esqueleto. Os GLB incluem as ações: `idle` e `greet` nos moradores;
 `idle`, `walk`, `cast` e `death` em Zephyr.
 
@@ -195,33 +228,34 @@ túnica violeta simples e cajado de madeira com ponta clara. O contorno escuro
 é aplicado ao canal alfa no empacotamento, sem linhas internas excessivas.
 
 ```sh
-blender -b -t 4 --python blender/stylized_characters.py
-python3 blender/pack_stylized_characters.py
+blender -b -t 4 --python blender/scripts/stylized_characters.py
+python3 blender/scripts/pack_stylized_characters.py
 node scripts/stylized-characters-browser-check.js
 node game_check.js
 ```
 
 São 800 quadros em oito direções. O empacotador verifica todos os recortes e
 as ações e substitui somente `necro`, `smith`, `elder`, `tilda` e `merch` no
-HTML. `*_render.json` descreve os PNGs mestres; `*_sheet.json` descreve os
+HTML. `frames/frames_stylized_<id>/render.json` descreve os PNGs mestres;
+`spritesheets/stylized_<id>_sheet.json` descreve os
 WebP usados no jogo. Zephyr tem mestres maiores para acomodar a queda, mas
 o atlas final mantém as dimensões originais de 2240 × 7168 e a escala no mapa.
 As âncoras e os pixels por unidade são ajustados juntos na redução.
 
-`preview_stylized_characters.png` amplia três vistas dos cinco personagens.
+`previews/preview_stylized_characters.png` amplia três vistas dos cinco personagens.
 `-- --preview` no Blender renderiza somente as vistas de inspeção; a execução
 completa deve ocorrer antes do empacotamento. Os scripts e modelos anteriores
 permanecem como histórico; use estes comandos para regenerar o visual atual.
 
 ## Reconstrução pela referência do ferreiro
 
-A geometria atual é definida em `character_sculpt.py`, com seções de malha
+A geometria atual é definida em `scripts/character_sculpt.py`, com seções de malha
 modeladas para o peito, barriga, avental curvo, mangas bufantes, punhos, botas,
 rosto, barba e mechas de cabelo. A renderização usa Cycles com materiais em
 três faixas de luz, câmera de 32 graus e contorno aplicado no empacotamento.
 Não usa mais o sombreamento de estúdio do Workbench para os personagens.
 
-Os cinco `stylized_*.blend` são editáveis e os respectivos GLB mantêm os rigs e
+Os cinco `models/stylized_*.blend` são editáveis e os respectivos GLB mantêm os rigs e
 as animações. Os GLB são exportados antes da conversão para materiais de render,
 conservando suas cores de base em outros visualizadores. Os PNGs mestres dos
 moradores usam 256 px; todos os atlas finais mantêm células de 224 px e a escala
@@ -235,13 +269,13 @@ O jogador conserva as oito direções para movimento e combate.
 Inspeção rápida de um modelo:
 
 ```sh
-blender -b -t 4 --python blender/stylized_characters.py -- --preview --only=bram
+blender -b -t 4 --python blender/scripts/stylized_characters.py -- --preview --only=bram
 ```
 
 Depois de uma inspeção parcial, execute a geração completa antes de empacotar.
 As capturas `review/stylized-characters-in-game.png` e
 `review/stylized-characters-closeup.png` mostram os sprites integrados ao jogo;
-`preview_stylized_characters.png` amplia as vistas de inspeção. Os testes
+`previews/preview_stylized_characters.png` amplia as vistas de inspeção. Os testes
 verificam carregamento, rig/animações e comportamento; a avaliação de semelhança
 artística é feita pelas imagens, separadamente desses testes funcionais.
 
@@ -293,21 +327,21 @@ também gravam `smith` e desfazem este Bram.
 ## Elenco da referência: fluxo atual
 
 A implementação atual de Zephyr, esqueletos e variantes propostas (o Bram ativo vem do atlas 2.5D, acima) está em
-[`reference/README.md`](reference/README.md). Use `reference_characters.py` e
-`pack_reference_characters.py` para regenerar esses personagens; os empacotadores
+[`reference/README.md`](reference/README.md). Use `scripts/reference_characters.py` e
+`scripts/pack_reference_characters.py` para regenerar esses personagens; os empacotadores
 anteriores ficam como histórico e podem sobrescrever o visual atual.
 
 ### Bram conforme a referência enviada
 
-`bram_reference.py` define a malha exclusiva do ferreiro: barba cinza, cabelo
+`scripts/bram_reference.py` define a malha exclusiva do ferreiro: barba cinza, cabelo
 castanho, camisa de linho com mangas dobradas, mãos expostas, braçadeiras,
 avental longo com rebites e martelo de cabeça vertical. A geração atual usa
 `reference_characters.py` com iluminação de estúdio para Bram e conserva as
 animações de repouso, saudação e martelada em oito direções.
 
 ```sh
-blender -b -t 4 --python blender/reference_characters.py -- --only=bram
-python3 blender/pack_reference_characters.py --only=bram
+blender -b -t 4 --python blender/scripts/reference_characters.py -- --only=bram
+python3 blender/scripts/pack_reference_characters.py --only=bram
 ```
 ## Cel shading compartilhado
 

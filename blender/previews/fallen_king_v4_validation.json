@@ -1,0 +1,118 @@
+{
+  "idle": {
+    "frames": 48,
+    "fps": 24,
+    "loop": true,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0005,
+    "swordLowest": 0.4683
+  },
+  "walk": {
+    "frames": 32,
+    "fps": 24,
+    "loop": true,
+    "footSlip": 0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0005,
+    "swordLowest": 0.4526
+  },
+  "windup": {
+    "frames": 18,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0006,
+    "swordLowest": 0.4748
+  },
+  "attack": {
+    "frames": 14,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0.0015,
+    "bodyLowest": -0.0006,
+    "swordLowest": 0.0393,
+    "impactFrame": 5,
+    "swordAtImpact": 0.0393
+  },
+  "recover": {
+    "frames": 18,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0.0015,
+    "bodyLowest": -0.0006,
+    "swordLowest": 0.1746
+  },
+  "cast": {
+    "frames": 36,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0006,
+    "swordLowest": 0.0342
+  },
+  "death": {
+    "frames": 40,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0,
+    "legOrArmOverreach": 0.0023,
+    "groundLift": 0.0345,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0012,
+    "swordLowest": -0.0042
+  },
+  "slam_windup": {
+    "frames": 18,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0006,
+    "swordLowest": 0.4594
+  },
+  "slam": {
+    "frames": 18,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0,
+    "legOrArmOverreach": 0.005,
+    "groundLift": 0.014,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0025,
+    "swordLowest": -0.0012,
+    "impactFrame": 14,
+    "swordAtImpact": 0.0015
+  },
+  "slam_recover": {
+    "frames": 22,
+    "fps": 24,
+    "loop": false,
+    "footSlip": 0.0,
+    "legOrArmOverreach": 0,
+    "groundLift": 0.004,
+    "footOutsideKnee": 0,
+    "bodyLowest": -0.0007,
+    "swordLowest": 0.001
+  },
+  "source": "models/boss_fallenKing_v3_teste.blend",
+  "status": "Ações recriadas e conferidas no Blender; render de sprites e integração ao jogo pendentes."
+}

@@ -1,0 +1,14 @@
+{
+  "rig": "Armature",
+  "bones": 65,
+  "actions": [
+    "attack",
+    "cast",
+    "death",
+    "idle",
+    "recover",
+    "walk",
+    "windup"
+  ],
+  "status": "Ações geradas; deformação, render e integração ainda pendentes de validação visual."
+}

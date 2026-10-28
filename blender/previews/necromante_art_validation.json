@@ -1,0 +1,12 @@
+{
+  "frames": 32,
+  "atlas": [
+    896,
+    1792
+  ],
+  "minimumTransparentMargin": 24,
+  "directions": 8,
+  "animatedDirections": 8,
+  "artVersion": 2,
+  "inGameValidation": false
+}

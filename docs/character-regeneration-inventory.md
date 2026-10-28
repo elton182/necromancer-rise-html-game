@@ -59,9 +59,9 @@ São cinco gerações; a quinta é o Lote 1 desta regeneração. Os empacotadore
 | Geração | Fontes | Saída | Estilo |
 |---|---|---|---|
 | Toon original | `blender/scripts/necromante.py`, `mob.py` (zumbi), `undead_ranged.py`, `crypt_hound.py`, `soul_warden.py`, `war_acolyte.py`, `render_*.py`, `pack_*.py`, `combat_toon.py`/`toon.py` | `blender/models/`, `blender/exports/`, `blender/spritesheets/` | Cel shading em 3 faixas e contorno Freestyle |
-| Estilizada | `blender/stylized_characters.py`, `character_sculpt.py`, `pack_stylized_characters.py` | `blender/stylized_*.blend/.glb/_sheet.*` | Low-poly facetado com contorno no alfa |
-| Referência | `blender/reference_characters.py`, `zephyr_materials.py`, `pack_reference_characters.py`, `validate_reference_characters.py`, `reference_review.py` | `blender/reference/*.blend/.glb`, `assets/characters/reference/*` | Low-poly da referência, materiais foscos |
-| Moradores | `blender/village_npcs.py`, `pack_village_npcs.py`, `bram_recover_frames.py` | `blender/villager_*.blend/_sheet.*` | Lysa, Tilda e mercador continuam na geração estilizada; o Bram pintado foi substituído no Lote 1 |
+| Estilizada | `blender/scripts/stylized_characters.py`, `character_sculpt.py`, `pack_stylized_characters.py` | `blender/models/stylized_*.blend`, `exports/stylized_*.glb`, `spritesheets/stylized_*_sheet.*` | Low-poly facetado com contorno no alfa |
+| Referência | `blender/scripts/reference_characters.py`, `zephyr_materials.py`, `pack_reference_characters.py`, `validate_reference_characters.py`, `reference_review.py` | `blender/reference/*.blend/.glb`, `assets/characters/reference/*` | Low-poly da referência, materiais foscos |
+| Moradores | `blender/scripts/village_npcs.py`, `pack_village_npcs.py`, `bram_recover_frames.py` | `blender/models/villager_*.blend`, `exports/villager_*.glb`, `spritesheets/villager_*_sheet.*` | Lysa, Tilda e mercador continuam na geração estilizada; o Bram pintado foi substituído no Lote 1 |
 | Lote 1 low-poly | `blender/scripts/lowpoly_cast.py`, `blender/scripts/pack_lowpoly_cast.py` | `blender/models/lowpoly_*.blend`, `exports/lowpoly_*.glb`, `spritesheets/lowpoly_*_sheet.*` | Zumbi e arqueiro inimigo no toon da referência. O Bram Blender foi trocado pelo atlas 2.5D do usuário (`pack_bram_2_5d.py`). Ver [revisão](character-regeneration-review.md) |
 
 - Os scripts da raiz de `blender/` ficam fora da estrutura `scripts/`, `models/`, `frames/` exigida por `blender/AGENTS.md`.
@@ -79,7 +79,7 @@ Notação das animações: `nome n@fps`. Escala na tela: `S / ppu × scale`; o
 
 | ID | Nome | Fonte atual | Sprite / atlas | Animações | Ataques | Âncora / ppu | Escala | Dependências | Estado |
 |---|---|---|---|---|---|---|---|---|---|
-| `necro` | Zephyr | `blender/reference_characters.py` + `zephyr_materials.py` → `blender/reference/zephyr.blend/.glb` | Embutido, 1792×16128, célula 224 | idle 4@5, walk 6@12, cast 8@22, summon 8@16, hurt 3@12, death 6@10, nova 8@18, channel 8@16, dash 6@30 | Tiro de Osso (cast); Explosão Necrótica (nova); magias canalizadas (channel); invocação (summon); Dash | (112, 148,4) / 34,3 | 1,12 | `character-visuals.js` (escolha de clipe pela cor de `castAnim`), `pack_reference_characters.py` | Já na família low-poly. Atlas no limite de altura |
+| `necro` | Zephyr | `blender/scripts/reference_characters.py` + `zephyr_materials.py` → `blender/reference/zephyr.blend/.glb` | Embutido, 1792×16128, célula 224 | idle 4@5, walk 6@12, cast 8@22, summon 8@16, hurt 3@12, death 6@10, nova 8@18, channel 8@16, dash 6@30 | Tiro de Osso (cast); Explosão Necrótica (nova); magias canalizadas (channel); invocação (summon); Dash | (112, 148,4) / 34,3 | 1,12 | `character-visuals.js` (escolha de clipe pela cor de `castAnim`), `pack_reference_characters.py` | Já na família low-poly. Atlas no limite de altura |
 
 ### Minions aliados
 
@@ -122,15 +122,15 @@ Ataque básico: corpo a corpo a cada 1,1 s e tiros a cada 1,3 s; o dano sai no i
 | ID | Nome | Fonte atual | Sprite / atlas | Animações | Ataques | Âncora / ppu | Escala | Dependências | Estado |
 |---|---|---|---|---|---|---|---|---|---|
 | `smith` | Bram, o ferreiro | Atlas 2.5D do usuário `blender/spritesheets/bram_2_5d_source.png` → `blender/scripts/pack_bram_2_5d.py` (antes: `lowpoly_cast.py`; antes disso, prancha pintada via `pack_village_npcs.py`) | Embutido, 1008×3456, célula 144, 8 direções | idle 7@5, idle_variation 7@8 (bigorna, em loop), talk 7@6 (`attack`/`walk` como aliases) | Nenhum | (72, 124) / 38 | 1,05 × 1,05 | Ciclo em `character-visuals.js` | Atlas do usuário fatiado, sem espelhamento. `pack_village_npcs.py`, `pack_reference_characters.py --only=bram` e `pack_lowpoly_cast.py --only=bram` sobrescrevem este registro |
-| `elder` | Lysa, a anciã | `blender/stylized_characters.py` → `stylized_lysa.blend` | Embutido, 1792×3584 | idle 8@5; `attack` 8@6 (saudação, loop) | Nenhum | (112, 161) / 49 | 1,05 × 0,95 | `drawHubProp` | Família estilizada; sem talk/hurt/variação |
-| `tilda` | Tilda | `stylized_characters.py` → `stylized_tilda.blend` | Embutido, 1792×3584 | Iguais às de Lysa | Nenhum | (112, 161) / 49 | 1,05 × 0,72 | Idem | Idem |
-| `merch` | Mercador | `stylized_characters.py` → `stylized_merchant.blend` | Embutido, 1792×3584 | Iguais às de Lysa | Nenhum | (112, 161) / 49 | 1,1 | `drawMerchant`, `village-environment.js` | Idem |
+| `elder` | Lysa, a anciã | `blender/scripts/stylized_characters.py` → `models/stylized_lysa.blend` | Embutido, 1792×3584 | idle 8@5; `attack` 8@6 (saudação, loop) | Nenhum | (112, 161) / 49 | 1,05 × 0,95 | `drawHubProp` | Família estilizada; sem talk/hurt/variação |
+| `tilda` | Tilda | `stylized_characters.py` → `models/stylized_tilda.blend` | Embutido, 1792×3584 | Iguais às de Lysa | Nenhum | (112, 161) / 49 | 1,05 × 0,72 | Idem | Idem |
+| `merch` | Mercador | `stylized_characters.py` → `models/stylized_merchant.blend` | Embutido, 1792×3584 | Iguais às de Lysa | Nenhum | (112, 161) / 49 | 1,1 | `drawMerchant`, `village-environment.js` | Idem |
 
 ### Resíduos, fora da regeneração
 
 - `reference_bram` no catálogo: recorte estático de `blender/examples/image.png` (`bram_sprite_reference.py`). Nenhum papel ativo o usa.
 - `boneShard`: projétil, não personagem (16 direções, célula 96).
-- `blender/villager_*.blend` e `blender/stylized_bram.blend`/`stylized_zephyr.blend`: gerações anteriores de Bram e Zephyr, sem uso no atlas ativo.
+- `blender/models/villager_*.blend` e `blender/models/stylized_bram.blend`/`stylized_zephyr.blend`: gerações anteriores de Bram e Zephyr, sem uso no atlas ativo.
 
 ## 4. Animações pedidas e o motor atual
 
@@ -157,7 +157,7 @@ Restrições concretas:
 ## 5. Problemas e dúvidas
 
 1. **Blender ausente.** Resolvido no Lote 1 com um Blender portátil em `/tmp`, fora do repositório.
-2. **Bram.** Decidido: substituir pelo modelo Blender (Lote 1). O sprite pintado continua recuperável pelo Git e por `blender/frames_villager_bram/`.
+2. **Bram.** Decidido: substituir pelo modelo Blender (Lote 1). O sprite pintado continua recuperável pelo Git e por `blender/frames/frames_villager_bram/`.
 3. **Lote 1 já parcialmente pronto.** Zephyr e o Esqueleto Guerreiro já pertencem à família da referência. Regenerá-los de novo arrisca regressão sem ganho claro. O ganho real está em zumbi (minion) e arqueiro inimigo (`earcher`), que estão em estilo antigo.
 4. **Fontes ausentes.** `abom`, `soldier`, `earcher`, `brute`, `mage` e `knight` não têm `.blend` nem gerador. Regenerá-los significa modelar do zero.
 5. **Identidade trocada pela camada visual.** `specter` (aliado) e `mage` (Mago Vivo, inimigo) usam o mesmo esqueleto mago, o que confunde aliado com inimigo e vivo com morto-vivo.

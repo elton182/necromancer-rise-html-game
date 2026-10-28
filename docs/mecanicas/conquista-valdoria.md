@@ -148,6 +148,11 @@ Nenhuma maldição é necessária para conquistar a região ou obter seu fragmen
 Líderes usam os sprites existentes do Carcereiro como visual inicial, com regras
 de combate regionais próprias. Caldeirões e restos são desenhados no Canvas.
 
+> No momento, o [Rei Caído](inimigos-e-chefes.md#rei-caído--chefe-único-atual)
+> substitui todos os chefes, inclusive os líderes: eles mantêm vida, dano, loot
+> e os objetos do encontro (caldeirões), mas usam os golpes do rei em vez das
+> regras regionais acima. `?bosses=classic` restaura os líderes descritos aqui.
+
 ## Osso Carcomido e Podridão
 
 Cajado raro ou épico disponível a partir de intensidade 4. Equipado, faz os

@@ -1,0 +1,52 @@
+{
+  "cell": 256,
+  "ppu": 44.800000000000004,
+  "anchorX": 128.0,
+  "anchorY": 172.0,
+  "dirs": 8,
+  "anims": {
+    "idle": {
+      "n": 6,
+      "fps": 3,
+      "loop": true,
+      "row": 0
+    },
+    "walk": {
+      "n": 8,
+      "fps": 12,
+      "loop": true,
+      "row": 8
+    },
+    "windup": {
+      "n": 6,
+      "fps": 7.5,
+      "loop": false,
+      "row": 16
+    },
+    "attack": {
+      "n": 7,
+      "fps": 23.3,
+      "loop": false,
+      "row": 24
+    },
+    "recover": {
+      "n": 6,
+      "fps": 12,
+      "loop": false,
+      "row": 32
+    },
+    "cast": {
+      "n": 8,
+      "fps": 6.67,
+      "loop": false,
+      "row": 40
+    },
+    "death": {
+      "n": 10,
+      "fps": 6.25,
+      "loop": false,
+      "row": 48
+    }
+  },
+  "source": "models/boss_fallenKing_v4.blend"
+}

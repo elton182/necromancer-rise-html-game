@@ -141,3 +141,7 @@ Ao carregar, o save passa por migrações idempotentes, em ordem:
 
 Saves sem investimento em Zumbis perdem os antigos zumbis gratuitos; quem já
 investiu mantém a evocação.
+
+### Ajustes para testes
+
+Pausa → Sistema permite ajustar Drop, Dano dos inimigos e Vida dos inimigos de 0 a 1000% (vida: mínimo 1%). O padrão é 100%. Drop multiplica chances de equipamentos e orbes, limitadas naturalmente a 100%; equipamentos garantidos de chefes permanecem. Vida e dano afetam inimigos atuais e novos em todos os modos; bonecos de treino são preservados. Alterar vida mantém a proporção restante. As opções ficam salvas no navegador, fora do save do personagem, e podem ser restauradas para 100%. Projéteis já disparados conservam o dano original. Esses ajustes experimentais não são modelados pelo simulador de balanceamento.

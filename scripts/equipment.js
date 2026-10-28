@@ -211,11 +211,45 @@ function gearRenderWaves(body){
  info.innerHTML='<h3>Wave '+p.selected+'</h3><p>Vida dos monstros ×'+s.hp.toFixed(2)+' · dano ×'+s.damage.toFixed(2)+' · loot nível '+s.itemLevel+'</p><p>Conclusão: +'+(20+p.selected*8)+' XP e +'+(3+p.selected*2)+' ouro, além dos monstros. Loja: peças nível '+p.unlocked+'.</p>';
  const b=document.createElement('button');b.className='btn';b.textContent='Entrar na wave '+p.selected;b.disabled=!gearVillage();b.onclick=()=>{setPause(false);startEndless();};info.append(b);
 }
+
+// Ajustes locais de teste; 100% preserva as regras de cada modo.
+const combatTestSettings={drop:100,damage:100,health:100};
+for(const key of Object.keys(combatTestSettings)){
+ const value=optsLoad()?.combatTestSettings?.[key];
+ if(Number.isFinite(value))combatTestSettings[key]=Math.max(key==='health'?1:0,Math.min(1000,value));
+}
+function applyCombatTestSettings(){
+ for(const e of enemies){
+  if(e.dead||e.dummy)continue;
+  const hpScale=combatTestSettings.health/100,damageScale=combatTestSettings.damage/100;
+  const previous=e._combatTestScale||{health:1,damage:1};
+  if(previous.health!==hpScale){const ratio=e.hp/Math.max(1,e.maxHp);e.maxHp=Math.max(1,e.maxHp/previous.health*hpScale);e.hp=e.maxHp*ratio;}
+  if(previous.damage!==damageScale){
+   if(previous.damage===0)e.dmg=e._combatTestBaseDamage*damageScale;
+   else {e._combatTestBaseDamage=e.dmg/previous.damage;e.dmg=e._combatTestBaseDamage*damageScale;}
+  }
+  e._combatTestScale={health:hpScale,damage:damageScale};
+ }
+}
+function combatTestControl(){
+ const host=document.createElement('section');host.className='combat-test-settings';
+ host.innerHTML='<h3>Ajustes para testes</h3><p class="section-note">100% = padrão; 200% = dobro. Drop multiplica as chances de equipamentos e orbes (máximo de 100% de chance); equipamentos garantidos de chefes são mantidos. Vida e dano afetam inimigos atuais e novos, preservando a proporção de vida restante. Valores salvos neste navegador.</p>';
+ for(const [key,label]of [['drop','Drop'],['damage','Dano dos inimigos'],['health','Vida dos inimigos']]){
+  const row=document.createElement('label');row.className='row';row.textContent=label+' (%) ';
+  const input=document.createElement('input');input.type='number';input.min=key==='health'?'1':'0';input.max='1000';input.step='1';input.value=combatTestSettings[key];input.setAttribute('aria-label',label+' (%)');
+  input.onchange=()=>{const value=Number(input.value);if(input.value===''||!Number.isFinite(value)){input.value=combatTestSettings[key];return;}combatTestSettings[key]=Math.max(Number(input.min),Math.min(1000,value));input.value=combatTestSettings[key];const saved=optsLoad()||{};saved.combatTestSettings={...combatTestSettings};optsSave(saved);applyCombatTestSettings();};
+  row.append(input);host.append(row);
+ }
+ const reset=document.createElement('button');reset.className='btn';reset.textContent='Restaurar ajustes para 100%';reset.onclick=()=>{for(const key of Object.keys(combatTestSettings))combatTestSettings[key]=100;const saved=optsLoad()||{};saved.combatTestSettings={...combatTestSettings};optsSave(saved);applyCombatTestSettings();tPause('system');};host.append(reset);return host;
+}
+
 function installEquipment(){
  gearEnsure();
+ const tick=update;update=function(dt){applyCombatTestSettings();return tick(dt);};
  for(const [name,values]of Object.entries(COMBAT_TUNING.specials))Object.assign(MOB_ABILITIES[name],values);
  const pause=tPause;tPause=function(tab){pause(tab);const tabs=document.querySelector('.pmtabs'),body=document.querySelector('.pmbody');if(!tabs||!body)return;
   for(const [id,name]of [['equipment','EQUIPAMENTOS'],['waves','WAVES']]){if(id==='waves'&&!gearVillage())continue;const b=document.createElement('button');b.className='pmtab'+(PM.tab===id?' on':'');b.textContent=name;b.onclick=()=>tPause(id);tabs.append(b);}
+  if(PM.tab==='system')body.append(combatTestControl());
   if(PM.tab==='equipment')gearRender(body);if(PM.tab==='waves')gearRenderWaves(body);
   if(!CAMP.on&&['hub','field'].includes(gameState)){const b=document.createElement('button');b.className='btn';b.textContent='Voltar à história';b.onclick=gearReturnToStory;document.querySelector('.pmside')?.append(b);}
   if(currentMission?.endless){const b=document.createElement('button');b.className='btn';b.textContent='Voltar à vila';b.onclick=()=>{setPause(false);enterHub();};document.querySelector('.pmside')?.append(b);}
@@ -235,9 +269,9 @@ function installEquipment(){
  const spawn=spawnEnemy;spawnEnemy=function(type,x,z){const e=spawn(type,x,z);e.gearWave=gearCurrentWave();if(!e.isBoss){e.spd=(e.spd??type.spd??0)*COMBAT_TUNING.enemySpeed;e.atkRate=['Arqueiro','Mago Vivo'].includes(type.name)?COMBAT_TUNING.rangedInterval:COMBAT_TUNING.meleeInterval;e.abilityCd=COMBAT_TUNING.specialDelayMin+Math.random()*(COMBAT_TUNING.specialDelayMax-COMBAT_TUNING.specialDelayMin);}if(currentMission?.endless&&!CAMP.on){const s=EquipmentModel.waveStats(wave);e.hp=e.maxHp=Math.round(type.hp*s.hp);e.dmg=Math.round(type.dmg*s.damage);e.xp=Math.round(type.xp*s.xp);}return e;};
  spawnDrop=function(x,z){const hp=Math.random()<COMBAT_TUNING.hpOrbShare;droppedItems.push({mesh:mkMesh2(x+(Math.random()-.5)*.6,z+(Math.random()-.5)*.6),type:hp?'hp':'mp',life:22,t:0});};
  const death=killEnemy;killEnemy=function(e,x,z){
-  if(e.dead)return;e.dropChance=COMBAT_TUNING.orbChance;
+  if(e.dead)return;e.dropChance=COMBAT_TUNING.orbChance*combatTestSettings.drop/100;
   const tier=e.expedition?ExpeditionModel.tiers[e.lootTier]:null;
-  const reward=!e.dummy&&(e.isBoss||Math.random()<(tier?.chance??COMBAT_TUNING.gearChance)),level=e.gearWave||gearCurrentWave();
+  const reward=!e.dummy&&(e.isBoss||Math.random()<(tier?.chance??COMBAT_TUNING.gearChance)*combatTestSettings.drop/100),level=e.gearWave||gearCurrentWave();
   if(reward){
    const roll=EquipmentModel.dropRoll(player.equipment,level),weights=e.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:tier?ExpeditionModel.lootWeights(e.lootTier):undefined;
    const regional=typeof endgameLootConfig==='function'?endgameLootConfig(e,roll):null;

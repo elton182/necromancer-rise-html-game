@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+ok 1 - save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+  ---
+  duration_ms: 2.9695
+  ...
+# Subtest: saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+ok 2 - saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+  ---
+  duration_ms: 0.2317
+  ...
+# Subtest: rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+ok 3 - rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+  ---
+  duration_ms: 3.8626
+  ...
+# Subtest: armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+ok 4 - armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+  ---
+  duration_ms: 0.9654
+  ...
+# Subtest: save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+ok 5 - save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+  ---
+  duration_ms: 0.44
+  ...
+# Subtest: quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+ok 6 - quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+  ---
+  duration_ms: 0.6197
+  ...
+# Subtest: falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+ok 7 - falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+  ---
+  duration_ms: 1.0889
+  ...
+# Subtest: somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+ok 8 - somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+  ---
+  duration_ms: 1.148
+  ...
+# Subtest: menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+ok 9 - menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+  ---
+  duration_ms: 0.3409
+  ...
+# Subtest: morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+ok 10 - morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+  ---
+  duration_ms: 0.9478
+  ...
+# Subtest: aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+ok 11 - aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+  ---
+  duration_ms: 0.5813
+  ...
+# Subtest: simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+ok 12 - simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+  ---
+  duration_ms: 2.6193
+  ...
+# Subtest: pausa congela preparação e movimento e impede novas magias
+ok 13 - pausa congela preparação e movimento e impede novas magias
+  ---
+  duration_ms: 2.1065
+  ...
+# Subtest: magia resolve dano uma vez e reiniciar remove o impacto antigo
+ok 14 - magia resolve dano uma vez e reiniciar remove o impacto antigo
+  ---
+  duration_ms: 0.4986
+  ...
+# Subtest: morte do atacante durante a preparação cancela o golpe pendente
+ok 15 - morte do atacante durante a preparação cancela o golpe pendente
+  ---
+  duration_ms: 0.2486
+  ...
+# Subtest: aviso travado permite esquiva e mantém o impacto no local original
+ok 16 - aviso travado permite esquiva e mantém o impacto no local original
+  ---
+  duration_ms: 0.7138
+  ...
+# Subtest: subpassos resolvem impacto igualmente em passos diferentes
+ok 17 - subpassos resolvem impacto igualmente em passos diferentes
+  ---
+  duration_ms: 0.3531
+  ...
+# Subtest: limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+ok 18 - limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+  ---
+  duration_ms: 3.014
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 150.5701

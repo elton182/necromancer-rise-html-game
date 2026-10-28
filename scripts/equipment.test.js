@@ -16,6 +16,7 @@ function fixture(options={}){
  const document={getElementById:()=>({textContent:'',style:{display:'none'}}),querySelector:()=>null},window={addEventListener(){}};
  const updateHUD=()=>{},updateMinionPanel=()=>{},floatMsg=()=>{},playSound=()=>{},saveGame=()=>{saves++;},setPause=()=>{},tConfirm=(text,label,action,cancel)=>{confirmation={text,action,cancel};},mkMesh2=(x,z)=>({position:{x,z}});
  function campToCampaign(){CAMP.on=true;campaignReturns++;}
+ function update(dt){}
  function tPause(){}function pmControlsHtml(){return '';}function buildSkillTree(){}function buildShopGrid(){}function closeHubOverlay(){}function campNewChar(){}function loadGame(){return false;}function enterHub(){gameState='hub';droppedItems=[];}function campMapOpen(){}function vilOpen(){}function vilClose(){}
  function startEndless(){wave=0;missionWave=0;currentMission={endless:true};gameState='field';}
  function endWave(){ends++;waveActive=false;player.gold+=10;}
@@ -269,4 +270,14 @@ test('catch-up drops: gear at wave level never rolls above it; lagging gear roll
  assert.equal(Model.dropRoll(worn(19),20,()=>.19).upgrade,true);assert.equal(Model.dropRoll(worn(19),20,()=>.21).upgrade,false);
  assert.equal(Model.dropRoll({},3,seq([0,.99,.9])).level,5);assert.equal(Model.dropRoll(worn(1000),1000,()=>0).level,1000);
  const upgraded=Model.generate(Model.dropRoll(lagging,20,seq([0,.99,.1])).level,Tree,Math.random,'boots',false,'catch-up');assert.ok(Model.validate(upgraded,Tree));
+});
+
+test('test settings scale existing enemies once, preserve health and restore zero damage',()=>{
+ const {run}=fixture();
+ run("enemies.push({hp:40,maxHp:80,dmg:12});combatTestSettings.health=200;combatTestSettings.damage=0;update(.1)");
+ assert.equal(run('enemies[0].hp'),80);assert.equal(run('enemies[0].maxHp'),160);assert.equal(run('enemies[0].dmg'),0);
+ run('update(.1);combatTestSettings.health=50;combatTestSettings.damage=200;update(.1)');
+ assert.equal(run('enemies[0].hp'),20);assert.equal(run('enemies[0].dmg'),24);
+ run('combatTestSettings.health=100;combatTestSettings.damage=100;update(.1)');
+ assert.equal(run('enemies[0].hp'),40);assert.equal(run('enemies[0].dmg'),12);
 });

@@ -1,0 +1,45 @@
+TAP version 13
+# Subtest: simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+ok 1 - simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+  ---
+  duration_ms: 2.2
+  ...
+# Subtest: pausa congela preparação e movimento e impede novas magias
+ok 2 - pausa congela preparação e movimento e impede novas magias
+  ---
+  duration_ms: 1.6042
+  ...
+# Subtest: magia resolve dano uma vez e reiniciar remove o impacto antigo
+ok 3 - magia resolve dano uma vez e reiniciar remove o impacto antigo
+  ---
+  duration_ms: 0.4426
+  ...
+# Subtest: morte do atacante durante a preparação cancela o golpe pendente
+ok 4 - morte do atacante durante a preparação cancela o golpe pendente
+  ---
+  duration_ms: 0.2364
+  ...
+# Subtest: aviso travado permite esquiva e mantém o impacto no local original
+ok 5 - aviso travado permite esquiva e mantém o impacto no local original
+  ---
+  duration_ms: 0.7764
+  ...
+# Subtest: subpassos resolvem impacto igualmente em passos diferentes
+ok 6 - subpassos resolvem impacto igualmente em passos diferentes
+  ---
+  duration_ms: 0.2951
+  ...
+# Subtest: limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+ok 7 - limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+  ---
+  duration_ms: 2.5942
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 109.8725

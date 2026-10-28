@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Necromancer’s Rise · v2</title>
+<style>/*STYLES*/</style></head>
+<body>
+<canvas id="view" tabindex="0" aria-label="Arena 3D de Necromancer’s Rise"></canvas>
+<aside aria-label="Configurações da arena">
+ <small>NECROMANCER’S RISE · V2</small><h1>O despertar</h1><span class="badge">E3 · Movimento e colisões</span>
+ <p>Uma nova base para Valdoria.<br>Câmera isométrica e modelos em tempo real.</p>
+ <div class="resources"><strong id="health">Vida · 100 / 100</strong><span id="boss-health">Rei Caído · 1000 / 1000</span></div>
+ <label>Horda aliada<select id="horde"><option>6</option><option>16</option><option>32</option><option>64</option></select></label>
+ <label>Ambiente<select id="ground"><option value="dark">Pedra escura</option><option value="light">Pedra clara</option></select></label>
+ <label>Qualidade<select id="quality"><option value="high">Alta · sombras</option><option value="low">Baixa · sem sombras</option></select></label>
+ <label><input id="colliders" type="checkbox"> Mostrar colisores no chão</label>
+ <div class="buttons"><button id="cast" type="button">Magia [Espaço]</button><button id="pause" type="button">Pausar [Esc]</button><button id="reset" type="button">Recomeçar</button><button id="menu" type="button">Menu</button></div>
+ <details id="save-tools"><summary>Personagem e saves</summary><p id="profile"></p><div class="buttons"><button id="save" type="button">Salvar v2</button><button id="export" type="button">Exportar v2</button><label class="file-button">Importar arquivo<input id="import-file" type="file" accept=".json,application/json"></label><button id="import-browser" type="button">Buscar save antigo</button><button id="backup" type="button">Exportar cópia anterior</button></div><p>O personagem importado fica arquivado. Atributos e progresso ainda não afetam o treino.</p></details>
+ <p id="save-message" role="status" aria-live="polite"></p>
+ <p class="controls">WASD / setas · mover<br>Mouse · mirar e lançar com clique<br>Roda · aproximar a câmera<br>Controle: sticks · mover / mirar<br>A / RT · magia · Start · pausa</p>
+ <p id="status" role="status">Preparando a arena…</p>
+ <p class="notice">Arena experimental. Save guarda opções e dados do personagem. A luta recomeça ao continuar; campanha e progressão ainda não migradas.</p>
+</aside>
+<section id="scene-panel"><small>VALDORIA · NOVO MOTOR 3D</small><h2 id="scene-title">O despertar de Valdoria</h2><p>Explore a arena de treinamento. As regras completas do jogo estão sendo migradas por etapas.</p><div class="buttons"><button id="enter" type="button">Entrar no treino</button><button id="continue" type="button" hidden>Continuar</button></div><p>Em “Personagem e saves”, você pode importar o JSON exportado pelo jogo anterior.</p></section>
+<dialog id="import-dialog" aria-labelledby="import-title"><h2 id="import-title">Revisar importação</h2><strong id="preview-profile"></strong><p id="preview-kind"></p><p>A confirmação substitui apenas o save da v2. Se houver um save anterior da v2, uma cópia ficará disponível para exportar.</p><p id="import-error" role="alert"></p><div class="buttons"><button id="confirm-import" type="button">Confirmar importação</button><button id="cancel-import" type="button">Cancelar</button></div></dialog>
+<div id="paused" class="paused" hidden>Pausado</div><footer id="stats">Preparando modelos…</footer>
+<section id="failure" role="alert" hidden><h2>Não foi possível abrir a arena</h2><p id="failure-message"></p><button id="retry" type="button">Tentar novamente</button></section>
+<noscript>Ative JavaScript para abrir a arena 3D.</noscript>
+<script>
+if(!HTMLScriptElement.supports?.('importmap')){document.getElementById('failure').hidden=false;document.getElementById('failure-message').textContent='Este navegador não suporta os módulos usados pela arena. Abra no Edge ou Chrome atualizado.';document.getElementById('retry').onclick=()=>location.reload();}
+</script>
+<!--IMPORTS--><!--ASSETS-->
+<script type="module">import 'v2-app';</script>
+</body></html>
