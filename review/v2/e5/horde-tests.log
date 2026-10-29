@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+ok 1 - definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+  ---
+  duration_ms: 217.914
+  ...
+# Subtest: perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+ok 2 - perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+  ---
+  duration_ms: 2.5653
+  ...
+# Subtest: equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+ok 3 - equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+  ---
+  duration_ms: 3.2901
+  ...
+# Subtest: morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+ok 4 - morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+  ---
+  duration_ms: 192.0606
+  ...
+# Subtest: detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+ok 5 - detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+  ---
+  duration_ms: 114.5567
+  ...
+# Subtest: sacrifício espera 20 segundos e não é elegível para reanimação
+ok 6 - sacrifício espera 20 segundos e não é elegível para reanimação
+  ---
+  duration_ms: 154.58
+  ...
+# Subtest: persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+ok 7 - persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+  ---
+  duration_ms: 87.4394
+  ...
+# Subtest: região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+ok 8 - região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+  ---
+  duration_ms: 174.9264
+  ...
+# Subtest: automáticas por tipo usam recarga própria e chefes não recebem lentidão
+ok 9 - automáticas por tipo usam recarga própria e chefes não recebem lentidão
+  ---
+  duration_ms: 5.1453
+  ...
+# Subtest: salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+ok 10 - salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+  ---
+  duration_ms: 7.8079
+  ...
+# Subtest: separação respeita terreno; esquiva não concede invulnerabilidade
+ok 11 - separação respeita terreno; esquiva não concede invulnerabilidade
+  ---
+  duration_ms: 12.4776
+  ...
+# Subtest: horda malformada e build inválida são recusadas sem alterar estado
+ok 12 - horda malformada e build inválida são recusadas sem alterar estado
+  ---
+  duration_ms: 1.5904
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1139.8445

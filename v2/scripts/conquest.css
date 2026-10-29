@@ -1,0 +1,18 @@
+/* Aba Valdoria do Relicário. Estilo dos blocos segue scripts/endgame.css do jogo anterior. */
+.conquest-panel{display:grid;gap:12px;color:#c7cdb4;font:13px/1.5 Georgia,serif}
+.conquest-heading h2{margin:2px 0;color:#dfc58c;font:22px Georgia,serif}.conquest-heading small{color:#9fa88a;letter-spacing:.14em;font-size:10px}.conquest-heading p{margin:4px 0;color:#aab494}
+.conquest-progress{display:grid;gap:4px}.conquest-progress progress{width:100%;height:12px;accent-color:#8a62b0}.conquest-progress span{font-size:11px;color:#9fa88a}
+.conquest-next,.conquest-rewards,.conquest-fragment,.conquest-encounter{padding:12px;border:1px solid #4d583f;background:#121a12}
+.conquest-next h3,.conquest-panel>h3{margin:0 0 6px;color:#dfc58c;font:16px Georgia,serif}
+.conquest-rewards{background:#22251a;border-left:3px solid #c4ae65}.conquest-rewards b{color:#e4cc89}.conquest-rewards small{color:#b4bd9e}
+.conquest-error{padding:8px 12px;border:1px solid #a9684c;background:#2b1a14;color:#f0c2a8}
+.conquest-settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.conquest-settings input{width:90px;min-height:34px;background:#1a2218;color:#dcd3b0;border:1px solid #6e6344;padding:4px 8px}
+.conquest-curses{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.conquest-curse{display:flex;gap:8px;padding:10px;border:1px solid #4d583f;background:#121a12;cursor:pointer}.conquest-curse.selected{border-color:#c4ae65;background:#1f2616}
+.conquest-curse span{display:grid;gap:2px}.conquest-curse em{color:#aab494;font-style:normal}.conquest-curse small{color:#c9a8e8}
+.conquest-encounters{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}.conquest-encounter h4{margin:0 0 4px;color:#dfc58c}.conquest-encounter .btn{margin-top:8px}
+.conquest-atlas{border:1px solid #8e8456;background:#131a12;min-width:0}.atlas-title{padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#d8c58b}.atlas-title small{color:#9fa88a}
+.atlas-scroll{overflow:auto;padding:0 8px}.atlas-scroll canvas{display:block;width:100%;height:auto;max-width:1040px;margin:0 auto}
+.atlas-nodes{display:flex;flex-wrap:wrap;gap:6px;padding:10px}.atlas-node{font-size:11px;padding:6px 8px}.atlas-node[aria-pressed=true]{border-color:#e1c786;background:#364329}
+.atlas-detail{display:grid;gap:4px;padding:10px 14px;border-top:1px solid #4d583f}.atlas-detail strong{color:#dfc58c}.atlas-detail p{margin:0}.atlas-detail small{color:#9fa88a}.atlas-detail .btn{justify-self:start;margin-top:6px}
+.conquest-special{margin:8px 0;padding:8px;border-left:3px solid #9cb06b;color:#b9d983;font:12px Georgia,serif}

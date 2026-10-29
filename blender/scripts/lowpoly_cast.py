@@ -4,6 +4,8 @@ Execute na raiz do projeto:
   blender -b -t 8 --python blender/scripts/lowpoly_cast.py -- --only=zombie,earcher,bram --preview
   blender -b -t 8 --python blender/scripts/lowpoly_cast.py -- --only=zombie,earcher,bram
   python3 blender/scripts/pack_lowpoly_cast.py --only=zombie,earcher,bram
+  # Só cena, ações e GLB, sem render:
+  blender -b --python blender/scripts/lowpoly_cast.py -- --only=zombie --no-render
 
 Cada personagem gera cena editável (models/), GLB (exports/), quadros (frames/lowpoly_<id>/)
 e metadados de render. Os contratos finais preservam célula, ppu e âncora dos sprites que substituem.
@@ -160,17 +162,27 @@ def zombie():
   P('head', z=.42 * v, y=.22 * twitch); P('chest', y=.16 * v); lean('chest', .08 * v)
   P('arm.R', x=.55 * v); P('arm.L', x=-.22 * v); P('jaw', x=-.25 * v)
  def walk(t):
-  p = TAU * t
-  for sd, ph, amp in (('L', 0, .40), ('R', math.pi, .26)):
-   w = math.sin(p + ph); P('leg.' + sd, x=amp * w); P('shin.' + sd, x=.55 * max(0, -w)); P('foot.' + sd, x=-.12 * w)
-  P('chest', z=.09 * math.sin(p), y=.07 * math.sin(p)); P('head', z=-.07 * math.sin(p))
-  L('hips', y=.025 * abs(math.sin(p))); P('arm.L', x=.12 * math.sin(p)); P('arm.R', x=-.12 * math.sin(p))
+  # Arrasto: a perna esquerda dá o passo, a direita arrasta com o pé em ponta.
+  # O quadril joga para o lado do apoio e o tronco gira ao contrário; braços pendem atrasados.
+  p = TAU * t; w = math.sin(p)
+  P('leg.L', x=-.48 * w); P('shin.L', x=.75 * max(0, math.sin(p + .9))); P('foot.L', x=.18 * w)
+  P('leg.R', x=.24 * w); P('shin.R', x=.22 + .18 * max(0, -w)); P('foot.R', x=.45)
+  P('hips', z=.10 * w, y=.10 * w); L('hips', y=-.035 + .035 * abs(math.cos(p)))
+  P('chest', z=-.12 * w, y=-.13 * w); lean('chest', .04 * abs(math.cos(p)))
+  P('head', z=.10 * math.sin(p + .8), y=.14 * math.sin(p + 1.2)); P('jaw', x=-.08 * (1 + math.sin(2 * p)) / 2)
+  P('arm.L', x=.20 * math.sin(p + .5), z=.06 * w); P('arm.R', x=-.16 * math.sin(p + .5), z=.06 * w)
+  P('forearm.L', x=-.14 * math.sin(p + 1.4)); P('forearm.R', x=.14 * math.sin(p + 1.4))
  def strike(t):
-  # Damage lands as the swing starts, so frame 0 is the impact and the rest recovers.
-  v = 1 - smooth((t - .2) / .8)
-  lean('chest', .30 * v); lean('head', -.18 * v); P('arm.L', x=-.55 * v); P('arm.R', x=-.45 * v)
-  P('forearm.L', x=.2 * v); P('forearm.R', x=.3 * v); P('leg.R', x=-.32 * v); P('shin.R', x=.2 * v); P('leg.L', x=.18 * v)
-  P('jaw', x=-.2 * v)
+  # O dano cai quando o golpe começa: o quadro 0 já é o impacto da garra direita
+  # cruzando o corpo; ela segue até o lado oposto e o corpo volta à postura base.
+  hold = 1 - smooth((t - .35) / .65); swipe = smooth(t / .35)
+  lean('chest', (.30 + .10 * swipe) * hold); lean('head', -.24 * hold)
+  P('chest', y=(.18 - .52 * swipe) * hold); P('hips', y=(.06 - .16 * swipe) * hold)
+  P('arm.R', x=(-.85 + .30 * swipe) * hold, z=(.30 + .55 * swipe) * hold); P('forearm.R', x=-.45 * hold)
+  P('hand.R', x=-.35 * hold)
+  P('arm.L', x=.35 * hold, z=-.20 * hold); P('forearm.L', x=-.25 * hold)
+  P('leg.R', x=-.42 * hold); P('shin.R', x=.30 * hold); P('foot.R', x=.12 * hold)
+  P('leg.L', x=.30 * hold); crouch(.10 * hold); P('jaw', x=-.38 * hold)
  def bite(t):
   v = 1 - smooth((t - .15) / .85)
   lean('chest', .42 * v); lean('head', .05 * v); P('jaw', x=-.55 * v)
@@ -185,7 +197,7 @@ def zombie():
   # Base hunch is undone while falling so the corpse lies flat.
   f = smooth((t - .3) / .7); lean('chest', -.46 * f); lean('head', .34 * f); crouch(-.12 * f)
   P('arm.L', x=.95 * f); P('arm.R', x=1.1 * f); fall(t, .2); P('jaw', x=-.4 * smooth(t / .4))
- anims = [('idle', 6, 6, True, idle), ('idle_variation', 6, 5, False, idle_variation), ('walk', 6, 10, True, walk),
+ anims = [('idle', 6, 6, True, idle), ('idle_variation', 6, 5, False, idle_variation), ('walk', 8, 13, True, walk),
           ('attack', 6, 12, False, strike), ('attack_secondary', 6, 12, False, bite), ('spawn', 6, 10, False, spawn),
           ('hurt', 3, 12, False, hurt), ('death', 6, 10, False, death)]
  return body, base, anims
@@ -399,6 +411,7 @@ def produce(ident, preview=False):
  sc.render.resolution_x = sc.render.resolution_y = cell; sc.render.resolution_percentage = 100
  if spec['style'] == 'studio': studio(sc)
  bpy.ops.wm.save_as_mainfile(filepath=str(BLENDER / 'models' / f'lowpoly_{ident}.blend'))
+ if NO_RENDER: print('LOWPOLY_SAVED', ident, flush=True); return  # só modelo, ações e GLB
  if spec['style'] == 'toon': toon.toonify(sc, light=(-.5, -.65, .9), bands=(.65, .84, 1), thick=.5)
  sc.render.use_freestyle = False
  out = BLENDER / 'frames' / (f'lowpoly_{ident}_preview' if preview else f'lowpoly_{ident}'); out.mkdir(parents=True, exist_ok=True)
@@ -418,8 +431,10 @@ def produce(ident, preview=False):
  (out / 'render.json').write_text(json.dumps(meta, indent=1))
  print('LOWPOLY_DONE', ident, json.dumps(manifest), flush=True)
 
+NO_RENDER = False
 if __name__ == '__main__':
  argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
+ NO_RENDER = '--no-render' in argv
  selected = next((a.split('=', 1)[1].split(',') for a in argv if a.startswith('--only=')), list(CAST))
  for ident in selected:
   if ident not in CAST: raise ValueError(ident)

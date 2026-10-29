@@ -193,3 +193,9 @@ renderizados como spritesheets com shader toon: 8 direções para personagens e
 ```bash
 blender -b -P blender/scripts/sprites.py -- blender/models/necromante.blend blender/spritesheets necromante
 ```
+
+## Versão 3D em migração
+
+A campanha do Ato I e a Vila de Eldrin também podem ser abertas na
+[V2](v2/README.md). Ela permanece separada da distribuição Canvas atual.
+Fluxos e limites da migração estão no [plano da V2](v2/plano-migracao.md).

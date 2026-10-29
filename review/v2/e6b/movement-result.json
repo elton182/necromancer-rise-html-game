@@ -1,0 +1,25 @@
+{
+  "stage": "E6b",
+  "browser": "Edge headless",
+  "controller": "Gamepad API simulada; sem controle físico",
+  "roundTripError": 7.944109290391274e-15,
+  "blocked": {
+    "x": -7.7750007071067815,
+    "animation": "idle"
+  },
+  "checks": [
+    "parede impede passagem",
+    "deslizamento e descanso quando bloqueado",
+    "mira acompanha câmera com mouse parado",
+    "zoom e resize preservam mira",
+    "conversão mundo/tela/chão",
+    "sticks movem e miram",
+    "Start pausa uma vez por pressão",
+    "RT lança magia",
+    "desconexão preserva teclado",
+    "pausa congela pose",
+    "pose sincroniza quadro do clipe",
+    "fundos e qualidade baixa com horda"
+  ],
+  "errors": []
+}

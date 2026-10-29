@@ -22,6 +22,17 @@ Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.m
 | [guia-visual-combate.md](guia-visual-combate.md) | Escala, contraste e regras visuais dos efeitos; arena de comparação |
 | [v2-saves.md](v2-saves.md) | Cenas, contrato de save da v2, importação preservada e limites da integração |
 | [v2-movimento.md](v2-movimento.md) | Colisões, navegação, câmera/mira, poses e controle da v2 |
+| [v2-combate.md](v2-combate.md) | E4: dano comum, Tiro de Osso, Dash, fontes compartilhadas e limites da integração |
+| [v2-grimorio.md](v2-grimorio.md) | E6: investimento/devolução, maestrias, XP por abates, persistência e limites |
+| [v2-horda.md](v2-horda.md) | E5: cinco tipos, grupos, seis slots, comandos, recuperação e persistência |
+| [v2-progressao.md](v2-progressao.md) | E7: nível, XP, atributos, recompensa por abate, drops, equipamentos, consumíveis e saves |
+| [v2-campanha.md](v2-campanha.md) | E9: Ato I, salas, ondas, trilhas, vila, missões e prêmios únicos |
+| [v2-arena.md](v2-arena.md) | E10a: Arena Infinita (clássica), Pedra do Infinito, waves, recorde, mercador e limites |
+| [v2-expedicoes.md](v2-expedicoes.md) | E10b: Expedições por bioma, encontros dormentes, boss (Rei Caído provisório) e portais |
+| [v2-conquista.md](v2-conquista.md) | E10c: Conquista de Valdoria — rotas, influência, maldições, poças, Osso Carcomido e limites |
+| [v2-interface.md](v2-interface.md) | HUD e Relicário da v2: fontes, abas, decisões e limites |
+| [v2-inimigos.md](v2-inimigos.md) | E8: seis arquétipos, escala, elites, projéteis, composição e Rei Caído completo |
+| [v2-magias.md](v2-magias.md) | E6b: cinco magias equipáveis, validação atômica, recargas, encerramento e limites |
 | [refactoring-baseline.md](refactoring-baseline.md) | Linha de base da refatoração: testes, fontes do HTML, dependências externas e problemas registrados |
 | [character-regeneration-inventory.md](character-regeneration-inventory.md) | Inventário dos personagens para a regeneração low-poly: fontes, atlas, animações, contratos e pipelines |
 | [character-regeneration-review.md](character-regeneration-review.md) | Revisão do Lote 1 (zumbi, arqueiro inimigo, Bram): metadados de impacto, testes, antes/depois e pendências |
@@ -35,7 +46,7 @@ o estado atual está nos guias de mecânicas.
 
 | Documento | Conteúdo | Situação |
 |---|---|---|
-| [../v2/plano-migracao.md](../v2/plano-migracao.md) | Migração completa para modelos 3D: etapas, critérios, fontes e ponto de retomada | E3 concluída: movimento, câmera, colisões e animações; próxima etapa E4 |
+| [../v2/plano-migracao.md](../v2/plano-migracao.md) | Migração completa para modelos 3D: etapas, critérios, fontes e ponto de retomada | E9 concluída no fluxo funcional: Ato I, vila e missões; próxima etapa E10 |
 | [plano-endgame-valdoria.md](plano-endgame-valdoria.md) | Conquista territorial, influência, maldições e pântano de decomposição | Primeira região jogável; expansão e alquimia planejadas |
 | [roadmap-combate-visual.md](roadmap-combate-visual.md) | Roadmap de animações de skills e novos inimigos | Ativo: primeiro pacote concluído, próximo é SK-02 (Dash) |
 | [plano-equipamentos-waves.md](plano-equipamentos-waves.md) | Plano de equipamentos, loot e waves | Primeira versão jogável implementada |

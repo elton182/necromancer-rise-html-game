@@ -279,6 +279,40 @@ As capturas `review/stylized-characters-in-game.png` e
 verificam carregamento, rig/animações e comportamento; a avaliação de semelhança
 artística é feita pelas imagens, separadamente desses testes funcionais.
 
+## Animações revisadas sem novo atlas (player e lacaios)
+
+As ações abaixo foram refeitas nas fontes e nas cenas; os atlas do jogo ainda
+usam os quadros anteriores até um novo render e empacotamento.
+
+| Personagem | Fonte | Mudança |
+|---|---|---|
+| Player (mago com rig) | `scripts/render_imported_player.py` | `cast` em 8 quadros: recolhe a mão ao peito com o ombro recuado, dispara com a palma à frente, tronco girando e inclinando e cajado avançando, sustenta e volta |
+| Zumbi | `scripts/lowpoly_cast.py` | `walk` em 8 quadros com perna direita arrastada, quadril lateral e tronco em contrarrotação; `attack` com garra direita cruzando o corpo a partir do quadro 0 (o dano cai no início do golpe) |
+| Esqueleto e arqueiro | `scripts/combat_animation_clips.py` | `walk` em 8 quadros com quadril subindo na passagem, tronco girando contra as pernas, escudo em guarda e arco baixo; esqueleto ergue a espada e corta com passo à frente; arqueiro fica de perfil, mira com o arco no alvo e solta a corda |
+
+Armas dos esqueletos (`scripts/reference_characters.py` + `combat_animation_clips.py`):
+- Guerreiro: repouso, caminhada e ataque com o escudo em guarda, vertical e de frente diante
+  do lado esquerdo do peito (antebraço por trás do disco). A espada reta não tem mais a inclinação
+  lateral fixa; o pulso a mantém em pé no repouso e na caminhada, e o ataque parte e volta a essa pose.
+- Arqueiro: o punho do arco fica na mão esquerda, com as pontas para trás e a corda do lado do
+  corpo; o pulso mantém o arco vertical ao caminhar e ao mirar. A flecha está na mão da corda:
+  na puxada completa (quadro 5 do ataque) vai da mão direita até o punho do arco; em repouso pende
+  para trás. A corda é uma malha reta e não se curva com a puxada.
+
+Regerar só cenas, ações e GLB, sem render:
+
+```powershell
+blender --background --python blender/scripts/render_imported_player.py -- rigged poses
+blender --background --python blender/scripts/check_rigged_player.py
+blender --background --python blender/scripts/lowpoly_cast.py -- --only=zombie --no-render
+blender --background --python blender/scripts/reference_characters.py -- --only=skeleton,archer --no-render
+```
+
+`models/v2_abomination.blend` deriva de `lowpoly_zombie.blend` e herda as novas
+ações do zumbi quando `scripts/v2_abomination.py` é executado de novo. O atlas `abom`
+do jogo 2D não tem cena-fonte no repositório. No jogo, o esqueleto mostra só os
+quadros 0–2 do ataque (`attackFrame`); com o novo corte, esses quadros são a preparação.
+
 ## Lote 1 low-poly: zumbi, arqueiro inimigo e Bram
 
 `scripts/lowpoly_cast.py` modela, cria rig e ações e renderiza os três personagens.
@@ -384,3 +418,7 @@ ortográfica usa escala 4,8 para acomodar o cajado na morte: células de 224 px,
 `spritesheets/warAcolyte_sheet.webp` e a prancha `previews/preview_war_acolyte.png`,
 e incorpora somente esse asset no HTML. A mecânica fica em
 `scripts/war-acolyte-model.js` e `scripts/war-acolyte.js` na raiz do repositório.
+
+## Inimigos importados da v2
+
+Seis modelos com rigs importados, ações próprias e equipamento separado incorporado ao personagem. Fontes, comandos, cena de revisão MCP e limitações em [notes/imported_enemies_v2.md](notes/imported_enemies_v2.md).

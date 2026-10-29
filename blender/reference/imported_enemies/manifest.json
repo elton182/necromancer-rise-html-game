@@ -1,0 +1,72 @@
+[
+  {
+    "file": "wolf_creature.glb",
+    "sha256": "78e733ef4456a76510b9129a9cf87e1fa46483e9f1abe139b6069e662c4c47f4",
+    "bytes": 1047072,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "polygonal_shield.glb",
+    "sha256": "c346940399d8985eabc0ffb0727fc30d1878a41d5d2e9f1578a0f4f27afcd91a",
+    "bytes": 932896,
+    "skins": 0,
+    "animations": 0
+  },
+  {
+    "file": "medieval_knight.glb",
+    "sha256": "9aea8348a8742eab4cec6aeb62fc29f6ac4c6d51faa44585caed3374e7ea4eb1",
+    "bytes": 1277072,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "wooden_fire_staff.glb",
+    "sha256": "7a6614cb3b14a026f13b536110683e5bfa94a6222235df9cd8342ed1fd959efb",
+    "bytes": 857372,
+    "skins": 0,
+    "animations": 0
+  },
+  {
+    "file": "dagger.glb",
+    "sha256": "dd94cd1eefc19b49a0ae4c6a3f11a4bc16a098f5dcfdb29b22ea75594bf35b85",
+    "bytes": 779424,
+    "skins": 0,
+    "animations": 0
+  },
+  {
+    "file": "hooded_mage.glb",
+    "sha256": "059a50e8c394ff2cf01a1c1192420b5090cb27453273e6f0b4e3b12f86ac7979",
+    "bytes": 1151676,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "griffin_like_humanoid.glb",
+    "sha256": "60fa346ce76cf5cbfc17f1452f6710ee70b7fcb9b205a4c8e7c1e0aaaf3289cc",
+    "bytes": 1220076,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "fantasy_hooded_thief.glb",
+    "sha256": "de5ab9d58c76b9d07e620cbc2b35e125b095af4dde3a9106351ab0c457742e1e",
+    "bytes": 1080028,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "low_poly_spider.glb",
+    "sha256": "681d4eec76fd43d71472faa3e5777f597896f39d54efa99ea8fcdce274fd7ceb",
+    "bytes": 1012424,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "medieval_sword.glb",
+    "sha256": "e060176b2c54a41a3d7c76f0b3938c237f18b45cd11e5c0a9e117c7753229b31",
+    "bytes": 811196,
+    "skins": 0,
+    "animations": 0
+  }
+]

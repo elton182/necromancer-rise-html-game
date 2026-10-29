@@ -33,9 +33,9 @@ test('IA usa rota para chegar ao outro lado da parede sem teleporte ou penetraç
  for(let i=0;i<1200&&a.x<1;i++){const p={x:a.x,y:a.y};step(w,1/60);assert.ok(!overlaps(a,a.radius,arena));assert.ok(Math.hypot(a.x-p.x,a.y-p.y)<=1.35/60+.001);}assert.ok(a.x>1);
 });
 test('pose do boss acompanha preparação e impacto sem antecipar o dano',()=>{
- const w=createWorld({horde:0});w.actors=[w.player,w.boss];w.boss.x=0;w.boss.y=2;
- for(let i=0;i<48;i++)step(w,1/60);assert.equal(w.player.hp,100);assert.equal(w.boss.pose.anim,'attack');assert.ok(w.boss.pose.progress<4/13);
- for(let i=0;i<5;i++)step(w,1/60);assert.equal(w.player.hp,75);assert.ok(w.boss.pose.progress>=4/13);
+ const w=createWorld({horde:0});w.actors=[w.player,w.boss];w.boss.x=0;w.boss.y=2;Object.assign(w.boss,{kingGap:0,kingCd:{slash:0,leap:99,summon:99}});
+ for(let i=0;i<49;i++)step(w,1/60);assert.equal(w.player.hp,100);assert.equal(w.boss.pose.anim,'attack');assert.ok(w.boss.pose.progress<4/13);
+ for(let i=0;i<6;i++)step(w,1/60);assert.equal(w.player.hp,71);assert.ok(w.boss.pose.progress>=4/13);
 });
 test('gamepad ignora drift, normaliza diagonais, lê botões e suporta desconexão',()=>{
  assert.deepEqual(stick(.1,-.1),{x:0,y:0});const d=stick(1,1);assert.ok(Math.abs(Math.hypot(d.x,d.y)-1)<1e-9);

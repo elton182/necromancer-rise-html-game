@@ -1,0 +1,14 @@
+'use strict';
+const legacy=require('./legacy-controls.cjs');
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
+(async()=>{const out=path.resolve(__dirname,'../../review/v2/model-revision');fs.mkdirSync(out,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await page.waitForFunction(()=>window.NecromancerV2);
+ await legacy.click(page,'#army-tools summary');await legacy.click(page,'#army-demo');await legacy.click(page,'#enter');await page.evaluate(()=>{
+  const n=NecromancerV2,w=n.world;n.pause(true);w.player.x=0;w.player.y=0;w.effects=[];w.projectiles=[];w.allyShots=[];
+  w.actors=[w.player,...['skeleton','zombie','archer','abom'].map(type=>w.actors.find(m=>m.groupType===type))];n.view.zoom(-700);
+  const xs=[960,500,730,1200,1470];w.actors.forEach((a,i)=>{if(i)Object.assign(a,n.view.aim(xs[i],600,w));a.angle=Math.PI/4;a.timer=0;a.pose={anim:'idle',progress:0};a.animationTime=0;a.actionId++;});
+ });
+ async function pose(name,progress){return page.evaluate(({name,progress})=>{const n=NecromancerV2;n.world.actors.forEach(a=>{a.pose={anim:name==='attack'&&a===n.world.player?'cast':name,progress};a.actionId++;});n.view.render(n.world,0);return n.world.actors.map(a=>{const o=n.view.actors.get(a.id);o.body.updateMatrixWorld(true);let skin;o.body.traverse(x=>{if(x.isSkinnedMesh&&!skin)skin=x;});return {model:a.model,clip:a.pose.anim,bones:skin.skeleton.bones.flatMap(b=>b.matrixWorld.elements.map(v=>Number(v.toFixed(5))))};});},{name,progress});}
+ const motion=[];for(const name of ['walk','attack']){const a=await pose(name,.15);await page.screenshot({path:path.join(out,name+'-early.png')});const b=await pose(name,.65);await page.screenshot({path:path.join(out,name+'-late.png')});for(let i=0;i<a.length;i++){assert.notDeepEqual(a[i].bones,b[i].bones,'Pose sem movimento: '+a[i].model+'/'+a[i].clip);motion.push({model:a[i].model,clip:a[i].clip,changed:true});}}
+ await legacy.select(page,'#ground','light');await legacy.select(page,'#quality','low');await pose('attack',.4);await page.screenshot({path:path.join(out,'light-low.png')});assert.deepEqual(errors,[]);fs.writeFileSync(path.join(out,'browser-result.json'),JSON.stringify({checks:['cinco modelos revisados carregados','ossos mudam entre duas poses de caminhada','ossos mudam entre duas poses de ataque/cast','fundo claro e qualidade baixa','sem erros de página'],motion,errors},null,2)+'\n');console.log('Modelos revisados OK: player, esqueleto, zumbi, arqueiro e Abominação; caminhada e ataque/cast animados.');
+}finally{await browser.close();}})().catch(e=>{console.error(String(e).slice(0,1500));process.exitCode=1;});

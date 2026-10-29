@@ -39,26 +39,60 @@ def zephyr():
  return [('idle',4,5,True),('walk',6,12,True),('cast',8,22,False),('summon',8,16,False),('hurt',3,12,False),('death',6,10,False),('nova',8,18,False),('channel',8,16,False),('dash',6,30,False)]
 
 def minion(kind):
+ # Convenção do rig: x negativo leva braço/perna à frente; no tronco, x negativo inclina à frente.
+ def smooth(x):x=min(1,max(0,x));return x*x*(3-2*x)
  def attack(t):
   v=pulse(t,.35)
   if kind=='archer':
-   draw=min(1,t/.55);release=max(0,(t-.55)/.45)
-   c.R('chest',z=.22*draw*(1-release));c.R('head',z=-.13*draw)
-   c.R('arm.L',x=-1.32*v,z=-.18*v);c.R('forearm.L',x=-.12*v)
-   c.R('arm.R',x=-1.2*v,z=.7*v);c.R('forearm.R',x=-1.5*draw*(1-release))
+   # Puxa a corda até a face (0–45%), segura a mira, solta com estalo em 60% e recupera.
+   draw=smooth(t/.45);snap=smooth((t-.6)/.12);hold=1-smooth((t-.72)/.28);a=draw*hold
+   # Tronco de perfil com o ombro do arco à frente (y negativo); a cabeça segue no alvo.
+   c.R('chest',x=-.04*a+.07*snap*hold,y=-.50*a);c.R('head',y=.42*a)
+   c.R('arm.L',x=-1.50*a,z=-.65*a);c.R('forearm.L',x=-.08*a)
+   # Pulso compensa a subida do braço: arco vertical e corda voltada à mão que puxa.
+   c.R('hand.L',x=1.95*a,z=-1.35*a)
+   # Soltura: a mão da corda volta para trás e para fora (z diminui) em vez de avançar.
+   c.R('arm.R',x=(-1.35*draw+.15*snap)*hold,z=(.85*draw-1.25*snap)*hold);c.R('forearm.R',x=(-2.0*draw*(1-snap)-.25*snap)*hold)
+   c.R('leg.L',x=-.22*a);c.R('leg.R',x=.22*a)
   elif kind=='skeleton_mage':
    c.R('chest',x=-.18*v);c.R('head',x=-.16*v);c.R('arm.R',x=-.65*v);c.R('forearm.R',x=-.3*v)
    c.R('arm.L',x=-1.4*v,z=-.4*v);c.R('forearm.L',x=-.55*v)
   else:
-   wind=math.sin(math.pi*min(1,t/.35)/2) if t<.35 else max(0,1-(t-.35)/.65)
-   slash=max(0,math.sin(math.pi*(t-.18)/.82)) if t>.18 else 0
-   c.R('chest',z=.28*wind-.55*slash,x=.12*slash);c.R('head',z=-.18*wind)
-   c.R('arm.R',x=-1.7*wind,z=-.55*slash);c.R('forearm.R',x=-.5*wind)
-   c.R('arm.L',x=-.75*slash,z=-.25*slash);c.R('forearm.L',x=-.55*slash)
-   c.R('leg.L',x=.13*slash);c.R('shin.L',x=.12*slash)
+   # Ergue a espada sobre o ombro (0–30%), corta em diagonal com passo à frente, sustenta e volta.
+   wind=smooth(t/.3)*(1-smooth((t-.3)/.2));cut=smooth((t-.3)/.22)*(1-smooth((t-.72)/.28))
+   c.R('chest',x=.08*wind-.24*cut,y=.32*wind-.42*cut);c.R('head',y=-.16*wind+.20*cut)
+   # Fora do golpe, braço e pulso voltam à posição do repouso (lâmina em pé), sem salto na transição.
+   rest=max(0,1-wind-cut)
+   c.R('arm.R',x=-.1*rest-2.3*wind-1.0*cut,z=.35*wind-.55*cut);c.R('forearm.R',x=-.35*rest-.6*wind-.2*cut)
+   c.R('hand.R',x=.64*rest,z=-.32*rest)
+   c.R('arm.L',x=-.2-.15*cut,z=.45);c.R('forearm.L',x=-.6);c.R('hand.L',x=.75)
+   c.R('leg.L',x=-.45*cut);c.R('shin.L',x=.35*cut);c.R('leg.R',x=.30*cut)
+   c.PB['hips'].location.y=-.04*cut
  def walk(t):
-  p=math.tau*t;c.R('chest',z=.055*math.sin(p));c.R('head',z=-.04*math.sin(p));c.PB['hips'].location.y=.018*abs(math.sin(p))
+  # Marcha ossuda: quadril sobe na passagem, tronco gira contra as pernas, cabeça chacoalha.
+  p=math.tau*t;s=math.sin(p)
+  c.PB['hips'].location.y=.035*abs(math.cos(p))-.015
+  c.R('chest',x=-.06,y=-.16*s,z=.04*s);c.R('head',x=.05*math.sin(2*p),y=.12*s)
+  swing={}
   for side,phase in [('L',0),('R',math.pi)]:
-   v=math.sin(p+phase);c.R('leg.'+side,x=.46*v);c.R('shin.'+side,x=.68*max(0,-v));c.R('foot.'+side,x=-.15*v)
-   c.R('arm.'+side,x=-.17*v);c.R('forearm.'+side,x=-.12)
- replace('attack',8,attack);replace('walk',6,walk,True)
+   v=math.sin(p+phase);swing[side]=v
+   c.R('leg.'+side,x=.52*v);c.R('shin.'+side,x=.1+.75*max(0,-math.cos(p+phase)));c.R('foot.'+side,x=-.2*v)
+  if kind=='skeleton':
+   # Espada balança com o passo; o escudo fica em guarda à frente.
+   c.R('arm.R',x=-.1-.30*swing['R']);c.R('forearm.R',x=-.35)
+   # Pulso compensa o balanço do braço: lâmina em pé, levemente à frente.
+   c.R('hand.R',x=.64+.32*swing['R'],z=-.24-.08*swing['R'])
+   c.R('arm.L',x=-.2-.06*swing['L'],z=.45);c.R('forearm.L',x=-.6);c.R('hand.L',x=.75)
+  elif kind=='archer':
+   # Arco baixo à frente; o braço livre balança.
+   c.R('arm.L',x=-.25-.12*swing['L']);c.R('forearm.L',x=-.3);c.R('hand.L',x=.55+.12*swing['L'])
+   c.R('arm.R',x=-.30*swing['R']);c.R('forearm.R',x=-.2)
+  else:
+   for side in 'LR':c.R('arm.'+side,x=-.17*swing[side]);c.R('forearm.'+side,x=-.12)
+ def guard_idle(t):
+  # Repouso em guarda: escudo diante do peito, respiração leve.
+  p=math.tau*t;c.R('chest',x=.018*math.sin(p));c.R('head',z=.025*math.sin(p))
+  c.R('arm.L',x=-.2,z=.45);c.R('forearm.L',x=-.6+.04*math.sin(p));c.R('hand.L',x=.75)
+  c.R('arm.R',x=-.1);c.R('forearm.R',x=-.35);c.R('hand.R',x=.64,z=-.32)
+ if kind=='skeleton':replace('idle',4,guard_idle,True)
+ replace('attack',8,attack);replace('walk',8,walk,True)

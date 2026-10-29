@@ -2,9 +2,15 @@
 blender --background --threads 4 --python blender/scripts/export_3d_lab.py
 """
 from pathlib import Path
-import bpy, json
+import bpy, json, sys
 BASE = Path(__file__).resolve().parents[1]
-for source, target in [('rigged_player', 'lab_player_current'), ('boss_fallenKing_v4', 'lab_fallen_king_v4')]:
+models = [('rigged_player', 'lab_player_current'), ('boss_fallenKing_v4', 'lab_fallen_king_v4')]
+only = next((arg.split('=', 1)[1] for arg in sys.argv if arg.startswith('--only=')), None)
+if only and only not in {source for source, _ in models}:
+    raise ValueError('Cena desconhecida: ' + only)
+for source, target in models:
+    if only and source != only:
+        continue
     bpy.ops.wm.open_mainfile(filepath=str(BASE/'models'/f'{source}.blend'))
     sc = bpy.context.scene
     bpy.ops.object.select_all(action='DESELECT')

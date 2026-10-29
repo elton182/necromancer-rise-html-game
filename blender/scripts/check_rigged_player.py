@@ -34,7 +34,11 @@ for action in ('idle','walk','cast'):
         assert vertical.z>.999,'Cajado precisa permanecer vertical'
         assert bone('RightHand').head.x<bone('RightArm').head.x-.02,'Braço precisa ficar afastado na lateral'
 assert tuple(bpy.context.view_layer.freestyle_settings.linesets[0].linestyle.color)==(0,0,0)
+# Cast em 8 quadros: carga no quadro 3 (mão recolhida ao peito), disparo no 5.
 frame('cast',3)
+charge=(bone('LeftHand').head.x-bone('LeftArm').head.x,bone('LeftHand').head.z-bone('LeftArm').head.z)
+assert charge[0]<0 and abs(charge[1])<.12,('carga precisa recolher a mão diante do peito',charge)
+frame('cast',5)
 reach=bone('LeftHand').head.y-bone('LeftArm').head.y
 assert reach<-.18,('mão precisa estar à frente',reach)
 b=bone('LeftHand');forward=(b.bone.tail_local-b.bone.head_local).normalized()

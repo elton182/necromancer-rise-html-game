@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: fixed windup, straight charge, first hit and full recovery
+ok 1 - fixed windup, straight charge, first hit and full recovery
+  ---
+  duration_ms: 3.2278
+  ...
+# Subtest: swept collision is independent of frame size and damages once
+ok 2 - swept collision is independent of frame size and damages once
+  ---
+  duration_ms: 2.3888
+  ...
+# Subtest: solids and corpse walls stop charge before a target; wall wins ties
+ok 3 - solids and corpse walls stop charge before a target; wall wins ties
+  ---
+  duration_ms: 1.044
+  ...
+# Subtest: earliest living target is hit even when targets are passed in reverse order
+ok 4 - earliest living target is hit even when targets are passed in reverse order
+  ---
+  duration_ms: 0.4509
+  ...
+# Subtest: first availability, activation range, death and boundary stop
+ok 5 - first availability, activation range, death and boundary stop
+  ---
+  duration_ms: 0.6178
+  ...
+# Subtest: arena introduces hounds without changing totals or campaign composition
+ok 6 - arena introduces hounds without changing totals or campaign composition
+  ---
+  duration_ms: 1.341
+  ...
+# Subtest: expedition introductions retain seed geometry, tiers and mob counts
+ok 7 - expedition introductions retain seed geometry, tiers and mob counts
+  ---
+  duration_ms: 7.1061
+  ...
+# Subtest: corte trava a direção, só acerta no contato e uma única vez
+ok 8 - corte trava a direção, só acerta no contato e uma única vez
+  ---
+  duration_ms: 3.106
+  ...
+# Subtest: salto marca o ponto, voa até ele e causa o impacto ao pousar
+ok 9 - salto marca o ponto, voa até ele e causa o impacto ao pousar
+  ---
+  duration_ms: 0.4366
+  ...
+# Subtest: salto limita o alcance e um quadro longo não pula a preparação nem repete o impacto
+ok 10 - salto limita o alcance e um quadro longo não pula a preparação nem repete o impacto
+  ---
+  duration_ms: 0.2818
+  ...
+# Subtest: conjuração só começa abaixo de 50%, uma vez por fase, e respeita o limite de aliados
+ok 11 - conjuração só começa abaixo de 50%, uma vez por fase, e respeita o limite de aliados
+  ---
+  duration_ms: 0.3797
+  ...
+# Subtest: chefe morto não executa golpe armado e reset limpa salto e recargas
+ok 12 - chefe morto não executa golpe armado e reset limpa salto e recargas
+  ---
+  duration_ms: 0.3844
+  ...
+# Subtest: pose acompanha a fase real e coloca o contato no quadro de impacto
+ok 13 - pose acompanha a fase real e coloca o contato no quadro de impacto
+  ---
+  duration_ms: 1.2014
+  ...
+# Subtest: fora de alcance ou sem alvo ele apenas persegue
+ok 14 - fora de alcance ou sem alvo ele apenas persegue
+  ---
+  duration_ms: 1.6718
+  ...
+# Subtest: windup grants no bonus, channel lasts four seconds, cooldown begins after it
+ok 15 - windup grants no bonus, channel lasts four seconds, cooldown begins after it
+  ---
+  duration_ms: 2.206
+  ...
+# Subtest: phase boundaries survive long frames and do not cast multiple times
+ok 16 - phase boundaries survive long frames and do not cast multiple times
+  ---
+  duration_ms: 2.1797
+  ...
+# Subtest: source death, departure, disengagement and reset end live bonus immediately
+ok 17 - source death, departure, disengagement and reset end live bonus immediately
+  ---
+  duration_ms: 0.3338
+  ...
+# Subtest: auras never stack and never buff self, other acolytes, bosses or dummies
+ok 18 - auras never stack and never buff self, other acolytes, bosses or dummies
+  ---
+  duration_ms: 0.5569
+  ...
+# Subtest: no ritual without allies or nearby threat; death during windup cancels
+ok 19 - no ritual without allies or nearby threat; death during windup cancels
+  ---
+  duration_ms: 0.2345
+  ...
+# Subtest: arena introduction preserves dog quota, old waves, campaign and list size
+ok 20 - arena introduction preserves dog quota, old waves, campaign and list size
+  ---
+  duration_ms: 1.2137
+  ...
+# Subtest: expedition introduction preserves geometry, tiers and seeded original plans
+ok 21 - expedition introduction preserves geometry, tiers and seeded original plans
+  ---
+  duration_ms: 4.5184
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 225.6207

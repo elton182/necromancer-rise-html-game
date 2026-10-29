@@ -47,13 +47,13 @@ export function resolvePosition(p,r,arena=TRAINING_ARENA){
  }
  return out;
 }
-export function moveCircle(p,delta,r,arena=TRAINING_ARENA){
+export function moveCircle(p,delta,r,arena=TRAINING_ARENA,{slide=true}={}){
  if(![p.x,p.y,delta.x,delta.y,r].every(Number.isFinite)||r<=0)throw Error('Movimento inválido.');
  let out=resolvePosition(p,r,arena),d={...delta},blocked=false;
  for(let pass=0;pass<5&&Math.hypot(d.x,d.y)>EPS;pass++){
   const h=hit(out,d,r,arena);if(!h){out.x+=d.x;out.y+=d.y;break;}blocked=true;
   const t=Math.max(0,h.t-EPS/Math.max(EPS,Math.hypot(d.x,d.y)));out.x+=d.x*t;out.y+=d.y*t;
-  const left=1-t;d.x*=left;d.y*=left;const inward=d.x*h.nx+d.y*h.ny;if(inward<0){d.x-=inward*h.nx;d.y-=inward*h.ny;}else break;
+  if(!slide)break;const left=1-t;d.x*=left;d.y*=left;const inward=d.x*h.nx+d.y*h.ny;if(inward<0){d.x-=inward*h.nx;d.y-=inward*h.ny;}else break;
  }
  out=resolvePosition(out,r,arena);return {...out,blocked,distance:Math.hypot(out.x-p.x,out.y-p.y)};
 }

@@ -1,0 +1,43 @@
+{
+  "stage": "E4",
+  "browser": "Microsoft Edge headless",
+  "viewport": "1440x900",
+  "checks": [
+    "HTML copiado abre sozinho por file://",
+    "quatro GLBs animados",
+    "movimento e magia",
+    "pausa e retomada",
+    "64 aliados e qualidade baixa",
+    "reinício sem crescimento de geometria/textura",
+    "menu e morte limpam efeitos",
+    "salvar e continuar após reload",
+    "prévia e cancelamento de importação",
+    "arquivo antigo integral e chave preservados",
+    "backup do save v2 anterior",
+    "exportação JSON sem estado transitório",
+    "JSON inválido não altera save",
+    "quota impede substituição",
+    "arena utilizável com armazenamento bloqueado",
+    "nenhuma requisição HTTP ou erro de página",
+    "diagnósticos de WebGL2 e clipe ausente"
+  ],
+  "counts": [
+    {
+      "actors": 74,
+      "geometries": 39,
+      "textures": 817
+    },
+    {
+      "actors": 74,
+      "geometries": 39,
+      "textures": 817
+    },
+    {
+      "actors": 74,
+      "geometries": 39,
+      "textures": 817
+    }
+  ],
+  "errors": [],
+  "remote": []
+}

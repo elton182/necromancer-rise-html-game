@@ -1,0 +1,15 @@
+{
+  "stage": "E7",
+  "checks": [
+    "abate com Tiro de Osso paga XP e ouro uma vez",
+    "coleta automática de ouro e aviso",
+    "subida de nível: atributos, cura, pontos e aviso",
+    "itens no chão em fundo escuro, claro e qualidade baixa",
+    "pausa preserva o chão",
+    "save e reload preservam nível, XP e ouro sem restaurar o chão",
+    "build de teste substitui o nível e avisa",
+    "save antigo preservado",
+    "sem erros de página"
+  ],
+  "errors": []
+}

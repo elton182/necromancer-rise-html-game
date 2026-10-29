@@ -1,0 +1,62 @@
+{
+  "checks": [
+    "cinco modelos revisados carregados",
+    "ossos mudam entre duas poses de caminhada",
+    "ossos mudam entre duas poses de ataque/cast",
+    "fundo claro e qualidade baixa",
+    "sem erros de página"
+  ],
+  "motion": [
+    {
+      "model": "player",
+      "clip": "walk",
+      "changed": true
+    },
+    {
+      "model": "skeleton",
+      "clip": "walk",
+      "changed": true
+    },
+    {
+      "model": "zombie",
+      "clip": "walk",
+      "changed": true
+    },
+    {
+      "model": "archer",
+      "clip": "walk",
+      "changed": true
+    },
+    {
+      "model": "abom",
+      "clip": "walk",
+      "changed": true
+    },
+    {
+      "model": "player",
+      "clip": "cast",
+      "changed": true
+    },
+    {
+      "model": "skeleton",
+      "clip": "attack",
+      "changed": true
+    },
+    {
+      "model": "zombie",
+      "clip": "attack",
+      "changed": true
+    },
+    {
+      "model": "archer",
+      "clip": "attack",
+      "changed": true
+    },
+    {
+      "model": "abom",
+      "clip": "attack",
+      "changed": true
+    }
+  ],
+  "errors": []
+}

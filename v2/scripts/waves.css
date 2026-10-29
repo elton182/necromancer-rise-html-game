@@ -1,0 +1,8 @@
+/* Aba Waves do Relicário (Pedra do Infinito). Estilo do seletor segue o jogo anterior. */
+.waves-picker{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;max-height:190px;overflow:auto}
+.waves-picker .btn{padding:9px 13px;min-height:38px}
+.waves-picker button[aria-pressed=true]{outline:2px solid #e7ce88;outline-offset:1px;box-shadow:inset 0 0 12px #bba76a44,0 0 6px #bea56833}
+.waves-mode label{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.waves-mode select{min-height:34px;background:#1a2218;color:#dcd3b0;border:1px solid #6e6344;padding:4px 8px}
+.waves-info h3{margin:0 0 6px;color:#dfc58c;font:18px Georgia,serif}
+.waves-enter{margin-top:10px;min-height:40px}

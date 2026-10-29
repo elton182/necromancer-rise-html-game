@@ -1,0 +1,165 @@
+TAP version 13
+# Subtest: catálogo preserva índices, IDs modulares e recompensas válidas
+ok 1 - catálogo preserva índices, IDs modulares e recompensas válidas
+  ---
+  duration_ms: 222.9255
+  ...
+# Subtest: Rei compartilhado preserva fases e morte cancela o avanço
+ok 2 - Rei compartilhado preserva fases e morte cancela o avanço
+  ---
+  duration_ms: 2.0749
+  ...
+# Subtest: integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+ok 3 - integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+  ---
+  duration_ms: 12.6184
+  ...
+# Subtest: composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+ok 4 - composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+  ---
+  duration_ms: 1.4902
+  ...
+# Subtest: escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+ok 5 - escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+  ---
+  duration_ms: 0.8958
+  ...
+# Subtest: especial integrado: Guerreiro
+ok 6 - especial integrado: Guerreiro
+  ---
+  duration_ms: 5.5453
+  ...
+# Subtest: especial integrado: Arqueiro
+ok 7 - especial integrado: Arqueiro
+  ---
+  duration_ms: 3.6578
+  ...
+# Subtest: especial integrado: Bruto
+ok 8 - especial integrado: Bruto
+  ---
+  duration_ms: 3.3411
+  ...
+# Subtest: especial integrado: Mago Vivo
+ok 9 - especial integrado: Mago Vivo
+  ---
+  duration_ms: 2.4564
+  ...
+# Subtest: especial integrado: Cão de Cripta
+ok 10 - especial integrado: Cão de Cripta
+  ---
+  duration_ms: 3.8964
+  ...
+# Subtest: especial integrado: Acólito de Guerra
+ok 11 - especial integrado: Acólito de Guerra
+  ---
+  duration_ms: 2.2351
+  ...
+# Subtest: projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+ok 12 - projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+  ---
+  duration_ms: 1.2348
+  ...
+# Subtest: morte durante salto/investida impede impactos e limpa altura; reset limpa projéteis e fogo
+ok 13 - morte durante salto/investida impede impactos e limpa altura; reset limpa projéteis e fogo
+  ---
+  duration_ms: 3.8404
+  ...
+# Subtest: Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+ok 14 - Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+  ---
+  duration_ms: 11.5893
+  ...
+# Subtest: encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+ok 15 - encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+  ---
+  duration_ms: 9.8806
+  ...
+# Subtest: elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+ok 16 - elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+  ---
+  duration_ms: 5.3955
+  ...
+# Subtest: flecha já lançada sobrevive à morte da fonte, como no motor atual
+ok 17 - flecha já lançada sobrevive à morte da fonte, como no motor atual
+  ---
+  duration_ms: 0.7678
+  ...
+# Subtest: definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+ok 18 - definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+  ---
+  duration_ms: 296.2559
+  ...
+# Subtest: perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+ok 19 - perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+  ---
+  duration_ms: 7.8611
+  ...
+# Subtest: equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+ok 20 - equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+  ---
+  duration_ms: 5.6756
+  ...
+# Subtest: morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+ok 21 - morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+  ---
+  duration_ms: 204.0787
+  ...
+# Subtest: detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+ok 22 - detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+  ---
+  duration_ms: 140.8353
+  ...
+# Subtest: sacrifício espera 20 segundos e não é elegível para reanimação
+ok 23 - sacrifício espera 20 segundos e não é elegível para reanimação
+  ---
+  duration_ms: 203.2548
+  ...
+# Subtest: persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+ok 24 - persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+  ---
+  duration_ms: 187.3209
+  ...
+# Subtest: região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+ok 25 - região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+  ---
+  duration_ms: 203.3923
+  ...
+# Subtest: automáticas por tipo usam recarga própria e chefes não recebem lentidão
+ok 26 - automáticas por tipo usam recarga própria e chefes não recebem lentidão
+  ---
+  duration_ms: 8.7751
+  ...
+# Subtest: salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+ok 27 - salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+  ---
+  duration_ms: 7.4226
+  ...
+# Subtest: separação respeita terreno; esquiva não concede invulnerabilidade
+ok 28 - separação respeita terreno; esquiva não concede invulnerabilidade
+  ---
+  duration_ms: 14.4065
+  ...
+# Subtest: horda malformada e build inválida são recusadas sem alterar estado
+ok 29 - horda malformada e build inválida são recusadas sem alterar estado
+  ---
+  duration_ms: 0.5655
+  ...
+# Subtest: Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+ok 30 - Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+  ---
+  duration_ms: 1.1366
+  ...
+# Subtest: botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+ok 31 - botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+  ---
+  duration_ms: 1.3569
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1540.1577

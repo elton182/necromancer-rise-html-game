@@ -1,0 +1,17 @@
+{
+  "stage": "E7",
+  "checks": [
+    "compra, comparação, equipar e vender pela interface",
+    "consumíveis: compra, F1 poção, Escudo de Ossos e barra vazia",
+    "atributos refletem o cajado",
+    "atalho I abre e fecha",
+    "filtro de loot oculta e não coleta",
+    "chefe deixa peça mágica ou melhor, coletada com aviso",
+    "sair do encontro coleta o permitido",
+    "save e reload preservam itens sem duplicar",
+    "fundo escuro, claro e qualidade baixa",
+    "save antigo preservado",
+    "sem erros de página"
+  ],
+  "errors": []
+}

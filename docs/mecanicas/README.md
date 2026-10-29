@@ -38,3 +38,9 @@ fechado por partidas completas.
 - Percentuais de mesmo tipo são **somados** antes de multiplicar.
 - Ao mudar um valor no código, atualize o guia correspondente. As fontes de cada
   regra aparecem no início de cada página.
+
+## Migração 3D
+
+As adaptações específicas da versão separada em `v2/` estão no
+[guia de campanha, vila e missões](../v2-campanha.md). Este índice continua
+descrevendo as regras da distribuição Canvas atual.

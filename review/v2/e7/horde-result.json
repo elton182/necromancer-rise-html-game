@@ -1,0 +1,26 @@
+{
+  "stage": "E7",
+  "browser": "Edge headless",
+  "checks": [
+    "perfil inicial sem concessão de aliados",
+    "build de teste validada e cinco tipos carregados",
+    "seis slots e preparação gratuita",
+    "comando detona um zumbi",
+    "bloqueio de dispensa de indisponível",
+    "persistência de integrantes e tempo de recuperação",
+    "reanimação 30 MP e 60% HP",
+    "ordem limitada à região",
+    "pausa congela recuperação",
+    "qualidade baixa e fundo claro",
+    "save antigo preservado",
+    "sem erros de página"
+  ],
+  "revive": {
+    "ok": true,
+    "hp": 229,
+    "max": 383,
+    "mp": 50
+  },
+  "provisionalAsset": "Abominação derivada do zumbi; arte dedicada pendente",
+  "errors": []
+}

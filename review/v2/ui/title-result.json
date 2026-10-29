@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "remote": [],
+  "checks": [
+    "cartão do save",
+    "Continuar habilitado e retoma o mapa",
+    "Nova campanha e Modo Livre pedem confirmação com save de campanha",
+    "Reiniciar campanha zera o personagem e guarda cópia anterior",
+    "Sair com confirmação",
+    "sem requisições de rede"
+  ]
+}

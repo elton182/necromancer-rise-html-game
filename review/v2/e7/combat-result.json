@@ -1,0 +1,26 @@
+{
+  "stage": "E7",
+  "browser": "Edge headless",
+  "checks": [
+    "tecla 1 lança modelo de osso",
+    "mana e recarga",
+    "pausa congela projétil",
+    "falta de mana não lança",
+    "C executa Dash de 4,5 u sem mana",
+    "proteção durante evasão e término",
+    "parede interrompe Dash",
+    "L3 simulado executa evasão",
+    "menu limpa projéteis e proteção"
+  ],
+  "dashed": {
+    "x": 4.499999999999998,
+    "y": 4,
+    "mp": 4,
+    "cooldown": 2.715400000000002
+  },
+  "protection": {
+    "during": 0,
+    "remaining": 0.09
+  },
+  "errors": []
+}

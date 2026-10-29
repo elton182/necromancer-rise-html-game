@@ -1,0 +1,36 @@
+{
+  "stage": "E6b",
+  "checks": [
+    "build de magias equipa seis slots",
+    "abates pela Explosão concedem XP de maestria uma vez e avisam a subida de nível",
+    "explosão pelo atalho 2 com dano imediato único, mana e recarga no HUD",
+    "mana insuficiente não paga nem inicia recarga",
+    "chuva pelo botão do slot com ossos visíveis antes do impacto",
+    "muralha renderizada e travessia bloqueada",
+    "escudo sem zumbi cobra vida e aparece no HUD",
+    "maldição marca o inimigo com rótulo",
+    "morte limpa quedas, muralhas, maldições e escudo",
+    "sacrifício de zumbi sem custo de vida em fundo claro e qualidade baixa",
+    "save/reload preserva loadout e recuperação sem entidades da luta",
+    "save antigo preservado",
+    "sem erros de página"
+  ],
+  "explosion": {
+    "hp": 99888,
+    "mp": 20.1948,
+    "cd": 7.9513,
+    "ring": true
+  },
+  "shield": {
+    "hp": 100,
+    "after": 85,
+    "barrier": 30
+  },
+  "sacrifice": {
+    "hp": 100,
+    "after": 100,
+    "sacrificed": 1,
+    "barrier": 355
+  },
+  "errors": []
+}

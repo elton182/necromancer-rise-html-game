@@ -113,7 +113,7 @@ if RIGGED:
         parent_delta=pose_matrix(b.parent).to_3x3() @ b.parent.bone.matrix_local.to_3x3().inverted()
         rest=b.bone.matrix_local.to_3x3()
         b.rotation_quaternion=(rest.inverted() @ parent_delta.inverted() @ target @ basis.inverted() @ rest).to_quaternion()
-    specs = [('idle',4,4,True),('walk',8,12,True),('cast',6,16,False),('death',6,7.5,False)]
+    specs = [('idle',4,4,True),('walk',8,12,True),('cast',8,28,False),('death',6,7.5,False)]
     for name,n,fps,loop in specs:
         arm.animation_data_create()
         arm.animation_data.action = bpy.data.actions.new(name)
@@ -139,16 +139,31 @@ if RIGGED:
                     rotate(side+'Arm',(1,0,0),-.38*s*sign)
                     rotate(side+'ForeArm',(0,0,1),-.10*sign)
             if name=='cast':
-                pulse=min(1,t/.40) if t<.75 else max(0,(1-t)/.25)
-                rotate('Spine',(1,0,0),-.06*pulse)
-                saved={bone_name:arm.pose.bones['mixamorig:'+bone_name].rotation_quaternion.copy()
-                       for bone_name in ('LeftArm','LeftForeArm','LeftHand')}
-                aim_bone('LeftArm',(.15,-1,.10))
-                aim_bone('LeftForeArm',(.04,-1,.14))
-                cast_palm()
-                for bone_name,start in saved.items():
-                    b=arm.pose.bones['mixamorig:'+bone_name]
-                    b.rotation_quaternion=start.slerp(b.rotation_quaternion,pulse)
+                # Recolher (0–30%), disparar (30–50%), sustentar (até 70%) e voltar ao descanso.
+                ease=lambda u:u*u*(3-2*u)
+                if t<.3:gather,release=ease(t/.3),0
+                elif t<.5:u=ease((t-.3)/.2);gather,release=1-u,u
+                elif t<.7:gather,release=0,1
+                else:gather,release=0,1-ease((t-.7)/.3)
+                # Spine +Z recua o ombro esquerdo; -Z o leva à frente. +X inclina o tronco à frente.
+                twist=.32*gather-.28*release
+                rotate('Spine',(0,0,1),twist*.5);rotate('Spine1',(0,0,1),twist*.5)
+                rotate('Spine',(1,0,0),-.06*gather+.18*release)
+                rotate('Head',(0,0,1),-twist*.6)
+                arm_bones=('LeftArm','LeftForeArm','LeftHand')
+                def capture():return {bone_name:arm.pose.bones['mixamorig:'+bone_name].rotation_quaternion.copy() for bone_name in arm_bones}
+                def restore(pose):
+                    for bone_name,q in pose.items():arm.pose.bones['mixamorig:'+bone_name].rotation_quaternion=q.copy()
+                rest_pose=capture()
+                # Carga: cotovelo baixo, mão recolhida diante do peito.
+                aim_bone('LeftArm',(.25,-.35,-.9));aim_bone('LeftForeArm',(-.75,-.35,.55))
+                charged=capture();restore(rest_pose)
+                # Disparo: braço estendido à frente, dedos para cima e palma para a frente.
+                aim_bone('LeftArm',(.15,-1,.10));aim_bone('LeftForeArm',(.04,-1,.14));cast_palm()
+                released=capture()
+                for bone_name in arm_bones:
+                    q=rest_pose[bone_name].slerp(charged[bone_name],gather).slerp(released[bone_name],release)
+                    arm.pose.bones['mixamorig:'+bone_name].rotation_quaternion=q
             if name=='death':
                 rotate('Hips',(1,0,0),-1.45*t)
                 arm.pose.bones['mixamorig:Hips'].location.z=-.28*t
@@ -157,6 +172,10 @@ if RIGGED:
             aim_bone('RightForeArm',(-.02,-1,.28))
             # Abrir o braço lateralmente como um conjunto, preservando a dobra.
             rotate('RightArm',(0,1,0),.20)
+            if name=='cast':
+                # O cajado acompanha o disparo: recua na carga e avança com o braço livre.
+                # Para o braço pendente, +X leva a mão para trás (sentido oposto ao do tronco).
+                rotate('RightArm',(1,0,0),.14*gather-.32*release)
             for b in arm.pose.bones:
                 b.keyframe_insert('rotation_quaternion',frame=fi+1)
                 b.keyframe_insert('location',frame=fi+1)

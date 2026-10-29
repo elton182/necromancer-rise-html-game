@@ -1,0 +1,16 @@
+{
+  "stage": "E6b",
+  "checks": [
+    "árvore e investimento pela interface",
+    "bônus aplicado ao tiro",
+    "maestria com XP fictício isolado",
+    "investimento de ponto próprio",
+    "save e reload preservam ranks",
+    "combate bloqueia edição",
+    "modal congela relógio e Escape mantém pausa",
+    "fundo claro e qualidade baixa",
+    "save antigo preservado",
+    "sem erros de página"
+  ],
+  "errors": []
+}

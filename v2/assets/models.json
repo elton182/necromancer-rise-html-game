@@ -19,7 +19,7 @@
   },
   "skeleton": {
     "path": "blender/reference/skeleton.glb",
-    "source": "blender/reference/skeleton.glb",
+    "source": "blender/reference/skeleton.blend",
     "height": 2.25,
     "requiredAnimations": [
       "idle",
@@ -58,5 +58,243 @@
       "slam_recover"
     ],
     "stride": 1.8
+  },
+  "bone": {
+    "path": "blender/exports/v2_bone.glb",
+    "source": "blender/scripts/v2_bone.py",
+    "requiredAnimations": []
+  },
+  "boneShard": {
+    "path": "blender/exports/bone_shard.glb",
+    "source": "blender/scripts/bone_shard.py",
+    "requiredAnimations": []
+  },
+  "archer": {
+    "path": "blender/reference/archer.glb",
+    "source": "blender/reference/archer.blend",
+    "height": 2.25,
+    "stride": 1.4,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ]
+  },
+  "specter": {
+    "path": "blender/exports/mob_specter.glb",
+    "source": "blender/exports/mob_specter.glb",
+    "height": 2.25,
+    "stride": 1.5,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ]
+  },
+  "abom": {
+    "path": "blender/exports/v2_abomination.glb",
+    "source": "blender/scripts/v2_abomination.py",
+    "height": 3,
+    "stride": 1.6,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "provisional": true
+  },
+  "warrior": {
+    "path": "blender/exports/v2_enemy_knight.glb",
+    "source": "blender/models/v2_enemy_knight.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "heavy_windup",
+      "heavy_attack",
+      "recover",
+      "hit"
+    ],
+    "stride": 1.4,
+    "durations": {
+      "attack": 0.3,
+      "death": 0.8
+    },
+    "matchPlayerHeight": true
+  },
+  "enemyArcher": {
+    "path": "blender/exports/lowpoly_earcher.glb",
+    "source": "blender/models/lowpoly_earcher.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "brute": {
+    "path": "blender/reference/corrupted.glb",
+    "source": "blender/reference/corrupted.blend",
+    "height": 3,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "livingMage": {
+    "path": "blender/exports/v2_enemy_mage.glb",
+    "source": "blender/models/v2_enemy_mage.blend",
+    "height": 2.25,
+    "stride": 1.4,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "cast",
+      "cast_windup",
+      "eruption_cast",
+      "eruption_windup"
+    ],
+    "matchPlayerHeight": true
+  },
+  "cryptHound": {
+    "path": "blender/exports/v2_enemy_wolf.glb",
+    "source": "blender/models/v2_enemy_wolf.blend",
+    "height": 1.6,
+    "stride": 2,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "windup",
+      "charge"
+    ]
+  },
+  "warAcolyte": {
+    "path": "blender/exports/mob_warAcolyte.glb",
+    "source": "blender/models/mob_warAcolyte.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "enemyThief": {
+    "path": "blender/exports/v2_enemy_thief.glb",
+    "source": "blender/models/v2_enemy_thief.blend",
+    "height": 2.25,
+    "stride": 1.4,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "stab",
+      "stab_windup"
+    ],
+    "matchPlayerHeight": true
+  },
+  "enemyGriffin": {
+    "path": "blender/exports/v2_enemy_griffin.glb",
+    "source": "blender/models/v2_enemy_griffin.blend",
+    "height": 2.4,
+    "stride": 1.4,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "claw",
+      "claw_windup",
+      "fly"
+    ],
+    "durations": {
+      "fly": 1,
+      "death": 0.8
+    }
+  },
+  "enemySpider": {
+    "path": "blender/exports/v2_enemy_spider.glb",
+    "source": "blender/models/v2_enemy_spider.blend",
+    "height": 1.1,
+    "stride": 1.3,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "bite",
+      "bite_windup"
+    ]
+  },
+  "npcBram": {
+    "path": "blender/exports/stylized_bram.glb",
+    "source": "blender/models/stylized_bram.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "greet"
+    ],
+    "stride": 1.4
+  },
+  "npcLysa": {
+    "path": "blender/exports/stylized_lysa.glb",
+    "source": "blender/models/stylized_lysa.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "greet"
+    ],
+    "stride": 1.4
+  },
+  "npcTilda": {
+    "path": "blender/exports/stylized_tilda.glb",
+    "source": "blender/models/stylized_tilda.blend",
+    "height": 1.45,
+    "requiredAnimations": [
+      "idle",
+      "greet"
+    ],
+    "stride": 1.4
+  },
+  "npcMerchant": {
+    "path": "blender/exports/stylized_merchant.glb",
+    "source": "blender/models/stylized_merchant.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "greet"
+    ],
+    "stride": 1.4
+  },
+  "medievalVillage": {
+    "path": "blender/exports/v2_medieval_village.glb",
+    "requiredAnimations": [],
+    "role": "scenery"
   }
 }

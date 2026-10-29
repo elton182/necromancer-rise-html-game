@@ -1,0 +1,14 @@
+00:11.188  image.write      | ERROR OpenImageIO write failed: Could not open file "C:\Users\elton\.thumbnails\large\blender_45648_c834631e6db0b4c02accfd7a2645e5af.png.png"
+Extensions: writing cache failed ([Errno 13] Permission denied: 'C:\\Users\\elton\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\extensions\\.cache\\compat.dat').
+Info: Saved as "v2_bone.blend"
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+17:46:22 | INFO: Starting glTF 2.0 export
+17:46:22 | INFO: Extracting primitive: Cone
+17:46:22 | INFO: Primitives created: 2
+17:46:22 | INFO: Finished glTF 2.0 export in 0.1854090690612793 s
+
+V2_BONE_OK 236
+Blender 5.2.3 LTS (hash e13b728c6880 built 2026-10-22 01:37:16)
+
+Blender quit

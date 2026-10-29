@@ -1,0 +1,217 @@
+{
+  "results": [
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "cast",
+      "actors": 7,
+      "shots": 0,
+      "zones": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "warrior",
+        "enemyArcher",
+        "brute",
+        "livingMage",
+        "cryptHound",
+        "warAcolyte"
+      ]
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "active",
+      "actors": 7,
+      "shots": 0,
+      "zones": 1,
+      "adds": 0,
+      "models": [
+        "player",
+        "warrior",
+        "enemyArcher",
+        "brute",
+        "livingMage",
+        "cryptHound",
+        "warAcolyte"
+      ]
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "king-slash",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "slash",
+      "phase2": false,
+      "phase": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "king-leap",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "leap",
+      "phase2": false,
+      "phase": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "king-air",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "leap",
+      "phase2": false,
+      "phase": 1,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "king-summon",
+      "actors": 4,
+      "shots": 0,
+      "zones": 0,
+      "king": "summon",
+      "phase2": true,
+      "phase": 1,
+      "adds": 2,
+      "models": [
+        "player",
+        "fallenKing",
+        "warrior",
+        "warrior"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "cast",
+      "actors": 7,
+      "shots": 0,
+      "zones": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "warrior",
+        "enemyArcher",
+        "brute",
+        "livingMage",
+        "cryptHound",
+        "warAcolyte"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "active",
+      "actors": 7,
+      "shots": 0,
+      "zones": 1,
+      "adds": 0,
+      "models": [
+        "player",
+        "warrior",
+        "enemyArcher",
+        "brute",
+        "livingMage",
+        "cryptHound",
+        "warAcolyte"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "king-slash",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "slash",
+      "phase2": false,
+      "phase": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "king-leap",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "leap",
+      "phase2": false,
+      "phase": 0,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "king-air",
+      "actors": 2,
+      "shots": 0,
+      "zones": 0,
+      "king": "leap",
+      "phase2": false,
+      "phase": 1,
+      "adds": 0,
+      "models": [
+        "player",
+        "fallenKing"
+      ]
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "king-summon",
+      "actors": 4,
+      "shots": 0,
+      "zones": 0,
+      "king": "summon",
+      "phase2": true,
+      "phase": 1,
+      "adds": 2,
+      "models": [
+        "player",
+        "fallenKing",
+        "warrior",
+        "warrior"
+      ]
+    }
+  ],
+  "cleanup": {
+    "adds": 0,
+    "shots": 0,
+    "zones": 0,
+    "warnings": 0
+  },
+  "errors": [],
+  "remote": [],
+  "limits": "Cenas controladas avançam a simulação real; não representam benchmark ou campanha."
+}

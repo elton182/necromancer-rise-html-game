@@ -1,0 +1,20 @@
+'use strict';
+// Tela inicial com save: cartão do progresso, Continuar, Nova campanha com confirmação e Modo Livre.
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
+(async()=>{const dir=path.resolve(__dirname,'../../review/v2/ui');fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true});
+ try{const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],remote=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
+  const url=pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href;await page.goto(url);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:60000});
+  await page.click('[data-title="campaign"]');await page.waitForFunction(()=>NecromancerV2.session.scene==='map');assert.equal(await page.locator('#tl').isVisible(),false);
+  assert.equal(await page.evaluate(()=>NecromancerV2.save()),true);
+  await page.reload();await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:60000});await page.waitForSelector('#tl.on');
+  assert.equal(await page.locator('[data-title="continue"]').isDisabled(),false);assert.match(await page.locator('#tl-card').innerText(),/Campanha — Ato I/);await page.screenshot({path:path.join(dir,'title-with-save.png')});
+  await page.click('[data-title="campaign"]');await page.waitForSelector('#tl .msg');assert.match(await page.locator('#tl .msg').innerText(),/reinicia/);await page.screenshot({path:path.join(dir,'title-confirm.png')});
+  await page.click('text=CANCELAR');await page.waitForSelector('[data-title="continue"]');
+  await page.click('[data-title="free"]');await page.waitForSelector('#tl .msg');await page.click('text=CANCELAR');await page.waitForSelector('[data-title="continue"]');
+  await page.click('[data-title="continue"]');await page.waitForFunction(()=>NecromancerV2.session.scene==='map');assert.equal(await page.locator('#tl').isVisible(),false);
+  await page.evaluate(()=>NecromancerV2.go('menu'));await page.waitForSelector('#tl.on');await page.click('[data-title="exit"]');await page.waitForSelector('#tl .msg');await page.click('text=CANCELAR');await page.waitForSelector('[data-title="exit"]');
+  await page.evaluate(()=>{NecromancerV2.session.save.character.gold=77;NecromancerV2.save();});await page.reload();await page.waitForSelector('#tl.on');await page.click('[data-title="campaign"]');await page.click('text=REINICIAR E COMEÇAR');await page.waitForFunction(()=>NecromancerV2.session.scene==='map');
+  assert.equal(await page.evaluate(()=>NecromancerV2.session.save.character.gold),0);assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('necromancer_rise_3d_save_backup')).character.gold),77);
+  assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
+  fs.writeFileSync(path.join(dir,'title-result.json'),JSON.stringify({errors,remote,checks:['cartão do save','Continuar habilitado e retoma o mapa','Nova campanha e Modo Livre pedem confirmação com save de campanha','Reiniciar campanha zera o personagem e guarda cópia anterior','Sair com confirmação','sem requisições de rede']},null,2));console.log('Tela inicial OK');
+ }finally{await browser.close();}})().catch(e=>{console.error(e.stack);process.exitCode=1;});

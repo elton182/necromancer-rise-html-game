@@ -23,7 +23,7 @@
 .lg-invest{display:grid;grid-template-columns:1fr;gap:8px}.lg-invest .btn,#tl.pz .pm.menu-standard .lg-invest .btn{font:14px/1.4 Georgia,serif!important;letter-spacing:.2px!important;min-height:44px;white-space:normal;padding:10px 12px}
 .lg-invest .invest{border-color:#d5b46b;background:linear-gradient(#826b35,#544420);color:#fff0c9}.lg-invest .refund{background:#182015;border-color:#778266;color:#d2dcc6}
 .lg-tabs button,.lg-reset,.lg-equip-help{min-height:44px;font-size:13px!important;letter-spacing:.3px!important}.lg-toolbar{gap:12px;margin:16px 0}.lg-heading h2{font-size:26px}.lg-heading small{font-size:11px}.lg-heading{padding-bottom:12px}
-#tl.pz .pm.menu-standard .pmmain button.pmtab{min-height:44px;font-size:12px;letter-spacing:.3px}
+#tl.pz .pm.menu-standard .pmmain button.pmtab{min-height:36px;font-size:12px;letter-spacing:.3px}
 #tl.pz .pm.menu-standard .pmcard{padding:18px;color:var(--ui-text)}.menu-summary{font-size:13px}.menu-actions>button{min-height:44px!important;font-size:12px!important}
 :where(.btn,.hub-tab,.pmtab,.cb,.lg-node,summary):focus-visible{outline:3px solid #ffe1a1!important;outline-offset:4px}
 :where(.btn,.hub-tab,.pmtab,.cb):not(:disabled):hover{filter:brightness(1.18);border-color:#ddc58b}

@@ -1,0 +1,280 @@
+TAP version 13
+# Subtest: 3 pontos por subida de nível, sem orçamento compartilhado duplicado
+ok 1 - 3 pontos por subida de nível, sem orçamento compartilhado duplicado
+  ---
+  duration_ms: 2.4858
+  ...
+# Subtest: bifurcações só abrem com nível e dois pontos no pai
+ok 2 - bifurcações só abrem com nível e dois pontos no pai
+  ---
+  duration_ms: 0.8672
+  ...
+# Subtest: as duas rotas intermediárias coexistem, finais da escola são exclusivos
+ok 3 - as duas rotas intermediárias coexistem, finais da escola são exclusivos
+  ---
+  duration_ms: 0.9779
+  ...
+# Subtest: as 12 especializações finais abrem no nível 22, mantendo pré-requisitos
+ok 4 - as 12 especializações finais abrem no nível 22, mantendo pré-requisitos
+  ---
+  duration_ms: 3.2177
+  ...
+# Subtest: remover pré-requisito devolve descendentes, preservando outra bifurcação
+ok 5 - remover pré-requisito devolve descendentes, preservando outra bifurcação
+  ---
+  duration_ms: 0.3101
+  ...
+# Subtest: diminuir nível remove skills indisponíveis e respeita o novo orçamento
+ok 6 - diminuir nível remove skills indisponíveis e respeita o novo orçamento
+  ---
+  duration_ms: 2.1391
+  ...
+# Subtest: sinergia de Zumbi afeta Abominação; pontes de explosão somam sem recursão
+ok 7 - sinergia de Zumbi afeta Abominação; pontes de explosão somam sem recursão
+  ---
+  duration_ms: 1.5311
+  ...
+# Subtest: códigos inválidos não aceitam excesso de pontos, skills falsas ou pré-requisitos ausentes
+ok 8 - códigos inválidos não aceitam excesso de pontos, skills falsas ou pré-requisitos ausentes
+  ---
+  duration_ms: 0.84
+  ...
+# Subtest: as cinco builds de exemplo sobrevivem a exportação e importação
+ok 9 - as cinco builds de exemplo sobrevivem a exportação e importação
+  ---
+  duration_ms: 2.2435
+  ...
+# Subtest: sequência de compras, devoluções e mudanças de nível mantém todas as builds válidas
+ok 10 - sequência de compras, devoluções e mudanças de nível mantém todas as builds válidas
+  ---
+  duration_ms: 36.2559
+  ...
+# Subtest: abilities wait for their staggered cooldown, then fire once and restart the timer
+ok 11 - abilities wait for their staggered cooldown, then fire once and restart the timer
+  ---
+  duration_ms: 7.8224
+  ...
+# Subtest: no cast without a reachable target, while rallying or outside the field
+ok 12 - no cast without a reachable target, while rallying or outside the field
+  ---
+  duration_ms: 2.8382
+  ...
+# Subtest: skeleton spin hits every nearby enemy and archer volley spreads over three targets
+ok 13 - skeleton spin hits every nearby enemy and archer volley spreads over three targets
+  ---
+  duration_ms: 4.1243
+  ...
+# Subtest: specter dashes through its target and the abomination slows crowds without displacing targets
+ok 14 - specter dashes through its target and the abomination slows crowds without displacing targets
+  ---
+  duration_ms: 3.1354
+  ...
+# Subtest: decomposition ticks for four seconds and repeated bites refresh without stacking
+ok 15 - decomposition ticks for four seconds and repeated bites refresh without stacking
+  ---
+  duration_ms: 3.3934
+  ...
+# Subtest: frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+ok 16 - frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+  ---
+  duration_ms: 17.1117
+  ...
+# Subtest: manual revive spends 30 mana once, restores visibility and places ally beside hero
+ok 17 - manual revive spends 30 mana once, restores visibility and places ally beside hero
+  ---
+  duration_ms: 5.8827
+  ...
+# Subtest: sacrificed/exploded allies and insufficient mana cannot bypass recovery
+ok 18 - sacrificed/exploded allies and insufficient mana cannot bypass recovery
+  ---
+  duration_ms: 3.0052
+  ...
+# Subtest: paused keyboard revive is blocked; explicit paid action in Horde menu works
+ok 19 - paused keyboard revive is blocked; explicit paid action in Horde menu works
+  ---
+  duration_ms: 2.4874
+  ...
+# Subtest: zombies and skeletons react after a delay and move out of warned area without invulnerability
+ok 20 - zombies and skeletons react after a delay and move out of warned area without invulnerability
+  ---
+  duration_ms: 15.9332
+  ...
+# Subtest: hostile projectiles are dodged; friendly projectiles do not trigger evasion
+ok 21 - hostile projectiles are dodged; friendly projectiles do not trigger evasion
+  ---
+  duration_ms: 3.4741
+  ...
+# Subtest: hound charge exposes a finite line hazard, removed during recovery
+ok 22 - hound charge exposes a finite line hazard, removed during recovery
+  ---
+  duration_ms: 3.7141
+  ...
+# Subtest: dodge respects collision constraints and does not replace return-to-hero or leap AI
+ok 23 - dodge respects collision constraints and does not replace return-to-hero or leap AI
+  ---
+  duration_ms: 5.3813
+  ...
+# Subtest: no hazard preserves normal AI and killing an ally clears dodge state
+ok 24 - no hazard preserves normal AI and killing an ally clears dodge state
+  ---
+  duration_ms: 2.923
+  ...
+# Subtest: revive HUD cannot intercept clicks while hidden and explains insufficient mana
+ok 25 - revive HUD cannot intercept clicks while hidden and explains insufficient mana
+  ---
+  duration_ms: 3.6297
+  ...
+# Subtest: Zumbi e Abominação fortalecem vida e dano um do outro e retiram bônus ao devolver pontos
+ok 26 - Zumbi e Abominação fortalecem vida e dano um do outro e retiram bônus ao devolver pontos
+  ---
+  duration_ms: 27.2458
+  ...
+# Subtest: migração redistribui exatamente o orçamento e remove souls e upgrades antigos
+ok 27 - migração redistribui exatamente o orçamento e remove souls e upgrades antigos
+  ---
+  duration_ms: 15.0645
+  ...
+# Subtest: save novo conserva ranks e remove liberações narrativas antigas
+ok 28 - save novo conserva ranks e remove liberações narrativas antigas
+  ---
+  duration_ms: 16.201
+  ...
+# Subtest: uma subida dá 3 pontos sem bônus por alma ou marcos de campanha
+ok 29 - uma subida dá 3 pontos sem bônus por alma ou marcos de campanha
+  ---
+  duration_ms: 14.3722
+  ...
+# Subtest: Zumbi e Carne Reanimada modificam stats reais da Abominação
+ok 30 - Zumbi e Carne Reanimada modificam stats reais da Abominação
+  ---
+  duration_ms: 16.1999
+  ...
+# Subtest: Tiro e Chuva recebem sinergias e perfuração sem consumir souls
+ok 31 - Tiro e Chuva recebem sinergias e perfuração sem consumir souls
+  ---
+  duration_ms: 17.0332
+  ...
+# Subtest: Estilhaços liberam o leque de 3 ossos do Tiro de Osso
+ok 32 - Estilhaços liberam o leque de 3 ossos do Tiro de Osso
+  ---
+  duration_ms: 17.8661
+  ...
+# Subtest: Tiro sem equipamento exige dois acertos no guerreiro inicial e cinco no bruto
+ok 33 - Tiro sem equipamento exige dois acertos no guerreiro inicial e cinco no bruto
+  ---
+  duration_ms: 14.6758
+  ...
+# Subtest: explosão de zumbi usa dano ampliado e raio de 3,5, preservando sacrifício e recarga
+ok 34 - explosão de zumbi usa dano ampliado e raio de 3,5, preservando sacrifício e recarga
+  ---
+  duration_ms: 19.5051
+  ...
+# Subtest: Explosão Necrótica só usa mana e soma sinergias de ambas as árvores
+ok 35 - Explosão Necrótica só usa mana e soma sinergias de ambas as árvores
+  ---
+  duration_ms: 18.5008
+  ...
+# Subtest: Maldição altera dano do inimigo e restaura ao expirar
+ok 36 - Maldição altera dano do inimigo e restaura ao expirar
+  ---
+  duration_ms: 16.7543
+  ...
+# Subtest: Pacto cura morte comum, sem cura em detonação ou sacrifício
+ok 37 - Pacto cura morte comum, sem cura em detonação ou sacrifício
+  ---
+  duration_ms: 13.4363
+  ...
+# Subtest: Dash, defesa após Dash e muralha usam os ranks reais
+ok 38 - Dash, defesa após Dash e muralha usam os ranks reais
+  ---
+  duration_ms: 16.6526
+  ...
+# Subtest: arquivo final inclui exatamente o modelo e as regras atuais, com sintaxe válida
+ok 39 - arquivo final inclui exatamente o modelo e as regras atuais, com sintaxe válida
+  ---
+  duration_ms: 229.0647
+  ...
+# Subtest: Aura soma com a escola e com o comando, respeitando distância do personagem
+ok 40 - Aura soma com a escola e com o comando, respeitando distância do personagem
+  ---
+  duration_ms: 19.3384
+  ...
+# Subtest: refund é bloqueado em combate e durante recuperação de sacrifício
+ok 41 - refund é bloqueado em combate e durante recuperação de sacrifício
+  ---
+  duration_ms: 13.5061
+  ...
+# Subtest: refund is available while paused between waves and explains gold or recovery restrictions
+ok 42 - refund is available while paused between waves and explains gold or recovery restrictions
+  ---
+  duration_ms: 16.5153
+  ...
+# Subtest: drenagem do Espectro cura a si mesmo e compartilha a cura efetiva com Zephyr
+ok 43 - drenagem do Espectro cura a si mesmo e compartilha a cura efetiva com Zephyr
+  ---
+  duration_ms: 13.862
+  ...
+# Subtest: ouro cai uma vez por inimigo, fica no chão e só é creditado ao coletar
+ok 44 - ouro cai uma vez por inimigo, fica no chão e só é creditado ao coletar
+  ---
+  duration_ms: 15.1555
+  ...
+# Subtest: gold não restaura mana, chefes deixam mais e alvos de treino não deixam ouro
+ok 45 - gold não restaura mana, chefes deixam mais e alvos de treino não deixam ouro
+  ---
+  duration_ms: 12.2526
+  ...
+# Subtest: reset cobra 20 ouro por ponto; saldo insuficiente não modifica a build
+ok 46 - reset cobra 20 ouro por ponto; saldo insuficiente não modifica a build
+  ---
+  duration_ms: 13.3004
+  ...
+# Subtest: devolução parcial cobra os descendentes e não contorna o custo do reset
+ok 47 - devolução parcial cobra os descendentes e não contorna o custo do reset
+  ---
+  duration_ms: 12.1871
+  ...
+# Subtest: campanha não concede skills nem bloqueia invocações da árvore
+ok 48 - campanha não concede skills nem bloqueia invocações da árvore
+  ---
+  duration_ms: 11.7374
+  ...
+# Subtest: tutorial é agendado uma vez no nível 2 e termina após os três primeiros pontos
+ok 49 - tutorial é agendado uma vez no nível 2 e termina após os três primeiros pontos
+  ---
+  duration_ms: 14.6203
+  ...
+# Subtest: personagem novo começa sem zumbis e precisa investir o primeiro ponto para equipar e evocar
+ok 50 - personagem novo começa sem zumbis e precisa investir o primeiro ponto para equipar e evocar
+  ---
+  duration_ms: 14.617
+  ...
+# Subtest: saves sem ponto em Zumbis perdem a liberação antiga e seus grupos gratuitos
+ok 51 - saves sem ponto em Zumbis perdem a liberação antiga e seus grupos gratuitos
+  ---
+  duration_ms: 10.9954
+  ...
+# Subtest: aprender habilidade equipável agenda orientação uma vez, melhorias e passivas não repetem
+ok 52 - aprender habilidade equipável agenda orientação uma vez, melhorias e passivas não repetem
+  ---
+  duration_ms: 15.5013
+  ...
+# Subtest: orientação não aparece para habilidade já equipada e só conclui a pendência selecionada
+ok 53 - orientação não aparece para habilidade já equipada e só conclui a pendência selecionada
+  ---
+  duration_ms: 15.8986
+  ...
+# Subtest: save preserva orientação pendente e descarta pendência de habilidade indisponível
+ok 54 - save preserva orientação pendente e descarta pendência de habilidade indisponível
+  ---
+  duration_ms: 15.957
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1212.2797

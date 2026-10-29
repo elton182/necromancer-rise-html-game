@@ -1,0 +1,45 @@
+{
+  "errors": [],
+  "remote": [],
+  "layout": [
+    {
+      "id": "hud",
+      "left": 8,
+      "right": 592,
+      "bottom": 792,
+      "vw": 600,
+      "vh": 800
+    },
+    {
+      "id": "game-nav",
+      "left": 8,
+      "right": 470,
+      "bottom": 34,
+      "vw": 600,
+      "vh": 800
+    },
+    {
+      "id": "minimap-panel",
+      "left": 480,
+      "right": 592,
+      "bottom": 102,
+      "vw": 600,
+      "vh": 800
+    }
+  ],
+  "checks": [
+    "tela inicial com arte, seis botões, opções e créditos",
+    "árvore Minions/Profana com 21 nós, detalhe e maestrias com seis slots",
+    "boneco com sete slots, comparação com Dif. e arrastar/soltar",
+    "seis slots",
+    "HUD sem painel lateral",
+    "pausa congela simulação",
+    "cinco abas",
+    "seleção de habilidade",
+    "inventário e Grimório",
+    "ajuda H/Esc",
+    "fundos claro/escuro e baixa qualidade",
+    "1440/1280/janela estreita",
+    "offline"
+  ]
+}

@@ -1,0 +1,125 @@
+TAP version 13
+# Subtest: catálogo preserva índices, IDs modulares e recompensas válidas
+ok 1 - catálogo preserva índices, IDs modulares e recompensas válidas
+  ---
+  duration_ms: 269.0112
+  ...
+# Subtest: Rei compartilhado preserva fases e morte cancela o avanço
+ok 2 - Rei compartilhado preserva fases e morte cancela o avanço
+  ---
+  duration_ms: 1.4447
+  ...
+# Subtest: integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+ok 3 - integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+  ---
+  duration_ms: 16.549
+  ...
+# Subtest: composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+ok 4 - composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+  ---
+  duration_ms: 4.4829
+  ...
+# Subtest: escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+ok 5 - escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+  ---
+  duration_ms: 1.6722
+  ...
+# Subtest: especial integrado: Guerreiro
+ok 6 - especial integrado: Guerreiro
+  ---
+  duration_ms: 10.5963
+  ...
+# Subtest: especial integrado: Arqueiro
+ok 7 - especial integrado: Arqueiro
+  ---
+  duration_ms: 5.4131
+  ...
+# Subtest: especial integrado: Bruto
+ok 8 - especial integrado: Bruto
+  ---
+  duration_ms: 3.8548
+  ...
+# Subtest: especial integrado: Mago Vivo
+ok 9 - especial integrado: Mago Vivo
+  ---
+  duration_ms: 10.1808
+  ...
+# Subtest: especial integrado: Cão de Cripta
+ok 10 - especial integrado: Cão de Cripta
+  ---
+  duration_ms: 7.0692
+  ...
+# Subtest: especial integrado: Acólito de Guerra
+ok 11 - especial integrado: Acólito de Guerra
+  ---
+  duration_ms: 3.3391
+  ...
+# Subtest: projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+ok 12 - projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+  ---
+  duration_ms: 0.8274
+  ...
+# Subtest: morte durante salto/investida impede impactos e limpa altura
+ok 13 - morte durante salto/investida impede impactos e limpa altura
+  ---
+  duration_ms: 4.0402
+  ...
+# Subtest: Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+ok 14 - Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+  ---
+  duration_ms: 18.9948
+  ...
+# Subtest: encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+ok 15 - encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+  ---
+  duration_ms: 9.5599
+  ...
+# Subtest: elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+ok 16 - elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+  ---
+  duration_ms: 6.742
+  ...
+# Subtest: flecha já lançada sobrevive à morte da fonte, como no motor atual
+ok 17 - flecha já lançada sobrevive à morte da fonte, como no motor atual
+  ---
+  duration_ms: 0.8636
+  ...
+# Subtest: aura é arredondada antes do multiplicador do especial, como o getter canônico
+ok 18 - aura é arredondada antes do multiplicador do especial, como o getter canônico
+  ---
+  duration_ms: 3.0006
+  ...
+# Subtest: voo baixo oscila, permanece vulnerável e desce ao morrer
+ok 19 - voo baixo oscila, permanece vulnerável e desce ao morrer
+  ---
+  duration_ms: 11.9828
+  ...
+# Subtest: extensão da v2 preserva os seis índices e introduz novos tipos progressivamente
+ok 20 - extensão da v2 preserva os seis índices e introduz novos tipos progressivamente
+  ---
+  duration_ms: 5.5735
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 6
+ok 21 - ataque preparado: dano único, evasão e morte cancelam — 6
+  ---
+  duration_ms: 15.435
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 7
+ok 22 - ataque preparado: dano único, evasão e morte cancelam — 7
+  ---
+  duration_ms: 9.0475
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 8
+ok 23 - ataque preparado: dano único, evasão e morte cancelam — 8
+  ---
+  duration_ms: 4.9314
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 833.0818

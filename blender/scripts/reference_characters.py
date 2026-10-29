@@ -1,5 +1,6 @@
 """Reference cast: editable meshes, UVs, skeletal GLB and game-camera animation atlases.
 Blender -b -t 4 --python blender/scripts/reference_characters.py -- --only=bram,zephyr,skeleton [--preview]
+Só cena, ações e GLB (sem render, exceto zephyr): -- --only=skeleton,archer --no-render
 Enemy proposals are optional visual assets, never new combat types.
 """
 import bpy,math,sys,json
@@ -69,13 +70,15 @@ def sword(curved=False):
  verts=[(x-.065,y,1.15),(x+.065,y,1.15),(x+.065+(.18 if curved else 0),y,1.68),(x+(.25 if curved else 0),y,1.85),(x-.065+(.1 if curved else 0),y,1.67),(x,y-.045,1.44)]
  s.mesh('Forged blade with central ridge',verts,[(0,1,5),(1,2,5),(2,3,5),(3,4,5),(4,0,5),(0,4,3,2,1)],'iron','hand.R')
 
- # Tilt the finished blade away from the body; keep its pivot in the gripping hand.
- angle=-.40
+ # Lâmina alinhada ao cabo (sem inclinação lateral fixa); a postura vem do pulso
+ # nas ações (combat_animation_clips). O espadachim curvo mantém o ângulo anterior.
+ angle=-.40 if curved else 0
  for part in c.PARTS[first:]:
   for vertex in part.data.vertices:
    dx=vertex.co.x-x;dz=vertex.co.z-.99;vertex.co.x=x+dx*math.cos(angle)+dz*math.sin(angle);vertex.co.z=.99-dx*math.sin(angle)+dz*math.cos(angle)
 
 def shield():
+ # Disco vertical de frente, preso à mão esquerda; a guarda (combat_animation_clips) o mantém diante do peito.
  x=.48;y=-.21;z=1.08;n=12;v=[(x+.30*math.sin(i*math.tau/n),y,z+.35*math.cos(i*math.tau/n)) for i in range(n)]+[(x,y-.05,z)]
  obj=s.mesh('Round wooden shield',v,[(i,(i+1)%n,n) for i in range(n)],'wood','hand.L');obj.data.materials.append(c.MATS['woodlight'])
  for i,p in enumerate(obj.data.polygons):p.material_index=i%2
@@ -83,10 +86,17 @@ def shield():
  s.ell('Shield boss',(x,y-.075,z),(.09,.045,.10),'iron','hand.L',8)
 
 def bow():
- pts=[(.42+(.25*math.sin(t*math.pi)), -.17, .56+t*1.05) for t in [0,.16,.33,.5,.67,.84,1]]
+ # Punho do arco dentro da mão esquerda; pontas curvadas para trás e corda do lado do corpo (+Y).
+ gx,gy,gz=.44,-.15,.94
+ pts=[(gx,gy+.20*(1-math.sin(t*math.pi)),gz-.55+1.1*t) for t in [0,.16,.33,.5,.67,.84,1]]
  for a,b in zip(pts,pts[1:]):s.link('Shaped wooden bow limb',a,b,.028,.021,'wood','hand.L')
+ s.box('Leather bow grip',(gx,gy,gz),(.06,.06,.14),'leather','hand.L',.01)
  s.link('Bowstring',pts[0],pts[-1],.006,.006,'joint','hand.L')
- s.link('Held arrow',(-.42,-.19,1.02),(.61,-.19,1.02),.012,.009,'woodlight','hand.R')
+ # A flecha fica na mão da corda. Direção calculada na puxada completa (attack, quadro 5):
+ # ali ela vai da mão direita até o punho do arco; em repouso pende para trás e para baixo.
+ nock=Vector((-.42,-.15,.94));d=Vector((.31,.85,-.43)).normalized()
+ s.link('Held arrow',nock,nock+d*.72,.012,.009,'woodlight','hand.R')
+ tip=nock+d*.72;s.link('Arrowhead',tip,tip+d*.08,.022,.003,'iron','hand.R')
  s.link('Leather quiver',(-.20,.19,1.05),(-.27,.22,1.66),.09,.11,'leather','chest')
  for i in range(3):
   x=-.33+i*.06;s.link('Quivered arrow',(x,.22,1.42),(x,.22,1.95+i*.04),.008,.008,'woodlight','chest');s.mesh('Broad arrow fletching',[(x-.045,.22,1.88),(x,.22,2.01),(x+.045,.22,1.91),(x,.22,1.82)],[(0,1,2,3)],'teal','chest')
@@ -124,7 +134,7 @@ def humanoid_actions(kind):
  if kind in ['skeleton','archer','skeleton_mage']:
   import combat_animation_clips
   combat_animation_clips.minion(kind)
-  return [('idle',4,5,True),('walk',6,10,True),('attack',8,20,False),('hurt',3,12,False),('death',6,10,False),('spawn',6,10,False)]
+  return [('idle',4,5,True),('walk',8,13,True),('attack',8,20,False),('hurt',3,12,False),('death',6,10,False),('spawn',6,10,False)]
  return [('idle',4,5,True),('walk',6,10,True),('attack',6,14,False),('hurt',3,12,False),('death',6,10,False),('spawn',6,10,False)]
 
 def improve_original(ident):
@@ -299,6 +309,7 @@ def produce(ident,preview=False):
  sc.render.resolution_x=sc.render.resolution_y=(768 if preview else cell);sc.render.resolution_percentage=100
  # Save PBR source before the render-only toon conversion.
  if ident!='zephyr':bpy.ops.wm.save_as_mainfile(filepath=str(OUT/(ident+'.blend')))
+ if ident!='zephyr' and '--no-render' in sys.argv:print('REFERENCE_SAVED',ident,flush=True);return  # só cena, ações e GLB
  import toon
  if ident=='bram':
   # Studio lighting preserves the broad planar shading of the supplied reference.

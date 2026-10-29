@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: fontes preservam fases, recompensas e histórias da campanha
+ok 1 - fontes preservam fases, recompensas e histórias da campanha
+  ---
+  duration_ms: 5.6438
+  ...
+# Subtest: normalização e conclusão: desbloqueio sequencial e prêmio único
+ok 2 - normalização e conclusão: desbloqueio sequencial e prêmio único
+  ---
+  duration_ms: 2.3525
+  ...
+# Subtest: portas e união dos corredores impedem atravessar paredes
+ok 3 - portas e união dos corredores impedem atravessar paredes
+  ---
+  duration_ms: 19.0595
+  ...
+# Subtest: personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+ok 4 - personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+  ---
+  duration_ms: 61.7491
+  ...
+# Subtest: morte e recarga não completam fase nem restauram combate
+ok 5 - morte e recarga não completam fase nem restauram combate
+  ---
+  duration_ms: 5.5696
+  ...
+# Subtest: ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+ok 6 - ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+  ---
+  duration_ms: 7.6559
+  ...
+# Subtest: save mantém histórias e prêmios mas não restaura entidades ou zonas
+ok 7 - save mantém histórias e prêmios mas não restaura entidades ou zonas
+  ---
+  duration_ms: 5.533
+  ...
+# Subtest: grupos revivem entre fases sem duplicar integrantes
+ok 8 - grupos revivem entre fases sem duplicar integrantes
+  ---
+  duration_ms: 7.5767
+  ...
+# Subtest: missão em arena só conclui depois das ondas e do chefe
+ok 9 - missão em arena só conclui depois das ondas e do chefe
+  ---
+  duration_ms: 9.5532
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 459.7692

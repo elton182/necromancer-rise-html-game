@@ -1,0 +1,145 @@
+TAP version 13
+# Subtest: fontes preservam fases, recompensas e histórias da campanha
+ok 1 - fontes preservam fases, recompensas e histórias da campanha
+  ---
+  duration_ms: 4.8977
+  ...
+# Subtest: normalização e conclusão: desbloqueio sequencial e prêmio único
+ok 2 - normalização e conclusão: desbloqueio sequencial e prêmio único
+  ---
+  duration_ms: 3.3039
+  ...
+# Subtest: portas e união dos corredores impedem atravessar paredes
+ok 3 - portas e união dos corredores impedem atravessar paredes
+  ---
+  duration_ms: 28.1183
+  ...
+# Subtest: personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+ok 4 - personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+  ---
+  duration_ms: 137.9887
+  ...
+# Subtest: morte e recarga não completam fase nem restauram combate
+ok 5 - morte e recarga não completam fase nem restauram combate
+  ---
+  duration_ms: 17.0917
+  ...
+# Subtest: ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+ok 6 - ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+  ---
+  duration_ms: 26.4755
+  ...
+# Subtest: save mantém histórias e prêmios mas não restaura entidades ou zonas
+ok 7 - save mantém histórias e prêmios mas não restaura entidades ou zonas
+  ---
+  duration_ms: 10.5692
+  ...
+# Subtest: grupos revivem entre fases sem duplicar integrantes
+ok 8 - grupos revivem entre fases sem duplicar integrantes
+  ---
+  duration_ms: 7.4881
+  ...
+# Subtest: missão em arena só conclui depois das ondas e do chefe
+ok 9 - missão em arena só conclui depois das ondas e do chefe
+  ---
+  duration_ms: 33.0492
+  ...
+# Subtest: catálogo preserva índices, IDs modulares e recompensas válidas
+ok 10 - catálogo preserva índices, IDs modulares e recompensas válidas
+  ---
+  duration_ms: 463.3973
+  ...
+# Subtest: Rei compartilhado preserva fases e morte cancela o avanço
+ok 11 - Rei compartilhado preserva fases e morte cancela o avanço
+  ---
+  duration_ms: 4.0975
+  ...
+# Subtest: integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+ok 12 - integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+  ---
+  duration_ms: 16.6058
+  ...
+# Subtest: composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+ok 13 - composição apresenta cão isolado e acólito gradualmente, sem mudar índices
+  ---
+  duration_ms: 2.3084
+  ...
+# Subtest: escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+ok 14 - escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+  ---
+  duration_ms: 1.8327
+  ...
+# Subtest: especial integrado: Guerreiro
+ok 15 - especial integrado: Guerreiro
+  ---
+  duration_ms: 21.0608
+  ...
+# Subtest: especial integrado: Arqueiro
+ok 16 - especial integrado: Arqueiro
+  ---
+  duration_ms: 9.7751
+  ...
+# Subtest: especial integrado: Bruto
+ok 17 - especial integrado: Bruto
+  ---
+  duration_ms: 5.7512
+  ...
+# Subtest: especial integrado: Mago Vivo
+ok 18 - especial integrado: Mago Vivo
+  ---
+  duration_ms: 7.828
+  ...
+# Subtest: especial integrado: Cão de Cripta
+ok 19 - especial integrado: Cão de Cripta
+  ---
+  duration_ms: 8.6004
+  ...
+# Subtest: especial integrado: Acólito de Guerra
+ok 20 - especial integrado: Acólito de Guerra
+  ---
+  duration_ms: 6.6793
+  ...
+# Subtest: projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+ok 21 - projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+  ---
+  duration_ms: 2.4217
+  ...
+# Subtest: morte durante salto/investida impede impactos e limpa altura
+ok 22 - morte durante salto/investida impede impactos e limpa altura
+  ---
+  duration_ms: 5.7891
+  ...
+# Subtest: Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+ok 23 - Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+  ---
+  duration_ms: 35.9642
+  ...
+# Subtest: encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+ok 24 - encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+  ---
+  duration_ms: 33.1044
+  ...
+# Subtest: elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+ok 25 - elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+  ---
+  duration_ms: 6.9415
+  ...
+# Subtest: flecha já lançada sobrevive à morte da fonte, como no motor atual
+ok 26 - flecha já lançada sobrevive à morte da fonte, como no motor atual
+  ---
+  duration_ms: 2.1657
+  ...
+# Subtest: aura é arredondada antes do multiplicador do especial, como o getter canônico
+ok 27 - aura é arredondada antes do multiplicador do especial, como o getter canônico
+  ---
+  duration_ms: 14.5792
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1330.8113

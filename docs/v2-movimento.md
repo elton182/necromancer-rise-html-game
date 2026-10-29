@@ -4,6 +4,10 @@ Implementado em `v2/scripts/terrain.mjs`, `training-model.mjs`, `renderer.mjs`,
 `input.mjs`, `gamepad.mjs` e `app.mjs`, relativos à raiz do projeto.
 O [plano de migração](../v2/plano-migracao.md) registra a sequência das etapas.
 
+Atualização E4: Tiro de Osso substituiu a magia de área, Dash está disponível e
+movimento normal usa 4 u/s básicos. Veja [combate da E4](v2-combate.md) para as
+regras atuais; os registros de validação abaixo documentam a entrega E3.
+
 ## Contrato do mundo
 
 A simulação usa x/y no chão; o renderizador converte para x/z de Three.js.
@@ -39,12 +43,12 @@ com suporte adicional a caixas alinhadas aos eixos para as paredes de teste:
   e a rota é reutilizada até precisar de atualização.
 - Um alvo perto de um sólido é convertido para chão alcançável pelo raio do
   perseguidor. Não há teleporte para atravessar obstáculos.
-- Um atacante comum não inicia um golpe corpo a corpo pela parede. A magia de
-  área experimental continua com sua regra anterior: a área não usa parede
-  como cobertura. Dano, custo, recarga e alcance dessa magia não foram alterados.
+- Um atacante comum não inicia um golpe corpo a corpo pela parede. Na E3, a
+  magia de área experimental mantinha a regra anterior sem cobertura por parede.
+  Na E4 ela foi substituída pelo tiro, que também atravessa sólidos conforme a fonte atual.
 
-Separação física entre integrantes da horda, formação completa e esquiva de
-ameaças continuam na E5. Não há colisão vertical, física de corpos rígidos ou
+Separação entre integrantes, formação e esquiva de ameaças foram integradas
+na [E5](v2-horda.md). Não há colisão vertical, física de corpos rígidos ou
 arte definitiva para os blocos; são volumes provisórios de validação.
 
 ## Câmera e mira
@@ -56,7 +60,7 @@ O anel pequeno no chão mostra a mira enquanto o treino está ativo.
 
 WASD/setas continuam relativos à tela, com diagonal normalizada. Pressionar
 contra uma parede não mantém a animação de caminhada quando não há deslocamento.
-A roda mantém o intervalo de zoom já usado na arena, sem alterar alcances.
+A roda mantém o intervalo de zoom já usado na arena, sem alterar alcances. O zoom inicial é 11 (antes 15), mais próximo do personagem; a roda continua variando de 8 a 24.
 
 ## Animações
 
@@ -91,11 +95,12 @@ Suporte básico ao mapeamento padrão da Gamepad API:
 | A | Entrar/tentar novamente no menu ou lançar magia no treino |
 | RT | Lançar magia, respeitando a recarga experimental |
 | Start | Pausar/retomar uma vez por pressão |
+| L3 (desde E4) | Dash |
 
 Os sticks têm deadzone radial de 0,18. Mouse volta a assumir a mira quando é
 movido. Perda de foco/transição limpa entradas; botões mantidos devem voltar
 ao neutro antes de serem aceitos novamente. Desconectar o controle mantém o
-teclado funcional. Slots completos, Dash, comandos da horda, calibração e
+teclado funcional. Slots completos, comandos da horda, calibração e
 navegação completa de menus permanecem nas etapas de habilidades/interface.
 
 Controle validado com Gamepad API simulada, não com hardware físico.

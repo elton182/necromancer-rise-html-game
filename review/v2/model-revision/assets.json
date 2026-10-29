@@ -1,0 +1,127 @@
+[
+  {
+    "id": "player",
+    "path": "blender/exports/lab_player_current.glb",
+    "source": "blender/models/rigged_player.blend",
+    "sha256": "6e092a500458c589467d3bd209d00348bc0a5e7c5fd7418de1e4f57287ee64bf",
+    "embeddedCurrent": true,
+    "animations": [
+      "cast",
+      "death",
+      "idle",
+      "walk"
+    ]
+  },
+  {
+    "id": "skeleton",
+    "path": "blender/reference/skeleton.glb",
+    "source": "blender/reference/skeleton.blend",
+    "sha256": "7ab277dea75b294339d619113fc357f4b8e0fe4383ed54850583f7517c045938",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "death",
+      "hurt",
+      "idle",
+      "spawn",
+      "walk"
+    ]
+  },
+  {
+    "id": "zombie",
+    "path": "blender/exports/lowpoly_zombie.glb",
+    "source": "blender/models/lowpoly_zombie.blend",
+    "sha256": "734de8980def0cfbbb1df37b92b1795af6d689b155cdfa030d368fe1ff889bf7",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "attack_secondary",
+      "death",
+      "hurt",
+      "idle",
+      "idle_variation",
+      "spawn",
+      "walk"
+    ]
+  },
+  {
+    "id": "fallenKing",
+    "path": "blender/exports/lab_fallen_king_v4.glb",
+    "source": "blender/models/boss_fallenKing_v4.blend",
+    "sha256": "6045be8069de506d84a4a3c601348af7304f870ddbe6de0c9e268e577cb585a7",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "cast",
+      "death",
+      "idle",
+      "recover",
+      "slam",
+      "slam_recover",
+      "slam_windup",
+      "walk",
+      "windup"
+    ]
+  },
+  {
+    "id": "bone",
+    "path": "blender/exports/v2_bone.glb",
+    "source": "blender/scripts/v2_bone.py",
+    "sha256": "5af3f7ec43ede930e9d5fbf033585ab6f77a2472d00078661347e97a4bfefcc5",
+    "embeddedCurrent": true,
+    "animations": []
+  },
+  {
+    "id": "boneShard",
+    "path": "blender/exports/bone_shard.glb",
+    "source": "blender/scripts/bone_shard.py",
+    "sha256": "7c7b9e6ba4d15c1d509653f2d665cc5c20289e6275e3452c362a888397ca5863",
+    "embeddedCurrent": true,
+    "animations": []
+  },
+  {
+    "id": "archer",
+    "path": "blender/reference/archer.glb",
+    "source": "blender/reference/archer.blend",
+    "sha256": "206279f8cdd55f85f30765e263e9a63352cb06102994a6716bf3dc08821f137b",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "death",
+      "hurt",
+      "idle",
+      "spawn",
+      "walk"
+    ]
+  },
+  {
+    "id": "specter",
+    "path": "blender/exports/mob_specter.glb",
+    "source": "blender/exports/mob_specter.glb",
+    "sha256": "2f2753020c70ab77511e4d9c389cc92fd260c5fabaea7050857bb267e758ef35",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "death",
+      "idle",
+      "walk"
+    ]
+  },
+  {
+    "id": "abom",
+    "path": "blender/exports/v2_abomination.glb",
+    "source": "blender/scripts/v2_abomination.py",
+    "sha256": "e4cbeb589653efff4ebd9d386ac0c9b8731737fd5f05e40a57a3029dd5fddb13",
+    "embeddedCurrent": true,
+    "animations": [
+      "attack",
+      "attack_secondary",
+      "death",
+      "hurt",
+      "idle",
+      "idle_variation",
+      "spawn",
+      "walk"
+    ]
+  }
+]

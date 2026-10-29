@@ -1,0 +1,14 @@
+00:02.859  blend            | Read blend: "C:\projects\games\necromancer-rise-html-game\blender\models\lowpoly_zombie.blend"
+Extensions: writing cache failed ([Errno 13] Permission denied: 'C:\\Users\\elton\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\extensions\\.cache\\compat.dat').
+Info: Saved as "v2_abomination.blend"
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+18:09:11 | INFO: Starting glTF 2.0 export
+18:09:11 | INFO: Extracting primitive: Gaunt zombie cranium
+18:09:12 | INFO: Primitives created: 13
+18:09:13 | INFO: Finished glTF 2.0 export in 2.034677505493164 s
+
+V2_ABOMINATION_PROVISIONAL_OK
+Blender 5.2.3 LTS (hash e13b728c6880 built 2026-10-22 01:37:16)
+
+Blender quit

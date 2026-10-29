@@ -1,0 +1,382 @@
+{
+  "inventory": [
+    {
+      "model": "warrior",
+      "meshes": 3,
+      "clips": [
+        "walk",
+        "recover",
+        "idle",
+        "hit",
+        "heavy_windup",
+        "heavy_attack",
+        "death",
+        "attack"
+      ]
+    },
+    {
+      "model": "livingMage",
+      "meshes": 2,
+      "clips": [
+        "walk",
+        "recover",
+        "idle",
+        "hit",
+        "eruption_windup",
+        "eruption_cast",
+        "death",
+        "cast_windup",
+        "cast",
+        "attack"
+      ]
+    },
+    {
+      "model": "cryptHound",
+      "meshes": 1,
+      "clips": [
+        "attack",
+        "charge",
+        "death",
+        "hit",
+        "idle",
+        "recover",
+        "walk",
+        "windup"
+      ]
+    },
+    {
+      "model": "enemyThief",
+      "meshes": 2,
+      "clips": [
+        "walk",
+        "stab_windup",
+        "stab",
+        "recover",
+        "idle",
+        "hit",
+        "death",
+        "attack"
+      ]
+    },
+    {
+      "model": "enemyGriffin",
+      "meshes": 5,
+      "clips": [
+        "walk",
+        "recover",
+        "idle",
+        "hit",
+        "death",
+        "claw_windup",
+        "claw",
+        "attack",
+        "fly"
+      ]
+    },
+    {
+      "model": "enemySpider",
+      "meshes": 1,
+      "clips": [
+        "attack",
+        "bite",
+        "bite_windup",
+        "death",
+        "hit",
+        "idle",
+        "recover",
+        "walk"
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "model": "warrior",
+      "clip": "walk",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "heavy_windup",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "heavy_attack",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "warrior",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "walk",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "eruption_windup",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "eruption_cast",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "cast_windup",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "cast",
+      "moving": true
+    },
+    {
+      "model": "livingMage",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "charge",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "walk",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
+      "clip": "windup",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "walk",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "stab_windup",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "stab",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "enemyThief",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "walk",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "claw_windup",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "claw",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "fly",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "attack",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "bite",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "bite_windup",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "enemySpider",
+      "clip": "walk",
+      "moving": true
+    }
+  ],
+  "proportions": [
+    {
+      "model": "player",
+      "height": 2.278634799153551
+    },
+    {
+      "model": "warrior",
+      "height": 2.278634908031254
+    },
+    {
+      "model": "livingMage",
+      "height": 2.2786346859642053
+    },
+    {
+      "model": "enemyThief",
+      "height": 2.27863510744008
+    }
+  ],
+  "flight": {
+    "clip": "fly",
+    "height": 0.94,
+    "wings": [
+      {
+        "name": "WingLeft",
+        "parent": "mixamorigSpine2"
+      },
+      {
+        "name": "WingRight",
+        "parent": "mixamorigSpine2"
+      }
+    ]
+  },
+  "errors": [],
+  "remote": []
+}
