@@ -11,13 +11,13 @@ export const ROLES={0:'front',2:'front',10:'front',4:'flank',6:'flank',8:'flank'
 export const TUNING={
  meleeSlots:{player:3,other:2},   // atacantes pela frente ao mesmo tempo por alvo; os demais esperam na roda
  waitRing:2,                       // a roda de espera fica a `alcance + waitRing` do alvo
- waitSpeed:.5,                     // fração da velocidade enquanto contorna a roda
- waitLimit:6,                      // depois disso o inimigo que espera entra mesmo sem vaga
- flankRadius:4.5,                  // raio do arco do flanqueador
- flankCommit:2.3,                  // ~130°: ângulo em relação ao eixo da frente em que o flanqueador investe
- flankLead:.5,                     // quanto o ponto de contorno anda à frente do flanqueador
+ waitSpeed:.8,                     // fração da velocidade enquanto contorna a roda
+ waitLimit:2.5,                      // depois disso o inimigo que espera entra mesmo sem vaga
+ flankRadius:2.8,                  // raio do arco do flanqueador
+ flankCommit:1.1,                  // ~130°: ângulo em relação ao eixo da frente em que o flanqueador investe
+ flankLead:.28,                     // quanto o ponto de contorno anda à frente do flanqueador
  flankClose:1.2,                   // já a `alcance + flankClose` do alvo, investe sem contornar
- flankLimit:5,                     // tempo máximo de contorno em órbita (a aproximação não conta)
+ flankLimit:1.4,                     // tempo máximo de contorno em órbita (a aproximação não conta)
  holdRatio:.85,                    // distância preferida do atirador, como fração do alcance
  minRatio:.5,                      // abaixo disso o atirador recua
  slotSpacing:.8,                   // abertura angular entre atiradores do leque
@@ -85,7 +85,7 @@ function flank(e,t,mates,tac,{d,alpha,fa,range,dt}){
  if(tac.mode==='commit')return {goal:spread(e,t,mates.filter(m=>roleOf(m.typeIndex)==='flank')),speed:1,mode:'commit'};
  // Espiral para dentro: o ponto de contorno anda à frente na órbita e o raio diminui até o arco.
  const r=Math.max(TUNING.flankRadius,d-3);
- return {goal:orbit(t,alpha,tac.side,TUNING.flankLead,r),speed:1,mode:'circle'};
+ return {goal:polar(t,alpha+tac.side*TUNING.flankLead,Math.max(range,r-1.5)),speed:1,mode:'circle'};
 }
 function ranged(e,t,mates,tac,{d,alpha,fa,shoot,ready,lineOk,dt}){
  const archers=mates.filter(m=>roleOf(m.typeIndex)==='ranged').sort((a,b)=>a.id-b.id),n=archers.length||1,k=Math.max(0,archers.indexOf(e));

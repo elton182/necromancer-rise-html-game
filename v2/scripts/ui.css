@@ -16,6 +16,7 @@ body[data-scene=menu] #hud,body[data-scene=menu] #minimap-panel,body[data-scene=
 @media(prefers-reduced-motion:reduce){.vessel-liquid,#boss-fill{transition:none}}
 body.titling #game-nav,body.titling #boss-bar,body.titling #top-left,body.titling #hud,body.titling #legacy-settings,body.titling .world-label{display:none!important}
 #tl{z-index:50}#tl .wrap.tmw{overflow:clip}
+#tl button.tb.tm.tm-text{color:#d9c9f2!important;font:600 clamp(10px,1.35vw,15px) Georgia,serif;letter-spacing:.12em;white-space:nowrap;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#1b1030d9,#0d0716d9);border:1px solid #6b4fa0aa;border-radius:3px;cursor:pointer}
 #pause-dialog .gear-grid .gear-cell{aspect-ratio:1;min-height:0;padding:0}
 #pause-dialog .live-grimoire .lg-node,#pause-dialog .live-grimoire .lg-node[aria-pressed=true]{background:none;box-shadow:none;border:0;border-radius:0}
 #pause-dialog .live-grimoire .lg-invest .refund{font-size:12px;padding:8px 12px}
@@ -61,3 +62,7 @@ body[data-lich="lich"] .action-equipped,body[data-lich="transform"] .action-equi
 @media(max-height:700px){.siege-panel{max-height:calc(100vh - 180px)}}
 
 #siege-panel.siege-panel{position:fixed;display:block;left:16px;right:auto;top:70px;bottom:auto;transform:none;width:310px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 270px);padding:14px;z-index:30}#siege-panel.siege-panel[hidden]{display:none}#siege-panel.siege-panel>button:last-child{display:inline-block}@media(max-height:700px){#siege-panel.siege-panel{max-height:calc(100dvh - 180px)}}
+
+/* Legenda de HQ sobre o palco 3D narrativo. */
+#campaign-panel[data-view="comic"]{position:fixed;left:8%;right:8%;bottom:5%;top:auto;width:auto;max-width:none;background:#f2e6cb;color:#241d28;border:4px solid #211a28;box-shadow:8px 8px 0 #08060cb8;padding:20px 28px;transform:rotate(-.4deg);font-size:clamp(16px,2vw,23px)}
+#campaign-panel[data-view="comic"] small{color:#69402d;font-weight:bold;letter-spacing:.12em}

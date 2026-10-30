@@ -2,5 +2,5 @@ import R from './horde-rules.mjs';
 export const SPELL_NODES={raio:'bolt',dash:'dash',lich:'lichform',chuva:'rain',explosao:'nova',maos:'wall',barreira:'shield',maldicao:'curse'};
 export const SPELL_NAMES={raio:'Tiro de Osso',dash:'Dash',chuva:'Chuva de Ossos',explosao:'Explosão Necrótica',maos:'Muralha de Corpos',barreira:'Escudo de Carne',maldicao:'Maldição da Fraqueza',lich:'Forma da Morte'};
 export const ACTIONS=['empty','raio','dash',...R.types,'chuva','explosao','maos','barreira','maldicao','lich'];
-export function available(army,id){const p=army.profile,g=p.grants||[];if(p.campaign&&!['empty','dash','maldicao','lich'].includes(id)&&!g.includes(id)&&!(R.types.includes(id)&&g.includes('summon')&&(id==='zombie'||p.ranks[id])))return false;return ACTIONS.includes(id)&&(id==='empty'||id==='raio'||id==='dash'||p.campaign&&(g.includes(id)||id==='zombie'&&g.includes('summon'))||!!army.profile.ranks[SPELL_NODES[id]||id]);}
+export function available(army,id){const p=army.profile,g=p.grants||[];return ACTIONS.includes(id)&&(id==='empty'||id==='raio'||id==='dash'||p.campaign&&(g.includes(id)||id==='zombie'&&g.includes('summon'))||!!army.profile.ranks[SPELL_NODES[id]||id]);}
 export function actionName(id){return (id==='specter'?'Possessão':null)||SPELL_NAMES[id]||R.defs[id]?.name||(id==='empty'?'Vazio':id);}

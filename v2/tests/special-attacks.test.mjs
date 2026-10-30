@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createWorld,step,dealDamage} from '../scripts/training-model.mjs';
-import {spawnEnemy,SLAM,RAIN,HOWL} from '../scripts/enemies.mjs';
+import {spawnEnemy,SLAM,RAIN,HOWL,CUT} from '../scripts/enemies.mjs';
 // Jogador parado no centro de uma arena aberta com vida de sobra para medir dano.
 function setup(index,x,y){const w=createWorld({horde:0}),p=w.player;w.actors=[p];w.arena={bounds:{minX:-30,maxX:30,minY:-30,maxY:30},solids:[]};Object.assign(p,{x:0,y:0,hp:1e5,maxHp:1e5,hpRegen:0});const e=spawnEnemy(w,index,x,y);return {w,p,e};}
 const quiet=e=>{e.atkTimer=1e9;e.abilityCd=1e9;return e;};
@@ -12,7 +12,7 @@ test('Orc: pancada no chão trava o ponto, avisa a área e só causa dano no imp
  const {w,p,e}=setup(10,0,-3);e.abilityCd=0;advance(w,.05);assert.ok(e.slam,'começou a armar');
  const {px,py}=e.slam;p.x=0;advance(w,.5);assert.equal(p.hp,1e5,'sem dano antes do impacto');
  assert.ok(warnings(w,e).some(f=>f.radius===SLAM.radius&&f.x===px&&f.y===py),'aviso do tamanho da área, no ponto travado');
- advance(w,SLAM.wind);assert.ok(p.hp<1e5,'o impacto acerta quem ficou na área');const hp=p.hp;advance(w,.3);assert.equal(p.hp,hp,'dano único');
+ advance(w,SLAM.wind+SLAM.flight);assert.ok(p.hp<1e5,'o impacto acerta quem ficou na área');const hp=p.hp;advance(w,.3);assert.equal(p.hp,hp,'dano único');
 });
 test('Orc: sair da área durante a preparação evita a pancada; morte e pausa cancelam',()=>{
  let {w,p,e}=setup(10,0,-3);e.abilityCd=0;advance(w,.3);p.x=SLAM.radius+3;advance(w,2);assert.equal(p.hp,1e5);
@@ -57,4 +57,15 @@ test('Uivo: morte durante o chamado cancela os reforços; reforços não dão re
 test('Uivo: pose do uivo usa o clipe howl e não ocorre com o alvo longe demais',()=>{
  let {w,e}=setup(4,0,-9);e.howlCd=0;advance(w,.4);assert.equal(e.pose.anim,'howl');
  ({w,e}=setup(4,0,-25));e.howlCd=0;advance(w,.3);assert.ok(!e.howl);
+});
+
+test('Soldado: corte frontal prepara dois segundos, trava direcao e atinge uma unica vez',()=>{
+ const {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.1);assert.ok(e.cut);advance(w,1.7);assert.equal(p.hp,1e5);assert.ok(warnings(w,e).some(f=>f.arc===CUT.arc));advance(w,.3);assert.ok(p.hp<1e5);const hp=p.hp;advance(w,.2);assert.equal(p.hp,hp);assert.equal(w.combatEvents.filter(x=>x.kind==='soldierCut').length,1);
+});
+test('Soldado: sair do arco evita corte; morte cancela preparacao',()=>{
+ let {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.2);p.y=-4;advance(w,2);assert.equal(p.hp,1e5);
+ ({w,p,e}=setup(0,0,-2));e.abilityCd=0;advance(w,.2);dealDamage(w,e,1e9,p);advance(w,2);assert.equal(p.hp,1e5);assert.ok(!e.cut);
+});
+test('Orc: salta de longe para ponto travado, ganha altura e causa impacto so ao pousar',()=>{
+ const {w,p,e}=setup(10,0,-8);e.abilityCd=0;advance(w,.1);assert.ok(e.slam);const {px,py}=e.slam;advance(w,SLAM.wind+.15);assert.ok(e.jumpZ>0);assert.equal(p.hp,1e5);p.x=6;advance(w,SLAM.flight);assert.equal(p.hp,1e5);assert.equal(e.jumpZ,0);assert.equal(e.x,px);assert.equal(e.y,py);assert.ok(w.effects.some(f=>f.fx==='groundBreak'));assert.equal(w.combatEvents.filter(x=>x.kind==='orcSlam').length,1);
 });

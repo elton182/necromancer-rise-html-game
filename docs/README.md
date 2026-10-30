@@ -35,6 +35,8 @@ Guias de referência das mecânicas, em [`mecanicas/`](mecanicas/README.md):
 | [v2-interface.md](v2-interface.md) | HUD e Relicário da v2: fontes, abas, decisões e limites |
 | [v2-inimigos.md](v2-inimigos.md) | E8: seis arquétipos, escala, elites, projéteis, composição e Rei Caído completo |
 | [v2-morte-lich.md](v2-morte-lich.md) | Árvore Morte e Forma de Lich: design, assets, regras e integração (Grimório, slot, HUD de almas, Lich e foice no renderizador); balanceamento pendente |
+| [v2-mapas.md](v2-mapas.md) | Editor de mapas in-game: criar, jogar, exportar/importar e usar um mapa como base de outros |
+| [v2-acabamento-visual.md](v2-acabamento-visual.md) | Acabamento do cenário: kits do Blender, chão pintado, luz, vento e oclusão (fatia na vila), onde falta aplicar e plano para o editor de mapas |
 | [v2-laboratorio.md](v2-laboratorio.md) | Laboratório in-game: visualizador de animações, boneco de madeira com medidor de DPS e testes cronometrados |
 | [v2-efeitos-visuais.md](v2-efeitos-visuais.md) | Revisão de efeitos: runas de invocação, Tiro de Osso, golpes de inimigos e Rei Caído em duas fases |
 | [v2-magias.md](v2-magias.md) | E6b: cinco magias equipáveis, validação atômica, recargas, encerramento e limites |

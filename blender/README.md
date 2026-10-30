@@ -214,6 +214,41 @@ elevada, luz ambiente, luz quente de janelas e lanternas e sombras suaves.
 
 Instruções e detalhes: `assets/village/README.md`.
 
+# Kit modular da vila (v2, 3D)
+
+`scripts/v2_village_kit.py` gera `models/v2_village_kit.blend` e `exports/v2_village_kit.glb`, registrado como
+`villageKit` em `../v2/assets/models.json`. São quinze peças `kit_<nome>`, cada uma com origem no ponto de encaixe:
+
+- **Paredes:** `bay_plain`, `bay_brace`, `bay_window` e `bay_door`. Módulo de 1 × 3 u com base de pedra, face externa em -Y.
+- **Estrutura e telhado:** `corner`, `gable`, `roof` (telhas desencontradas), `roof_end` e `chimney`.
+- **Mobiliário:** `lamp`, `fence_post`, `fence_rails`, `well`, `barrel` e `crate`.
+
+`plaster` e `roof` são brancos, porque o jogo tinge cada casa pela cor da instância. A cor por vértice faz
+uma oclusão falsa: pé das paredes e base das telhas mais escuros. Mudar medidas do módulo exige
+conferir `v2/scripts/village-kit.mjs`, que monta as casas a partir dos colisores.
+
+```powershell
+blender --background --python blender/scripts/v2_village_kit.py
+node v2/tools/build.cjs
+```
+
+`scripts/v2_nature_kit.py` segue o mesmo padrão e reaproveita `Piece` e os materiais de `v2_village_kit.py`.
+Ele gera `models/v2_nature_kit.blend` e `exports/v2_nature_kit.glb` (`natureKit`) com seis peças:
+
+- `oak`: altura de referência 5,5 u.
+- `pine`: altura de referência 6 u.
+- `bush`, `grass`, `flowers` e `rock`.
+
+Folhagem, grama e pétalas são brancas, porque o jogo tinge cada instância. Só grama, hastes e pétalas têm dupla
+face; os demais materiais usam backface culling.
+
+```powershell
+blender --background --python blender/scripts/v2_nature_kit.py
+```
+
+No Blender aberto, o script monta as peças sem exportar. Execute-o com `__name__ == '__main__'` e chame `export(build())`
+para gravar o `.blend` e o `.glb`.
+
 # Estilo atual dos personagens — referência low poly com contorno
 
 A versão atual dos quatro NPCs e de Zephyr é gerada por

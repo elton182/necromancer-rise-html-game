@@ -39,18 +39,18 @@ export function cast(w){
 export function dash(w,input={}){return beginDash(w,input);}
 export function setPaused(w,paused){w.paused=!!paused;if(paused)w.boltCharge=null;}
 function tick(w,dt,input){
- w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);w.dash.cooldown=Math.max(0,w.dash.cooldown-dt);w.player.mp=Math.min(w.player.maxMp,w.player.mp+w.player.mpRegen*dt);if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+w.player.hpRegen*dt);w.player.veilTime=Math.max(0,w.player.veilTime-dt);if(w.player.veilTime<1e-9)w.player.veilTime=0;
+ for(const a of w.actors)a.rootTime=Math.max(0,(a.rootTime||0)-dt);w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);w.dash.cooldown=Math.max(0,w.dash.cooldown-dt);w.player.mp=Math.min(w.player.maxMp,w.player.mp+w.player.mpRegen*dt);if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+w.player.hpRegen*dt);w.player.veilTime=Math.max(0,w.player.veilTime-dt);if(w.player.veilTime<1e-9)w.player.veilTime=0;
  const p=w.player,x=clamp(Number(input.x)||0,-1,1),y=clamp(Number(input.y)||0,-1,1);
  // Movimento relativo à tela da câmera isométrica.
  let mx=x+y,my=y-x;const length=Math.hypot(mx,my);if(length){const magnitude=Math.min(1,Math.hypot(x,y));mx=mx/length*magnitude;my=my/length*magnitude;}
- const dashing=moveDash(w,dt);let moved=0;if(!dashing&&length&&p.hp>0){const pos=moveCircle(p,{x:mx*p.moveSpeed*(w.lich?.moveFactor??1)*dt,y:my*p.moveSpeed*(w.lich?.moveFactor??1)*dt},p.radius,w.arena);moved=pos.distance;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
+ const dashing=moveDash(w,dt);let moved=0;if(!dashing&&length&&p.hp>0&&!(p.rootTime>0)){const pos=moveCircle(p,{x:mx*p.moveSpeed*(w.lich?.moveFactor??1)*dt,y:my*p.moveSpeed*(w.lich?.moveFactor??1)*dt},p.radius,w.arena);moved=pos.distance;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
  tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
  if(w.armyMode==='groups')tickHorde(w,dt);
- tickHostiles(w,dt);tickSiegeCombat(w,dt);
+ tickHostiles(w,dt);tickSiegeCombat(w,dt);w.effects=w.effects.filter(f=>!f.webRoot);for(const a of w.actors)if(a.rootTime>0&&a.hp>0)w.effects.push({id:'web-root-'+a.id,webRoot:true,x:a.x,y:a.y,radius:a.radius+.5,color:'#e3e9ec',visual:true,ground:true,fixedRadius:true,time:0,duration:10});
  for(const a of w.actors){
   if(a.groupType)continue;
   a.slowTime=Math.max(0,(a.slowTime||0)-dt);a.timer=Math.max(0,a.timer-dt);a.animationTime+=dt;a.pose=a.labPose||null;
-  if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.jumpZ=0;if(a===w.boss){a.king=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
+  if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.web=null;a.rootTime=0;a.jumpZ=0;if(a===w.boss){a.king=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
   if(a.dummy||a.team==='neutral'||a.siegeGuard)continue;
   if(a.siegeLane!==undefined){tickSiegeEnemy(w,a,dt);continue;}
   if(a.home&&!tickSleep(w,a,dt))continue;
@@ -90,7 +90,7 @@ function tick(w,dt,input){
   if(e.time>e.delay+.3)w.effects.splice(i,1);
  }
  // Morte precisa aparecer também no quadro em que o dano foi aplicado.
- for(const a of w.actors)if(a.hp<=0){animate(a,'death');a.pose=null;a.strike=null;a.volley=null;a.slam=null;a.rain=null;a.howl=null;a.castRecovery=null;}
+ for(const a of w.actors)if(a.hp<=0){animate(a,'death');a.pose=null;a.strike=null;a.volley=null;a.slam=null;a.cry=null;a.warBuff=null;a.rain=null;a.howl=null;a.castRecovery=null;}
 }
 export function step(w,dt,input={}){
  if(w.paused||w.player.hp<=0||(w.adventure?.kind==='siege'&&w.adventure.done)||!Number.isFinite(dt)||dt<=0)return;

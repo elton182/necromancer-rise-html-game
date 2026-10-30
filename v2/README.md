@@ -57,7 +57,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/outpost-map.mjs`, `outpost-scene.mjs`, `camp-parts.mjs` | Mapa do Posto do Capitão (fase 4) e peças de acampamento compartilhadas |
 | `scripts/trail-map.mjs`, `trail-scene.mjs` | Mapa da Trilha dos Vigias (fase 3): faixa, clareiras, barricadas e acampamento procedurais |
 | `scripts/crypt-map.mjs`, `crypt-scene.mjs` | Mapa da Cripta Esquecida (fase 1): paredes, pilares, portões e decoração procedural |
-| `scripts/village-map.mjs`, `village-scene.mjs` | Mapa da Vila de Eldrin: casas, ruas, praça e mobiliário com colisão; visual procedural |
+| `scripts/village-map.mjs`, `village-scene.mjs`, `village-kit.mjs`, `village-ground.mjs`, `nature-kit.mjs`, `scenery-fx.mjs` | Mapa da Vila de Eldrin: casas, ruas, praça e mobiliário com colisão; casas montadas com o kit do Blender (`villageKit`), vegetação do `natureKit`, chão pintado em textura gerada, vento na folhagem e transparência pontilhada contra oclusão ([guia](../docs/v2-acabamento-visual.md)) |
 | `scripts/gamepad.mjs` | Amostragem pura de sticks, deadzone e botões do controle padrão |
 | `scripts/app.mjs` | Inicialização, ligação entre módulos, painel e relógio |
 | `scripts/session.mjs` | Menu, treino, campanha, morte e separação do estado persistido |
@@ -65,6 +65,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/audio.mjs` | Efeitos e música procedurais em Web Audio, portados do jogo anterior; trilhas em arquivo por tema (`tracks`); volume, mudo e preferência do aparelho |
 | `scripts/sound-events.mjs` | Lê o mundo a cada quadro e decide sons e trilha; as regras de combate não conhecem o áudio |
 | `scripts/game.css` | Apresentação da interface |
+| `scripts/map-model.mjs`, `map-editor.mjs`, `map-preview.mjs`, `map-panel.mjs`, `map-play.mjs`, `maps.css` | Editor de mapas: formato, herança de mapa base, biblioteca, editor 2D com pré-visualização 3D, aba Mapas e lançamento do mapa ([guia](../docs/v2-mapas.md)) |
 | `scripts/lab-model.mjs`, `lab.mjs`, `lab-panel.mjs`, `lab.css` | Laboratório: medidor de DPS, boneco de treino, visualizador de animações e painel ([guia](../docs/v2-laboratorio.md)) |
 | `scripts/loading.mjs`, `scripts/loading.css` | Tela de carregamento: a marcação `#loading` fica no template e aparece antes dos módulos; o módulo mostra progresso dos modelos e dicas e some quando a arena está pronta |
 | `scripts/save.css` | Menu, prévia de importação e ferramentas de save |
@@ -182,7 +183,9 @@ A validação automatizada continua sem equivaler a benchmark em outras máquina
 O HTML contém cópias dos GLBs. Depois de exportar os modelos, execute
 `node v2/tools/build.cjs` na raiz e recarregue a página. Para o player, exporte
 a cena atual sem regenerá-la:
-`blender --background --threads 4 --python blender/scripts/export_3d_lab.py -- --only=rigged_player`.
+`blender --background blender/models/rigged_player.blend --python blender/scripts/v2_player_motion.py`
+(refaz idle, walk, cast e death, grava `blender/models/v2_player.blend` e
+`blender/exports/v2_player.glb`; o `rigged_player.blend` não é alterado).
 O laboratório antigo usa `node tools/3d-lab/build.cjs`.
 
 Player, esqueleto, arqueiro, zumbi e Abominação têm conferências em

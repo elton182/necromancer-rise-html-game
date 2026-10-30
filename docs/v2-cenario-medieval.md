@@ -8,6 +8,6 @@ Esta entrega é um ensaio de ambientação. As peças ficam fora do limite camin
 
 Para empacotar, na raiz: `node v2/tools/build.cjs`. O modelo fica incorporado no HTML, sem carregamento externo. Conferência: `node v2/tests/village-browser-check.cjs`, com Playwright e Edge. O teste usa contexto isolado e entrada na vila preparada em memória; não comprova o desbloqueio pela campanha. Evidências em `review/v2/village/`.
 
-Atualização: a Vila de Eldrin agora tem mapa próprio com casas, ruas e colisões explícitas (ver [campanha da V2](v2-campanha.md#vila-de-eldrin-mapa)); as peças deste modelo seguem apenas como periferia. O treino mantém o ensaio descrito acima.
+Atualização: a Vila de Eldrin agora tem mapa próprio com casas, ruas e colisões explícitas (ver [campanha da V2](v2-campanha.md#vila-de-eldrin-mapa)). Desde o [acabamento visual](v2-acabamento-visual.md), a vila usa os kits novos e as peças deste modelo saíram da periferia dela. O treino mantém o ensaio descrito acima.
 
 Próximo trabalho possível: separar um kit editável, ajustar materiais e orientação, criar ruas e integrar obstáculos com colisões explícitas. Não está incluído neste ensaio.

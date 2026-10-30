@@ -203,3 +203,29 @@ Mudanças de regra: os arqueiros e o cão ganharam especiais novos (antes só ti
 Visual: o uivo usa o clipe novo `howl` do lobo (Blender: `imported_enemy_beasts.py -- --character=wolf`), a saraivada faz flechas caírem e ficarem fincadas (`arrowRain` em `vfx.mjs`) e a pancada usa a runa de perigo e a onda de choque já existentes.
 
 Verificação: `node --test v2/tests/special-attacks.test.mjs` e `node v2/tests/special-attacks-browser-check.cjs` (capturas em `review/v2/special-attacks/`).
+
+O Arqueiro básico (índice 1) também usa o GLB animado `enemyRogue`, assim como o Ladino Arqueiro (9). A substituição é visual: índices, atributos, ataques e progressão permanecem iguais. O registro antigo `enemyArcher` fica preservado para compatibilidade, mas não é escolhido na criação dos inimigos.
+
+### Ajuste de mobilidade e teia
+
+Substitui os valores de contorno descritos acima: flanqueadores usam arco curto (raio de 2,8 u, compromisso angular de 1,1 rad e no máximo 1,4 s próximos do alvo), com destino que converge para dentro, evitando órbita oval. Espera da frente: velocidade de 80% e limite de 2,5 s. Movimento comum ganha aceleração e giro suavizados. Multiplicadores de velocidade sobre a regra anterior: soldado 1,65; arqueiros/rogue 1,4; lobo 1,35; ladrão/assassino 1,55; orc 1,3. Os clipes atuais continuam sincronizados pela distância percorrida; ainda não foi criado um clipe de corrida específico.
+
+Aranha: teia com preparação de 0,75 s e linha clara avisada no chão, alcance de 8 u para iniciar, projétil reto de 10 u/s que percorre 9 u; recarga de 7 s e primeira tentativa após 3 s. Impacto causa 1 de dano base e imobiliza jogador ou aliado por 2 s, sem impedir ataques. Dash evita o impacto; durante a prisão não pode iniciar dash. Sólidos e Muralha bloqueiam a teia. Sair da linha durante a preparação evita o disparo. Morte cancela a preparação; projétil lançado continua. A prisão aparece como marca clara no chão, congela com pausa e não persiste em saves.
+
+Essas mudanças aumentam a pressão de combate; não houve reavaliação no balance-simulator.
+
+### Corte frontal, salto do Orc e uivo
+
+O especial do soldado substitui o Golpe pesado circular: prepara por **2 s**, trava a direção e avisa um setor frontal de **135 graus**, com alcance de **3,5 u**. No corte, aplica **160%** do dano uma única vez, com linha de visão, rastro de lâmina e som de corte. Recarga de 5 s após a recuperação de 0,4 s. Sair do setor evita o golpe; morte cancela a preparação.
+
+A Pancada no Chão do Orc agora começa a até **10 u**, com linha livre. Trava uma posição válida próxima do alvo, prepara por **1,1 s**, salta durante **0,6 s** e só causa dano ao pousar: **180%**, raio de **3,2 u**. O círculo avisa o destino durante preparação e voo. Rachaduras temporárias, poeira, tremor e som grave acompanham o impacto; duração total de 2,5 s e recarga de 7 s após recuperação. Morte cancela o impacto e limpa a altura. A pancada básica de porrete permanece.
+
+O uivo do lobo ganhou onda visual roxa e som procedural de uivo no início da animação. Invocações, limites e recarga não mudaram. Os três sons usam o áudio do jogo e respeitam volume e silêncio; eventos persistem entre quadros para evitar perda do som do impacto. Pausa congela as habilidades. Sem alterações de saves ou regras da v1; balance-simulator não reavaliado.
+
+### Resistência, grito de guerra e flechas
+
+Vida base exclusiva da v2: soldado **60 HP** (antes 40), orc **110 HP** (antes 75), antes das escalas de modo e raridade. O escudo do modelo motiva a resistência maior; não foi adicionada redução de dano ou bloqueio direcional.
+
+O Orc usa **Grito de Guerra** quando há outro inimigo vivo em até 8 u e o alvo está em até 12 u. Prepara por 1 s, com círculo inofensivo; ao concluir, emite som grave, onda laranja e tremor de tela, concedendo aos outros inimigos no raio **+25% de dano e +15% de velocidade de deslocamento por 6 s**. Primeira preparação após 5 s; recarga de 14 s após o grito. Não interrompe salto/pancada em curso. Os bônus não acumulam: um novo grito substitui a fonte e renova a duração. Morte da fonte encerra o bônus; matar o Orc durante a preparação impede a aplicação. Os afetados exibem um pequeno anel laranja. O estado é transitório, sem alteração dos saves. Pausa congela o relógio. Mudança de balanceamento ainda não reavaliada no simulador.
+
+Flechas dos dois tipos que usam o modelo do ladino possuem rastro fino de 0,9 u, opacidade de 30%, removido com o projétil. Não altera dano nem colisão.

@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createAudio,base64Bytes,SOUND_NAMES,THEMES,STORAGE_KEY} from '../scripts/audio.mjs';
 import {createSoundObserver,musicTheme,pickupSound,CONSUMABLE_SOUNDS,SPELL_SOUNDS} from '../scripts/sound-events.mjs';
-import {createSession,equipSession,transition,stepSession} from '../scripts/session.mjs';
-import {SPELL_TEST_PROFILE} from '../scripts/grimoire.mjs';
-import {setProfile} from '../scripts/horde.mjs';
+import {createSession,equipSession,transition,stepSession,activateSlot} from '../scripts/session.mjs';
+import {SPELL_TEST_PROFILE,changeRank} from '../scripts/grimoire.mjs';
+import {setProfile,TEST_PROFILE} from '../scripts/horde.mjs';
 import {castSpell} from '../scripts/spells.mjs';
 import {castBolt,dealDamage} from '../scripts/combat.mjs';
 import {launchStage,startCampaign} from '../scripts/campaign.mjs';
@@ -202,4 +202,15 @@ test('mapas de som de coleta e consumíveis só usam efeitos que existem', () =>
  const all=new Set(SOUND_NAMES);
  for(const name of [...Object.values(CONSUMABLE_SOUNDS),...Object.values(SPELL_SOUNDS),pickupSound({kind:'hp'}),pickupSound({kind:'gold'}),pickupSound({kind:'equipment'})])assert.ok(all.has(name),name);
  assert.equal(pickupSound({kind:'desconhecido'}),null);
+});
+test('golpe da Forma da Morte soa só o vento da foice, sem o ruído de impacto', () => {
+ const s=createSession();setProfile(s.world,TEST_PROFILE);equipSession(s,0,'raio');equipSession(s,2,'dash');s.save.character.gold=2000;
+ for(const id of ['lichform','lichform','spinning','spinning'])assert.equal(changeRank(s,id).ok,true);
+ equipSession(s,3,'lich');transition(s,'training');s.world.paused=false;
+ const w=s.world,p=w.player,ob=createSoundObserver();w.actors=w.actors.filter(a=>a===p||a.groupType);p.hp=p.maxHp=1000;w.aim={x:p.x+9,y:p.y};
+ activateSlot(s,3);ob.observe(s);for(let i=0;i<20;i++){stepSession(s,.05,{x:0,y:0});ob.observe(s);}
+ assert.equal(w.lich.form,'lich');
+ w.actors.push({id:w.nextId++,model:'zombie',team:'enemy',x:p.x+2.5,y:p.y,hp:10000,maxHp:10000,radius:.3,animation:'idle',animationTime:0,timer:0,walkDistance:0,angle:0,actionId:0});
+ const hits=w.hits,heard=[];activateSlot(s,0);for(let i=0;i<30;i++){stepSession(s,.05,{x:0,y:0});heard.push(...ob.observe(s));}
+ assert.ok(w.hits>hits,'o golpe acertou');assert.deepEqual(heard,['windCut']);
 });

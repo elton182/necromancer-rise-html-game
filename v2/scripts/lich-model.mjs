@@ -77,7 +77,7 @@ export const isLich=w=>w.lich?.form==='lich';
 export const lichLocksSlots=w=>!!w.lich&&w.lich.form!=='none';
 export function lichSlots(w){return LICH_SLOTS.map((base,index)=>{const id=index===0&&w.lich.stats.unlocked.colheita?'colheita':base;return {id,name:LICH_NAMES[id],unlocked:!!w.lich.stats.unlocked[id],cooldown:id==='colheita'&&w.lich.combo&&w.lich.combo.step<2?0:w.lich.cooldowns[id]||0,cost:cost(id)};});}
 function cost(id){return id==='ceifada'||id==='libertar'?0:LICH[id].cost;}
-function emit(w,kind,data={}){w.lich.events.push({kind,time:w.time,...data});if(w.lich.events.length>64)w.lich.events.shift();}
+function emit(w,kind,data={}){if(kind==='throw')w.combatEvents.push({kind:'scytheWind'});w.lich.events.push({kind,time:w.time,...data});if(w.lich.events.length>64)w.lich.events.shift();}
 const gearCooldown=w=>1-Math.min(50,Math.max(0,w.modifiers?.gearCooldown||0))/100;
 
 export function canEnter(w){
@@ -157,7 +157,7 @@ function hit(w,e,damage){
  return r;
 }
 // Rastro do golpe: só desenho, no mesmo instante e geometria do dano.
-function slash(w,dir,range,arc,{sparks=12,color=SOUL_COLOR,duration=.35,sweep=-1,wind=true}={}){const p=w.player;fx(w,'slash',{x:p.x,y:p.y,dx:dir.x,dy:dir.y,radius:range,arc:Math.min(arc,Math.PI*2),h:.9,color,mood:'magic',sparks,duration});if(wind)fx(w,'windarc',{x:p.x,y:p.y,dx:dir.x,dy:dir.y,radius:range,arc:Math.min(arc,Math.PI*2),sweep,duration:.45});}
+function slash(w,dir,range,arc,{sparks=12,color=SOUL_COLOR,duration=.35,sweep=-1,wind=true}={}){const p=w.player;if(wind)w.combatEvents.push({kind:'scytheWind'});fx(w,'slash',{x:p.x,y:p.y,dx:dir.x,dy:dir.y,radius:range,arc:Math.min(arc,Math.PI*2),h:.9,color,mood:'magic',sparks,duration});if(wind)fx(w,'windarc',{x:p.x,y:p.y,dx:dir.x,dy:dir.y,radius:range,arc:Math.min(arc,Math.PI*2),sweep,duration:.45});}
 function burst(w,x,y,radius,color='#8b5cf6'){fx(w,'shockwave',{x,y,radius,color,mood:'magic',duration:.6});}
 
 function contact(w){

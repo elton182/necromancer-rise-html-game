@@ -2,7 +2,7 @@
 // Arte e estilos vêm de shared-title.css (gerado pelo build); aqui ficam estrutura e ligações.
 const IW=1536,IH=1024;
 // Retângulos dos botões sobre a arte (coordenadas da imagem), iguais aos do jogo anterior.
-const RECTS={continue:[120,486,386,54],campaign:[120,408,418,58],free:[120,558,390,52],options:[122,648,352,52],credits:[122,718,352,50],exit:[122,786,348,50]};
+const RECTS={continue:[120,486,386,54],campaign:[120,408,418,58],free:[120,558,390,52],options:[122,648,352,52],credits:[122,718,352,50],maps:[122,613,352,32],exit:[122,786,348,50]};
 export function createTitle(s,h){
  const $=id=>document.getElementById(id),root=$('tl'),wrap=$('tl-wrap'),cv=$('tl-cv');
  let view='main',anim=0,particles=[],wasOn=false,padTime=0;
@@ -26,6 +26,8 @@ export function createTitle(s,h){
    mk('continue','CONTINUAR',()=>h.resume(),{dis:!d});
    mk('campaign','NOVA CAMPANHA',()=>{if(d?.campaign)confirm('Já existe uma campanha (Nível '+d.level+').<br>Uma nova campanha <b>reinicia o personagem e a campanha</b>; o save atual da v2 fica guardado como cópia anterior.','REINICIAR E COMEÇAR',()=>{h.newCampaign();},main);else h.startCampaign();});
    mk('free','MODO LIVRE',()=>{if(d?.campaign)confirm('Abrir o <b>Modo Livre</b> com o personagem da campanha?<br>O progresso da campanha permanece salvo.','ABRIR',()=>h.free(),main);else h.free();});
+   // Fora da arte da tela inicial: o texto fica visível (as demais opções já vêm desenhadas).
+   if(h.maps)mk('maps','🗺 EDITOR DE MAPAS',()=>h.maps()).classList.add('tm-text');
    mk('options','OPÇÕES',options);mk('credits','CRÉDITOS',credits);
    mk('exit','SAIR',()=>confirm('Sair do jogo?','SAIR',()=>{try{window.close();}catch{}setTimeout(()=>screen(x=>{el('div','pt','ATÉ A PRÓXIMA',x);el('div','msg','Você já pode fechar esta aba.',x);menuEl(x).append(btn('← VOLTAR AO MENU',main));}),150);},main));
    const c=el('div','tcard',d?'<b>'+(d.campaign?'Campanha — Ato I (fase '+Math.min(4,d.unlocked||1)+'/4)':'Modo Livre')+'</b><br>Nível '+d.level+'<br>🪙 '+d.gold:'<span style="color:#777;font-style:italic">Nenhum save neste navegador.</span>',w);c.id='tl-card';

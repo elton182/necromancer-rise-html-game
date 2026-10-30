@@ -134,3 +134,5 @@ Verificação específica: `node --test v2/tests/lance.test.mjs` e
 `node v2/tests/combat-rework-browser-check.cjs` (Playwright + Edge).
 Capturas em `review/v2/combat-rework/`. Balanceamento em partidas reais
 continua pendente.
+
+Os cortes da foice da Forma da Morte e seu arremesso emitem som procedural de corte de vento no instante da execução, respeitando volume e silêncio do jogo.

@@ -24,17 +24,17 @@ export function clean(s,arena,pos={x:0,y:4}){
 }
 function grant(s,id){const c=s.save.campaign;if(!c.grants.includes(id))c.grants.push(id);for(const army of [s.save.horde,s.world.army])if(army){army.profile={...army.profile,campaign:true,grants:[...c.grants]};army.loadout=army.loadout.map(id=>available(army,id)?id:'empty');}}
 
-export function startCampaign(s){s.save.campaign=normalizeCampaign({...s.save.campaign,started:true});s.save.character.mode='campaign';s.save.settings.armyMode='groups';campaignMap(s);}
+export function startCampaign(s){s.save.campaign=normalizeCampaign({...s.save.campaign,started:true});for(const id of ['raio','summon','maos','barreira'])grant(s,id);s.save.character.mode='campaign';s.save.settings.armyMode='groups';campaignMap(s);}
 export function campaignMap(s){clean(s,emptyArena('campaign-map'));s.scene='map';s.world.paused=true;s.save.campaign.resume=s.save.campaign.village?'village':'map';if(!s.save.campaign.story.intro)s.world.story={id:'intro',pages:D.stories.camp_intro,index:0};}
 export function nextStory(s){const story=s.world.story;if(!story)return false;story.index++;if(story.index>=story.pages.length){s.save.campaign.story[story.id]=1;if(story.id==='post4'&&!s.save.campaign.story.end){s.world.story={id:'end',pages:D.stories.camp_end,index:0};return true;}s.world.story=null;s.world.paused=!!s.world.adventure?.done||s.scene!=='training'&&s.scene!=='village';}return true;}
-export function launchStage(s,n){const c=s.save.campaign;if(!c.started||!D.stages[n]||n>c.unlocked)return false;const stage=D.stages[n];grant(s,stage.grant);
+export function launchStage(s,n){const c=s.save.campaign;if(!c.started||!D.stages[n]||n>c.unlocked)return false;const stage=D.stages[n];for(const id of ['raio','summon','maos','barreira'])grant(s,id);
  const arena=n===1?cryptArena():n===2?forestArena():n===3?trailArena():n===4?outpostArena():emptyArena('campaign-'+n);
  clean(s,arena,n===1?{x:-6,y:0}:n===3?{x:2.5,y:0}:{x:0,y:10});const w=s.world;s.scene='training';w.adventure={kind:'stage',n,done:false,wave:0,queue:[],wait:n===2?3.2:n===4?3.6:0,rooms:n===1?clone(D.rooms).map((r,i)=>({...r,state:i===0?'active':'idle',wi:0})):[],zones:n===3?clone(D.strip):[],active:null};w.gearLevel=n;
  w.tutorial={stage:n,index:0,pages:(D.tutorials[n]||[]).map(t=>t.replace('(20 MP)',`(${boltCost(w)} MP)`))};w.portal={x:n===1?-6:0,y:n===1?0:10};
  if(n===1){for(const [x,y]of [[2,-3],[4.5,0],[2,3]]){const e=campEnemy(s,0,x,y,'A');Object.assign(e,{hp:28,maxHp:28,dmg:0,spd:0,xp:6,dummy:true});}doors(w,[false,false,false]);}
  if(!c.story['pre'+n]){w.story={id:'pre'+n,pages:D.stories['camp_pre'+n],index:0};w.paused=true;}
  if(stage.grant==='summon'&&!w.army.loadout.includes('zombie'))equipGroup(w,2,'zombie',{preparation:true});
- if(stage.grant==='maos')equipGroup(w,1,'maos',{preparation:true});if(stage.grant==='barreira')equipGroup(w,3,'barreira',{preparation:true});return true;
+ return true;
 }
 function doors(w,open){const base=w.arena.solids.filter(s=>!s.door);w.arena.solids=[...base,...D.doors.flatMap((d,i)=>open[i]?[]:[{kind:'box',door:true,look:'gate',x:d.x,y:(d.y0+d.y1)/2,width:d.w,depth:d.y1-d.y0,height:.9}])];w.adventure.doors=open;w.sceneryRevision++;}
 function campEnemy(s,index,x,y,room,mission=false){const w=s.world,r=w.adventure,t=spawnEnemy(w,index,x,y),n=r.n||1,level=s.save.character.level,route=mission&&r.mission.layout==='strip',arena=n===2||mission&&!route,combatWave=r.combatWave??r.wave??0;
@@ -68,7 +68,7 @@ function tickArena(s,dt){const w=s.world,r=w.adventure;
 export function returnAdventure(s){const r=s.world.adventure,note=r?.conquest?(r.result||'Valdoria: tentativa encerrada; o progresso foi preservado.'):r?.kind==='arena'||r?.kind==='expedition'?summary(r,s.save.character.waveProgress):null;if(r&&!r.done&&s.world.player.hp<=0){s.world.drops=[];}const result=s.save.campaign.village?enterVillage(s):campaignMap(s);if(note)s.world.notice=note;return result;}
 export function tickAdventure(s,dt){const w=s.world,r=w.adventure;if(!r||w.paused||r.done||w.player.hp<=0)return;
  if(r.kind==='arena')return tickArena(s,dt);
- if(r.kind==='expedition'||r.kind==='lab'||r.kind==='siege')return;
+ if(r.kind==='expedition'||r.kind==='lab'||r.kind==='siege'||r.kind==='custom-map')return;
  for(const p of r.queue)p.time-=dt;const ready=r.queue.filter(p=>p.time<=0);r.queue=r.queue.filter(p=>p.time>0);for(const p of ready){const e=campEnemy(s,p.index,p.x,p.y,p.room,r.kind==='mission');Object.assign(e,resolvePosition(e,e.radius,w.arena));}
  if(r.queue.length)return;
  if(r.n===1){for(let i=0;i<r.rooms.length;i++){const room=r.rooms[i];if(room.state==='idle'&&w.player.x>room.x0+1.8&&w.player.x<room.x1-1.8){room.state='active';w.notice='Sala selada · derrote todos para abrir as portas';r.active=i;const open=[...r.doors];if(i>0)open[i-1]=false;if(i<3)open[i]=false;doors(w,open);room.wait=.9;}

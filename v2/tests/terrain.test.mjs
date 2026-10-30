@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {TRAINING_ARENA,overlaps,resolvePosition,moveCircle,lineClear,findPath} from '../scripts/terrain.mjs';
+import {TRAINING_ARENA,overlaps,resolvePosition,moveCircle,lineClear,findPath,navigate} from '../scripts/terrain.mjs';
 import {createWorld,step} from '../scripts/training-model.mjs';
 import {sampleGamepad,stick} from '../scripts/gamepad.mjs';
 const arena={bounds:{minX:-15,maxX:15,minY:-15,maxY:15},solids:[{kind:'box',x:0,y:0,width:.1,depth:6,height:100}]};
@@ -41,4 +41,21 @@ test('gamepad ignora drift, normaliza diagonais, lê botões e suporta desconex�
  assert.deepEqual(stick(.1,-.1),{x:0,y:0});const d=stick(1,1);assert.ok(Math.abs(Math.hypot(d.x,d.y)-1)<1e-9);
  const buttons=Array.from({length:16},()=>({pressed:false,value:0}));buttons[7].value=.8;buttons[9].pressed=true;buttons[0].pressed=true;const p=sampleGamepad({axes:[1,0,0,-1],buttons,connected:true});assert.equal(p.move.x,1);assert.equal(p.aim.y,-1);assert.ok(p.fire&&p.pause&&p.confirm);assert.equal(sampleGamepad({connected:false}).fire,false);
  const a=createWorld({horde:0}),b=createWorld({horde:0});a.actors=[a.player];b.actors=[b.player];step(a,.1,{x:.5});step(b,.1,{x:1});assert.ok(Math.abs(a.player.x*2-b.player.x)<1e-9);
+});
+// Alvo cercado por colisores (como um início fechado por pinheiros no editor de mapas): sem caminho, e sem custo a cada quadro.
+const sealed=(()=>{const solids=[];for(let a=0;a<24;a++){const t=a/24*Math.PI*2;solids.push({kind:'circle',x:Math.cos(t)*3,y:Math.sin(t)*3,r:.45,height:6});}
+ return {id:'sealed',bounds:{minX:-20,maxX:20,minY:-20,maxY:20},solids};})();
+test('alvo num bolsão fechado: não há caminho e a busca não roda de novo a cada quadro',()=>{
+ assert.deepEqual(findPath({x:12,y:8},{x:0,y:0},.3,sealed),[]);
+ const e={x:12,y:8,radius:.3},first=navigate(e,{x:0,y:0},3,1/60,sealed);assert.equal(first.distance,0);
+ for(let i=0;i<200;i++)navigate(e,{x:0,y:0},3,1/60,sealed);
+ // Cada busca regrava `navGoal`; em 200 quadros (3,3 s) só cabem as poucas tentativas espaçadas por 1,5 s ou mais.
+ let searches=0,last=e.navGoal;for(let i=0;i<300;i++){navigate(e,{x:0,y:0},3,1/60,sealed);if(e.navGoal!==last){searches++;last=e.navGoal;}}
+ assert.ok(searches<=4,'buscas em 5 s: '+searches);
+});
+test('colisores trocados (portas) invalidam o cache de regiões',()=>{
+ const door={bounds:{minX:-10,maxX:10,minY:-10,maxY:10},solids:[{kind:'box',x:0,y:0,width:.6,depth:20.4,height:3}]};
+ assert.deepEqual(findPath({x:-5,y:0},{x:5,y:0},.3,door),[]);
+ // A porta abre: o mesmo `arena`, com um vetor novo de colisores (vão de 2 u no meio), volta a ter rota.
+ door.solids=[{kind:'box',x:0,y:-5.5,width:.6,depth:9,height:3},{kind:'box',x:0,y:5.5,width:.6,depth:9,height:3}];assert.ok(findPath({x:-5,y:-4},{x:5,y:4},.3,door).length>0);
 });

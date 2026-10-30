@@ -1,7 +1,7 @@
 {
   "player": {
-    "path": "blender/exports/lab_player_current.glb",
-    "source": "blender/models/rigged_player.blend",
+    "path": "blender/exports/v2_player.glb",
+    "source": "blender/models/v2_player.blend",
     "height": 2.25,
     "requiredAnimations": [
       "idle",
@@ -10,7 +10,7 @@
       "death"
     ],
     "durations": {
-      "idle": 1,
+      "idle": 2,
       "walk": 0.6666666667,
       "cast": 0.375,
       "death": 0.8
@@ -335,6 +335,18 @@
   },
   "medievalVillage": {
     "path": "blender/exports/v2_medieval_village.glb",
+    "requiredAnimations": [],
+    "role": "scenery"
+  },
+  "villageKit": {
+    "path": "blender/exports/v2_village_kit.glb",
+    "source": "blender/scripts/v2_village_kit.py",
+    "requiredAnimations": [],
+    "role": "scenery"
+  },
+  "natureKit": {
+    "path": "blender/exports/v2_nature_kit.glb",
+    "source": "blender/scripts/v2_nature_kit.py",
     "requiredAnimations": [],
     "role": "scenery"
   },

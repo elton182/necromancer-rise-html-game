@@ -131,9 +131,9 @@ dificuldade percebida da fase 2 e **não foi balanceado nem medido**.
 ## Vila de Eldrin (mapa)
 
 A vila deixou de ser uma arena vazia. `v2/scripts/village-map.mjs` define o layout
-(determinístico, 40×40 u) e `village-scene.mjs` o desenha com geometria procedural;
-árvores, rochas, grama e flores reutilizam `forest-scene.mjs`. Os blocos do modelo
-medieval da periferia continuam como pano de fundo, fora do limite caminhável.
+(determinístico, 40×40 u) e `village-scene.mjs` o desenha com o kit modular do Blender
+(`villageKit`, veja **Aparência**); árvores, rochas, grama e flores reutilizam `forest-scene.mjs`. As peças do
+modelo medieval antigo (`medievalVillage`) saíram da periferia da vila; continuam só no campo de treino.
 
 - **Colisores (46):** onze construções (fileira de casas ao norte, ferraria de Bram a oeste,
   casa de Lysa a leste, casas laterais ao sul e a estalagem fechando a rua principal),
@@ -143,12 +143,33 @@ medieval da periferia continuam como pano de fundo, fora do limite caminhável.
   Lysa `(11,1)`, Tilda `(-6,8)` e Vesper `x 0, y 5,9` ficam livres, ligados por rua e praça,
   dentro do alcance de 3,2 u da tecla G. Os testes conferem rota a pé, a partir da chegada
   `(0,9)`, e que nenhum ator nasce dentro de um sólido.
-- **Aparência:** ruas de pedra e terra, praça circular com anel de pedras, janelas acesas e
-  postes sem luzes dinâmicas (material sem iluminação); paleta própria nos fundos escuro e claro.
+- **Aparência (fatia vertical do acabamento visual):**
+  - **Casas:** montadas por `village-kit.mjs` a partir de cada colisor, com o kit
+    `blender/exports/v2_village_kit.glb`. São módulos de enxaimel de 1 u (liso, mão-francesa, janela com
+    venezianas e porta), cantos, empenas, telhado de telhas desencontradas com beiral e chaminé. Porta e janelas
+    ficam nas faces sul e leste, as que a câmera vê. Reboco e telhado recebem a cor de cada casa.
+  - **Outras peças do kit:** postes com lanterna, poço com telhadinho, cerca, barris e caixotes. Barracas,
+    quadro e pilares continuam em primitivas.
+  - **Chão:** `village-ground.mjs` pinta grama, terra batida com sulcos, ruas de pedra em
+    fiadas, praça em anéis concêntricos, terra no pé das construções e sombra de contato numa textura gerada
+    ao carregar (2048 px, cerca de 32 px/u), sem bytes extras no HTML. A textura substitui os planos de rua e
+    as pedras soltas.
+  - **Luz:** postes e janelas projetam poças de luz aditivas no chão, sem luzes dinâmicas.
+    Só na vila, o renderizador usa tone mapping ACES (exposição 1,2), um céu em gradiente
+    pré-filtrado como reflexo difuso e sol mais quente (`SCENE_LOOK` em `renderer.mjs`). Os demais
+    mapas mantêm a luz anterior.
+  - **Vegetação:** `nature-kit.mjs` desenha carvalhos, pinheiros, arbustos, tufos de grama, flores e pedras
+    com o kit `blender/exports/v2_nature_kit.glb` (`natureKit`), lendo os mesmos dados de `forest-scene.mjs`. A
+    folhagem é tingida por instância e balança com o vento (`scenery-fx.mjs`, só desenho; a sombra fica parada).
+  - **Oclusão:** o cenário entre a câmera e o jogador abre um círculo pontilhado de 2,6 u ao redor dele. Base de
+    muros, cercas e caixotes (abaixo de 0,9 u) continua sólida, e o que está atrás do jogador não é afetado.
+    Vale só para o jogador; NPCs, aliados e inimigos atrás de casas continuam ocultos.
+  - **Fundo claro:** o chão clareia e as poças enfraquecem.
+  - **Sem o GLB:** a cena volta ao visual de primitivas.
 
 Nenhuma regra de missão, oferta, mercador ou progressão mudou. Limites: casas e barracas
-podem ocultar um personagem atrás delas para a câmera isométrica (oclusão fica para o
-acabamento da E11); o Dash e as rotas dos aliados agora contornam as construções.
+ainda podem ocultar outros personagens (só o jogador ganha a transparência pontilhada); o Dash e as rotas dos aliados
+agora contornam as construções.
 
 ## Histórias, instruções e retorno
 
@@ -227,3 +248,7 @@ por partidas completas. O simulador existente não foi alterado, pois as fórmul
 canônicas continuam compartilhadas; ele não substitui a IA da V2.
 
 Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.
+
+## Disponibilidade e narrativa
+
+As habilidades basicas da campanha ficam disponiveis desde o inicio, sem concessoes por fase. Os investimentos normais do Grimorio continuam valendo. As cronicas possuem um palco 3D separado do combate e legendas em estilo HQ. A encenacao especifica de cada trecho da v1 ainda precisa ser concluida e validada visualmente.

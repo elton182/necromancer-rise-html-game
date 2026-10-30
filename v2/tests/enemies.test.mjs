@@ -37,7 +37,7 @@ test('escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilha
 for(const index of [0,1,2,3,4,5])test('especial integrado: '+Types[index].name,()=>{
  const w=field8(),e=spawnEnemy(w,index,0,index===4||index===2?-4:-2,{legacy:true});e.abilityCd=0;e.atkTimer=99;
  if(index===5)spawnEnemy(w,0,1,-2).atkTimer=99;
- const hp=w.player.hp;advance(w,.1);assert.ok(e.ability);assert.equal(w.player.hp,hp);
+ const hp=w.player.hp;advance(w,.1);assert.ok(index===0?e.cut:e.ability);assert.equal(w.player.hp,hp);
  if(index===5){advance(w,1.1);assert.equal(e.ability.phase,'channel');assert.ok(Acolyte.supported(w.actors.at(-1),[e]));}
  else{advance(w,2);assert.ok(w.player.hp<hp,Types[index].name+' causou dano');}
  dealDamage(w,e,999999,w.player);assert.equal(e.ability,null);assert.ok(!w.effects.some(f=>f.enemyWarning===e.id));

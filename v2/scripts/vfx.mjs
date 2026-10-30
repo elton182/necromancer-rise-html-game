@@ -190,10 +190,13 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  // Fase II do Rei: pilares de fogo em anel e onda grande, só visuais.
  INIT.roar=(o,e)=>{
   INIT.shockwave(o,e);o.rune=decal(o,textures.runeA,e.color||'#ff7a2a',{y:.072});o.rune.position.set(e.x,.072,e.y);
-  for(let k=0;k<14;k++){const a=k/14*TAU,x=e.x+Math.cos(a)*3.2,z=e.y+Math.sin(a)*3.2;for(let j=0;j<Math.round(5*density);j++)flame(x,z,{up:6.5,spread:.35,life:1.1,size:1.5});}
+  if(e.mood!=='war')for(let k=0;k<14;k++){const a=k/14*TAU,x=e.x+Math.cos(a)*3.2,z=e.y+Math.sin(a)*3.2;for(let j=0;j<Math.round(5*density);j++)flame(x,z,{up:6.5,spread:.35,life:1.1,size:1.5});}
  };
  RUN.roar=(o,e)=>{RUN.shockwave(o,e);const t=life(e);o.rune.scale.setScalar(lerp(2.5,6,easeOut(t)));o.rune.rotation.z=time*1.2;o.rune.material.opacity=Math.pow(1-t,1.2);};
 
+ // Fratura temporária do chão, combinada com poeira e onda de choque.
+ INIT.groundBreak=(o,e)=>{INIT.shockwave(o,e);o.cracks=decal(o,textures.cracks,'#231c19',{y:.065});o.cracks.position.set(e.x,.065,e.y);o.cracks.scale.setScalar(e.radius);};
+ RUN.groundBreak=(o,e)=>{RUN.shockwave(o,e);o.cracks.material.opacity=Math.min(1,(1-life(e))*3);};
  // Marca de perigo: círculo rúnico, preenchimento que cresce até a borda quando o golpe acontece e chamas na borda.
  INIT.dangerRune=(o,e)=>{
   const c=e.color||'#ff784e';o.rune=decal(o,textures.runeD,c,{y:.06});
@@ -287,9 +290,12 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  INIT.projectile=(o,e)=>{
   const magic=e.shot!=='arrow'&&e.shot!=='feather',s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.shot==='feather'?'#f0e0b8':magic?'#e0a0ff':'#fff0b0'),transparent:true,depthTest:false,depthWrite:false}));
   s.renderOrder=11;scene.add(s);o.objs.push(s);o.orb=s;o.lx=e.x;o.lz=e.y;
+  if(e.rogueTrail){const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xe4d3a8,transparent:true,opacity:.3,depthWrite:false}));line.userData.ownGeometry=true;scene.add(line);o.objs.push(line);o.trail=line;}
+
  };
  RUN.projectile=(o,e,step)=>{
   const feather=e.shot==='feather',magic=e.shot!=='arrow'&&!feather,c=magic?[.82,.5,1]:feather?[.94,.86,.66]:[.95,.82,.4],size=feather?.4:magic?1:.6;
+  if(o.trail){const a=o.trail.geometry.attributes.position;a.setXYZ(0,e.x,.85,e.y);a.setXYZ(1,e.x-e.dx*.9,.85,e.y-e.dy*.9);a.needsUpdate=true;o.trail.geometry.computeBoundingSphere();}
   o.orb.position.set(e.x,.85,e.y);o.orb.scale.setScalar(size*(.9+.1*Math.sin(time*40)));
   if(step>0){const n=Math.max(1,Math.round(step*80*density));for(let i=0;i<n;i++){const k=Math.random();particles.emit({x:lerp(o.lx,e.x,k),h:.85+rand(-.08,.08),z:lerp(o.lz,e.y,k),vx:rand(-.3,.3),vh:rand(-.2,.4),vz:rand(-.3,.3),life:rand(.18,.35),s0:(magic?.26:.14)*rand(.8,1.2),s1:.02,c0:mix(c,WHITE,.4),c1:c,a0:.8});}}
   o.lx=e.x;o.lz=e.y;

@@ -29,7 +29,7 @@ test('seleção só aceita waves liberadas e conclusão libera a seguinte uma ve
  assert.match(summary({start:2,completed:0},p),/antes de concluir/);
 });
 test('Pedra do Infinito: ponto na vila; sem vila liberada a arena não abre',()=>{
- const s=village();assert.ok(s.world.landmarks.some(l=>l.id==='endless'&&l.name==='Pedra do Infinito'));
+ const s=village();assert.ok(s.world.landmarks.some(l=>l.id==='endless'&&l.name==='Guardião das Waves'));
  const fresh=createSession();assert.equal(launchArena(fresh),false);assert.equal(fresh.scene,'menu');
 });
 test('arena: waves sucessivas pagam uma vez, sobem o recorde e escalam por wave',()=>{

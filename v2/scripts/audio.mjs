@@ -16,7 +16,7 @@ export const THEMES={
  endless:{bpm:120,root:42,sc:'min',prog:[0,5,3,6],pad:1,padO:0,bass:'x.xx.xx.x.xx.xx.',arp:{p:'x.x.x.x.x.x.x.x.',o:2,v:.035,pl:'saw'},lead:{p:.3,o:2,v:.045},cut:1400,kick:'x...x...x...x...',hat:'..x...x...x...x.',snare:'....x.......x...'},
  field:{bpm:96,root:40,sc:'min',prog:[0,6,5,6],pad:1,padO:0,bass:'x.x.x.x.x.x.x.x.',arp:{p:'..x...x...x..x..',o:2,v:.03,pl:'tri'},lead:{p:.2,o:2,v:.04},cut:950,kick:'x.......x.......',hat:'..x...x...x...x.'}
 };
-export const SOUND_NAMES=['click','maos','raio','chuva','explosao','hit','enemyDeath','minionDeath','revive','levelUp','waveStart','playerHurt','gameOver','portal','summon','pickupHp','pickupMp'];
+export const SOUND_NAMES=['windCut','battleCry','swordSlash','heavySlam','wolfHowl','click','maos','raio','chuva','explosao','hit','enemyDeath','minionDeath','revive','levelUp','waveStart','playerHurt','gameOver','portal','summon','pickupHp','pickupMp'];
 export const STORAGE_KEY='necromancer_v2_audio';
 export const PAUSE_DUCK=.35;
 const MUSIC_BASE=.34,THROTTLE_MS=45,DEFAULTS={volume:.55,music:.7,muted:false};
@@ -71,6 +71,13 @@ export function createAudio({createContext=defaultContext,storage=null,now=()=>p
 
  // ── Efeitos ─────────────────────────────────────────────
  const SFX={
+  windCut(){const t=ctx.currentTime,g=gain(.2);decay(g,.2,t,.4);const f=filtered('bandpass',2400,.7);f.frequency.setValueAtTime(2400,t);f.frequency.exponentialRampToValueAtTime(600,t+.35);const n=gain(.001);n.disconnect();n.connect(f);f.connect(g);n.gain.setValueAtTime(.001,t);n.gain.linearRampToValueAtTime(.8,t+.06);n.gain.exponentialRampToValueAtTime(.001,t+.35);noise(n,0,.36);},
+  battleCry(){const t=ctx.currentTime,g=gain(.22);g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.22,t+.08);g.gain.exponentialRampToValueAtTime(.001,t+1);sweep('sawtooth',140,65,t,.9,filtered('lowpass',650),g);sweep('triangle',210,100,t,.8,null,g);},
+
+  swordSlash(){const t=ctx.currentTime,g=gain(.2);decay(g,.2,t,.3);sweep('triangle',1100,180,t,.22,filtered('bandpass',1800,1),g);noise(g,0,.14);},
+  heavySlam(){const t=ctx.currentTime,g=gain(.45);decay(g,.45,t,.85);sweep('sine',100,25,t,.65,null,g);const n=gain(.2);decay(n,.2,t,.55);noise(n,0,.5);},
+  wolfHowl(){const t=ctx.currentTime,g=gain(.16);g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.16,t+.3);g.gain.linearRampToValueAtTime(.12,t+1);g.gain.exponentialRampToValueAtTime(.001,t+1.7);sweep('sine',260,450,t,.5,null,g);sweep('triangle',450,240,t+.45,1.2,filtered('lowpass',900),g);},
+
   click(){const g=gain(.12,.05);osc('sine',880,g,0,.005);osc('sine',660,g,.005,.04);},
   maos(){
    const t=ctx.currentTime,g=gain(.3);decay(g,.3,t,.6);

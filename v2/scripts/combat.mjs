@@ -12,7 +12,7 @@ export function initializeCombat(w){
  Object.assign(w.player,{mp:RULES.base.mp,maxMp:RULES.base.mp,mpRegen:RULES.base.regen,hpRegen:0,spellDamage:spellDamage(1),moveSpeed:moveSpeed(),defense:0,barrier:0,boneShield:false,veilTime:0,level:1});
 }
 function kill(w,a,source){
- if(a.dead)return;a.dead=true;a.hp=0;a.animation='death';a.animationTime=0;a.pose=null;a.timer=0;a.ability=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);
+ if(a.dead)return;a.dead=true;a.hp=0;a.animation='death';a.animationTime=0;a.pose=null;a.timer=0;a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);
  if(a===w.boss){a.king=null;a.kingRoar=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);w.hostileZones=(w.hostileZones||[]).filter(z=>z.source!==a.id);for(const add of w.actors)if(add.kingOwner===a.id&&add.hp>0){add.hp=0;add.dead=true;add.animation='death';add.animationTime=0;add.kingOwner=null;}}
  w.combatEvents.push({kind:'death',id:w.nextId++,target:a.id,team:a.team,source:source?.id??null});
  if(a.groupType)w.onAllyDeath?.(a);
@@ -69,7 +69,7 @@ export function castBolt(w,{charge=0}={}){
  w.effects.push({id:w.nextId++,kind:'boneLaunch',fx:'boltCast',x:p.x,y:p.y,dx:dx/d,dy:dy/d,radius:.3,time:0,duration:.45,visual:true,ground:true,color:'#b8f2d0'});return true;
 }
 export function beginDash(w,input={}){
- if(w.paused||w.player.hp<=0||w.dash.cooldown>1e-9||w.dash.remaining>0||w.lich?.form==='transform')return false;
+ if(w.player.rootTime>0||w.paused||w.player.hp<=0||w.dash.cooldown>1e-9||w.dash.remaining>0||w.lich?.form==='transform')return false;
  let x=Number(input.x)||0,y=Number(input.y)||0,dx=x+y,dy=y-x;
  if(Math.hypot(dx,dy)<.1){dx=w.aim.x-w.player.x;dy=w.aim.y-w.player.y;}
  const length=Math.hypot(dx,dy);if(!Number.isFinite(length)||length<1e-9){dx=Math.sin(w.player.angle)||1;dy=Math.cos(w.player.angle);}

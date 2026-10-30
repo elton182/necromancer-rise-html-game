@@ -39,8 +39,10 @@ export function createSoundObserver(){
    const now=snapshot(s);
    for(const e of w.effects)if(!prev.seen.has(e)&&EFFECT_SOUNDS[e.kind])out.push(EFFECT_SOUNDS[e.kind]);
    if(now.cast>prev.cast+1e-9||now.dash>prev.dash+1e-9)out.push('raio');
-   if(now.hits>prev.hits)out.push('hit');
+   // Na Forma da Morte o som do golpe é o vento da foice (scytheWind); o ruído de impacto do Tiro de Osso soaria por cima.
+   if(now.hits>prev.hits&&!(w.lich&&w.lich.form!=='none'))out.push('hit');
    for(const [id,t] of Object.entries(now.cooldowns))if(t>(prev.cooldowns[id]||0)+1e-9&&SPELL_SOUNDS[id])out.push(SPELL_SOUNDS[id]);
+   for(const e of w.combatEvents.slice(prev.cursor))if(({soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut'})[e.kind])out.push(({soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut'})[e.kind]);
    for(const e of w.combatEvents.slice(prev.cursor))if(e.kind==='death'&&e.team==='enemy')out.push(w.boss&&e.target===w.boss.id?'explosao':'enemyDeath');
    for(const [id,dead] of now.groups){const was=prev.groups.get(id);if(was===undefined||was===dead)continue;out.push(dead?'minionDeath':'revive');}
    if(now.level>prev.level)out.push('levelUp');

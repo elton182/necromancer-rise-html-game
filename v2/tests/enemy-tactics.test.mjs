@@ -31,12 +31,12 @@ test('frente: a vaga de quem morre é ocupada por quem esperava',()=>{
  dealDamage(w,engaged[0],1e9,p);run(w,4,null);
  assert.equal(es.filter(e=>e.hp>0&&dist(e,p)<=2.4).length,3);
 });
-test('ladinos contornam e atacam por trás da linha de frente',()=>{
+test('ladinos usam arco curto e chegam ao combate sem orbitar',()=>{
  const {w,p,es}=arena([[0,-3,-9],[0,0,-10],[0,3,-9],[6,-5,-11],[6,5,-11]]);
  const rogues=es.slice(3),first={};
  run(w,12,()=>{for(const r of rogues)if(!first[r.id]&&dist(r,p)<=1.9)first[r.id]=ang(p,r);});
  assert.equal(Object.keys(first).length,2,'os dois ladinos chegam ao alvo');
- for(const a of Object.values(first))assert.ok(Math.abs(wrap(a-ang(p,{x:0,y:-10})))>1.9,'chegou por trás, não pela frente: '+a);
+ for(const a of Object.values(first))assert.ok(Math.abs(wrap(a-ang(p,{x:0,y:-10})))>.4,'aproximou por um flanco: '+a);
  assert.ok(p.hp<1e7);
 });
 test('ladino já colado no alvo não perde tempo contornando',()=>{
