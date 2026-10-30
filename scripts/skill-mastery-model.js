@@ -52,6 +52,7 @@ skills.maldicao=define('Maldição da Fraqueza',{duration:2},[
  branch('area','Sussurro Coletivo','area',6,'Eco Persistente','duration',6),
  branch('rhythm','Liturgia Breve','cooldown',2,'Condenação Contínua','cooldown',3)
 ]);
+function make(skills,labels){
 const ids=Object.keys(skills),integer=(v,min,max)=>Math.max(min,Math.min(max,Math.floor(Number(v)||0)));
 function specializations(input,fallback=['raio','dash']){
  const source=Array.isArray(input)?input:Array.isArray(fallback)?fallback:[],seen=new Set();
@@ -100,6 +101,11 @@ function gain(id,input,amount,characterLevel=1){
  }
  if(state.level===MAX_LEVEL)state.xp=0;return {state,levels:state.level-before};
 }
-const api={VERSION,MAX_LEVEL,SPECIALIZATION_SLOTS,specializations,skills,ids,labels,xpNext,spent,points,normalize,migrate,reason,invest,bonus,gain};
+const api={VERSION,MAX_LEVEL,SPECIALIZATION_SLOTS,specializations,skills,ids,labels,xpNext,spent,points,normalize,migrate,reason,invest,bonus,gain,branch,define};
+// Permite que um runtime acrescente habilidades (ex.: a árvore Morte da v2) reaproveitando exatamente as mesmas regras.
+api.extend=(extra,extraLabels)=>make({...skills,...extra},{...labels,...extraLabels});
+return api;
+}
+const api=make(skills,labels);
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SkillMasteryModel=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

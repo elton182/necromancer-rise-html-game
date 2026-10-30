@@ -16,6 +16,7 @@ O treino continua acessível separadamente pelo menu.
 - `campaign.mjs` administra encontros, filas de spawn, portas, vila e retornos,
   usando dano, inimigos, horda, equipamentos, XP e saves já existentes.
 - `campaign-panel.mjs` apresenta mapa, histórias, tutoriais e diálogos.
+- `campaign-atlas.mjs` desenha o **Mapa da Campanha** (aberto pelo quadro da vila) como atlas em pergaminho, no estilo da carta de Valdoria: terra e mar, quatro marcos ligados por estradas, castelo de Valdoria, Vila de Eldrin (após o Ato I) e anel dourado na próxima fase. Clique no marco ou use os botões de fase para ver a prévia; **Entrar/Revisitar** inicia a fase. Só visual: regras de liberação e recompensa continuam em `campaign-model.mjs`.
 
 Execute `node v2/tools/build.cjs` na raiz para atualizar o HTML autocontido e os
 hashes de proveniência. Os modelos de NPC já existentes foram incorporados;
@@ -224,3 +225,5 @@ carregamento offline e recarga na vila. Isso não comprova a dificuldade de uma 
 completa nem desempenho em outras máquinas; não houve comparação de balanceamento
 por partidas completas. O simulador existente não foi alterado, pois as fórmulas
 canônicas continuam compartilhadas; ele não substitui a IA da V2.
+
+Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.

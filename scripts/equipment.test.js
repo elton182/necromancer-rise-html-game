@@ -80,7 +80,7 @@ test('old saves convert percentage bases once while preserving affixes, slots an
  const grimoire={...item(12,'grimoire'),version:1,rarity:'common',base:{stat:'horde',value:9.28},affixes:[]};
  const boots={...item(12,'boots'),version:1,rarity:'common',base:{stat:'move',value:2.32},affixes:[]};
  const data={equipment:{staff,boots},gearBag:[grimoire]};Model.migrate(data,Tree);
- assert.equal(data.equipmentVersion,2);assert.equal(data.equipment.staff.base.stat,'spellFlat');assert.equal(data.equipment.staff.base.value,26);assert.deepEqual(data.equipment.staff.affixes,staff.affixes);assert.equal(data.equipment.staff.id,staff.id);
+ assert.equal(data.equipmentVersion,3);assert.equal(data.equipment.staff.base.stat,'spellFlat');assert.equal(data.equipment.staff.base.value,26);assert.deepEqual(data.equipment.staff.affixes,staff.affixes);assert.equal(data.equipment.staff.id,staff.id);
  assert.equal(data.equipment.boots.base.stat,'moveFlat');assert.equal(data.gearBag[0].base.stat,'hordeFlat');assert.equal(data.gearBag[0].id,grimoire.id);
  const once=JSON.stringify(data);Model.migrate(data,Tree);assert.equal(JSON.stringify(data),once);
  assert.equal(Model.validate({...staff,base:{stat:'spell',value:1e99}},Tree),null);
@@ -280,4 +280,15 @@ test('test settings scale existing enemies once, preserve health and restore zer
  assert.equal(run('enemies[0].hp'),20);assert.equal(run('enemies[0].dmg'),24);
  run('combatTestSettings.health=100;combatTestSettings.damage=100;update(.1)');
  assert.equal(run('enemies[0].hp'),40);assert.equal(run('enemies[0].dmg'),12);
+});
+
+test('armaduras sempre têm defesa inerente; sorteio só concede percentual; migração é idempotente',()=>{
+ for(const type of ['body','head','boots'])for(const level of [1,8,1000])for(const roll of [0,.61,.9,.99]){
+  const gear=Model.generate(level,Tree,()=>roll,type);assert.ok(Model.baseDefense(gear)>0);assert.equal(Model.baseDefense(gear),Math.round(10*(1+(level-1)*.12)*100)/100);
+  assert.ok(gear.affixes.every(a=>a.stat!=='defense'));assert.deepEqual(Model.validate(gear,Tree),gear);
+ }
+ const old={...Model.generate(1,Tree,()=>0,'body'),version:2,rarity:'magic',affixes:[{stat:'defense',value:10},{stat:'mp',value:8}]};
+ const upgraded=Model.validate(old,Tree);assert.ok(upgraded);assert.equal(upgraded.id,old.id);assert.deepEqual(upgraded.base,old.base);assert.deepEqual(upgraded.affixes,[{stat:'defensePercent',value:10},{stat:'mp',value:8}]);assert.deepEqual(Model.validate(upgraded,Tree),upgraded);
+ const data={equipment:{body:upgraded,head:Model.generate(1,Tree,()=>0,'head'),boots:Model.generate(1,Tree,()=>0,'boots')}};assert.equal(Model.bonuses(data).defense,33);delete data.equipment.body;assert.equal(Model.bonuses(data).defense,20);
+ for(const type of ['staff','grimoire','ring1','ring2'])assert.equal(Model.baseDefense(Model.generate(1,Tree,()=>0,type)),0);
 });

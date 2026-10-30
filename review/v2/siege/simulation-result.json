@@ -1,0 +1,320 @@
+[
+  {
+    "profile": "towers-only",
+    "modifier": "none",
+    "won": false,
+    "done": true,
+    "wave": 8,
+    "integrity": 0,
+    "seconds": 306.5,
+    "essence": 361,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: sem ataque de Zephyr nem horda equipada; estratégia fixa, não representa todas as builds."
+  },
+  {
+    "profile": "towers-only",
+    "modifier": "armored",
+    "won": false,
+    "done": true,
+    "wave": 5,
+    "integrity": 0,
+    "seconds": 189.75,
+    "essence": 124,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 1
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 1
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 1
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 1
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 1
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: sem ataque de Zephyr nem horda equipada; estratégia fixa, não representa todas as builds."
+  },
+  {
+    "profile": "towers-only",
+    "modifier": "haste",
+    "won": false,
+    "done": true,
+    "wave": 6,
+    "integrity": 0,
+    "seconds": 184.25,
+    "essence": 353,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 1
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 2
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 1
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 1
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 1
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: sem ataque de Zephyr nem horda equipada; estratégia fixa, não representa todas as builds."
+  },
+  {
+    "profile": "hero-horde",
+    "modifier": "none",
+    "won": true,
+    "done": true,
+    "wave": 8,
+    "integrity": 20,
+    "seconds": 219.75,
+    "essence": 585,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: build fixa Nv.24, horda e Tiro de Osso automático, sem movimentação ou esquiva; não representa todas as builds."
+  },
+  {
+    "profile": "hero-horde",
+    "modifier": "armored",
+    "won": true,
+    "done": true,
+    "wave": 8,
+    "integrity": 20,
+    "seconds": 220.5,
+    "essence": 585,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: build fixa Nv.24, horda e Tiro de Osso automático, sem movimentação ou esquiva; não representa todas as builds."
+  },
+  {
+    "profile": "hero-horde",
+    "modifier": "haste",
+    "won": true,
+    "done": true,
+    "wave": 8,
+    "integrity": 20,
+    "seconds": 202.5,
+    "essence": 585,
+    "towers": [
+      {
+        "pad": 1,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 2,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 7,
+        "kind": "crypt",
+        "rank": 1
+      },
+      {
+        "pad": 3,
+        "kind": "bone",
+        "rank": 3
+      },
+      {
+        "pad": 6,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 5,
+        "kind": "frost",
+        "rank": 2
+      },
+      {
+        "pad": 4,
+        "kind": "plague",
+        "rank": 2
+      },
+      {
+        "pad": 8,
+        "kind": "crypt",
+        "rank": 1
+      }
+    ],
+    "limits": "Motor real: build fixa Nv.24, horda e Tiro de Osso automático, sem movimentação ou esquiva; não representa todas as builds."
+  }
+]

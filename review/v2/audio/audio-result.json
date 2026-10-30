@@ -1,0 +1,51 @@
+{
+  "result": {
+    "decoded": {
+      "crypt": {
+        "duration": 120,
+        "channels": 2
+      },
+      "village": {
+        "duration": 180,
+        "channels": 2
+      },
+      "portal": {
+        "duration": 6,
+        "channels": 1
+      },
+      "waveStart": {
+        "duration": 3,
+        "channels": 1
+      },
+      "levelUp": {
+        "duration": 3,
+        "channels": 1
+      }
+    },
+    "playback": [
+      {
+        "loop": false,
+        "duration": 3
+      },
+      {
+        "loop": false,
+        "duration": 3
+      },
+      {
+        "loop": false,
+        "duration": 6
+      },
+      {
+        "loop": true,
+        "duration": 120
+      }
+    ],
+    "villagePlayback": {
+      "loop": true,
+      "duration": 180
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "remote": []
+}

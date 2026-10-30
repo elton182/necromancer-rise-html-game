@@ -90,3 +90,8 @@ test('boss de expedição garante peça rara ou épica e o dormente não aparece
  let rare=0;for(let i=0;i<40;i++){const t=village();launchExpedition(t);t.world.player.hp=t.world.player.maxHp=1e8;t.world.boss.hp=1;dealDamage(t.world,t.world.boss,1e9,t.world.player);const d=t.world.drops.find(x=>x.kind==='equipment');assert.ok(d,'boss deve largar equipamento');assert.ok(['rare','epic'].includes(d.item.rarity));rare++;}
  assert.equal(rare,40);assert.equal(!!(w.boss.home&&!w.boss.alert),true);
 });
+test('Expedição apresenta os novos inimigos conforme a onda',()=>{
+ const types=wave=>{const s=village();s.save.character.waveProgress=EQ.progress({best:wave-1,selected:wave});launchExpedition(s);return new Set(foes(s).map(a=>a.typeIndex));};
+ for(const index of [6,7,8])assert.ok(!types(1).has(index));
+ assert.ok(types(2).has(6));assert.ok(!types(2).has(7));assert.ok(types(6).has(8));
+});

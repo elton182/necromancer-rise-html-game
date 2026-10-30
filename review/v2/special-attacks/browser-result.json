@@ -1,0 +1,53 @@
+{
+  "results": {
+    "slam": {
+      "warn": true,
+      "pose": "smash_windup",
+      "clips": [
+        "attack",
+        "charge",
+        "death",
+        "hit",
+        "howl",
+        "idle",
+        "recover",
+        "walk",
+        "windup"
+      ]
+    },
+    "rain": {
+      "zone": 1,
+      "fx": true,
+      "hp": false,
+      "clips": [
+        "attack",
+        "charge",
+        "death",
+        "hit",
+        "howl",
+        "idle",
+        "recover",
+        "walk",
+        "windup"
+      ]
+    },
+    "howl": {
+      "preWolves": 1,
+      "wolves": 3,
+      "pose": "howl",
+      "clips": [
+        "attack",
+        "charge",
+        "death",
+        "hit",
+        "howl",
+        "idle",
+        "recover",
+        "walk",
+        "windup"
+      ]
+    }
+  },
+  "errors": [],
+  "remote": []
+}

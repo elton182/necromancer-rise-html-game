@@ -422,3 +422,13 @@ e incorpora somente esse asset no HTML. A mecânica fica em
 ## Inimigos importados da v2
 
 Seis modelos com rigs importados, ações próprias e equipamento separado incorporado ao personagem. Fontes, comandos, cena de revisão MCP e limitações em [notes/imported_enemies_v2.md](notes/imported_enemies_v2.md).
+
+## Lich da Forma da Morte (v2)
+
+Esqueleto de 65 ossos e foice fornecidos pelo usuário, com 13 clipes e a foice presa a um osso livre (`Scythe`). Gerar na raiz: `blender --background --python blender/scripts/lich.py` (saídas `models/v2_lich.blend`, `exports/v2_lich.glb`, `exports/v2_lich_scythe.glb`); prévias com `preview_lich.py`. Notas, clipes e limitações em [notes/lich_v2.md](notes/lich_v2.md); desenho da mecânica em [../docs/v2-morte-lich.md](../docs/v2-morte-lich.md).
+
+Escudo de Carne da v2: [fonte e integração](notes/flesh_shield_v2.md), gerado por `scripts/flesh_shield.py`.
+
+Bran, o ferreiro (v2): `models/bran.blend` → `exports/bran.glb`, importado de `reference/bran/blacksmith.glb` por `scripts/bran.py`; detalhes em [notes/bran.md](notes/bran.md).
+
+Cerco ao Ritual (v2): `scripts/siege_structures.py` usa `common.py` para gerar as cenas `models/siege_{core,bone,frost,plague,crypt}.blend` e os GLBs correspondentes em `exports/`, com rig e clipes `idle`/`attack`. Registro em `v2/assets/models.json`; após gerar, executar `node v2/tools/build.cjs` na raiz.

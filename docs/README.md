@@ -1,8 +1,10 @@
 # Documentação
 
-## Como o jogo funciona
+A **v2 (3D)** é o jogo principal: seus guias são os `v2-*.md` da seção *Implementação e ferramentas*, e o plano e estado estão em [../v2/README.md](../v2/README.md). As páginas de `mecanicas/` descrevem a versão legada (Canvas 2D) e as regras compartilhadas; onde divergirem da v2, vale o guia `v2-*.md`.
 
-Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.md):
+## Como o jogo funciona (versão legada e regras compartilhadas)
+
+Guias de referência das mecânicas, em [`mecanicas/`](mecanicas/README.md):
 
 - [Personagem e progressão](mecanicas/personagem-e-progressao.md)
 - [Habilidades e slots](mecanicas/habilidades.md)
@@ -32,6 +34,9 @@ Guias de referência das mecânicas atuais, em [`mecanicas/`](mecanicas/README.m
 | [v2-conquista.md](v2-conquista.md) | E10c: Conquista de Valdoria — rotas, influência, maldições, poças, Osso Carcomido e limites |
 | [v2-interface.md](v2-interface.md) | HUD e Relicário da v2: fontes, abas, decisões e limites |
 | [v2-inimigos.md](v2-inimigos.md) | E8: seis arquétipos, escala, elites, projéteis, composição e Rei Caído completo |
+| [v2-morte-lich.md](v2-morte-lich.md) | Árvore Morte e Forma de Lich: design, assets, regras e integração (Grimório, slot, HUD de almas, Lich e foice no renderizador); balanceamento pendente |
+| [v2-laboratorio.md](v2-laboratorio.md) | Laboratório in-game: visualizador de animações, boneco de madeira com medidor de DPS e testes cronometrados |
+| [v2-efeitos-visuais.md](v2-efeitos-visuais.md) | Revisão de efeitos: runas de invocação, Tiro de Osso, golpes de inimigos e Rei Caído em duas fases |
 | [v2-magias.md](v2-magias.md) | E6b: cinco magias equipáveis, validação atômica, recargas, encerramento e limites |
 | [refactoring-baseline.md](refactoring-baseline.md) | Linha de base da refatoração: testes, fontes do HTML, dependências externas e problemas registrados |
 | [character-regeneration-inventory.md](character-regeneration-inventory.md) | Inventário dos personagens para a regeneração low-poly: fontes, atlas, animações, contratos e pipelines |
@@ -55,3 +60,5 @@ o estado atual está nos guias de mecânicas.
 | [concepts/skill-trees-proposal-v1.md](concepts/skill-trees-proposal-v1.md) | Proposta visual inicial das árvores | Histórico: o grafo final está no Grimório |
 
 Imagens de conceito e evidências visuais ficam em [`concepts/`](concepts/).
+
+- [Cerco ao Ritual — defesa de torres e progressão de endgame](v2-cerco.md)

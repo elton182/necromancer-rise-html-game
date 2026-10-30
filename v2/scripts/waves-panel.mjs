@@ -6,7 +6,7 @@ export function createWavesPanel(s,{enter,mode,changed,valdoria=()=>{},available
  const node=(tag,text,parent=host,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;parent.append(e);return e;};
  function render(){
   const p=s.save.character.waveProgress,village=s.scene==='village',stats=EQ.waveStats(p.selected),r=reward(p.selected);host.replaceChildren();
-  const head=node('div',undefined,host,'gear-header');const title=node('div',undefined,head);node('small','PEDRA DO INFINITO',title);node('h2','Waves',title);node('span','Recorde concluído: '+p.best,head);
+  const head=node('div',undefined,host,'gear-header');const title=node('div',undefined,head);node('small','GUARDIÃO DAS WAVES',title);node('h2','Waves',title);node('span','Recorde concluído: '+p.best,head);
   node('p','Escolha uma wave desbloqueada. Repetir waves anteriores mantém seu recorde e reduz a dificuldade e o nível do loot.',host);
   const box=node('div',undefined,host,'gear-wave-info waves-mode'),label=node('label','Modelo de waves ',box),select=node('select',undefined,label);select.setAttribute('aria-label','Modelo de waves');
   for(const [value,name] of [['expedition','Expedição'],['classic','Arena clássica']]){const o=node('option',name+(available[value]?'':' (indisponível nesta versão)'),select);o.value=value;o.disabled=!available[value];}
@@ -18,8 +18,7 @@ export function createWavesPanel(s,{enter,mode,changed,valdoria=()=>{},available
   node('p','Vida dos monstros ×'+stats.hp.toFixed(2)+' · dano ×'+stats.damage.toFixed(2)+' · loot nível '+stats.itemLevel,info);
   node('p','Conclusão: +'+r.xp+' XP e +'+r.gold+' ouro, além dos monstros. Loja: peças nível '+p.unlocked+'.',info);
   const go=node('button','Entrar na wave '+p.selected,info,'btn waves-enter');go.type='button';go.id='waves-enter';go.disabled=!village;go.onclick=()=>enter();
-  const val=node('button','Conquistar Valdoria · Pântano',info,'btn waves-valdoria');val.type='button';val.disabled=!village;val.onclick=()=>valdoria();
-  if(!village)node('p','As waves só podem ser iniciadas na Vila de Eldrin, pela Pedra do Infinito.',info,'section-note');
+  if(!village)node('p','As waves só podem ser iniciadas na Vila de Eldrin, pelo Guardião das Waves.',info,'section-note');
  }
  return {render};
 }

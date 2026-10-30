@@ -41,8 +41,7 @@ function skillEffects(ranks, items) {
 }
 function stats(level, build, items, source) {
   const ranks = buildRanks(level, build), { effects: e, bonusRanks } = skillEffects(ranks, items);
-  const mods = {};
-  for (const a of items.flatMap(i => [i.base, ...i.affixes])) if (!['skill', 'school'].includes(a.stat)) mods[a.stat] = (mods[a.stat] || 0) + a.value;
+  const mods = Gear.bonuses({equipment:Object.fromEntries(items.map((item,index)=>[index,item]))});
   const percent = key => 1 + (e[key] || 0) / 100;
   const spell = Gear.spellDamage(level,mods);
   const minions = [];

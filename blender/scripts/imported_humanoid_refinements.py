@@ -130,7 +130,7 @@ def refine(scene, arm, character, actions):
                 u=f/length
                 for b in arm.pose.bones:b.rotation_mode='QUATERNION';b.rotation_quaternion=Quaternion();b.location=(0,0,0)
                 flap=math.sin(u*math.tau)*.55
-                attacking=name in ('attack','claw','claw_windup')
+                attacking=name in ('attack','claw','claw_windup');feathering=name in ('feather_windup','feather')
                 aim('LeftArm',(.25,-.2,-1));aim('RightArm',(-.25,-.2,-1))
                 aim('LeftForeArm',(-.1,-1,.2));aim('RightForeArm',(.1,-1,.2))
                 for side,sign in [('Left',1),('Right',-1)]:
@@ -148,13 +148,27 @@ def refine(scene, arm, character, actions):
                     rotate('LeftUpLeg',(1,0,0),-.8*reach);rotate('RightUpLeg',(1,0,0),-.8*reach)
                     rotate('LeftLeg',(1,0,0),-.6*reach);rotate('RightLeg',(1,0,0),-.6*reach)
                     aim('RightArm',(-.2,-1,-.5+.5*reach));aim('RightForeArm',(.1,-1,.2))
+                if feathering:
+                    # Arremesso de penas: armado (k=1) com os braços abertos para trás e as asas erguidas; solto (k=0) com os braços lançados à frente.
+                    ease=lambda x:x*x*(3-2*min(1,max(0,x)))
+                    k=ease(u) if name=='feather_windup' else 1-ease(u*1.8)
+                    for side,sign in [('Left',1),('Right',-1)]:
+                        rest=(sign*.25,-.2,-1) if name=='feather_windup' else (sign*.3,-1,.05)
+                        armed=(sign*.95,.55,.3);forearm_rest=(sign*.1,-1,.2) if name=='feather_windup' else (sign*.15,-1,.1);forearm_armed=(sign*.8,.6,.45)
+                        mix=lambda a,b:tuple(a[i]+(b[i]-a[i])*k for i in range(3))
+                        aim(side+'Arm',mix(rest,armed));aim(side+'ForeArm',mix(forearm_rest,forearm_armed))
+                        b=arm.pose.bones['Wing'+side];axis=b.bone.matrix_local.to_3x3().inverted() @ Vector((0,1,0))
+                        b.rotation_quaternion=Quaternion(axis.normalized(),sign*(-.25-.6*k))
+                        b=arm.pose.bones['Wing'+side+'Tip'];axis=b.bone.matrix_local.to_3x3().inverted() @ Vector((0,1,0))
+                        b.rotation_quaternion=Quaternion(axis.normalized(),-sign*.3*k)
+                    rotate('Spine',(1,0,0),-.25*k+.12*(1-k)*(name=='feather'))
                 if name=='hit':rotate('Spine2',(0,1,0),.15*math.sin(u*math.pi))
                 for b in arm.pose.bones:b.keyframe_insert('rotation_quaternion',frame=f+1)
             action['loop']=name in ('idle','walk','fly')
         arm['flight_revision']=1
     arm.animation_data.action=actions['idle'];arm.animation_data.action_slot=actions['idle'].slots[0]
     scene.frame_set(1);bpy.context.view_layer.update()
-    ratios={'KnightSword':.52/.7,'KnightShield':.34/.43,'ThiefDagger':.22/.32,'MageStaff':.84/.95}
+    ratios={'KnightSword':.52/.7,'KnightShield':.34/.43,'ThiefDagger':.42/.32,'MageStaff':.84/.95}
     for obj in arm.children_recursive:
         key=next((n for n in ratios if obj.name.startswith(n)),None)
         if key is None or obj.get('equipment_revision')==1:continue

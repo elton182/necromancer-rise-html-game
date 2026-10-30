@@ -3,7 +3,7 @@ import {available} from './actions.mjs';
 export {D} from './campaign-model.mjs';
 import {D,normalizeCampaign,completeStage,offer} from './campaign-model.mjs';
 import {resetWorld,step} from './training-model.mjs';
-import {spawnEnemy,composition} from './enemies.mjs';
+import {spawnEnemy,composition,withNewTypes} from './enemies.mjs';
 import {snapshotHorde,equipGroup} from './horde.mjs';
 import {syncSkills} from './grimoire.mjs';
 import {boltCost} from './combat.mjs';
@@ -11,7 +11,7 @@ import {grantExperience} from './rewards.mjs';
 import {collectAll} from './gear.mjs';
 import {resolvePosition} from './terrain.mjs';
 import {forestArena} from './forest-map.mjs';
-import {villageArena} from './village-map.mjs';
+import {villageArena,VILLAGE_PLAZA} from './village-map.mjs';
 import {cryptArena} from './crypt-map.mjs';
 import {trailArena} from './trail-map.mjs';
 import {outpostArena} from './outpost-map.mjs';
@@ -20,7 +20,7 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 export const emptyArena=id=>({id,bounds:{minX:-20,maxX:20,minY:-20,maxY:20},solids:[]});
 export function clean(s,arena,pos={x:0,y:4}){
  const w=s.world;if(w.armyMode==='groups')s.save.horde=snapshotHorde(w);collectAll(s);
- resetWorld(w,{horde:0,armyMode:'groups',army:s.save.horde,character:s.save.character,gearLevel:1});w.actors=w.actors.filter(a=>a.team!=='enemy');w.boss.hp=0;w.arena=arena;w.sceneryRevision=(w.sceneryRevision||0)+1;w.adventure=null;w.portal=null;w.landmarks=[];Object.assign(w.player,pos);for(const a of w.actors.filter(a=>a.team==='ally')){Object.assign(a,{hp:a.maxHp,dead:false,sacrificed:false,exploded:false,deathHandled:false,deadTimer:0,returning:false});a.x=pos.x+(w.random()-.5)*2;a.y=pos.y+(w.random()-.5)*2;Object.assign(a,resolvePosition(a,a.radius,arena));}syncSkills(w);
+ resetWorld(w,{horde:0,armyMode:'groups',army:s.save.horde,character:s.save.character,gearLevel:1,lootFilter:s.save.settings.lootFilter});w.actors=w.actors.filter(a=>a.team!=='enemy');w.boss.hp=0;w.arena=arena;w.sceneryRevision=(w.sceneryRevision||0)+1;w.adventure=null;w.portal=null;w.landmarks=[];Object.assign(w.player,pos);for(const a of w.actors.filter(a=>a.team==='ally')){Object.assign(a,{hp:a.maxHp,dead:false,sacrificed:false,exploded:false,deathHandled:false,deadTimer:0,returning:false});a.x=pos.x+(w.random()-.5)*2;a.y=pos.y+(w.random()-.5)*2;Object.assign(a,resolvePosition(a,a.radius,arena));}syncSkills(w);
 }
 function grant(s,id){const c=s.save.campaign;if(!c.grants.includes(id))c.grants.push(id);for(const army of [s.save.horde,s.world.army])if(army){army.profile={...army.profile,campaign:true,grants:[...c.grants]};army.loadout=army.loadout.map(id=>available(army,id)?id:'empty');}}
 
@@ -42,17 +42,18 @@ function campEnemy(s,index,x,y,room,mission=false){const w=s.world,r=w.adventure
  t.hp=t.maxHp=Math.round(t.type.hp*scale)*(1+combatWave*.12);t.dmg=Math.round(t.type.dmg*(route?Math.sqrt(scale):arena?1:stageScale(n,level).dmg));t.room=room;t.gearWave=r.kind==='stage'?n:r.mission.difficulty||1;w.gearLevel=t.gearWave;return t;}
 
 function king(s,base,x=0,y=-12){const w=s.world,e=w.boss,q=resolvePosition({x,y},e.radius,w.arena);Object.assign(e,{...q,hp:base.hp,maxHp:base.hp,dmg:base.dmg,spd:base.spd,xp:base.xp,dead:false,rewarded:false,king:null,kingCd:null,animation:'idle',jumpZ:0,gearWave:w.adventure.kind==='stage'?w.adventure.n:w.adventure.mission.difficulty||1});w.gearLevel=e.gearWave;w.spawnKingAdd=(p,owner)=>{const add=spawnEnemy(w,0,p.x,p.y,{wave:1,owner:owner.id}),sourceWave=w.adventure.n===4?6:w.adventure.zones?.length?0:w.adventure.wave+1;add.hp=add.maxHp=add.type.hp*(1+sourceWave*.12);add.gearWave=owner.gearWave;return add;};w.actors.push(e);return e;}
-function queue(s,list,room,cx,cy){const r=s.world.adventure;r.queue=list.map((index,i)=>({index,room,time:i*.18,x:cx+(i%4-1.5)*2.5,y:cy+(Math.floor(i/4)%3-1)*2}));r.wait=0;}
+// Fase 1 (tutorial) mantém os tipos básicos; depois Ladrão, Humanoide Grifo e Aranha entram por nível (2×fase ou dificuldade + onda).
+function queue(s,list,room,cx,cy){const r=s.world.adventure,level=r.n===1?0:2*(r.kind==='stage'?r.n:r.mission.difficulty||1)+(r.wave||0);r.queue=withNewTypes(list,level).map((index,i)=>({index,room,time:i*.18,x:cx+(i%4-1.5)*2.5,y:cy+(Math.floor(i/4)%3-1)*2}));r.wait=0;}
 function living(w,room){return w.actors.some(e=>e.team==='enemy'&&e.hp>0&&(room===undefined||e.room===room));}
 function finish(s){const w=s.world,r=w.adventure;if(r.done)return;r.done=true;w.progressChanged=true;w.hostileShots=[];w.hostileZones=[];w.effects=[];w.paused=true;
  if(r.kind==='stage'){const result=completeStage(s.save.campaign,r.n);s.save.campaign=result.state;s.save.character.gold+=result.gold;grantExperience(s,result.xp);if(r.n===4){s.save.horde.profile.act1=true;w.army.profile.act1=true;}w.notice=result.first?`Fase concluída · +${result.gold} ouro · +${result.xp} XP`:'Fase concluída novamente';if(result.first&&!s.save.campaign.story['post'+r.n])w.story={id:'post'+r.n,pages:D.stories['camp_post'+r.n],index:0};}
  else {const m=r.mission;s.save.character.gold+=Math.floor(m.rewardSouls*.6+w.random()*30);grantExperience(s,m.rewardExp);w.notice='Missão concluída · '+m.label;}
 }
-export function enterVillage(s){if(!s.save.campaign.village)return false;clean(s,villageArena(),{x:0,y:9});s.scene='village';s.world.paused=false;s.save.campaign.resume='village';s.world.portal={x:0,y:-9};s.world.offers={};s.world.landmarks=[{id:'portal',name:'Portal da Campanha',x:0,y:-9},{id:'map',name:'Mapa da Campanha',x:-6,y:-8},{id:'merchant',name:'Mercador',x:8,y:-6},{id:'endless',name:'Pedra do Infinito',x:6,y:7.4},...Object.entries(D.npcs).map(([id,n])=>({id,name:n.name,x:n.pos[0],y:n.pos[1]}))];
- const models={bram:'npcBram',lysa:'npcLysa',tilda:'npcTilda',vesper:'specter',merchant:'npcMerchant'};for(const l of s.world.landmarks){if(['map','portal','endless'].includes(l.id))continue;s.world.actors.push({id:s.world.nextId++,model:models[l.id],team:'neutral',...l,radius:.4,hp:1,maxHp:1,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,abilityLabel:l.name,labelTime:999});}return true;}
+export function enterVillage(s){if(!s.save.campaign.village)return false;clean(s,villageArena(),{x:0,y:9});s.scene='village';s.world.paused=false;s.save.campaign.resume='village';s.world.portal={x:0,y:-9};s.world.offers={};s.world.landmarks=[{id:'portal',name:'Portal da Campanha',x:0,y:-9},{id:'map',name:'Mapa da Campanha',x:-6,y:-8},{id:'merchant',name:'Mercador',x:8,y:-6},{id:'endless',name:'Guardião das Waves',x:4,y:5},{id:'valdoria',name:'Emissária de Valdoria',x:-4,y:5},...Object.entries(D.npcs).map(([id,n])=>({id,name:id==='bram'?'Bran, o ferreiro':n.name,x:n.pos[0],y:n.pos[1]}))];
+ const models={bram:'npcBran',lysa:'npcLysa',tilda:'npcTilda',vesper:'specter',merchant:'npcMerchant',endless:'npcBram',valdoria:'npcLysa'};for(const l of s.world.landmarks){if(['map','portal'].includes(l.id))continue;s.world.actors.push({id:s.world.nextId++,model:models[l.id],team:'neutral',...l,radius:.4,hp:1,maxHp:1,angle:l.id==='bram'?Math.atan2(VILLAGE_PLAZA.x-l.x,VILLAGE_PLAZA.y-l.y):0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,abilityLabel:l.name,labelTime:999});}return true;}
 export function makeOffer(s,id){if(s.world.offers?.[id]){s.world.offer=s.world.offers[id];return s.world.offer;}const result=offer(s.save.campaign,id,s.world.random);s.save.campaign=result.state;s.world.offer=result.mission;if(s.world.offers)s.world.offers[id]=result.mission;return result.mission;}
 export function launchMission(s,mission=s.world.offer){if(!s.save.campaign.village||!mission)return false;const copy=clone(mission),strip=copy.layout==='strip';clean(s,strip?{id:'village-route',bounds:{minX:0,maxX:150,minY:-3.4,maxY:3},solids:[]}:emptyArena('village-mission'),strip?{x:2.5,y:0}:{x:0,y:10});s.scene='training';s.world.adventure={kind:'mission',n:0,mission:copy,done:false,wave:0,queue:[],wait:1,zones:strip?clone(D.route):[],active:null};s.world.portal=strip?{x:2.5,y:0}:{x:0,y:10};return true;}
-// Arena Infinita: só pela Pedra do Infinito. O recorde é gravado a cada wave concluída, não ao sair.
+// Arena Infinita: pelo Guardião das Waves. O recorde é gravado a cada wave concluída, não ao sair.
 export function launchArena(s){if(!s.save.campaign.village)return false;const progress=s.save.character.waveProgress;clean(s,emptyArena('arena'),{x:0,y:10});const w=s.world;s.scene='training';w.adventure=newRun(progress);w.gearLevel=progress.selected;w.portal={x:0,y:10};return true;}
 function tickArena(s,dt){const w=s.world,r=w.adventure;
  for(const p of r.queue)p.time-=dt;const ready=r.queue.filter(p=>p.time<=0);r.queue=r.queue.filter(p=>p.time>0);
@@ -67,7 +68,7 @@ function tickArena(s,dt){const w=s.world,r=w.adventure;
 export function returnAdventure(s){const r=s.world.adventure,note=r?.conquest?(r.result||'Valdoria: tentativa encerrada; o progresso foi preservado.'):r?.kind==='arena'||r?.kind==='expedition'?summary(r,s.save.character.waveProgress):null;if(r&&!r.done&&s.world.player.hp<=0){s.world.drops=[];}const result=s.save.campaign.village?enterVillage(s):campaignMap(s);if(note)s.world.notice=note;return result;}
 export function tickAdventure(s,dt){const w=s.world,r=w.adventure;if(!r||w.paused||r.done||w.player.hp<=0)return;
  if(r.kind==='arena')return tickArena(s,dt);
- if(r.kind==='expedition')return;
+ if(r.kind==='expedition'||r.kind==='lab'||r.kind==='siege')return;
  for(const p of r.queue)p.time-=dt;const ready=r.queue.filter(p=>p.time<=0);r.queue=r.queue.filter(p=>p.time>0);for(const p of ready){const e=campEnemy(s,p.index,p.x,p.y,p.room,r.kind==='mission');Object.assign(e,resolvePosition(e,e.radius,w.arena));}
  if(r.queue.length)return;
  if(r.n===1){for(let i=0;i<r.rooms.length;i++){const room=r.rooms[i];if(room.state==='idle'&&w.player.x>room.x0+1.8&&w.player.x<room.x1-1.8){room.state='active';w.notice='Sala selada · derrote todos para abrir as portas';r.active=i;const open=[...r.doors];if(i>0)open[i-1]=false;if(i<3)open[i]=false;doors(w,open);room.wait=.9;}

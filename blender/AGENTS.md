@@ -1,6 +1,6 @@
 # Criação de assets, animação e sprites
 
-Estas regras complementam o `AGENTS.md` da raiz para arquivos em `blender/`. Consulte também `README.md` desta pasta e `../docs/guia-visual-combate.md`.
+Estas regras complementam o `AGENTS.md` da raiz para arquivos em `blender/`. **A v2 (3D) é o jogo principal e consome os `.glb` de `exports/`**, registrados em `../v2/assets/models.json` e incorporados por `node v2/tools/build.cjs`; modelos novos seguem esse caminho (o GLB precisa conter malha, rig e todas as animações exigidas no registro). As seções sobre atlas, `SPR.load` e oito direções valem para a versão legada (Canvas 2D). Consulte também `README.md` desta pasta e `../docs/guia-visual-combate.md`.
 
 ## Organização e fontes editáveis
 

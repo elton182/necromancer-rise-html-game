@@ -4,11 +4,12 @@ Estas regras complementam o `AGENTS.md` da raiz para arquivos em `docs/`.
 
 ## Fontes e tipos de documento
 
-- `mecanicas/` descreve comportamento implementado. Confirme fórmulas, nomes, custos, controles e condições nas fontes atuais antes de atualizar.
+- A v2 é o jogo principal: os `docs/v2-*.md` descrevem o comportamento implementado nela e têm precedência. Atualize o guia da área ao mudar a v2 e registre entregas de etapa em `../v2/plano-migracao.md`.
+- `mecanicas/` descreve a versão legada e as regras compartilhadas. Confirme fórmulas, nomes, custos, controles e condições nas fontes atuais antes de atualizar e indique quando a v2 diverge.
 - Planos e roadmaps descrevem intenção e histórico. Identifique o que está proposto, em produção, validado ou pendente; não transforme uma proposta em regra atual.
 - `guia-visual-combate.md` registra convenções visuais; o pipeline reproduzível de assets fica em `../blender/README.md` e `../blender/AGENTS.md`.
-- Use `docs/README.md` como índice. Ao adicionar um guia de mecânica, confira também `mecanicas/README.md` e os links pertinentes no README da raiz.
-- Evidências de navegador e validação ficam normalmente em `../review/`; conceitos e algumas evidências históricas estão em `concepts/`. Preserve os destinos usados pelos scripts existentes.
+- Use `docs/README.md` como índice. Ao adicionar um guia, inclua-o ali e confira os links pertinentes no README da raiz e em `../v2/README.md`; guias da versão legada também entram em `mecanicas/README.md`.
+- Evidências de navegador e validação ficam normalmente em `../review/` (`../review/v2/` para a v2); conceitos e algumas evidências históricas estão em `concepts/`. Preserve os destinos usados pelos scripts existentes.
 
 ## Como escrever
 

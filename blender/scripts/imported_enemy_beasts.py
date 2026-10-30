@@ -19,7 +19,8 @@ def rotate(b,axis,angle):
     local=b.bone.matrix_local.to_3x3().inverted() @ Vector(axis)
     b.rotation_quaternion=Quaternion(local.normalized(),angle) @ b.rotation_quaternion
 specs={'idle':48,'walk':24,'attack':18,'hit':8,'death':24,'recover':12}
-specs.update({'windup':18,'charge':16} if character=='wolf' else {'bite_windup':12,'bite':12})
+# O lobo também uiva (howl): cabeça e peito se erguem, seguram o grito e voltam.
+specs.update({'windup':18,'charge':16,'howl':24} if character=='wolf' else {'bite_windup':12,'bite':12})
 # Imported labels are unreliable: find limb chains from their actual hierarchy.
 if character=='spider':
     spine=arm.pose.bones['tripo::Spine_0']
@@ -44,6 +45,9 @@ for name,length in specs.items():
             target=arm.pose.bones.get('tripo::Head_0') or arm.pose.bones['tripo::Spine_0']
             rotate(target,(1,0,0),-.2*k)
             for b in chains:rotate(b,(1,0,0),.08*k)
+        elif name=='howl':
+            k=(lambda x:x*x*(3-2*x))(min(1,u/.25))*(1-(lambda x:x*x*(3-2*x))(max(0,min(1,(u-.85)/.15))))
+            rotate(arm.pose.bones['tripo::Head_0'],(1,0,0),-.95*k);rotate(arm.pose.bones['tripo::Spine_0'],(1,0,0),-.05*k+.015*math.sin(u*math.tau*6)*k)
         elif name=='hit':rotate(root,(0,1,0),.15*math.sin(u*math.pi))
         elif name=='death':
             k=min(1,u*1.4);rotate(root,(0,1,0),1.45*k)

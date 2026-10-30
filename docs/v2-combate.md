@@ -73,7 +73,8 @@ editável `blender/models/v2_bone.blend` e export `blender/exports/v2_bone.glb`.
 Os estilhaços reutilizam `blender/exports/bone_shard.glb`. Ambos estão embutidos
 no HTML. O osso e seu rastro têm prioridade visual sobre os modelos para não
 sumirem dentro de uma horda densa, mantendo a posição lógica do voo. Rastros e
-impactos são visuais e não aplicam um segundo dano.
+impactos são visuais e não aplicam um segundo dano. O lançamento também mostra clarão, faíscas e anel rúnico no
+jogador, e o osso deixa um rastro de faíscas ([efeitos visuais](v2-efeitos-visuais.md)).
 
 ## Dash
 
@@ -172,3 +173,7 @@ Atualização E5: a composição e os atributos dos grupos da horda, comandos,
 recuperação e seis slots foram integrados. Consulte [horda](v2-horda.md).
 Os limites acima referentes à migração futura da horda descrevem o checkpoint
 histórico da E4. Inimigos completos e Rei Caído foram integrados na [E8](v2-inimigos.md).
+
+### Vida e dano sobre os inimigos
+
+Inimigos vivos exibem uma barra de vida sobre o modelo. Cada aplicação de dano mostra o valor efetivamente retirado da vida, inclusive acertos da horda e golpes letais. Os números sobem e desaparecem em 0,9 s do relógio do jogo; pausa congela esse movimento. A apresentação funciona também em qualidade baixa, sem alterar as regras de dano. A conversão para materiais toon preserva as texturas emissivas dos modelos, incluindo jogador e Rei Caído.

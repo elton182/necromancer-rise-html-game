@@ -1,0 +1,135 @@
+TAP version 13
+# Subtest: carga aumenta força, alcance, largura e ossos; cobra somente ao soltar e limita carga
+ok 1 - carga aumenta força, alcance, largura e ossos; cobra somente ao soltar e limita carga
+  ---
+  duration_ms: 4.1186
+  ...
+# Subtest: formação em V avança paralela em linha reta e acerta cada alvo uma vez
+ok 2 - formação em V avança paralela em linha reta e acerta cada alvo uma vez
+  ---
+  duration_ms: 1.0155
+  ...
+# Subtest: carga não dispara ao pausar, morrer ou perder a habilidade; fracasso não cobra
+ok 3 - carga não dispara ao pausar, morrer ou perder a habilidade; fracasso não cobra
+  ---
+  duration_ms: 0.551
+  ...
+# Subtest: carga integrada avança por tempo de jogo e não depende de FPS
+ok 4 - carga integrada avança por tempo de jogo e não depende de FPS
+  ---
+  duration_ms: 2.8326
+  ...
+# Subtest: árvore Morte: nós no padrão do Grimório, IDs próprios e especializações exclusivas
+ok 5 - árvore Morte: nós no padrão do Grimório, IDs próprios e especializações exclusivas
+  ---
+  duration_ms: 2.7337
+  ...
+# Subtest: entrar exige o nó, mana, recarga e vida; paga a mana uma vez e suspende a regeneração
+ok 6 - entrar exige o nó, mana, recarga e vida; paga a mana uma vez e suspende a regeneração
+  ---
+  duration_ms: 4.8795
+  ...
+# Subtest: transformação: invulnerável e imóvel por 0,9 s; depois vulnerável; Avatar encurta
+ok 7 - transformação: invulnerável e imóvel por 0,9 s; depois vulnerável; Avatar encurta
+  ---
+  duration_ms: 1.6216
+  ...
+# Subtest: na forma: Tiro de Osso e magias ficam bloqueados; Dash vale, exceto transformando
+ok 8 - na forma: Tiro de Osso e magias ficam bloqueados; Dash vale, exceto transformando
+  ---
+  duration_ms: 1.1647
+  ...
+# Subtest: almas drenam 1,5/s; zerar sai da forma, devolve a mana anterior e abre a recarga de 20 s
+ok 9 - almas drenam 1,5/s; zerar sai da forma, devolve a mana anterior e abre a recarga de 20 s
+  ---
+  duration_ms: 2.7118
+  ...
+# Subtest: espíritos: só na forma, valor por tipo, marca Ceifado e Colheita de Almas; expiram em 8 s
+ok 10 - espíritos: só na forma, valor por tipo, marca Ceifado e Colheita de Almas; expiram em 8 s
+  ---
+  duration_ms: 2.337
+  ...
+# Subtest: absorção: dentro do raio soma almas até o máximo, cura com Lamento e puxa espíritos próximos
+ok 11 - absorção: dentro do raio soma almas até o máximo, cura com Lamento e puxa espíritos próximos
+  ---
+  duration_ms: 0.8436
+  ...
+# Subtest: Ceifada: arco frontal de 120° e 3,4 u, grátis, uma vez por golpe, recarga; sólidos bloqueiam
+ok 12 - Ceifada: arco frontal de 120° e 3,4 u, grátis, uma vez por golpe, recarga; sólidos bloqueiam
+  ---
+  duration_ms: 2.1448
+  ...
+# Subtest: passo grande de tempo aplica o mesmo número de golpes que passos pequenos
+ok 13 - passo grande de tempo aplica o mesmo número de golpes que passos pequenos
+  ---
+  duration_ms: 2.4859
+  ...
+# Subtest: Colheita Tripla: gratuita, janela de 0,6 s entre golpes, finalizador em área e onda marcam Ceifado
+ok 14 - Colheita Tripla: gratuita, janela de 0,6 s entre golpes, finalizador em área e onda marcam Ceifado
+  ---
+  duration_ms: 1.1084
+  ...
+# Subtest: Colheita: janela expirada permite reiniciar o combo; Executor aumenta dano em alvo fraco e a marca
+ok 15 - Colheita: janela expirada permite reiniciar o combo; Executor aumenta dano em alvo fraco e a marca
+  ---
+  duration_ms: 0.8255
+  ...
+# Subtest: Foice Giratória: 15 almas, vai e volta acertando cada alvo uma vez por perna, bloqueia outras habilidades e pousa em catch
+ok 16 - Foice Giratória: 15 almas, vai e volta acertando cada alvo uma vez por perna, bloqueia outras habilidades e pousa em catch
+  ---
+  duration_ms: 1.7146
+  ...
+# Subtest: Foice Giratória não existe sem o nó; Libertar Forma funciona a qualquer momento
+ok 17 - Foice Giratória não existe sem o nó; Libertar Forma funciona a qualquer momento
+  ---
+  duration_ms: 0.5091
+  ...
+# Subtest: Gancho do Túmulo: linha frontal, puxão ampliado por Ceifado e chefes imóveis com lentidão
+ok 18 - Gancho do Túmulo: linha frontal, puxão ampliado por Ceifado e chefes imóveis com lentidão
+  ---
+  duration_ms: 1.2636
+  ...
+# Subtest: sinergia: Giratória prolonga marca e Ciclone consome uma vez por alvo
+ok 19 - sinergia: Giratória prolonga marca e Ciclone consome uma vez por alvo
+  ---
+  duration_ms: 2.4608
+  ...
+# Subtest: Ciclone da Morte: órbita de 360° por 1,4 s, até duas passagens por alvo, lentidão de 40% e ordem de sentido
+ok 20 - Ciclone da Morte: órbita de 360° por 1,4 s, até duas passagens por alvo, lentidão de 40% e ordem de sentido
+  ---
+  duration_ms: 2.157
+  ...
+# Subtest: recarga por habilidade, custo insuficiente e mira inválida não cobram almas
+ok 21 - recarga por habilidade, custo insuficiente e mira inválida não cobram almas
+  ---
+  duration_ms: 0.8475
+  ...
+# Subtest: morte do jogador, troca de cena e pausa limpam a forma sem deixar foice, espíritos nem marcas
+ok 22 - morte do jogador, troca de cena e pausa limpam a forma sem deixar foice, espíritos nem marcas
+  ---
+  duration_ms: 0.9424
+  ...
+# Subtest: dano recebido na forma: Avatar reduz em 25% e o dano já passa pelo caminho comum de defesa
+ok 23 - dano recebido na forma: Avatar reduz em 25% e o dano já passa pelo caminho comum de defesa
+  ---
+  duration_ms: 0.3674
+  ...
+# Subtest: simulação integrada: step() avança a forma, espíritos e golpes sem outro caminho de dano
+ok 24 - simulação integrada: step() avança a forma, espíritos e golpes sem outro caminho de dano
+  ---
+  duration_ms: 3.4363
+  ...
+# Subtest: bônus base da forma: dano e defesa +25%, sem alterar atributos permanentes
+ok 25 - bônus base da forma: dano e defesa +25%, sem alterar atributos permanentes
+  ---
+  duration_ms: 0.4383
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 205.8393

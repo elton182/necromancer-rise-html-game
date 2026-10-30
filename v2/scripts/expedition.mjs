@@ -3,7 +3,7 @@
 // Guardião de Almas, que ainda não existe na v2. Vida, dano e XP seguem a escala da wave (Expedição) ou da dificuldade regional (Conquista).
 import {clean} from './campaign.mjs';
 import {expeditionArena} from './expedition-map.mjs';
-import {spawnEnemy} from './enemies.mjs';
+import {spawnEnemy,withNewTypes} from './enemies.mjs';
 import {completeWave,LAST_WAVE} from './arena-model.mjs';
 import {grantExperience} from './rewards.mjs';
 import {collectAll,CAPACITY} from './gear.mjs';
@@ -26,15 +26,18 @@ const routeWave=(state,run)=>1+(state.seed+run.cycle*31+run.difficulty*7+Object.
 // Troca o mapa mantendo o jogador e a horda como estão: sem cura nem reanimação.
 function load(s,wave){
  const w=s.world,r=w.adventure,run=r.conquest,state=s.save.character.conquest;
- const arena=run?expeditionArena(routeWave(state,run),{biome:run.biome,groups:GROUPS[run.kind]}):expeditionArena(wave),plan=arena.plan;
+ const arena=run?expeditionArena(routeWave(state,run),{biome:run.biome,groups:GROUPS[run.kind],pilot:run.kind==='expedition'&&run.biome==='swamp'}):expeditionArena(wave),plan=arena.plan;
  w.actors=w.actors.filter(a=>a.team!=='enemy');wipe(w);
  w.arena=arena;w.sceneryRevision=(w.sceneryRevision||0)+1;w.paused=false;w.gearLevel=run?run.reward.itemLevel:wave;
  const start=resolvePosition({x:plan.entry.x+3,y:plan.entry.y+2},w.player.radius,arena);Object.assign(w.player,start);w.aim={x:start.x+1,y:start.y};
  w.actors.filter(a=>a.team==='ally').forEach((a,i)=>{const t=i*2.4;Object.assign(a,resolvePosition({x:start.x+Math.cos(t)*2,y:start.y+Math.sin(t)*2},a.radius,arena));Object.assign(a,{targetId:null,navPath:null,returning:false,leap:null,jumpZ:0,evade:null,ability:null});});
  // Conquista: escala pela dificuldade regional; um a cada cinco inimigos é infectado e deixa uma poça ao morrer.
  const scale=run?Endgame.combatScale(run.difficulty):null;let index=0;
+ const level=run?8:wave+2;
+ const types=withNewTypes(plan.groups.flatMap(g=>g.mobs.map(m=>m.type)),level);
  for(const group of plan.groups)for(const mob of group.mobs){
-  const e=spawnEnemy(w,mob.type,mob.x,mob.y,{wave:run?1:wave,tier:group.tier});Object.assign(e,{expedition:true,home:{x:e.x,y:e.y},alert:false});
+  const e=spawnEnemy(w,types[index],mob.x,mob.y,{wave:run?1:wave,tier:group.tier});Object.assign(e,{expedition:true,home:{x:e.x,y:e.y},alert:false});
+  if(group.patrol)e.patrol=group.patrol.map(p=>({x:p.x+mob.x-group.x,y:p.y+mob.y-group.y}));
   if(run){Object.assign(e,{gearWave:run.reward.itemLevel,hp:Math.round(e.hp*scale.hp),maxHp:Math.round(e.maxHp*scale.hp),dmg:Math.round(e.dmg*scale.damage),xp:Math.round(e.xp*scale.xp)});if(index%5===0)e.infected=true;}
   index++;
  }
@@ -44,7 +47,7 @@ function load(s,wave){
  // Poças permanentes junto aos primeiros grupos da expedição de Valdoria.
  if(run?.kind==='expedition')for(const g of plan.groups.slice(1,5))w.hostileZones.push({id:w.nextId++,source:null,gearWave:run.reward.itemLevel,x:g.x+3,y:g.y,radius:2.5,delay:1.5,life:1e9,tick:0,damage:Math.round(6*scale.damage)});
  Object.assign(r,{wave,cleared:false,exit:{...plan.exit},biome:plan.biome});w.portal={...plan.entry};w.exitPortal=null;
- w.notice=run?Endgame.encounters[run.kind].name+' · '+Endgame.routeBiomes[run.biome].name+' · dificuldade '+run.difficulty+' · intensidade '+run.reward.score:'Expedição · wave '+wave+' · '+BIOME_NAMES[plan.biome]+' · explore ou siga até o boss';
+ w.notice=run?Endgame.encounters[run.kind].name+' · '+Endgame.routeBiomes[run.biome].name+' · dificuldade '+run.difficulty+' · intensidade '+run.reward.score+(plan.layout==='brejo-fork'?' · trilha direta: defesa; desvio: acampamento raro; patrulha na convergência':''):'Expedição · wave '+wave+' · '+BIOME_NAMES[plan.biome]+' · explore ou siga até o boss';
 }
 export function launchExpedition(s){
  if(!s.save.campaign.village)return false;const p=s.save.character.waveProgress;
@@ -58,6 +61,8 @@ export function launchConquest(s,kind,routeId){
  const c=s.save.character,state=c.conquest,d=state.difficulty;let next;
  try{next=Endgame.begin(state,kind,d,state.offers[d].selected,routeId);}catch(error){return {ok:false,message:error.message};}
  c.conquest=next.state;const run=next.run;
+ run.xpMultiplier=(1+.25*(run.difficulty-1))*(1+.15*run.reward.score);
+ run.reward={...run.reward,xp:Math.round(run.reward.xp*run.xpMultiplier)};
  clean(s,expeditionArena(1),{x:0,y:0});s.scene='training';const w=s.world;
  w.adventure={kind:'expedition',n:0,done:false,conquest:run,start:0,wave:0,completed:0,cleared:false,queue:[],zones:[],mission:{label:Endgame.encounters[kind].name.toUpperCase(),layout:'expedition'}};
  // Maldições valem só nesta tentativa; resetWorld as remove ao voltar à vila.

@@ -1,16 +1,29 @@
 # ☠ Necromancer's Rise
 
-Jogo de ação top-down em HTML5 Canvas 2D, num único arquivo e sem dependências.
+Jogo de ação top-down de necromancia, em HTML5, num único arquivo e sem dependências.
 Você é **Zephyr**, um aprendiz condenado que volta como necromante: lança magias
 de osso, ergue uma horda de mortos-vivos e enfrenta a guarda do Reino de Valdoria.
 
-### ▶ [Jogar agora](https://elton182.github.io/necromancer-rise-html-game/)
+> **A v2 em 3D é o jogo principal.** Abra [`v2/necromancer-3d.html`](v2/necromancer-3d.html)
+> (ou [`v2/index.html`](v2/index.html)) no Edge ou Chrome com WebGL 2. Todo o
+> desenvolvimento novo acontece nela; o guia está em [v2/README.md](v2/README.md) e o
+> plano em [v2/plano-migracao.md](v2/plano-migracao.md). A versão em Canvas 2D
+> (`necromancer-canvas.html`) é **legada**: continua jogável e é a entrada atual do
+> GitHub Pages, mas não recebe novidades, e suas regras são lidas pelo build da v2.
+
+### ▶ [Jogar a versão legada (GitHub Pages)](https://elton182.github.io/necromancer-rise-html-game/)
 
 [![Tela inicial do jogo](docs/tela-inicial.jpg)](https://elton182.github.io/necromancer-rise-html-game/)
 
-## Estado atual — versão 0.5
+## Estado da v2
 
-O jogo é uma **demo jogável do Ato I** com um endgame curto. Funciona no
+A v2 tem o Ato I, a Vila de Eldrin, Arena Infinita, Expedições e Conquista de Valdoria, com Grimório, maestrias,
+horda, equipamentos e magias portados da versão legada. Estado, limites e próximas etapas (acabamento E11, HQs e
+mapa da campanha) estão em [v2/README.md](v2/README.md) e nos guias [`docs/v2-*.md`](docs/README.md).
+
+## Estado da versão legada — 0.5 (Canvas 2D)
+
+O jogo legado é uma **demo jogável do Ato I** com um endgame curto. Funciona no
 navegador, com teclado e mouse ou controle, e salva o progresso localmente.
 
 | Sistema | Situação |
@@ -36,6 +49,9 @@ O próximo cartão do [roadmap visual](docs/roadmap-combate-visual.md) é o Dash
 
 ## Como jogar
 
+A tabela vale para a versão legada; a v2 usa o mesmo esquema em linhas gerais (veja os controles dela em
+[v2/README.md](v2/README.md) e [docs/v2-movimento.md](docs/v2-movimento.md)).
+
 | Tecla | Ação |
 |---|---|
 | `W A S D` | Mover |
@@ -58,8 +74,9 @@ Grimório. No controle: analógicos movem e miram, `RT`/`A` usam o slot selecion
 
 ## Mecânicas em resumo
 
-A referência completa, com fórmulas e tabelas, está em
-[docs/mecanicas](docs/mecanicas/README.md).
+A referência completa da versão legada, com fórmulas e tabelas, está em
+[docs/mecanicas](docs/mecanicas/README.md); as regras e limites da v2 estão nos guias
+[`docs/v2-*.md`](docs/README.md). Onde divergirem, vale o guia da v2.
 
 - **[Personagem](docs/mecanicas/personagem-e-progressao.md)**
   - Vida, mana, dano mágico e regeneração crescem com o nível.
@@ -103,10 +120,13 @@ A referência completa, com fórmulas e tabelas, está em
 
 ## Rodando localmente
 
-Não precisa de build nem servidor: abra `necromancer-canvas.html` no navegador.
-`index.html` só redireciona para ele (entrada do GitHub Pages).
+**v2 (principal):** não precisa de servidor: abra `v2/necromancer-3d.html` (ou `v2/index.html`) no Edge ou Chrome com
+WebGL 2. Para regenerar o HTML depois de editar as fontes em `v2/`, rode na raiz `node v2/tools/build.cjs`.
 
-O progresso fica no `localStorage` do navegador (chave `necromancer_v2`). Use
+**Versão legada:** abra `necromancer-canvas.html`. O `index.html` da raiz só redireciona para ele (entrada do GitHub Pages).
+
+Na v2 o progresso fica no `localStorage` (chave `necromancer_rise_3d_save`; veja [docs/v2-saves.md](docs/v2-saves.md)) e a v2 importa o
+JSON exportado da versão legada. Na versão legada a chave é `necromancer_v2`. Use
 **Opções → Exportar/Importar save** para backup.
 
 Para diagnosticar combate com sua build, exporte em **Esc → Sistema → Exportar save**
@@ -119,21 +139,32 @@ Ela roda tentativas reproduzíveis em navegador isolado, preservando seu progres
 
 | Caminho | Descrição |
 |---|---|
-| `necromancer-canvas.html` | **Versão atual** do jogo, autocontida (código, estilos, sprites e módulos embutidos) |
-| `scripts/` | Fontes dos módulos embutidos, scripts de sincronização e testes |
+| `v2/` | **Jogo principal (3D)**: fontes em `scripts/`, modelos e trilhas em `assets/`, testes em `tests/`, empacotador em `tools/build.cjs` e a distribuição autocontida `necromancer-3d.html` |
+| `necromancer-canvas.html` | **Versão legada** (Canvas 2D), autocontida (código, estilos, sprites e módulos embutidos); suas regras também alimentam o build da v2 |
+| `scripts/` | Fontes dos módulos da versão legada e das regras compartilhadas, sincronizadores e testes |
 | `build-simulator/` | [Simulador de builds](build-simulator/README.md); `model.js` é o grafo do Grimório usado pelo jogo |
 | `balance-simulator/` | [Simulador de balanceamento](balance-simulator/README.md) de equipamentos e waves |
 | `tools/` | Arena de comparação de efeitos e inimigos (`combat-lab`) |
-| `blender/` | Modelos, rigs e scripts Python que geram os spritesheets |
+| `blender/` | Modelos, rigs e scripts Python: GLBs animados da v2 (`exports/`) e spritesheets da versão legada |
 | `assets/story/` | Imagens dos quadrinhos |
 | `docs/` | [Documentação](docs/README.md): mecânicas, implementação e planos |
 | `game_check.js` | Cenários de regras do jogo (Node, sem dependências) |
 | `necromancer-game.html`, `necromancer-demo.html` | Versões antigas (Three.js e demo visual) |
 
-### Módulos embutidos
+### Verificação da v2
 
-O jogo distribuído continua sendo um único HTML. Alguns sistemas são editados em
-arquivos separados e copiados para dentro dele:
+```bash
+node v2/tools/build.cjs
+node --test v2/tests/*.test.mjs
+```
+
+Os `v2/tests/*-browser-check.cjs` abrem a v2 num navegador isolado (Playwright com Edge ou Chrome, WebGL 2) e gravam evidências em
+`review/v2/`. Cada guia `docs/v2-*.md` indica o teste da sua área.
+
+### Módulos embutidos (versão legada e fontes compartilhadas)
+
+A versão legada é distribuída como um único HTML. Alguns sistemas são editados em
+arquivos separados e copiados para dentro dele (a v2 lê várias dessas fontes pelo build):
 
 | Fonte | Sistema | Sincronizar com |
 |---|---|---|
@@ -147,7 +178,7 @@ arquivos separados e copiados para dentro dele:
 
 Edite a fonte e rode o script; não edite o bloco embutido direto no HTML.
 
-### Verificação
+### Verificação da versão legada
 
 ```bash
 node game_check.js
@@ -164,7 +195,7 @@ node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/minion
   conferem fluxos de interface. Exigem Playwright e Google Chrome instalados, por
   exemplo `node scripts/loot-filter-browser-check.js`.
 
-### Arena de comparação
+### Arena de comparação (versão legada)
 
 ```bash
 node tools/combat-lab-server.js
@@ -174,11 +205,11 @@ Depois acesse `http://127.0.0.1:4173/tools/combat-lab.html`. A arena usa os spri
 e o renderizador reais para comparar efeitos e inimigos no tamanho do jogo
 (veja o [guia visual](docs/guia-visual-combate.md)).
 
-### Pipeline de sprites (Blender)
+### Pipeline do Blender
 
-Personagens e efeitos são modelados e animados por script no Blender e
-renderizados como spritesheets com shader toon: 8 direções para personagens e
-16 para o estilhaço de osso. Detalhes em [blender/README.md](blender/README.md).
+Personagens e efeitos são modelados e animados por script no Blender. A v2 usa os
+`.glb` animados de `blender/exports/`, registrados em `v2/assets/models.json`. A versão
+legada usa spritesheets com shader toon: 8 direções para personagens e 16 para o estilhaço de osso. Detalhes em [blender/README.md](blender/README.md).
 
 ![Personagens renderizados no Blender](blender/previews/preview_mobs.png)
 
@@ -194,8 +225,9 @@ renderizados como spritesheets com shader toon: 8 direções para personagens e
 blender -b -P blender/scripts/sprites.py -- blender/models/necromante.blend blender/spritesheets necromante
 ```
 
-## Versão 3D em migração
+## Migração para a v2
 
-A campanha do Ato I e a Vila de Eldrin também podem ser abertas na
-[V2](v2/README.md). Ela permanece separada da distribuição Canvas atual.
-Fluxos e limites da migração estão no [plano da V2](v2/plano-migracao.md).
+A v2 já é o jogo principal; a troca da entrada do GitHub Pages (`index.html` da raiz) e o acabamento final são a etapa E11.
+Fluxos e limites da migração estão no [plano da v2](v2/plano-migracao.md).
+
+Novo endgame da v2: [Cerco ao Ritual](docs/v2-cerco.md), defesa do Obelisco de Almas com torres, horda e runas.

@@ -1,3 +1,29 @@
 {
-  "title": {"title": "The Shadow's Oath", "path": "v2/assets/audio/the-shadows-oath.mp3"}
+  "title": {
+    "title": "The Shadow's Oath",
+    "path": "v2/assets/audio/the-shadows-oath.mp3"
+  },
+  "village": {
+    "title": "Autumn Keep",
+    "path": "v2/assets/audio/autumn-keep.mp3"
+  },
+  "crypt": {
+    "title": "Crypt of Stone",
+    "path": "v2/assets/audio/crypt-of-stone.mp3"
+  },
+  "portal": {
+    "title": "Necromantic Threshold",
+    "path": "v2/assets/audio/necromantic-threshold.wav",
+    "kind": "sfx"
+  },
+  "waveStart": {
+    "title": "Warning Signal",
+    "path": "v2/assets/audio/warning-signal.wav",
+    "kind": "sfx"
+  },
+  "levelUp": {
+    "title": "Crowned in Bone",
+    "path": "v2/assets/audio/crowned-in-bone.wav",
+    "kind": "sfx"
+  }
 }

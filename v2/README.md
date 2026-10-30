@@ -1,5 +1,7 @@
 # Necromancer’s Rise — v2
 
+**A v2 é o jogo principal do projeto.** A versão Canvas 2D (`../necromancer-canvas.html`) é legada: novidades vão para cá e o build lê as regras compartilhadas dela (`node v2/tools/build.cjs`, na raiz). Convenções de trabalho em [../AGENTS.md](../AGENTS.md).
+
 Estado: **E10 concluída no fluxo funcional — Arena clássica (E10a), Expedições (E10b) e Conquista de Valdoria (E10c)**, com Rei Caído provisório como boss, sobre o Ato I, a vila e as missões da E9.
 Próximo passo: acabamento (E11), HQs e tela de mapa da campanha. Cenário básico; acabamento visual em E11.
 O [plano de migração](plano-migracao.md) registra critérios e ponto de retomada.
@@ -26,7 +28,12 @@ equipamentos e consumíveis são aplicados. Campanha antiga, árvore e maestrias
 permanecem arquivadas. A chave antiga não é sobrescrita. Consulte
 o [contrato de saves e cenas](../docs/v2-saves.md) para formato e limitações.
 
-Efeitos e trilhas são gerados em tempo real: 17 efeitos e 10 trilhas (título, mapa, vila, cripta,
+Portal (Necromantic Threshold), início de onda (Warning Signal) e subida de nível (Crowned in Bone)
+usam WAVs em `assets/audio/`; a cripta usa `crypt-of-stone.mp3` (Crypt of Stone), em loop.
+A Vila de Eldrin usa Autumn Keep (`assets/audio/autumn-keep.mp3`), em loop.
+O catálogo `assets/music.json` distingue efeitos (`kind: "sfx"`) de músicas. Todos são embutidos
+no HTML; efeitos são pré-decodificados no primeiro gesto e mantêm fallback procedural em caso de falha.
+Os demais efeitos e trilhas são gerados em tempo real: 17 efeitos e 10 trilhas (título, mapa, vila, cripta,
 floresta, trilha, chefe, campo, história e menu). A tela inicial toca “The Shadow’s Oath”
 (`assets/audio/the-shadows-oath.mp3`, em loop, embutida em base64 no HTML); se o arquivo não
 decodificar, volta à trilha procedural `title`. O navegador só libera o áudio após o primeiro clique
@@ -58,6 +65,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/audio.mjs` | Efeitos e música procedurais em Web Audio, portados do jogo anterior; trilhas em arquivo por tema (`tracks`); volume, mudo e preferência do aparelho |
 | `scripts/sound-events.mjs` | Lê o mundo a cada quadro e decide sons e trilha; as regras de combate não conhecem o áudio |
 | `scripts/game.css` | Apresentação da interface |
+| `scripts/lab-model.mjs`, `lab.mjs`, `lab-panel.mjs`, `lab.css` | Laboratório: medidor de DPS, boneco de treino, visualizador de animações e painel ([guia](../docs/v2-laboratorio.md)) |
 | `scripts/loading.mjs`, `scripts/loading.css` | Tela de carregamento: a marcação `#loading` fica no template e aparece antes dos módulos; o módulo mostra progresso dos modelos e dicas e some quando a arena está pronta |
 | `scripts/save.css` | Menu, prévia de importação e ferramentas de save |
 | `scripts/combat.mjs` | Dano comum, Tiro de Osso, mana, Dash e morte |
@@ -67,6 +75,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/progression.mjs`, `rewards.mjs`, `drops.mjs` | Atributos, XP, crédito único, drops e coleta |
 | `scripts/gear.mjs`, `consumables.mjs` | Mochila, equipamento, mercador e consumíveis |
 | `scripts/enemies.mjs`, `fallen-king.mjs` | Arquétipos, projéteis hostis e Rei Caído |
+| `scripts/enemy-tactics.mjs` | IA tática dos inimigos: papéis (frente, flanco, distância), vagas de ataque e leque de atiradores; só decide o posicionamento |
 | `scripts/campaign-model.mjs` | Progresso, desbloqueios e prêmios únicos |
 | `scripts/campaign.mjs`, `campaign-panel.mjs` | Cenas, encontros, vila, mapa e histórias |
 | `tools/*-source.cjs`, `scripts/shared-*.mjs` | Adaptação e cópias geradas das fontes canônicas |
@@ -262,3 +271,5 @@ Fonte do estilo: `tools/ui-source.cjs` (gera `scripts/shared-hud.css`); lógica 
 Verificação: `node v2/tests/ui-browser-check.cjs` e `node v2/tests/title-browser-check.cjs` (Playwright/Edge); evidências em
 [review/v2/ui](../review/v2/ui/). Os demais checks de navegador acionam os controles
 movidos para dentro do Relicário por `tests/legacy-controls.cjs`.
+
+O **Cerco ao Ritual** abre pelo painel da Vila de Eldrin após o Ato I: oito ondas, quatro torres, runas e vinte graus de endgame. Veja [o guia do cerco](../docs/v2-cerco.md).

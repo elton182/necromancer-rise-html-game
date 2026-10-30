@@ -9,26 +9,29 @@
 
 ## Identidade e arquitetura
 
-- Jogo de ação top-down em Canvas 2D, com necromancia, horda de aliados e combate de fantasia sombria. Novas mecânicas devem criar decisões legíveis durante o combate.
-- A versão distribuída é `necromancer-canvas.html`, autocontida: deve funcionar ao abrir o arquivo, sem build, servidor, CDN ou requisições para buscar módulos e sprites. `index.html` redireciona para ela.
-- `necromancer-game.html` e `necromancer-demo.html` são versões antigas. Não implemente novidades nelas por engano. Backups e `_to_delete/` não são fontes atuais.
-- Parte do motor ainda vive diretamente no HTML. Sistemas extraídos têm fontes em `scripts/` e são embutidos por sincronizadores. Edite a fonte desses sistemas, nunca somente a cópia gerada no HTML.
-- Não adicione frameworks, dependências de runtime ou uma etapa de build para uma mudança local sem necessidade concreta.
+- **A v2 (`v2/`) é o jogo principal.** É a versão 3D em Three.js, com modelos GLB animados do Blender, horda, Grimório, equipamentos, campanha do Ato I, Vila de Eldrin, Arena, Expedições e Conquista de Valdoria. Novidades, mecânicas e correções vão para a v2, salvo pedido explícito em contrário. Novas mecânicas devem criar decisões legíveis durante o combate.
+- A v2 é distribuída como `v2/necromancer-3d.html`, autocontido (módulos, modelos GLB e música embutidos): deve funcionar ao abrir o arquivo, sem servidor, CDN ou requisições para buscar módulos e modelos. `v2/index.html` redireciona para ele. É um arquivo **gerado**: edite as fontes em `v2/scripts/`, `v2/assets/` e `v2/tools/` e rode `node v2/tools/build.cjs` na raiz. Veja o mapa de fontes em `v2/README.md`.
+- `necromancer-canvas.html` (Canvas 2D) é a **versão legada**. Ela continua no repositório porque o build da v2 lê regras dela e de `scripts/*-model.js`, `scripts/skill-trees.js`, `scripts/equipment-model.js`, `build-simulator/model.js` e outros (veja `v2/tools/*-source.cjs` e as entradas em `v2/assets/build-manifest.json`) e as copia para `v2/scripts/shared-*.mjs`, `*-rules.mjs` e `enemy-types.mjs`. Alterar essas fontes canônicas altera a v2 e a versão legada; confira os dois lados e regenere a v2. Não implemente novidades só na versão legada nem edite os arquivos `shared-*` / `*-rules.mjs` gerados.
+- `index.html` da raiz ainda redireciona para `necromancer-canvas.html` (entrada atual do GitHub Pages). `necromancer-game.html` e `necromancer-demo.html` são versões antigas. Backups e `_to_delete/` não são fontes atuais.
+- Na versão legada, parte do motor vive diretamente no HTML e os sistemas extraídos em `scripts/` são embutidos por sincronizadores (`scripts/sync-*.js`). Só mexa nisso ao corrigir a versão legada ou uma fonte compartilhada.
+- Não adicione frameworks, dependências de runtime ou uma etapa de build além do `v2/tools/build.cjs` para uma mudança local sem necessidade concreta. A v2 usa a cópia local do Three.js (`tools/3d-lab/vendor`), sem CDN.
 
 ## Onde procurar e editar
 
 | Área | Fonte / referência | Integração |
 | --- | --- | --- |
-| Motor, cena, entrada e combate base | `necromancer-canvas.html` | Edição localizada fora dos blocos gerados |
-| Grimório e parâmetros compartilhados | `build-simulator/model.js`, `scripts/skill-trees.js`, `scripts/skill-trees.css` | `node scripts/sync-skill-trees.js` |
-| Equipamentos, horda, expedições, inimigos modulares, maestrias e endgame | Módulos correspondentes em `scripts/` | `node scripts/sync-equipment.js` |
-| Efeitos de habilidades | `scripts/skill-vfx.js` | `node scripts/sync-skill-vfx.js` |
-| Modelos, animações e sprites | `blender/scripts/`, `blender/models/` | Pipeline descrito em `blender/AGENTS.md` |
-| Regras atuais para consulta | `docs/mecanicas/` | Atualizar o guia da área afetada |
-| Planos e direção visual | `docs/roadmap-combate-visual.md`, `docs/guia-visual-combate.md` | Distinguir proposta de funcionalidade entregue |
-| Verificação visual isolada | `tools/combat-lab.html`, `tools/combat-lab.js` | `node tools/combat-lab-server.js` |
+| Simulação, combate, horda, magias, progressão, campanha e modos (v2) | `v2/scripts/*.mjs` (mapa em `v2/README.md`) | `node v2/tools/build.cjs` |
+| Renderização, câmera, animações e efeitos visuais (v2) | `v2/scripts/renderer.mjs`, `v2/scripts/vfx.mjs`, `v2/scripts/vfx-events.mjs` | `node v2/tools/build.cjs` |
+| Interface (v2) | `v2/scripts/*.css`, `v2/tools/template.html`, `v2/tools/ui-layout.html` | `node v2/tools/build.cjs` |
+| Modelos 3D e animações (v2) | `blender/scripts/`, `blender/models/`, `blender/exports/*.glb`; registro em `v2/assets/models.json` | Pipeline em `blender/AGENTS.md`; depois `node v2/tools/build.cjs` |
+| Regras compartilhadas com a versão legada (Grimório, equipamentos, horda, inimigos, campanha, endgame) | `build-simulator/model.js`, `scripts/skill-trees.js`, `scripts/*-model.js`, `necromancer-canvas.html` | Adaptadores em `v2/tools/*-source.cjs`; `node v2/tools/build.cjs` regenera `v2/scripts/shared-*.mjs` e `*-rules.mjs`. Para a versão legada: `node scripts/sync-equipment.js` |
+| Regras atuais da v2 | `docs/v2-*.md` | Atualizar o guia da área afetada |
+| Regras da versão legada e conceitos comuns | `docs/mecanicas/` | Podem diferir da v2; confira o guia `docs/v2-*.md` correspondente |
+| Planos e direção visual | `v2/plano-migracao.md`, `docs/roadmap-combate-visual.md`, `docs/guia-visual-combate.md` | Distinguir proposta de funcionalidade entregue |
+| Versão legada (Canvas 2D) | `necromancer-canvas.html`, `scripts/skill-vfx.js` | `node scripts/sync-skill-trees.js`, `sync-equipment.js`, `sync-skill-vfx.js` |
+| Verificação visual da versão legada | `tools/combat-lab.html`, `tools/combat-lab.js` | `node tools/combat-lab-server.js` |
 
-O sincronizador de equipamentos também executa o de árvores. Consulte sua lista de módulos para confirmar a cobertura; novos módulos precisam ser registrados explicitamente. Empacotadores de sprites têm seu próprio passo de incorporação ao HTML.
+Na versão legada, o sincronizador de equipamentos também executa o de árvores; novos módulos precisam ser registrados explicitamente. Na v2, módulos novos precisam ser registrados na tabela `modules` de `v2/tools/build.cjs`, e GLBs em `v2/assets/models.json`.
 
 ## Onde salvar arquivos
 
@@ -36,20 +39,22 @@ Cada arquivo novo vai para a pasta do seu tipo. Não salve assets, testes, captu
 
 | Tipo de arquivo | Destino |
 | --- | --- |
-| Módulos de runtime, modelos de regra, testes, sincronizadores e `*-browser-check.js` | `scripts/` |
+| Módulos de runtime, regras, testes e verificações de navegador da v2 | `v2/scripts/` e `v2/tests/` (`*.test.mjs`, `*-browser-check.cjs`) |
+| Ferramentas de empacotamento e adaptadores da v2 | `v2/tools/` |
+| Modelos de regra compartilhados, sincronizadores e testes da versão legada | `scripts/` |
 | Páginas de teste, atalhos `?playerModel=` e ferramentas de inspeção | `tools/` |
 | Assets carregados pelo jogo fora do HTML (retratos, vila, catálogos de personagens) | `assets/<área>/` |
 | Scripts Blender, cenas, exports, atlas, quadros, prévias e notas de asset | Subpastas de `blender/`, conforme `blender/AGENTS.md` |
-| Evidências de validação: capturas, logs de teste e JSON de resultado | `review/`; use uma subpasta quando a entrega tiver muitos arquivos |
-| Documentação | `docs/` (regras vigentes em `docs/mecanicas/`, conceitos em `docs/concepts/`) |
+| Evidências de validação: capturas, logs de teste e JSON de resultado | `review/`; a v2 grava em `review/v2/<etapa>/`; use subpasta quando a entrega tiver muitos arquivos |
+| Documentação | `docs/` (guias da v2 em `docs/v2-*.md`, regras da versão legada em `docs/mecanicas/`, conceitos em `docs/concepts/`); plano da v2 em `v2/plano-migracao.md` |
 | Backups do HTML e arquivos à espera de remoção | `blender/backups/` (ignorado, usado pelos empacotadores) ou `_to_delete/` |
 | Saídas temporárias e rascunhos | Diretório temporário fora do repositório |
 
-- A raiz do projeto contém apenas `necromancer-canvas.html`, `index.html`, as versões antigas já existentes, `game_check.js`, `README.md`, `AGENTS.md` e configuração. Não acrescente páginas, backups ou imagens nela.
-- Siga a convenção de nomes da pasta: `kebab-case` em `scripts/`, `tools/`, `docs/`, `review/` e `assets/`; `snake_case` em `blender/`.
+- A raiz do projeto contém apenas `necromancer-canvas.html`, `index.html`, as versões antigas já existentes, `game_check.js`, `README.md`, `AGENTS.md`, a pasta `v2/` e configuração. Não acrescente páginas, backups ou imagens nela; arquivos da v2 ficam dentro de `v2/`.
+- Siga a convenção de nomes da pasta: `kebab-case` em `scripts/`, `tools/`, `docs/`, `review/`, `assets/` e `v2/` (os módulos `.mjs` da v2 também são `kebab-case`); `snake_case` em `blender/`.
 - Prefira o Git a cópias como `*-backup`, `*-old` ou `*.before-*` ao lado da fonte atual. Quando um empacotador precisar de backup local, grave em pasta ignorada.
 - Pastas ignoradas como `Claude outputs/` não são fonte nem destino de entrega.
-- Ao mover um arquivo, use `git mv` se ele for versionado. Procure o caminho antigo em `scripts/`, `blender/`, `tools/`, `docs/`, `assets/` e nos README; atualize os scripts que resolvem o caminho e os comandos documentados. Não reescreva relatórios antigos em `review/` nem retratos históricos em `docs/` só para refletir a mudança.
+- Ao mover um arquivo, use `git mv` se ele for versionado. Procure o caminho antigo em `v2/`, `scripts/`, `blender/`, `tools/`, `docs/`, `assets/` e nos README (inclusive `v2/assets/models.json` e `v2/tools/build.cjs`); atualize os scripts que resolvem o caminho e os comandos documentados. Não reescreva relatórios antigos em `review/` nem retratos históricos em `docs/` só para refletir a mudança.
 
 ## Como desenvolver uma mecânica
 
@@ -62,24 +67,25 @@ Cada arquivo novo vai para a pasta do seu tipo. Não salve assets, testes, captu
 ## Compatibilidade e leitura do combate
 
 - Preserve IDs de habilidades, itens, tipos e campos persistidos. Tipos de inimigos ainda são acessados por índice: não reordene `ENEMY_TYPES` sem migrar todos os consumidores.
-- Preserve saves da chave `necromancer_v2`. Novos campos precisam de valores padrão para saves antigos; faça migração quando houver mudança de formato. Testes devem usar armazenamento isolado.
-- Campanha, vila, Arena, Expedições e Conquista podem compartilhar funções. Verifique os consumidores da função alterada e preserve as diferenças intencionais entre modos.
+- Preserve os saves. A v2 grava em `necromancer_rise_3d_save` (contrato em `docs/v2-saves.md` e `v2/scripts/save-model.mjs`) e só lê a chave `necromancer_v2` da versão legada na importação; nunca a sobrescreva. Novos campos precisam de valores padrão para saves antigos; faça migração quando houver mudança de formato. Testes devem usar armazenamento isolado.
+- Campanha, vila, Arena, Expedições, Conquista e treino podem compartilhar funções. Verifique os consumidores da função alterada e preserve as diferenças intencionais entre modos.
 - Preparação, execução, recuperação e morte precisam concordar com animação e efeito real. Limpe rituais, áreas, projéteis e bônus quando sua regra exigir interrupção, morte ou troca de cena.
-- Use Blender para personagens e objetos com volume; Canvas para avisos no chão, rastros e partículas ligados à posição real. Siga `docs/guia-visual-combate.md`.
+- Na v2, personagens e objetos com volume são modelos GLB do Blender animados em Three.js; avisos no chão, rastros e partículas ficam em `vfx.mjs`/`renderer.mjs`, ligados à posição real. Na versão legada, sprites do Blender e Canvas. Siga `docs/guia-visual-combate.md`.
 - Redesenho visual não deve alterar silenciosamente dano, custo, alcance, colisão ou recarga. Quando a solicitação envolver balanceamento, documente a mudança de regra.
 
 ## Validação proporcional à mudança
 
 - Só documentação: confira caminhos, comandos, links e coerência com as fontes; não é necessário rodar testes do jogo.
-- Motor ou integração ao HTML: execute `node game_check.js` e os testes dos sistemas afetados.
-- Regras isoladas: execute os testes pertinentes com `node --test`, incluindo os dos modelos compartilhados quando afetados.
-- Interface, combate ou sprites: use o `scripts/*-browser-check.js` pertinente ou uma conferência equivalente no navegador, em armazenamento isolado; confira erros de página e comportamento observável. Leia o teste para saber se usa Chrome ou Edge e quais dependências exige.
+- Regras isoladas da v2: `node --test v2/tests/<sistema>.test.mjs` (ou `node --test v2/tests/*.test.mjs`), incluindo os dos modelos compartilhados quando afetados (`build-simulator/model.test.js`, `scripts/*.test.js`).
+- Motor ou integração da v2: rode `node v2/tools/build.cjs`, os testes dos sistemas afetados e o `v2/tests/*-browser-check.cjs` pertinente. Alterações em fontes compartilhadas também exigem `node game_check.js` e os `node --test` da versão legada.
+- Interface, combate ou modelos da v2: use o `v2/tests/*-browser-check.cjs` pertinente (Playwright com Edge/Chrome e WebGL 2, em armazenamento isolado; leia o teste para saber a dependência) ou uma conferência equivalente no navegador; confira erros de página e comportamento observável. Evidências em `review/v2/`.
+- Versão legada: `node game_check.js` e os `scripts/*-browser-check.js` pertinentes.
 - Visual: confira no tamanho real do jogo, fundo claro e escuro, com grupo/horda e qualidade baixa. Registre evidências pertinentes em `review/` ou no destino já usado pelo teste.
 - Balanceamento: confira `balance-simulator/` e seus limites. Atualize o adaptador se a regra modelada mudou; não apresente uma estimativa matemática como validação completa da IA.
 - Ao entregar, diga o que mudou, como foi verificado e o que ficou pendente. Não declare render, teste ou integração concluídos sem executá-los.
 
 ## Guias específicos
 
-- [Mecânicas e integração](scripts/AGENTS.md)
-- [Assets, Blender e sprites](blender/AGENTS.md)
+- [Mecânicas e integração (v2 e módulos compartilhados)](scripts/AGENTS.md)
+- [Assets, Blender e modelos](blender/AGENTS.md)
 - [Documentação e evidências](docs/AGENTS.md)

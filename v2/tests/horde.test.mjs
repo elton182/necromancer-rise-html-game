@@ -13,7 +13,7 @@ function field(){const w=createWorld({armyMode:'groups',army:army()});w.actors=w
 const advance=(w,t)=>{for(let x=0;x<t-1e-9;x+=1/60)step(w,Math.min(1/60,t-x));};
 function foe(w,x=0,y=2){const a={id:w.nextId++,model:'zombie',team:'enemy',hp:100000,maxHp:100000,radius:.3,x,y,angle:0,animation:'idle',animationTime:0,walkDistance:0,timer:999,actionId:0};w.actors.push(a);return a;}
 test('definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos',()=>{
- assert.deepEqual(R,JSON.parse(JSON.stringify(readHorde().data)));const w=field();for(const t of TYPES){assert.equal(members(w,t).length,groupSize(w,t));const s=statsFor(t,TEST_PROFILE.level,effects(w));assert.equal(members(w,t)[0].maxHp,s.hp);assert.equal(members(w,t)[0].dmg,s.dmg);}assert.equal(w.actors.filter(a=>a.groupType).length,12);
+ assert.deepEqual(R,JSON.parse(JSON.stringify(readHorde().data)));const w=field();for(const t of TYPES){if(t==='specter'){assert.equal(members(w,t).length,0);continue;}assert.equal(members(w,t).length,groupSize(w,t));const s=statsFor(t,TEST_PROFILE.level,effects(w));assert.equal(members(w,t)[0].maxHp,s.hp);assert.equal(members(w,t)[0].dmg,s.dmg);}assert.equal(w.actors.filter(a=>a.groupType).length,10);
 });
 test('perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam',()=>{
  const basic=createWorld({armyMode:'groups'});assert.equal(basic.actors.filter(a=>a.groupType).length,0);assert.equal(equipGroup(basic,1,'zombie',{preparation:true}).ok,false);
@@ -39,11 +39,11 @@ test('região restringe alvos e retorno usa histerese; ordem é limitada ao alca
  const w=field();w.army.range=8;const m=members(w,'zombie')[0],outside=foe(w,0,-12);m.x=0;m.y=13;const before=Math.hypot(m.x-w.player.x,m.y-w.player.y);advance(w,.5);assert.ok(Math.hypot(m.x-w.player.x,m.y-w.player.y)<before);assert.notEqual(m.targetId,outside.id);assert.ok(order(w,{x:1000,y:1000}));assert.ok(Math.hypot(w.command.x-w.player.x,w.command.y-w.player.y)<=8.001);advance(w,14);assert.equal(w.command,null);
 });
 test('automáticas por tipo usam recarga própria e chefes não recebem lentidão',()=>{
- for(const t of TYPES){const w=field(),m=members(w,t)[0];w.actors=w.actors.filter(a=>a===w.player||a===m);const target=foe(w,m.x+.7,m.y);m.abilityCooldown=0;advance(w,.1);assert.ok(m.abilityCooldown>0,t);assert.ok(target.hp<100000||w.allyShots.length>0,t);}
+ for(const t of TYPES.filter(t=>t!=='specter')){const w=field(),m=members(w,t)[0];w.actors=w.actors.filter(a=>a===w.player||a===m);const target=foe(w,m.x+.7,m.y);m.abilityCooldown=0;advance(w,.1);assert.ok(m.abilityCooldown>0,t);assert.ok(target.hp<100000||w.allyShots.length>0,t);}
  const w=field(),m=members(w,'zombie')[0];w.actors=[w.player,m];const target=foe(w,m.x+.5,m.y);target.model='fallenKing';m.abilityCooldown=0;advance(w,.05);assert.equal(target.slowTime,0);
 });
 test('salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga',()=>{
- const w=field(),m=members(w,'abom')[0],target=foe(w,m.x+3,m.y);w.aim={x:target.x,y:target.y};assert.ok(special(w,'abom'));advance(w,.2);assert.ok(m.jumpZ>0);assert.equal(target.hp,100000);advance(w,.3);assert.equal(m.jumpZ,0);assert.ok(target.hp<100000);w.aim={x:1,y:4};assert.ok(special(w,'specter'));assert.ok(w.army.cooldowns.specter>7&&w.army.cooldowns.specter<8);assert.equal(special(w,'specter'),false);
+ const w=field(),m=members(w,'abom')[0],target=foe(w,m.x+3,m.y);w.aim={x:target.x,y:target.y};assert.ok(special(w,'abom'));advance(w,.2);assert.ok(m.jumpZ>0);assert.equal(target.hp,100000);advance(w,.3);assert.equal(m.jumpZ,0);assert.ok(target.hp<100000);w.aim={x:1,y:4};const corpse=foe(w,1,4);corpse.hp=0;assert.ok(special(w,'specter'));assert.ok(w.army.cooldowns.specter>7&&w.army.cooldowns.specter<8);assert.equal(special(w,'specter'),false);
 });
 test('separação respeita terreno; esquiva não concede invulnerabilidade',()=>{
  const w=field();for(const m of w.actors.filter(a=>a.groupType)){m.x=0;m.y=4;}advance(w,1);const group=w.actors.filter(a=>a.groupType);assert.ok(group.some(m=>Math.hypot(m.x-group[0].x,m.y-group[0].y)>1));const m=members(w,'zombie')[0],hp=m.hp;dealDamage(w,m,10);assert.ok(m.hp<hp);

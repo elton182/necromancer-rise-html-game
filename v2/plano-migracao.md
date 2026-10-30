@@ -15,8 +15,8 @@ Valdoria abre a Conquista ([Arena](../docs/v2-arena.md), [Expedições](../docs/
 provisório**, com a escala da wave do treino. Portar o Guardião de Almas continua pendente e substituirá o provisório.
 
 **Pedidos do usuário ainda sem entrega (acabamento, fora da numeração):** histórias em quadrinhos das
-fases (hoje só texto, uma passagem por vez) e a **tela de mapa da campanha na versão nova** do jogo atual
-(hoje uma lista de cartões). Não foram iniciados.
+fases (hoje só texto, uma passagem por vez) e a **tela de mapa da campanha na versão nova** do jogo atual.
+O mapa passou a ser um atlas em pergaminho no estilo de Valdoria (`campaign-atlas.mjs`); as HQs não foram iniciadas.
 
 Última entrega: mapa e histórias do Ato I, quatro fases com salas/portas, ondas,
 emboscadas e Rei Caído; liberações, primeiro prêmio único, revisita e retorno por
@@ -443,3 +443,44 @@ Este plano registra a direção; não dispara execução automática.
 | 28/10/2026 | E10c — Conquista de Valdoria | Aba Valdoria com mapa de 17 rotas (Canvas), dificuldade, maldições, encontros e recompensas; rotas jogáveis sobre o mapa da Expedição (biomas pântano/rio/montanha, escala regional, infectados e poças com aviso); maldições nos atributos, dano e horda; loot regional, cajado Osso Carcomido e Podridão; influência, rotas, fragmento e dificuldade seguinte pelo modelo compartilhado; `character.conquest` no save e na importação. Boss: Rei Caído provisório; sem caldeirões, restos e golpes regionais (só existem com `?bosses=classic` no jogo antigo). E10 concluída no fluxo funcional. | 229 testes v2 (10 novos em `conquest.test.mjs`); navegador integrado: mapa, rota no pântano, líder derrotado, G reabrindo a aba. Playwright indisponível: checks de navegador não reexecutados. Dificuldade, equilíbrio e desempenho não medidos; uma carga do HTML truncado por build concorrente foi refeita. Guia em [docs/v2-conquista.md](../docs/v2-conquista.md); evidências em `review/v2/e10/`. |
 
 | 28/10/2026 | UI/HUD — árvore de habilidades e maestrias | Aba Habilidades refeita no layout do Grimório anterior (nós com ícones, linhas, detalhe, Minions/Profana/Maestrias, seis cartões de especialização) e Redistribuir tudo (`resetRanks`, 20 ouro/ponto). Tutoriais de primeiros pontos não portados. | 230 testes v2 (novo: redistribuição total) e checks Edge de UI, Grimório, magias, progressão, equipamentos, horda, campanha e tela inicial aprovados; evidências em `review/v2/ui/`. Outro processo editava `app.mjs`/`game-ui.mjs` em paralelo (E10); não toquei nesses arquivos. |
+
+### 29/10/2026 — Defesa inerente dos equipamentos
+
+Vestimenta, capuz e botas recebem defesa garantida por nível, além da base anterior. Só o bônus percentual de defesa participa do sorteio. Itens antigos são migrados para a versão 3, convertendo o afixo plano em percentual com o mesmo número. O simulador utiliza os bônus do modelo compartilhado. Validado: testes de equipamentos, combate e Forma da Morte, testes do simulador, `game_check.js` e conferência de equipamentos da v2 no Edge (inclui save/reload, fundo claro/escuro e qualidade baixa). O check legado chegou às verificações de navegação após validar equipamentos e persistência, mas falhou na expectativa de `VILLAGE() === false` após liberar Eldrin; esse fluxo não foi alterado. Capturas legadas novas em `review/v2/guaranteed-defense/`; capturas históricas preservadas.
+# Áudios produzidos — 29/10/2026
+
+Integrados Crypt of Stone (cripta, MP3 em loop), Necromantic Threshold (portal),
+Warning Signal (início de onda) e Crowned in Bone (subida de nível), com efeitos WAV
+mono e fallback procedural. Arquivos incorporados pelo catálogo `assets/music.json`.
+Verificação: build, 28 testes de áudio e `node v2/tests/audio-browser-check.cjs`
+no Edge com perfil isolado; decodificação real, música em loop e efeitos sem loop,
+sem erros de página ou requisições remotas. Evidência: `review/v2/audio/audio-result.json`.
+Pendente: avaliação auditiva em partida, equilíbrio de volumes e emenda musical.
+
+
+### Ajuste — Possessão do Espectro (29/10/2026)
+
+O slot `specter` possui cadáveres por 60 s, com custo de 45 MP, limite de grupo, exclusão de chefes e limpeza transitória. Regras e limites em [horda](../docs/v2-horda.md#possessão-espectro). Ataques básicos preservados por categoria; especiais hostis e revisão visual dedicada permanecem pendentes.
+
+- Piloto de Valdoria: bifurcação nas expedições do pântano, formações defensivas, acampamento raro no desvio e patrulha na convergência. Validação visual e balanceamento do percurso pendentes.
+
+### Ajuste — foice, Lança e Escudo (29/10/2026)
+
+Colheita Tripla passa ao clique sem custo e sem recarga entre combos; Gancho
+do Túmulo substitui Arco Ceifador mantendo IDs. Marca Ceifado conecta
+Colheita, Giratória, Gancho e Ciclone. Lança Sepulcral carrega pelo clique e
+dispara ossos em V. Escudo usa GLB próprio de placas de carne/costelas com
+leitura de absorção e impacto, preservando suas regras. Ver
+[Morte](../docs/v2-morte-lich.md) e [magias](../docs/v2-magias.md).
+Testes de regras e verificação no HTML autocontido; evidências em
+`review/v2/combat-rework/`. Balanceamento em partidas reais permanece pendente.
+
+### Bran, o ferreiro
+
+Integrado à Vila de Eldrin com GLB fornecido e animação idle. Serviços em Equipamentos: aprimoramento garantido até +5 (25% de base e defesa garantida por grau) e substituição de um afixo escolhido por outro aleatório, pagos em ouro. Campo opcional persistido `enhancement`; missões existentes preservadas. Regras e custos em `docs/v2-progressao.md`; verificação específica em `v2/tests/bran.test.mjs` e `v2/tests/bran-browser-check.cjs`.
+
+### Cerco ao Ritual — endgame de defesa de torres
+
+Implementado na v2: entrada pela Vila de Eldrin após o Ato I, oito ondas com três rotas progressivas e chefe, quatro defesas com três graus, essência transitória, integridade do obelisco, vinte graus, modificadores e runas persistidas. Obelisco e torres são GLBs animados gerados pelo Blender. Regras e limites de validação em `docs/v2-cerco.md`; evidências em `review/v2/siege/`. Balanceamento amplo dos graus altos permanece pendente.
+
+A interface de construção do cerco passou a ser contextual: aparece até 3,2 unidades do pedestal mais próximo, seleciona esse ponto automaticamente e fecha ao sair do alcance. O anel acompanha essa seleção. Durante a invasão, longe dos pedestais, fica apenas o resumo do ritual no topo; entre ondas há preparação compacta. Conferido no navegador com construção, melhoria, afastamento, vitória e derrota.

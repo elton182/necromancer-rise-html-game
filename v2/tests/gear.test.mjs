@@ -12,7 +12,7 @@ import Build from '../scripts/shared-build.mjs';
 let serial=0;
 // Peças fixas e válidas segundo o modelo compartilhado; a validação garante que os testes não inventam formatos.
 const BASE={staff:12,grimoire:4,body:12,head:8,boots:.05,ring1:.4,ring2:.4};
-function piece(type,rarity='common',base=BASE[type],affixes=[],level=1){const stat=EQ.slots[type].base,item={version:2,id:'t-'+type+'-'+(++serial),type,level,originWave:level,rarity,base:{stat,value:base},affixes};assert.ok(EQ.validate(item,Build),JSON.stringify(item));return item;}
+function piece(type,rarity='common',base=BASE[type],affixes=[],level=1){const stat=EQ.slots[type].base,item={version:2,id:'t-'+type+'-'+(++serial),type,level,originWave:level,rarity,base:{stat,value:base},affixes};assert.ok(EQ.validate(item,Build),JSON.stringify(item));return EQ.validate(item,Build);}
 const staff=(spell=0)=>piece('staff',spell?'magic':'common',12,spell?[{stat:'spell',value:spell},{stat:'cooldown',value:1}]:[]);
 function fresh(options={}){const s=createSession(normalizeSave({format:FORMAT,version:VERSION,...options}));return s;}
 function give(s,...items){s.save.character.gearBag.push(...items);return items;}
@@ -32,15 +32,15 @@ test('atributos seguem as fórmulas documentadas com itens e preservam proporç�
  const [weapon,robe,boots]=give(s,piece('staff','magic',12,[{stat:'spell',value:5},{stat:'cooldown',value:1}]),piece('body','magic',12,[{stat:'defense',value:10},{stat:'mp',value:8}]),piece('boots','common',.05));
  p.hp=Math.floor(p.maxHp/2);p.mp=Math.floor(p.maxMp/4);const ratio=[p.hp/p.maxHp,p.mp/p.maxMp];
  assert.equal(equip(s,weapon.id,'staff').ok,true);assert.equal(p.spellDamage,Math.round((40+4*11+12)*1.05));assert.equal(w.modifiers.gearCooldown,1);
- assert.equal(equip(s,robe.id,'body').ok,true);assert.equal(p.defense,10);assert.equal(p.maxHp,210+12);assert.equal(p.maxMp,135+8);
+ assert.equal(equip(s,robe.id,'body').ok,true);assert.equal(p.defense,11);assert.equal(p.maxHp,210+12);assert.equal(p.maxMp,135+8);
  assert.equal(equip(s,boots.id,'boots').ok,true);assert.equal(p.moveSpeed,4.05);
  assert.ok(Math.abs(p.hp/p.maxHp-ratio[0])<.02);assert.ok(Math.abs(p.mp/p.maxMp-ratio[1])<.02);
- const before=[p.hp,p.mp],cooldown=w.castCooldown;assert.equal(unequip(s,'body').ok,true);assert.equal(p.defense,0);assert.ok(p.hp<=before[0]);assert.equal(w.castCooldown,cooldown);
+ const before=[p.hp,p.mp],cooldown=w.castCooldown;assert.equal(unequip(s,'body').ok,true);assert.equal(p.defense,10);assert.ok(p.hp<=before[0]);assert.equal(w.castCooldown,cooldown);
  const mean=snapshot(s).character.equipment;assert.deepEqual(Object.keys(mean).sort(),['boots','staff']);
 });
 test('defesa de itens entra no caminho comum de dano e recargas respeitam o piso do tiro',()=>{
  const s=fresh();const [robe]=give(s,piece('body','magic',12,[{stat:'defense',value:10},{stat:'cooldown',value:1}]));equip(s,robe.id,'body');transition(s,'training');const w=s.world;
- const enemy={level:1},before=w.player.hp;dealDamage(w,w.player,100,enemy);assert.equal(Math.round(before-w.player.hp),Math.round(100*(1-EQ.defenseReduction(10,1))));
+ const enemy={level:1},before=w.player.hp;dealDamage(w,w.player,100,enemy);assert.equal(Math.round(before-w.player.hp),Math.round(100*(1-EQ.defenseReduction(11,1))));
  w.modifiers.gearCooldown=50;w.aim={x:0,y:0};assert.equal(castBolt(w),true);assert.equal(w.castCooldown,.25);
 });
 test('itens de horda alteram atributos dos aliados sem curar e deixam a vida proporcional',()=>{

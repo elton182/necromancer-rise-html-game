@@ -1,0 +1,18 @@
+[
+  {
+    "file": "skeleton_knight.glb",
+    "sha256": "6a880e7f40ae5073a3a11bd5954dafab3d8c1f9b9216958286bad9e46431ad28",
+    "bytes": 1342348,
+    "skins": 1,
+    "animations": 0,
+    "source": "Downloads (fornecido pelo usuário em 29/10/2026)"
+  },
+  {
+    "file": "fantasy_scythe.glb",
+    "sha256": "7c2406d8847d81c801233002f044daf47ba8171a13978661237b8b9a44921903",
+    "bytes": 1183048,
+    "skins": 0,
+    "animations": 0,
+    "source": "Downloads (fornecido pelo usuário em 29/10/2026)"
+  }
+]

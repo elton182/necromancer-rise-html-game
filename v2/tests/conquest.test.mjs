@@ -91,3 +91,28 @@ test('save/recarga: nada da tentativa é gravado e o progresso regional persiste
  const n=createSession(saved);applySave(n,saved);assert.equal(n.save.character.conquest.influence,saved.character.conquest.influence);assert.equal(n.world.curses,null);assert.equal(n.world.adventure,null);
  const dead=village();launchConquest(dead,'expedition');dead.world.player.hp=0;stepSession(dead,.1,{});assert.equal(dead.scene,'dead');const inf=dead.save.character.conquest.influence;returnAdventure(dead);assert.equal(dead.scene,'village');assert.equal(dead.save.character.conquest.influence,inf);
 });
+
+ test('piloto do Brejo: bifurcação, patrulha e preservação dos encontros',()=>{
+ const s=village();select(s,[]);assert.ok(launchConquest(s,'expedition').ok);
+ const w=s.world,p=w.arena.plan;
+ assert.equal(p.layout,'brejo-fork');assert.equal(p.branches.length,1);
+ assert.equal(p.groups.reduce((n,g)=>n+g.mobs.length,0),56);
+ assert.ok(p.groups.some(g=>g.encounter==='camp'&&g.tier==='rare'));
+ const patrol=w.actors.find(e=>e.patrol);assert.ok(patrol);
+ const before={x:patrol.x,y:patrol.y};step(w,.2);
+ assert.ok(Math.hypot(patrol.x-before.x,patrol.y-before.y)>0);
+ assert.equal(patrol.alert,false);
+ assert.equal(expeditionArena(1).plan.layout,undefined);
+ });
+
+ test('XP de Valdoria: dificuldade e intensidade bonificam abate sem inflar ouro ou maestria',()=>{
+ const s=village();s.save.character.level=50;s.world.level=50;if(s.world.army)s.world.army.profile.level=50;s.save.character.conquest=Endgame.normalize({...s.save.character.conquest,unlocked:4,difficulty:4});
+ select(s,[0,1,2]);const r=launchConquest(s,'expedition');assert.ok(r.ok,r.message);
+ assert.equal(r.run.xpMultiplier,1.75*(1+.15*r.run.reward.score));
+ const raw=Endgame.rewards(s.save.character.conquest,'expedition',4,r.run.curses);
+ assert.equal(r.run.reward.xp,Math.round(raw.xp*r.run.xpMultiplier));
+ const e=foes(s).find(e=>!e.isBoss),before=s.save.character.exp;
+ e.hp=1;dealDamage(s.world,e,1e9,s.world.player);
+ assert.equal(s.save.character.exp-before,Math.round(e.xp*r.run.xpMultiplier));
+ const after=s.save.character.exp;dealDamage(s.world,e,1e9,s.world.player);assert.equal(s.save.character.exp,after);
+ });

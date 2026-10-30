@@ -34,3 +34,10 @@ test('grupos revivem entre fases sem duplicar integrantes',()=>{const s=createSe
 test('missão em arena só conclui depois das ondas e do chefe',()=>{const s=createSession();s.save.campaign=normalizeCampaign({started:true,cleared:{1:1,2:1,3:1,4:1}});enterVillage(s);s.world.random=()=>.9;const m=makeOffer(s,'lysa');assert.equal(m.layout,'arena');launchMission(s,m);const w=s.world;for(let i=0;i<200&&!w.adventure.done;i++){clearWave(s);advance(s,4);}assert.equal(w.adventure.bossSpawned,true);assert.equal(w.adventure.wave,m.wavesGoal);assert.equal(w.adventure.done,true);});
 test('floresta usa wave de combate para vida e fase para nível dos itens',()=>{const s=createSession();s.save.campaign=normalizeCampaign({started:true,cleared:{1:1}});launchStage(s,2);skip(s);s.world.random=()=>0;advance(s,20);const e=s.world.actors.find(a=>a.team==='enemy');assert.ok(e);assert.ok(Math.abs(e.hp-e.type.hp*1.36)<1e-8);assert.equal(e.gearWave,2);assert.equal(s.world.gearLevel,2);});
 test('chefe da campanha e reforços preservam atributos e níveis do encontro',()=>{const s=createSession();s.save.campaign=normalizeCampaign({started:true,cleared:{1:1,2:1,3:1}});launchStage(s,4);skip(s);advance(s,16);const e=s.world.boss;assert.equal(e.hp,D.captain.hp);assert.equal(e.spd,D.captain.spd);assert.equal(e.gearWave,4);const add=s.world.spawnKingAdd({x:2,y:0},e);assert.ok(Math.abs(add.hp-40*1.72)<1e-8);assert.equal(add.gearWave,4);});
+test('floresta e missões liberam Ladrão, Grifo e Aranha por onda; a cripta de tutorial não',()=>{
+ const s=createSession();s.save.campaign=normalizeCampaign({started:true,cleared:{1:1,2:1}});launchStage(s,1);skip(s);
+ for(const room of s.world.adventure.rooms)for(const list of room.waves)assert.ok(list.every(i=>i<6));
+ s.world.adventure.queue=[];launchStage(s,2);skip(s);s.world.random=()=>0;const seen=new Set();
+ for(let wave=0;wave<6;wave++){for(let i=0;i<40&&!s.world.adventure.queue.length;i++)advance(s,1);advance(s,12);for(const e of s.world.actors)if(e.team==='enemy')seen.add(e.typeIndex);clearWave(s);}
+ for(const index of [6,7,8])assert.ok(seen.has(index),'tipo '+index+' ausente na floresta');
+});

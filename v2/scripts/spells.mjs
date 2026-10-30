@@ -11,7 +11,7 @@ export function initializeSpells(w){clearSpells(w);w.onPlayerDeath=()=>clearSpel
 function ring(w,x,y,radius,color,duration=.6){w.effects.push({id:w.nextId++,kind:'spellArea',x,y,radius,color,time:0,duration,visual:true,ground:true,fixedRadius:true});}
 export function castSpell(w,id){
  const rule=R[id],p=w.player;
- if(!rule||w.armyMode!=='groups'||w.paused||!living(p)||!w.army.loadout.includes(id)||!available(w.army,id)||(w.spellCooldowns[id]||0)>1e-9||p.mp<rule.cost)return false;
+ if(!rule||w.armyMode!=='groups'||w.paused||!living(p)||w.lich&&w.lich.form!=='none'||!w.army.loadout.includes(id)||!available(w.army,id)||(w.spellCooldowns[id]||0)>1e-9||p.mp<rule.cost)return false;
  const point=id==='barreira'?p:w.aim;
  if(!Number.isFinite(point?.x)||!Number.isFinite(point?.y)||id!=='barreira'&&dist(p,point)>R.range)return false;
  const e=effects(w),percent=key=>1+(e[key]||0)/100,factor=key=>masteryFactor(w,id,key),{x,y}=point;
@@ -26,7 +26,7 @@ export function castSpell(w,id){
  if(id==='explosao'){
   const radius=R.radius*rule.radius*Math.sqrt(factor('area')),damage=p.spellDamage*rule.damage*(1+((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100)*factor('damage');
   // Explosão imediata: o desenho nunca agenda um segundo impacto.
-  for(const enemy of w.actors.filter(a=>a.team==='enemy'&&living(a)))if(dist(enemy,point)<radius)dealDamage(w,enemy,damage,p);
+  for(const enemy of w.actors.filter(a=>a.team==='enemy'&&living(a)))if(dist(enemy,point)<radius)dealDamage(w,enemy,damage,p,'Explosão Necrótica');
   ring(w,x,y,radius,'#c17cdd',.85);
  }else if(id==='chuva'){
   const radius=R.radius*Math.sqrt(percent('Área da Chuva de Ossos')*factor('area')),damage=p.spellDamage*rule.damage*percent('Dano da Chuva de Ossos')*factor('damage'),random=w.random||Math.random;
@@ -65,9 +65,9 @@ export function absorbWallProjectile(w,from,to,damage){const hit=firstWallHit(w,
 export function tickSpells(w,dt){
  for(const id of Object.keys(w.spellCooldowns))w.spellCooldowns[id]=Math.max(0,w.spellCooldowns[id]-dt);
  for(const enemy of w.actors)if(enemy.curse){enemy.curse.remaining-=dt;if(enemy.curse.remaining<=1e-9||!living(enemy))delete enemy.curse;}
- for(const drop of w.rain){drop.time+=dt;if(drop.time+1e-9<drop.delay+drop.fall)continue;for(const e of w.actors.filter(a=>a.team==='enemy'&&living(a)))if(dist(e,drop)<drop.radius)dealDamage(w,e,drop.damage,w.player);ring(w,drop.x,drop.y,drop.radius,'#e1d2a0',.25);drop.hit=true;}
+ for(const drop of w.rain){drop.time+=dt;if(drop.time+1e-9<drop.delay+drop.fall)continue;for(const e of w.actors.filter(a=>a.team==='enemy'&&living(a)))if(dist(e,drop)<drop.radius)dealDamage(w,e,drop.damage,w.player,'Chuva de Ossos');ring(w,drop.x,drop.y,drop.radius,'#e1d2a0',.25);drop.hit=true;}
  w.rain=w.rain.filter(d=>!d.hit);
- for(const wall of w.walls){wall.remaining-=dt;wall.tick-=dt;while(wall.tick<=1e-9&&wall.remaining>0){wall.tick+=R.maos.interval;for(const enemy of w.actors.filter(a=>a.team==='enemy'&&living(a)&&!(a.jumpZ>0)))if(dist(enemy,wallNearest(wall,enemy))<=wall.width/2+(enemy.radius||.3)+.12)dealDamage(w,enemy,wall.damage,w.player);}}
+ for(const wall of w.walls){wall.remaining-=dt;wall.tick-=dt;while(wall.tick<=1e-9&&wall.remaining>0){wall.tick+=R.maos.interval;for(const enemy of w.actors.filter(a=>a.team==='enemy'&&living(a)&&!(a.jumpZ>0)))if(dist(enemy,wallNearest(wall,enemy))<=wall.width/2+(enemy.radius||.3)+.12)dealDamage(w,enemy,wall.damage,w.player,'Muralha de Corpos');}}
  w.walls=w.walls.filter(wall=>wall.remaining>1e-9&&wall.hp>0);
  for(const enemy of w.actors.filter(a=>a.team==='enemy'))blockEnemyByWalls(w,enemy,{x:enemy.x,y:enemy.y});
 }

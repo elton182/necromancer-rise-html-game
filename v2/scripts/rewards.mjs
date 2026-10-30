@@ -25,7 +25,9 @@ export function rewardKill(s,enemy){
  if(enemy?.infected&&!enemy.rewarded&&w.infectedPool)w.hostileZones.push({id:w.nextId++,source:null,gearWave:enemy.gearWave,x:enemy.x,y:enemy.y,radius:2.3,delay:1.5,life:3,tick:0,damage:Math.max(1,Math.round(enemy.dmg*.4))});
  if(!validXp(xp)||enemy.rewarded)return false;
  enemy.rewarded=true;
- const mastery=gainMastery(s,xp),c=s.save.character,level=raise(s,addExp({level:levelOf(w),exp:c.exp},xp));
+ if(enemy.siegeLane!==undefined&&w.adventure?.kind==='siege'&&!w.adventure.done)w.adventure.essence+=enemy.siegeBoss?80:12;
+ const run=w.adventure?.conquest,characterXp=Math.round(xp*(enemy.expedition?(run?.xpMultiplier??1):1));
+ const mastery=gainMastery(s,xp),c=s.save.character,level=raise(s,addExp({level:levelOf(w),exp:c.exp},characterXp));
  const notes=[level,mastery?.raised?.length?'Maestria ↑ '+mastery.raised.join(' · '):''].filter(Boolean);
  if(notes.length)w.notice=notes.join(' · ');
  if(level)announce(w,level,'#f0d98a');
@@ -39,7 +41,7 @@ export function rewardKill(s,enemy){
   }
   // Chefes sempre deixam uma peça; a recuperação de nível favorece quem está atrasado em relação ao drop.
   const boss=enemy===w.boss;
-  if(boss||w.random()<(Expedition.tiers[enemy.lootTier]?.chance??P.gear.chance)){const roll=EQ.dropRoll(w.equipment,w.gearLevel,w.random),region=w.lootConfig?.(enemy,roll),item=EQ.generate(region?.level??roll.level,Build,w.random,region?.type??roll.type,boss,newItemId(s),{loot:{weights:region?.weights??(enemy.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:Expedition.lootWeights(enemy.lootTier)),unboundedLevel:!!region}});if(region?.special)item.special='carcomido';spawnDrop(w,'equipment',enemy.x,enemy.y,{item,upgrade:roll.upgrade});}
+  if(boss||w.random()<(Expedition.tiers[enemy.lootTier]?.chance??P.gear.chance)){const roll=EQ.dropRoll(w.equipment,w.gearLevel,w.random),region=w.lootConfig?.(enemy,roll),item=EQ.generate(region?.level??roll.level,Build,w.random,region?.type??roll.type,boss,newItemId(s),{loot:{weights:region?.weights??(enemy.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:Expedition.lootWeights(enemy.lootTier)),unboundedLevel:!!region},extraAffixes:['lifesteal']});if(region?.special)item.special='carcomido';spawnDrop(w,'equipment',enemy.x,enemy.y,{item,upgrade:roll.upgrade});}
  }
  return mastery;
 }

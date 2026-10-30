@@ -1,0 +1,102 @@
+{
+  "lance": {
+    "charge": 1,
+    "bones": 11,
+    "range": 16,
+    "damage": 316
+  },
+  "armor": [
+    {
+      "ground": "dark",
+      "ratio": 1,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    },
+    {
+      "ground": "dark",
+      "ratio": 0.45,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    },
+    {
+      "ground": "dark",
+      "ratio": 0.12,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    },
+    {
+      "ground": "light",
+      "ratio": 1,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    },
+    {
+      "ground": "light",
+      "ratio": 0.45,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    },
+    {
+      "ground": "light",
+      "ratio": 0.12,
+      "model": true,
+      "clips": [
+        "pulse_0",
+        "pulse_1",
+        "pulse_2",
+        "pulse_3",
+        "pulse_4",
+        "pulse_5"
+      ]
+    }
+  ],
+  "combo": {
+    "ok": true,
+    "id": "colheita",
+    "step": 2,
+    "soulsBefore": 39.85000000000001,
+    "soulsAfter": 36.80500000000018
+  },
+  "hook": {
+    "ok": true,
+    "before": 6,
+    "after": 1.49980175516141
+  },
+  "errors": [],
+  "remote": []
+}

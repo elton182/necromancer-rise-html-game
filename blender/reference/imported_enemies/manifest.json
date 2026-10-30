@@ -68,5 +68,33 @@
     "bytes": 811196,
     "skins": 0,
     "animations": 0
+  },
+  {
+    "file": "hooded_rogue.glb",
+    "sha256": "3fa183dd456bc7f2e1ab74a5c909fb85affa5baae98e48cf3ce029c87fb1137b",
+    "bytes": 1487892,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "stylized_bow.glb",
+    "sha256": "c856d81b2051c00dc61b65851ec9b8ccfe845d6261e3dc2cb2568cae6868743d",
+    "bytes": 721340,
+    "skins": 0,
+    "animations": 0
+  },
+  {
+    "file": "orc.glb",
+    "sha256": "cfd2360a9e25c03b328c86d85cc3d81e367ab4905c6a5600e7a9962442142a56",
+    "bytes": 1501640,
+    "skins": 1,
+    "animations": 0
+  },
+  {
+    "file": "orc_spiked_wooden_mace.glb",
+    "sha256": "ad73f1ba25e34c08c58363cc9a0987ef7168615e12b8389254c7d242e3e90560",
+    "bytes": 641520,
+    "skins": 0,
+    "animations": 0
   }
 ]

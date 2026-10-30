@@ -1,0 +1,24 @@
+{
+  "clips": [
+    "attack",
+    "claw",
+    "claw_windup",
+    "death",
+    "feather",
+    "feather_windup",
+    "fly",
+    "hit",
+    "idle",
+    "recover",
+    "walk"
+  ],
+  "seen": {
+    "windup": true,
+    "throw": true,
+    "feathers": 3,
+    "meshes": -1
+  },
+  "shots": 3,
+  "errors": [],
+  "remote": []
+}

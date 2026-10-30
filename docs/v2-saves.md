@@ -169,3 +169,9 @@ ao normalizar; a importação do arquivo antigo também lê `camp.eb`. Veja [Are
 Campos ausentes recebem padrões; entidades e lutas não são retomadas. A importação
 antiga mantém a campanha em `legacy.data`, sem conversão automática. Veja o
 [guia da campanha](v2-campanha.md) para fluxo, compatibilidade e validação.
+
+Equipamentos na versão 3: os itens v1 e v2 são normalizados pelo modelo compartilhado. Na passagem de v2 para v3, o afixo `defense` é convertido em `defensePercent` com o mesmo valor; os demais dados válidos são preservados. A defesa inerente de vestimenta, capuz e botas é calculada pelo tipo e nível, sem campo adicional no save.
+
+Aprimoramentos de Bran persistem no campo opcional `enhancement` do equipamento (inteiro de 0 a 5; ausente equivale a +0). A base original permanece armazenada; o bônus é calculado ao usar o item. Afixos substituídos usam o mesmo contrato dos afixos sorteados.
+
+`character.siege` persiste o Cerco ao Ritual: `unlocked` (1–20), `best` (0–20), `wins`, `shards`, `rune` e `runes` (bone/frost/plague/crypt, níveis 0–3). Saves anteriores recebem padrões por `normalizeSiege`; filas, essência, integridade, torres, guardiões e partida corrente não são salvos. Vitória atualiza esse progresso uma vez; importar/carregar começa em cena limpa.

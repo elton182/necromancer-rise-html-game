@@ -44,7 +44,7 @@
   "fallenKing": {
     "path": "blender/exports/lab_fallen_king_v4.glb",
     "source": "blender/models/boss_fallenKing_v4.blend",
-    "height": 3.2,
+    "height": 4.4,
     "requiredAnimations": [
       "idle",
       "walk",
@@ -62,6 +62,11 @@
   "bone": {
     "path": "blender/exports/v2_bone.glb",
     "source": "blender/scripts/v2_bone.py",
+    "requiredAnimations": []
+  },
+  "harpyFeather": {
+    "path": "blender/exports/v2_harpy_feather.glb",
+    "source": "blender/scripts/v2_harpy_feather.py",
     "requiredAnimations": []
   },
   "boneShard": {
@@ -173,7 +178,7 @@
   "cryptHound": {
     "path": "blender/exports/v2_enemy_wolf.glb",
     "source": "blender/models/v2_enemy_wolf.blend",
-    "height": 1.6,
+    "height": 0.95,
     "stride": 2,
     "requiredAnimations": [
       "idle",
@@ -183,7 +188,8 @@
       "hit",
       "recover",
       "windup",
-      "charge"
+      "charge",
+      "howl"
     ]
   },
   "warAcolyte": {
@@ -229,6 +235,8 @@
       "recover",
       "claw",
       "claw_windup",
+      "feather_windup",
+      "feather",
       "fly"
     ],
     "durations": {
@@ -251,6 +259,39 @@
       "bite",
       "bite_windup"
     ]
+  },
+  "enemyRogue": {
+    "path": "blender/exports/v2_enemy_rogue.glb",
+    "source": "blender/models/v2_enemy_rogue.blend",
+    "height": 2.25,
+    "stride": 1.4,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover"
+    ],
+    "matchPlayerHeight": true
+  },
+  "enemyOrc": {
+    "path": "blender/exports/v2_enemy_orc.glb",
+    "source": "blender/models/v2_enemy_orc.blend",
+    "height": 2.25,
+    "stride": 1.3,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "hit",
+      "recover",
+      "smash",
+      "smash_windup"
+    ],
+    "matchPlayerHeight": true,
+    "heightScale": 1.3
   },
   "npcBram": {
     "path": "blender/exports/stylized_bram.glb",
@@ -296,5 +337,92 @@
     "path": "blender/exports/v2_medieval_village.glb",
     "requiredAnimations": [],
     "role": "scenery"
+  },
+  "lich": {
+    "path": "blender/exports/v2_lich.glb",
+    "source": "blender/scripts/lich.py",
+    "height": 2.6,
+    "stride": 1.6,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "slash",
+      "combo_1",
+      "combo_2",
+      "combo_3",
+      "throw",
+      "catch",
+      "sweep",
+      "spin",
+      "transform",
+      "hit",
+      "death"
+    ]
+  },
+  "lichScythe": {
+    "path": "blender/exports/v2_lich_scythe.glb",
+    "source": "blender/scripts/lich.py",
+    "requiredAnimations": []
+  },
+  "fleshShield": {
+    "path": "blender/exports/v2_flesh_shield.glb",
+    "source": "blender/scripts/flesh_shield.py",
+    "requiredAnimations": [
+      "pulse_0"
+    ],
+    "role": "effect"
+  },
+  "npcBran": {
+    "path": "blender/exports/bran.glb",
+    "source": "blender/models/bran.blend",
+    "height": 3.15,
+    "requiredAnimations": [
+      "idle"
+    ]
+  },
+  "siegeCore": {
+    "path": "blender/exports/siege_core.glb",
+    "source": "blender/models/siege_core.blend",
+    "height": 4,
+    "requiredAnimations": [
+      "idle",
+      "attack"
+    ]
+  },
+  "siegeBone": {
+    "path": "blender/exports/siege_bone.glb",
+    "source": "blender/models/siege_bone.blend",
+    "height": 3,
+    "requiredAnimations": [
+      "idle",
+      "attack"
+    ]
+  },
+  "siegeFrost": {
+    "path": "blender/exports/siege_frost.glb",
+    "source": "blender/models/siege_frost.blend",
+    "height": 2.8,
+    "requiredAnimations": [
+      "idle",
+      "attack"
+    ]
+  },
+  "siegePlague": {
+    "path": "blender/exports/siege_plague.glb",
+    "source": "blender/models/siege_plague.blend",
+    "height": 2.5,
+    "requiredAnimations": [
+      "idle",
+      "attack"
+    ]
+  },
+  "siegeCrypt": {
+    "path": "blender/exports/siege_crypt.glb",
+    "source": "blender/models/siege_crypt.blend",
+    "height": 2.8,
+    "requiredAnimations": [
+      "idle",
+      "attack"
+    ]
   }
 }

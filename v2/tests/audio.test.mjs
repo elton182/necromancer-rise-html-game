@@ -78,6 +78,19 @@ test('trilha escolhida antes do primeiro gesto começa quando o áudio é libera
  audio.unlock();ctx.currentTime=1;audio.tick();assert.ok(ctx.made.oscillators>0);
 });
 const settle=()=>new Promise(r=>setTimeout(r,0));
+test('efeito em arquivo usa cache, toca uma vez sem loop e respeita mudo', async () => {
+ let loads=0;const {audio,ctx,advance}=engine({effects:{portal:()=>{loads++;return base64Bytes('SUQz');}}});
+ audio.play('portal');await settle();assert.equal(ctx.made.sources,1);assert.equal(ctx.made.last.loop,false);assert.equal(ctx.made.last.started,1);
+ advance(100);audio.play('portal');await settle();assert.equal(loads,1);assert.equal(ctx.made.sources,2);
+ advance(100);audio.play('portal');audio.setMuted(true);await settle();assert.equal(ctx.made.sources,2);
+ audio.dispose();
+});
+test('efeito inválido usa procedural e descarte impede reprodução pendente', async () => {
+ const warn=console.warn;console.warn=()=>{};
+ try{const {audio,ctx}=engine({effects:{portal:()=>base64Bytes('SUQz')}});ctx.decodeFails=true;audio.play('portal');await settle();assert.ok(ctx.made.oscillators>0);audio.dispose();
+ const other=engine({effects:{portal:()=>base64Bytes('SUQz')}});other.audio.play('portal');other.audio.dispose();await settle();assert.equal(other.ctx.made.sources,0);
+ }finally{console.warn=warn;}
+});
 test('base64Bytes devolve os bytes originais do arquivo embutido', () => {
  assert.deepEqual([...new Uint8Array(base64Bytes(Buffer.from([73,68,51,255,0]).toString('base64')))],[73,68,51,255,0]);
 });

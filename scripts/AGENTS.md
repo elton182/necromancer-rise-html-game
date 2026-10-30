@@ -2,6 +2,16 @@
 
 Estas regras complementam o `AGENTS.md` da raiz para arquivos em `scripts/`.
 
+**A v2 (`v2/`) é o jogo principal.** Mecânicas novas são implementadas lá, em módulos ES (`v2/scripts/*.mjs`) com testes `v2/tests/*.test.mjs`, e distribuídas por `node v2/tools/build.cjs`. Esta pasta contém a versão legada (Canvas 2D) e as **fontes canônicas compartilhadas** que o build da v2 copia (`*-model.js`, `skill-trees.js`, `equipment-model.js` e afins, mais `build-simulator/model.js`). As seções abaixo descrevem a versão legada; ao mudar uma fonte compartilhada, regenere a v2 e rode os testes dos dois lados.
+
+## v2
+
+- Regras ficam em módulos sem DOM nem Three.js (padrão de `training-model.mjs`, `combat.mjs`, `spells.mjs`); `renderer.mjs`, `vfx.mjs` e `vfx-events.mjs` desenham o que as regras decidem. A apresentação nunca decide dano.
+- Registre módulos novos na tabela `modules` de `v2/tools/build.cjs` (nome do arquivo → chave do import map). Cópias geradas (`shared-*.mjs`, `*-rules.mjs`, `enemy-types.mjs`) não se editam: mude a fonte canônica ou o adaptador em `v2/tools/*-source.cjs`.
+- Modelos e animações entram em `v2/assets/models.json` (caminho, altura, clipes exigidos, durações). O build falha se faltar clipe ou se o GLB depender de recurso externo.
+- Habilidades seguem as mesmas regras de unidades, estados, dano único, limpeza e save descritas abaixo; confira `docs/v2-combate.md`, `docs/v2-magias.md`, `docs/v2-horda.md` e `docs/v2-saves.md` e atualize o guia `docs/v2-*.md` da área.
+- Verificação: `node --test v2/tests/<sistema>.test.mjs` e o `v2/tests/*-browser-check.cjs` pertinente, em armazenamento isolado.
+
 ## Fontes e distribuição
 
 - Leia o módulo e seus consumidores antes de criar um novo ponto de extensão. Os módulos de runtime compartilham o escopo do motor no HTML; não suponha que são ES modules independentes.

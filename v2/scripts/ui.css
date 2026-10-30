@@ -21,3 +21,43 @@ body.titling #game-nav,body.titling #boss-bar,body.titling #top-left,body.titlin
 #pause-dialog .live-grimoire .lg-invest .refund{font-size:12px;padding:8px 12px}
 #pause-dialog .lg-equip{margin-top:12px;display:grid;gap:6px}#pause-dialog .lg-equip h4{margin:0}
 #pause-dialog .lg-tabs button[aria-selected=true]{background:linear-gradient(#716037,#3c3c22);color:#fff0bf}
+/* Mapa da Campanha: atlas em pergaminho, no estilo da carta de Valdoria. */
+body[data-scene=map] .campaign-panel[data-view=atlas]{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(250px,1fr);grid-template-rows:auto minmax(0,1fr);gap:10px 14px;width:min(1180px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:16px 18px;overflow:auto}
+.campaign-panel[data-view=atlas]>header{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.campaign-panel[data-view=atlas]>header h2{margin:0;color:#dfc58c;font-size:26px}
+.campaign-panel[data-view=atlas]>header small{color:#9fa88a;letter-spacing:.14em}
+.campaign-panel[data-view=atlas] .atlas-frame{border:1px solid #8e8456;background:#131a12;padding:6px;min-width:0;align-self:start}
+.campaign-panel[data-view=atlas] .atlas-frame canvas{display:block;width:100%;height:auto;max-height:calc(100dvh - 120px);object-fit:contain}
+.campaign-panel[data-view=atlas] .atlas-side{display:grid;gap:10px;align-content:start;min-width:0}
+body[data-scene=map] .campaign-panel[data-view=atlas] article{display:grid;gap:5px;background:#e0d0a4;color:#3a3122;border:1px solid #8b7652;box-shadow:inset 0 0 0 3px #c9b681;padding:14px 16px}
+.campaign-panel[data-view=atlas] article h3{margin:0;font-size:20px;color:#2e2819}
+.campaign-panel[data-view=atlas] article p{margin:0;color:#4c412e;line-height:1.45}
+.campaign-panel[data-view=atlas] article small{color:#614276;letter-spacing:.04em}
+.campaign-panel[data-view=atlas] article button{justify-self:start}
+.campaign-panel[data-view=atlas] .atlas-stages,.campaign-panel[data-view=atlas] .atlas-actions{display:flex;flex-wrap:wrap;gap:6px}
+.campaign-panel[data-view=atlas] .atlas-side button{margin:0}
+.campaign-panel[data-view=atlas] .atlas-stage-button{font-size:11px;padding:6px 8px}
+.campaign-panel[data-view=atlas] .atlas-stage-button[aria-pressed=true]{border-color:#e1c786;background:#364329}
+@media(max-width:820px){body[data-scene=map] .campaign-panel[data-view=atlas]{grid-template-columns:minmax(0,1fr);grid-template-rows:auto;padding:12px}}
+/* Mapa da Campanha em tela cheia: cobre a cena 3D vazia por trás e deixa o menu superior livre. */
+body[data-scene=map] .campaign-panel[data-view=atlas]{left:0;top:0;right:0;bottom:0;transform:none;width:auto;height:100dvh;max-height:none;border:0;border-radius:0;padding:60px clamp(14px,3vw,40px) 18px;grid-template-columns:minmax(0,1fr) clamp(280px,26vw,380px);grid-template-rows:auto minmax(0,1fr);background:radial-gradient(ellipse at 40% 45%,#1d2a1c,#0a110b 75%);box-shadow:none;z-index:12;align-content:stretch}
+.campaign-panel[data-view=atlas] .atlas-frame{display:flex;align-items:center;justify-content:center;align-self:stretch;min-height:0;overflow:hidden}
+.campaign-panel[data-view=atlas] .atlas-frame canvas{width:auto;height:auto;max-width:100%;max-height:100%}
+.campaign-panel[data-view=atlas] .atlas-side{align-self:stretch;overflow:auto;padding-right:2px}
+@media(max-width:820px){body[data-scene=map] .campaign-panel[data-view=atlas]{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;overflow:auto;align-content:start;padding-top:56px}.campaign-panel[data-view=atlas] .atlas-frame{align-self:start}.campaign-panel[data-view=atlas] .atlas-frame canvas{width:100%}}
+body[data-scene=map] .campaign-panel[data-view=atlas] .atlas-frame{border:0;background:none;padding:0}
+body[data-scene=map] .campaign-panel[data-view=atlas] .atlas-frame canvas{border:1px solid #8e8456;box-shadow:0 8px 30px #000a}
+
+/* Forma de Lich: o vaso de mana vira o de almas (roxo-espectral). */
+body[data-lich="lich"] .mana-vessel .vessel-liquid,body[data-lich="transform"] .mana-vessel .vessel-liquid{background:radial-gradient(ellipse at 38% 20%,#e1d4ff,#7a56d6 55%,#2a1458)!important;box-shadow:0 -2px 8px #b79bff66;border-color:#cdbcff77}
+body[data-lich="lich"] .mana-vessel .vessel-rune,body[data-lich="transform"] .mana-vessel .vessel-rune{color:#e1d4ff88}
+body[data-lich="lich"] .action-equipped,body[data-lich="transform"] .action-equipped{border-color:#9d7be866}
+
+.enemy-health,.hit-number{position:fixed;pointer-events:none;z-index:20;transform:translate(-50%,-100%)}
+.enemy-health{width:46px;height:6px;background:#201519;border:1px solid #100d13;box-shadow:0 1px 3px #000;border-radius:3px;overflow:hidden}.enemy-health span{display:block;height:100%;background:#db514b}.hit-number{font:bold 18px sans-serif;color:#fff0c2;text-shadow:1px 1px 2px #000,-1px -1px 2px #000}
+
+/* Cerco ao Ritual: construção permanece acessível durante o combate. */
+.siege-panel{width:310px;max-height:calc(100vh - 270px);overflow:auto;top:68px;padding:14px;pointer-events:auto}.siege-panel[hidden]{display:none}.siege-panel button{padding:7px 9px;margin:3px 2px;font-size:12px}.siege-panel p{font-size:12px;line-height:1.5;margin:9px 0}.siege-panel h2{margin:4px 0 10px}.siege-panel h3{font-size:15px;margin:12px 0 5px}.siege-panel small{display:block;font-size:11px;line-height:1.4;color:#c6c2a4}.siege-panel [aria-pressed=true]{background:#5c5432;border-color:#edce80}.siege-panel .siege-pads{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.siege-status{color:#eee0a2;font-weight:bold}.siege-rune{padding:5px 0;border-bottom:1px solid #685e3b55}.siege-choices{display:flex;flex-wrap:wrap}.siege-panel select{background:#172016;color:#eee0b4;padding:5px}
+@media(max-height:700px){.siege-panel{max-height:calc(100vh - 180px)}}
+
+#siege-panel.siege-panel{position:fixed;display:block;left:16px;right:auto;top:70px;bottom:auto;transform:none;width:310px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 270px);padding:14px;z-index:30}#siege-panel.siege-panel[hidden]{display:none}#siege-panel.siege-panel>button:last-child{display:inline-block}@media(max-height:700px){#siege-panel.siege-panel{max-height:calc(100dvh - 180px)}}

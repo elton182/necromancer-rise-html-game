@@ -46,7 +46,7 @@ maldições, tenentes e fortaleza. Abre-se na **Vila de Eldrin** pela aba **Vald
   habilidades regionais, não teriam efeito. O Boticário, a Guardiã e o Abade usam os golpes do Rei.
 - **Tela:** o jogo antigo usa uma tela dedicada de tela cheia com mapa à esquerda e preparação à direita. Na v2 é uma aba
   do Relicário, com o mesmo mapa, mas sem a barra fixa de partida, o zoom do mapa e o seletor "Local do mapa" separado
-  (os botões das 17 rotas fazem esse papel). O acabamento fica para a E11.
+  (os botões das 17 rotas fazem esse papel). O acabamento fica para a E11. Em telas largas (≥ 1300 px) a aba usa três colunas (mapa, preparação, avanço e recompensas) e cabe sem rolagem a partir de ~900 px de altura; abaixo disso, ou em telas estreitas, rola.
 - **Podridão:** não mostra o rótulo "Podridão ×N" sobre o inimigo.
 - **Rotas já iniciadas:** recarregar a página encerra a tentativa e preserva o progresso concluído; não restaura o mapa.
 - **Maldições e "preservar a proporção de vida" ao sair:** a v2 recria o mundo ao voltar à vila, o que cura. É o
@@ -62,3 +62,15 @@ suíte completa `node --test v2/tests/*.test.mjs`; `node v2/tools/build.cjs` reg
 navegador integrado: aba Valdoria com o mapa renderizado, expedição no pântano (57 inimigos dormentes e 4 poças), líder
 derrotado com 20% de influência e três rotas liberadas, G no portal reabrindo a aba. Playwright não está instalado; os
 `*-browser-check.cjs` não foram reexecutados. Evidências em [review/v2/e10/](../review/v2/e10/).
+
+## Piloto de percurso do Brejo
+
+Nas rotas de tipo expedição com bioma pântano, a v2 usa uma bifurcação: a trilha direta passa por duas formações defensivas; o desvio passa por acampamentos, incluindo o grupo raro existente. Uma patrulha percorre a convergência a 65% da velocidade normal enquanto está sem alerta. Ao detectar jogador, horda ou dano, usa o combate normal; ao perder o alerta, retoma a patrulha. As duas trilhas são desenhadas no chão e livres dos adereços sólidos sorteados.
+
+Continuam oito grupos, 56 inimigos e o chefe, com as mesmas escalas, raridades, poças, recompensas e conclusão pelo chefe. O terreno permanece aberto: as trilhas orientam, mas não obrigam o percurso. Outros biomas, tenentes, fortaleza e Expedições comuns conservam seus mapas. Não há emboscadas nem objetivo de ritual nesta primeira versão.
+
+### Bônus de XP da v2
+
+Abates naturais da rota (incluindo o chefe) e XP de conclusão recebem o multiplicador `(1 + 0,25 × (D − 1)) × (1 + 0,15 × intensidade)`, além da escala regional existente. Na dificuldade 4 com intensidade 6, isso rende 3,325 vezes o XP anterior. Invocações do chefe não recebem esse bônus. Ouro, maestria, loot e atributos de combate preservam os cálculos anteriores. O bônus não depende do nível do personagem e não exige migração de saves.
+
+Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.

@@ -49,35 +49,36 @@ export function createConquestPanel(s,{enter,changed}){
  function render(){
   const st=state(),d=st.difficulty,selected=st.offers[d].selected,r=Endgame.rewards(st,'expedition',d,selected),next=Endgame.nextEncounter(st);host.replaceChildren();
   const sec=node('section',undefined,host,'conquest-panel');
-  const head=node('div',undefined,sec,'conquest-heading');node('small','CONQUISTA DE VALDORIA · TERRITÓRIO I',head);node('h2','Pântano da Febre Negra',head);node('p','Domine a decomposição. Revele os tenentes, tome a fortaleza e obtenha o Fragmento da Pestilência.',head);
-  const prog=node('div',undefined,sec,'conquest-progress');node('b',st.conquered?'TERRITÓRIO CONQUISTADO':st.influence+'% de influência',prog);const bar=node('progress',undefined,prog);bar.max=100;bar.value=st.influence;bar.setAttribute('aria-label','Influência no pântano');node('span','30% · Boticário   60% · Guardiã   100% + tenentes · Fortaleza',prog);
-  if(message)node('p',message,sec,'conquest-error').setAttribute('role','alert');
-  const nb=node('section',undefined,sec,'conquest-next');nb.setAttribute('aria-label','Próximo objetivo da conquista');node('h3',st.conquered?'Revisitar a fortaleza':'Próximo objetivo',nb);
+  const top=node('div',undefined,sec,'conquest-top'),head=node('div',undefined,top,'conquest-heading');node('small','CONQUISTA DE VALDORIA · TERRITÓRIO I',head);node('h2','Pântano da Febre Negra',head);node('p','Domine a decomposição. Revele os tenentes, tome a fortaleza e obtenha o Fragmento da Pestilência.',head);
+  const prog=node('div',undefined,top,'conquest-progress');node('b',st.conquered?'TERRITÓRIO CONQUISTADO':st.influence+'% de influência',prog);const bar=node('progress',undefined,prog);bar.max=100;bar.value=st.influence;bar.setAttribute('aria-label','Influência no pântano');node('span','30% · Boticário   60% · Guardiã   100% + tenentes · Fortaleza',prog);
+  const main=node('div',undefined,sec,'conquest-main'),side=node('div',undefined,sec,'conquest-side'),extra=node('div',undefined,sec,'conquest-extra');
+  if(message)node('p',message,side,'conquest-error').setAttribute('role','alert');
+  const nb=node('section',undefined,side,'conquest-next');nb.setAttribute('aria-label','Próximo objetivo da conquista');node('h3',st.conquered?'Revisitar a fortaleza':'Próximo objetivo',nb);
   node('p',st.influence===100&&!st.conquered?(Endgame.blockedReason(st,'fortress',d)||'Influência completa e tenentes derrotados. A fortaleza está liberada!'):next==='expedition'?'Conclua expedições para aumentar sua influência.':next==='fortress'?'A fortaleza está disponível na dificuldade escolhida.':'Tenente revelado. Derrote '+Endgame.encounters[next].name+' para avançar rumo à fortaleza.',nb);
   const go=node('button',(st.conquered?'Revisitar agora · ':'Avançar agora · ')+Endgame.encounters[next].name,nb,'btn');go.type='button';go.onclick=()=>start(next);
-  const settings=node('div',undefined,sec,'conquest-settings'),label=node('label','Dificuldade regional ',settings),input=node('input',undefined,label);input.type='number';input.min=1;input.step=1;input.value=d;input.setAttribute('aria-label','Dificuldade regional');
+  const settings=node('div',undefined,side,'conquest-settings'),label=node('label','Dificuldade regional ',settings),input=node('input',undefined,label);input.type='number';input.min=1;input.step=1;input.value=d;input.setAttribute('aria-label','Dificuldade regional');
   const apply=node('button','Aplicar',label,'btn conquest-apply-difficulty');apply.type='button';
-  node('span','Recomendado: nível '+(8+(d-1)*6)+' ou build equivalente. Maior liberada: '+st.unlocked+'.',settings);node('p','Sem limite de dificuldade. Trocar o nível reinicia influência, rotas e tenentes.',sec);
+  node('span','Recomendado: nível '+(8+(d-1)*6)+' ou build equivalente. Maior liberada: '+st.unlocked+'.',settings);node('small','Sem limite de dificuldade. Trocar o nível reinicia influência, rotas e tenentes.',settings,'conquest-note');
   const doApply=()=>{const value=Number(input.value);if(!Endgame.validDifficulty(value)){input.setCustomValidity('Use um número inteiro a partir de 1.');input.reportValidity();return;}input.setCustomValidity('');set(Endgame.selectDifficulty(st,value));routeSelected=null;render();};
   apply.onclick=doApply;input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();doApply();}};
-  mountAtlas(sec,st,d);
-  node('h3','Escolha suas maldições · '+selected.length+'/3',sec);node('p','Quatro ofertas sorteadas. A oferta muda ao vencer um encontro; morte, saída e recarga preservam as opções.',sec);
-  const curses=node('div',undefined,sec,'conquest-curses');
+  mountAtlas(main,st,d);
+  node('h3','Escolha suas maldições · '+selected.length+'/3',side);node('small','Quatro ofertas sorteadas; mudam ao vencer um encontro e sobrevivem a morte e recarga.',side,'conquest-note');
+  const curses=node('div',undefined,side,'conquest-curses');
   for(const id of Endgame.offer(st.seed,st.offers[d].cycle,d)){
    const c=Endgame.curses.find(c=>c.id===id),lab=node('label',undefined,curses,'conquest-curse'+(selected.includes(id)?' selected':'')),box=node('input',undefined,lab);box.type='checkbox';box.checked=selected.includes(id);box.disabled=!box.checked&&selected.length>=3;box.setAttribute('aria-label',c.name);
    const body=node('span',undefined,lab);node('b',c.name,body);node('em',c.text,body);node('small','Intensidade +'+c.weight,body);
    box.onchange=()=>{const copy=Endgame.normalize(st);copy.offers[d].selected=box.checked?[...selected,id]:selected.filter(v=>v!==id);set(copy);render();host.querySelector('input[aria-label="'+c.name+'"]')?.focus();};
   }
-  const rw=node('div',undefined,sec,'conquest-rewards');rw.setAttribute('aria-live','polite');node('b','Intensidade '+r.score+' · Patamar '+r.tier,rw);
+  const rw=node('div',undefined,extra,'conquest-rewards');rw.setAttribute('aria-live','polite');node('b','Intensidade '+r.score+' · Patamar '+r.tier,rw);
   node('p','Expedição: +'+r.influence+'% influência · '+r.gold+' ouro · '+r.xp+' XP.',rw);node('p','Todos os equipamentos: nível '+r.itemLevel+'. Chefe garante raro ou épico ('+Math.round(r.epicChance*100)+'% épico).',rw);
   node('p',r.specialChance?'Chefe: '+Math.round(r.specialChance*100)+'% de chance do cajado Osso Carcomido.':'Intensidade 4: libera 12% de chance de Osso Carcomido; intensidade 6: aumenta para 25%.',rw);node('small','Osso Carcomido: Tiro de Osso aplica Podridão por 5 s, até 5 cargas.',rw);
-  node('h3','Avanço no território',sec);const list=node('div',undefined,sec,'conquest-encounters');
+  node('h3','Avanço no território',extra);const list=node('div',undefined,extra,'conquest-encounters');
   for(const [kind,e] of Object.entries(Endgame.encounters)){
-   const ok=Endgame.available(st,kind,d),reward=Endgame.rewards(st,kind,d,selected),done=kind==='fortress'?st.conquered:st.lieutenants[kind],reason=Endgame.blockedReason(st,kind,d),card=node('article',undefined,list,'conquest-encounter');card.dataset.conquestKind=kind;
+   const ok=Endgame.available(st,kind,d),reward=Endgame.rewards(st,kind,d,selected),done=kind==='fortress'?st.conquered:st.lieutenants[kind],reason=Endgame.blockedReason(st,kind,d),card=node('article',undefined,list,'conquest-encounter'+(ok&&!done?' ready':''));card.dataset.conquestKind=kind;
    node('h4',e.name,card);node('p',ok?(done?(kind==='fortress'?'Território conquistado · fortaleza disponível para revisitar.':'Derrotado · disponível para repetir.'):'Disponível para enfrentar.'):reason,card);node('small','+'+reward.influence+'% influência · '+reward.gold+' ouro · '+reward.xp+' XP',card);
    const b=node('button',(done?'Revisitar · ':'Entrar · ')+e.name,card,'btn');b.type='button';b.disabled=!ok;if(!ok)b.title=reason;b.onclick=()=>start(kind);
   }
-  const frag=node('div',undefined,sec,'conquest-fragment');
+  const frag=node('div',undefined,extra,'conquest-fragment');
   if(st.fragment){node('b','Fragmento da Pestilência obtido',frag);node('p','Conquista permanente. Maior dificuldade vencida na fortaleza: '+st.highest+'. Todas as dificuldades podem ser escolhidas livremente.',frag);node('p','Os outros territórios e o chefe dos fragmentos serão adicionados em uma próxima etapa.',frag);}
   else node('p','Conquiste a fortaleza em qualquer dificuldade para obter o Fragmento da Pestilência.',frag);
  }

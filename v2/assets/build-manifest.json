@@ -44,7 +44,7 @@
     },
     {
       "path": "necromancer-canvas.html",
-      "sha256": "6e3cae51168b92239612163472cb2165456c1f09fd2a906c4c9f940c597cb355"
+      "sha256": "e805587f7fa182355ed4123fbb30766f06ef9d34384ebbfd4a7a89b3d9e1f8af"
     },
     {
       "path": "scripts/skill-trees.js",
@@ -52,7 +52,7 @@
     },
     {
       "path": "scripts/equipment-model.js",
-      "sha256": "42fb699f0bcbf957bc608874c9d4f0fb48daf8237608a85010b072b4b4f35105"
+      "sha256": "1a1dd30214adc75176677f2baa8da86f3c931b8c8841a20969dc2eea1777cd59"
     },
     {
       "path": "v2/tools/combat-source.cjs",
@@ -64,7 +64,7 @@
     },
     {
       "path": "scripts/equipment.js",
-      "sha256": "65fffeeb3b13d1b3003f11bead3f5bee180161dbfdfa7b7e3e00e3443b901df5"
+      "sha256": "422341926f4ed208ac423fbf7dae35699640453af78f10c86a84e8bd958af466"
     },
     {
       "path": "v2/tools/spell-source.cjs",
@@ -84,7 +84,7 @@
     },
     {
       "path": "scripts/skill-mastery-model.js",
-      "sha256": "d8c69a2cea01f69154892638c94b8bb9b51ec0b05842c8da8038966dd97536d1"
+      "sha256": "d6d1e2544f4e26358d52db7b6c406d714733a49d683c6151896c066a2a90252c"
     },
     {
       "path": "tools/3d-lab/vendor/three.core.js",
@@ -107,6 +107,26 @@
       "sha256": "0761b1e003917b215d25dd81439d854b36034b5a57ce84c2cfe3b02428d7b253"
     },
     {
+      "path": "v2/scripts/siege-model.mjs",
+      "sha256": "04b6d5110c7017c0481cc10b73e9d265b32015d2cb4eda1ff374a7442d015138"
+    },
+    {
+      "path": "v2/scripts/siege-combat.mjs",
+      "sha256": "7b0f1ac52d0fe41195125abd63b55980b318af4309720ab1d8fb55261307fa9f"
+    },
+    {
+      "path": "v2/scripts/siege.mjs",
+      "sha256": "64724a2245909e5f103b8e3a73475baa6ab056ae02d39d4f364102d14f1f3bcf"
+    },
+    {
+      "path": "v2/scripts/siege-panel.mjs",
+      "sha256": "4a8ae8205557873567e7b054ce11347c799d9ed500c1a510ed77a27ccefa984f"
+    },
+    {
+      "path": "v2/scripts/siege-scene.mjs",
+      "sha256": "3f0c6bbd05a4e35be1b8f101a417b556f65b4cdc523836d9ca94ea41a232a9a8"
+    },
+    {
       "path": "v2/scripts/shared-portrait.mjs",
       "sha256": "c166a8bd8e5a49d225c11557dca8705ba824d25b70922159015ff51356160b59"
     },
@@ -120,11 +140,11 @@
     },
     {
       "path": "v2/scripts/game-ui.mjs",
-      "sha256": "4269063c0bbac5c566b146a281f2491950394eb73e31ebebac254110bc7350e0"
+      "sha256": "8c0a747b533d6936d3b706044ad60a784a4847c4827062cd637a1883e54c396c"
     },
     {
       "path": "v2/scripts/campaign.mjs",
-      "sha256": "8ec27e49b433698cb05b3e217c31c49951bbe4de7b233996a480b96abaf157fe"
+      "sha256": "a6f534e1d00c0eb8d21a2bc4efc810b29676833c570df6eca3c8a9ffe274e686"
     },
     {
       "path": "v2/scripts/arena-model.mjs",
@@ -136,11 +156,11 @@
     },
     {
       "path": "v2/scripts/conquest-panel.mjs",
-      "sha256": "4a954e29848aebc158662defa2988c00f61a2ef91b3ccc96fa38d2619a7b1026"
+      "sha256": "4fe098c28d3bbacb046db186c4f12a3a5297a80faf0a95abaff177f9d43c2b70"
     },
     {
       "path": "v2/scripts/expedition-map.mjs",
-      "sha256": "c29c79c7998eae29099e1f31397265bd4d0ba42ca9ace49a3db0f7587195c10f"
+      "sha256": "f53a7cdb8f43e1f28e843efa8c90bc74abb3b4073a92b22e8718bf7504e90b2a"
     },
     {
       "path": "v2/scripts/expedition-scene.mjs",
@@ -148,15 +168,19 @@
     },
     {
       "path": "v2/scripts/expedition.mjs",
-      "sha256": "1e1f3ba4bf32bb7170e258e9978996ea3f0c8f6fa4ce50ecdabcfb9592835f9b"
+      "sha256": "e132f30b7d37ed9c7f62fdc75daef6258e118a4c206d85a2338ef81ff06ddab5"
     },
     {
       "path": "v2/scripts/waves-panel.mjs",
-      "sha256": "6d20b8c5f481aa20cf29532f6a041cfa855a46b58f23a2f71f3ddcb674f398fa"
+      "sha256": "1d976be01ff7afe048c99de473a3803211036cd7b5ff12db0a46ad6d3ace9c57"
     },
     {
       "path": "v2/scripts/campaign-panel.mjs",
-      "sha256": "c378ca7b0a1cda26e66912bdfa87673d06c80027c4b7cc2f7059d0d20927307a"
+      "sha256": "f391293d05353d59587aaaa73ff02e56532f4b8f7dac093b4b795f15d0751199"
+    },
+    {
+      "path": "v2/scripts/campaign-atlas.mjs",
+      "sha256": "ad4c0f76d431312e1e09bf57415147ba9e09da45086e260ba76ba8ee44261262"
     },
     {
       "path": "v2/scripts/campaign-rules.mjs",
@@ -168,7 +192,11 @@
     },
     {
       "path": "v2/scripts/enemies.mjs",
-      "sha256": "7936ac3af03b9e0e2c3d8f122fdd4e96684f4924a560a574f701e8a7fd940315"
+      "sha256": "e03136a26985db41fb26db6315c64c42dcc0ae1d5d0372ea9a21bf5e32b0ab2d"
+    },
+    {
+      "path": "v2/scripts/enemy-tactics.mjs",
+      "sha256": "92fe3aa39b0e05e477a23f312075aaf2e4775b00f3dfe63e35a64a32f82020ec"
     },
     {
       "path": "v2/scripts/enemy-rules.mjs",
@@ -188,7 +216,7 @@
     },
     {
       "path": "v2/scripts/fallen-king.mjs",
-      "sha256": "43c72ebad029b3153ab23e921dca46cd59ded19b77b1ac6ebe7462fb8968c5ae"
+      "sha256": "6cf98bd3b5619cb6d6f019f96cc73be9cb78f4b17c41ed3ee3f20fcb4637c0e1"
     },
     {
       "path": "v2/scripts/shared-fallen-king.mjs",
@@ -200,7 +228,7 @@
     },
     {
       "path": "v2/scripts/actions.mjs",
-      "sha256": "b0c7021320f77b6dedbdcd127c88567ee8d2140a81b28c1dcb88f5e0974ffd6b"
+      "sha256": "853f1b6a243e98125fcdfe5cc8b8df207043e7fbc982c806aa626b05a80d29d0"
     },
     {
       "path": "v2/scripts/spell-rules.mjs",
@@ -208,7 +236,23 @@
     },
     {
       "path": "v2/scripts/spells.mjs",
-      "sha256": "f3a2ba9c292f6f741b46b6b4615eb527d06a48d50aef45369f7a414bcc9ba61b"
+      "sha256": "232a77cac794884f14e20744b4aca0e6873fb8b74103a88ad17df93e2c850d21"
+    },
+    {
+      "path": "v2/scripts/death-tree.mjs",
+      "sha256": "54a64de690d02e2a45f390976efdd4d4ec6bba71317f47b7c96d4b2731da150b"
+    },
+    {
+      "path": "v2/scripts/lich-mastery.mjs",
+      "sha256": "c76b55b207090ea391558e61186ecc2dbab4f0a569c61adca1100c5e81da8cd6"
+    },
+    {
+      "path": "v2/scripts/full-build.mjs",
+      "sha256": "f3b89f660e20e5fb5f4be3f5304ae8579590edab8b962fb50ed5e88bfb4049c5"
+    },
+    {
+      "path": "v2/scripts/lich-model.mjs",
+      "sha256": "e223b815f0c6facd3703f59c0569f2e00914b8a1e9705a74147bcdfd917ba02f"
     },
     {
       "path": "v2/scripts/terrain.mjs",
@@ -268,7 +312,7 @@
     },
     {
       "path": "v2/scripts/shared-equipment.mjs",
-      "sha256": "85221da997027f4c02eaa01054177fd5d78af36067a9aaa5a1282c673e36dbaa"
+      "sha256": "0f7d06337d141e62418b7dc0a7baaf4c06a34f69dbd8af7633e23720645fef7f"
     },
     {
       "path": "v2/scripts/shared-build.mjs",
@@ -276,11 +320,11 @@
     },
     {
       "path": "v2/scripts/shared-mastery.mjs",
-      "sha256": "77011b7cc8bcbf71608e1206b270f90a603eb129111656e8cf69b16e2ba10103"
+      "sha256": "b33dde778b8d65217e4970fe59772f975b76572ec86de59b7d75f3bd28f41d8e"
     },
     {
       "path": "v2/scripts/mastery.mjs",
-      "sha256": "7d39ee54f1508ee454b12afe2f55894fc9546d5b16c612555f4ff73e231d56f6"
+      "sha256": "8a7d1b921911775c3121c2654edec7bdd01961ecff99037ff683e9bbdff1fe2b"
     },
     {
       "path": "v2/scripts/progression-rules.mjs",
@@ -288,7 +332,7 @@
     },
     {
       "path": "v2/scripts/progression.mjs",
-      "sha256": "e062eaa7ea7c4d20d69d2a433ec8fd0d66c0edd61ecb90a94cb79e2eff1659b0"
+      "sha256": "ffced50629514b952d6088815d17c16b9d05bd3ac8e1505538e755a5b94bcced"
     },
     {
       "path": "v2/scripts/drops.mjs",
@@ -300,23 +344,23 @@
     },
     {
       "path": "v2/scripts/gear.mjs",
-      "sha256": "078b4944eae68c4ce1f8e724dc8a4d7fed2fe3f28f7648326ea9912425fb3a2b"
+      "sha256": "abc4ded9705d5f592da6d8d2f07d88c2df7b64c87152f875a7269b0469cf1cb4"
     },
     {
       "path": "v2/scripts/gear-panel.mjs",
-      "sha256": "cfd62698277535e4e828a91ddd3db30912606a9261fe765cd0ccb45921d8f08f"
+      "sha256": "a199926d03de768a64cbaab639ea58fbc085057e77f2f0da61b102149e4cab16"
     },
     {
       "path": "v2/scripts/rewards.mjs",
-      "sha256": "09397929abece53709e88822cb6fc517b319ba839cf49db4b52fbc549a62f73c"
+      "sha256": "4bd51064b596d6e02442d035910334e311ae13e1cbaf0a26c550b8e8cf4c8907"
     },
     {
       "path": "v2/scripts/grimoire.mjs",
-      "sha256": "3ea91ebef8c10ad2ad7b12f78c62b4f05a5378c910629c502cb434c17c4fc557"
+      "sha256": "364ac8da4e6e6dfa541797b2c4c92075fb6a18efb98a45266d820b02a35ac592"
     },
     {
       "path": "v2/scripts/grimoire-panel.mjs",
-      "sha256": "a1556643979fddfaf67f48b103e01e635858d7e905ad7c39f37db305bbebdcdf"
+      "sha256": "5ca084237478f8474b9f1445de8e6ef476242c99462dd19fad2e5321f37c26f2"
     },
     {
       "path": "v2/scripts/horde-rules.mjs",
@@ -328,51 +372,71 @@
     },
     {
       "path": "v2/scripts/horde.mjs",
-      "sha256": "0007a52434de3778cfd38c8e3ed1dc8ebb52a06e9fbca2e52d5a428ce902a868"
+      "sha256": "1f0bd7ac7a7a8d403236276375e0ca9f272e6166bbface602141fed9c99a0f26"
     },
     {
       "path": "v2/scripts/horde-panel.mjs",
-      "sha256": "50207a8923f2136850f3f0868f84835eeca30d4d2b2c130bf7040b3592b0e134"
+      "sha256": "001b172ac9177d922c476973959e70086dbf3471a9e1af2e02756b7ab4dda185"
     },
     {
       "path": "v2/scripts/combat.mjs",
-      "sha256": "f4158a8ffed458a07fba0c60d924cc0574d6d5561bb2b162204e7d6f7562d8e5"
+      "sha256": "305d4bb24e447e7244b9072a59d0907dc994ed7f1efa21154bb44d57873021aa"
     },
     {
       "path": "v2/scripts/training-model.mjs",
-      "sha256": "08540f47354e226bd457f595ab769c3cc0479f176a61dca7703c4a809dc03204"
+      "sha256": "bddc366015c910d003ecc79cd63be7fab262b1841a1946a340f37e934a856408"
     },
     {
       "path": "v2/scripts/audio.mjs",
-      "sha256": "68cf236ed821df322d2f073490b2514c3a3c123f7c6f1afa74d2d65639ab5138"
+      "sha256": "deb1474e2d47f3463fc39e8a40a4551bf1a006db2972a0b01768b1ecadb0e1a8"
     },
     {
       "path": "v2/scripts/sound-events.mjs",
       "sha256": "bd092bda540ea0107005f5012b2e50f9043571d9e63827d24e9ba8b7d50c1d14"
     },
     {
+      "path": "v2/scripts/lab-model.mjs",
+      "sha256": "7d452e2fadb8ff2f1bd9ce329e2f40d831f2f310c59258c7df32dfc30e3b2f9b"
+    },
+    {
+      "path": "v2/scripts/lab.mjs",
+      "sha256": "30236b4a6dc4cb3ec7fa5e3e3fb6855955a5a28b32b56d80561b6558128250aa"
+    },
+    {
+      "path": "v2/scripts/lab-panel.mjs",
+      "sha256": "4e73ee710a62c87e190d1ee4756f712ea447c26617752bd4f0198cdb4538c2c7"
+    },
+    {
+      "path": "v2/scripts/vfx-events.mjs",
+      "sha256": "af76628934aafcc282d518216a389efd241f79013ae049dde25124e1d5071c06"
+    },
+    {
+      "path": "v2/scripts/vfx.mjs",
+      "sha256": "644a5e8ca276e04addb39a6dea56bac152db324d7e6422d7786e70a457e6a23f"
+    },
+    {
       "path": "v2/scripts/renderer.mjs",
-      "sha256": "6c8eefe5a5203d418368310fabc62b123f7f7cea5552523df3d8541d29dc4ec6"
+      "sha256": "a0d29d1c5a6983328496c2b4bba93599ba49f11eb2f3bc276bcea46daae023f8"
     },
     {
       "path": "v2/scripts/input.mjs",
-      "sha256": "f3338ece93a683d75cd07c436a8795604812256e0dbe6723d08a67390df46adb"
+      "sha256": "8945e176ee5e85a36082caec9ee4be1c9e3eaafe78184bf8b68d4f5bb63ee3f7"
     },
     {
       "path": "v2/scripts/save-model.mjs",
-      "sha256": "d339f83bb9f9517f35a9d920fbafdaa501c98eacb84f901e8f8415ac192a89ba"
+      "sha256": "1db52e0ae447995f8bb5f4950e5c5a7b971a45a15e2adea407b7bf77be1d1959"
     },
     {
       "path": "v2/scripts/session.mjs",
-      "sha256": "f0a909dc4485fba473128fd179895cb92d4cf8f5359d79099f16dd05a363af00"
+      "sha256": "d6a136a4a0d3dedfab52f132ff120ea8ef63184ac4f0da0356aea994b9253410"
     },
     {
       "path": "v2/scripts/app.mjs",
-      "sha256": "ca79446db17529c229efdac06fd4930a4a39041fdbd7eb06719de8453ad43f5f"
+      "sha256": "11aac729b1163b7ea6c4f560eadd402005930f212e42093f3813f03eb74f0906"
     },
     {
       "path": "v2/assets/models.json",
-      "sha256": "203e740980411a40e867bf549fac9dd5147994ece9277ee4ccfb2fa5d3ee5e32"
+      "sha256": "7834633ea9eaf90e45eb5848b05e40cd444f19f7696646574a83588f6d49c711"
     },
     {
       "path": "blender/exports/lab_player_current.glb",
@@ -395,6 +459,10 @@
       "sha256": "5af3f7ec43ede930e9d5fbf033585ab6f77a2472d00078661347e97a4bfefcc5"
     },
     {
+      "path": "blender/exports/v2_harpy_feather.glb",
+      "sha256": "ae3f6260c9787ec1b7a3e29a0c0a2dd5bcd0b33e8b55f813738b2e8c100739df"
+    },
+    {
       "path": "blender/exports/bone_shard.glb",
       "sha256": "7c7b9e6ba4d15c1d509653f2d665cc5c20289e6275e3452c362a888397ca5863"
     },
@@ -412,7 +480,7 @@
     },
     {
       "path": "blender/exports/v2_enemy_knight.glb",
-      "sha256": "b24a8b0449200351213444c6a3950844212171299b341f0364c25c9fcad0fb63"
+      "sha256": "4467b4e71ecf212ba5b31438ad6f7d374c0534acba29c7b2fbe96d9830fe5808"
     },
     {
       "path": "blender/exports/lowpoly_earcher.glb",
@@ -428,7 +496,7 @@
     },
     {
       "path": "blender/exports/v2_enemy_wolf.glb",
-      "sha256": "38231b5b8f2072bdfbc634a6ecf4a80710e45a0d8618694ddf820e2118bf6b31"
+      "sha256": "ba804561c7caa2abfe60e349c91585625b04ef0a37038961494f2144b241962f"
     },
     {
       "path": "blender/exports/mob_warAcolyte.glb",
@@ -436,15 +504,23 @@
     },
     {
       "path": "blender/exports/v2_enemy_thief.glb",
-      "sha256": "8b1c27733b325a6f714d411daa34822c00051a6212f013f30bf7dbfb4d500ae4"
+      "sha256": "a40091ae73c9d6f2010a344aad612747ccf52edcd58a40ab4f4ba2316111a67f"
     },
     {
       "path": "blender/exports/v2_enemy_griffin.glb",
-      "sha256": "244549c2afee8196cae03625485ecc8fde118758afe98cd106416422dd4b1e7e"
+      "sha256": "3bbb56e8a12e060f0d4f4d56ecceb0637d1067ab8c0c07b2a88b9d2f4e6fc0c8"
     },
     {
       "path": "blender/exports/v2_enemy_spider.glb",
       "sha256": "e02611bfe7b8ca5844dda179d6e95c2869d41554195e753d911c464a168fcbff"
+    },
+    {
+      "path": "blender/exports/v2_enemy_rogue.glb",
+      "sha256": "49ca0be5c2a1ffeff7f56d0db323a5abcfb26678e3786aae45a040e6ef0b1205"
+    },
+    {
+      "path": "blender/exports/v2_enemy_orc.glb",
+      "sha256": "790f129cc5d856bc36f28ed1b0fe6429dba245beb2084b3f9455df346ff09e9e"
     },
     {
       "path": "blender/exports/stylized_bram.glb",
@@ -467,12 +543,68 @@
       "sha256": "b0deebbbddef8795d03393a0bc32170f1e1ee306c07a4299a0aa04aca182ccf0"
     },
     {
+      "path": "blender/exports/v2_lich.glb",
+      "sha256": "425491a891eda259cbf0328a06f9d114a0126be27fb1869902816c1914cd1770"
+    },
+    {
+      "path": "blender/exports/v2_lich_scythe.glb",
+      "sha256": "1e5eaca0de5c8648cd178b68f49aba659796abf034d765b7a92c48847ff50dec"
+    },
+    {
+      "path": "blender/exports/v2_flesh_shield.glb",
+      "sha256": "58d995e882ae84d6ccda6a6814f33353086d9a93690d2fc8810b0fcfa0bf3e92"
+    },
+    {
+      "path": "blender/exports/bran.glb",
+      "sha256": "c2dddaf5a88def053ddb42f5f8dd4a23cb617213a31de0b2c8ddf7a500370395"
+    },
+    {
+      "path": "blender/exports/siege_core.glb",
+      "sha256": "2c0f39ac47a81ab113c2f9a2836e9197dc358592967cd7b101892dd42e1573c1"
+    },
+    {
+      "path": "blender/exports/siege_bone.glb",
+      "sha256": "57b349eec9d9e758cf86c92227ae02ececdddf41c0e295eff0ec7da52a15ee43"
+    },
+    {
+      "path": "blender/exports/siege_frost.glb",
+      "sha256": "ca3c46da1d354d0984a03bc36342b4cb8fbf653b8e329cf3f2b2e42ba9bca2c0"
+    },
+    {
+      "path": "blender/exports/siege_plague.glb",
+      "sha256": "e5b86b203b3689b65da880d786ddfa84eaf6c23121be7e7b209de3574142e2e8"
+    },
+    {
+      "path": "blender/exports/siege_crypt.glb",
+      "sha256": "9834759d95a76004fb44f2a656f52abef382a4f03684bb75979036e999faf192"
+    },
+    {
       "path": "v2/assets/music.json",
-      "sha256": "7d016472115705e6d32eaef6003f219f862273ec8ea09d2e9ce571779a31a31c"
+      "sha256": "1e4e3cd534fb70237e274f94cada730bab61ba3f39be15069af80a7e08cf75aa"
     },
     {
       "path": "v2/assets/audio/the-shadows-oath.mp3",
       "sha256": "b19e8c096fc63a7e96a6f101f781c1f796cc079ce1a38eb08b045731faa0ada4"
+    },
+    {
+      "path": "v2/assets/audio/autumn-keep.mp3",
+      "sha256": "a9e908deefdfc208c0b202511c15398f8280220d5bbb84ddff30fc21ed2857d7"
+    },
+    {
+      "path": "v2/assets/audio/crypt-of-stone.mp3",
+      "sha256": "1d5026e295ecd42ec6a2c92e2fc7762167c34d302655f0007da8eb0659fd0e68"
+    },
+    {
+      "path": "v2/assets/audio/necromantic-threshold.wav",
+      "sha256": "157cc0a2a0141ec983eb20b9611882665cd0543b2f599ffadcea876586d16289"
+    },
+    {
+      "path": "v2/assets/audio/warning-signal.wav",
+      "sha256": "61e019f3261a2da0acd6774b8400557e599044fab5f42cdfece95f8e31cb07ae"
+    },
+    {
+      "path": "v2/assets/audio/crowned-in-bone.wav",
+      "sha256": "1b2699b49feb09ba06485ae75ed83ac5c9c5f99d9bbd84b5c1c732a6b4362411"
     },
     {
       "path": "v2/tools/template.html",
@@ -504,7 +636,11 @@
     },
     {
       "path": "v2/scripts/conquest.css",
-      "sha256": "2599a94dc46b149c2b7a6136b0075791bcf53f1f53d4a0542582d063a98e5046"
+      "sha256": "02f571f13523cbed94f868e4e307986aeb4eb54f4e25a9b3d211ff4d1f5b7b83"
+    },
+    {
+      "path": "v2/scripts/lab.css",
+      "sha256": "bff9a6ecad8fd5c02ae2425811d8c76c1a83a4396b44abf29a8056ad9790ef0e"
     },
     {
       "path": "v2/scripts/shared-hud.css",
@@ -532,7 +668,7 @@
     },
     {
       "path": "v2/scripts/ui.css",
-      "sha256": "2bb8ca37689db1068da7d52a88e3590e5f48c8f52d2ee3b1188b2e89fcda2954"
+      "sha256": "2cb599f891781a371741915b01b2b3907b17082b1639de0a213a7de7f02bff24"
     },
     {
       "path": "v2/tools/ui-layout.html",

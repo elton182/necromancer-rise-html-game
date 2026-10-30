@@ -1,3 +1,4 @@
+import {normalizeSiege} from './siege-model.mjs';
 import {normalizeCampaign} from './campaign-model.mjs';
 // Contrato persistido independente do mundo, DOM e armazenamento.
 import {normalizeHorde} from './horde.mjs';
@@ -38,7 +39,7 @@ export function normalizeSave(raw){
  const gearLevel=number(s.gearLevel,1,'Nível dos itens',60);if(!Number.isInteger(gearLevel)||gearLevel<1)throw Error('Nível dos itens inválido.');
  if(s.lootFilter!==undefined&&!RARITY_ORDER.includes(s.lootFilter))throw Error('Filtro de loot inválido.');
  if(s.ground!==undefined&&!['dark','light'].includes(s.ground)||s.quality!==undefined&&!['high','low'].includes(s.quality))throw Error('Opções inválidas.');
- const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{}))},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
+ const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
  if(!MODES.includes(result.settings.waveMode))throw Error('Modelo de waves inválido.');
  result.settings.armyMode=s.armyMode??(raw.settings?'load':'groups');if(!['load','groups'].includes(result.settings.armyMode))throw Error('Modo da horda inválido.');result.horde=normalizeHorde(raw.horde);
  // Nível do personagem e do perfil do Grimório são o mesmo progresso: vale o maior, e o XP respeita o nível final.

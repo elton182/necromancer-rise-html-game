@@ -34,7 +34,8 @@ Arquivos: `expedition-map.mjs` (dados do mapa), `expedition-scene.mjs` (visual p
 - **Raridades:** mágico vida ×1,9, dano ×1,3, velocidade ×1,08, XP ×2, 55% de equipamento (mágico
   ou melhor); raro vida ×3,4, dano ×1,65, velocidade ×1,12, XP ×4, equipamento garantido
   (raro 85%, épico 15%); comum 16% de equipamento. Aplicados sobre a escala da wave, uma vez.
-  Elites mostram rótulo com o nome da raridade quando dormentes.
+  Elites mágicos e raros têm círculo rúnico azul/dourado, rótulo com a raridade, modelo maior e ponto colorido no
+  minimapa ([efeitos visuais](v2-efeitos-visuais.md#elites-de-expedição-mágicos-e-raros)).
 - **Boss:** derrotá-lo conclui a wave: recorde, `3+2w` de ouro e `20+8w` de XP, uma vez, e abre
   o portal final. Garante equipamento raro (75%) ou épico (25%). Não é preciso matar os outros
   grupos. A barra e a música de chefe só aparecem depois que ele acorda.
@@ -66,3 +67,5 @@ navegador integrado, sem erros de console: entrada pela Pedra, boss derrotado no
 recorde gravado, G no portal final levando à wave 2 (floresta), grupo acordando por proximidade.
 Playwright não está instalado; os `*-browser-check.cjs` não foram reexecutados.
 Evidências em [review/v2/e10/](../review/v2/e10/).
+
+Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.

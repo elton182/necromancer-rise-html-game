@@ -86,3 +86,14 @@ Acólito durante preparação/canal**; o relatório declara essa limitação e p
 subestimar o dano dos grupos. Use os testes de navegador ou a simulação no motor
 real para investigar o efeito integrado. Campanha e comparação legacy preservam
 a composição anterior.
+
+### Revisão de combate da v2 (29/10/2026)
+
+A carga da Lança Sepulcral, a formação em V, a Forma da Morte, o Gancho do
+Túmulo e as sinergias de Ceifado não são modelados por este simulador. As
+prioridades automáticas atuais não investem em `lance`; os relatórios do
+Tiro comum não validam o dano sustentado da Lança carregável. Use os testes
+de regras e de navegador da v2 para integração e partidas reais para avaliar
+o balanceamento desses recursos. O novo visual do Escudo não muda absorção.
+
+O **Cerco ao Ritual** da v2 não é modelado por este simulador matemático: rotas, integridade, torres, essência e runas têm simulação no motor em `v2/tests/siege-simulation.mjs`. Consulte `docs/v2-cerco.md` para regras e limites; resultados não equivalem a validar todas as builds ou graus.

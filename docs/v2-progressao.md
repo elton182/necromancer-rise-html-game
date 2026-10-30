@@ -77,7 +77,8 @@ o chefe usa a referência do Extermínio com escala.
   mitigação de defesa e DPS das habilidades (`snapshot`, estimativas do modelo atual).
 - **Filtro de loot** (`settings.lootFilter`): peças abaixo da raridade ficam ocultas e
   não são coletadas; ouro e orbes não são filtrados. Mochila cheia mantém a peça no
-  chão e avisa uma vez por 3 s.
+  chão e avisa uma vez por 3 s. O filtro vale em todos os modos (treino, campanha, Arena, Expedição e Conquista):
+  cada modo reconstrói o mundo e reaplica `settings.lootFilter` (`campaign.mjs`, `clean`).
 - **Menu como vila:** o mercador de relíquias (preço `25 + 10 × nível`), a venda
   (15% do preço) e a compra de consumíveis só funcionam no menu, fora do encontro.
   No encontro, a opção é **Descartar**. Descartar tudo pede segundo clique.
@@ -152,3 +153,13 @@ fundos escuro, claro e qualidade baixa, filtro de loot e resultados em JSON.
 - Sem arrastar e soltar, sem áudio de coleta, sem comparação de balanceamento com o simulador
   e sem teste de desempenho em outras máquinas. Hardware de controle não conferido.
 - Itens só entram por drop, compra ou importação; não há ajuste de drop/dano para testes.
+
+### Defesa garantida dos equipamentos
+
+Vestimenta, capuz e botas sempre concedem defesa inerente, além de suas bases de vida, mana e movimento. Cada peça concede `10 × (1 + 0,12 × (nível do item − 1))` de defesa, arredondada a duas casas, independentemente da raridade e sem sorteio. Cajado, grimório e anéis não têm essa base defensiva. O sorteio dessas três peças pode acrescentar apenas **+% de defesa**, aplicado à soma da defesa dos equipamentos. A defesa inerente não consome um afixo. A versão 3 dos itens converte o antigo afixo de defesa plana em percentual com o mesmo número (ex.: +10 vira +10%); a defesa garantida passa a valer também para itens antigos. IDs, bases anteriores, raridade e demais afixos são preservados.
+
+### Bran, o ferreiro
+
+Na Vila de Eldrin, G junto de Bran abre Equipamentos. Selecione uma peça equipada ou da mochila: Bran aprimora qualquer raridade, de +0 a +5, com sucesso garantido. Cada grau acrescenta 25% à base e à defesa garantida (+125% em +5), sem mudar nível ou afixos. O próximo grau custa (25 + 10 × nível do item) × (grau atual + 1) ouro.
+
+Cada botão de troca substitui somente o afixo escolhido por um atributo numérico aleatório permitido para o slot, diferente de todos os atuais. O novo valor segue a escala do nível e o intervalo de 70–130% da base do atributo. Custa 2 × (25 + 10 × nível do item) ouro; itens comuns não têm afixos para trocar. Missões de Bran continuam acessíveis perto dele pelo painel da vila. Serviços exclusivos da vila; a interface salva após cada operação.

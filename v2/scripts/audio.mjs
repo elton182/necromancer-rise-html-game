@@ -1,5 +1,5 @@
 // Áudio procedural da v2, portado de necromancer-canvas.html (AUDIO ENGINE e MÚSICA PROCEDURAL).
-// Sem arquivos: efeitos e música saem de osciladores e ruído do Web Audio. Sem DOM; o contexto é injetável.
+// Arquivos embutidos substituem temas e efeitos; osciladores e ruído mantêm o fallback. Sem DOM; contexto injetável.
 const SCALES={
  min:[0,2,3,5,7,8,10],dor:[0,2,3,5,7,9,10],phr:[0,1,3,5,7,8,10],pdom:[0,1,4,5,7,8,10],pent:[0,3,5,7,10,12,15]
 };
@@ -33,9 +33,11 @@ export function base64Bytes(data){const bin=atob(data),bytes=new Uint8Array(bin.
 // O volume fica fora do save do personagem: é preferência do aparelho, não progresso.
 // tracks: {id: () => ArrayBuffer | Promise<ArrayBuffer>} troca a trilha procedural do tema por um arquivo em loop;
 // se o arquivo não decodificar, o tema procedural assume.
-export function createAudio({createContext=defaultContext,storage=null,now=()=>performance.now(),tracks={}}={}){
+// effects usa o mesmo contrato para efeitos sem loop, pré-carregados no primeiro gesto.
+export function createAudio({createContext=defaultContext,storage=null,now=()=>performance.now(),tracks={},effects={}}={}){
  const prefs=loadPrefs(storage),counts={},lastPlayed={};
- const decoded={};
+ const decoded={},decodedEffects={};
+ const loadEffect=id=>decodedEffects[id]||(decodedEffects[id]=Promise.resolve().then(()=>effects[id]()).then(bytes=>ctx.decodeAudioData(bytes)));
  let ctx=null,master=null,noiseBuffer=null,bus=null,theme=null,current=null,step=0,next=0,duck=1,timer=null,broken=false,disposed=false;
  const save=()=>{try{storage?.setItem(STORAGE_KEY,JSON.stringify(prefs));}catch{}};
  const masterLevel=()=>prefs.muted?0:prefs.volume;
@@ -247,6 +249,7 @@ export function createAudio({createContext=defaultContext,storage=null,now=()=>p
     ctx=createContext();master=ctx.createGain();master.gain.value=masterLevel();master.connect(ctx.destination);
     timer=setInterval(tick,90);timer.unref?.();
     if(current!==null)startTheme(current);
+    for(const id of Object.keys(effects))loadEffect(id).catch(()=>{});
    }
    if(ctx.state==='suspended')ctx.resume();
    return true;
@@ -255,7 +258,13 @@ export function createAudio({createContext=defaultContext,storage=null,now=()=>p
  function play(name){
   if(prefs.muted||!SFX[name]||!unlock())return false;
   const t=now();if(t-(lastPlayed[name]||-Infinity)<THROTTLE_MS)return false;lastPlayed[name]=t;
-  try{SFX[name]();counts[name]=(counts[name]||0)+1;return true;}catch(error){console.warn('Som falhou:',name,error.message||error);return false;}
+  try{if(effects[name]){
+   loadEffect(name).then(data=>{
+    if(disposed||prefs.muted)return;
+    const source=ctx.createBufferSource(),g=gain(.65);source.buffer=data;source.connect(g);
+    source.onended=()=>{source.disconnect();g.disconnect();};source.start();
+   }).catch(error=>{if(disposed||prefs.muted)return;console.warn('Efeito indisponível, usando o procedural:',name,error?.message||error);SFX[name]();});
+  }else SFX[name]();counts[name]=(counts[name]||0)+1;return true;}catch(error){console.warn('Som falhou:',name,error.message||error);return false;}
  }
  // null mantém a trilha atual; um id desconhecido silencia a música.
  function setMusic(id){

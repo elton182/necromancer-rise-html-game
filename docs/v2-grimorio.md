@@ -7,6 +7,8 @@ da arena; árvore, maestrias e barra do personagem antigo seguem arquivadas. O p
 básico de nível 1 só ganha pontos ao subir de nível (3 por nível, E7). Para experimentar, use a build de teste da horda
 de nível 24 e seus pontos ainda disponíveis.
 
+> A aba **Morte** (árvore da Forma de Lich) e os novos rótulos das abas estão em [v2-morte-lich.md](v2-morte-lich.md#10-integração-etapa-4-29102026).
+
 ## Investimento e devolução
 
 O modelo canônico `build-simulator/model.js` define os nós, níveis mínimos,

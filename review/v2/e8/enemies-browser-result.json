@@ -24,7 +24,7 @@
       "kind": "active",
       "actors": 7,
       "shots": 0,
-      "zones": 1,
+      "zones": 0,
       "adds": 0,
       "models": [
         "player",
@@ -91,9 +91,7 @@
       "actors": 4,
       "shots": 0,
       "zones": 0,
-      "king": "summon",
       "phase2": true,
-      "phase": 1,
       "adds": 2,
       "models": [
         "player",
@@ -126,7 +124,7 @@
       "kind": "active",
       "actors": 7,
       "shots": 0,
-      "zones": 1,
+      "zones": 0,
       "adds": 0,
       "models": [
         "player",
@@ -193,9 +191,7 @@
       "actors": 4,
       "shots": 0,
       "zones": 0,
-      "king": "summon",
       "phase2": true,
-      "phase": 1,
       "adds": 2,
       "models": [
         "player",

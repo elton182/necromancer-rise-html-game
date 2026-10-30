@@ -19,13 +19,28 @@ const KINDS={grave:['tomb','column','skulls'],forest:['oak','pine','bush'],deser
 // Só estes viram colisor, como no jogo antigo; `r` é o raio de colisão e `height` a altura visual.
 const SOLID={oak:{r:.5,height:5.2},pine:{r:.45,height:6},rock:{r:.55,height:.9},cactus:{r:.55,height:2.4},column:{r:.55,height:3.2},house:{r:2,height:3},ice:{r:.55,height:1.6},ruin:{r:.55,height:1.8}};
 const round=n=>+n.toFixed(2);
+// Piloto exclusivo do Brejo: duas trilhas convergem antes do chefe.
+function brejo(plan){
+ plan.layout='brejo-fork';
+ plan.route=[{x:8,y:40},{x:30,y:40},{x:65,y:31},{x:102,y:36},{x:125,y:40},{x:148,y:40}];
+ plan.branches=[[{x:30,y:40},{x:48,y:62},{x:83,y:64},{x:108,y:56},{x:125,y:40}]];
+ const spots=[[32,40,'guard'],[55,31,'defense'],[75,35,'defense'],[54,63,'camp'],[78,64,'camp'],[108,53,'patrol'],[119,39,'guard'],[131,43,'guard']];
+ plan.groups.forEach((g,i)=>{const [x,y,encounter]=spots[i];g.x=x;g.y=y;g.encounter=encounter;
+ g.mobs.forEach((m,j)=>{m.x=x+(encounter==='defense'?(j%4-1.5)*2:Math.cos(j*2.4)*3);m.y=y+(encounter==='defense'?Math.floor(j/4)*4:Math.sin(j*2.4)*3);});
+ if(encounter==='patrol')g.patrol=[{x:96,y:53},{x:113,y:53}];
+ });
+ // O grupo raro existente ocupa o desvio; não acrescenta loot nem inimigos.
+ return plan;
+}
+
 // Distância de um ponto à trilha, ao início, à saída e aos grupos: a mesma regra do jogo antigo para deixar a rota livre.
 function blocked(plan,x,y){
- return Math.abs(y-Expedition.routeY(plan.route,x))<5||Math.hypot(x-plan.entry.x,y-plan.entry.y)<7||Math.hypot(x-plan.exit.x,y-plan.exit.y)<9||plan.groups.some(g=>Math.hypot(x-g.x,y-g.y)<5);
+ return [plan.route,...(plan.branches||[])].some(r=>x>=r[0].x&&x<=r.at(-1).x&&Math.abs(y-Expedition.routeY(r,x))<5)||Math.hypot(x-plan.entry.x,y-plan.entry.y)<7||Math.hypot(x-plan.exit.x,y-plan.exit.y)<9||plan.groups.some(g=>Math.hypot(x-g.x,y-g.y)<5);
 }
 // `options` (Conquista): troca o bioma e limita os grupos, como o jogo antigo faz sobre o plano da Expedição.
 export function expeditionArena(wave,options={}){
  const plan=Expedition.plan(wave);if(options.biome)plan.biome=options.biome;if(options.groups)plan.groups=plan.groups.slice(0,options.groups);
+ if(options.pilot)brejo(plan);
  const rr=Expedition.random(plan.wave*3571),kinds=KINDS[plan.biome],solids=[],decor={trees:[],bushes:[],grass:[],flowers:[],mushrooms:[],patches:[],path:[],misc:[],braziers:[],water:[]};
  for(let i=0;i<190;i++){
   const x=3+rr()*(plan.width-6),y=3+rr()*(plan.height-6);if(blocked(plan,x,y))continue;
@@ -34,6 +49,7 @@ export function expeditionArena(wave,options={}){
   else if(look==='bush')decor.bushes.push({x:round(x),y:round(y),size:round(.5*sc+.15),tone:round(seed)});
   else decor.misc.push({look,x:round(x),y:round(y),size:round(sc),tone:round(seed),tilt:round(tilt),w:round(w),v});
  }
+ if(plan.branches)for(const route of plan.branches)for(let x=route[0].x;x<=route.at(-1).x;x+=1.5)decor.path.push({x:round(x),y:round(Expedition.routeY(route,x)),r:1.9});
  // Trilha de terra ao longo da rota e brasas a cada 16 u, sem luz dinâmica.
  for(let x=0;x<=plan.width;x+=1.5)decor.path.push({x:round(x),y:round(Expedition.routeY(plan.route,x)),r:1.9});
  for(let x=8;x<plan.width;x+=16)decor.braziers.push({x,y:round(Expedition.routeY(plan.route,x)+4.5)});

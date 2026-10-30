@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: regras: recompensa, tamanho da wave e cadência de nascimento
+ok 1 - regras: recompensa, tamanho da wave e cadência de nascimento
+  ---
+  duration_ms: 3.1423
+  ...
+# Subtest: seleção só aceita waves liberadas e conclusão libera a seguinte uma vez
+ok 2 - seleção só aceita waves liberadas e conclusão libera a seguinte uma vez
+  ---
+  duration_ms: 0.46
+  ...
+# Subtest: Pedra do Infinito: ponto na vila; sem vila liberada a arena não abre
+not ok 3 - Pedra do Infinito: ponto na vila; sem vila liberada a arena não abre
+  ---
+  duration_ms: 50.8259
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\arena.test.mjs:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(s.world.landmarks.some(l=>l.id==='endless'&&l.name==='Pedra do Infinito'))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/arena.test.mjs:32:27)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: arena: waves sucessivas pagam uma vez, sobem o recorde e escalam por wave
+ok 4 - arena: waves sucessivas pagam uma vez, sobem o recorde e escalam por wave
+  ---
+  duration_ms: 28.8227
+  ...
+# Subtest: arena começa na wave escolhida e uma repetição não reduz o recorde
+ok 5 - arena começa na wave escolhida e uma repetição não reduz o recorde
+  ---
+  duration_ms: 22.8139
+  ...
+# Subtest: sair pelo portal ou morrer encerra a corrida, limpa o campo e mantém o recorde
+ok 6 - sair pelo portal ou morrer encerra a corrida, limpa o campo e mantém o recorde
+  ---
+  duration_ms: 37.7522
+  ...
+# Subtest: recorde persiste no save e na importação do arquivo antigo (inclusive camp.eb)
+ok 7 - recorde persiste no save e na importação do arquivo antigo (inclusive camp.eb)
+  ---
+  duration_ms: 23.9101
+  ...
+# Subtest: mercador da vila vende peças do nível da maior wave liberada; o menu mantém a configuração
+ok 8 - mercador da vila vende peças do nível da maior wave liberada; o menu mantém a configuração
+  ---
+  duration_ms: 16.3545
+  ...
+# Subtest: campanha comum não é afetada: fase não usa waves da arena
+ok 9 - campanha comum não é afetada: fase não usa waves da arena
+  ---
+  duration_ms: 21.7367
+  ...
+# Subtest: Ladino Arqueiro e Orc são tipos novos com modelo próprio e preservam os índices anteriores
+ok 10 - Ladino Arqueiro e Orc são tipos novos com modelo próprio e preservam os índices anteriores
+  ---
+  duration_ms: 3.8244
+  ...
+# Subtest: Ladino Arqueiro atira à distância com as regras do Arqueiro e usa o clipe de ataque
+ok 11 - Ladino Arqueiro atira à distância com as regras do Arqueiro e usa o clipe de ataque
+  ---
+  duration_ms: 17.5712
+  ...
+# Subtest: Orc: golpe de maça avisa a área, causa dano uma vez e pode ser evitado
+ok 12 - Orc: golpe de maça avisa a área, causa dano uma vez e pode ser evitado
+  ---
+  duration_ms: 8.1206
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 467.6466

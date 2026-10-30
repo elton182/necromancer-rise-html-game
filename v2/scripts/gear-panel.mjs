@@ -2,7 +2,7 @@
 // Estrutura e classes seguem scripts/equipment.js (jogo anterior); a lógica está em gear.mjs.
 import EQ from './shared-equipment.mjs';
 import Build from './shared-build.mjs';
-import {equip,unequip,discard,discardAll,sell,buy,relicPrice,relicLevel,gearName,compatible,CAPACITY} from './gear.mjs';
+import {forge,forgePrice,rerollPrice,equip,unequip,discard,discardAll,sell,buy,relicPrice,relicLevel,gearName,compatible,CAPACITY} from './gear.mjs';
 import {snapshotFor,levelOf} from './progression.mjs';
 import {CATALOG,buyConsumable} from './consumables.mjs';
 import {RARITY_ORDER} from './drops.mjs';
@@ -50,8 +50,14 @@ export function createGearPanel(session,{open,changed,filter}){
   const value=v=>v?'+'+num(v.value)+(EQ.attributes[v.stat]?.percent?'%':'')+(dormant(v)?'<small>inativo</small>':''):'<span class="gear-affix-missing">—</span>';
   const cells=(a,b)=>equipped?'<td>'+value(b)+'</td>':'<td>'+value(a)+'</td><td class="'+((b?.value||0)>(a?.value||0)?'stat-up up':(b?.value||0)<(a?.value||0)?'stat-down down':'')+'">'+value(b)+'</td>';
   const table=document.createElement('table');table.className='gear-item-comparison gear-compare';
-  table.innerHTML='<thead><tr><th>Atributo</th>'+(equipped?'<th>Equipado</th>':'<th>Equipado</th><th>Selecionado</th>')+'</tr></thead><tbody><tr class="gear-base-row"><th>Base · '+describe(item.base)+'</th>'+cells(current?.base,item.base)+'</tr>'+[...rows].sort(([x],[y])=>x.localeCompare(y)).map(([k,a])=>'<tr data-affix="'+k+'"><th>'+describe(a)+'</th>'+cells(current?.affixes.find(v=>key(v)===k),item.affixes.find(v=>key(v)===k))+'</tr>').join('')+'</tbody>';
-  const actions=detail.querySelector('.gear-detail-actions');detail.insertBefore(table,actions);
+  table.innerHTML='<thead><tr><th>Atributo</th>'+(equipped?'<th>Equipado</th>':'<th>Equipado</th><th>Selecionado</th>')+'</tr></thead><tbody><tr class="gear-base-row"><th>Base · '+describe(item.base)+'</th>'+cells(current?{...current.base,value:current.base.value*EQ.enhancementMultiplier(current)}:null,{...item.base,value:item.base.value*EQ.enhancementMultiplier(item)})+'</tr>'+(EQ.baseDefense(item)?'<tr class="gear-base-row"><th>Base · Defesa garantida</th>'+cells(current?{stat:'defense',value:EQ.baseDefense(current)}:null,{stat:'defense',value:EQ.baseDefense(item)})+'</tr>':'')+[...rows].sort(([x],[y])=>x.localeCompare(y)).map(([k,a])=>'<tr data-affix="'+k+'"><th>'+describe(a)+'</th>'+cells(current?.affixes.find(v=>key(v)===k),item.affixes.find(v=>key(v)===k))+'</tr>').join('')+'</tbody>';
+  const actions=detail.querySelector('.gear-detail-actions');
+  if(session.scene==='village'){
+   node('h3','Bran · Ferreiro',actions);node('p','Cada grau melhora a base e a defesa garantida em 25%, até +5. A rolagem substitui somente o atributo escolhido por outro aleatório.',actions);
+   const b=button('Aprimorar '+(item.enhancement||0)+'/5 · '+forgePrice(item)+' ouro',()=>act(forge(session,item.id)),actions);b.disabled=(item.enhancement||0)>=5||c.gold<forgePrice(item);
+   item.affixes.forEach((a,index)=>{const b=button('Trocar '+EQ.describe(a,Build)+' · '+rerollPrice(item)+' ouro',()=>act(forge(session,item.id,index)),actions);b.disabled=c.gold<rerollPrice(item);});
+  }
+ detail.insertBefore(table,actions);
   if(item.special==='carcomido')detail.insertBefore(Object.assign(document.createElement('p'),{className:'conquest-special',textContent:'Osso Carcomido · Tiro de Osso aplica Podridão: 12% do dano do projétil por carga por segundo, por 5 s. Até 5 cargas; novos acertos renovam a duração.'}),actions);
   if(equipped)button('Desequipar',()=>act(unequip(session,slot)),actions).disabled=c.gearBag.length>=CAPACITY;
   else{

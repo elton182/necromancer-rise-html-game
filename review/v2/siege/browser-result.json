@@ -1,0 +1,24 @@
+{
+  "errors": [],
+  "remote": [],
+  "active": {
+    "towers": 4,
+    "guards": 2,
+    "invaders": 7,
+    "integrity": 20
+  },
+  "completed": {
+    "won": true,
+    "wave": 8,
+    "unlocked": 2,
+    "singleReward": true
+  },
+  "proximity": {
+    "hiddenAway": true,
+    "opensNearby": true,
+    "autoSelectsNearest": true,
+    "closesOnLeave": true,
+    "remotePickerRemoved": true
+  },
+  "limits": "Perfil e recursos isolados em memória; vitória acelerada com dano de teste. Valida integração, não dificuldade de uma partida normal."
+}

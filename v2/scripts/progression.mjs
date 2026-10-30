@@ -2,7 +2,7 @@
 // As constantes vêm de progression-rules.mjs e os atributos, do modelo de equipamentos compartilhado.
 import P from './progression-rules.mjs';
 import EQ from './shared-equipment.mjs';
-import Build from './shared-build.mjs';
+import Build from './full-build.mjs';
 import R from './horde-rules.mjs';
 export const MAX_LEVEL=P.xp.maxLevel;
 export const xpNext=level=>level>=MAX_LEVEL?0:Math.floor(P.xp.base*Math.pow(P.xp.growth,level-1));

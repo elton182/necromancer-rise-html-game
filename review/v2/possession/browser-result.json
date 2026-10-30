@@ -1,0 +1,12 @@
+{
+  "result": {
+    "ok": true,
+    "model": "enemyArcher",
+    "team": "ally",
+    "remaining": 58.000000000000114,
+    "attacked": true,
+    "mp": 76.80000000000028
+  },
+  "errors": [],
+  "scope": "Integração no HTML autocontido; inspeção visual pendente."
+}

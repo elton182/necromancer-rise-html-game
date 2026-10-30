@@ -1,18 +1,19 @@
-// Aba Habilidades do Relicário: árvores Minions/Profana e Maestrias.
+// Aba Habilidades do Relicário: árvores Senhor dos Mortos (minions), Carne e Ossos (spells), Morte e Maestrias.
 // Estrutura e classes seguem scripts/skill-trees.js e skill-mastery.js (jogo anterior); regras em grimoire.mjs.
 import {Build,Model,changeRank,changeMastery,resetRanks,editReason} from './grimoire.mjs';
 import {ACTIONS,SPELL_NODES,available,actionName} from './actions.mjs';
 import R from './horde-rules.mjs';
 import {D} from './campaign-model.mjs';
-const ICON={empty:'＋',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯'};
+import {LICH_MASTERY_IDS} from './lich-mastery.mjs';
+const ICON={empty:'＋',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠',ceifada:'⚔',giratoria:'✧',colheita:'✂',arco:'⤶',ciclone:'✷'};
 const KEYS=['M1 · 1','M2 · 2','3 · Q','4 · E','5 · R','6 · T'];
 const POSITIONS=[[50,8],[23,104],[77,104],[23,200],[77,200],[23,296],[77,296]];
 const REFUND_GOLD=20;
 const pct=(key,v)=>(v>0?'+':'')+v+(/adicionais/.test(key)?'':'%');
-const fmt=(stat,value)=>'+'+Number(value.toFixed(2))+(stat==='pierce'?'':stat==='curse'?' p.p.':'%')+' '+Model.labels[stat];
+const fmt=(stat,value)=>'+'+Number(value.toFixed(2))+(stat==='pierce'?'':stat==='curse'||stat==='lifesteal'?' p.p.':'%')+' '+Model.labels[stat];
 export function createGrimoirePanel(session,{open,changed,equip}){
  const host=document.getElementById('grimoire-content'),status=document.getElementById('grimoire-message'),warning=document.getElementById('grimoire-warning');
- let tab='minions',selected='zombie',masterySlot=0;const api={render,isOpen:()=>false,openPicker:index=>window.NecromancerV2?.ui?.chooseSlot(index)};
+ let tab='minions',selected='zombie',masterySlot=0,lichSub='lich';const api={render,isOpen:()=>false,openPicker:index=>window.NecromancerV2?.ui?.chooseSlot(index)};
  const el=(tag,cls,html,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;parent?.append(e);return e;};
  function result(r){status.textContent=r.message;changed();render();}
  function render(){
@@ -22,7 +23,7 @@ export function createGrimoirePanel(session,{open,changed,equip}){
   const shell=el('div','live-grimoire'+(tab==='spells'?' profana':'')+(mastery?' mastery-view':''),undefined,host);
   shell.innerHTML='<div class="lg-heading"><div><small>O LEGADO DE ZEPHYR</small><h2>'+(mastery?'Maestrias das habilidades':'Grimório dos Mortos')+'</h2></div><div><b>'+remaining+'</b> pontos disponíveis<small>3 pontos por nível · nível '+profile.level+'</small></div></div><div class="lg-toolbar"><div class="lg-tabs" role="tablist" aria-label="Árvore de habilidades"></div><button type="button" class="btn lg-reset"></button><span class="lg-gold">🪙 '+gold+' ouro</span></div>';
   const tabs=shell.querySelector('.lg-tabs');
-  for(const [id,title] of [['minions','☠ Minions'],['spells','✧ Profana'],['mastery','✦ Maestrias']]){const b=el('button',undefined,title,tabs);b.type='button';b.dataset.tree=id;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(tab===id));b.onclick=()=>{tab=id;if(id!=='mastery'&&Build.byId[selected]?.tree!==id)selected=Build.nodes.find(n=>n.tree===id).id;render();};}
+  for(const [id,title] of [['minions','☠ Senhor dos Mortos'],['spells','✧ Carne e Ossos'],['death','☽ Morte'],['mastery','✦ Maestrias']]){const b=el('button',undefined,title,tabs);b.type='button';b.dataset.tree=id;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(tab===id));b.onclick=()=>{tab=id;if(id!=='mastery'&&Build.byId[selected]?.tree!==id)selected=Build.nodes.find(n=>n.tree===id).id;render();};}
   const resetCost=Build.spent(profile.ranks)*REFUND_GOLD,reset=shell.querySelector('.lg-reset');reset.textContent='Redistribuir · '+resetCost+' ouro';reset.disabled=!resetCost||!!reason||gold<resetCost;reset.title=REFUND_GOLD+' ouro por ponto devolvido · Seu ouro: '+gold;reset.hidden=mastery;reset.onclick=()=>result(resetRanks(session));
   if(mastery)renderMastery(shell,w,reason);else renderTree(shell,w,profile,remaining,reason,gold);
  }
@@ -41,7 +42,7 @@ export function createGrimoirePanel(session,{open,changed,equip}){
   const n=Build.byId[selected],rank=profile.ranks[n.id]||0,error=Build.reason(n,profile.ranks,profile.level),detail=layout.querySelector('.lg-detail');
   const blocked=reason||error||rank>=n.max&&'Habilidade no máximo.'||remaining<=0&&'Sem pontos disponíveis.';
   const school=Build.schools.find(s=>s.id===n.school);
-  detail.innerHTML='<small>'+(tab==='minions'?'MINIONS':'PROFANA')+' · '+school.name+'</small><h3>'+n.icon+' '+n.name+'</h3><b>'+rank+'/'+n.max+' pontos</b><p>'+n.description+'</p><div class="lg-requirement">'+(error||'Nível '+n.level+(n.requires?' · 2 pontos em '+Build.byId[n.requires].name:''))+'</div>'+(n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+Build.byId[n.exclusive].name+'.</p>':'')+'<h4>Por ponto investido</h4><ul>'+Object.entries(n.effects).map(([k,v])=>'<li>'+pct(k,v)+' '+k.toLowerCase()+'</li>').join('')+'</ul><div class="lg-invest"><button type="button" class="btn invest">+ Investir ponto</button><button type="button" class="btn refund">− Devolver ponto</button></div>';
+  detail.innerHTML='<small>'+(tab==='minions'?'SENHOR DOS MORTOS':tab==='spells'?'CARNE E OSSOS':'MORTE')+' · '+school.name+'</small><h3>'+n.icon+' '+n.name+'</h3><b>'+rank+'/'+n.max+' pontos</b><p>'+n.description+'</p><div class="lg-requirement">'+(error||'Nível '+n.level+(n.requires?' · 2 pontos em '+Build.byId[n.requires].name:''))+'</div>'+(n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+Build.byId[n.exclusive].name+'.</p>':'')+'<h4>Por ponto investido</h4><ul>'+Object.entries(n.effects).map(([k,v])=>'<li>'+pct(k,v)+' '+k.toLowerCase()+'</li>').join('')+'</ul><div class="lg-invest"><button type="button" class="btn invest">+ Investir ponto</button><button type="button" class="btn refund">− Devolver ponto</button></div>';
   const invest=detail.querySelector('.invest'),refund=detail.querySelector('.refund'),points=Build.refund(structuredClone(profile),n.id),cost=points*REFUND_GOLD;
   invest.disabled=!!blocked;invest.title=blocked||'Investir 1 ponto em '+n.name;invest.onclick=()=>result(changeRank(session,n.id));
   refund.disabled=!!reason||!points||gold<cost;refund.setAttribute('aria-label','Devolver ponto de '+n.name+' por '+cost+' ouro');refund.title='Devolve '+points+' ponto(s), incluindo dependentes · '+cost+' ouro';refund.onclick=()=>result(changeRank(session,n.id,{refund:true}));
@@ -67,7 +68,9 @@ export function createGrimoirePanel(session,{open,changed,equip}){
    b.innerHTML='<small>SLOT '+(index+1)+' · '+KEYS[index]+'</small><span>'+(def?ICON[id]:'＋')+'</span><b>'+(def?def.name:'Vazio')+'</b><em>'+(state?'Nível '+state.level+' · '+Model.points(state)+' pts':'Equipe na barra')+'</em>'+(state?'<progress aria-label="XP de '+def.name+'" max="'+(next||1)+'" value="'+(next?state.xp:1)+'"></progress>':'');
    b.onclick=()=>{masterySlot=index;render();};
   });
-  const id=slots[masterySlot],def=Model.skills[id];
+  let id=slots[masterySlot],def=Model.skills[id];
+  // Forma da Morte: escolhe entre a própria forma e as cinco habilidades da foice, cada uma com sua maestria.
+  if(id==='lich'){const row=el('div','mastery-slots mastery-lich',undefined,panel);row.setAttribute('role','group');row.setAttribute('aria-label','Maestrias da Morte');for(const sub of LICH_MASTERY_IDS){const s=w.army.mastery[sub],d=Model.skills[sub],b=el('button','mastery-specialization'+(sub===lichSub?' selected':''),'<span>'+ICON[sub]+'</span><b>'+d.name+'</b><em>Nível '+(s?s.level:1)+'</em>',row);b.type='button';b.dataset.masteryLich=sub;b.setAttribute('aria-pressed',String(sub===lichSub));b.onclick=()=>{lichSub=sub;render();};}id=lichSub;def=Model.skills[id];}
   if(!def){el('p','mastery-locked','Equipe uma habilidade na barra de combate para iniciar sua especialização.',panel);const choose=el('button','btn','Escolher habilidade para slot '+(masterySlot+1),panel);choose.type='button';choose.onclick=()=>api.openPicker(masterySlot);return;}
   const state=w.army.mastery[id],next=Model.xpNext(state.level),bonus=Model.bonus(id,state);
   const detail=el('section','mastery-selected-tree',undefined,panel);detail.setAttribute('aria-label','Árvore de '+def.name);
