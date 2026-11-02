@@ -1,0 +1,11 @@
+#campaign-panel[data-view^="world"]>button:last-child{display:inline-block}
+#campaign-panel[data-view="world"]{line-height:1.5}
+#campaign-panel[data-view="world"] small{color:#dbcb9f}
+#campaign-panel[data-view="world"]{overflow:auto}
+#campaign-panel[data-view="world"] h4{margin:10px 0 0;font-size:13px;color:#e6d39f}
+#campaign-panel[data-view="world"] p{margin:4px 0}
+#campaign-panel[data-view="world-map"],#campaign-panel[data-view="world-dialogue"]{left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);width:min(740px,calc(100vw - 36px));max-height:calc(100dvh - 100px);padding:22px;font:16px/1.6 Georgia;z-index:18;overflow:auto;box-shadow:0 16px 70px #000c,inset 0 0 0 3px #0b100b}
+#campaign-panel[data-view="world-map"] h2,#campaign-panel[data-view="world-dialogue"] h2{margin:0;color:#efd293}
+#campaign-panel[data-view="world-map"] canvas{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain}
+#campaign-panel[data-view="world-dialogue"]{width:min(600px,calc(100vw - 36px))}
+@media(max-width:760px){#campaign-panel[data-view="world"]{width:180px;max-height:30vh}#campaign-panel[data-view="world-map"],#campaign-panel[data-view="world-dialogue"]{padding:14px;font-size:14px;max-height:80dvh}}

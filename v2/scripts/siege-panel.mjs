@@ -1,3 +1,4 @@
+import {inVillageHub} from './village-services.mjs';
 import {TOWERS,PADS,LANES,MODIFIERS,WAVES,normalizeSiege,activeLanes,towerCost,runeCost} from './siege-model.mjs';
 import {launchSiege,buildTower,upgradeTower,startSiegeWave,attuneRune,siegeAccess} from './siege.mjs';
 import {returnAdventure} from './campaign.mjs';
@@ -8,7 +9,7 @@ export function createSiegePanel(s,{changed=()=>{}}={}){
  const act=fn=>{const result=fn();if(result?.message)message=result.message;signature='';changed();update();};
  const button=(text,fn,disabled=false,parent=host)=>{const b=node('button',text,parent);b.type='button';b.disabled=disabled;b.onclick=()=>act(fn);return b;};
  function update(){
-  const w=s.world,r=w.adventure,inRun=s.scene==='training'&&r?.kind==='siege',inMenu=s.scene==='village'&&w.siegeMenu;
+  const w=s.world,r=w.adventure,inRun=s.scene==='training'&&r?.kind==='siege',inMenu=inVillageHub(s)&&w.siegeMenu;
   const nearby=inRun&&!r.done?PADS.filter(p=>Math.hypot(p.x-w.player.x,p.y-w.player.y)<=3.2).sort((a,b)=>Math.hypot(a.x-w.player.x,a.y-w.player.y)-Math.hypot(b.x-w.player.x,b.y-w.player.y))[0]:null;
   if(selected!==(nearby?.id??null)){selected=nearby?.id??null;message='';host.scrollTop=0;}
   w.siegeSelectedPad=selected;
@@ -18,8 +19,8 @@ export function createSiegePanel(s,{changed=()=>{}}={}){
   const p=normalizeSiege(s.save.character.siege),key=JSON.stringify([inRun,p,r?.wave,r?.active,r?.done,r?.integrity,r?.essence,r?.towers?.map(t=>[t.pad,t.rank]),selected,tier,modifier,message,w.paused]);if(key===signature)return true;signature=key;const scroll=host.scrollTop;host.replaceChildren();
   node('small',nearby?'CONSTRUÇÃO · ESSÊNCIA DO RITUAL':'ENDGAME · DEFESA DO OBELISCO');node('h2',nearby?'Pedestal '+selected:'Cerco ao Ritual');
   if(inMenu){
-   node('p','Proteja o Obelisco de Almas durante oito ondas. Construa em pedestais numerados; Zephyr e a horda também combatem.');
-   if(!siegeAccess(s))node('p','Conclua o Ato I para liberar este ritual.');
+   node('p','Proteja o Obelisco de Almas durante oito ondas. Construa em pedestais numerados e lute para proteger o ritual.');
+   if(!siegeAccess(s))node('p','Entre na vila para iniciar a defesa de torres.');
    const label=node('label','Grau do cerco '),select=node('select',undefined,label);select.setAttribute('aria-label','Grau do cerco');tier=Math.min(tier,p.unlocked);
    for(let i=1;i<=p.unlocked;i++){const o=node('option',String(i),select);o.value=i;}select.value=tier;select.onchange=()=>{tier=Number(select.value);signature='';update();};
    node('p','Melhor grau: '+p.best+' · Vitórias: '+p.wins+' · Fragmentos: '+p.shards);
@@ -46,5 +47,5 @@ export function createSiegePanel(s,{changed=()=>{}}={}){
   }
   if(message){const m=node('p',message);m.setAttribute('role','status');}host.scrollTop=scroll;return true;
  }
- return {update,open(){s.world.siegeMenu=true;s.world.paused=true;message='';signature='';update();}};
+ return {update,open(){if(!inVillageHub(s))return false;s.world.siegeMenu=true;s.world.paused=true;message='';signature='';update();}};
 }

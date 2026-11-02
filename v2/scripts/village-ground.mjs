@@ -99,8 +99,19 @@ export function villageGround(arena){
  }
  g.filter='none';
 
+ // Vila embutida num mapa maior (`groundBlend`): a borda some em transparência sobre a mesma grama de painted-ground.mjs.
+ if(arena.groundBlend){
+  g.globalCompositeOperation='destination-in';const fade=U(10)/SIZE;
+  for(const [ax,az,bx,bz]of [[0,0,SIZE,0],[0,0,0,SIZE]]){const gr=g.createLinearGradient(ax,az,bx,bz);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(fade,'#000');gr.addColorStop(1-fade,'#000');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(0,0,SIZE,SIZE);}
+  g.globalCompositeOperation='source-over';
+ }else{
+  // Escurece suavemente a periferia, sem desenhar uma moldura reta no chão.
+  const edgeShade=g.createRadialGradient(SIZE/2,SIZE/2,SIZE*.30,SIZE/2,SIZE/2,SIZE*.64);
+  edgeShade.addColorStop(0,'rgba(15,25,19,0)');edgeShade.addColorStop(.6,'rgba(15,25,19,.22)');edgeShade.addColorStop(1,'rgba(15,25,19,.82)');
+  g.fillStyle=edgeShade;g.fillRect(0,0,SIZE,SIZE);
+ }
  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=8;
- const mesh=new THREE.Mesh(new THREE.PlaneGeometry(span,span).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({map:texture,roughness:.95}));
+ const mesh=new THREE.Mesh(new THREE.PlaneGeometry(span,span).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({map:texture,roughness:.95,transparent:!!arena.groundBlend,depthWrite:!arena.groundBlend}));
  mesh.position.set(cx,.004,cz);mesh.receiveShadow=true;mesh.renderOrder=-3;
  // O renderizador esconde o chão liso quando a cena traz o próprio e clareia este no modo de fundo claro.
  mesh.userData.replacesGround=true;mesh.userData.lightColor=new THREE.Color(1.3,1.3,1.25);

@@ -1,0 +1,15 @@
+{
+  "errors": [],
+  "remote": [],
+  "checks": [
+    "menu",
+    "modelo 3D",
+    "seleção de duas classes",
+    "390px",
+    "dois personagens independentes",
+    "nome tratado como texto",
+    "progresso preservado na troca",
+    "persistência após reload",
+    "offline"
+  ]
+}

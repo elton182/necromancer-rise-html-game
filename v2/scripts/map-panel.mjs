@@ -62,6 +62,8 @@ export function createMapPanel(s,{library,editor,play,exit,focus}){
   for(const t of TEMPLATES){const o=node('option',t.name,template);o.value=t.id;}
   button('Novo mapa',()=>{const map=TEMPLATES.find(t=>t.id===template.value).make();editor.open(map);},create,'btn pri').id='maps-new';
   button('Importar…',importFile,create);
+  const refresh=button('↻ Atualizar modelos',()=>location.reload(),create);refresh.id='maps-refresh-models';refresh.title='Recarrega o HTML atualizado. Salve o mapa antes; alterações não salvas serão perdidas.';
+  button('Revisar campanha integrada',()=>editor.open(TEMPLATES.find(t=>t.id==='campaign-world').make()),create,'btn pri').id='maps-campaign-world';
   node('h3','Seus mapas',host);
   const maps=library.list();
   if(!maps.length)node('p','Nenhum mapa ainda. Escolha um modelo e clique em «Novo mapa».',host,'section-note');

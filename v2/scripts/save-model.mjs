@@ -1,3 +1,5 @@
+import WarriorGear from './warrior-equipment.mjs';
+import {warriorRanks,warriorLoadout} from './warrior-model.mjs';
 import {normalizeSiege} from './siege-model.mjs';
 import {normalizeCampaign} from './campaign-model.mjs';
 // Contrato persistido independente do mundo, DOM e armazenamento.
@@ -12,15 +14,16 @@ import Endgame from './shared-endgame.mjs';
 export const FORMAT='necromancer-rise-3d',VERSION=1;
 export const SAVE_KEY='necromancer_rise_3d_save',BACKUP_KEY=SAVE_KEY+'_backup',LEGACY_KEY='necromancer_v2';
 export const MAX_BYTES=5*1024*1024;
+export const CHARACTERS_KEY='arandu_character_archives_v1';
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const copy=v=>JSON.parse(JSON.stringify(v));
 // Itens inválidos ou duplicados são descartados pelo validador compartilhado; o formato 1 é convertido.
-function normalizeGear(equipment,gearBag,waveProgress,arenaBest){
+function normalizeGear(equipment,gearBag,waveProgress,arenaBest,classId='necromancer'){
  if(equipment!==undefined&&!object(equipment))throw Error('Equipamentos inválidos.');
  if(gearBag!==undefined&&!Array.isArray(gearBag))throw Error('Mochila inválida.');
  if(waveProgress!==undefined&&!object(waveProgress))throw Error('Progresso de waves inválido.');
  // O recorde da arena anterior (camp.eb) pode ser mais novo que waveProgress; o modelo compartilhado usa o maior.
- const {equipment:worn,gearBag:bag,waveProgress:waves}=EQ.migrate({equipment:copy(equipment??{}),gearBag:copy(gearBag??[]),waveProgress:copy(waveProgress??{}),camp:{eb:arenaBest}},Build);return {equipment:worn,gearBag:bag,waveProgress:waves};
+ const {equipment:worn,gearBag:bag,waveProgress:waves}=(classId==='warrior'?WarriorGear:EQ).migrate({equipment:copy(equipment??{}),gearBag:copy(gearBag??[]),waveProgress:copy(waveProgress??{}),camp:{eb:arenaBest}},Build);return {equipment:worn,gearBag:bag,waveProgress:waves};
 }
 function record(v,name){if(!object(v))throw Error(name+' inválido.');return v;}
 function number(v,fallback,name,max=Number.MAX_SAFE_INTEGER){if(v===undefined)return fallback;if(typeof v!=='number'||!Number.isFinite(v)||v<0||v>max)throw Error(name+' inválido.');return v;}
@@ -39,13 +42,18 @@ export function normalizeSave(raw){
  const gearLevel=number(s.gearLevel,1,'Nível dos itens',60);if(!Number.isInteger(gearLevel)||gearLevel<1)throw Error('Nível dos itens inválido.');
  if(s.lootFilter!==undefined&&!RARITY_ORDER.includes(s.lootFilter))throw Error('Filtro de loot inválido.');
  if(s.ground!==undefined&&!['dark','light'].includes(s.ground)||s.quality!==undefined&&!['high','low'].includes(s.quality))throw Error('Opções inválidas.');
- const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
+ const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress,undefined,p.classId),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
  if(!MODES.includes(result.settings.waveMode))throw Error('Modelo de waves inválido.');
  result.settings.armyMode=s.armyMode??(raw.settings?'load':'groups');if(!['load','groups'].includes(result.settings.armyMode))throw Error('Modo da horda inválido.');result.horde=normalizeHorde(raw.horde);
  // Nível do personagem e do perfil do Grimório são o mesmo progresso: vale o maior, e o XP respeita o nível final.
  const profileLevel=result.horde.profile.level;
  if(profileLevel>result.character.level)result.character.level=profileLevel;
  else if(profileLevel<result.character.level)result.horde=normalizeHorde({...result.horde,profile:{...result.horde.profile,level:result.character.level}});
+ result.character.classId=p.classId||'necromancer';if(!['necromancer','warrior'].includes(result.character.classId))throw Error('Classe inválida.');result.character.warriorLoadout=warriorLoadout(p.warriorLoadout);result.character.warriorRanks=warriorRanks(p.warriorRanks,result.character.level);
+ if(result.character.classId==='warrior'&&p.warriorEquipmentVersion!==1){
+  for(const type of ['sword','shield']){const id='starter-'+type+'-'+(p.slotId||'imported');if(!result.character.equipment[type]&&!result.character.gearBag.some(i=>i.id===id))result.character.equipment[type]=WarriorGear.generate(1,null,()=>.2,type,false,id);}
+  result.character.warriorEquipmentVersion=1;
+ }
  result.character.exp=clampExp(result.character.level,result.character.exp);
  if(!['free','campaign'].includes(result.character.mode))throw Error('Modo de personagem inválido.');
  if(raw.legacy!==undefined){record(raw.legacy,'Arquivo antigo preservado');if(raw.legacy.key!==LEGACY_KEY)throw Error('Origem do arquivo antigo inválida.');result.legacy={...copy(raw.legacy),data:validateLegacy(raw.legacy.data)};}
@@ -64,6 +72,47 @@ export function serializeSave(save){const text=JSON.stringify(normalizeSave(save
 
 // Storage injetável: o módulo pode ser testado sem usar armazenamento pessoal.
 export function createSaveStore(storage){
+ // O slot ativo continua na chave histórica. Só arquivamos ao trocar/criar:
+ // autosaves permanecem atômicos e não duplicam o personagem ativo.
+ function characters(){try{
+  const text=storage.getItem(CHARACTERS_KEY),archive=text===null?{}:JSON.parse(text);
+  if(!object(archive))throw Error('Catálogo de personagens inválido e preservado.');
+  const saves=new Map(Object.entries(archive).map(([id,value])=>[id,normalizeSave(value)]));
+  const active=load();if(active.status==='invalid'||active.status==='unavailable')throw Error(active.message);
+  if(active.status==='ok')saves.set(active.save.character.slotId||'original',active.save);
+  return {ok:true,saves,characters:[...saves].map(([id,v])=>({id,classId:v.character.classId||'necromancer',name:v.character.name||'Zephyr',level:v.character.level,savedAt:v.savedAt})).sort((a,b)=>b.savedAt-a.savedAt)};
+ }catch(error){return {ok:false,message:error.message};}}
+ function switchCharacter(value){try{
+  const catalog=characters();if(!catalog.ok)return catalog;
+  // Arquivar tudo antes de alterar o slot ativo: uma falha de quota nunca o apaga.
+  storage.setItem(CHARACTERS_KEY,JSON.stringify(Object.fromEntries(catalog.saves)));
+  return save(value,{backup:true});
+ }catch(error){return {ok:false,message:'Não foi possível trocar de personagem. '+error.message};}}
+ function createCharacter(name,classId='necromancer'){
+  if(!['necromancer','warrior'].includes(classId))return {ok:false,message:'Classe inválida.'};
+  if(typeof name!=='string'||!name.trim()||name.trim().length>32)return {ok:false,message:'Escolha um nome de até 32 caracteres.'};
+  const value=freshSave();Object.assign(value.character,{name:name.trim(),classId,slotId:globalThis.crypto.randomUUID()});value.savedAt=Date.now();
+  if(classId==='warrior')for(const type of ['sword','shield'])value.character.equipment[type]=WarriorGear.generate(1,null,()=>.2,type,false,'starter-'+type+'-'+value.character.slotId);
+  const result=switchCharacter(value);return result.ok?{ok:true,save:value}:result;
+ }
+ function selectCharacter(id){const catalog=characters();if(!catalog.ok)return catalog;const value=catalog.saves.get(id);if(!value)return {ok:false,message:'Personagem não encontrado.'};
+  const result=switchCharacter(value);return result.ok?{ok:true,save:value}:result;}
+ function deleteCharacter(id){
+  const catalog=characters();if(!catalog.ok)return catalog;
+  if(!catalog.saves.has(id))return {ok:false,message:'Personagem não encontrado.'};
+  let previous,active;
+  try{
+   previous=storage.getItem(CHARACTERS_KEY);active=load();
+   catalog.saves.delete(id);
+   storage.setItem(CHARACTERS_KEY,JSON.stringify(Object.fromEntries(catalog.saves)));
+   const deletedActive=active.status==='ok'&&(active.save.character.slotId||'original')===id;
+   if(deletedActive)storage.removeItem(SAVE_KEY);
+   return {ok:true,deletedActive};
+  }catch(error){
+   try{if(previous===null)storage.removeItem(CHARACTERS_KEY);else if(previous!==undefined)storage.setItem(CHARACTERS_KEY,previous);}catch{}
+   return {ok:false,message:'Não foi possível excluir o personagem. '+error.message};
+  }
+ }
  function load(){try{const raw=storage.getItem(SAVE_KEY);if(raw===null)return {status:'empty'};try{return {status:'ok',save:normalizeSave(JSON.parse(raw))};}catch(error){return {status:'invalid',message:'Save da v2 inválido e preservado. '+error.message};}}catch{return {status:'unavailable',message:'O navegador não permitiu acessar os saves. Use exportar para guardar um arquivo.'};}}
  function save(value,{backup=false}={}){try{
   const text=serializeSave(value),previous=storage.getItem(SAVE_KEY);
@@ -75,5 +124,5 @@ export function createSaveStore(storage){
  }catch(error){return {ok:false,message:'Não foi possível gravar o save. O save anterior foi preservado. '+(error.message||'')};}}
  function legacy(){try{const raw=storage.getItem(LEGACY_KEY);if(!raw)return {ok:false,message:'Nenhum save antigo acessível nesta página. Exporte o JSON no jogo anterior e importe o arquivo aqui.'};return {ok:true,save:importSave(raw)};}catch(error){return {ok:false,message:error.message};}}
  function backup(){try{return storage.getItem(BACKUP_KEY);}catch{return null;}}
- return {load,save,legacy,backup};
+ return {load,save,legacy,backup,characters,createCharacter,selectCharacter,deleteCharacter};
 }

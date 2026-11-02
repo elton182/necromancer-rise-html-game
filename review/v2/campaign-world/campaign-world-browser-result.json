@@ -1,0 +1,81 @@
+{
+  "start": {
+    "kind": "campaign-world",
+    "x": -98,
+    "y": -86,
+    "solids": 766,
+    "bounds": {
+      "minX": -180,
+      "maxX": 180,
+      "minY": -180,
+      "maxY": 180
+    }
+  },
+  "perf": {
+    "crypt": {
+      "median": 15.6,
+      "p90": 23.1,
+      "enemies": 0
+    },
+    "forest": {
+      "median": 8.3,
+      "p90": 23.8,
+      "enemies": 3
+    },
+    "mineRoad": {
+      "median": 8.1,
+      "p90": 15.7,
+      "enemies": 6
+    },
+    "mine": {
+      "median": 8.6,
+      "p90": 16,
+      "enemies": 10
+    },
+    "mill": {
+      "median": 7.8,
+      "p90": 8.6,
+      "enemies": 10
+    },
+    "graveyard": {
+      "median": 8.1,
+      "p90": 15.9,
+      "enemies": 14
+    },
+    "village": {
+      "median": 8.1,
+      "p90": 16.2,
+      "enemies": 0
+    },
+    "villageLow": {
+      "median": 8,
+      "p90": 15.6,
+      "enemies": 0
+    }
+  },
+  "quest": {
+    "opened": {
+      "smith": "active",
+      "lumber": "active"
+    },
+    "dialogue": "Bran · Mina de Valfundo"
+  },
+  "state": {
+    "stage": "complete",
+    "checkpoint": "village",
+    "guardsCleared": true,
+    "smith": "done",
+    "lumber": "active",
+    "piles": [
+      0,
+      0,
+      0
+    ],
+    "cleared": [
+      "mine-guards"
+    ]
+  },
+  "errors": [],
+  "remote": [],
+  "limits": "Teleporte e abates injetados para validar regiões, encontros, quests e interface; tempos de quadro no Edge headless (GPU do ambiente), não equivalem a medição no navegador do jogador nem a validação de dificuldade."
+}

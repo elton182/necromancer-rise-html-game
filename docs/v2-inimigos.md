@@ -216,7 +216,7 @@ Essas mudanças aumentam a pressão de combate; não houve reavaliação no bala
 
 ### Corte frontal, salto do Orc e uivo
 
-O especial do soldado substitui o Golpe pesado circular: prepara por **2 s**, trava a direção e avisa um setor frontal de **135 graus**, com alcance de **3,5 u**. No corte, aplica **160%** do dano uma única vez, com linha de visão, rastro de lâmina e som de corte. Recarga de 5 s após a recuperação de 0,4 s. Sair do setor evita o golpe; morte cancela a preparação.
+O especial do soldado substitui o Golpe pesado circular: prepara por **0,7 s**, trava a direção e avisa um setor frontal de **135 graus**, com alcance de **3,5 u**. No corte, aplica **160%** do dano uma única vez, com linha de visão, rastro de lâmina e som de corte. Recarga de 5 s após a execução/recuperação de 0,25 s (corte em 0,2 s). A preparação anterior era de 2 s; essa aceleração aumenta a pressão e não foi reavaliada no balance-simulator. Sair do setor evita o golpe; morte cancela a preparação.
 
 A Pancada no Chão do Orc agora começa a até **10 u**, com linha livre. Trava uma posição válida próxima do alvo, prepara por **1,1 s**, salta durante **0,6 s** e só causa dano ao pousar: **180%**, raio de **3,2 u**. O círculo avisa o destino durante preparação e voo. Rachaduras temporárias, poeira, tremor e som grave acompanham o impacto; duração total de 2,5 s e recarga de 7 s após recuperação. Morte cancela o impacto e limpa a altura. A pancada básica de porrete permanece.
 

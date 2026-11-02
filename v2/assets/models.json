@@ -7,13 +7,15 @@
       "idle",
       "walk",
       "cast",
-      "death"
+      "death",
+      "jump"
     ],
     "durations": {
       "idle": 2,
       "walk": 0.6666666667,
       "cast": 0.375,
-      "death": 0.8
+      "death": 0.8,
+      "jump": 0.5
     },
     "stride": 1.5
   },
@@ -112,25 +114,20 @@
     "provisional": true
   },
   "warrior": {
-    "path": "blender/exports/v2_enemy_knight.glb",
-    "source": "blender/models/v2_enemy_knight.blend",
+    "path": "blender/exports/warrior.glb",
+    "source": "blender/models/warrior.blend",
     "height": 2.25,
     "requiredAnimations": [
       "idle",
       "walk",
-      "attack",
-      "death",
-      "heavy_windup",
-      "heavy_attack",
-      "recover",
-      "hit"
+      "slash_1",
+      "slash_2",
+      "slash_3",
+      "thrust",
+      "shield_bash",
+      "death"
     ],
-    "stride": 1.4,
-    "durations": {
-      "attack": 0.3,
-      "death": 0.8
-    },
-    "matchPlayerHeight": true
+    "stride": 1.5
   },
   "enemyArcher": {
     "path": "blender/exports/lowpoly_earcher.glb",
@@ -436,5 +433,100 @@
       "idle",
       "attack"
     ]
+  },
+  "swampKit": {
+    "path": "blender/exports/v2_swamp_kit.glb",
+    "source": "blender/models/v2_swamp_kit.blend",
+    "height": 0.94,
+    "requiredAnimations": []
+  },
+  "cryptArchitecture": {
+    "path": "blender/exports/v2_crypt_architecture.glb",
+    "source": "blender/models/v2_crypt_architecture.blend",
+    "height": 8.25,
+    "requiredAnimations": []
+  },
+  "ruinedVillageKit": {
+    "path": "blender/exports/v2_ruined_village_kit.glb",
+    "source": "blender/models/v2_ruined_village_kit.blend",
+    "height": 8,
+    "requiredAnimations": []
+  },
+  "caravanKit": {
+    "path": "blender/exports/arandu_caravan_kit.glb",
+    "source": "blender/models/arandu_caravan_kit.blend",
+    "height": 3.3,
+    "requiredAnimations": []
+  },
+  "caravanHorse": {
+    "path": "blender/exports/arandu_caravan_horse.glb",
+    "source": "blender/models/arandu_caravan_horse.blend",
+    "height": 2.55,
+    "requiredAnimations": [
+      "idle",
+      "walk"
+    ],
+    "durations": {
+      "idle": 1,
+      "walk": 1
+    },
+    "stride": 1.6
+  },
+  "caveFallKit": {
+    "path": "blender/exports/arandu_cave_fall.glb",
+    "source": "blender/models/arandu_cave_fall.blend",
+    "height": 6,
+    "requiredAnimations": []
+  },
+  "playerFalling": {
+    "path": "blender/exports/arandu_player_fall.glb",
+    "source": "blender/models/arandu_player_fall.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "fall"
+    ],
+    "durations": {
+      "idle": 2,
+      "walk": 0.6666666667,
+      "cast": 0.375,
+      "death": 0.8,
+      "jump": 0.5,
+      "fall": 1.5
+    },
+    "stride": 1.5
+  },
+  "caveHideoutKit": {
+    "path": "blender/exports/arandu_cave_hideout.glb",
+    "source": "blender/models/arandu_cave_hideout.blend",
+    "height": 3.7,
+    "requiredAnimations": []
+  },
+  "enemySoldier": {
+    "path": "blender/exports/v2_enemy_knight.glb",
+    "source": "blender/models/v2_enemy_knight.blend",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "attack",
+      "death",
+      "heavy_windup",
+      "heavy_attack",
+      "recover",
+      "hit"
+    ],
+    "stride": 1.4,
+    "durations": {
+      "attack": 0.3,
+      "death": 0.8
+    },
+    "matchPlayerHeight": true
+  },
+  "warriorShield": {
+    "path": "blender/exports/warrior_shield.glb",
+    "source": "blender/models/warrior.blend",
+    "height": 1.05,
+    "requiredAnimations": []
   }
 }

@@ -1,3 +1,5 @@
+import {prologueMapData} from './prologue-map-data.mjs';
+import {campaignWorldMap} from './campaign-world-map.mjs';
 // Mapas personalizados: dados puros (sem DOM nem Three.js). Um mapa é um documento JSON com objetos posicionados,
 // ponto de início e pontos de inimigos. Pode ter um mapa base (`base`): herda dele os objetos, o bioma, o tamanho,
 // o início e os inimigos, e só guarda o que mudou (objetos novos, objetos da base ocultos e campos substituídos).
@@ -7,13 +9,31 @@ import {TRAINING_ARENA,overlaps} from './terrain.mjs';
 import {forestArena} from './forest-map.mjs';
 
 export const MAP_FORMAT='necromancer-rise-map',BUNDLE_FORMAT='necromancer-rise-maps',MAP_VERSION=1,STORAGE_KEY='necromancer_v2_maps';
-export const LIMITS={minSize:12,maxSize:120,maxObjects:600,maxSpawns:24,maxCount:30,maxMaps:60,maxName:40,maxDepth:5,maxLevel:60,maxBytes:2e6};
+export const LIMITS={minSize:12,maxSize:360,maxObjects:2000,maxSpawns:40,maxCount:30,maxMaps:60,maxName:40,maxDepth:5,maxLevel:60,maxBytes:2e6};
 export const ENEMY_TYPE_COUNT=11;
-export const BIOMES={grave:'Cemitério',forest:'Floresta',desert:'Deserto',snow:'Tundra',village:'Vila',swamp:'Pântano',river:'Rio',mountain:'Montanha'};
+export const BIOMES={cave:'Caverna',grave:'Cemitério',forest:'Floresta',desert:'Deserto',snow:'Tundra',village:'Vila',swamp:'Pântano',river:'Rio',mountain:'Montanha'};
 export const DEFAULT_BIOME='forest';
 // `dims`: campos editáveis (r raio, w largura, d profundidade, h altura, s escala). `solid`: vira colisor; os demais são só visuais.
 // `look`: nome visual já entendido pelas cenas da floresta/expedição; sem `look`, o renderizador desenha um bloco liso.
 export const PROPS={
+ caravan:{label:'Carroça da caravana',group:'Caravana',shape:'box',solid:true,look:'caravan',dims:['w','d','h'],w:2.8,d:5.2,h:2,color:'#b98b58'},
+ road_block:{label:'Bloqueio da estrada',group:'Caravana',shape:'circle',decor:'misc',dims:[],r:3.5,color:'#875738'},
+ cave_wall:{label:'Parede rochosa da caverna',group:'Caverna',shape:'box',solid:true,look:'cave-boundary',dims:['w','d','h'],w:5,d:8,h:2.6,color:'#82796a'},
+ hideout_table:{label:'Mesa de ordens dos salteadores',group:'Caverna',shape:'box',solid:true,look:'hideout-table',dims:['w','d','h'],w:1.8,d:1.1,h:1,color:'#b89362'},
+ hideout_cargo:{label:'Depósito de carga roubada',group:'Caverna',shape:'box',solid:true,look:'hideout-cargo',dims:['w','d','h'],w:2,d:1.5,h:1.6,color:'#a08b63'},
+ hideout_bedroll:{label:'Leito improvisado',group:'Caverna',shape:'circle',decor:'misc',dims:['s'],r:.8,s:1,color:'#79735d'},
+ cave_support:{label:'Escoramento da galeria',group:'Caverna',shape:'circle',decor:'misc',dims:['s'],r:1,s:1,color:'#79664c'},
+ cave_spire:{label:'Formação rochosa da caverna',group:'Caverna',shape:'circle',solid:true,look:'cave-spire',dims:['r','h'],r:.55,h:1.8,color:'#68665f'},
+ fall_debris:{label:'Destroços da queda',group:'Caverna',shape:'circle',decor:'misc',dims:[],r:1.3,color:'#827568'},
+ capture_note:{label:'Lista de captura',group:'Caverna',shape:'circle',decor:'misc',dims:[],r:.45,color:'#e2c899'},
+ cave_exit:{label:'Marco da saída da caverna',group:'Caverna',shape:'circle',decor:'misc',dims:[],r:1.6,color:'#a9ddc9'},
+ crypt_floor:{label:'Piso de lajes da cripta',group:'Cripta',shape:'circle',decor:'misc',dims:['s'],r:.5,s:1,color:'#898495'},
+ sarcophagus:{label:'Sarcófago aberto',group:'Cripta',shape:'circle',decor:'misc',dims:['s'],r:.5,s:1,color:'#898495'},
+ crypt_bench:{label:'Banco funerário',group:'Cripta',shape:'circle',decor:'misc',dims:['s'],r:.5,s:1,color:'#898495'},
+ crypt_altar:{label:'Altar com velas',group:'Cripta',shape:'circle',decor:'misc',dims:['s'],r:.5,s:1,color:'#898495'},
+ crypt_shelf:{label:'Estante de arquivos',group:'Cripta',shape:'circle',decor:'misc',dims:['s'],r:.5,s:1,color:'#898495'},
+
+ cryptwall:{label:'Muro de cripta com vitral',group:'Colisores',shape:'box',solid:true,look:'cryptwall',dims:['w','d','h'],w:4,d:.7,h:8,color:'#7c7793'},
  wall:{label:'Muro',group:'Colisores',shape:'box',solid:true,dims:['w','d','h'],w:4,d:.65,h:.9,color:'#8c9a8e'},
  pillar:{label:'Pilar',group:'Colisores',shape:'circle',solid:true,dims:['r','h'],r:.6,h:1.2,color:'#a3a79b'},
  log:{label:'Tronco caído',group:'Colisores',shape:'box',solid:true,look:'log',dims:['w','d','h'],w:3.6,d:.7,h:.7,color:'#8a6a45'},
@@ -36,7 +56,7 @@ export const PROPS={
  path:{label:'Trilha',group:'Chão',shape:'circle',decor:'path',dims:['r'],r:1.5,color:'#8a7650'}
 };
 export const PROP_TYPES=Object.keys(PROPS);
-export const BUILTIN_BASES={'builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin'};
+export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin'};
 export const isBuiltin=ref=>typeof ref==='string'&&ref.startsWith('builtin:');
 export const mapRef=id=>'map:'+id;
 
@@ -102,6 +122,8 @@ function fromSolids(prefix,solids){
  }).filter(Boolean).map((o,i)=>({...o,id:prefix+'-'+i}));
 }
 export function builtinMap(ref){
+ if(ref==='builtin:arandu-caravan'||ref==='builtin:arandu-cave')return normalizeMap({...prologueMapData(ref.endsWith('cave')?'cave':'ambush'),id:ref}).map;
+ if(ref==='builtin:campaign-world')return normalizeMap({...campaignWorldMap(),id:ref}).map;
  if(ref==='builtin:training')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'grave',size:{w:30,h:30},start:{x:0,y:10},spawns:[{x:0,y:-8,count:4,type:0}]}).map,objects:fromSolids('training',TRAINING_ARENA.solids)};
  if(ref==='builtin:forest')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'forest',size:{w:40,h:40},start:{x:0,y:10},spawns:[{x:0,y:-5,count:6,type:0}]}).map,objects:fromSolids('forest',forestArena().solids)};
  return null;
@@ -156,11 +178,13 @@ export function toArena(map){
  const area=map.size.w*map.size.h,free=(x,y,r)=>!solids.some(s=>s.kind==='circle'?Math.hypot(x-s.x,y-s.y)<s.r+r:Math.abs(x-s.x)<s.width/2+r&&Math.abs(y-s.y)<s.depth/2+r)&&!decor.path.some(p=>Math.hypot(x-p.x,y-p.y)<p.r)&&!decor.water.some(p=>Math.hypot(x-p.x,y-p.y)<p.r);
  const scatter=(list,count,make,pad)=>{for(let n=0,t=0;n<count&&t<count*6;t++){const x=rnd(bounds.minX+pad,bounds.maxX-pad),y=rnd(bounds.minY+pad,bounds.maxY-pad);if(!free(x,y,.1))continue;list.push(make(+x.toFixed(2),+y.toFixed(2)));n++;}};
  if(GREEN.has(map.biome)){
-  scatter(decor.grass,Math.min(900,Math.round(area*.05)),(x,y)=>({x,y,height:+rnd(.2,.5).toFixed(2),tone:tone()}),1);
-  scatter(decor.patches,Math.min(60,Math.round(area*.0035)),(x,y)=>({x,y,r:+rnd(1.2,3.2).toFixed(2),tone:tone()}),2);
-  if(map.biome==='forest')scatter(decor.flowers,Math.min(160,Math.round(area*.012)),(x,y)=>({x,y,tone:tone()}),1);
+  // Tetos fixos até 240 × 240; mapas maiores mantêm a mesma densidade por área.
+  const cap=n=>Math.round(n*Math.max(1,area/57600));
+  scatter(decor.grass,Math.min(cap(900),Math.round(area*.05)),(x,y)=>({x,y,height:+rnd(.2,.5).toFixed(2),tone:tone()}),1);
+  scatter(decor.patches,Math.min(cap(60),Math.round(area*.0035)),(x,y)=>({x,y,r:+rnd(1.2,3.2).toFixed(2),tone:tone()}),2);
+  if(map.biome==='forest')scatter(decor.flowers,Math.min(cap(160),Math.round(area*.012)),(x,y)=>({x,y,tone:tone()}),1);
  }
- return {id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor};
+ return {cave:map.biome==='cave',prologue:map.biome==='cave'||solids.some(s=>s.look==='caravan')||decor.misc.some(m=>m.look==='road_block'),caravans:solids.filter(s=>s.look==='caravan').map(s=>({x:s.x,y:s.y,sx:s.width/2.8,sy:s.height/2,sz:s.depth/5.2})),roadBlocks:decor.misc.filter(m=>m.look==='road_block'),id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor};
 }
 
 // --- Verificação ---
@@ -266,6 +290,9 @@ export function createLibrary(storage,key=STORAGE_KEY){
 
 // --- Modelos iniciais para "Novo mapa" ---
 export const TEMPLATES=[
+ {id:'arandu-caravan',name:'ARANDU · Desembarque da caravana',make:()=>normalizeMap(prologueMapData('ambush')).map},
+ {id:'arandu-cave',name:'ARANDU · Caverna dos bandidos',make:()=>normalizeMap(prologueMapData('cave')).map},
+ {id:'campaign-world',name:'Campanha integrada · Cripta–Floresta–Vila',make:()=>normalizeMap(campaignWorldMap()).map},
  {id:'open',name:'Campo aberto',make:()=>blankMap('Campo aberto')},
  {id:'pillars',name:'Arena de pilares',make(){
   const m=blankMap('Arena de pilares',{biome:'grave'}),objects=[];

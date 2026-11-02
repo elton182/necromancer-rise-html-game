@@ -1,0 +1,138 @@
+{
+  "triangles": 4594,
+  "materials": 1,
+  "clips": [
+    "death",
+    "idle",
+    "shield_bash",
+    "slash_1",
+    "slash_2",
+    "slash_3",
+    "thrust",
+    "walk"
+  ],
+  "loops": {
+    "idle": 1.1622905731201172e-06,
+    "walk": 3.8743019104003906e-07
+  },
+  "joins": {
+    "slash_1 -> slash_2": 0.0,
+    "slash_2 -> slash_3": 0.0
+  },
+  "bone_scale_tracks": 0,
+  "joint_ranges": {
+    "idle": {
+      "elbow": [
+        66.3,
+        70.9
+      ],
+      "right_knee": [
+        26.9,
+        30.8
+      ],
+      "left_knee": [
+        30.1,
+        33.7
+      ]
+    },
+    "walk": {
+      "elbow": [
+        70.4,
+        93.7
+      ],
+      "right_knee": [
+        6.8,
+        87.1
+      ],
+      "left_knee": [
+        6.8,
+        88.0
+      ]
+    },
+    "slash_1": {
+      "elbow": [
+        9.1,
+        77.0
+      ],
+      "right_knee": [
+        26.6,
+        61.0
+      ],
+      "left_knee": [
+        31.1,
+        72.9
+      ]
+    },
+    "slash_2": {
+      "elbow": [
+        9.1,
+        89.8
+      ],
+      "right_knee": [
+        26.6,
+        69.4
+      ],
+      "left_knee": [
+        31.1,
+        64.2
+      ]
+    },
+    "slash_3": {
+      "elbow": [
+        9.1,
+        79.9
+      ],
+      "right_knee": [
+        28.9,
+        85.9
+      ],
+      "left_knee": [
+        31.9,
+        87.5
+      ]
+    },
+    "thrust": {
+      "elbow": [
+        9.1,
+        132.3
+      ],
+      "right_knee": [
+        28.9,
+        79.1
+      ],
+      "left_knee": [
+        31.9,
+        60.2
+      ]
+    },
+    "shield_bash": {
+      "elbow": [
+        68.7,
+        132.0
+      ],
+      "right_knee": [
+        28.9,
+        60.4
+      ],
+      "left_knee": [
+        31.9,
+        75.4
+      ]
+    },
+    "death": {
+      "elbow": [
+        61.1,
+        67.7
+      ],
+      "right_knee": [
+        6.0,
+        6.0
+      ],
+      "left_knee": [
+        4.8,
+        4.8
+      ]
+    }
+  },
+  "status": "PASS"
+}

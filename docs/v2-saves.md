@@ -170,8 +170,44 @@ Campos ausentes recebem padrões; entidades e lutas não são retomadas. A impor
 antiga mantém a campanha em `legacy.data`, sem conversão automática. Veja o
 [guia da campanha](v2-campanha.md) para fluxo, compatibilidade e validação.
 
+Campanha integrada: `campaign.world` é opcional (`null` nos saves do Ato I por fases). Guarda `stage` (`wake`, `village`, `rescue`, `return`, `complete`), `checkpoint` (derivado: `crypt` ou `village`), `guardsCleared`, `smith` (`locked`, `active`, `found`, `done`), `lumber` (`locked`, `active`, `done`), `piles` (três marcadores 0/1) e `cleared` (grupos de quest derrotados). Valores inválidos voltam ao padrão. Com `stage` `complete` e quests ausentes, as duas quests ficam ativas. Posições, inimigos e conversas não são salvos: ao carregar, Zephyr volta ao último abrigo. Normalização em `v2/scripts/campaign-world-model.mjs`.
+
 Equipamentos na versão 3: os itens v1 e v2 são normalizados pelo modelo compartilhado. Na passagem de v2 para v3, o afixo `defense` é convertido em `defensePercent` com o mesmo valor; os demais dados válidos são preservados. A defesa inerente de vestimenta, capuz e botas é calculada pelo tipo e nível, sem campo adicional no save.
 
 Aprimoramentos de Bran persistem no campo opcional `enhancement` do equipamento (inteiro de 0 a 5; ausente equivale a +0). A base original permanece armazenada; o bônus é calculado ao usar o item. Afixos substituídos usam o mesmo contrato dos afixos sorteados.
 
 `character.siege` persiste o Cerco ao Ritual: `unlocked` (1–20), `best` (0–20), `wins`, `shards`, `rune` e `runes` (bone/frost/plague/crypt, níveis 0–3). Saves anteriores recebem padrões por `normalizeSiege`; filas, essência, integridade, torres, guardiões e partida corrente não são salvos. Vitória atualiza esse progresso uma vez; importar/carregar começa em cena limpa.
+
+
+## ARANDU — personagens separados (31/10/2026)
+
+O slot ativo continua em `necromancer_rise_3d_save`, formato e versão preservados. Novos personagens recebem `character.name` (1–32 caracteres após remover espaços nas pontas), `classId: 'necromancer'` e `slotId` UUID. Os campos acompanham snapshot, exportação e importação pelo contrato de campos adicionais. Saves anteriores sem esses campos continuam carregáveis e são listados como Zephyr, Necromante, com identificador de catálogo `original`.
+
+A chave adicional `arandu_character_archives_v1` guarda um objeto de snapshots por identificador. Ao criar ou trocar de personagem, o catálogo é lido e validado e o ativo é arquivado **antes** de substituir a chave histórica. A gravação do ativo mantém a cópia anterior já prevista no contrato. Autosaves continuam gravando apenas o ativo; a lista combina os arquivos com o ativo mais recente, evitando duplicá-lo. Uma falha de quota ao arquivar impede a troca. Um catálogo inválido é preservado e bloqueia novas criações/trocas; exportar o ativo permanece disponível.
+
+O arquivo exportado contém **um personagem**, não todo o catálogo. Não há exclusão nem limite artificial de slots; o limite efetivo é a quota do navegador. Transportar o HTML pode mudar o armazenamento acessível. A chave legada `necromancer_v2` continua intacta. A importação explícita conserva sua semântica de substituição do ativo com backup; não é uma importação em lote.
+
+Testes: `node --test v2/tests/character-saves.test.mjs v2/tests/save-session.test.mjs` e `node v2/tests/title-browser-check.cjs` (Playwright/Edge). Cobrem preservação do save sem slot, nomes, personagens independentes, troca, recarga, catálogo inválido e quota.
+
+
+## ARANDU — abertura opcional da campanha
+
+`campaign.prologue` persiste etapa, pista da lista e vitória no esconderijo; ausente recebe `null`, preservando o fluxo dos saves anteriores. Personagens de campanhas novas começam em `travel`. `done` encerra a abertura e ativa o abrigo e as quests locais de Jacarandá. `campaign.world.passengerMissing: true` preserva o gancho de Nilo. Entidades, temporizador da flecha, posição e página de diálogo não persistem. Contrato completo em [abertura do ARANDU](v2-prologo-arandu.md).
+
+
+A introdução textual anterior à carroça usa o campo opcional `campaign.prologue.introRead`. Personagens novos recebem `false`; saves anteriores sem o campo assumem `true`. Confirmar **Começar a jornada** registra a leitura antes da primeira conversa, sem alterar etapa, recompensas ou formato do save.
+
+
+### Excluir jornadas
+
+Em Carregar, cada personagem tem um botão Excluir. A confirmação identifica o nome e avisa sobre a perda do progresso. Cancelar preserva o save. Excluir remove o personagem do catálogo e, se ativo, remove também seu slot e limpa a sessão em memória. Os demais personagens e o save legado são preservados.
+
+
+A descoberta da caverna também persiste `campaign.prologue.caveHeard`. O campo é marcado ao concluir a conversa dos guardas. Se ausente, assume `true` quando `clue` ou `caveCleared` já eram verdadeiros, e `false` nos demais casos. Não modifica o formato nem a chave do save.
+
+### Classe Guerreiro
+
+`character.classId` aceita `necromancer` (padrão para saves antigos) ou `warrior`. `character.warriorRanks` guarda `strength`, `vitality` e `armor`, com valores de 0 a 5, limitados ao orçamento do nível. Animação, combo, avanço e recargas não são persistidos. Veja [Guerreiro](v2-guerreiro.md).
+
+
+O Guerreiro também persiste os investimentos dos três ramos em `character.warriorRanks` e os itens marciais com `classId: "warrior"`. `character.warriorEquipmentVersion: 1` marca a entrega única de espada/escudo para saves anteriores da classe; retirar ou vender essas peças não as recria. Itens antigos incompatíveis são preservados, com opção de guardar; afixos mágicos/de horda não contribuem aos atributos marciais. Voo do escudo, canalização e bônus de Ímpeto/Retaliação são transitórios e não são gravados. Consulte [Guerreiro](v2-guerreiro.md).

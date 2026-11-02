@@ -1,0 +1,104 @@
+{
+  "errors": [],
+  "log": [
+    {
+      "t": 0,
+      "anim": "-",
+      "window": null,
+      "clip": "idle"
+    },
+    {
+      "phase": "3 cliques com ritmo (0,4 s)"
+    },
+    {
+      "t": 0.1,
+      "anim": "slash_1",
+      "window": null,
+      "clip": "slash_1"
+    },
+    {
+      "t": 0.43,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    },
+    {
+      "t": 0.54,
+      "anim": "slash_2",
+      "window": null,
+      "clip": "slash_2"
+    },
+    {
+      "t": 0.87,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    },
+    {
+      "t": 1.08,
+      "anim": "slash_3",
+      "window": null,
+      "clip": "slash_3"
+    },
+    {
+      "t": 1.52,
+      "anim": "-",
+      "window": null,
+      "clip": "idle"
+    },
+    {
+      "phase": "2 cliques, pausa de 1,2 s, clique"
+    },
+    {
+      "t": 2.71,
+      "anim": "slash_1",
+      "window": null,
+      "clip": "slash_1"
+    },
+    {
+      "t": 3.04,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    },
+    {
+      "t": 3.13,
+      "anim": "slash_2",
+      "window": null,
+      "clip": "slash_2"
+    },
+    {
+      "t": 3.46,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    },
+    {
+      "t": 4.36,
+      "anim": "slash_1",
+      "window": null,
+      "clip": "slash_1"
+    },
+    {
+      "t": 4.69,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    },
+    {
+      "phase": "1 clique só"
+    },
+    {
+      "t": 5.19,
+      "anim": "slash_1",
+      "window": null,
+      "clip": "slash_1"
+    },
+    {
+      "t": 5.51,
+      "anim": "-",
+      "window": 0.45,
+      "clip": "idle"
+    }
+  ]
+}

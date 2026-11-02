@@ -1,5 +1,8 @@
 # Necromancer’s Rise — v2
 
+**ARANDU — nova abertura:** Novo Jogo cria um personagem nomeado, com seleção de Necromante ou Guerreiro e saves separados. A campanha nova começa na caravana e segue por emboscada, caverna, mensageiro e defesa de Jacarandá. [Fluxo, fontes, saves e limitações](../docs/v2-prologo-arandu.md). Os resumos E9/E10 abaixo preservam o histórico da base e dos modos existentes.
+
+
 **A v2 é o jogo principal do projeto.** A versão Canvas 2D (`../necromancer-canvas.html`) é legada: novidades vão para cá e o build lê as regras compartilhadas dela (`node v2/tools/build.cjs`, na raiz). Convenções de trabalho em [../AGENTS.md](../AGENTS.md).
 
 Estado: **E10 concluída no fluxo funcional — Arena clássica (E10a), Expedições (E10b) e Conquista de Valdoria (E10c)**, com Rei Caído provisório como boss, sobre o Ato I, a vila e as missões da E9.
@@ -57,7 +60,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/outpost-map.mjs`, `outpost-scene.mjs`, `camp-parts.mjs` | Mapa do Posto do Capitão (fase 4) e peças de acampamento compartilhadas |
 | `scripts/trail-map.mjs`, `trail-scene.mjs` | Mapa da Trilha dos Vigias (fase 3): faixa, clareiras, barricadas e acampamento procedurais |
 | `scripts/crypt-map.mjs`, `crypt-scene.mjs` | Mapa da Cripta Esquecida (fase 1): paredes, pilares, portões e decoração procedural |
-| `scripts/village-map.mjs`, `village-scene.mjs`, `village-kit.mjs`, `village-ground.mjs`, `nature-kit.mjs`, `scenery-fx.mjs` | Mapa da Vila de Eldrin: casas, ruas, praça e mobiliário com colisão; casas montadas com o kit do Blender (`villageKit`), vegetação do `natureKit`, chão pintado em textura gerada, vento na folhagem e transparência pontilhada contra oclusão ([guia](../docs/v2-acabamento-visual.md)) |
+| `scripts/village-map.mjs`, `village-scene.mjs`, `village-kit.mjs`, `village-ground.mjs`, `painted-ground.mjs`, `nature-kit.mjs`, `scenery-fx.mjs` | Mapa da Vila de Eldrin: casas, ruas, praça e mobiliário com colisão; casas montadas com o kit do Blender (`villageKit`), vegetação do `natureKit`, chão pintado em textura gerada (a mesma grama e terra batida em todos os mapas abertos via `painted-ground.mjs`), vento na folhagem e transparência pontilhada contra oclusão ([guia](../docs/v2-acabamento-visual.md)) |
 | `scripts/gamepad.mjs` | Amostragem pura de sticks, deadzone e botões do controle padrão |
 | `scripts/app.mjs` | Inicialização, ligação entre módulos, painel e relógio |
 | `scripts/session.mjs` | Menu, treino, campanha, morte e separação do estado persistido |
@@ -276,3 +279,7 @@ Verificação: `node v2/tests/ui-browser-check.cjs` e `node v2/tests/title-brows
 movidos para dentro do Relicário por `tests/legacy-controls.cjs`.
 
 O **Cerco ao Ritual** abre pelo painel da Vila de Eldrin após o Ato I: oito ondas, quatro torres, runas e vinte graus de endgame. Veja [o guia do cerco](../docs/v2-cerco.md).
+
+## Guerreiro / Soldado
+
+Novo Jogo também oferece Guerreiro, com três cortes, estocada, golpe de escudo e passivas. Consulte [regras e limites](../docs/v2-guerreiro.md).

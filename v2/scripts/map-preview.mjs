@@ -1,3 +1,8 @@
+import {buildForestBorder} from './forest-border.mjs';
+import {buildMapHorizon,updateMapHorizon} from './map-horizon.mjs';
+import {buildPrologueScenery} from './prologue-scene.mjs';
+import {sceneLookKey,createSceneEnvironment,applySceneLook} from './scene-look.mjs';
+import {updateSceneryFx} from './scenery-fx.mjs';
 // Pré-visualização 3D do editor de mapas: o mesmo cenário do jogo (buildExpedition), câmera ortográfica como a do jogo,
 // um personagem que anda com a colisão real do mapa e câmera que pode girar, aproximar ou ficar livre.
 // Usa um renderizador próprio, criado ao abrir o editor e liberado ao fechar; nada aqui altera o jogo nem o mapa.
@@ -12,7 +17,7 @@ const KEYS={KeyW:[0,1],ArrowUp:[0,1],KeyS:[0,-1],ArrowDown:[0,-1],KeyA:[-1,0],Ar
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 function disposeTree(group){
- for(const o of [...group.children]){group.remove(o);o.traverse?.(n=>{n.geometry?.dispose();for(const m of [].concat(n.material||[]))m.dispose?.();n.dispose?.();});}
+ for(const o of [...group.children]){group.remove(o);o.traverse?.(n=>{n.geometry?.dispose();for(const m of [].concat(n.material||[])){if(n.userData.replacesGround)m.map?.dispose();m.dispose?.();}n.dispose?.();});}
 }
 
 export function createMapPreview({models,assets}){
@@ -50,7 +55,7 @@ export function createMapPreview({models,assets}){
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:0x35443e,roughness:1}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.renderOrder=-3;scene.add(ground);
   const scenery=new THREE.Group(),markers=new THREE.Group();scene.add(scenery,markers);markers.visible=showMarkers;
   const body=buildPlayer();if(body)scene.add(body.root);
-  live={canvas,renderer,scene,camera,sun,ground,scenery,markers,body,palette:null,raycaster:new THREE.Raycaster(),size:{w:0,h:0}};
+  live={canvas,renderer,scene,camera,sun,hemisphere,environment:null,lookKey:null,ground,scenery,markers,body,palette:null,raycaster:new THREE.Raycaster(),size:{w:0,h:0}};
   bindCanvas(canvas);
   live.observer=new ResizeObserver(resize);live.observer.observe(holder);resize();
   if(arenaState.arena)pending=arenaState;
@@ -60,7 +65,7 @@ export function createMapPreview({models,assets}){
  function stop(){
   cancelAnimationFrame(raf);raf=0;if(!live)return;
   live.observer.disconnect();disposeTree(live.scenery);disposeTree(live.markers);live.ground.geometry.dispose();live.ground.material.dispose();
-  live.body?.mixer.stopAllAction();live.renderer.dispose();live.canvas.remove();live=null;held.clear();player.placed=false;pending=null;
+  live.environment?.dispose();live.sun.shadow.dispose();live.body?.mixer.stopAllAction();live.renderer.dispose();live.canvas.remove();live=null;held.clear();player.placed=false;pending=null;
  }
  const running=()=>!!live;
 
@@ -82,12 +87,17 @@ export function createMapPreview({models,assets}){
  function paint(){
   if(!live)return;const side=live.palette?.[lightGround?'light':'dark'];
   live.ground.material.color.set(side?side.ground:lightGround?0xa5a393:0x35443e);live.scene.background.set(side?side.background:lightGround?0x777e79:0x182428);live.scene.fog.color.copy(live.scene.background);
+  live.sun.color.set(0xffe2b0);live.sun.intensity=3;live.hemisphere.intensity=2;
+  applySceneLook(live.renderer,live.scene,live.sun,live.hemisphere,live.lookKey,()=>live.environment??=(createSceneEnvironment(live.renderer)));
+  for(const o of live.scenery.children){const u=o.userData;if(u.lightColor)o.material.color.copy(lightGround?u.lightColor:new THREE.Color(1,1,1));if(u.lightOpacity!==undefined){u.darkOpacity??=o.material.opacity;o.material.opacity=lightGround?u.lightOpacity:u.darkOpacity;}}
+  updateMapHorizon(live.scenery);
  }
  function rebuild({arena,start,spawns}){
   const b=arena.bounds,cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2;
-  disposeTree(live.scenery);disposeTree(live.markers);live.palette=arena.palette||null;paint();
+  disposeTree(live.scenery);disposeTree(live.markers);live.palette=arena.palette||null;live.lookKey=sceneLookKey(arena);
   live.ground.scale.set((b.maxX-b.minX+24)/60,(b.maxY-b.minY+24)/60,1);live.ground.position.set(cx,0,cy);
-  for(const o of buildExpedition(arena))live.scenery.add(o);
+  for(const o of [...buildExpedition(arena,models),...buildPrologueScenery(arena,models)])live.scenery.add(o);
+  live.ground.visible=!live.scenery.children.some(o=>o.userData.replacesGround);live.scenery.add(buildMapHorizon(live.scenery.children.find(o=>o.userData.replacesGround)||live.ground));for(const mesh of buildForestBorder(arena,models))live.scenery.add(mesh);paint();
   // Sólidos sem `look` (muro e pilar) não têm peça própria: o jogo os desenha como blocos lisos.
   const plain=new THREE.MeshStandardMaterial({color:0x74877c,roughness:1});
   for(const s of arena.solids){
@@ -160,6 +170,7 @@ export function createMapPreview({models,assets}){
   Object.assign(live.camera,{left:-view.zoom*aspect,right:view.zoom*aspect,top:view.zoom,bottom:-view.zoom,near:.1,far:140});live.camera.updateProjectionMatrix();
   live.camera.position.set(camTarget.x+Math.sin(view.yaw)*cp*CAMERA_DISTANCE,Math.sin(view.pitch)*CAMERA_DISTANCE,camTarget.z+Math.cos(view.yaw)*cp*CAMERA_DISTANCE);live.camera.lookAt(camTarget);
   live.sun.position.copy(camTarget).add(SUN_OFFSET);live.sun.target.position.copy(camTarget);live.sun.target.updateMatrixWorld();
+  live.camera.updateMatrixWorld();updateSceneryFx(live.renderer,live.camera,player,live.lookKey==='custom-forest'||arenaState.arena?.cave);
   live.renderer.render(live.scene,live.camera);
  }
 

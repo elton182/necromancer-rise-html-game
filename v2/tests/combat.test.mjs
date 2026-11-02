@@ -31,15 +31,15 @@ test('perfuração e estilhaços compartilham acertos e não multiplicam dano nu
 test('regeneração e cooldown respeitam tempo, sem avançar na pausa',()=>{
  const w=field();cast(w);step(w,.25);close(w.player.mp,76);w.paused=true;const state=JSON.stringify(w);step(w,.25);assert.equal(JSON.stringify(w),state);w.paused=false;step(w,.25);assert.ok(cast(w));close(w.player.mp,72);
 });
-test('Dash percorre 4,5 unidades em 0,18 s sem mana; usa movimento antes da mira',()=>{
- const w=field();w.aim={x:0,y:-9};assert.ok(dash(w,{x:1,y:1}));assert.equal(dash(w),false);step(w,.18);close(w.player.x,4.5);close(w.player.y,0);close(w.dash.remaining,0);close(w.dash.cooldown,2.82);assert.equal(w.player.mp,80);
+test('Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira',()=>{
+ const w=field();w.aim={x:0,y:-9};assert.ok(dash(w,{x:1,y:1}));assert.equal(dash(w),false);step(w,.25);step(w,.25);close(w.player.x,4.5);close(w.player.y,0);close(w.dash.remaining,0);close(w.dash.cooldown,2.5);assert.equal(w.player.mp,80);
 });
 test('Dash para no primeiro sólido e não desliza ou atravessa paredes e limites',()=>{
- const w=field();w.player.x=-2;w.arena.solids=[{kind:'box',x:0,y:0,width:.1,depth:6}];dash(w,{x:1});step(w,.18);assert.equal(w.dash.remaining,0);assert.ok(w.player.x<=-.5);assert.ok(w.player.y> -2);
- const b=field();b.player.x=14;dash(b,{x:1,y:1});step(b,.18);assert.ok(b.player.x<=14.55);assert.equal(b.dash.remaining,0);
+ const w=field();w.player.x=-2;w.arena.solids=[{kind:'box',x:0,y:0,width:.1,depth:6}];dash(w,{x:1});step(w,.25);step(w,.25);assert.equal(w.dash.remaining,0);assert.ok(w.player.x<=-.5);assert.ok(w.player.y> -2);
+ const b=field();b.player.x=14;dash(b,{x:1,y:1});step(b,.25);step(b,.25);assert.ok(b.player.x<=14.55);assert.equal(b.dash.remaining,0);
 });
 test('proteção do Dash termina ao acabar o deslocamento e não consome barreira',()=>{
- const w=field();w.player.barrier=5;dash(w,{x:1,y:1});assert.equal(dealDamage(w,w.player,20).blocked,true);assert.equal(w.player.barrier,5);step(w,.1);assert.equal(dealDamage(w,w.player,20).blocked,true);step(w,.08);const r=dealDamage(w,w.player,20);assert.equal(r.absorbed,5);assert.equal(r.applied,15);assert.equal(w.player.hp,85);
+ const w=field();w.player.barrier=5;dash(w,{x:1,y:1});assert.equal(dealDamage(w,w.player,20).blocked,true);assert.equal(w.player.barrier,5);step(w,.1);assert.equal(dealDamage(w,w.player,20).blocked,true);step(w,.2);step(w,.2);const r=dealDamage(w,w.player,20);assert.equal(r.absorbed,5);assert.equal(r.applied,15);assert.equal(w.player.hp,85);
 });
 test('defesa compartilhada, barreira, bloqueio ósseo e morte seguem um único caminho',()=>{
  const w=field();w.player.defense=20;w.player.barrier=5;const r=dealDamage(w,w.player,20,{level:1});assert.equal(r.applied,5);assert.equal(r.absorbed,5);assert.equal(w.player.hp,95);

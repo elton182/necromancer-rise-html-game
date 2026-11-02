@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-BR">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Necromancer’s Rise · v2</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ARANDU</title>
 <style>/*STYLES*/</style></head>
 <body>
-<div id="loading" role="progressbar" aria-label="Carregando Necromancer’s Rise" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-sigil" aria-hidden="true">☠</div><div><small>VALDORIA · ATO I</small><h1>NECROMANCER’S RISE</h1></div><div class="loading-track"><span id="loading-bar"></span></div><p id="loading-label" role="status" aria-live="polite">Abrindo os portões…</p><p id="loading-tip"></p></div>
+<div id="loading" role="progressbar" aria-label="Carregando ARANDU" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="loading-sigil" aria-hidden="true">☠</div><div><small>ALÉM DAS MURALHAS</small><h1>ARANDU</h1></div><div class="loading-track"><span id="loading-bar"></span></div><p id="loading-label" role="status" aria-live="polite">Abrindo os portões…</p><p id="loading-tip"></p></div>
 <canvas id="view" tabindex="0" aria-label="Arena 3D de Necromancer’s Rise"></canvas>
 <!--GAME_UI-->
 <aside id="legacy-settings" aria-label="Configurações da arena">
@@ -26,7 +26,7 @@
  <p id="status" role="status">Preparando a arena…</p>
  <p class="notice">Treino e campanha compartilham as regras de combate. O progresso é preservado; ao continuar, o campo começa limpo.</p>
 </aside>
-<section id="scene-panel"><small>VALDORIA · ATO I</small><h2 id="scene-title">O despertar de Valdoria</h2><p>Inicie a campanha do Ato I ou entre no treino. Salve o personagem e seu progresso para continuar depois.</p><div class="buttons"><button id="enter" type="button">Entrar no treino</button><button id="continue" type="button" hidden>Continuar</button></div><p>Em “Personagem e saves”, você pode importar o JSON exportado pelo jogo anterior.</p></section>
+<section id="scene-panel"><small>ALÉM DAS MURALHAS</small><h2 id="scene-title">O despertar de Valdoria</h2><p>Inicie a campanha do Ato I ou entre no treino. Salve o personagem e seu progresso para continuar depois.</p><div class="buttons"><button id="enter" type="button">Entrar no treino</button><button id="continue" type="button" hidden>Continuar</button></div><p>Em “Personagem e saves”, você pode importar o JSON exportado pelo jogo anterior.</p></section>
 <dialog id="grimoire-dialog" aria-labelledby="grimoire-title"><h2 id="grimoire-title">Grimório dos Mortos</h2><button id="close-grimoire" type="button">Fechar</button><p id="grimoire-warning"></p><div id="grimoire-content"></div><p id="grimoire-message" role="status" aria-live="polite"></p></dialog>
 <dialog id="gear-dialog" aria-labelledby="gear-title"><h2 id="gear-title">Relicário de Zephyr</h2><button id="close-gear" type="button">Fechar · I</button><div id="gear-content"></div><p id="gear-message" role="status" aria-live="polite"></p></dialog>
 <dialog id="import-dialog" aria-labelledby="import-title"><h2 id="import-title">Revisar importação</h2><strong id="preview-profile"></strong><p id="preview-kind"></p><p>A confirmação substitui apenas o save da v2. Se houver um save anterior da v2, uma cópia ficará disponível para exportar.</p><p id="import-error" role="alert"></p><div class="buttons"><button id="confirm-import" type="button">Confirmar importação</button><button id="cancel-import" type="button">Cancelar</button></div></dialog>

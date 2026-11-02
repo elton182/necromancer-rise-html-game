@@ -14,7 +14,7 @@ const Types=[...BaseTypes.map((t,i)=>i===0?{...t,hp:60}:t),...[['hoodedThief','L
  // Ladino Arqueiro usa as regras do Arqueiro (`rules`); Orc é corpo a corpo com golpe de maça preparado. Atributos provisórios.
  {...BaseTypes[1],id:'hoodedArcher',name:'Ladino Arqueiro',rules:'Arqueiro'},{...BaseTypes[2],id:'orc',name:'Orc',hp:110,dmg:14,spd:1.5,xp:24,souls:16,sc:1.3}];
 export {Types,R,Hound,Acolyte,Expedition};
-export const models=['warrior','enemyRogue','brute','livingMage','cryptHound','warAcolyte','enemyThief','enemyGriffin','enemySpider','enemyRogue','enemyOrc'];
+export const models=['enemySoldier','enemyRogue','brute','livingMage','cryptHound','warAcolyte','enemyThief','enemyGriffin','enemySpider','enemyRogue','enemyOrc'];
 // Voo baixo: a projeção no chão mantém as colisões e a vulnerabilidade comuns.
 export function flightHeight(actor,time){if(actor.model!=='enemyGriffin')return 0;if(actor.hp<=0)return .85*Math.max(0,1-(actor.animationTime||0)/.8);return .85+.09*Math.sin(time*Math.PI*2);}
 // Corpos de inimigos somem sozinhos; no último segundo afundam no chão antes de sair da cena.
@@ -74,7 +74,7 @@ export const FEATHER={range:6.5,min:2.6,wind:.6,throw:.3,total:1,cooldown:2.6,co
 const featherDirs=v=>[-1,0,1].map(k=>{const a=k*FEATHER.spread,c=Math.cos(a),s=Math.sin(a);return {x:v.dx*c-v.dy*s,y:v.dx*s+v.dy*c};});
 const SMASH={wind:.7,total:1.2,range:2.2,reach:1.5,radius:1.6,mult:1.25};
 // Orc — Pancada no Chão: especial de área grande. O ponto do impacto trava ao começar a armar; só o pouso causa dano (saia do círculo).
-export const CUT={wind:2,range:3.5,arc:Math.PI*.75,mult:1.6,cooldown:5};
+export const CUT={wind:.7,range:3.5,arc:Math.PI*.75,mult:1.6,cooldown:5};
 export const SLAM={initial:[3,5],range:10,reach:10,wind:1.1,flight:.6,hit:.15,total:2.5,radius:3.2,mult:1.8,cooldown:7,color:'#ff7a3a'};
 // Arqueiros (tipos 1 e 9) — Saraivada: flechas para o alto que caem numa área travada no alvo. O aviso no chão dura a preparação e a queda; o dano é um só, no pouso.
 export const RAIN={initial:[5,8],range:9,min:3.5,wind:1,fall:.9,total:1.6,radius:2.8,mult:1.1,count:10,cooldown:9,color:'#e0c070'};
@@ -110,8 +110,8 @@ export function tickEnemy(w,e,dt){
   if(e.cut){const a=e.cut;a.time+=dt;e.angle=Math.atan2(a.dx,a.dy);
    if(a.time<CUT.wind){e.pose={anim:'heavy_windup',progress:a.time/CUT.wind};mark(w,e,'cut',e.x,e.y,CUT.range,'#efb76b',{arc:CUT.arc,direction:Math.atan2(a.dy,a.dx),progress:a.time/CUT.wind});}
    else{if(!a.hit){a.hit=true;for(const victim of targets(w)){const vx=victim.x-e.x,vy=victim.y-e.y,distance=Math.hypot(vx,vy);if(distance<=CUT.range&&(distance<.1||(vx*a.dx+vy*a.dy)/distance>=Math.cos(CUT.arc/2))&&lineClear(e,victim,.05,w.arena))dealDamage(w,victim,power(w,e,e.dmg)*CUT.mult,e);}fx(w,'slash',{x:e.x,y:e.y,dx:a.dx,dy:a.dy,radius:CUT.range,arc:CUT.arc,color:'#ffe2ae',h:.9,sparks:16,duration:.4});w.combatEvents.push({kind:'soldierCut'});}
-    e.pose={anim:'heavy_attack',progress:Math.min(1,(a.time-CUT.wind)/.35)};}
-   e.animation=e.pose.anim;if(a.time>=CUT.wind+.4){e.cut=null;e.abilityCd=CUT.cooldown;e.atkTimer=.5;}return;
+    e.pose={anim:'heavy_attack',progress:Math.min(1,(a.time-CUT.wind)/.2)};}
+   e.animation=e.pose.anim;if(a.time>=CUT.wind+.25){e.cut=null;e.abilityCd=CUT.cooldown;e.atkTimer=.5;}return;
   }
   e.abilityCd=Math.max(0,e.abilityCd-dt);if(e.abilityCd<=0&&d<=CUT.range&&lineClear(e,t,.05,w.arena)){e.cut={time:0,dx:dx/d,dy:dy/d,hit:false};e.actionId++;return;}
  }

@@ -2,9 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {normalizeMap,blankMap,resolveMap,detach,dependents,toArena,analyze,createLibrary,builtinMap,TEMPLATES,PROPS,LIMITS,mapRef,reachable,canReach} from '../scripts/map-model.mjs';
 import {overlaps,resolvePosition} from '../scripts/terrain.mjs';
+import {prologueArena} from '../scripts/prologue-map.mjs';
 
 const memory=()=>{const data=new Map();return {getItem:k=>data.has(k)?data.get(k):null,setItem:(k,v)=>data.set(k,v),data};};
 const make=(extra={})=>normalizeMap({id:'a',name:'Teste',objects:[],...extra}).map;
+
+test('mapas ARANDU compartilham geometria e inimigos com a campanha e permitem variações',()=>{
+ for(const [ref,stage] of [['builtin:arandu-caravan','ambush'],['builtin:arandu-cave','cave']]){
+  const map=builtinMap(ref),arena=toArena(map),campaign=prologueArena(stage);
+  assert.deepEqual(arena.solids.map(({tone,...o})=>o),campaign.solids.map(({tone,...o})=>o));assert.deepEqual(map.spawns,campaign.prologueSpawns);assert.equal(overlaps(map.start,.45,arena),false);
+  const copy=normalizeMap(JSON.parse(JSON.stringify({...map,id:'copy'}))).map;
+  const item=copy.objects.find(o=>o.type===(stage==='cave'?'capture_note':'caravan'));item.x+=1;
+  const restored=normalizeMap(JSON.parse(JSON.stringify(copy))).map;assert.equal(restored.objects.find(o=>o.id===item.id).x,item.x);
+  const flat=resolveMap(blankMap('Variação',{base:ref})).map;assert.equal(flat.objects.length,map.objects.length);assert.equal(flat.biome,map.biome);
+  if(stage==='cave'){assert.ok(arena.cave);assert.ok(arena.decor.misc.some(m=>m.look==='capture_note'));}else assert.equal(arena.caravans.length,2);
+ }
+});
 
 test('normaliza valores inválidos sem lançar erro', () => {
  assert.equal(normalizeMap(null).map,null);

@@ -1,7 +1,7 @@
 // Visual procedural da Trilha dos Vigias: mata outono, cerca, lanternas, torres, barricadas e acampamento.
-// Vegetação, rochas, grama e trilha vêm de buildForest (`arena.autumn` troca a paleta das copas).
+// Chão pintado, vegetação, rochas, grama e trilha vêm de buildForestScene (`arena.autumn` troca a paleta das copas).
 import * as THREE from 'three';
-import {buildForest,family,material,mix,dummy} from './forest-scene.mjs';
+import {buildForestScene,family,material,mix,dummy} from './forest-scene.mjs';
 import {buildTowers,buildCamp} from './camp-parts.mjs';
 const box=()=>new THREE.BoxGeometry(1,1,1).translate(0,.5,0);
 const col=hex=>new THREE.Color(hex);
@@ -25,6 +25,6 @@ export function buildTrail(arena){
  buildCamp(add,d);
  add(family(post,material({color:0x4d3524}),[{y:-2.6},{y:2.6}],(p)=>{dummy.position.set(150.2,0,p.y);dummy.scale.set(4,6.2,4);},{shadow:true}));
  add(family(box(),material({color:0x4d3524}),[{y:0}],()=>{dummy.position.set(150.2,5.6,0);dummy.scale.set(.5,.5,6.4);},{shadow:true}));
- for(const o of buildForest(arena))add(o);
+ for(const o of buildForestScene(arena))add(o);
  return out;
 }

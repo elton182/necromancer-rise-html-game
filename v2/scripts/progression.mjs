@@ -1,5 +1,7 @@
 // Regras de progressão do personagem: sem DOM, armazenamento ou Three.js.
 // As constantes vêm de progression-rules.mjs e os atributos, do modelo de equipamentos compartilhado.
+import {warriorAttributes,warriorRanks} from './warrior-model.mjs';
+import WarriorGear from './warrior-equipment.mjs';
 import P from './progression-rules.mjs';
 import EQ from './shared-equipment.mjs';
 import Build from './full-build.mjs';
@@ -20,8 +22,14 @@ export const points=(level,ranks={})=>Math.max(0,Build.budget(level)-Build.spent
 export const levelOf=w=>w.army?w.army.profile.level:w.level||1;
 // Estimativas e atributos saem do mesmo modelo usado pelo inventário atual; `equipment` permite prever uma troca.
 export function snapshotFor(w,equipment=w.equipment||{},level=levelOf(w)){
+ if(w.classId==='warrior'){
+  const b=WarriorGear.bonuses({equipment}),r=warriorRanks(w.warriorRanks,level),mastery=1+r.equipmentMastery*.08;
+  const raw={hp:120+18*(level-1)+(b.hp||0),mp:80+4*(level-1)+(b.mp||0),damage:(24+6*(level-1)+(b.damageFlat||0)*mastery)*(1+(b.damagePercent||0)/100),defense:(b.defense||0)*mastery,blockChance:equipment.shield?12+(b.blockChance||0):0,hpRegen:b.hpRegen||0,regen:5+(b.regen||0),move:(6+(b.moveFlat||0))*(1+Math.min(30,b.move||0)/100),cooldown:Math.min(50,b.cooldown||0)};
+  const a=warriorAttributes(raw,r);if(!equipment.shield)a.blockChance=0;a.defenseMitigation=WarriorGear.defenseReduction(a.defense,level)*100;
+  return {attributes:a,skills:[['slash','Três cortes',2.1,0],['thrust','Estocada',2.2,20],['bash','Golpe de escudo',1.3,15],['tornado','Corte tornado',.65,5],['shieldThrow','Arremesso de escudo',1.2,20]].map(([id,name,mult,mana])=>({id,name,damage:id==='slash'?[.55,.65,.9].reduce((sum,m)=>sum+Math.floor(a.damage*m*(1+r.slash*.06)),0):Math.floor(a.damage*mult*(1+(r[id]||0)*(id==='thrust'||id==='bash'?.1:0))),cooldown:({slash:0,thrust:5,bash:7,tornado:3,shieldThrow:7}[id])*(1-a.cooldown/100),mana,equipped:!['tornado','shieldThrow'].includes(id)||r[id]>0,dps:null,sustained:null}))};
+ }
  const army=w.army;
- return EQ.snapshot(Build,{level,skillRanks:army?.profile.ranks||{},actionLoadout:army?.loadout||[],skillMastery:army?.mastery||{},equipment},R.defs,R.tuning,equipment);
+ const result=EQ.snapshot(Build,{level,skillRanks:army?.profile.ranks||{},actionLoadout:army?.loadout||[],skillMastery:army?.mastery||{},equipment},R.defs,R.tuning,equipment);return result;
 }
 export const attributes=(w,level=levelOf(w))=>snapshotFor(w,w.equipment||{},level).attributes;
 // Aplica os atributos derivados ao jogador. Trocar nível, árvore ou itens preserva a proporção de vida e mana
@@ -30,7 +38,7 @@ export function applyAttributes(w,{fill=false,level=levelOf(w)}={}){
  // Maldições de Valdoria (w.curses) multiplicam estes atributos; saem sozinhas quando o mundo é recriado.
  const a={...attributes(w,level)},p=w.player,m=w.curses;if(m){a.hp=Math.max(1,Math.round(a.hp*m.hp));a.regen*=m.mpRegen;a.hpRegen*=m.hpRegen;a.move*=m.move;}
  const hp=p.maxHp>0?p.hp/p.maxHp:1,mp=p.maxMp>0?p.mp/p.maxMp:1,changed=a.hp!==p.maxHp||a.mp!==p.maxMp;
- Object.assign(p,{maxHp:a.hp,maxMp:a.mp,spellDamage:a.spell,mpRegen:a.regen,hpRegen:a.hpRegen,moveSpeed:a.move,defense:a.defense,level});
+ Object.assign(p,{maxHp:a.hp,maxMp:a.mp,spellDamage:a.spell??0,damage:a.damage??0,blockChance:a.blockChance??0,mpRegen:a.regen,hpRegen:a.hpRegen,moveSpeed:a.move,defense:a.defense,level});
  if(fill){p.hp=a.hp;p.mp=a.mp;}else if(changed){p.hp=p.hp<=0?0:Math.max(1,Math.floor(a.hp*hp+1e-8));p.mp=Math.max(0,Math.floor(a.mp*mp+1e-8));}
  w.modifiers={...w.modifiers,gearCooldown:a.cooldown};
  return a;

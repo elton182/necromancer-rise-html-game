@@ -485,3 +485,82 @@ Integrado à Vila de Eldrin com GLB fornecido e animação idle. Serviços em Eq
 Implementado na v2: entrada pela Vila de Eldrin após o Ato I, oito ondas com três rotas progressivas e chefe, quatro defesas com três graus, essência transitória, integridade do obelisco, vinte graus, modificadores e runas persistidas. Obelisco e torres são GLBs animados gerados pelo Blender. Regras e limites de validação em `docs/v2-cerco.md`; evidências em `review/v2/siege/`. Balanceamento amplo dos graus altos permanece pendente.
 
 A interface de construção do cerco passou a ser contextual: aparece até 3,2 unidades do pedestal mais próximo, seleciona esse ponto automaticamente e fecha ao sair do alcance. O anel acompanha essa seleção. Durante a invasão, longe dos pedestais, fica apenas o resumo do ritual no topo; entre ondas há preparação compacta. Conferido no navegador com construção, melhoria, afastamento, vitória e derrota.
+
+### E11 — receita visual compartilhada com o mapa integrado
+
+Vila e mapas personalizados de floresta usam a mesma receita de iluminação, também na prévia 3D.
+Materiais dos kits isolados por família; cripta com paredes opacas e oclusão localizada, vento na vegetação,
+paleta das casas abandonadas e poças de luz das tochas. Testes de integração dos modelos e build executados.
+Aprovação visual e desempenho permanecem pendentes. Ver `docs/v2-mapas.md`.
+
+### Campanha integrada — mundo ampliado e quests de reconstrução
+
+Mundo de Eldrin ampliado para 360 × 360, com Mina de Valfundo, Serraria do Vale, Cemitério antigo e mata nas bordas. São 21 grupos de inimigos com tipos misturados, escala por região e líderes de elite. Após o resgate de Oren, abrem-se **O ferreiro de Eldrin** (libertar Bran na mina e reacender a forja, que dá acesso aos equipamentos) e **Madeira para Eldrin** (três pilhas guardadas na serraria). Regras, save e limites em `docs/v2-campanha.md`; testes em `v2/tests/campaign-world.test.mjs` e `v2/tests/campaign-world-browser-check.cjs`. Balanceamento e reconstrução visual da vila permanecem pendentes.
+
+
+## ARANDU — apresentação inicial (31/10/2026)
+
+Entregues menu baseado na referência visual, seleção apenas do Necromante com GLB animado, nome próprio e múltiplos personagens preservando o save ativo histórico. Fontes e limitações em [interface](../docs/v2-interface.md) e [saves](../docs/v2-saves.md). Build e testes de regras/saves/campanha executados; conferência no Edge e capturas em `review/v2/arandu-title/`. A campanha ainda começa no mundo integrado existente: caravana, queda na caverna e Jacarandá permanecem planejados.
+
+
+## ARANDU — primeira versão da abertura (31/10/2026)
+
+Integrados conversa na caravana, defesa contra bandidos, flecha/queda roteirizada, saída do esconderijo com pista de Nilo, mensageiro e defesa de Jacarandá. O reencontro conclui com Nilo sequestrado e acesso ao abrigo e quests existentes. Saves anteriores mantêm sua abertura. Fonte e critérios em [v2-prologo-arandu.md](../docs/v2-prologo-arandu.md). Kit estático gerado no Blender, build, suíte completa e percurso controlado no Edge executados; evidências em `review/v2/arandu-prologue/`. Ainda sem validação de dificuldade por partida completa, viagem em movimento ou animações exclusivas de queda/sequestro.
+
+
+### Revisão: conversa na carroça em movimento
+
+A abertura parada foi substituída pela viagem com carroça aberta, rodas em movimento, cavalo GLB com rig/clipes e passageiros a bordo. Balões alternam interlocutores, terminando na interrupção do cocheiro e chamada pelo nome. Frenagem, pausa, câmera próxima e retomada dos controles ao desembarcar integradas. Build, suíte da v2 e check `caravan-travel-browser-check.cjs` executados; evidências em `review/v2/arandu-travel/`. Pose de assento e dublagem continuam fora desta versão.
+
+
+### Introdução textual do ARANDU
+
+Adicionada antes da carroça, apresentando o mundo, Ferrabrás, Alvorada, Itavera e a busca do aventureiro por fama, riqueza e poder. Confirmação manual inicia a viagem; leitura registrada sem interferir em saves existentes. Build, testes de prólogo/saves e check visual da viagem executados. Evidências em `review/v2/arandu-intro/`.
+
+
+### Acabamento da carroça do ARANDU
+
+Modelo aberto/coberto refinado no gerador Blender: rodas com raios, madeira, ferragens, bancos, lanternas, bagagem e lona curva. Sem alteração das regras. Exportação via MCP, build e conferência no Edge; capturas em `review/v2/arandu-travel/`.
+
+
+## ARANDU — mapas no editor e queda integrada (01/11/2026)
+
+Emboscada e caverna registradas como modelos e bases do editor, com peças próprias e prévia 3D. Fonte única de mapas e inimigos em `prologue-map-data.mjs`; cópias editadas ficam na biblioteca, sem publicar alterações na campanha automaticamente. Queda revisada com recorte do terreno, poço GLB, fragmentos, câmera de descida e clipe próprio em cópia do player. Transição para a caverna preserva saves e regras; aterrissagem ainda não tem animação própria. Build, suíte da v2 e checks do editor/prólogo no Edge executados. Guias: [mapas](../docs/v2-mapas.md) e [abertura](../docs/v2-prologo-arandu.md); evidências em `review/v2/arandu-editor/` e `review/v2/arandu-prologue/`.
+
+
+### Caverna narrativa — entregue em 01/11/2026
+
+Chegada com recuperação e rastros, conversa dos guardas persistida, carga opcional, ordens em três páginas e transição textual à saída. Novo kit Blender de depósito, escoramentos e formações, integrado à campanha e ao editor. Build, suíte da v2 e check direcionado da caverna no Edge executados; evidências em `review/v2/arandu-cave-story/`. Aproximação dos guardas alterada para permitir exploração inicial; dificuldade ainda sem partida completa.
+
+
+### Continuidade visual do terreno — entregue em 01/11/2026
+
+Piso prolongado além do enquadramento com transição de textura e névoa, compartilhado pelo jogo e pela prévia do editor. Limites de movimento preservados, recorte da queda aplicado também à extensão. Build, check de sete mapas no Edge e regressão da queda concluídos. Evidências em `review/v2/map-horizon/` e `review/v2/arandu-fall/`.
+
+### Guerreiro / Soldado — base inicial
+
+Classe selecionável, modelo com equipamentos vinculados e animações, combo de três cortes, estocada com avanço, golpe de escudo e três passivas persistidas. Regras e limites em [v2-guerreiro](../docs/v2-guerreiro.md). Balanceamento completo e equipamento exclusivo seguem pendentes.
+
+
+### Mata contínua da floresta — 01/11/2026
+
+A borda dos cenários de floresta recebeu árvores GLB instanciadas além do limite jogável, até a névoa. Mesma apresentação no jogo e na prévia do editor; sem mudanças em colisões e navegação. Build e check visual de horizonte no Edge concluídos. Evidências em `review/v2/map-horizon/`.
+
+
+### Jacarandá intacta após a vitória — 01/11/2026
+
+O mundo contínuo de campanhas com prólogo concluído incorpora a mesma vila completa da defesa, com colisões e decoração correspondentes. Composição também aplicada a saves já concluídos, sem novo formato ou recompensa adicional. Testes de prólogo e mundo contínuo executados, incluindo retomada e acesso às quests.
+
+Acabamento da caverna do prólogo: nove salas com portas alternadas, três nichos investigáveis e continuação rochosa além dos limites. Borda infinita é requisito visual de toda fase; não muda limites físicos.
+
+
+### Árvore e arsenal do Guerreiro — 02/11/2026
+
+Três ramos marciais (Espada, Escudo e Passivas), Tornado mantido, Arremesso de escudo, bloqueio integral por chance, recuperação de vida e duas sinergias temporárias. Arsenal inicial de espada de uma mão e escudo, com loot, mercador, comparação, forja e migração sem apagar peças antigas. Atributos próprios sem dano mágico/DPS de horda; soldado inimigo mantém o modelo anterior. Guia: [Guerreiro](../docs/v2-guerreiro.md). Evidências no Edge em `review/v2/warrior/`. Balanceamento de campanha e clipes autorais de Tornado/Arremesso permanecem pendentes.
+
+Refinamento visual da árvore marcial: selos com ícones vetoriais, ramos conectados, cores e estados próprios, painel de investimento e seleção de ramo no celular. Conferência de seleção, pré-requisitos visuais e investimento pelo check do Guerreiro no Edge. Regras e saves preservados.
+
+
+### Comparação de equipamentos e NPCs dos modos — 02/11/2026
+
+Diferenças de status destacadas com sinal, seta e cores para ganho/perda. Jacarandá recebe Guardião das Ondas, Cartógrafa de Valdoria e Mestre do Cerco, com acesso por G aos modos existentes, sem exigir o Ato I. Entradas também mantidas em Eldrin; retorno restaura a praça e preserva quests e progressão dos modos. Regras em `village-services.mjs`; evidências no Edge em `review/v2/village-services/`.

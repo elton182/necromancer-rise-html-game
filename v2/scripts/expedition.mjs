@@ -1,3 +1,4 @@
+import {inVillageHub,rememberVillage} from './village-services.mjs';
 // Expedição (E10b) e rotas da Conquista de Valdoria (E10c): mapa amplo, encontros dormentes e boss ao fim da trilha.
 // Fontes: scripts/expedition.js, scripts/expedition-model.js e scripts/endgame.js. O boss é o Rei Caído PROVISÓRIO: o jogo antigo usa o
 // Guardião de Almas, que ainda não existe na v2. Vida, dano e XP seguem a escala da wave (Expedição) ou da dificuldade regional (Conquista).
@@ -50,14 +51,14 @@ function load(s,wave){
  w.notice=run?Endgame.encounters[run.kind].name+' · '+Endgame.routeBiomes[run.biome].name+' · dificuldade '+run.difficulty+' · intensidade '+run.reward.score+(plan.layout==='brejo-fork'?' · trilha direta: defesa; desvio: acampamento raro; patrulha na convergência':''):'Expedição · wave '+wave+' · '+BIOME_NAMES[plan.biome]+' · explore ou siga até o boss';
 }
 export function launchExpedition(s){
- if(!s.save.campaign.village)return false;const p=s.save.character.waveProgress;
+ if(!inVillageHub(s))return false;rememberVillage(s);const p=s.save.character.waveProgress;
  clean(s,expeditionArena(p.selected),{x:0,y:0});s.scene='training';
  s.world.adventure={kind:'expedition',n:0,done:false,start:p.selected,wave:p.selected,completed:0,cleared:false,queue:[],zones:[],mission:{label:'EXPEDIÇÃO',layout:'expedition'}};
  load(s,p.selected);return true;
 }
 // Conquista de Valdoria: o modelo valida acesso, rota, maldições e dificuldade; erros voltam como mensagem.
 export function launchConquest(s,kind,routeId){
- if(!s.save.campaign.village)return {ok:false,message:'Valdoria só abre a partir da Vila de Eldrin.'};
+ if(!inVillageHub(s))return {ok:false,message:'Volte à vila para iniciar a Conquista de Valdoria.'};rememberVillage(s);
  const c=s.save.character,state=c.conquest,d=state.difficulty;let next;
  try{next=Endgame.begin(state,kind,d,state.offers[d].selected,routeId);}catch(error){return {ok:false,message:error.message};}
  c.conquest=next.state;const run=next.run;

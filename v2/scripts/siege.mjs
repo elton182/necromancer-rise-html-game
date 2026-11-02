@@ -1,13 +1,14 @@
+import {inVillageHub,rememberVillage} from './village-services.mjs';
 import {clean} from './campaign.mjs';
 import {spawnEnemy} from './enemies.mjs';
 import {grantExperience} from './rewards.mjs';
 import {CORE,PADS,TOWERS,LANES,MODIFIERS,WAVES,MAX_TIER,normalizeSiege,guardianStats,siegeArena,wavePlan,towerCost,runeCost,victoryReward} from './siege-model.mjs';
 const fail=message=>({ok:false,message}),ok=message=>({ok:true,message});
-export const siegeAccess=s=>s.scene==='village'&&s.save.campaign.village&&!!s.save.campaign.cleared[4];
+export const siegeAccess=s=>inVillageHub(s);
 export function launchSiege(s,tier=1,modifier='none'){
- const p=normalizeSiege(s.save.character.siege);if(!siegeAccess(s))return fail('Conclua o Ato I e entre na vila para iniciar o cerco.');
+ const p=normalizeSiege(s.save.character.siege);if(!siegeAccess(s))return fail('Entre na vila e fale com o Mestre do Cerco para iniciar a defesa.');
  if(!Number.isInteger(tier)||tier<1||tier>p.unlocked||!Object.hasOwn(MODIFIERS,modifier))return fail('Grau ou modificador indisponível.');
- clean(s,siegeArena(),{x:0,y:3});s.scene='training';s.world.siegeMenu=false;const w=s.world;
+ rememberVillage(s);clean(s,siegeArena(),{x:0,y:3});s.scene='training';s.world.siegeMenu=false;const w=s.world;
  w.adventure={kind:'siege',n:0,tier,modifier,done:false,won:false,wave:0,active:false,queue:[],essence:240,integrity:CORE.hp,towers:[],rune:p.rune,runeRank:p.runes[p.rune],mission:{label:'Cerco ao Ritual'},zones:[]};
  w.portal=null;w.gearLevel=8+3*tier;w.paused=false;
  w.actors.push({id:w.nextId++,model:'siegeCore',team:'neutral',...CORE,hp:1,maxHp:1,radius:0,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0});
@@ -21,7 +22,7 @@ export function buildTower(s,padId,kind){
 export function upgradeTower(s,padId){const w=s.world,r=w.adventure,t=r?.towers?.find(t=>t.pad===padId);if(s.scene!=='training'||r?.kind!=='siege'||r.done||w.player.hp<=0||!t||t.rank>=3)return fail('Melhoria indisponível.');const cost=towerCost(t);if(r.essence<cost)return fail('Essência insuficiente.');r.essence-=cost;t.rank++;t.cd=0;for(const a of w.actors.filter(a=>a.siegeGuard===t.id&&a.hp>0)){const stats=guardianStats(t,r),ratio=a.hp/a.maxHp;Object.assign(a,stats,{hp:Math.max(1,Math.round(stats.maxHp*ratio))});}return ok('Torre melhorada para grau '+t.rank+'.');}
 export function startSiegeWave(s){const r=s.world.adventure;if(s.scene!=='training'||r?.kind!=='siege'||r.done||r.active||s.world.player.hp<=0)return false;r.wave++;r.queue=wavePlan(r.tier,r.wave,r.modifier);r.elapsed=0;r.active=true;s.world.paused=false;return true;}
 export function attuneRune(s,kind,upgrade=false){
- if(!siegeAccess(s)||!Object.hasOwn(TOWERS,kind))return fail('Runas só podem mudar na vila após o Ato I.');const p=normalizeSiege(s.save.character.siege);
+ if(!siegeAccess(s)||!Object.hasOwn(TOWERS,kind))return fail('Runas só podem mudar na vila.');const p=normalizeSiege(s.save.character.siege);
  if(upgrade){const cost=runeCost(p.runes[kind]);if(p.runes[kind]>=3||p.shards<cost)return fail('Fragmentos insuficientes ou runa no máximo.');p.shards-=cost;p.runes[kind]++;}p.rune=kind;s.save.character.siege=p;return ok('Runa de '+TOWERS[kind].name+' equipada.');
 }
 export function endSiege(s,won){

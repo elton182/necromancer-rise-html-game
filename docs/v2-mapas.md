@@ -124,3 +124,72 @@ Fontes: `v2/scripts/map-model.mjs` (modelo, herança, validação e biblioteca),
 (criar, mover, desenhar muro, desfazer, herdar, ocultar, copiar, salvar, testar no jogo, persistir após recarregar, excluir base
 com dependentes e largura de celular), incluindo a vista 3D (modos 2D, 2D + 3D e 3D, andar, girar, zoom, atualização ao editar e
 liberação ao fechar); não há `*-browser-check.cjs` automatizado para o editor.
+
+## Protótipo da campanha integrada
+
+Em **Novo mapa**, escolha **Campanha integrada · Cripta–Floresta–Vila**. Cria uma cópia editável de 120 × 120 unidades: cripta no sudoeste, floresta central e vila no nordeste, com trilha contínua e três encontros de teste. Fonte: `v2/scripts/campaign-world-map.mjs`. Use **2D + 3D** para revisar e **Testar** para percorrer. Salve para guardar suas alterações na biblioteca; o modelo não sobrescreve mapas existentes.
+
+É uma planta inicial dentro dos limites atuais do editor, ainda com um único bioma global e casas genéricas. Não substitui a campanha atual, não contém NPCs, quests, reconstrução nem respawn. Essas integrações e a diferenciação visual das regiões são próximas etapas. Testes do modelo de mapas e build executados; inspeção visual no editor ainda pendente.
+
+Atalho direto: **Revisar campanha integrada** na aba Mapas abre uma cópia editável da planta. Ela também aparece em **Mapas do jogo**, com Jogar e Criar variação. Não é necessário importar JSON.
+
+O modelo da campanha integrada foi ampliado para **240 × 240** (dobro por eixo, quatro vezes a área), mantendo construções em escala humana. Tem caminho secundário, clareiras com colunas, acampamentos e depósitos junto à vila. O limite dimensional do editor agora é 240; o limite de 600 objetos permanece. Mapas já salvos são preservados: use **Revisar campanha integrada** para abrir a nova planta. A trilha procedural passa a usar cor uniforme entre segmentos, inclusive nos demais cenários que usam `buildForest`. Inspeção visual e desempenho do mapa ampliado ainda pendentes.
+
+A planta integrada usa agora **Muro de cripta com vitral**, peça editável com largura, profundidade e altura, padrão 8 m. O kit `cryptArchitecture` é gerado por `blender/scripts/v2_crypt_architecture.py`; a cena o usa no jogo e na prévia com fallback de caixa sem modelos. Paredes translúcidas permitem conduzir o personagem no interior; o salão permanece aberto por cima como corte de apresentação. A abertura leste leva à floresta. A câmera existente acompanha o personagem no jogo; na prévia, desative Câmera livre. Build e testes de mapas executados; aparência e transição ainda sem validação visual.
+
+Interior da planta integrada: piso de lajes, salas laterais com vãos para o corredor, bancos funerários, altares com velas, estantes e sarcófago aberto no início. As cinco peças estão no grupo **Cripta** do editor, como decoração sem colisão. O jogador nasce no sarcófago e sai andando pelo lado aberto; não há animação de despertar. Build, testes do modelo e verificação do início/corredor executados; visual ainda sem conferência no navegador.
+
+A planta integrada agora é o mundo da campanha nova e tem **360 × 360** unidades, com mina, serraria, cemitério e mata nas bordas (veja o [guia da campanha](v2-campanha.md)). Os limites do editor passaram a 360 de lado, 2000 objetos e 40 pontos de inimigos. Grama, manchas e flores mantêm os tetos anteriores até 240 × 240; acima disso, crescem com a área para preservar a densidade. Mapas salvos não mudam.
+
+**Atualizar modelos** na aba Mapas (também em Opções do menu inicial) recarrega o HTML atual, incluindo modelos e módulos embutidos pelo último build. Salve o mapa antes: não preserva alterações em memória nem sessões de combate. A biblioteca salva continua no armazenamento do navegador. Não regenera GLBs nem executa o build.
+
+Correção do piso da cripta: lajes ficam a 0,025 u acima do chão, com deslocamento de profundidade no material e sem projetar sombras. Antes, topo das lajes e terreno estavam na mesma altura, causando disputa de profundidade durante movimento da câmera. Os avisos de combate a 0,04 u continuam acima do piso. Build e sintaxe verificados; conferência visual em movimento pendente.
+
+Revisão da composição da cripta: removidos pontos de trilha dentro do salão e lápides/colunas antigas que cruzavam divisórias; novas lápides distribuídas nas salas laterais. Mapas personalizados de floresta passam a usar chão pintado com faixas de terra contínuas entre pontos próximos, substituindo os discos individuais. Isso também atualiza o chão de outros mapas personalizados de floresta; objetos e colisões salvos permanecem iguais. Para receber a composição nova, abra o modelo novamente. Sintaxe, testes de mapas e build verificados; conferência visual pendente.
+
+Revisão de pilares e trilha: seis colunas de 6 m no salão, com base/capitel e fuste segmentado do GLB `crypt_column`; marcos externos passam a 4,5–5,7 m. Colunas em outras Expedições também usam o kit quando disponível, preservando suas medidas. A pintura de trilha usa máscara única com grão de terra e variação de tom (pântano e mapas personalizados de floresta), em vez de camadas de preenchimento uniforme. Build, sintaxe e testes do modelo executados; avaliação visual ainda pendente.
+
+A grama dos mapas personalizados de floresta usa manchas suaves de verde, separadas da paleta escura do pântano. Sombras pintadas de muros seguem a base em faixa estreita, em vez de um círculo calculado pela diagonal. Teste de gradientes e build executados; aparência pendente de conferência.
+
+Casas de mapas personalizados usam uma variante degradada do kit original (`ruinedVillageKit`), com telhas ausentes, paleta envelhecida, janelas apagadas e tábuas cruzadas. A largura/profundidade é inscrita no colisor circular existente. Não altera a Vila de Eldrin da campanha atual. Tochas do cenário de Expedições e mapas personalizados usam agora `cryptArchitecture/torch` quando disponível, com fallback anterior. São modelos estáticos, sem animação da chama. Blender, build, sintaxe e testes de mapas executados; visual e circulação ainda pendentes de conferência no jogo.
+
+Fatia de acabamento na saída da cripta: vegetação antes sorteada foi recomposta em agrupamentos laterais, com arbustos, pedras baixas e vestígios de posto de vigia. A ligação até a primeira clareira foi conferida com `lineClear` em três segmentos, raio 0,55. Planta com 562 objetos, abaixo do limite de 600. Mapas personalizados de floresta passam a usar o kit de vegetação; barris/caixotes personalizados usam o kit da vila, com fallback anterior. Referência de direção: Pixel Crawler de Anokolisa (composição de margens e conjuntos de adereços; nenhum sprite foi importado). Build e testes de mapas/chão executados; inspeção visual ainda pendente.
+
+## Paridade de acabamento com a Vila de Eldrin (31/10/2026)
+
+Nos mapas personalizados de floresta, jogo e prévia 3D agora compartilham a receita de luz da vila em
+`scene-look.mjs`: ACES, exposição, reflexo difuso do céu, sol e hemisfério. A prévia também respeita o chão
+pintado que substitui o plano liso e aplica as alterações de fundo claro aos materiais do cenário.
+As outras paletas conservam a configuração anterior. O ambiente da prévia é liberado ao fechá-la.
+
+Paredes da cripta passam a ser opacas, com recorte pontilhado apenas quando encobrem o personagem;
+isto substitui a transparência permanente de 48% descrita nas revisões anteriores. A vegetação usa o vento
+do kit da vila. Casas abandonadas mantêm danos, com reboco e telhas de cores mais legíveis. Tochas ganham
+poças de luz aditivas no chão, mais fracas no fundo claro. As regras e posições do mapa são preservadas.
+
+Cada família de peças do kit tem seu próprio material, evitando que a cor, o shader ou o descarte de uma
+cena afetem outra ou a prévia. Verificações executadas: `scene-look.test.mjs`, `map-model.test.mjs`,
+`swamp-ground.test.mjs`, `village.test.mjs`, sintaxe dos módulos e build. Ainda pendentes: inspeção visual
+no navegador, comparação em movimento, fundo claro/escuro e custo em qualidade baixa. Os testes não
+comprovam equivalência estética com a vila.
+
+
+## Mapas da abertura do ARANDU (01/11/2026)
+
+Disponíveis tanto no seletor de **Novo mapa** quanto em **Mapas do jogo**:
+
+- **ARANDU · Desembarque da caravana**: área de 40 × 60 com as duas carroças, estrada, vegetação, bloqueio, início do jogador e três bandidos.
+- **ARANDU · Caverna dos bandidos**: galeria de 40 × 60 com paredes rochosas, tochas, caixotes, lista de captura, marco da saída, destroços da queda e dois bandidos.
+
+Escolha o modelo e clique em **Novo mapa** para editar uma cópia independente. Em **Mapas do jogo**, **Criar variação** mantém herança da base. Salvar grava na biblioteca; **Testar ▶** entra na cópia com inimigos. Essas cópias não substituem automaticamente a campanha nem executam seus diálogos, missão da lista ou transições.
+
+A paleta tem os grupos **Caravana** e **Caverna**: carroça, bloqueio, parede rochosa, lista, saída e destroços. As carroças permitem largura, profundidade e altura; paredes permitem os mesmos ajustes. O bioma **Caverna** usa o chão e o acabamento rochoso da campanha. A prévia 3D desenha as mesmas peças GLB usadas no jogo; mover paredes e marcadores atualiza sua apresentação. Lista e saída são peças de cenário no teste de mapas, sem gatilhos narrativos.
+
+Fonte comum: `v2/scripts/prologue-map-data.mjs`, consumida por `prologue-map.mjs` e `map-model.mjs`. Pontos de inimigos da emboscada e da caverna também vêm dessa fonte. Registro dos módulos em `v2/tools/build.cjs`. A prévia usa `prologue-scene.mjs`, e `toArena` traduz os objetos para colisores e adereços.
+
+Verificados: testes do modelo de mapas/prólogo e suíte da v2; `node v2/tests/prologue-maps-browser-check.cjs` no Edge com armazenamento isolado. O check abre as duas cópias em **2D + 3D**, salva, recarrega e testa a caverna. Evidências em `review/v2/arandu-editor/`. Alterações pessoais da biblioteca não foram lidas nem substituídas.
+
+
+A caverna da abertura inclui mesa de ordens (`hideout_table`), carga roubada (`hideout_cargo`), leitos (`hideout_bedroll`), escoramentos (`cave_support`) e formações (`cave_spire`). Mesa, carga e formações têm colisão; as outras peças são decorativas. A prévia usa o mesmo kit GLB e piso da campanha. Objetos anteriores mantêm IDs e os novos são acrescentados ao final; editar uma cópia não substitui automaticamente o mapa da campanha.
+
+- Toda fase da v2 deve ter borda infinita: continuidade visual do piso e do bioma além dos limites jogáveis, inclusive cavernas, sem alterar colisões. Conferir com zoom máximo, chão claro/escuro e qualidade baixa; não deixar o mapa parecer uma placa recortada.

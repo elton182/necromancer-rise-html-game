@@ -1,0 +1,58 @@
+{
+  "idle": {
+    "frames": [
+      1.0,
+      61.0
+    ],
+    "duration": 2.0
+  },
+  "walk": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
+  },
+  "slash_1": {
+    "frames": [
+      1.0,
+      19.0
+    ],
+    "duration": 0.6
+  },
+  "slash_2": {
+    "frames": [
+      1.0,
+      17.0
+    ],
+    "duration": 0.5333333333333333
+  },
+  "slash_3": {
+    "frames": [
+      1.0,
+      13.0
+    ],
+    "duration": 0.4
+  },
+  "thrust": {
+    "frames": [
+      1.0,
+      12.0
+    ],
+    "duration": 0.36666666666666664
+  },
+  "shield_bash": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
+  },
+  "death": {
+    "frames": [
+      1.0,
+      31.0
+    ],
+    "duration": 1.0
+  }
+}

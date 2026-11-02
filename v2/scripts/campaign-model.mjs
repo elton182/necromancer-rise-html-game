@@ -1,11 +1,13 @@
+import {normalizePrologue} from './prologue-model.mjs';
 import D from './campaign-rules.mjs';
+import {normalizeWorld} from './campaign-world-model.mjs';
 export {D};
 const object=x=>x&&typeof x==='object'&&!Array.isArray(x);
 export function normalizeCampaign(raw={}){
  if(!object(raw))throw Error('Progresso da campanha inválido.');const flags=v=>{if(v!==undefined&&!object(v))throw Error('Marcadores da campanha inválidos.');return Object.fromEntries(Object.entries(v||{}).filter(([k,x])=>x===1||x===true).map(([k])=>[k,1]));};
  const cleared=flags(raw.cleared);for(const k of Object.keys(cleared))if(![1,2,3,4].includes(Number(k)))delete cleared[k];
  let unlocked=1;while(unlocked<4&&cleared[unlocked])unlocked++;
- return {started:!!raw.started,unlocked,cleared,story:flags(raw.story),tut:flags(raw.tut),grants:Array.from(new Set((Array.isArray(raw.grants)?raw.grants:[]).filter(x=>['raio','summon','maos','barreira'].includes(x)))),village:!!cleared[4],resume:cleared[4]&&raw.resume==='village'?'village':'map',missionSerial:Number.isSafeInteger(raw.missionSerial)&&raw.missionSerial>=0?raw.missionSerial:0};
+ return {started:!!raw.started,unlocked,cleared,story:flags(raw.story),tut:flags(raw.tut),grants:Array.from(new Set((Array.isArray(raw.grants)?raw.grants:[]).filter(x=>['raio','summon','maos','barreira'].includes(x)))),village:!!cleared[4],resume:cleared[4]&&raw.resume==='village'?'village':'map',missionSerial:Number.isSafeInteger(raw.missionSerial)&&raw.missionSerial>=0?raw.missionSerial:0,world:normalizeWorld(raw.world),prologue:normalizePrologue(raw.prologue)};
 }
 export function completeStage(raw,n){const state=normalizeCampaign(raw);if(!Number.isInteger(n)||!D.stages[n]||n>state.unlocked)throw Error('Fase bloqueada.');const first=!state.cleared[n];state.cleared[n]=1;state.unlocked=Math.max(state.unlocked,Math.min(4,n+1));state.village=!!state.cleared[4];state.resume=state.village?'village':'map';return {state,first,gold:first?D.stages[n].rew.gold:0,xp:first?D.stages[n].rew.xp:0};}
 export function offer(raw,npcId,random=Math.random){const state=normalizeCampaign(raw),npc=D.npcs[npcId];if(!state.village||!npc)throw Error('A vila ainda não está disponível.');const pool=D.missions.filter(m=>npc.kinds.includes(m.id)),base=pool[Math.floor(random()*pool.length)],layout=random()<.5?'strip':'arena';state.missionSerial++;return {state,mission:{...base,boss:{...base.boss},npc:npcId,token:state.missionSerial,layout,label:base.label+' · '+(layout==='strip'?'Trilha de Eldrin':'Arredores de Eldrin'),rewardExp:Math.round(base.rewardExp*1.25),rewardSouls:Math.round(base.rewardSouls*1.25)}};}

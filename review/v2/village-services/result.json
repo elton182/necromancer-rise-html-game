@@ -1,0 +1,23 @@
+{
+  "errors": [],
+  "remote": [],
+  "state": {
+    "services": [
+      "endless",
+      "valdoria",
+      "siege"
+    ],
+    "quests": "village",
+    "cleared": {}
+  },
+  "checks": [
+    "positive equipment difference",
+    "negative equipment difference",
+    "waves NPC starts arena",
+    "cartographer starts conquest route",
+    "siege NPC starts tower defence",
+    "return to Jacarandá",
+    "no artificial Act I completion",
+    "offline"
+  ]
+}

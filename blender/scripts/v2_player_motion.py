@@ -217,6 +217,12 @@ DEATH_FLAT = P(spine=(-.35, 0, 0), spine1=(-.12, 0, 0), spine2=(-.2, 0, 0), neck
 def death(u):
     return sample([(0, GUARD, 's'), (.2, DEATH_STAGGER, 'out'), (.55, DEATH_KNEES, 's'), (1, DEATH_FLAT, 'in')], u)
 
+JUMP_CROUCH = P(spine=(.2, 0, 0), hips=(0, 0, -.12 * H), LU=(-.65, 0, 0), LL=(1.1, 0, 0), RU=(-.65, 0, 0), RL=(1.1, 0, 0))
+JUMP_AIR = P(spine=(.18, 0, 0), LU=(-.55, 0, 0), LL=(.8, 0, 0), RU=(.25, 0, 0), RL=(.55, 0, 0))
+@clip('jump', 24, False, 'feet')
+def jump(u):
+    return sample([(0, GUARD, 's'), (.15, JUMP_CROUCH, 's'), (.4, JUMP_AIR, 's'), (.72, JUMP_AIR, 's'), (.88, JUMP_CROUCH, 's'), (1, GUARD, 's')], u)
+
 # --- gravação ---------------------------------------------------------------------------------------------------------
 def bake():
     arm.animation_data_create()
@@ -233,7 +239,11 @@ def bake():
             apply(p); hip = Vector(p['hips']); set_hips(hip)
             # Pés no chão (o robe passa abaixo do chão no repouso, então os pés é que valem); na queda vale o corpo todo.
             low = lowest(ground) - (rest_feet if ground == 'feet' else rest_mesh)
-            hip.z -= low; set_hips(hip)
+            hip.z -= low
+            if name == 'jump':
+                u = f / length
+                hip.z += (.42 / SCALE) * math.sin(math.pi * max(0, min(1, (u - .15) / .73)))
+            set_hips(hip)
             pts = local_points(); height.append(float(pts[:, 2].max() - pts[:, 2].min()))
             fore = bone('RightForeArm'); shaft = staff.matrix_world.to_3x3() @ Vector((0, 0, 1))
             ang = math.degrees((fore.tail - fore.head).angle(shaft)); grip.append(ang)

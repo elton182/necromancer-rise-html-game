@@ -1,3 +1,8 @@
+import {buildForestBorder} from './forest-border.mjs';
+import {buildMapHorizon,updateMapHorizon} from './map-horizon.mjs';
+import {createFallGroundMask,buildFallScenery,updateFallScenery,clearFallFade} from './fall-presentation.mjs';
+import {buildPrologueScenery,updatePrologueScenery,positionTravelSpeech} from './prologue-scene.mjs';
+import {sceneLookKey,createSceneEnvironment,applySceneLook} from './scene-look.mjs';
 import {PADS as SIEGE_PADS,TOWERS as SIEGE_TOWERS} from './siege-model.mjs';
 import {buildSiege} from './siege-scene.mjs';
 import {LANCE,lanceShape} from './combat.mjs';
@@ -7,7 +12,7 @@ import {clone} from 'skeleton-utils';
 import {TRAINING_ARENA} from './terrain.mjs';
 import {lootAllowed} from './drops.mjs';
 import {flightHeight,corpseSink,Expedition} from './enemies.mjs';
-import {buildForest,THEME_PALETTE} from './forest-scene.mjs';
+import {buildForestScene,THEME_PALETTE} from './forest-scene.mjs';
 import {buildExpedition} from './expedition-scene.mjs';
 import {buildVillage} from './village-scene.mjs';
 import {buildCrypt} from './crypt-scene.mjs';
@@ -19,7 +24,7 @@ import {updateSceneryFx} from './scenery-fx.mjs';
 // Elites (mágico/raro) são desenhados um pouco maiores; só a aparência muda, colisão e alcance seguem o raio lógico.
 const TIER_SCALE={magic:1.12,rare:1.25},TAG_RANGE=26;
 // Luz por tema de cenário com acabamento novo (fatia vertical da vila); temas ausentes mantêm a luz original.
-const SCENE_LOOK={village:{exposure:1.2,env:.45,sun:3.4,sunColor:0xffd9a6,hemisphere:1.3}},WHITE=new THREE.Color(1,1,1);
+const WHITE=new THREE.Color(1,1,1);
 function buildDummy(){
  const root=new THREE.Group(),pivot=new THREE.Group(),geometries=[],materials=[],textures=[];
  const mat=(color,extra={})=>{const m=new THREE.MeshStandardMaterial({color,roughness:1,...extra});materials.push(m);return m;};
@@ -61,6 +66,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  const sunRight=new THREE.Vector3().crossVectors(SUN_OFFSET.clone().negate(),new THREE.Vector3(0,1,0)).normalize(),sunUp=new THREE.Vector3().crossVectors(sunRight,SUN_OFFSET.clone().negate()).normalize(),sunCenter=new THREE.Vector3(),texel=60/2048;
  function followSun(x,z){sunCenter.set(x,0,z);const a=sunCenter.dot(sunRight),b=sunCenter.dot(sunUp);sunCenter.addScaledVector(sunRight,Math.round(a/texel)*texel-a).addScaledVector(sunUp,Math.round(b/texel)*texel-b);sun.target.position.copy(sunCenter);sun.position.copy(sunCenter).add(SUN_OFFSET);sun.target.updateMatrixWorld();}
  const ground=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:0x35443e,roughness:1}));ground.rotation.x=-Math.PI/2;ground.renderOrder=-3;ground.receiveShadow=true;scene.add(ground);
+ const fallMask=createFallGroundMask();fallMask.patch(ground.material);
  const grid=new THREE.GridHelper(60,30,0x61756a,0x42544b);grid.position.y=.012;scene.add(grid);
  const graveGeometry=new THREE.BoxGeometry(.8,1.35,.35),graveMaterial=new THREE.MeshStandardMaterial({color:0x69736b,roughness:1});
  const graves=new THREE.Group();scene.add(graves);for(let i=0;i<18;i++){const a=i*Math.PI*2/18,o=new THREE.Mesh(graveGeometry,graveMaterial);o.position.set(Math.sin(a)*19,.675,Math.cos(a)*19);o.rotation.y=-a;o.castShadow=true;o.receiveShadow=true;graves.add(o);}
@@ -72,21 +78,18 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  }
  const siegeRange=new THREE.Mesh(new THREE.RingGeometry(.985,1,64),new THREE.MeshBasicMaterial({color:0xf5dda2,transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}));siegeRange.rotation.x=-Math.PI/2;siegeRange.visible=false;scene.add(siegeRange);
  const portalMark=new THREE.Mesh(new THREE.RingGeometry(1,1.15,40),new THREE.MeshBasicMaterial({color:0xbb88ff,side:THREE.DoubleSide}));portalMark.rotation.x=-Math.PI/2;scene.add(portalMark);const exitMark=portalMark.clone();exitMark.visible=false;scene.add(exitMark);
- let lightGround=false,theme='default',palette=null;/* Paleta por tema: a floresta substitui as cores neutras do treino. */
+ let lightGround=false,theme='default',palette=null,lookKey='default';/* Paleta por tema: a floresta substitui as cores neutras do treino. */
  function paint(){const f=(palette||THEME_PALETTE[theme])?.[lightGround?'light':'dark']||null;ground.material.color.set(f?f.ground:lightGround?0xa5a393:0x35443e);scene.background.set(f?f.background:lightGround?0x777e79:0x182428);scene.fog.color.copy(scene.background);const crypt=theme==='crypt';sun.color.set(crypt?0xb9b4ec:0xffe2b0);sun.intensity=crypt?2.1:3;hemisphere.intensity=crypt?1.5:2;
-  // Receita de luz por tema (por ora só a vila): tone mapping, exposição, reflexo difuso do céu e luzes ajustadas.
-  const look=SCENE_LOOK[theme];renderer.toneMapping=look?THREE.ACESFilmicToneMapping:THREE.NoToneMapping;renderer.toneMappingExposure=look?.exposure??1;scene.environment=look?environment():null;scene.environmentIntensity=look?.env??0;
-  if(look){sun.intensity=look.sun;sun.color.set(look.sunColor);hemisphere.intensity=look.hemisphere;}
+  // Receita compartilhada de luz para os cenários com acabamento: tone mapping, exposição, reflexo difuso do céu e luzes ajustadas.
+  applySceneLook(renderer,scene,sun,hemisphere,lookKey,environment);
   // Objetos da cena que reagem ao fundo claro (chão pintado clareia, poças de luz enfraquecem).
-  for(const o of scenery.children){const u=o.userData;if(u.lightColor)o.material.color.copy(lightGround?u.lightColor:WHITE);if(u.lightOpacity!==undefined){u.darkOpacity??=o.material.opacity;o.material.opacity=lightGround?u.lightOpacity:u.darkOpacity;}}}
+  for(const o of scenery.children){const u=o.userData;if(u.lightColor)o.material.color.copy(lightGround?u.lightColor:WHITE);if(u.lightOpacity!==undefined){u.darkOpacity??=o.material.opacity;o.material.opacity=lightGround?u.lightOpacity:u.darkOpacity;}}updateMapHorizon(scenery);}
  // Céu em gradiente pré-filtrado (PMREM): dá volume aos materiais PBR sem custo por quadro.
- let envTexture=null;function environment(){if(envTexture)return envTexture;const pmrem=new THREE.PMREMGenerator(renderer),sky=new THREE.Scene(),geometry=new THREE.SphereGeometry(10,32,16),colors=[],top=new THREE.Color(0x9fb4d0),horizon=new THREE.Color(0xd9c8a8),below=new THREE.Color(0x3b382e),c=new THREE.Color();
-  for(let i=0;i<geometry.attributes.position.count;i++){const y=geometry.attributes.position.getY(i)/10;c.copy(horizon).lerp(y>0?top:below,Math.min(1,Math.abs(y)*(y>0?1:1.6)));colors.push(c.r,c.g,c.b);}
-  geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));const material=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide});sky.add(new THREE.Mesh(geometry,material));
-  envTexture=pmrem.fromScene(sky,0).texture;pmrem.dispose();geometry.dispose();material.dispose();return envTexture;}
+ let envTexture=null;function environment(){return envTexture??=(createSceneEnvironment(renderer));}
  function syncScenery(w){const a=w.arena,key=a.id+':'+(w.sceneryRevision||0);portalMark.visible=!!w.portal;if(w.portal)portalMark.position.set(w.portal.x,.06,w.portal.y);exitMark.visible=!!w.exitPortal;if(w.exitPortal)exitMark.position.set(w.exitPortal.x,.06,w.exitPortal.y);if(key===sceneryKey)return;sceneryKey=key;vfx.clear();
  for(const g of [scenery,collisionView]){for(const o of [...g.children]){g.remove(o);o.geometry?.dispose();o.material?.dispose();o.dispose?.();}}
- syncVillage(a);theme=a.theme||'default';palette=a.palette||null;if(a.theme){grid.visible=false;for(const o of ({siege:buildSiege,forest:buildForest,village:buildVillage,crypt:buildCrypt,trail:buildTrail,outpost:buildOutpost,expedition:buildExpedition})[a.theme](a,models))scenery.add(o);}ground.visible=!scenery.children.some(o=>o.userData.replacesGround);paint();graves.visible=false;const b=a.bounds,cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2;const margin=(a.id==='village'||a.id===TRAINING_ARENA.id||a.theme==='forest'||a.theme==='expedition')?24:0;ground.scale.set((b.maxX-b.minX+margin)/60,(b.maxY-b.minY+margin)/60,1);ground.position.set(cx,0,cy);grid.position.set(cx,.012,cy);grid.scale.set((b.maxX-b.minX)/60,1,(b.maxY-b.minY)/60);
+ syncVillage(a);lookKey=sceneLookKey(a);theme=a.theme||'default';palette=a.palette||null;if(a.theme){grid.visible=false;for(const o of ({siege:buildSiege,forest:buildForestScene,village:buildVillage,crypt:buildCrypt,trail:buildTrail,outpost:buildOutpost,expedition:buildExpedition})[a.theme](a,models))scenery.add(o);}for(const o of [...buildPrologueScenery(a,models),...buildFallScenery(a,models)])scenery.add(o);if(a.fallSite)for(const o of scenery.children)if(o.userData.replacesGround)fallMask.patch(o.material);ground.visible=!scenery.children.some(o=>o.userData.replacesGround);graves.visible=false;const b=a.bounds,cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2;const margin=(a.id==='village'||a.id===TRAINING_ARENA.id||a.theme==='forest'||a.theme==='expedition')?24:0;ground.scale.set((b.maxX-b.minX+margin)/60,(b.maxY-b.minY+margin)/60,1);ground.position.set(cx,0,cy);grid.position.set(cx,.012,cy);grid.scale.set((b.maxX-b.minX)/60,1,(b.maxY-b.minY)/60);
+ const horizon=buildMapHorizon(scenery.children.find(o=>o.userData.replacesGround)||ground);if(a.fallSite)fallMask.patch(horizon.material);scenery.add(horizon);for(const mesh of buildForestBorder(a,models))scenery.add(mesh);paint();
  for(const landmark of w.landmarks||[]){const marker=new THREE.Mesh(new THREE.RingGeometry(.5,.6,24),new THREE.MeshBasicMaterial({color:0xd4af37,side:THREE.DoubleSide}));marker.rotation.x=-Math.PI/2;marker.position.set(landmark.x,.05,landmark.y);scenery.add(marker);}
  for(const r of a.theme==='crypt'?[]:a.walk||[]){const floor=new THREE.Mesh(new THREE.PlaneGeometry(r.x1-r.x0,r.y1-r.y0),new THREE.MeshStandardMaterial({color:0x4b455b,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.set((r.x0+r.x1)/2,.015,(r.y0+r.y1)/2);floor.receiveShadow=true;scenery.add(floor);}
  for(const solid of a.solids){if(!solid.look||!a.theme){const h=solid.height||.9,geometry=solid.kind==='circle'?new THREE.CylinderGeometry(solid.r,solid.r,h,16):new THREE.BoxGeometry(solid.width,h,solid.depth),o=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:solid.door?0x8c5449:0x74877c,roughness:1}));o.position.set(solid.x,h/2,solid.y);o.castShadow=true;o.receiveShadow=true;scenery.add(o);}const g=solid.kind==='circle'?new THREE.RingGeometry(solid.r-.02,solid.r+.02,24):new THREE.PlaneGeometry(solid.width,solid.depth),mark=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x87d8d1,side:THREE.DoubleSide,wireframe:solid.kind==='box'}));mark.rotation.x=-Math.PI/2;mark.position.set(solid.x,.03,solid.y);collisionView.add(mark);}
@@ -124,7 +127,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  function disposeMaterial(m){for(const value of Object.values(m))if(value?.isTexture)value.dispose();m.dispose();}
  function releaseDrop(o){scene.remove(o.root);}
  function releaseEffect(o){scene.remove(o);o.geometry.dispose();o.material.dispose();}
- function releaseActor(o){scene.remove(o.root);o.dispose?.();if(o.flightShadow){o.flightShadow.geometry.dispose();o.flightShadow.material.dispose();}o.mixer.stopAllAction();o.mixer.uncacheRoot(o.body);o.body.traverse(m=>{if(m.isSkinnedMesh)m.skeleton.dispose();});}
+ function releaseActor(o){scene.remove(o.root);o.dispose?.();for(const part of o.shieldMeshes||[])part.mesh.geometry.dispose();if(o.flightShadow){o.flightShadow.geometry.dispose();o.flightShadow.material.dispose();}o.mixer.stopAllAction();o.mixer.uncacheRoot(o.body);o.body.traverse(m=>{if(m.isSkinnedMesh)m.skeleton.dispose();});}
  function releaseWall(o){scene.remove(o.root);o.root.traverse(m=>{if(m.isSkinnedMesh)m.skeleton.dispose();});releaseEffect(o.mark);releaseEffect(o.shade);}
  function releaseFall(o){scene.remove(o.root);releaseEffect(o.mark);releaseEffect(o.shade);}
  function releaseProjectile(o){scene.remove(o.root,o.trail);o.trail.geometry.dispose();o.trail.material.dispose();}
@@ -148,7 +151,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  function spawn(a){
   if(a.model==='woodDummy'){const d=buildDummy(),body=new THREE.Group();d.root.add(body);scene.add(d.root);return {root:d.root,body,mixer:new THREE.AnimationMixer(body),actions:{},flightShadow:null,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0,wobble:d.wobble,dispose:d.dispose};}
   const asset=assets[a.model],model=models[a.model];if(!model)throw Error('Modelo não registrado: '+a.model);
-  const body=clone(model.scene),root=new THREE.Group();cellShade(body,0);body.updateMatrixWorld(true);body.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});
+  const body=clone(model.scene),root=new THREE.Group(),shieldMeshes=[];if(a.model==='warrior')body.traverse(m=>{const mask=m.geometry?.getAttribute('_warrior_shield');if(!mask)return;m.geometry=m.geometry.clone();const full=m.geometry.index,indices=[];for(let i=0;i<full.count;i+=3){const tri=[full.getX(i),full.getX(i+1),full.getX(i+2)];if(!tri.every(v=>mask.getX(v)>.5))indices.push(...tri);}shieldMeshes.push({mesh:m,full,hidden:new THREE.BufferAttribute(new full.array.constructor(indices),1)});});cellShade(body,0);body.updateMatrixWorld(true);body.traverse(o=>{if(o.isSkinnedMesh)o.skeleton.update();});
   const box=new THREE.Box3().setFromObject(body,true);let targetHeight=asset.height;
   if(asset.matchPlayerHeight){targetHeight=playerBodyHeight()*(asset.heightScale||1);box.makeEmpty();body.traverse(o=>{if(o.isSkinnedMesh)box.union(new THREE.Box3().setFromObject(o,true));});}
   const height=box.max.y-box.min.y;if(!(height>0))throw Error('Modelo sem altura: '+a.model);
@@ -156,9 +159,9 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   const mixer=new THREE.AnimationMixer(body),actions={};
   for(const original of model.animations){const clip=original.clone(),duration=asset.durations?.[clip.name];if(duration&&clip.duration>0){const factor=duration/clip.duration;for(const t of clip.tracks)for(let i=0;i<t.times.length;i++)t.times[i]*=factor;clip.duration=duration;}actions[clip.name]=mixer.clipAction(clip);}
   let flightShadow=null;if(a.model==='enemyGriffin'||a.model==='lich'){flightShadow=new THREE.Mesh(new THREE.CircleGeometry(a.model==='lich'?.75:.4,24),new THREE.MeshBasicMaterial({color:0x10191a,transparent:true,opacity:.23,depthWrite:false}));flightShadow.rotation.x=-Math.PI/2;root.add(flightShadow);}
-  return {root,body,mixer,actions,flightShadow,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
+  return {root,body,mixer,actions,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
  }
- function resize(){const width=canvas.clientWidth||innerWidth,height=canvas.clientHeight||innerHeight,aspect=width/height;Object.assign(camera,{left:-zoom*aspect,right:zoom*aspect,top:zoom,bottom:-zoom,near:.1,far:120});camera.updateProjectionMatrix();renderer.setSize(width,height,false);}
+ function resize(){const width=canvas.clientWidth||innerWidth,height=canvas.clientHeight||innerHeight,aspect=width/height,span=camera.userData.descent?5.5:camera.userData.journey?(aspect<.8?6:4.6):zoom;Object.assign(camera,{left:-span*aspect,right:span*aspect,top:span,bottom:-span,near:.1,far:120});camera.updateProjectionMatrix();renderer.setSize(width,height,false);}
  // Palco narrativo separado da simulacao de combate.
  const storyScene=new THREE.Scene();storyScene.background=new THREE.Color(0x171321);
  storyScene.add(new THREE.HemisphereLight(0xc7d6ff,0x453129,3));
@@ -174,20 +177,23 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    for(let i=0;i<cast.length;i++){const id=models[cast[i]]?cast[i]:'player',body=clone(models[id].scene);body.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(body),scale=2.4/Math.max(.01,box.max.y-box.min.y);body.scale.setScalar(scale);body.position.set(i?1.8:-1.3,-box.min.y*scale,0);body.rotation.y=i?-.6:.6;storyCast.add(body);}
   }
   const rect=canvas.getBoundingClientRect();storyCamera.aspect=rect.width/Math.max(1,rect.height);storyCamera.updateProjectionMatrix();
-  const reverse=w.story.index%2;storyCamera.position.set(reverse?-4:4,3.4,8);storyCamera.lookAt(0,1.3,0);renderer.render(storyScene,storyCamera);
+  const reverse=w.story.index%2;storyCamera.position.set(reverse?-4:4,3.4,8);storyCamera.lookAt(0,1.3,0);const mapping=renderer.toneMapping,exposure=renderer.toneMappingExposure;
+  try{renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;renderer.render(storyScene,storyCamera);}
+  finally{renderer.toneMapping=mapping;renderer.toneMappingExposure=exposure;}
  }
  function render(w,dt,{animateWhilePaused=false}={}){
   const live=new Set(w.actors.map(a=>a.id));for(const [id,o]of actors)if(!live.has(id)){releaseActor(o);actors.delete(id);}
-  syncScenery(w);follow(w);const siege=w.adventure?.kind==='siege'?w.adventure:null,siegePad=siege&&SIEGE_PADS.find(p=>p.id===w.siegeSelectedPad);siegeRange.visible=!!siegePad&&!siege.done;if(siegePad){const t=siege.towers.find(t=>t.pad===siegePad.id),d=t&&SIEGE_TOWERS[t.kind];siegeRange.position.set(siegePad.x,.055,siegePad.y);siegeRange.scale.setScalar(d?d.range+.5*(t.rank-1):1.3);siegeRange.material.color.set(d?d.color:'#f5dda2');}for(const a of w.actors){let o=actors.get(a.id);/* Mundos reiniciados reutilizam ids: um ator novo com outro modelo não pode herdar o corpo do antigo. */if(o&&(o.model!==a.model||o.tier!==a.lootTier)){releaseActor(o);actors.delete(a.id);o=null;}if(!o){o=spawn(a);actors.set(a.id,o);}o.root.position.set(a.x,(a.jumpZ||0)+flightHeight(a,w.time)-corpseSink(a),a.y);o.root.rotation.y=a.angle;if(a.pad)o.root.scale.setScalar(1+.12*(a.rank-1));if(o.wobble){o.wobble(a,w.time);continue;}
+  syncScenery(w);fallMask.update(w);updatePrologueScenery(scenery,w);updateFallScenery(scenery,w);clearFallFade(w);follow(w);const siege=w.adventure?.kind==='siege'?w.adventure:null,siegePad=siege&&SIEGE_PADS.find(p=>p.id===w.siegeSelectedPad);siegeRange.visible=!!siegePad&&!siege.done;if(siegePad){const t=siege.towers.find(t=>t.pad===siegePad.id),d=t&&SIEGE_TOWERS[t.kind];siegeRange.position.set(siegePad.x,.055,siegePad.y);siegeRange.scale.setScalar(d?d.range+.5*(t.rank-1):1.3);siegeRange.material.color.set(d?d.color:'#f5dda2');}for(const a of w.actors){let o=actors.get(a.id);/* Mundos reiniciados reutilizam ids: um ator novo com outro modelo não pode herdar o corpo do antigo. */if(o&&(o.model!==a.model||o.tier!==a.lootTier)){releaseActor(o);actors.delete(a.id);o=null;}if(!o){o=spawn(a);actors.set(a.id,o);}o.root.position.set(a.x,(a.jumpZ||0)+(a.warriorProjectile?1.1:0)+flightHeight(a,w.time)-corpseSink(a),a.y);o.root.rotation.y=a.angle;o.root.rotation.z=a===w.player&&w.adventure?.kind==='prologue'?-(w.adventure.fall||0)*1.1:0;o.root.scale.setScalar(a.pad?1+.12*(a.rank-1):a.visualScale||1);if(o.wobble){o.wobble(a,w.time);continue;}
+   for(const part of o.shieldMeshes||[])part.mesh.geometry.setIndex(w.warriorShieldFlight||!w.equipment?.shield?part.hidden:part.full);
    if(o.flightShadow)o.flightShadow.position.y=.025-o.root.position.y;
    const elapsed=w.paused&&!animateWhilePaused?0:dt;
    if(a.hp<o.lastHp&&a.hp>0&&o.actions.hit)o.hitTime=.16;o.lastHp=a.hp;
-   let pose=a.pose;
+   let pose=a.pose;if(a===w.player&&a.hp>0&&w.dash.remaining>0)pose={anim:'jump',progress:1-w.dash.remaining/assets.player.durations.jump};
    if(!pose&&a.model==='enemyGriffin'&&a.hp>0&&['idle','walk'].includes(a.animation))pose={anim:'fly',progress:(w.time/o.actions.fly.getClip().duration)%1};
    // Reação visual não interrompe ataques nem altera o estado de combate.
    if(a.hp>0&&o.hitTime>0&&['idle','walk'].includes(a.animation))pose={anim:'hit',progress:1-o.hitTime/.16};
    o.hitTime=Math.max(0,o.hitTime-elapsed);
-   const name=pose?.anim||a.animation,next=o.actions[name]||o.actions.idle;
+   const name=pose?.anim||a.animation,next=o.actions[name]||o.actions.idle;if(!next)continue;
    if(o.state!==name||o.actionId!==a.actionId){const frozen=w.paused&&!animateWhilePaused;for(const action of Object.values(o.actions))if(action!==next){if(frozen)action.stop();else action.fadeOut(.08);}next.reset().setLoop(THREE.LoopOnce,1);next.clampWhenFinished=true;next.paused=true;if(frozen)next.stopFading().setEffectiveWeight(1);else next.fadeIn(.08);next.play();o.state=name;o.actionId=a.actionId;o.deathTime=0;}
    o.mixer.update(elapsed);
    let progress;if(pose)progress=pose.progress;else if(name==='walk')progress=(a.walkDistance/(assets[a.model].stride||1.5))%1;else if(name==='idle')progress=(a.animationTime/next.getClip().duration)%1;else if(name==='death'){if(animateWhilePaused)o.deathTime+=elapsed;progress=Math.max(a.animationTime,o.deathTime)/next.getClip().duration;}else progress=a.animationTime/next.getClip().duration;
@@ -265,15 +271,22 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   w.damageNumbers=(w.damageNumbers||[]).filter(n=>w.time-n.time<.9&&w.time>=n.time);
   for(const n of w.damageNumbers){const age=w.time-n.time,el=combatLabel('hit:'+n.id,n.x+n.offset,2.6+age*1.4,n.y,'hit-number');el.textContent=String(Math.max(1,Math.round(n.amount)));el.style.opacity=String(Math.min(1,(.9-age)*4));}
   for(const [key,el]of combatLabels)if(!visibleCombat.has(key)){el.remove();combatLabels.delete(key);}
-  const labeled=new Set();for(const a of w.actors){const tier=a.hp>0&&!a.isBoss&&TIER_SCALE[a.lootTier]&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<TAG_RANGE?Expedition.tiers[a.lootTier]:null;if(a.hp<=0||!(a.curse||tier||a.reaped))continue;labeled.add(a.id);let el=labels.get(a.id);if(!el){el=document.createElement('div');el.className='world-label';document.body.append(el);labels.set(a.id,el);}el.textContent=[tier&&a.type.name+' · '+tier.name,a.curse&&'Fraqueza · '+Math.ceil(a.curse.remaining)+'s',a.reaped&&'Ceifado · '+Math.ceil(a.reaped.remaining)+'s'].filter(Boolean).join('  ·  ');el.style.color=tier?.color||'';const p=new THREE.Vector3(a.x,(assets[a.model]?.height||(a.model==='woodDummy'?2.2:2.25))*(TIER_SCALE[a.lootTier]||1)+.4+(a.jumpZ||0)+flightHeight(a,w.time),a.y).project(camera),r=canvas.getBoundingClientRect();el.style.left=(r.left+(p.x+1)*r.width/2)+'px';el.style.top=(r.top+(1-p.y)*r.height/2)+'px';}
+  const labeled=new Set();for(const a of w.actors){const service=a.service&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<18;const tier=a.hp>0&&!a.isBoss&&TIER_SCALE[a.lootTier]&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<TAG_RANGE?Expedition.tiers[a.lootTier]:null;if(a.hp<=0||!(a.curse||tier||a.reaped||service))continue;labeled.add(a.id);let el=labels.get(a.id);if(!el){el=document.createElement('div');el.className='world-label';document.body.append(el);labels.set(a.id,el);}el.classList.toggle('service-label',!!service);el.textContent=[service&&(a.name+'\n'+a.serviceTitle+(Math.hypot(a.x-w.player.x,a.y-w.player.y)<3.2?' · G':'')),tier&&a.type.name+' · '+tier.name,a.curse&&'Fraqueza · '+Math.ceil(a.curse.remaining)+'s',a.reaped&&'Ceifado · '+Math.ceil(a.reaped.remaining)+'s'].filter(Boolean).join('  ·  ');el.style.color=service?'#f0d69b':tier?.color||'';const p=new THREE.Vector3(a.x,(assets[a.model]?.height||(a.model==='woodDummy'?2.2:2.25))*(TIER_SCALE[a.lootTier]||1)+.4+(a.jumpZ||0)+flightHeight(a,w.time),a.y).project(camera),r=canvas.getBoundingClientRect();el.style.left=(r.left+(p.x+1)*r.width/2)+'px';el.style.top=(r.top+(1-p.y)*r.height/2)+'px';}
   for(const [id,el]of labels)if(!labeled.has(id)){el.remove();labels.delete(id);}
   cursor.position.set(w.aim.x,.035,w.aim.y);cursor.visible=!w.paused;
   vfx.update(w,dt,{frozen:w.paused&&!animateWhilePaused});follow(w);
   const shake=vfx.shakeOffset();if(shake.x||shake.z){camera.position.x+=shake.x;camera.position.z+=shake.z;camera.updateMatrixWorld();}
-  if(w.story)renderStory(w);else {storyKey='';updateSceneryFx(renderer,camera,w.player,theme==='village');renderer.render(scene,camera);}
+  if(w.story)renderStory(w);else {storyKey='';updateSceneryFx(renderer,camera,w.player,theme==='village'||lookKey==='custom-forest'||w.arena.cave);renderer.render(scene,camera);positionTravelSpeech(camera,w,canvas);}
  }
  const ray=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),point=new THREE.Vector3();
- function follow(w){const f=w.adventure?.kind==='lab'&&w.focus||w.player;followSun(f.x,f.y);camera.position.set(f.x+22,28,f.y+22);camera.lookAt(f.x,0,f.y);camera.updateMatrixWorld();}
+ function follow(w){
+  const journey=w.adventure?.stage==='travel'&&w.adventure?.kind==='prologue',descent=w.adventure?.stage==='fall'&&w.adventure?.kind==='prologue';
+  if(camera.userData.journey!==journey||camera.userData.descent!==descent){camera.userData.journey=journey;camera.userData.descent=descent;resize();}
+  const f=journey?{x:0,y:w.adventure.journey.y}:w.adventure?.kind==='lab'&&w.focus||w.player;followSun(f.x,f.y);
+  if(journey){camera.position.set(f.x+6,6.5,f.y+8);camera.lookAt(f.x,1.2,f.y-.5);}
+  else if(descent){const h=Math.max(-3,w.player.jumpZ||0),k=Math.max(0,Math.min(1,(w.adventure.elapsed-1.4)/1.8));camera.position.set(f.x+11-8.8*k,10+h,f.y+13-10.2*k);camera.lookAt(f.x,h+.5,f.y);}
+  else{camera.position.set(f.x+22,28,f.y+22);camera.lookAt(f.x,0,f.y);}camera.updateMatrixWorld();
+ }
  resize();
  return {render,resize,dispose,renderer,models,assets,actors,effects,projectiles,drops,vfx,
   aim(x,y,w){if(w)follow(w);const r=canvas.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2),camera);return ray.ray.intersectPlane(plane,point)?{x:point.x,y:point.z}:null;},

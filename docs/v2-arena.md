@@ -1,9 +1,6 @@
 # V2 — Arena Infinita (E10a)
 
-A **Arena clássica** é o primeiro dos três modos da E10. Abre-se na **Vila de Eldrin** pela
-**Pedra do Infinito** (monólito ao sul da praça, tecla **G**), que leva à aba **Waves** do
-Relicário. A vila só existe depois do Ato I; sem ela a arena não abre. As [Expedições](v2-expedicoes.md) (modelo padrão da aba) estão na E10b; a
-**Conquista de Valdoria** ainda não foi portada (veja [limites](#limites)).
+A **Arena clássica** abre pelo **Guardião das Ondas**, na praça de Jacarandá: aproxime-se e pressione **G**, escolha Arena clássica e entre na wave liberada. O mesmo NPC oferece [Expedições](v2-expedicoes.md). Não é preciso concluir o Ato I; basta alcançar a vila no mundo contínuo. O acesso também existe na Vila de Eldrin dos saves anteriores. A [Conquista de Valdoria](v2-conquista.md) tem uma NPC própria.
 
 ## Fontes
 

@@ -177,12 +177,12 @@ test('pausa e carga de save não geram sons e atualizam a referência', () => {
 test('trocas de cena tocam portal; morte toca gameOver; menu fica em silêncio', () => {
  const s=createSession(),ob=createSoundObserver();ob.observe(s);
  transition(s,'training');assert.deepEqual(ob.observe(s),[]);
- startCampaign(s);assert.deepEqual(ob.observe(s),['portal'],'treino → mapa');
+ startCampaign(s,{legacy:true});assert.deepEqual(ob.observe(s),['portal'],'treino → mapa');
  s.world.player.hp=0;s.world.dash.remaining=0;transition(s,'dead');assert.deepEqual(ob.observe(s),['gameOver']);
  transition(s,'menu');assert.deepEqual(ob.observe(s),[]);
 });
 test('marcos da campanha tocam aviso de onda e conclusão', () => {
- const s=createSession();startCampaign(s);s.save.campaign.unlocked=4;const ob=createSoundObserver();
+ const s=createSession();startCampaign(s,{legacy:true});s.save.campaign.unlocked=4;const ob=createSoundObserver();
  assert.ok(launchStage(s,2));s.world.story=null;s.world.paused=false;ob.observe(s);
  const r=s.world.adventure;r.wave=1;assert.ok(ob.observe(s).includes('waveStart'));
  r.done=true;assert.ok(ob.observe(s).includes('levelUp'));
@@ -191,7 +191,7 @@ test('trilha acompanha cena, estágio, chefe e história', () => {
  const s=createSession();
  assert.equal(musicTheme(s),'hub');assert.equal(musicTheme(s,{title:true}),'title');
  transition(s,'training');assert.equal(musicTheme(s),'field');
- startCampaign(s);s.save.campaign.unlocked=4;s.world.story=null;assert.equal(musicTheme(s),'map');
+ startCampaign(s,{legacy:true});s.save.campaign.unlocked=4;s.world.story=null;assert.equal(musicTheme(s),'map');
  const themes={};for(const n of [1,2,3,4]){launchStage(s,n);s.world.story=null;s.world.boss.hp=0;themes[n]=musicTheme(s);}
  assert.deepEqual(themes,{1:'crypt',2:'forest',3:'strip',4:'boss'});
  launchStage(s,2);s.world.story=null;s.world.actors.push(s.world.boss);s.world.boss.hp=500;assert.equal(musicTheme(s),'boss');

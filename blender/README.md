@@ -467,3 +467,57 @@ Escudo de Carne da v2: [fonte e integração](notes/flesh_shield_v2.md), gerado 
 Bran, o ferreiro (v2): `models/bran.blend` → `exports/bran.glb`, importado de `reference/bran/blacksmith.glb` por `scripts/bran.py`; detalhes em [notes/bran.md](notes/bran.md).
 
 Cerco ao Ritual (v2): `scripts/siege_structures.py` usa `common.py` para gerar as cenas `models/siege_{core,bone,frost,plague,crypt}.blend` e os GLBs correspondentes em `exports/`, com rig e clipes `idle`/`attack`. Registro em `v2/assets/models.json`; após gerar, executar `node v2/tools/build.cjs` na raiz.
+
+### Ruínas do pântano da v2
+
+`blender/scripts/v2_swamp_kit.py` gera `models/v2_swamp_kit.blend` e `exports/v2_swamp_kit.glb`: três lápides de pedra quebrada (`kit_tomb_0..2`), com musgo e rebaixo. Execute na raiz: `blender --background --python blender/scripts/v2_swamp_kit.py`, depois `node v2/tools/build.cjs`. Reutiliza os helpers do kit da vila.
+
+Kit arquitetônico da cripta: `blender --background --python blender/scripts/v2_crypt_architecture.py` gera `models/v2_crypt_architecture.blend` e `exports/v2_crypt_architecture.glb`. Módulo `kit_crypt_wall`: 4 m de largura, 8 m de parede, vitral em mosaico e pilares laterais; base na origem.
+
+O gerador `v2_crypt_architecture.py` também produz `crypt_floor` (48 × 40 m), `sarcophagus` (aberto a leste), `crypt_bench`, `crypt_altar` e `crypt_shelf`. Os móveis e o piso são decorativos no editor; paredes conservam colisão.
+
+`crypt_column` no kit arquitetônico: coluna de 6 m com base de raio 0,86 m, capitel e fuste segmentado. O runtime escala para as medidas do colisor.
+
+`v2_ruined_village_kit.py` gera a variante degradada do kit original em `models/v2_ruined_village_kit.blend` e `exports/v2_ruined_village_kit.glb`, incluindo `boarding`. Execute com Blender em modo background. `v2_crypt_architecture.py` inclui também `torch` (tocha estática de madeira e ferro).
+
+
+## Kit da abertura ARANDU
+
+Fonte: `scripts/arandu_caravan_kit.py`. Gera `models/arandu_caravan_kit.blend` e `exports/arandu_caravan_kit.glb`, registro `caravanKit` na v2. Contém carroça coberta, estandarte e flecha de cena; peças estáticas `kit_caravan_cart`, `kit_bandit_banner`, `kit_story_arrow`. Usa os materiais e utilitários do kit da vila. Executar com Blender em background e depois `node v2/tools/build.cjs` na raiz. Conferência no jogo em `review/v2/arandu-prologue/`; o kit estático original é complementado pelo cavalo e pelas rodas independentes descritos abaixo.
+
+
+### Viagem inicial do ARANDU
+
+O kit da caravana também inclui `kit_caravan_open` (corte aberto para leitura), `kit_caravan_wheel` (rodas independentes) e `kit_road_block`. A movimentação de suas instâncias é ligada à distância da viagem. `scripts/arandu_caravan_horse.py` gera `models/arandu_caravan_horse.blend` e `exports/arandu_caravan_horse.glb`: cavalo low-poly com rig e ações `idle`/`walk` de 1 s; registro `caravanHorse` na v2. Executar esse script em Blender separado/background para não alterar uma cena de trabalho; a execução também pode ser acionada pelo MCP, preservando a cena aberta. Evidências no jogo: `review/v2/arandu-travel/`.
+
+
+### Acabamento da carroça
+
+O gerador `scripts/arandu_caravan_kit.py` passou a produzir rodas vazadas de oito raios, aro de madeira com cinta de ferro, chassi reforçado, tábuas de cores alternadas, rebites, faixa vinho, bancos laterais, apoio do cocheiro, lanternas e bagagem presa ao suporte traseiro. A variante coberta usa lona curva facetada com costuras. Origens, nomes de peças e raio de roda de 0,65 u foram mantidos para o movimento existente; o kit permanece único e embutido na v2. Exportação acionada pelo MCP em processo separado, preservando a cena aberta. Build e conferência no Edge em `review/v2/arandu-travel/`, incluindo 390 px e a versão coberta no encontro.
+
+
+## Queda na caverna do ARANDU
+
+- `scripts/arandu_cave_fall.py`: gera `models/arandu_cave_fall.blend` e `exports/arandu_cave_fall.glb`, com `kit_pit_rim`, `kit_pit_shaft` e `kit_collapse_chunk`; registro `caveFallKit` na v2. Adereços estáticos movimentados pelo tempo da cena.
+- `scripts/arandu_player_fall.py`: executar com `blender --background blender/models/v2_player.blend --python blender/scripts/arandu_player_fall.py`. Gera `models/arandu_player_fall.blend` e `exports/arandu_player_fall.glb`, com animação própria `fall` (1,5 s, 24 FPS), sem alterar o player original. Registro `playerFalling` na v2.
+
+Os dois GLBs são incorporados pelo build normal. Abertura, paredes e fragmentos foram conferidos no Edge; evidências em `review/v2/arandu-prologue/`. As exportações foram acionadas pelo MCP em processos separados; a cena aberta permaneceu intacta. O movimento vertical do personagem e da câmera é governado pelo runtime, e não pelo deslocamento global do rig.
+
+
+## Esconderijo dos salteadores
+
+Na raiz do repositório, `blender --background --python blender/scripts/arandu_cave_hideout.py` gera `blender/models/arandu_cave_hideout.blend` e `blender/exports/arandu_cave_hideout.glb`. Peças: `kit_hideout_table`, `kit_hideout_cargo`, `kit_hideout_bedroll`, `kit_cave_support` e `kit_cave_spire`. Registro `caveHideoutKit` em `v2/assets/models.json`; incorporar com `node v2/tools/build.cjs`. A exportação foi acionada via MCP em processo separado, preservando a cena aberta do usuário. Conferência no jogo em `review/v2/arandu-cave-story/`.
+
+## Guerreiro jogável
+
+`models/warrior.blend` e `exports/warrior.glb`, gerados por `scripts/warrior_motion.py` a partir de `reference/warrior/warrior_source.glb`. Equipamentos vinculados às mãos, três cortes, estocada e golpe de escudo; [integração](../docs/v2-guerreiro.md). Geração desta entrega realizada via MCP.
+
+### Fonte atual do Guerreiro após edição manual
+
+A fonte atual é `models/warrior.blend`, com os três cortes editados pelo usuário. Para atualizar o jogo, execute `scripts/warrior_export_manual.py` na sessão Blender via MCP e depois `node v2/tools/build.cjs`. O gerador `warrior_motion.py` é a base procedural histórica e não deve substituir automaticamente essa cena manual. O exportador mantém apenas as oito trilhas do personagem e não inclui Action Stash.
+
+O exportador manual chama também `scripts/warrior_equipment_export.py`: gera a máscara de escudo no personagem e `exports/warrior_shield.glb`, usado no arremesso. Esse segundo script pode ser executado sozinho via MCP para reexportar a cena salva, usando cópias temporárias e preservando a cena ativa. A fonte editável do escudo continua dentro de `models/warrior.blend`.
+
+### Tornado para edição manual
+
+A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a 30 fps, criada por `scripts/warrior_tornado.py` via MCP. Palma para baixo, braço à frente do peito e apoios alternados. Ela está selecionada no Pose Mode para ajuste do usuário; os clipes publicados no GLB e o jogo continuam os anteriores até a integração. Os exportadores preservam essa nona ação quando presente. [Notas de edição e validação](notes/warrior_tornado.md).

@@ -59,11 +59,11 @@ test('Uivo: pose do uivo usa o clipe howl e não ocorre com o alvo longe demais'
  ({w,e}=setup(4,0,-25));e.howlCd=0;advance(w,.3);assert.ok(!e.howl);
 });
 
-test('Soldado: corte frontal prepara dois segundos, trava direcao e atinge uma unica vez',()=>{
- const {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.1);assert.ok(e.cut);advance(w,1.7);assert.equal(p.hp,1e5);assert.ok(warnings(w,e).some(f=>f.arc===CUT.arc));advance(w,.3);assert.ok(p.hp<1e5);const hp=p.hp;advance(w,.2);assert.equal(p.hp,hp);assert.equal(w.combatEvents.filter(x=>x.kind==='soldierCut').length,1);
+test('Soldado: corte frontal prepara 0,7 segundo, trava direcao e atinge uma unica vez',()=>{
+ const {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.1);assert.ok(e.cut);advance(w,.4);assert.equal(p.hp,1e5);assert.ok(warnings(w,e).some(f=>f.arc===CUT.arc));advance(w,.3);assert.ok(p.hp<1e5);const hp=p.hp;advance(w,.2);assert.equal(p.hp,hp);assert.equal(w.combatEvents.filter(x=>x.kind==='soldierCut').length,1);
 });
 test('Soldado: sair do arco evita corte; morte cancela preparacao',()=>{
- let {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.2);p.y=-4;advance(w,2);assert.equal(p.hp,1e5);
+ let {w,p,e}=setup(0,0,-2);e.abilityCd=0;e.atkTimer=99;advance(w,.2);p.y=-4;advance(w,.9);assert.equal(p.hp,1e5);
  ({w,p,e}=setup(0,0,-2));e.abilityCd=0;advance(w,.2);dealDamage(w,e,1e9,p);advance(w,2);assert.equal(p.hp,1e5);assert.ok(!e.cut);
 });
 test('Orc: salta de longe para ponto travado, ganha altura e causa impacto so ao pousar',()=>{

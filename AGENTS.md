@@ -89,3 +89,5 @@ Cada arquivo novo vai para a pasta do seu tipo. Não salve assets, testes, captu
 - [Mecânicas e integração (v2 e módulos compartilhados)](scripts/AGENTS.md)
 - [Assets, Blender e modelos](blender/AGENTS.md)
 - [Documentação e evidências](docs/AGENTS.md)
+
+- Toda fase da v2 deve ter borda infinita: continuidade visual do piso e do bioma além dos limites jogáveis, inclusive cavernas, sem alterar colisões. Conferir com zoom máximo, chão claro/escuro e qualidade baixa; não deixar o mapa parecer uma placa recortada.

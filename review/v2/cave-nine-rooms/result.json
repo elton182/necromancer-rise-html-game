@@ -1,0 +1,67 @@
+{
+  "start": 165,
+  "bounds": {
+    "minX": -72,
+    "maxX": 72,
+    "minY": -180,
+    "maxY": 180
+  },
+  "enemies": 15,
+  "rooms": [
+    {
+      "x": 0,
+      "y": 165,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": 36,
+      "y": 165,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": 36,
+      "y": 125,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": -8,
+      "y": 125,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": -44,
+      "y": 125,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": -44,
+      "y": 85,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": 0,
+      "y": 85,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": 0,
+      "y": 45,
+      "cross": true,
+      "passage": true
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "cross": true,
+      "passage": true
+    }
+  ],
+  "errors": []
+}

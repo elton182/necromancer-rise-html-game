@@ -1,0 +1,19 @@
+{
+  "errors": [],
+  "maps": [
+    "custom-arandu-cave",
+    "campaign-forest",
+    "village",
+    "campaign-crypt",
+    "campaign-strip",
+    "campaign-outpost",
+    "expedition-1"
+  ],
+  "checks": [
+    "limites preservados",
+    "borda com zoom máximo",
+    "fundo claro e escuro",
+    "qualidade baixa",
+    "390px"
+  ]
+}

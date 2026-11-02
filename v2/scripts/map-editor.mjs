@@ -50,7 +50,7 @@ export function createMapEditor({library,enemyTypes,play,closed,game}){
  label('Espaço',spacingIn,g);label('Raio',radiusIn,g);
  el('p','me-note','Segure e arraste para criar várias peças de uma vez. Ctrl+Z desfaz o traço inteiro.',g);
  g=toolGroup('Marcadores');addTool('start','Início do jogador','#6fb7ff',g);addTool('spawn','Inimigos','#e0605a',g);
- for(const group of ['Colisores','Enfeites','Chão']){g=toolGroup(group);for(const type of PROP_TYPES)if(PROPS[type].group===group)addTool(type,PROPS[type].label,PROPS[type].color,g);}
+ for(const group of ['Colisores','Enfeites','Chão','Caravana','Caverna']){g=toolGroup(group);for(const type of PROP_TYPES)if(PROPS[type].group===group)addTool(type,PROPS[type].label,PROPS[type].color,g);}
 
  // --- Estado ---
  let doc=null,resolved=null,tool='select',selection=null,dirty=false,undo=[],redo=[],view={cx:0,cy:0,scale:12},hover=null,drag=null,spaceDown=false,lastEnemyType=0,analysisTimer=0,problems=[];

@@ -1,0 +1,19 @@
+{
+  "errors": [],
+  "remote": [],
+  "checks": [
+    "recuperação sem narrador onisciente",
+    "guardas aguardam no depósito",
+    "vozes antes do combate",
+    "carga opcional",
+    "ordens revelam Nilo",
+    "390px",
+    "recarga preserva pistas e conversa",
+    "grupo e qualidade baixa",
+    "saída liga a busca por Jacarandá"
+  ],
+  "limitations": [
+    "combate encerrado com HP injetado",
+    "sem teste de dificuldade em partida completa"
+  ]
+}

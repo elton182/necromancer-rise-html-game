@@ -1,0 +1,13 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
+(async()=>{const dir=path.resolve(__dirname,'../../review/v2/arandu-fall');fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true});try{
+ const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});
+ await page.evaluate(()=>{const n=NecromancerV2;n.session.save.campaign.started=true;n.session.save.campaign.prologue={stage:'fall',introRead:true};n.campaign.start();});
+ await page.waitForFunction(()=>NecromancerV2.world.adventure.elapsed>=2.25);await page.evaluate(()=>NecromancerV2.pause(true,false));
+ const t=await page.evaluate(()=>NecromancerV2.world.adventure.elapsed);await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>NecromancerV2.world.adventure.elapsed),t);assert.equal(await page.evaluate(()=>NecromancerV2.world.player.model),'playerFalling');await page.screenshot({path:path.join(dir,'collapse.png')});
+ await page.evaluate(()=>NecromancerV2.pause(false,false));await page.waitForFunction(()=>NecromancerV2.world.adventure.elapsed>=3.5);await page.evaluate(()=>NecromancerV2.pause(true,false));await page.getByText('A luz da superfície se afasta…',{exact:true}).waitFor();await page.screenshot({path:path.join(dir,'descent.png')});
+ await page.evaluate(()=>{NecromancerV2.view.ground(true);NecromancerV2.view.quality(true);});await page.screenshot({path:path.join(dir,'descent-light-low.png')});
+ await page.evaluate(()=>{NecromancerV2.view.ground(false);NecromancerV2.view.quality(false);NecromancerV2.pause(false,false);});await page.waitForFunction(()=>NecromancerV2.world.adventure.stage==='cave');await page.waitForTimeout(650);assert.equal(await page.evaluate(()=>NecromancerV2.world.player.model),'player');assert.ok(await page.evaluate(()=>NecromancerV2.world.player.hp>0));await page.screenshot({path:path.join(dir,'arrival.png')});assert.deepEqual(errors,[]);
+ fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({errors,checks:['modelo e animação próprios','terreno recortado','poço com profundidade','pausa congela a queda','legendas por fase','fundo claro e qualidade baixa','chegada restaura modelo e mantém jogador vivo']},null,2));console.log('Queda integrada: OK');
+}finally{await browser.close();}})().catch(e=>{console.error(e.stack);process.exitCode=1;});

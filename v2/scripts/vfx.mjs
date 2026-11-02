@@ -155,6 +155,13 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  RUN.impact=(o,e)=>{const t=life(e);o.ring.scale.setScalar((e.size||1)*lerp(.3,1.05,easeOut(t)));o.ring.material.opacity=(1-t)*.8;};
 
  // Rastro curvo de um golpe: faixa em arco com brilho na borda externa.
+ // A faixa da estocada usa a mesma cápsula registrada pela simulação.
+ INIT.thrust=(o,e)=>{
+  const r=e.radius,length=e.length,shape=new THREE.Shape();shape.moveTo(0,-r);shape.lineTo(length,-r);shape.absarc(length,0,r,-Math.PI/2,Math.PI/2,false);shape.lineTo(0,r);shape.absarc(0,0,r,Math.PI/2,Math.PI*1.5,false);
+  const mesh=new THREE.Mesh(new THREE.ShapeGeometry(shape),new THREE.MeshBasicMaterial({color:e.color||'#ffd9a0',transparent:true,opacity:.18,depthWrite:false,side:THREE.DoubleSide}));
+  mesh.userData.ownGeometry=true;mesh.rotation.set(-Math.PI/2,-Math.atan2(e.dy,e.dx),0,'YXZ');mesh.position.set(e.x,.055,e.y);mesh.renderOrder=11;scene.add(mesh);o.objs.push(mesh);o.mesh=mesh;
+ };
+ RUN.thrust=(o,e)=>{o.mesh.material.opacity=.18*Math.pow(1-life(e),2);};
  INIT.slash=(o,e)=>{
   const arc=e.arc||Math.PI*.8,r=e.radius||1.8,dir=Math.atan2(e.dy,e.dx),c=hex(e.color||'#ffd9a0'),h=e.h??.85;
   const m=new THREE.Mesh(new THREE.RingGeometry(r*.45,r,40,1,-dir-arc/2,arc),material(textures.arc,e.color||'#ffd9a0',.95));

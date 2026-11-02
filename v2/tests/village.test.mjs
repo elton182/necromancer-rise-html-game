@@ -31,3 +31,13 @@ test('casa e poço bloqueiam o jogador; rua principal e praça ficam livres',()=
  const walk=moveCircle({x:-1.8,y:9},{x:0,y:-16},.45,a,{slide:false});assert.ok(walk.y<-6.5&&walk.y>-9.5,'rua principal deveria levar ao portal sem atravessar os pilares');
  const free=moveCircle({x:-6,y:2},{x:12,y:0},.45,a);assert.ok(Math.hypot(free.x+6,free.y-2)>4,'praça bloqueada demais');
 });
+
+test('cinturão decorativo fica fora da área caminhável e deixa clareiras nos eixos',()=>{
+ const a=villageArena(),b=a.bounds;
+ assert.ok(a.decor.trees.length>50);
+ for(const t of a.decor.trees){
+  assert.ok(t.x<b.minX-2||t.x>b.maxX+2||t.y<b.minY-2||t.y>b.maxY+2);
+  assert.ok(Math.abs(t.x)>=3.5&&Math.abs(t.y)>=3.5);
+  assert.ok(!a.solids.includes(t));
+ }
+});

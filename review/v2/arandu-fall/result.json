@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "checks": [
+    "modelo e animação próprios",
+    "terreno recortado",
+    "poço com profundidade",
+    "pausa congela a queda",
+    "legendas por fase",
+    "fundo claro e qualidade baixa",
+    "chegada restaura modelo e mantém jogador vivo"
+  ]
+}

@@ -107,6 +107,90 @@
       "sha256": "0761b1e003917b215d25dd81439d854b36034b5a57ce84c2cfe3b02428d7b253"
     },
     {
+      "path": "v2/scripts/forest-border.mjs",
+      "sha256": "8d51d87e60ad4d13542af60fd82e30bc1480064b07b957398b5e8466bd669e73"
+    },
+    {
+      "path": "v2/scripts/map-horizon.mjs",
+      "sha256": "02a72bfb78aef930c4613f29998db6d0e73410ae294851bc36bca5ff67a6575a"
+    },
+    {
+      "path": "v2/scripts/village-services.mjs",
+      "sha256": "05896fbb04ac3fe41d619128647edcf0953b05e33cf5c7282643ac6272a72fc1"
+    },
+    {
+      "path": "v2/scripts/warrior-equipment.mjs",
+      "sha256": "21c73ec209d8281887c75101517250596ccabb6d3bd9284428175c907af6823c"
+    },
+    {
+      "path": "v2/scripts/warrior-model.mjs",
+      "sha256": "63d95e5aa0d1d1a1003e705078c1bbd641b4ab1fd89967b364374da52556a7c4"
+    },
+    {
+      "path": "v2/scripts/warrior.mjs",
+      "sha256": "8d699f92a04a8be549ceb800d2387b6f107c90efc38ce4fc87d33415ab426f04"
+    },
+    {
+      "path": "v2/scripts/cave-hideout.mjs",
+      "sha256": "b3675d7da3ce393cf0e5fbf29de228f0abee7cd84bffb655c37c8aa7325f93c5"
+    },
+    {
+      "path": "v2/scripts/fall-presentation.mjs",
+      "sha256": "c455cad90383bd81ea9a7f695437edc4b6fd051d6ae7fd6aaa007e749cbff338"
+    },
+    {
+      "path": "v2/scripts/prologue-map-data.mjs",
+      "sha256": "607fcc30509abc0de1b17153dc04fc9872e0ca9d0eccad88e6e7c8a6149cf67b"
+    },
+    {
+      "path": "v2/scripts/prologue-model.mjs",
+      "sha256": "9157708d0b61cb1350695d697dcd62676b2b760fe873570b94436fb88c33d0da"
+    },
+    {
+      "path": "v2/scripts/prologue-map.mjs",
+      "sha256": "4391ad416073560cc8c665f5717171163c74cdf05fe6be57ce84e277ee14fb64"
+    },
+    {
+      "path": "v2/scripts/prologue.mjs",
+      "sha256": "1165346d1cb547a146f167fb76ba4dbb9e9a9b970b02601a4943a12a540d317c"
+    },
+    {
+      "path": "v2/scripts/prologue-scene.mjs",
+      "sha256": "5113a93e8caade62ff7dd8b4355e443855f4289ea743acb1275fdee28e5ae9b0"
+    },
+    {
+      "path": "v2/scripts/title-preview.mjs",
+      "sha256": "706560915c2d6e516145f795a7e5d0a2e99765a0e201ff4a6e75c14ce529028f"
+    },
+    {
+      "path": "v2/scripts/campaign-world-model.mjs",
+      "sha256": "a8bf37e2914560fc193b704b713c54a16da2655e9a2acabe35861dbfbdc3e751"
+    },
+    {
+      "path": "v2/scripts/campaign-world.mjs",
+      "sha256": "5f3e2eae7f5337550b2fdd638ae5d9a81a1fdcfd58b41b4957972de5fb3dc33b"
+    },
+    {
+      "path": "v2/scripts/campaign-world-panel.mjs",
+      "sha256": "ff1347d78118863f7af76cbe3aaf1ef17ed98ce9c42a17177031d93bc66e3362"
+    },
+    {
+      "path": "v2/scripts/scene-look.mjs",
+      "sha256": "5e630b1b41a6a699e552f4668cf49e1ec38ea140c01547dd542b6a0af5a9522e"
+    },
+    {
+      "path": "v2/scripts/campaign-world-map.mjs",
+      "sha256": "4c16c54a2b65bfc4b855f8593681db56cb8cad8c9d32247ef18375021b51f285"
+    },
+    {
+      "path": "v2/scripts/swamp-ground.mjs",
+      "sha256": "d713804a0dca492147dff14d40bfc06ed88a64061d7833105dc806f911962184"
+    },
+    {
+      "path": "v2/scripts/painted-ground.mjs",
+      "sha256": "e1a55325d20324989c1306b06347f0d660a4a2bec0c2e61b1cc76b9c7351e613"
+    },
+    {
       "path": "v2/scripts/siege-model.mjs",
       "sha256": "04b6d5110c7017c0481cc10b73e9d265b32015d2cb4eda1ff374a7442d015138"
     },
@@ -116,11 +200,11 @@
     },
     {
       "path": "v2/scripts/siege.mjs",
-      "sha256": "64724a2245909e5f103b8e3a73475baa6ab056ae02d39d4f364102d14f1f3bcf"
+      "sha256": "9f934899bea79df556eed17e266ec6893a134dc7032738b09f57e2aad4516d95"
     },
     {
       "path": "v2/scripts/siege-panel.mjs",
-      "sha256": "4a8ae8205557873567e7b054ce11347c799d9ed500c1a510ed77a27ccefa984f"
+      "sha256": "46e2e68a4755ad8a4ae8f3970924d17d99e3de08327560b06e42a3cd55ad8200"
     },
     {
       "path": "v2/scripts/siege-scene.mjs",
@@ -136,15 +220,15 @@
     },
     {
       "path": "v2/scripts/title.mjs",
-      "sha256": "2e5a31df1ba13b1780e0a76a8b6d104fd59419bb118708a4954a01c37a49743a"
+      "sha256": "e122c42c1dcfb476ef486c3afd8c7ba9d0dbeb70d86a83149c7b53f8e2a09997"
     },
     {
       "path": "v2/scripts/game-ui.mjs",
-      "sha256": "aab2ff93eb06136e76e1e370861fb2396b75053fe7aa8a55e0d10b5a63ad4fff"
+      "sha256": "17930ebf05dbc1a640bb72999707fad634a2a25f0893bad8346ccf6e9cf45e23"
     },
     {
       "path": "v2/scripts/campaign.mjs",
-      "sha256": "ccf5f6a627eccf63cfc0e65d306f350a3a75d3b1fb8a1c61d9412f351e1c0e6b"
+      "sha256": "50f96cc550013905c02785e04480d894eaf1a8c6873a947774efd516a8e6cdcd"
     },
     {
       "path": "v2/scripts/arena-model.mjs",
@@ -156,15 +240,15 @@
     },
     {
       "path": "v2/scripts/conquest-panel.mjs",
-      "sha256": "4fe098c28d3bbacb046db186c4f12a3a5297a80faf0a95abaff177f9d43c2b70"
+      "sha256": "d8f4fdba688b5650d5503f4379f33b0c1f9d108749bb404d6e139cc38c8ea339"
     },
     {
       "path": "v2/scripts/expedition-map.mjs",
-      "sha256": "f53a7cdb8f43e1f28e843efa8c90bc74abb3b4073a92b22e8718bf7504e90b2a"
+      "sha256": "98cd93176d9e791c933fc3846737f353191fde318a87ceed29554a73cea022d8"
     },
     {
       "path": "v2/scripts/map-model.mjs",
-      "sha256": "f25ef0235137fadeb35aa8a2ce5b919364e26e6f15f0c3b205094d2221ed499f"
+      "sha256": "e412e0c79bfecab48c9098512827cd6b659b5155c8c640b4870afaa5e37dfb15"
     },
     {
       "path": "v2/scripts/map-play.mjs",
@@ -172,31 +256,31 @@
     },
     {
       "path": "v2/scripts/map-preview.mjs",
-      "sha256": "156d39ec98972d4bba01b45e2e931c0f8bf32054c5256bf436da57e68c29d7bc"
+      "sha256": "10f20c229dfff805a4a8be9be117a69e3f485c913388fbc46a37ef9214dc36f1"
     },
     {
       "path": "v2/scripts/map-editor.mjs",
-      "sha256": "1cca5add80b8c62abf95bdbc99733e5263107294ff1ba7467a5dfef984fba148"
+      "sha256": "5bbc3f5bb13c5dce31fc64d2a087b147b9c32dd51c15377f97b1a6415d4fa659"
     },
     {
       "path": "v2/scripts/map-panel.mjs",
-      "sha256": "77f5dd9f8ad088ce372d502c664b980c23bb6e7f2f0ed56d09f79af79348f039"
+      "sha256": "12cdf93eb533e5a89451ee3f825b5df64cdffd97caf091c9be55e15de6c86dbd"
     },
     {
       "path": "v2/scripts/expedition-scene.mjs",
-      "sha256": "1bde6d33b077df1c71f60e2d0392c31c646089c40e568f92f9be0bd49d57b2a4"
+      "sha256": "9e34405704e515abc30d62f770b4212d5f05741b41272a5fdb0c30794563fb93"
     },
     {
       "path": "v2/scripts/expedition.mjs",
-      "sha256": "e132f30b7d37ed9c7f62fdc75daef6258e118a4c206d85a2338ef81ff06ddab5"
+      "sha256": "f6074e3460e0f444ec549465403456ce0c304c4c7814206d6c14a32f303c6f6e"
     },
     {
       "path": "v2/scripts/waves-panel.mjs",
-      "sha256": "1d976be01ff7afe048c99de473a3803211036cd7b5ff12db0a46ad6d3ace9c57"
+      "sha256": "dda402e208116166533d5a823443bcc5a37a73e32cc94bffc55639cbce67826a"
     },
     {
       "path": "v2/scripts/campaign-panel.mjs",
-      "sha256": "63a5b6f077b8f354ca49625e548f4c9bfdc1443fd21302cb6ac1536ff8acf7aa"
+      "sha256": "87ea03a9a3c95d65cf1c9c0e9ebc84517f439c2b33586c4b4c4ba5a50a4fbdd3"
     },
     {
       "path": "v2/scripts/campaign-atlas.mjs",
@@ -208,11 +292,11 @@
     },
     {
       "path": "v2/scripts/campaign-model.mjs",
-      "sha256": "a8e9ed32e4ca2f0b9839d412eb69e7bfed8a6b6442751eea978a9a6ab643af2c"
+      "sha256": "5a9d7db2cbea50f178c3c42778b9055a8976b78647e296618d9138c585b13512"
     },
     {
       "path": "v2/scripts/enemies.mjs",
-      "sha256": "cacace02a86e434d83bf14d98a4a69c54503e65ae0cc7b92975aee6724dd0ac1"
+      "sha256": "1e8ff9400dc772ab88f5170b2356833347e921b498bffa4dff5004a9f45ba977"
     },
     {
       "path": "v2/scripts/enemy-tactics.mjs",
@@ -284,11 +368,11 @@
     },
     {
       "path": "v2/scripts/forest-scene.mjs",
-      "sha256": "662a17413b388d54b61630c936265a1a6612b79c1a31e1c1acf274e34a564703"
+      "sha256": "fba3577d9010baa488073708611c24f254b7dc935034a2913305ceb3385d9dde"
     },
     {
       "path": "v2/scripts/village-map.mjs",
-      "sha256": "b675d5d746e81b56aeec591ea84447e192426e906ef73ac3dbaf932b77c0cda0"
+      "sha256": "45dce1d87eeb6f221ae72b247cef8415b25aae0335f396591f7b112e22a257ad"
     },
     {
       "path": "v2/scripts/scenery-fx.mjs",
@@ -300,15 +384,15 @@
     },
     {
       "path": "v2/scripts/village-kit.mjs",
-      "sha256": "73f38ce25fc60b5743aa9ad1c68f12f7311ec3dff38ec281be6e41f763029e03"
+      "sha256": "254b4900d2bdc77989681eee6e0d12c47b19ffedeec5e4992a9c17c6f0e8d08b"
     },
     {
       "path": "v2/scripts/village-ground.mjs",
-      "sha256": "41f068ffaf2901bd88d8bd8dc65a930949e98b5da7e0b8855306735ba8fc6cb6"
+      "sha256": "39fed0c11809674a4137f0d561b3ccb9a5c58a93ce9e0f6dc2bc667235cf00bf"
     },
     {
       "path": "v2/scripts/village-scene.mjs",
-      "sha256": "6071cc999c84d9611355957dc786c7be4445d8d2127d24a619d9101943c2e48f"
+      "sha256": "f3db01ad46e587cf30669848752f293ea28fbfdb6f6daaff757ada53e55b156e"
     },
     {
       "path": "v2/scripts/crypt-map.mjs",
@@ -324,7 +408,7 @@
     },
     {
       "path": "v2/scripts/trail-scene.mjs",
-      "sha256": "19e3c71e14bce7a15e7f865600b7996b4370b994593d27c54de5cd3fa3269776"
+      "sha256": "51d7b6ca8fe8190e0b4388944151946f0cc0a1dafdcd0109e5406365ad2a4b9b"
     },
     {
       "path": "v2/scripts/camp-parts.mjs",
@@ -368,7 +452,7 @@
     },
     {
       "path": "v2/scripts/progression.mjs",
-      "sha256": "ffced50629514b952d6088815d17c16b9d05bd3ac8e1505538e755a5b94bcced"
+      "sha256": "5b8d139685a48d4d7cc069e082af257175abb3c6128f0d9182776969a7430566"
     },
     {
       "path": "v2/scripts/drops.mjs",
@@ -380,19 +464,19 @@
     },
     {
       "path": "v2/scripts/gear.mjs",
-      "sha256": "abc4ded9705d5f592da6d8d2f07d88c2df7b64c87152f875a7269b0469cf1cb4"
+      "sha256": "c290f362d3e6ec3c151fa1e6b2005a39aa8ff41a0a1e48c38b3596d72dd72d81"
     },
     {
       "path": "v2/scripts/gear-panel.mjs",
-      "sha256": "a199926d03de768a64cbaab639ea58fbc085057e77f2f0da61b102149e4cab16"
+      "sha256": "90a4c2375bb3cf0037ec45e34ebacb0980fcbf961bc933c492cfa911dff8d890"
     },
     {
       "path": "v2/scripts/rewards.mjs",
-      "sha256": "4bd51064b596d6e02442d035910334e311ae13e1cbaf0a26c550b8e8cf4c8907"
+      "sha256": "6583a699cc514b747167afd43fb469e6518534a4f6df2b65a22dd7de2b9e4cb7"
     },
     {
       "path": "v2/scripts/grimoire.mjs",
-      "sha256": "364ac8da4e6e6dfa541797b2c4c92075fb6a18efb98a45266d820b02a35ac592"
+      "sha256": "b456910d574edd1958fa4f8bb726ec5d20b5cd256433f2e3351d549ea5eae038"
     },
     {
       "path": "v2/scripts/grimoire-panel.mjs",
@@ -416,11 +500,11 @@
     },
     {
       "path": "v2/scripts/combat.mjs",
-      "sha256": "3ca0b2f7860f0dd7aa92f5a0b81f50ab4727292fd585a727aa41a2df2006b2ef"
+      "sha256": "313e8e30602086338da85f1d80e9fce41d5569ba3d655a1c37782bfd036f1679"
     },
     {
       "path": "v2/scripts/training-model.mjs",
-      "sha256": "cd3df16a7eba7f285acbff311fab35f12bc0429edab14a31fc85b3d811efd9b0"
+      "sha256": "c627807a9122a6b878f8ee1aabf0ea545d9d3bd07ddb6ffcbdfe6b3d477359c3"
     },
     {
       "path": "v2/scripts/audio.mjs",
@@ -428,7 +512,7 @@
     },
     {
       "path": "v2/scripts/sound-events.mjs",
-      "sha256": "2469385da0d125713a9224e9910915449dc25401b08f862f533cecf5103ebfb5"
+      "sha256": "514bf5326909a923667d1e29298cb210401039ee5c3b70e4e4e1c3c0e59ed345"
     },
     {
       "path": "v2/scripts/lab-model.mjs",
@@ -448,35 +532,35 @@
     },
     {
       "path": "v2/scripts/vfx.mjs",
-      "sha256": "5c71d851e7e52d8b46d0a07db6813923fa0568d7fee5ddb2f3ceb0d85e104b24"
+      "sha256": "81e3f3804acfc48fb589ec423b3c05c4993b331d8dd8b8156f3c17eafeb5987a"
     },
     {
       "path": "v2/scripts/renderer.mjs",
-      "sha256": "fc23dd2549cf9539af2dd7bb62f09df4b32955d6af4501086c0dae6f61468130"
+      "sha256": "7a20f8883aaa1d6d2a8a4d817fecf789c83616feffccd67f6808988c5d30a713"
     },
     {
       "path": "v2/scripts/input.mjs",
-      "sha256": "8945e176ee5e85a36082caec9ee4be1c9e3eaafe78184bf8b68d4f5bb63ee3f7"
+      "sha256": "b49555ebc4b9328740907183f80c38bf6a433a2b9086312eaa7eae7e01b317fd"
     },
     {
       "path": "v2/scripts/save-model.mjs",
-      "sha256": "1db52e0ae447995f8bb5f4950e5c5a7b971a45a15e2adea407b7bf77be1d1959"
+      "sha256": "7dfa1d1c18291df7d3faac15e0f3754581d947fe07f75a47e9c64187e87d2459"
     },
     {
       "path": "v2/scripts/session.mjs",
-      "sha256": "d6a136a4a0d3dedfab52f132ff120ea8ef63184ac4f0da0356aea994b9253410"
+      "sha256": "6476cf6485cc6b19188a6452283705def4c251ae75ed9b9687f08cc0e276a041"
     },
     {
       "path": "v2/scripts/app.mjs",
-      "sha256": "162c74baf54b40dad5baea6a001ac55e4be5f68b1983ae5b8df8e0111f4e168e"
+      "sha256": "c3e6229a76c24083311ec097aef359a282adeb14a02f318b06e21754cf2ff35e"
     },
     {
       "path": "v2/assets/models.json",
-      "sha256": "2ef6b1b3b7fc6b2537511dcad87d8c511cad0757818a5a43b085641c19e80a7a"
+      "sha256": "9c028fdd28a891ff17bae0e727a3b1781b3cadfa6c073edfc7c33083e0f982dd"
     },
     {
       "path": "blender/exports/v2_player.glb",
-      "sha256": "957ad65c54c79f99d91f3a222263b44fde4e5b8e37c86ccab8e176f563ab243a"
+      "sha256": "7757680c7addb1eeee7642654e1917f784ef5c1dcd2af3ffc848f1ccef689f76"
     },
     {
       "path": "blender/reference/skeleton.glb",
@@ -515,8 +599,8 @@
       "sha256": "e4cbeb589653efff4ebd9d386ac0c9b8731737fd5f05e40a57a3029dd5fddb13"
     },
     {
-      "path": "blender/exports/v2_enemy_knight.glb",
-      "sha256": "2174307aeac5f097f81870ae0da071b7b24ac45500d719d39502dc93511961c8"
+      "path": "blender/exports/warrior.glb",
+      "sha256": "368e3b7172d37b76e8708d34c9538bacd1fbf76ea066d2a831a37542063008fb"
     },
     {
       "path": "blender/exports/lowpoly_earcher.glb",
@@ -623,6 +707,46 @@
       "sha256": "9834759d95a76004fb44f2a656f52abef382a4f03684bb75979036e999faf192"
     },
     {
+      "path": "blender/exports/v2_swamp_kit.glb",
+      "sha256": "c786c8d8894da7d5d2ad5e33bb3bab04d9d3575df975242c1b279965201acd7d"
+    },
+    {
+      "path": "blender/exports/v2_crypt_architecture.glb",
+      "sha256": "fd703c4300909fdf71b170402ac0e4bc545ec1064ead6d7cf8b7b9867fe5a195"
+    },
+    {
+      "path": "blender/exports/v2_ruined_village_kit.glb",
+      "sha256": "3fa79ce67eb23f9e7deeacd8b7e638d376b1210733c51c5cbfc5c89ba69da850"
+    },
+    {
+      "path": "blender/exports/arandu_caravan_kit.glb",
+      "sha256": "5c2872b6278196d58f3480cb1d4d7e478b112e1b476c75d30cc2f417b48ad823"
+    },
+    {
+      "path": "blender/exports/arandu_caravan_horse.glb",
+      "sha256": "75ff1fac092c414972b9179c3633ba9dcea4481c5e943397a5d7f0edaf0a7105"
+    },
+    {
+      "path": "blender/exports/arandu_cave_fall.glb",
+      "sha256": "84c209d61cdc5916b47840260872f0ae6ed0ea53f16bb396620be91d917d48e1"
+    },
+    {
+      "path": "blender/exports/arandu_player_fall.glb",
+      "sha256": "8831f3e9aa9a59a2d668fc3f0db0f58bd43a40d0f76ebfd174219e5bb9aec86b"
+    },
+    {
+      "path": "blender/exports/arandu_cave_hideout.glb",
+      "sha256": "5333ce2d1c70271fd2b2d6fa3b18aec022ee050ff8575d11ae0075b6b2412a01"
+    },
+    {
+      "path": "blender/exports/v2_enemy_knight.glb",
+      "sha256": "2174307aeac5f097f81870ae0da071b7b24ac45500d719d39502dc93511961c8"
+    },
+    {
+      "path": "blender/exports/warrior_shield.glb",
+      "sha256": "21ca577defe8136ea79f26696c1f7fe621853a6349d1dfa6e2d1eb309df0d326"
+    },
+    {
       "path": "v2/assets/music.json",
       "sha256": "1e4e3cd534fb70237e274f94cada730bab61ba3f39be15069af80a7e08cf75aa"
     },
@@ -652,7 +776,7 @@
     },
     {
       "path": "v2/tools/template.html",
-      "sha256": "53522a818025240ffbf6ea594bbe1f813f8e2aae381f674826fd4ef4d0b3a898"
+      "sha256": "365bfdf5aaacfe3ea8bdc1a8a1dcdcd8a80e804fcadb1e73330876b46576e77b"
     },
     {
       "path": "v2/scripts/game.css",
@@ -716,11 +840,27 @@
     },
     {
       "path": "v2/scripts/ui.css",
-      "sha256": "d4602764d738f1ae6028de00603ca7d5c1ccba3f6cc641e995e123b5e4b24f78"
+      "sha256": "36ff3f8b91c1fd4cc8e54fe677571eeefbe22ce445dbee5630447761ebf49413"
+    },
+    {
+      "path": "v2/scripts/campaign-world.css",
+      "sha256": "84b742c05402ed9cabd9f7c0168ce2affc448a9f4f2fbef69b96a2924538937d"
+    },
+    {
+      "path": "v2/scripts/arandu-title.css",
+      "sha256": "4258f2476bf44ee44fce1dfd9a963020f18073060900e8da5fda918f9b9d3ef1"
+    },
+    {
+      "path": "v2/scripts/prologue.css",
+      "sha256": "fb5fd28792afb6efe88247118c18b131f5d81981e1d21815073b2035313ee3a9"
     },
     {
       "path": "v2/tools/ui-layout.html",
-      "sha256": "7bfcfc2e723e3f0165640bda4e0c9cf594eed7f6fee19cc0006eb7c54f79bcc9"
+      "sha256": "9661ab4c134300222004c8a1d624c57dea77eb9d40534fe501dfa681b4be1b54"
+    },
+    {
+      "path": "assets/title/arandu-refuge.png",
+      "sha256": "9bb657498affc5b2cb56c6d06c06ffb98bc598cabbc75d8070231ef5d2084a1c"
     }
   ]
 }

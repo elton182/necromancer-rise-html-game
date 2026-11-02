@@ -1,6 +1,6 @@
 # Cerco ao Ritual — defesa do Obelisco de Almas
 
-Modo de endgame da v2, acessível pelo botão **Cerco ao Ritual** no painel da Vila de Eldrin após concluir o Ato I. É independente da Arena, das Expedições e da Conquista: não altera os recordes desses modos.
+Modo de defesa de torres da v2, acessível com **G** no **Mestre do Cerco**, na praça de Jacarandá ou na Vila de Eldrin. Está liberado ao alcançar a vila, sem exigir conclusão do Ato I. É independente da Arena, das Expedições e da Conquista: não altera os recordes desses modos.
 
 ## Partida
 

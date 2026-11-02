@@ -68,4 +68,6 @@ recorde gravado, G no portal final levando à wave 2 (floresta), grupo acordando
 Playwright não está instalado; os `*-browser-check.cjs` não foram reexecutados.
 Evidências em [review/v2/e10/](../review/v2/e10/).
 
-Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.
+Acesso na vila: aproxime-se do **Guardião das Ondas** (Arena e Expedições) ou da **Cartógrafa de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.
+
+Os serviços também estão na praça de Jacarandá, no mundo contínuo: G com o Guardião abre ondas/expedições, com a Cartógrafa abre a Conquista e com o Mestre do Cerco abre defesa de torres. Basta alcançar a vila; não é necessário marcar o Ato I como concluído. Os NPCs têm nome e modo indicados sobre o personagem. Sair de uma tentativa retorna à praça e preserva as quests.

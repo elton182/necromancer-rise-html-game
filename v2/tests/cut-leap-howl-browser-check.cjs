@@ -12,7 +12,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   w.actors=[w.player];Object.assign(w.player,{x:0,y:4,hp:1e7,maxHp:1e7,hpRegen:0});w.effects=[];w.projectiles=[];w.hostileShots=[];w.hostileZones=[];w.arena={...w.arena,solids:[]};w.paused=false;
   const run=t=>{for(let i=0;i<Math.round(t*60);i++)step(w,1/60);};const info={};
   if(kind==='slam'){const e=spawnEnemy(w,10,0,0);e.abilityCd=0;run(.7);info.warn=w.effects.some(f=>f.enemyWarning===e.id&&f.radius===SLAM.radius);info.pose=e.pose?.anim;}
-  if(kind==='cut'){const e=spawnEnemy(w,0,0,2);e.abilityCd=0;e.atkTimer=99;run(1);info.warn=w.effects.some(f=>f.enemyWarning===e.id&&f.arc);info.pose=e.pose?.anim;}
+  if(kind==='cut'){const e=spawnEnemy(w,0,0,2);e.abilityCd=0;e.atkTimer=99;run(.35);info.warn=w.effects.some(f=>f.enemyWarning===e.id&&f.arc);info.pose=e.pose?.anim;}
   if(kind==='leap'){const e=spawnEnemy(w,10,0,-4);e.abilityCd=0;run(SLAM.wind+.3);info.height=e.jumpZ;}
   if(kind==='impact'){const e=spawnEnemy(w,10,0,-4);e.abilityCd=0;run(SLAM.wind+SLAM.flight+.1);info.fx=w.effects.some(f=>f.fx==='groundBreak');}
   if(kind==='rain'){const e=spawnEnemy(w,1,0,-4);e.atkTimer=1e9;e.abilityCd=1e9;e.rainCd=0;run(RAIN.wind+.55);info.zone=w.hostileZones.length;info.fx=w.effects.some(f=>f.fx==='arrowRain');info.hp=w.player.hp<1e7;}

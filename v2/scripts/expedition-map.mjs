@@ -5,6 +5,7 @@ import Expedition from './shared-expedition.mjs';
 export const EXPEDITION_ID='expedition';
 // Paleta por bioma; o renderizador usa `arena.palette` no lugar da paleta do tema.
 export const PALETTES={
+ cave:{dark:{ground:0x303031,background:0x111318},light:{ground:0x9a9890,background:0x9fa2a8}},
  grave:{dark:{ground:0x2a2a33,background:0x111118},light:{ground:0x8e8a96,background:0x80808a}},
  forest:{dark:{ground:0x2c4a2f,background:0x13201a},light:{ground:0x86a266,background:0x8ea98a}},
  desert:{dark:{ground:0x6b5a38,background:0x2a2216},light:{ground:0xc9b179,background:0xb9a572}},

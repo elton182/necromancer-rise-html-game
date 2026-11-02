@@ -1,5 +1,8 @@
 # V2 — campanha, vila e missões (E9)
 
+> **Atualização ARANDU (31/10/2026):** campanhas novas começam na caravana, passam pela caverna e chegam à defesa de Jacarandá. Veja [abertura e contrato atual](v2-prologo-arandu.md). Saves já iniciados sem `campaign.prologue` preservam o fluxo anterior descrito abaixo. No mundo contínuo, Eldrin passa a ser apresentada como Jacarandá. Os trechos por fases abaixo são referência de compatibilidade, não a abertura padrão.
+
+
 A V2 oferece **Campanha · Ato I** na tela inicial. Um save novo começa no mapa,
 com quatro fases sequenciais. **Continuar** restaura o progresso e abre o mapa ou
 a Vila de Eldrin em uma cena limpa; nenhuma luta ou entidade é restaurada.
@@ -252,3 +255,34 @@ Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou
 ## Disponibilidade e narrativa
 
 As habilidades basicas da campanha ficam disponiveis desde o inicio, sem concessoes por fase. Os investimentos normais do Grimorio continuam valendo. As cronicas possuem um palco 3D separado do combate e legendas em estilo HQ. A encenacao especifica de cada trecho da v1 ainda precisa ser concluida e validada visualmente.
+
+## Campanha integrada · Eldrin (mundo contínuo)
+
+Uma **campanha nova** começa no mundo contínuo de Eldrin em vez do atlas de fases. Saves que já tinham o Ato I iniciado continuam no fluxo de fases acima (`startCampaign` com `legacy`). O progresso fica em `campaign.world` (veja [saves](v2-saves.md)).
+
+Fontes: `campaign-world-model.mjs` (pontos, rotas, encontros, quests, objetivos e regiões), `campaign-world.mjs` (entrada, encontros, abrigo, conversas e prêmios), `campaign-world-panel.mjs` (objetivos, conversa e mapa da região, tecla **M**) e `campaign-world-map.mjs` (planta, também disponível no editor de mapas).
+
+### Mapa e regiões
+
+O mundo tem **360 × 360** unidades. Regiões: Cripta Esquecida (início, no sarcófago), Bosque dos Vigias (centro), Vila de Eldrin (abrigo), Posto em ruínas, Mina de Valfundo (pátio entre paredões de rocha, ao norte), Serraria do Vale (clareira de tocos, barracões, pilhas de toras e riacho, a sudoeste) e Cemitério antigo (capela sem telhado e lápides, a leste). Estradas saem da praça para o norte (posto e mina), oeste (serraria) e leste (cemitério); colunas com brasas marcam as bifurcações. As bordas novas têm mata densa fora das estradas. O nome da região aparece no painel e define a música (cripta e mina usam o tema da cripta).
+
+### Encontros
+
+São 21 grupos fixos com tipos misturados (Guerreiro, Arqueiro, Mago Vivo, Cão de Cripta, Ladrão, Humanoide Grifo, Aranha, Ladino Arqueiro e Orc). Cada grupo nasce parado quando Zephyr chega a 18 unidades e reage pela regra de alerta das Expedições. `wave` escala atributos e nível dos itens por região: 1 perto da cripta, 2–3 nas estradas, mina e serraria, e 4 no cemitério. Alguns grupos têm um líder Mágico (mina e serra) ou Raro (cemitério). Ao voltar à vila, as ameaças somem e os grupos comuns voltam na próxima saída. Grupos de quest (guardas do posto, bando da mina e guardas das três pilhas) não voltam depois de derrotados.
+
+### Quests
+
+| Quest | Como progride | Prêmio |
+| --- | --- | --- |
+| Uma voz entre as ruínas → Resgate o prefeito | Falar com Lia na praça; derrotar os três guardas do posto; libertar Oren; falar com ele na praça | 90 ouro, 120 XP |
+| O ferreiro de Eldrin | Aberta ao concluir o resgate. Derrotar o bando da Mina de Valfundo (Orc líder, Ladrão, Ladino Arqueiro, Arqueiro); falar com Bran na entrada; falar com ele na forja da vila | 100 ouro, 150 XP. Depois, Bran abre a forja (painel de equipamentos) |
+| Madeira para Eldrin | Aberta junto com a do ferreiro. Cada uma das três pilhas da serraria tem seu grupo de guardas; com o grupo derrotado, **G** marca a pilha. Com as três marcadas, falar com Oren | 110 ouro, 160 XP |
+
+As duas quests ficam ativas ao mesmo tempo: o painel lista ambas, a bússola segue a primeira e o mapa marca todos os objetivos e as pilhas restantes. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem. Cada prêmio é pago uma vez. Saves que já tinham concluído o resgate recebem as duas quests ativas ao carregar.
+
+### Limitações
+
+- A conclusão das quests não altera o cenário: as pilhas marcadas continuam visíveis e a vila não é reconstruída.
+- Os números de grupos, tipos, `wave` e prêmios são provisórios, sem passagem pelo `balance-simulator/`.
+- Testes: `node --test v2/tests/campaign-world.test.mjs` cobre rotas livres de colisores, pontos alcançáveis, grupos mistos e líderes, ordem das quests, prêmio único, retomada após morte e recarga, e migração de saves. `node v2/tests/campaign-world-browser-check.cjs` percorre as regiões no Edge com teleporte e abates injetados, abre o mapa e conclui a forja; capturas em `review/v2/campaign-world/`. Não valida dificuldade. A medição de quadro feita ali no Edge headless não representa a GPU do jogador.
+- `v2/tests/campaign-browser-check.cjs` ainda percorre as fases antigas a partir de uma campanha nova e precisa ser adaptado ao fluxo integrado.

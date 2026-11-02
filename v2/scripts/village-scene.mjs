@@ -30,7 +30,17 @@ function buildKitVillage(arena,models){
  add(houses.meshes);
  // Alturas de referência das peças no GLB: poste 2,68 u, poço 1,08 u (anel), cerca 0,8 u (poste).
  const lamps=look('lamp');
- add(kitFamily(kit,'lamp',lamps.map(l=>({x:l.x,z:l.y,sy:l.height/2.68}))));
+ // Postes finos não precisam abrir passagem visual: o Bayer cintila ao mover a câmera.
+ // Materiais do GLB são compartilhados com as casas; isolar antes de configurar o shader.
+ const lampMeshes=kitFamily(kit,'lamp',lamps.map(l=>({x:l.x,z:l.y,sy:l.height/2.68})));
+ for(const mesh of lampMeshes){
+  const source=mesh.material;
+  // Material próprio sem hooks herdados: a lanterna e a haste nunca recebem descarte de pixels.
+  mesh.material=new THREE.MeshBasicMaterial({color:source.color.clone(),vertexColors:source.vertexColors,side:THREE.DoubleSide});
+  if(source.emissive?.getHex())mesh.material.color.copy(source.emissive).multiplyScalar(Math.max(1,source.emissiveIntensity||1));
+  mesh.userData.sceneryFx=false;mesh.receiveShadow=false;
+ }
+ add(lampMeshes);
  add(kitFamily(kit,'well',look('well').map(w=>({x:w.x,z:w.y,sx:w.r,sy:w.height/1.08,sz:w.r,tint:new THREE.Color(KIT_ROOFS[2])}))));
  add(kitFamily(kit,'barrel',look('barrel').map((b,i)=>({x:b.x,z:b.y,ry:i*1.3,sx:b.r,sy:b.height,sz:b.r}))));
  add(kitFamily(kit,'crate',look('crate').map(c=>({x:c.x,z:c.y,ry:c.x,sx:c.width,sy:c.height,sz:c.depth}))));
@@ -52,7 +62,7 @@ function buildKitVillage(arena,models){
  const rest=nature?{...arena,solids:arena.solids.filter(s=>!['pine','oak','rock'].includes(s.look)),decor:{...d,trees:[],bushes:[],grass:[],flowers:[],patches:[],path:[]}}:{...arena,decor:{...d,patches:[],path:[]}};
  for(const o of buildForest(rest))add(o);
  // Vento na folhagem e transparência pontilhada no que fica entre a câmera e o jogador (chão e poças de luz ficam de fora).
- for(const o of out)if(o!==poolMesh&&!o.userData.replacesGround){const [sway,swayFrom]=NATURE_SWAY[o.material.name]||[0,0];patchScenery(o.material,{sway,swayFrom});}
+ for(const o of out)if(o!==poolMesh&&!o.userData.replacesGround&&o.userData.sceneryFx!==false){const [sway,swayFrom]=NATURE_SWAY[o.material.name]||[0,0];patchScenery(o.material,{sway,swayFrom,see:o.userData.scenerySee!==false});}
  return out;
 }
 

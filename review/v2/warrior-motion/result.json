@@ -1,0 +1,12 @@
+{
+  "errors": [],
+  "frames": "C:\\Users\\elton\\AppData\\Local\\Temp\\warrior-motion-rzCdXy",
+  "samples": 144,
+  "checks": [
+    "combo contínuo",
+    "estocada",
+    "escudo",
+    "caminhada",
+    "GLB no Three.js"
+  ]
+}

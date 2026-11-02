@@ -63,5 +63,16 @@ export function villageArena(){
  for(let n=0,tries=0;n<90&&tries<1500;tries++){const x=pick(random,-19,19),y=pick(random,-19,19);if(onRoad(x,y,.4)||!free(x,y,.4))continue;decor.flowers.push({x:+x.toFixed(2),y:+y.toFixed(2),tone:+random().toFixed(2)});n++;}
  for(let n=0,tries=0;n<34&&tries<900;tries++){const x=pick(random,-19,19),y=pick(random,-19,19),r=pick(random,.4,.7);if(onRoad(x,y,.6)||!free(x,y,r+.4))continue;decor.bushes.push({x:+x.toFixed(2),y:+y.toFixed(2),size:+r.toFixed(2),tone:+random().toFixed(2)});n++;}
  for(let n=0;n<16;n++)decor.patches.push({x:+pick(random,-18,18).toFixed(2),y:+pick(random,-18,18).toFixed(2),r:+pick(random,1.2,3).toFixed(2),tone:+random().toFixed(2)});
+ // Cinturão cênico fora da área caminhável: duas faixas desencontradas, com clareiras.
+ // Usa outro gerador para não deslocar a decoração existente a cada ajuste da periferia.
+ const edge=rng(0xE1D817);
+ for(let side=0;side<4;side++)for(let row=0;row<2;row++)for(let i=0;i<14;i++){
+  const along=-28+i*4.3+pick(edge,-1.2,1.2),out=23+row*4.3+pick(edge,-.8,.8);
+  if(Math.abs(along)<3.5||edge()<.12)continue;
+  const x=side<2?along:(side===2?-out:out),y=side<2?(side===0?-out:out):along;
+  decor.trees.push({x,y,look:edge()<.55?'pine':'oak',height:pick(edge,4,6.7),tone:edge()});
+  decor.bushes.push({x:x+pick(edge,-1.4,1.4),y:y+pick(edge,-1.4,1.4),size:pick(edge,.5,1),tone:edge()});
+  for(let j=0;j<4;j++)decor.grass.push({x:x+pick(edge,-2,2),y:y+pick(edge,-2,2),height:pick(edge,.2,.5),tone:edge()});
+ }
  return {id:VILLAGE_ID,theme:'village',bounds:{...BOUNDS},solids,roads:VILLAGE_ROADS.map(r=>({...r})),plaza:{...VILLAGE_PLAZA},decor};
 }

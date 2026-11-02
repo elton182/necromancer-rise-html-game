@@ -65,7 +65,8 @@ node v2/tools/build.cjs
 | --- | --- |
 | [`village-kit.mjs`](../v2/scripts/village-kit.mjs) | `kitPart`/`kitFamily`: transformam uma peça de qualquer kit em um `InstancedMesh` por material, com tinta por instância. `houseLayout`/`buildHouses` montam a casa a partir do colisor |
 | [`nature-kit.mjs`](../v2/scripts/nature-kit.mjs) | `buildNature(arena, kit, {autumn})`: vegetação a partir dos mesmos campos de `buildForest` (sólidos `oak`, `pine`, `rock`; `decor.trees`, `bushes`, `grass`, `flowers`). `NATURE_SWAY` define o vento por material |
-| [`village-ground.mjs`](../v2/scripts/village-ground.mjs) | `villageGround(arena)`: pinta o chão da vila numa textura de 2048 px gerada ao carregar, sem bytes no HTML |
+| [`village-ground.mjs`](../v2/scripts/village-ground.mjs) | `villageGround(arena)`: pinta o chão da vila numa textura de 2048 px gerada ao carregar, sem bytes no HTML. Com `arena.groundBlend` (vila embutida no mundo da campanha) a borda some em transparência em vez de escurecer |
+| [`painted-ground.mjs`](../v2/scripts/painted-ground.mjs) | `paintedGround(arena, {swamp})`: a grama e a terra batida de Jacarandá para todos os mapas abertos (floresta, trilha, expedições verdes, mapas personalizados de floresta/vila/pântano, mundo da campanha e prólogo). Ladrilhos sem emenda de grama (32 u, 1024 px) e terra (16 u) gerados uma vez, mais uma sobreposição por mapa (até 2048 px) com trilhas de `decor.path` (borda irregular, sulcos contínuos nas trilhas com raio ≥ 1,2, faixa de grama central), sombras de contato, manchas de `decor.patches` e, no pântano, grama mais escura e poças. O mesmo material continua no horizonte. Substitui os discos de trilha/musgo e `swamp-ground.mjs`; o posto avançado, a cripta, a caverna e os biomas não verdes mantêm o chão próprio |
 | [`scenery-fx.mjs`](../v2/scripts/scenery-fx.mjs) | `patchScenery(material, {sway, swayFrom, see})` injeta vento e transparência pontilhada; `updateSceneryFx(...)` atualiza os uniformes a cada quadro |
 | [`village-scene.mjs`](../v2/scripts/village-scene.mjs) | Com `models.villageKit` usa o kit; sem ele, volta ao visual de primitivas |
 | [`renderer.mjs`](../v2/scripts/renderer.mjs) | Passa `models` às cenas, aplica `SCENE_LOOK` e chama `updateSceneryFx` antes de desenhar |
@@ -97,8 +98,8 @@ Contratos que o renderizador entende e que qualquer cena nova pode usar:
 | Barracas do mercador, quadro de avisos, pilares do portal e Pedra do Infinito | Primitivas (`buildFurniture` em `village-scene.mjs`) | Novas peças no kit da vila (`stall`, `board`, `portal_pillar`, `monolith`) |
 | Ferraria de Bram e estalagem | Usam o mesmo enxaimel das casas | Variações: forja/bigorna e alpendre na ferraria (`smithy`), placa e varanda na estalagem (`inn`) |
 | Oclusão de NPCs, aliados e inimigos | Só o jogador ganha o círculo | Estender `updateSceneryFx` a uma lista curta de alvos (uniforme em vetor) ou contorno dos personagens atrás de cenário |
-| Borda do terreno | Grama até a borda, visível com zoom máximo | Anel de árvores fora do limite caminhável (`decor.trees`, sem colisão) e escurecer a borda da textura |
-| Histórias abertas na vila | O palco das histórias usa o mesmo renderizador, então herda o tone mapping da vila | Salvar e restaurar `toneMapping`/exposição em `renderStory` ou dar ao palco sua própria receita |
+| Borda do terreno | Implementado: duas faixas irregulares de árvores e sub-bosque fora do limite caminhável, clareiras nos eixos e escurecimento gradual do chão | Conferência visual pendente nesta revisão |
+| Histórias abertas na vila | Corrigido: palco usa `NoToneMapping` e exposição 1; valores da vila são restaurados após o desenho | Conferência visual pendente nesta revisão |
 | Medições | Desempenho, chamadas de desenho e custo do descarte não medidos; o vento não aparece em capturas paradas | Cena fixa com contador de quadros, qualidade alta e baixa; `village-browser-check.cjs` com Playwright |
 
 ### Nos outros cenários
@@ -207,3 +208,45 @@ Registrado em [`review/v2/village-kit/validacao.md`](../review/v2/village-kit/va
 - **Correção junto da fatia:** dois caracteres em Latin-1 ("Capitão", "sábios") numa alteração local de
   `renderer.mjs` foram convertidos para UTF-8. Isso destravou a edição do arquivo e corrigiu o filtro de textos das
   histórias no HTML gerado.
+
+## Revisão da periferia (30/10/2026)
+
+O cinturão usa os kits existentes, com geração determinística independente da decoração interna.
+Não adiciona colisores nem muda limites, rotas ou pontos de interação. Árvores externas continuam sem sombras.
+O chão escurece gradualmente junto à extremidade. O palco das histórias salva e restaura a receita de exposição.
+
+Verificados: testes de `village.test.mjs` e build autocontido. A tentativa de abrir o HTML local no navegador integrado
+foi bloqueada pela política de URLs (`file:`); Playwright não está instalado neste ambiente.
+Aparência em fundo claro/escuro, horda, qualidade baixa e desempenho permanecem sem validação nesta revisão.
+Barracas, quadro, pilares, Pedra do Infinito e variações da ferraria/estalagem continuam pendentes.
+
+Os postes de luz ficam fora do recorte pontilhado de oclusão: sua haste fina não encobre o jogador e o padrão em pixels pode cintilar durante movimento. Seus materiais são isolados dos materiais compartilhados das casas. Correção ainda sem conferência visual no navegador.
+
+Revisão dos postes: as malhas da família `lamp` deixam de receber sombras, para evitar instabilidade do mapa de sombras na haste e nas molduras finas. Continuam projetando sombras no chão. A retirada do recorte pontilhado, sozinha, não resolveu o problema segundo a conferência do usuário; esta segunda correção ainda precisa de conferência em movimento.
+
+Após o usuário confirmar persistência de furos na haste/lanterna, a família `lamp` passou a usar material opaco próprio (`MeshBasicMaterial`, dupla face, cores por vértice), sem nenhum hook de cenário. Esta revisão elimina descarte de pixels e dependência de iluminação na superfície dos postes; conferência em movimento ainda pendente.
+
+## Extensão da receita visual ao editor (31/10/2026)
+
+A receita de luz da vila foi extraída para `v2/scripts/scene-look.mjs`, preservando seus valores.
+Mapas personalizados de floresta e sua prévia agora usam a mesma receita, incluindo o ambiente PMREM.
+Também recebem vento, recorte localizado de oclusão e poças de luz nas tochas. Detalhes e limites
+em [Editor de mapas](v2-mapas.md#paridade-de-acabamento-com-a-vila-de-eldrin-31102026).
+Isso substitui a observação anterior de que somente `village` usa tone mapping e de que a prévia não
+participa do acabamento. A geometria provisória restante e a composição ainda precisam de revisão visual.
+
+
+## Continuidade além dos mapas (01/11/2026)
+
+O jogo e a prévia 3D do editor usam `v2/scripts/map-horizon.mjs` para prolongar o piso além da área jogável. Uma superfície abaixo do chão ocupa mais 1024 u por lado, fora do alcance visível da câmera atual. A textura acompanha o último texel da borda e se mistura em 3 u com a cor média da periferia e granulação discreta; o exterior escurece gradualmente. A névoa existente encerra a distância sem expor uma plataforma recortada. Fundo claro e paleta acompanham o piso de origem. O efeito não cria áreas navegáveis, colisões ou decoração extra.
+
+O horizonte recebe o mesmo recorte da queda para não cobrir o poço. A troca de cenário descarta geometria e material; a textura é compartilhada com o chão e mantém seu ciclo de vida original. Implementação integrada em `renderer.mjs`, `map-preview.mjs` e no build offline.
+
+Verificação: `node v2/tests/map-horizon-browser-check.cjs` no Edge, armazenamento isolado, sete cenários, zoom máximo, fundos claro/escuro, qualidade baixa e 390 px, sem erros de página ou shader; imagens em `review/v2/map-horizon/`. `node v2/tests/fall-browser-check.cjs` também passou, preservando o recorte e a descida. Não houve medição comparativa de desempenho.
+
+
+### Mata na borda da floresta
+
+`v2/scripts/forest-border.mjs` prolonga cenários de tema ou bioma `forest` com pinheiros e carvalhos do `natureKit` até 80 u além dos limites, cobrindo o enquadramento atual até a névoa. Caverna é excluída. Posições e variações são determinísticas; centros ficam pelo menos 4 u fora do retângulo jogável. As árvores são instâncias decorativas, sem colisões novas nem sombras projetadas, compartilhadas pelo jogo e pela prévia do editor. Não alteram sólidos, caminhos ou saves. Build e conferência no Edge com zoom máximo, fundo claro/escuro e qualidade baixa executados; evidências em `review/v2/map-horizon/1-edge-dark.png` e `1-edge-light-low.png`. Não houve medição comparativa de desempenho.
+
+- Toda fase da v2 deve ter borda infinita: continuidade visual do piso e do bioma além dos limites jogáveis, inclusive cavernas, sem alterar colisões. Conferir com zoom máximo, chão claro/escuro e qualidade baixa; não deixar o mapa parecer uma placa recortada.

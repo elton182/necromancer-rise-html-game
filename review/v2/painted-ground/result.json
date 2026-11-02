@@ -1,0 +1,52 @@
+{
+  "errors": [],
+  "views": [
+    {
+      "name": "village",
+      "theme": "village",
+      "biome": null
+    },
+    {
+      "name": "world-path",
+      "theme": "expedition",
+      "biome": "forest"
+    },
+    {
+      "name": "world-village-edge",
+      "theme": "expedition",
+      "biome": "forest"
+    },
+    {
+      "name": "forest",
+      "theme": "forest",
+      "biome": null
+    },
+    {
+      "name": "trail",
+      "theme": "trail",
+      "biome": null
+    },
+    {
+      "name": "expedition-forest",
+      "theme": "expedition",
+      "biome": "forest"
+    },
+    {
+      "name": "expedition-swamp",
+      "theme": "expedition",
+      "biome": "swamp"
+    },
+    {
+      "name": "prologue-caravan",
+      "theme": "expedition",
+      "biome": "forest"
+    }
+  ],
+  "worldMs": 712,
+  "checks": [
+    "fundo claro e escuro",
+    "qualidade baixa",
+    "vila embutida no mundo",
+    "pântano com poças"
+  ]
+}

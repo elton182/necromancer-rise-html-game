@@ -28,6 +28,7 @@ Guias de referência das mecânicas, em [`mecanicas/`](mecanicas/README.md):
 | [v2-grimorio.md](v2-grimorio.md) | E6: investimento/devolução, maestrias, XP por abates, persistência e limites |
 | [v2-horda.md](v2-horda.md) | E5: cinco tipos, grupos, seis slots, comandos, recuperação e persistência |
 | [v2-progressao.md](v2-progressao.md) | E7: nível, XP, atributos, recompensa por abate, drops, equipamentos, consumíveis e saves |
+| [v2-prologo-arandu.md](v2-prologo-arandu.md) | Abertura ARANDU: caravana, emboscada, caverna, mensageiro, defesa de Jacarandá e saves |
 | [v2-campanha.md](v2-campanha.md) | E9: Ato I, salas, ondas, trilhas, vila, missões e prêmios únicos |
 | [v2-arena.md](v2-arena.md) | E10a: Arena Infinita (clássica), Pedra do Infinito, waves, recorde, mercador e limites |
 | [v2-expedicoes.md](v2-expedicoes.md) | E10b: Expedições por bioma, encontros dormentes, boss (Rei Caído provisório) e portais |
@@ -53,6 +54,8 @@ o estado atual está nos guias de mecânicas.
 
 | Documento | Conteúdo | Situação |
 |---|---|---|
+| [arandu-analise-e-plano-transicao.md](arandu-analise-e-plano-transicao.md) | Comparação entre o GDD do ARANDU e a v2; reaproveitamento, lacunas e marcos de transição | Proposta documental; sem implementação |
+| [concepts/arandu-gdd-lore-v0.1.md](concepts/arandu-gdd-lore-v0.1.md) | Visão criativa, mundo e narrativa do ARANDU fornecidos pelo usuário | Conceito v0.1; referência para a transição |
 | [../v2/plano-migracao.md](../v2/plano-migracao.md) | Migração completa para modelos 3D: etapas, critérios, fontes e ponto de retomada | E9 concluída no fluxo funcional: Ato I, vila e missões; próxima etapa E10 |
 | [plano-endgame-valdoria.md](plano-endgame-valdoria.md) | Conquista territorial, influência, maldições e pântano de decomposição | Primeira região jogável; expansão e alquimia planejadas |
 | [roadmap-combate-visual.md](roadmap-combate-visual.md) | Roadmap de animações de skills e novos inimigos | Ativo: primeiro pacote concluído, próximo é SK-02 (Dash) |
@@ -64,3 +67,5 @@ o estado atual está nos guias de mecânicas.
 Imagens de conceito e evidências visuais ficam em [`concepts/`](concepts/).
 
 - [Cerco ao Ritual — defesa de torres e progressão de endgame](v2-cerco.md)
+
+- [Guerreiro / Soldado — classe jogável da v2](v2-guerreiro.md)

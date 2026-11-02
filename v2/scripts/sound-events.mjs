@@ -1,3 +1,4 @@
+import {worldRegion} from './campaign-world-model.mjs';
 // Traduz o estado da simulação em sons e trilhas. Só lê o mundo: regras de combate não conhecem o áudio.
 import {levelOf} from './progression.mjs';
 // Efeitos visuais duram frações de segundo e podem expirar dentro de um quadro longo; por isso só habilidades de aliados
@@ -69,6 +70,8 @@ export function musicTheme(s,{title=false}={}){
  if(s.scene!=='training')return null;
  const a=w.adventure;if(!a)return 'field';
  if(w.actors.includes(w.boss)&&w.boss.hp>0&&!(w.boss.home&&!w.boss.alert))return 'boss';
+ if(a.kind==='prologue')return a.stage==='cave'?'crypt':a.stage==='defense'?'boss':a.stage==='reunion'?'village':'forest';
+ if(a.kind==='campaign-world'){if(a.inVillage)return 'village';const region=worldRegion(w.player);return region==='Cripta Esquecida'||region==='Mina de Valfundo'?'crypt':'forest';}
  if(a.kind==='stage')return {1:'crypt',2:'forest',3:'strip',4:'boss'}[a.n]||'forest';
  return a.mission?.layout==='strip'?'strip':'forest';
 }

@@ -2,8 +2,9 @@ import RULES from './combat-rules.mjs';
 import {defenseReduction,spellDamage,moveSpeed} from './shared-equipment.mjs';
 import {moveCircle,resolvePosition} from './terrain.mjs';
 import {MAX_LEVEL,levelOf} from './progression.mjs';
-import {hitFx} from './vfx-events.mjs';
+import {hitFx,fx} from './vfx-events.mjs';
 export {RULES};
+export const DODGE_DURATION=.5;
 // O custo do Tiro de Osso cresce de 5 MP no nível 1 até o valor das regras (RULES.bolt.cost) no nível máximo.
 export const BOLT_COST_MIN=5;
 export const boltCost=w=>{const level=Math.min(MAX_LEVEL,Math.max(1,levelOf(w)));return Math.round(BOLT_COST_MIN+(RULES.bolt.cost-BOLT_COST_MIN)*(level-1)/(MAX_LEVEL-1));};
@@ -18,7 +19,7 @@ function kill(w,a,source){
  if(a.groupType)w.onAllyDeath?.(a);
  if(a.team==='enemy')w.onEnemyDeath?.(a,source);
  if(a.team==='enemy')w.onLichKill?.(a);
- if(a===w.player){w.boltCharge=null;w.onPlayerDeath?.();w.projectiles=[];w.effects=[];w.dash.remaining=0;}
+ if(a===w.player){w.warriorShieldFlight=null;w.warriorMomentum=null;w.warriorRiposte=null;w.actors=w.actors.filter(e=>!e.warriorProjectile);w.warriorAction=null;w.warriorCombo=null;w.boltCharge=null;w.onPlayerDeath?.();w.projectiles=[];w.effects=[];w.dash.remaining=0;}
 }
 // Osso Carcomido (cajado especial): o Tiro de Osso aplica Podridão, até 5 cargas por 5 s; 12% do dano bruto do projétil por carga, a cada segundo.
 export const ROT={stacks:5,ttl:5,share:.12,tick:1};
@@ -37,6 +38,9 @@ export function dealDamage(w,target,amount,source=null,tag=null){
  let damage=amount*(source?.curse?1-source.curse.reduction:1);
  if(target===w.player){
   if(w.dash.remaining>1e-9||w.lich?.invuln){result.blocked=true;return result;}
+  if(w.classId==='warrior'&&source?.team==='enemy'&&w.equipment?.shield&&!w.warriorShieldFlight&&(w.random?.()??Math.random())<(target.blockChance||0)/100){
+   result.blocked=true;w.warriorRiposte={until:w.time+4,bonus:(w.warriorRanks?.riposte||0)*.1};fx(w,'impact',{x:target.x,y:target.y,h:1,color:'#a8d4ec',radius:.7,duration:.3});return result;
+  }
   if(target.veilTime>0)damage*=.75;
   if(w.lich?.form==='lich')damage*=w.lich.stats.damageTaken;
   damage*=1-defenseReduction(target.defense*(w.lich?.form==='lich'?(w.lich.stats.defenseFactor??1):1),source?.gearWave??source?.level??1);
@@ -74,13 +78,14 @@ export function beginDash(w,input={}){
  if(Math.hypot(dx,dy)<.1){dx=w.aim.x-w.player.x;dy=w.aim.y-w.player.y;}
  const length=Math.hypot(dx,dy);if(!Number.isFinite(length)||length<1e-9){dx=Math.sin(w.player.angle)||1;dy=Math.cos(w.player.angle);}
  const n=Math.hypot(dx,dy),m=w.modifiers;
+ if(w.classId==='warrior'){if(w.warriorAction?.index===4)(w.warriorCooldowns??=[])[4]=w.time+3;w.warriorAction=null;w.warriorCombo=null;w.castCooldown=0;w.player.timer=0;}
  w.boltCharge=null;
- Object.assign(w.dash,{remaining:RULES.dash.duration,cooldown:Math.max(1.5,RULES.dash.cooldown*(1+Math.max(-50,m.dashCooldownPercent||0)/100)*(1-Math.min(50,Math.max(0,m.gearCooldown||0))/100))*(1-(m.dashMasteryCooldown||0)/100),dx:dx/n,dy:dy/n,origin:{x:w.player.x,y:w.player.y}});
+ Object.assign(w.dash,{remaining:DODGE_DURATION,cooldown:Math.max(1.5,RULES.dash.cooldown*(1+Math.max(-50,m.dashCooldownPercent||0)/100)*(1-Math.min(50,Math.max(0,m.gearCooldown||0))/100))*(1-(m.dashMasteryCooldown||0)/100),dx:dx/n,dy:dy/n,origin:{x:w.player.x,y:w.player.y}});
  return true;
 }
 export function moveDash(w,dt){
  const dash=w.dash;if(dash.remaining<=0)return false;
- const t=Math.min(dt,dash.remaining),travel=RULES.dash.distance*(1+(w.modifiers.dashDistancePercent||0)/100)*t/RULES.dash.duration;
+ const t=Math.min(dt,dash.remaining),travel=RULES.dash.distance*(1+(w.modifiers.dashDistancePercent||0)/100)*t/DODGE_DURATION;
  const pos=moveCircle(w.player,{x:dash.dx*travel,y:dash.dy*travel},RULES.dash.radius,w.arena,{slide:false});w.player.x=pos.x;w.player.y=pos.y;w.player.angle=Math.atan2(dash.dx,dash.dy);
  dash.remaining=Math.max(0,dash.remaining-t);if(pos.blocked)dash.remaining=0;
  if(dash.remaining<=1e-9){dash.remaining=0;const p=resolvePosition(w.player,w.player.radius,w.arena);w.player.x=p.x;w.player.y=p.y;if(w.modifiers.veilDuration)w.player.veilTime=w.modifiers.veilDuration;}

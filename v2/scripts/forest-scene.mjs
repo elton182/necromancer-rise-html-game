@@ -1,5 +1,6 @@
 // Visual procedural da Floresta de Eldrin. Cada família é um InstancedMesh: poucas chamadas de desenho.
 import * as THREE from 'three';
+import {paintedGround} from './painted-ground.mjs';
 export const FOREST_PALETTE={
  dark:{ground:0x2c4a2f,background:0x13201a},
  light:{ground:0x86a266,background:0x8ea98a}
@@ -19,6 +20,8 @@ export const mix=(a,b,t)=>tint.set(a).lerp(new THREE.Color(b),t).clone();
 export const material=(extra={})=>new THREE.MeshStandardMaterial({roughness:1,flatShading:true,...extra});
 const tall=(s,i)=>s.height*(.92+i%3*.05);
 
+// Cenário aberto completo: chão pintado com a grama e a terra batida de Jacarandá no lugar dos discos de trilha e manchas.
+export function buildForestScene(arena){return [paintedGround(arena),...buildForest({...arena,decor:{...arena.decor,path:[],patches:[]}})];}
 // `arena` vem de forestArena(); devolve os objetos que o renderizador deve adicionar à cena.
 export function buildForest(arena){
  const out=[],add=m=>{if(m)out.push(m);};
@@ -60,6 +63,6 @@ export function buildForest(arena){
  const disc=new THREE.CircleGeometry(1,18).rotateX(-Math.PI/2);
  const flat=()=>material({color:0xffffff,flatShading:false,depthTest:false,depthWrite:false});
  add(family(disc,flat(),d.patches,(p,i)=>{dummy.position.set(p.x,.014,p.y);dummy.scale.set(p.r,1,p.r*.8);dummy.rotation.y=i;},{order:-2,color:p=>au?mix(0x4a4a22,0x8c7a38,p.tone):mix(0x2a4a2d,0x6a8c45,p.tone)}));
- add(family(disc,flat(),d.path,(p,i)=>{dummy.position.set(p.x,.018,p.y);dummy.scale.set(p.r,1,p.r*.85);dummy.rotation.y=i;},{order:-1,color:(p,i)=>mix(0x6e5a3c,0x8a7650,(i*.37)%1)}));
+ add(family(disc,flat(),d.path,(p,i)=>{dummy.position.set(p.x,.018,p.y);dummy.scale.set(p.r,1,p.r*.85);dummy.rotation.y=i;},{order:-1,color:()=>new THREE.Color(0x78694c)}));
  return out;
 }

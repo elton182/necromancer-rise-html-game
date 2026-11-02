@@ -1,0 +1,57 @@
+/* Apresentação do ARANDU; aplicada após os estilos compartilhados do legado. */
+#tl.art{background:#171b1c url('ARANDU_BACKGROUND') center center/cover no-repeat;color:#e8cfaa;font-family:Georgia,'Times New Roman',serif}
+#tl.art:before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,10,10,.65),transparent 65%);pointer-events:none}
+#tl.art.dim:before{background:linear-gradient(90deg,rgba(8,10,10,.87),rgba(8,10,10,.45))}
+#tl .wrap{box-sizing:border-box;z-index:1;scrollbar-width:thin;scrollbar-color:#95734e #191818}
+#tl .arandu-main{align-self:stretch;align-items:flex-start;padding:7vh 8.5vw 4vh;height:100%;justify-content:center;gap:30px}
+#tl .arandu-brand{font-size:clamp(58px,6.4vw,108px);letter-spacing:.025em;color:#edc7a0;line-height:1;text-shadow:0 3px 20px #0008;font-weight:normal;width:390px;max-width:100%;text-align:center}
+#tl .brand-rule{display:flex;align-items:center;gap:12px;font-size:25px;margin:8px 0 0;color:#bc9065}
+#tl .brand-rule:before,#tl .brand-rule:after{content:'';height:1px;flex:1;background:linear-gradient(90deg,transparent,#bd936d)}
+#tl .brand-rule:after{transform:rotate(180deg)}
+#tl .arandu-brand.small{font-size:36px;width:210px;align-self:flex-start}
+#tl .arandu-nav{display:flex;flex-direction:column;width:390px;max-width:100%;gap:3px}
+#tl.art button.tb{font-family:inherit;color:#e6c9a6;border:1px solid #97745066;background:#171613dd;border-radius:2px;box-shadow:none;cursor:pointer;padding:13px 22px;letter-spacing:.02em;font-size:17px;font-weight:normal;border-left-width:1px;transform:none;transition:background .18s,border-color .18s}
+#tl.art button.tb:hover,#tl.art button.tb:focus-visible{color:#ffe2b9;background:#542b28e8;border-color:#b99068;outline:2px solid #d2ae7970;outline-offset:3px}
+#tl.art .arandu-nav button.tb{position:relative;text-align:left;font-size:clamp(21px,2vw,29px);padding:10px 28px;background:transparent;border-color:transparent}
+#tl.art .arandu-nav button.tb:hover,#tl.art .arandu-nav button.tb:focus-visible{background:linear-gradient(90deg,#542626e8,#54262688);border-color:#bd936c}
+#tl.art .arandu-nav button.tb:focus-visible:before,#tl.art .arandu-nav button.tb:hover:before{content:'›';position:absolute;left:8px;color:#edc7a0}
+#tl .arandu-tools{display:flex;gap:18px;margin-top:15px}
+#tl.art .arandu-tools button.tb{font-size:12px;padding:5px 0;border:0;background:transparent;color:#b7a48c}
+#tl .arandu-foot{font:10px/1.8 Georgia,serif;letter-spacing:.2em;color:#b5a28b;margin:0}
+#tl .arandu-character,#tl .arandu-load{max-width:1160px;padding:30px 45px;align-items:stretch}
+#tl .character-heading{margin-top:20px;text-align:center}
+#tl .character-heading small,#tl .character-kicker{font-size:10px;letter-spacing:.25em;color:#be9870}
+#tl .character-heading h1{font-weight:normal;font-size:clamp(26px,3vw,40px);margin:8px 0 0}
+#tl .character-layout{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;min-height:480px}
+#tl .character-preview{position:relative;height:480px;min-width:0;background:radial-gradient(ellipse at 50% 70%,#76c2aa25,transparent 65%)}
+#tl .character-preview canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+#tl .character-rune{position:absolute;bottom:30px;left:15%;right:15%;height:60px;border:1px solid #9d845766;border-radius:50%;color:#be9870;text-align:center;font-size:35px;box-shadow:0 0 55px #78bfa51a}
+#tl .character-details{display:flex;flex-direction:column;gap:16px;text-align:left;max-width:440px}
+#tl.art button.class-choice{width:100%;border-color:#a78459;background:linear-gradient(90deg,#49322a,#251e1a);text-align:left;font-size:24px}
+#tl .character-details h2{font-weight:normal;font-size:29px;margin:0}
+#tl .character-description{font-size:15px;line-height:1.8;color:#c5b9a8;margin:0}
+#tl .class-traits{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+#tl .class-traits span{font-size:12px;border:1px solid #a7895b55;padding:6px 10px;color:#d2b99a}
+#tl .character-details label{font-size:14px;color:#d9c1a2}
+#tl #character-name{box-sizing:border-box;width:100%;background:#111718b8;color:#f5dfc1;border:1px solid #9a795a;padding:15px;font:17px Georgia,serif;border-radius:2px;user-select:text}
+#tl #character-name:focus{outline:2px solid #d1a66a;outline-offset:3px}
+#tl .character-actions{display:flex;justify-content:space-between;gap:14px;margin-top:5px}
+#tl.art button.journey-start{background:linear-gradient(90deg,#65352c,#442520);border-color:#b98d60;flex:1}
+#tl .character-error{color:#f4af91;font-size:14px;min-height:18px;margin:0}
+#tl .arandu-load{max-width:750px;gap:20px}
+#tl .save-list{display:flex;flex-direction:column;gap:12px;max-height:50vh;overflow:auto;padding:5px}
+#tl .save-character{text-align:left;display:flex;flex-direction:column;gap:8px;width:100%}
+#tl .save-character strong{font-size:23px;font-weight:normal}.save-character span{font-size:14px}.save-character small{font-size:11px;color:#baa88e}
+#tl .pt{color:#ead2af;text-shadow:none;font-family:Georgia,serif}
+@media(max-width:650px){
+ #tl.art{background-position:62% center}#tl.art:before{background:#080b0b80}
+ #tl .arandu-main{padding:7vh 9vw;gap:22px}#tl .arandu-brand{width:300px}
+ #tl .arandu-character,#tl .arandu-load{padding:20px;max-height:100dvh;display:block}
+ #tl .arandu-brand.small{font-size:25px;width:150px}#tl .character-heading{margin:18px 0}
+ #tl .character-layout{grid-template-columns:1fr;gap:0;min-height:0}#tl .character-preview{height:230px}
+ #tl .character-details{max-width:none;gap:12px}#tl .character-description{font-size:13px}#tl .character-details h2{font-size:23px}
+ #tl .character-actions .tb{padding:13px;font-size:15px}#tl .arandu-foot{max-width:280px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){#tl-cv{display:none}#tl.art button.tb{transition:none}}
+
+#tl .save-character-row{display:flex;align-items:center;gap:12px}#tl .save-character-row .save-character{flex:1;min-width:0}#tl .save-character-row>.dng{flex:0 0 auto}

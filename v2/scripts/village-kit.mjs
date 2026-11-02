@@ -26,7 +26,7 @@ const place=p=>{dummy.position.set(p.x,p.y||0,p.z);dummy.rotation.y=p.ry||0;dumm
 export function kitFamily(model,name,items,{shadow=true}={}){
  if(!items.length)return [];
  // A geometria é clonada por família: o renderizador descarta a geometria ao trocar de cena.
- return kitPart(model,name).map(({geometry,material})=>family(geometry.clone(),material,items,place,{shadow,color:TINTED.has(material.name)?(p=>p.tint||WHITE):undefined}));
+ return kitPart(model,name).map(({geometry,material})=>family(geometry.clone(),material.clone(),items,place,{shadow,color:TINTED.has(material.name)?(p=>p.tint||WHITE):undefined}));
 }
 
 // Peças de uma casa a partir do colisor. Face sul (+y do jogo, +z do Three.js) e leste ficam de frente para a câmera:

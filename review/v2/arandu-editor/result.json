@@ -1,0 +1,10 @@
+{
+  "errors": [],
+  "checks": [
+    "ambos os modelos",
+    "prévia 2D + 3D",
+    "salvar cópias",
+    "persistência após reload",
+    "testar caverna com inimigos e cenário"
+  ]
+}

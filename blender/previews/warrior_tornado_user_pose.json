@@ -1,0 +1,44 @@
+{
+  "action": "tornado",
+  "source_frame": 1,
+  "updated_frames": [
+    2,
+    25
+  ],
+  "bones": [
+    "mixamorig:RightShoulder",
+    "mixamorig:RightArm",
+    "mixamorig:RightForeArm",
+    "mixamorig:RightHand",
+    "mixamorig:RightHandIndex1",
+    "mixamorig:RightHandIndex2",
+    "mixamorig:RightHandIndex3",
+    "mixamorig:RightHandIndex4",
+    "mixamorig:RightHandMiddle1",
+    "mixamorig:RightHandMiddle2",
+    "mixamorig:RightHandMiddle3",
+    "mixamorig:RightHandMiddle4",
+    "mixamorig:RightHandPinky1",
+    "mixamorig:RightHandPinky2",
+    "mixamorig:RightHandPinky3",
+    "mixamorig:RightHandPinky4",
+    "mixamorig:RightHandRing1",
+    "mixamorig:RightHandRing2",
+    "mixamorig:RightHandRing3",
+    "mixamorig:RightHandRing4",
+    "mixamorig:RightHandThumb1",
+    "mixamorig:RightHandThumb2",
+    "mixamorig:RightHandThumb3",
+    "mixamorig:RightHandThumb4"
+  ],
+  "frame_1_pose_error": 0.0,
+  "loop_seam": 5.662441253662109e-07,
+  "manual_frame_1_channels_keyed": [],
+  "other_actions_unchanged": true,
+  "body_spin_and_legs_preserved": true,
+  "user_torso_posture_applied": [
+    "mixamorig:Spine"
+  ],
+  "backup": "C:\\projects\\games\\necromancer-rise-html-game\\blender\\backups\\warrior_before_tornado_pose_transfer_20261102_195417.blend",
+  "exported": false
+}

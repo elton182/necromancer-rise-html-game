@@ -1,0 +1,8 @@
+{
+  "slash_1 -> slash_2": {
+    "max_matrix_difference": 0.2231719046831131
+  },
+  "slash_2 -> slash_3": {
+    "max_matrix_difference": 0.0
+  }
+}

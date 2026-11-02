@@ -177,3 +177,8 @@ histórico da E4. Inimigos completos e Rei Caído foram integrados na [E8](v2-in
 ### Vida e dano sobre os inimigos
 
 Inimigos vivos exibem uma barra de vida sobre o modelo. Cada aplicação de dano mostra o valor efetivamente retirado da vida, inclusive acertos da horda e golpes letais. Os números sobem e desaparecem em 0,9 s do relógio do jogo; pausa congela esse movimento. A apresentação funciona também em qualidade baixa, sem alterar as regras de dano. A conversão para materiais toon preserva as texturas emissivas dos modelos, incluindo jogador e Rei Caído.
+
+
+### Esquiva básica
+
+Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem equipar Dash. Mantém custo, distância, recarga e colisão do dash existente. O deslocamento e a proteção agora duram 0,5 s (antes 0,18 s). O necromante executa um salto direcionado com o clipe `jump`, produzido por `blender/scripts/v2_player_motion.py`; a pose acompanha a duração real da esquiva e termina ao colidir ou morrer.

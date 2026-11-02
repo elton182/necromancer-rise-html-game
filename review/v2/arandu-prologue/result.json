@@ -1,0 +1,19 @@
+{
+  "errors": [],
+  "remote": [],
+  "checks": [
+    "novo personagem entra na caravana",
+    "diálogo e combate real",
+    "flecha e queda sem game over",
+    "caverna e lista",
+    "reload preserva pista e guardas derrotados",
+    "mensageiro",
+    "defesa e reencontro",
+    "Jacarandá e passageiro desaparecido",
+    "offline"
+  ],
+  "limitations": [
+    "encerramentos de encontros com HP injetado",
+    "sem validação de dificuldade por partida completa"
+  ]
+}

@@ -28,9 +28,11 @@ para revisar o adaptador.
 - **HUD:** frascos de vida e mana, nível/ouro/pontos de Grimório, XP, seis slots de
   habilidade com tecla, recarga, mana insuficiente e vivos/total do grupo, estado da
   horda, local/objetivo, barra do chefe (fases I/II) e minimapa.
-- **Relicário (Esc):** cinco abas — Personagem, Habilidades (Grimório), Horda,
-  Equipamentos e Sistema. Abrir qualquer aba pausa a simulação; fechar retoma, exceto
-  onde a cena exige pausa (menu, morte).
+- **Relicário (Esc):** sem barra de título; o topo é o resumo de Zephyr com o botão ✕.
+  Abre em Equipamentos, a primeira aba, seguida de Personagem, Habilidades (Grimório),
+  Horda e Sistema (Laboratório, Mapas, Waves e Valdoria aparecem conforme a cena).
+  Abrir qualquer aba pausa a simulação; fechar retoma, exceto onde a cena exige pausa
+  (menu, morte).
 - **Atalhos:** `I` abre Equipamentos, Grimório pelo botão do HUD, `H` abre/fecha a ajuda.
   Clique em um slot abre o seletor de habilidade (pausa enquanto aberto).
 - **Controle:** navegação por foco nos diálogos e confirmação pelo botão principal;
@@ -114,3 +116,40 @@ jogo; a visibilidade real desses controles é conferida só no check de UI.
 - Em janela estreita (600 px) o HUD cabe sem rolagem, mas minimapa e painéis ficam
   apertados; revisão fina de layout e ajuda completa ficam para E11.
 - Não houve revisão de áudio, tutoriais nem das telas de Arena/Expedições/Conquista (E10).
+
+
+## ARANDU — tela inicial e seleção (31/10/2026)
+
+A apresentação da v2 passa a usar ARANDU, com paisagem de pôr do sol, cidade murada e menu interativo: **Novo Jogo, Carregar, Configurações, Créditos e Sair**. Modo livre e editor continuam disponíveis em atalhos discretos. Estilos locais em `v2/scripts/arandu-title.css`, após os estilos compartilhados; não editar `shared-title.css`.
+
+**Novo Jogo** abre a seleção com apenas **Necromante**, modelo GLB do jogador animado em uma cena exclusiva (`title-preview.mjs`), descrição e campo de nome obrigatório (até 32 caracteres). **Iniciar jornada** cria um personagem independente e entra na campanha atual. A abertura da caravana, a caverna e a renomeação de Eldrin para Jacarandá ainda não foram implementadas nesta entrega.
+
+**Carregar** lista os personagens por nome, nível e última gravação. Saves antigos sem nome aparecem como Zephyr. Não há exclusão de personagens nesta versão. Criação e troca recusam avançar quando não conseguem preservar o save atual. Nomes são apresentados como texto, sem interpretar HTML. Veja o [contrato de saves](v2-saves.md).
+
+A imagem `assets/title/arandu-refuge.png` é uma edição da referência enviada pelo usuário, usando a ferramenta integrada de geração de imagens. Prompt: remover todas as letras, textos do menu e bordas de botão, reconstruindo a árvore escura; preservar composição, pixel art, pôr do sol, cidade, espada, lanterna e folhas vermelhas; fundo panorâmico sem interface. O build incorpora a imagem ao HTML, sem requisições externas. A paisagem é uma ilustração de apresentação; o personagem da seleção é o modelo real do jogo.
+
+Verificações executadas: build, testes de personagens/saves/sessão/campanha e campanha integrada; check `node v2/tests/title-browser-check.cjs` no Edge com armazenamento isolado. Evidências em `review/v2/arandu-title/`: tela inicial, seleção em 1440 e 390 px, lista de saves e resultado. Não houve teste com controle físico. Esta entrega não valida a futura abertura narrativa.
+
+
+### Continuação: abertura ARANDU
+
+A partir da entrega da [abertura da campanha](v2-prologo-arandu.md), **Iniciar jornada** passa a entrar na conversa da caravana. A limitação de abertura mencionada na seção anterior é histórica. HUD e minimapa reconhecem os trechos do prólogo; os diálogos ficam acima da barra de ações e podem ser avançados com G. Eldrin é apresentada como Jacarandá no mundo contínuo.
+
+
+### Viagem com balões
+
+No começo do ARANDU, a câmera acompanha a carroça em movimento. Marta, Nilo e o cocheiro conversam por balões ligados à posição de cada um. **Continuar · G** avança uma fala; **Ver o bloqueio** desembarca para a emboscada. O cocheiro usa o nome do personagem. O HUD e o minimapa retornam após o desembarque. A viagem continua durante a leitura, mas Esc e perda de foco a congelam. Confira [abertura](v2-prologo-arandu.md) e `review/v2/arandu-travel/`.
+
+
+### Treinamento do Guerreiro
+
+A árvore marcial do Relicário usa os selos e molduras do Grimório, com três ramos, cores próprias, conexões de pré-requisito e detalhes da habilidade selecionada. O investimento ocorre no painel de detalhes. Em telas estreitas, Espada, Escudo e Passivas são alternados por seletores, para preservar o tamanho dos nós. As regras e IDs permanecem em [Guerreiro](v2-guerreiro.md). Evidências: `review/v2/warrior/skill-tree.png`, `skill-tree-mobile.png` e `skill-detail-mobile.png`.
+
+
+### Comparação de equipamento e serviços da praça
+
+Ao selecionar ou arrastar uma peça, os status mostram Atual, Prévia e Diferença. Ganhos ficam verdes com sinal positivo e seta para cima; perdas ficam vermelhas com sinal negativo e seta para baixo. A comparação do Guerreiro também permite escolher qual anel substituir e mostra a mudança prevista no dano dos golpes. A prévia não equipa nem altera os atributos reais.
+
+Três NPCs na praça de Jacarandá (e na vila dos saves anteriores) abrem Ondas/Expedições, Conquista de Valdoria e Cerco ao Ritual. Nome e função aparecem sobre o modelo; G abre o painel ao se aproximar. Os modos ficam disponíveis ao chegar à vila, sem fabricar conclusão do Ato I ou alterar as quests. Evidências em `review/v2/village-services/`.
+
+Perder o foco da janela no menu inicial mantém a tela de título, sem abrir o inventário ou o menu de pausa.

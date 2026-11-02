@@ -16,7 +16,7 @@ maldições, tenentes e fortaleza. Abre-se na **Vila de Eldrin** pela aba **Vald
 | Maldições, poças, Podridão, loot regional | `progression.mjs`, `horde.mjs`, `combat.mjs`, `enemies.mjs`, `rewards.mjs` |
 | Aba Valdoria e mapa de rotas (Canvas 2D) | `conquest-panel.mjs`, `conquest.css` |
 
-- **Acesso:** só a partir da vila; sem exigir o fim da campanha (a vila já exige o Ato I na v2). Dificuldade, até três
+- **Acesso:** só a partir da vila; sem exigir o fim da campanha ou do Ato I. Na campanha contínua, fica disponível ao alcançar Jacarandá. Dificuldade, até três
   maldições entre quatro ofertas e a rota são escolhidas na aba; **Entrar na rota** inicia a tentativa. O modelo
   valida rota, influência, tenentes e dificuldade; erros voltam como mensagem na aba, sem consumir tentativa.
 - **Rotas:** as expedições usam o mapa amplo da Expedição, com o bioma da rota, **8 grupos** (tenentes: 4; fortaleza: 6)
@@ -73,4 +73,16 @@ Continuam oito grupos, 56 inimigos e o chefe, com as mesmas escalas, raridades, 
 
 Abates naturais da rota (incluindo o chefe) e XP de conclusão recebem o multiplicador `(1 + 0,25 × (D − 1)) × (1 + 0,15 × intensidade)`, além da escala regional existente. Na dificuldade 4 com intensidade 6, isso rende 3,325 vezes o XP anterior. Invocações do chefe não recebem esse bônus. Ouro, maestria, loot e atributos de combate preservam os cálculos anteriores. O bônus não depende do nível do personagem e não exige migração de saves.
 
-Acesso na vila: aproxime-se do **Guardião das Waves** (Arena e Expedições) ou da **Emissária de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.
+Acesso na vila: aproxime-se do **Guardião das Ondas** (Arena e Expedições) ou da **Cartógrafa de Valdoria** e pressione **G**. Cada NPC abre seu próprio painel; esses acessos não aparecem mais como abas do Relicário. Os NPCs reutilizam modelos animados existentes.
+
+## Acabamento regional — primeira etapa
+
+O pântano usa o kit de vegetação 3D existente para árvores, pedras, arbustos, grama e flores, com folhagem em tons oliva. O jogo e a prévia do editor passam os modelos à mesma função de cena. Sem o kit carregado, mantém o cenário procedural. A mudança também alcança Expedições com bioma pântano; não altera colisores, trilhas, encontros ou regras. Chão, ruínas e adereços regionais continuam provisórios. Conferência visual ainda pendente.
+
+O pântano usa o chão de [`painted-ground.mjs`](../v2/scripts/painted-ground.mjs) com `swamp: true` (grama de Jacarandá escurecida, trilhas de terra batida e poças nas manchas longe das trilhas); a descrição abaixo é do `swamp-ground.mjs` anterior, que ficou sem uso: textura gerada com manchas de musgo, terra no centro das trilhas e margens escuras, a partir de `decor.path` (incluindo a bifurcação). Substitui os discos de trilha/musgo sem alterar colisões nem zonas hostis. Textura de 2048 px no eixo horizontal, sem arquivos externos; descartada na troca de cena. Build e testes de Conquista executados; conferência visual e desempenho pendentes. Ruínas continuam provisórias, aguardando peças GLB próprias.
+
+As lápides do pântano usam agora `swampKit` (pedra quebrada, musgo e rebaixo), gerado por `blender/scripts/v2_swamp_kit.py`, com fallback procedural. Ocupam os pontos decorativos existentes e não adicionam colisão. Blender, exportação GLB, build e testes de Conquista executados; conferência visual no jogo e desempenho ainda pendentes. Paredes, arcos e estruturas maiores de ruínas ainda não foram entregues.
+
+Revisão do acabamento: trilhas passam a ter bordas orgânicas definidas, em vez de apenas gradientes; manchas de água estagnada desenhadas na textura ficam afastadas dos pontos de trilha e não causam dano. Resolução da textura limitada a 2048 no maior eixo. Lápides agora têm três silhuetas distintas (altura e inclinação do topo), corrigindo a duplicação geométrica do kit inicial. Blender/exportação, build e testes de Conquista executados; esta revisão ainda não foi inspecionada visualmente no jogo.
+
+Os serviços também estão na praça de Jacarandá, no mundo contínuo: G com o Guardião abre ondas/expedições, com a Cartógrafa abre a Conquista e com o Mestre do Cerco abre defesa de torres. Basta alcançar a vila; não é necessário marcar o Ato I como concluído. Os NPCs têm nome e modo indicados sobre o personagem. Sair de uma tentativa retorna à praça e preserva as quests.

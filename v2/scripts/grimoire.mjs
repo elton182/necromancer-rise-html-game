@@ -12,7 +12,7 @@ export function editReason(s){return s.world.armyMode!=='groups'?'Ative os grupo
 // Recalcula tudo o que deriva de nível, árvore, maestria e equipamento, sem curar nem acumular bônus.
 export function syncSkills(w){
  applyAttributes(w);
- if(w.armyMode!=='groups')return;
+ if(w.classId==='warrior'||w.armyMode!=='groups')return;
  setLichRanks(w,w.army.profile.ranks);
  const e=effects(w),bolt=masteryBonus(w,'raio'),dash=masteryBonus(w,'dash');
  w.modifiers={...w.modifiers,boltDamagePercent:100*((1+(e['Dano do Tiro de Osso']||0)/100)*(1+(bolt.damage||0)/100)-1),extraPierce:(e['Alvos perfurados adicionais']||0)+(bolt.pierce||0),lance:!!w.army.profile.ranks.lance,shards:!!w.army.profile.ranks.shards,boltMasteryCooldown:bolt.cooldown||0,dashCooldownPercent:e['Recarga do Dash']||0,dashDistancePercent:100*((1+(e['Distância do Dash']||0)/100)*masteryFactor(w,'dash','distance')-1),dashMasteryCooldown:dash.cooldown||0,veilDuration:w.army.profile.ranks.veil ? .18+1+(e['Duração da proteção após Dash']||0)/100:0};
@@ -55,7 +55,7 @@ export function changeMastery(s,id,node,{reset=false}={}){
 // Recebe XP pelo contrato compartilhado, como o wrapper de gainExp do jogo atual.
 export function gainMastery(s,amount){
  if(!Number.isFinite(amount)||amount<=0)return false;
- const w=s.world;if(w.armyMode!=='groups')return false;
+ const w=s.world;if(w.classId==='warrior'||w.armyMode!=='groups')return false;
  const raised=[];
  const ids=Model.specializations(w.army.loadout,[]);if(ids.includes('lich'))for(const id of LICH_ABILITIES)if(w.lich?.stats.unlocked[id]!==false)ids.push(id);
  for(const id of ids)if(id){const result=Model.gain(id,w.army.mastery[id],amount,w.army.profile.level);w.army.mastery[id]=result.state;if(result.levels)raised.push(Model.skills[id].name+' '+result.state.level);}
