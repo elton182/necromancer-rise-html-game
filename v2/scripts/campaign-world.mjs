@@ -3,7 +3,8 @@ import {clean} from './campaign.mjs';
 import {builtinMap,toArena} from './map-model.mjs';
 import {withIntactVillage} from './campaign-world-map.mjs';
 import {WORLD_POINTS,WORLD_ENCOUNTERS,WORLD_PILES,normalizeWorld,inWorldVillage,worldObjective} from './campaign-world-model.mjs';
-import {spawnEnemy} from './enemies.mjs';
+import {editedCampaignMap} from './campaign-maps.mjs';
+import {makeGroups,tickGroups} from './map-spawns.mjs';
 import {grantExperience} from './rewards.mjs';
 import {collectAll} from './gear.mjs';
 
@@ -12,13 +13,16 @@ const near=(a,b,r)=>Math.hypot(a.x-b.x,a.y-b.y)<r;
 const groupCleared=(p,g)=>g.quest&&(g.id==='prison-guards'?p.guardsCleared:p.cleared.includes(g.id));
 const groupState=(p,g)=>groupCleared(p,g)?'clear':'dormant';
 export const isWorld=s=>s.world.adventure?.kind==='campaign-world';
+// O que é missão vem sempre do jogo, não do mapa: a edição muda onde e como o grupo aparece, não o que a história espera dele.
+const worldGroups=(spawns,p)=>makeGroups(spawns.map(s=>({...s,quest:QUEST_IDS.has(s.id)}))).map(g=>({...g,state:groupState(p,g)}));
+const QUEST_IDS=new Set(WORLD_ENCOUNTERS.filter(e=>e.quest).map(e=>e.id));
 export function launchWorld(s){
  const progress=s.save.campaign.world=normalizeWorld(s.save.campaign.world||{});
- const map=builtinMap('builtin:campaign-world'),start=WORLD_POINTS[progress.checkpoint];
+ const edited=editedCampaignMap('world'),map=edited||builtinMap('builtin:campaign-world'),point=WORLD_POINTS[progress.checkpoint],start=progress.checkpoint==='crypt'&&edited?map.start:point;
  const arena=toArena(map),savedVillage=s.save.campaign.prologue?.stage==='done';
  clean(s,savedVillage?withIntactVillage(arena):arena,{x:start.x,y:start.y});
  const w=s.world;s.scene='training';w.paused=false;w.gearLevel=1;w.aim={x:start.x+5,y:start.y};
- w.adventure={kind:'campaign-world',name:'Jacarandá · O despertar',done:false,queue:[],zones:[],groups:WORLD_ENCOUNTERS.map(e=>({...e,state:groupState(progress,e)})),inVillage:inWorldVillage(start),dialogue:null,mapOpen:false};
+ w.adventure={kind:'campaign-world',name:'Jacarandá · O despertar',done:false,queue:[],zones:[],groups:worldGroups(map.spawns,progress),level:map.level,inVillage:inWorldVillage(start),dialogue:null,mapOpen:false};
  w.portal=progress.checkpoint==='village'?{x:60,y:64}:null;
  syncWorldPeople(s);w.notice=worldObjective(progress).text;return true;
 }
@@ -44,26 +48,17 @@ function villageArrival(s){
  if(p.stage==='wake')p.stage='village';p.checkpoint='village';w.portal={x:60,y:64};
  // Retornar ao abrigo encerra os encontros dos arredores. Só renascem ao explorar de novo.
  collectAll(s);w.actors=w.actors.filter(a=>a.team!=='enemy');w.hostileShots=[];w.hostileZones=[];w.projectiles=[];w.allyShots=[];w.effects=[];
- for(const g of r.groups)g.state=groupState(p,g);
+ for(const g of r.groups){g.state=groupState(p,g);g.wavesLeft=g.waves||1;g.timer=g.trigger==='timer'?g.delay||0:0;}
  w.notice='Vila de Jacarandá · abrigo alcançado. Os arredores voltam a ser povoados ao sair.';w.progressChanged=true;
 }
-export function tickWorld(s){
+export function tickWorld(s,dt=1/60){
  const w=s.world,r=w.adventure,p=s.save.campaign.world;if(!isWorld(s)||w.paused||w.player.hp<=0)return;
  const safe=inWorldVillage(w.player);
  if(safe&&!r.inVillage)villageArrival(s);r.inVillage=safe;
- if(!safe)for(const g of r.groups){
-  if(g.state==='dormant'&&near(w.player,g,18)){
-   g.state='active';
-   const types=g.mix||Array(g.count).fill(g.type);
-   types.forEach((type,i)=>{const a=i*Math.PI*2/types.length+.6,e=spawnEnemy(w,type,g.x+Math.cos(a)*2.2,g.y+Math.sin(a)*2.2,{wave:g.wave||1,tier:i===0&&g.leader||'common'});Object.assign(e,{worldGroup:g.id,home:{x:e.x,y:e.y},alert:false});});
-   w.notice=GROUP_NOTICES[g.id]||'Inimigos à frente · clique para atacar; use Dash para esquivar.';
-  }
-  if(g.state==='active'&&!w.actors.some(a=>a.worldGroup===g.id&&a.hp>0)){
-   g.state='clear';
+ tickGroups(w,r.groups,dt,{level:r.level||1,blocked:safe,onRelease:g=>{w.notice=GROUP_NOTICES[g.id]||'Inimigos à frente · clique para atacar; use Dash para esquivar.';},onClear:g=>{
    if(g.id==='prison-guards'){p.guardsCleared=true;w.progressChanged=true;w.notice='Posto livre · aproxime-se do prefeito e pressione G.';}
    else if(g.quest){if(!p.cleared.includes(g.id))p.cleared.push(g.id);w.progressChanged=true;w.notice=g.id==='mine-guards'?(p.smith==='active'?'Mina livre · Bran está na entrada.':'Mina livre · alguém se esconde na entrada.'):(p.lumber==='active'?'Guardas derrotados · a pilha pode ser marcada com G.':'Guardas derrotados · a madeira da serraria ficou livre.');}
-  }
- }
+ }});
  syncWorldPeople(s);
 }
 export function interactWorld(s){

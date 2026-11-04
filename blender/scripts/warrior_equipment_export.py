@@ -1,9 +1,13 @@
-"""Exporta escudo e máscara visual usando cópias; preserva a cena ativa do usuário."""
+"""Exporta escudo e máscara visual usando cópias; preserva a cena ativa do usuário.
+
+Com a cena aberta no Blender, a biblioteca não pode ler o próprio arquivo: nesse caso, execute fora da sessão, na raiz:
+  blender --background --factory-startup --python blender/scripts/warrior_equipment_export.py
+"""
 from pathlib import Path
 import bpy
 from mathutils import Vector
 ROOT=Path(__file__).resolve().parents[1]
-original_scene=bpy.context.window.scene;old_active=bpy.context.view_layer.objects.active;old_selected=list(bpy.context.selected_objects)
+window=bpy.context.window;original_scene=window.scene if window else None;old_active=bpy.context.view_layer.objects.active;old_selected=list(bpy.context.selected_objects)
 with bpy.data.libraries.load(str(ROOT/'models/warrior.blend'),link=False) as (available,loaded):
  loaded.objects=['WarriorOrigin','WarriorRig','WarriorBody']
 imported=[o for o in loaded.objects if o]
@@ -22,7 +26,8 @@ ids=set()
 for vertices in parts.values():
  if max(v.co.z for v in vertices)-min(v.co.z for v in vertices)>.08 and all(any(g.group==group and g.weight>.999 for g in v.groups) for v in vertices):ids.update(v.index for v in vertices)
 assert 30<len(ids)<200,len(ids)
-scene=bpy.data.scenes.new('COL_WarriorExportTemporary');scene.render.fps=30
+# Sem janela não há como trocar a cena ativa; a execução em segundo plano usa a cena vazia de partida.
+scene=bpy.data.scenes.new('COL_WarriorExportTemporary') if window else bpy.context.scene;scene.render.fps=30
 objects=[]
 try:
  root=source_root.copy();scene.collection.objects.link(root);objects.append(root)
@@ -34,12 +39,14 @@ try:
  attr.data.foreach_set('value',[1.0 if i in ids else 0.0 for i in range(len(mesh.vertices))])
  if body.animation_data:body.animation_data.action=None
  rig.animation_data.action=None
- expected={'idle','walk','slash_1','slash_2','slash_3','thrust','shield_bash','death','tornado'}
+ # O tornado segue só na cena, para edição, até ser integrado ao jogo.
+ expected={'idle','walk','strafe_left','strafe_right','slash_1','slash_2','slash_3','thrust','shield_bash','death'}
  for track in list(rig.animation_data.nla_tracks):
   if track.name not in expected:rig.animation_data.nla_tracks.remove(track);continue
   strip=track.strips[0];lo,hi=strip.action.frame_range;strip.action_frame_start=lo;strip.action_frame_end=hi;strip.frame_start=1;strip.scale=1;strip.repeat=1;strip.frame_end=1+hi-lo;track.mute=False
  for b in rig.pose.bones:b.rotation_quaternion=(1,0,0,0);b.location=(0,0,0);b.scale=(1,1,1)
- bpy.context.window.scene=scene
+ if window:window.scene=scene
+ else:bpy.ops.object.select_all(action='DESELECT')
  for o in objects:o.select_set(True)
  bpy.context.view_layer.objects.active=rig
  bpy.ops.export_scene.gltf(filepath=str(ROOT/'exports/warrior.glb'),use_selection=True,use_active_scene=True,export_format='GLB',export_animation_mode='NLA_TRACKS',export_anim_slide_to_zero=True,export_attributes=True)
@@ -58,14 +65,14 @@ try:
  bpy.ops.export_scene.gltf(filepath=str(ROOT/'exports/warrior_shield.glb'),use_selection=True,use_active_scene=True,export_format='GLB',export_animations=False)
  print('Escudo:',len(ids),'vértices;',len(data.polygons),'faces. Clipes do personagem preservados.')
 finally:
- bpy.context.window.scene=original_scene
+ if window:window.scene=original_scene
  for o in objects:
   data=o.data if o.type in ['MESH','ARMATURE'] else None
   bpy.data.objects.remove(o,do_unlink=True)
   if data and data.users==0:
    if isinstance(data,bpy.types.Mesh):bpy.data.meshes.remove(data)
    else:bpy.data.armatures.remove(data)
- bpy.data.scenes.remove(scene)
+ if window:bpy.data.scenes.remove(scene)
  for o in imported:
   bpy.data.objects.remove(o,do_unlink=True)
  for o in old_selected:

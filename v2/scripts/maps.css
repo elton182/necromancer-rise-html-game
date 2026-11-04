@@ -61,6 +61,19 @@
  .me-group{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
 }
 
+#terrain-chip{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:30;padding:4px 12px;background:#0b140fd9;border:1px solid #5a6a40;border-radius:3px;color:#e8e5c5;font:12px Georgia,serif;pointer-events:none}
+#terrain-chip[hidden]{display:none}
+.me-tools summary{cursor:pointer;color:#d4af37;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin:8px 0 4px}
+.me-tools details .me-group{margin-bottom:4px}
+.me-search{width:100%;margin-bottom:6px}
+.me input[type=search]{background:#0b140f;border:1px solid #3c4a30;padding:4px 6px;box-sizing:border-box;color:#e8e5c5}
+.me-tool[hidden],.me-sec[hidden]{display:none}
+.me-campaign{background:#2a2312;border:1px solid #d4af37;padding:6px 8px;border-radius:3px}
+.me-mix{display:grid;grid-template-columns:minmax(0,1fr) 54px auto;gap:4px;align-items:center}
+.me-mix input{width:100%}
+.me-inline{display:flex;gap:4px;flex-wrap:wrap}
+.me-row>input[type=color]{flex:1;min-width:0;height:24px;padding:0;background:none;border:1px solid #3c4a30}
+.me-row>input[type=range]{flex:1;min-width:0}
 #maps-content h3{margin:14px 0 6px;font-size:13px;letter-spacing:1px;color:#d4af37}
 .maps-create{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
 .maps-create select{flex:1 1 180px;min-width:0}

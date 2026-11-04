@@ -3,6 +3,7 @@
 // Uma textura de sobreposição por mapa diz onde há trilha (R), sombra de contato e sulcos (G), manchas de cor (B) e água parada (A).
 // Só desenho: o chão continua todo caminhável e a mira usa um plano matemático.
 import * as THREE from 'three';
+import {heightAt,TERRAIN_RULES,SURFACES} from './map-terrain.mjs';
 
 const K=32,GRASS_TILE=32,DIRT_TILE=16,MARGIN=12,OVERLAY_MAX=2048;
 const GRASS=['#4f6a38','#45602f','#58743c','#3e5a2d','#62793f','#4a6534','#536d33','#3b532b'];
@@ -89,7 +90,14 @@ function paintOverlay(arena,swamp){
  // R: terra batida. Borda desfocada para a grama do ladrilho entrar nela; faixa central mais fraca deixa brotar grama entre os sulcos.
  layer(0,'#000',()=>{
   g.fillStyle=g.strokeStyle='#fff';g.lineCap=g.lineJoin='round';
+  // Terra pintada no editor entra na mesma camada das trilhas.
+  const t=arena.terrain;if(t)for(let j=0;j<t.rows;j++)for(let i=0;i<t.cols;i++)if(SURFACES[t.s[j*t.cols+i]]?.id==='dirt')g.fillRect(X(t.x0+(i-.5)*t.cell),Z(t.y0+(j-.5)*t.cell),U(t.cell),U(t.cell));
   for(const p of paths){ragged(p.x,p.y,p.r*.9,.2);g.fill();}
+  // Trilha de cantos retos: o retângulo exato, girado com a peça.
+  for(const q of arena.decor?.pathBoxes||[]){
+   const c=Math.cos(q.angle),n=Math.sin(q.angle);g.beginPath();
+   [[-q.w/2,-q.d/2],[q.w/2,-q.d/2],[q.w/2,q.d/2],[-q.w/2,q.d/2]].forEach(([a,e],i)=>{const x=X(q.x+a*c+e*n),z=Z(q.y-a*n+e*c);i?g.lineTo(x,z):g.moveTo(x,z);});g.closePath();g.fill();
+  }
   for(const [,i,j]of links){const p=paths[i],q=paths[j];g.lineWidth=U(Math.min(p.r,q.r)*1.8);g.beginPath();g.moveTo(X(p.x),Z(p.y));g.lineTo(X(q.x),Z(q.y));g.stroke();}
   flush(Math.max(.5,U(.18)));g.strokeStyle='rgb(150,150,150)';g.lineWidth=U(.4);
   for(const pts of axes)along(pts,0,.08);flush(Math.max(.5,U(.08)));
@@ -100,8 +108,12 @@ function paintOverlay(arena,swamp){
   g.lineJoin='round';for(const pts of axes)for(const off of [-.42,.42])along(pts,off,.06);
   flush(0);g.fillStyle='rgba(255,255,255,.5)';
   for(const s of arena.solids){
-   if(s.settlement)continue;
-   if(s.kind==='box'){const e=.12;g.fillRect(X(s.x-s.width/2-e),Z(s.y-s.depth/2-e),U(s.width+2*e),U(s.depth+2*e));}
+   if(s.settlement||s.terrainBlock)continue;
+   if(s.kind==='box'&&s.angle){
+    const e=.12,c=Math.cos(s.angle),n=Math.sin(s.angle),hw=s.width/2+e,hd=s.depth/2+e;g.beginPath();
+    [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]].forEach(([a,b],i)=>{const x=X(s.x+a*c+b*n),z=Z(s.y-a*n+b*c);i?g.lineTo(x,z):g.moveTo(x,z);});g.closePath();g.fill();
+   }
+   else if(s.kind==='box'){const e=.12;g.fillRect(X(s.x-s.width/2-e),Z(s.y-s.depth/2-e),U(s.width+2*e),U(s.depth+2*e));}
    else{g.beginPath();g.arc(X(s.x),Z(s.y),U(s.r*(s.look==='oak'||s.look==='pine'?1.8:1.35)),0,Math.PI*2);g.fill();}
   }
   flush(Math.max(1,Math.round(U(.3))));
@@ -121,6 +133,25 @@ function paintOverlay(arena,swamp){
  return {texture,rect:new THREE.Vector4(x0,z0,w,h)};
 }
 
+// Pesos das superfícies pintadas: areia, pedra, neve e lama (terra vai na camada das trilhas).
+function surfaceTexture(t){
+ const data=new Uint8Array(t.cols*t.rows*4),channel={sand:0,stone:1,snow:2,mud:3};
+ for(let k=0;k<t.cols*t.rows;k++){const c=channel[SURFACES[t.s[k]]?.id];if(c!==undefined)data[k*4+c]=255;}
+ const texture=new THREE.DataTexture(data,t.cols,t.rows,THREE.RGBAFormat);texture.magFilter=texture.minFilter=THREE.LinearFilter;texture.needsUpdate=true;return texture;
+}
+const terrainRect=t=>t?new THREE.Vector4(t.x0,t.y0,t.x1-t.x0,t.y1-t.y0):new THREE.Vector4(0,0,1,1);
+// Malha na resolução da grade: altura real em cada vértice e, em `aTerrain`, altura, inclinação e o sinal de que há relevo.
+function terrainGeometry(arena,rect){
+ const t=arena.terrain,sx=Math.max(1,Math.ceil(rect.z/t.cell)),sz=Math.max(1,Math.ceil(rect.w/t.cell)),geometry=new THREE.PlaneGeometry(rect.z,rect.w,sx,sz).rotateX(-Math.PI/2);
+ const p=geometry.attributes.position,info=new Float32Array(p.count*3),shore=new Float32Array(p.count),wet=t.hasWater?(x,z)=>{if(heightAt(arena,x,z)<TERRAIN_RULES.wet)return 1;for(const [r,weight]of [[1.5,1],[3,.55]])for(let a=0;a<8;a++)if(heightAt(arena,x+Math.cos(a*Math.PI/4)*r,z+Math.sin(a*Math.PI/4)*r)<TERRAIN_RULES.wet)return weight;return 0;}:null,cx=rect.x+rect.z/2,cz=rect.y+rect.w/2,e=t.cell*.5;
+ for(let i=0;i<p.count;i++){
+  const x=p.getX(i)+cx,z=p.getZ(i)+cz,h=heightAt(arena,x,z);p.setY(i,h);
+  const gx=(heightAt(arena,x+e,z)-heightAt(arena,x-e,z))/(2*e),gz=(heightAt(arena,x,z+e)-heightAt(arena,x,z-e))/(2*e);
+  info[i*3]=h;info[i*3+1]=Math.hypot(gx,gz)/TERRAIN_RULES.cliff;info[i*3+2]=1;if(wet)shore[i]=wet(x,z);
+ }
+ geometry.setAttribute('aTerrain',new THREE.BufferAttribute(info,3));geometry.setAttribute('aShore',new THREE.BufferAttribute(shore,1));geometry.computeVertexNormals();return geometry;
+}
+
 const FRAGMENT=`#include <map_fragment>
 {
  vec2 gp=vGroundXZ;
@@ -130,11 +161,19 @@ const FRAGMENT=`#include <map_fragment>
  vec4 o=texture2D(uGroundOverlay,clamp(ouv,0.,1.));
  float edge=min(min(ouv.x,1.-ouv.x)*uGroundRect.z,min(ouv.y,1.-ouv.y)*uGroundRect.w);
  o=mix(vec4(0.,0.,.5,0.),o,smoothstep(0.,3.,edge));
- vec3 c=grassTexel.rgb*uGrassTint;
+ float grain=dot(dirtColor,vec3(.3,.59,.11))*2.4;
+ vec3 c=mix(grassTexel.rgb,uBaseColor*grain,uBaseMix)*uGrassTint;
  float tone=o.b*2.-1.;
- c=mix(c,uGroundDry,max(tone,0.));c=mix(c,uGroundMoss,max(-tone,0.));
+ c=mix(c,uGroundDry,max(tone,0.)*(1.-uBaseMix*.8));c=mix(c,uGroundMoss,max(-tone,0.)*(1.-uBaseMix*.8));
  c=mix(c,dirtColor,smoothstep(.3,.7,o.r*1.4-grassTexel.a*.5));
  c=mix(c,mix(uPondEdge,uPond,smoothstep(.7,.8,o.a)),smoothstep(.15,.35,o.a));
+ if(vTerrain.z>.5){
+  vec2 suv=(gp-uSurfaceRect.xy)/uSurfaceRect.zw;
+  vec4 w=texture2D(uSurfaceMap,(suv*(uSurfaceSize-1.)+.5)/uSurfaceSize);
+  c=mix(c,vec3(.72,.62,.4)*grain,w.r);c=mix(c,vec3(.48,.49,.47)*grain,w.g);c=mix(c,vec3(.88,.92,.95)*(.6+grain*.45),w.b);c=mix(c,vec3(.2,.16,.1)*grain,w.a);
+  c=mix(c,vec3(.52,.5,.46)*grain,smoothstep(.55,1.05,vTerrain.y));
+  c=mix(c,vec3(.56,.5,.36)*grain,vShore*.8);c=mix(c,vec3(.22,.26,.22)*grain,smoothstep(.0,-.5,vTerrain.x));
+ }
  c*=1.-o.g;
  vec2 outside=max(max(uGroundBounds.xy-gp,gp-uGroundBounds.zw),vec2(0.));
  c*=1.-.3*smoothstep(4.,40.,length(outside));
@@ -142,22 +181,23 @@ const FRAGMENT=`#include <map_fragment>
 }`;
 
 // `swamp`: grama mais escura e poças nas manchas longe das trilhas.
-export function paintedGround(arena,{swamp=false}={}){
+// `base`: cor do chão no lugar da grama (areia, neve, pedra...), com o grão do ladrilho de terra.
+export function paintedGround(arena,{swamp=false,base=null,tint=null}={}){
  const {grass,dirt}=groundTiles(),overlay=paintOverlay(arena,swamp),b=arena.bounds,rect=overlay.rect;
  const uniforms={uGrassTile:{value:grass},uDirtTile:{value:dirt},uGroundOverlay:{value:overlay.texture},uGroundRect:{value:rect},
-  uGroundBounds:{value:new THREE.Vector4(b.minX,b.minY,b.maxX,b.maxY)},uGrassTint:{value:swamp?new THREE.Color(.7,.72,.62):new THREE.Color(1,1,1)},
+  uGroundBounds:{value:new THREE.Vector4(b.minX,b.minY,b.maxX,b.maxY)},uGrassTint:{value:tint?new THREE.Color(tint):swamp?new THREE.Color(.7,.72,.62):new THREE.Color(1,1,1)},uBaseColor:{value:new THREE.Color(base||'#ffffff')},uBaseMix:{value:base?1:0},uSurfaceMap:{value:arena.terrain?surfaceTexture(arena.terrain):null},uSurfaceRect:{value:terrainRect(arena.terrain)},uSurfaceSize:{value:{x:arena.terrain?.cols||1,y:arena.terrain?.rows||1}},
   uGroundDry:{value:new THREE.Color('#7f7c46')},uGroundMoss:{value:new THREE.Color('#36502a')},uPondEdge:{value:new THREE.Color('#263d3c')},uPond:{value:new THREE.Color('#304a46')}};
  const material=new THREE.MeshStandardMaterial({roughness:.95});
  material.onBeforeCompile=shader=>{
   Object.assign(shader.uniforms,uniforms);
-  shader.vertexShader='varying vec2 vGroundXZ;\n'+shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vGroundXZ=(modelMatrix*vec4(transformed,1.)).xz;');
-  shader.fragmentShader='uniform sampler2D uGrassTile,uDirtTile,uGroundOverlay;uniform vec4 uGroundRect,uGroundBounds;uniform vec3 uGrassTint,uGroundDry,uGroundMoss,uPondEdge,uPond;varying vec2 vGroundXZ;\n'+shader.fragmentShader.replace('#include <map_fragment>',FRAGMENT);
+  shader.vertexShader='attribute vec3 aTerrain;attribute float aShore;varying vec3 vTerrain;varying float vShore;varying vec2 vGroundXZ;\n'+shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\n vGroundXZ=(modelMatrix*vec4(transformed,1.)).xz;vTerrain=aTerrain;vShore=aShore;');
+  shader.fragmentShader='uniform sampler2D uGrassTile,uDirtTile,uGroundOverlay,uSurfaceMap;uniform vec4 uGroundRect,uGroundBounds,uSurfaceRect;uniform vec2 uSurfaceSize;uniform float uBaseMix;uniform vec3 uGrassTint,uBaseColor,uGroundDry,uGroundMoss,uPondEdge,uPond;varying vec3 vTerrain;varying float vShore;varying vec2 vGroundXZ;\n'+shader.fragmentShader.replace('#include <map_fragment>',FRAGMENT);
  };
- material.customProgramCacheKey=()=>'painted-ground-v1';
- const mesh=new THREE.Mesh(new THREE.PlaneGeometry(rect.z,rect.w).rotateX(-Math.PI/2),material);
+ material.customProgramCacheKey=()=>'painted-ground-v3';
+ const mesh=new THREE.Mesh(arena.terrain?terrainGeometry(arena,rect):new THREE.PlaneGeometry(rect.z,rect.w).rotateX(-Math.PI/2),material);
  mesh.position.set(rect.x+rect.z/2,.004,rect.y+rect.w/2);mesh.receiveShadow=true;mesh.renderOrder=-3;
  // O renderizador esconde o chão liso, clareia este no fundo claro e o horizonte reaproveita o material além do mapa.
  mesh.userData.replacesGround=true;mesh.userData.paintedGround=true;mesh.userData.lightColor=new THREE.Color(1.3,1.3,1.25);
- const dispose=material.dispose.bind(material);material.dispose=()=>{overlay.texture.dispose();dispose();};
+ const dispose=material.dispose.bind(material);material.dispose=()=>{overlay.texture.dispose();uniforms.uSurfaceMap.value?.dispose();dispose();};
  return mesh;
 }

@@ -1,0 +1,127 @@
+{
+  "forward": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 1,
+    "left": 0,
+    "right": 0,
+    "reverse": false,
+    "phase0": 0.911382073529329,
+    "walked": 2.8284271247461907,
+    "angle": 0
+  },
+  "back": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 1,
+    "left": 0,
+    "right": 0,
+    "reverse": true,
+    "phase0": 0.8541911151113903,
+    "walked": 2.8284271247462094,
+    "angle": 0
+  },
+  "left": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.00006172507882927835,
+    "left": 0.9999382749211707,
+    "right": 0,
+    "reverse": false,
+    "phase0": 0.2117267001639318,
+    "walked": 2.8284271247462094,
+    "angle": -0.007856580357812695
+  },
+  "right": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.00006172458490216604,
+    "left": 4.939271123112045e-10,
+    "right": 0.9999382749211707,
+    "reverse": false,
+    "phase0": 0.0685756927180936,
+    "walked": 2.8284271247461845,
+    "angle": 0.007856580357812695
+  },
+  "diagonal": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.4920815370901968,
+    "left": 0.5079184624158759,
+    "right": 4.939271123112045e-10,
+    "reverse": false,
+    "phase0": 0.2489836201880442,
+    "walked": 3.999999999999986,
+    "angle": -0.007918793706696561
+  },
+  "backDiagonal": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.5077950211123412,
+    "left": 2.508901856471069e-10,
+    "right": 0.4922049786367683,
+    "reverse": true,
+    "phase0": 0.8352785697151586,
+    "walked": 3.999999999999986,
+    "angle": -0.007795336917200331
+  },
+  "slip": {
+    "left": {
+      "L": 0.063,
+      "R": 0.034
+    },
+    "right": {
+      "L": 0.089,
+      "R": 0.048
+    },
+    "forward": {
+      "L": 0.271,
+      "R": 0.274
+    },
+    "warriorL": 0.052,
+    "warriorR": 0.033
+  },
+  "lich": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.00006172458490216667,
+    "left": 0.9999382754150978,
+    "right": 0,
+    "reverse": false,
+    "phase0": 0.24277328038353163,
+    "walked": 1.4142135623730567,
+    "angle": -0.00785658035781277
+  },
+  "warrior": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.00006172458490216578,
+    "left": 0.9999382754150978,
+    "right": 0,
+    "reverse": false,
+    "phase0": 0.7856653839704253,
+    "walked": 2.8284271247463266,
+    "angle": -0.007856580357812695
+  },
+  "warriorBack": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 0.5077950208693043,
+    "left": 0.4922049791306954,
+    "right": 0,
+    "reverse": true,
+    "phase0": 0.3357615785102803,
+    "walked": 4.000000000000156,
+    "angle": 0.007795336917200331
+  },
+  "plain": {
+    "animation": "walk",
+    "state": "walk",
+    "walk": 1,
+    "left": null,
+    "right": null,
+    "walked": 0,
+    "angle": -0.00785658035781277
+  },
+  "errors": []
+}

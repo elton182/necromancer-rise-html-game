@@ -1,7 +1,8 @@
-import {CAVE_ROOMS} from './prologue-map-data.mjs';
+import {CAVE_ROOMS,PAPERS_GUARD_RADIUS} from './prologue-map-data.mjs';
 import {clean} from './campaign.mjs';
 import {launchWorld} from './campaign-world.mjs';
 import {spawnEnemy} from './enemies.mjs';
+import {makeGroups,tickGroups} from './map-spawns.mjs';
 import {resolvePosition} from './terrain.mjs';
 import {grantExperience} from './rewards.mjs';
 import {PROLOGUE_TEXT,PROLOGUE_INTRO,prologueObjective,travelLine,caveTitle} from './prologue-model.mjs';
@@ -23,14 +24,18 @@ function speech(node,d,text){
 export const isPrologue=s=>s.world.adventure?.kind==='prologue';
 const near=(a,b,r=3.2)=>Math.hypot(a.x-b.x,a.y-b.y)<r;
 function person(w,key,model,name,x,y,extra={}){const a={id:w.nextId++,key,model,name,team:'neutral',x,y,radius:.4,hp:100,maxHp:100,angle:Math.PI,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,...extra};Object.assign(a,resolvePosition(a,a.radius,w.arena));w.actors.push(a);return a;}
-function enemies(w,positions){for(const [type,x,y] of positions){const e=spawnEnemy(w,type,x,y,{wave:1,tier:'common'});Object.assign(e,resolvePosition(e,e.radius,w.arena));e.prologueEnemy=true;if(w.adventure.stage==='cave'&&type===0){e.name='Capitão dos bandidos';e.hp=e.maxHp=e.maxHp*3;e.prologueBoss=true;}if(w.adventure.stage==='cave')Object.assign(e,{home:{x:e.x,y:e.y},alert:false});}}
+function markEnemy(w,e){e.prologueEnemy=true;if(w.adventure.stage==='cave'&&e.typeIndex===0){e.name='Capitão dos bandidos';e.hp=e.maxHp=e.maxHp*3;e.prologueBoss=true;}if(w.adventure.stage==='cave')Object.assign(e,{home:{x:e.x,y:e.y},alert:false});}
+function enemies(w,positions){for(const [type,x,y]of positions){const e=spawnEnemy(w,type,x,y,{wave:1,tier:'common'});Object.assign(e,resolvePosition(e,e.radius,w.arena));markEnemy(w,e);}}
+// Grupos do mapa editado: gatilho, ondas e composição do editor. Sem edição, cada ponto da planta é um inimigo presente desde a entrada.
+function tickSceneGroups(w,dt){const r=w.adventure;if(r.groups)tickGroups(w,r.groups,dt,{onRelease:g=>{for(const a of w.actors)if(a.worldGroup===g.id&&!a.prologueEnemy)markEnemy(w,a);}});}
+function placeEnemies(w,arena,fallback){if(!arena.prologueGroups)return enemies(w,fallback);w.adventure.groups=makeGroups(arena.prologueGroups);tickSceneGroups(w,0);}
 function dialogue(s,key){const r=s.world.adventure;r.dialogue={key,index:0};s.world.paused=key!=='travel';s.world.boltCharge=null;}
 function advance(s,stage){s.save.campaign.prologue.stage=stage;launchPrologue(s);s.world.progressChanged=true;}
 export function launchPrologue(s){
  const p=s.save.campaign.prologue;if(!p||p.stage==='done')return launchWorld(s);
  const stage=p.stage,w=s.world,arena=prologueArena(stage);
  const start=stage==='travel'?{x:0,y:80}:stage==='cave'?{x:0,y:165}:stage==='trail'?{x:0,y:20}:['defense','reunion'].includes(stage)?{x:0,y:12}:{x:0,y:10};
- clean(s,arena,start);s.scene='training';w.paused=false;w.gearLevel=1;w.aim={x:0,y:0};
+ clean(s,arena,['ambush','cave','trail'].includes(stage)&&arena.prologueStart||start);s.scene='training';w.paused=false;w.gearLevel=1;w.aim={x:0,y:0};
  w.adventure={kind:'prologue',name:stage==='cave'?caveTitle(p):arena.name||'Jacarandá',stage,done:false,queue:[],zones:[],dialogue:null,cinematic:['travel','fall'].includes(stage),elapsed:0,wave:0};
  if(['travel','ambush','farewell','fall'].includes(stage)){
   person(w,'marta','npcLysa','Marta',1,6);person(w,'nilo','npcBram','Nilo',-1,-1);
@@ -44,22 +49,22 @@ export function launchPrologue(s){
    w.adventure.journey={y:80,distance:0,speed:1.6,bob:0,braking:false};dialogue(s,'travel');placeRiders(w);
    if(!p.introRead){w.adventure.intro=true;w.paused=true;}
   }
-  if(stage==='ambush')enemies(w,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
+  if(stage==='ambush')placeEnemies(w,arena,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
   if(stage==='farewell')dialogue(s,'farewell');
   if(stage==='fall'){
-   w.player.model='playerFalling';
+   w.player.model='necromancerFalling';
    person(w,'archer','enemyRogue','Arqueiro na encosta',7,-5,{animation:'attack'});
    w.adventure.shot={from:{x:7,y:-5},to:{x:0,y:10},x:7,y:-5,visible:false};
   }
  }
  if(stage==='cave'){
-  if(!p.caveCleared)enemies(w,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
+  if(!p.caveCleared)placeEnemies(w,arena,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
   w.landmarks=[...[2,4,6].map(i=>({key:'cargo',name:'Investigar a carga lateral',x:CAVE_ROOMS[i].x+8,y:CAVE_ROOMS[i].y+3})),{key:'papers',name:'Examinar as ordens',...PROLOGUE_POINTS.papers},{key:'cargo',name:'Examinar a carga roubada',x:7,y:7},{key:'exit',name:'Saída da caverna',...PROLOGUE_POINTS.exit}];
   if(!p.clue)dialogue(s,'cave');
  }
  if(stage==='trail'){
   person(w,'messenger','npcBram','Tomás · mensageiro ferido',0,-8,{visualScale:.9});
-  enemies(w,[[6,-3,3],[6,3,-1]]);w.landmarks=[{key:'messenger',name:'Ajudar Tomás',...PROLOGUE_POINTS.messenger}];
+  placeEnemies(w,arena,[[6,-3,3],[6,3,-1]]);w.landmarks=[{key:'messenger',name:'Ajudar Tomás',...PROLOGUE_POINTS.messenger}];
  }
  if(['defense','reunion'].includes(stage)){
   person(w,'marta','npcLysa','Marta',1,7);person(w,'oren','npcBram','Oren',-3,5);
@@ -69,12 +74,19 @@ export function launchPrologue(s){
  }
  w.notice=prologueObjective(p).join(' · ');return true;
 }
-const living=w=>w.actors.some(a=>a.prologueEnemy&&a.hp>0);
+// Grupo que ainda vai nascer conta como inimigo: a cena não avança antes dele.
+const living=w=>w.actors.some(a=>a.prologueEnemy&&a.hp>0)||!!w.adventure.groups?.some(g=>g.state==='dormant'||g.state==='between'||g.state==='active');
+// Inimigo vivo conta pela posição de guarda, não por onde está agora: quem saiu correndo atrás do jogador continua guardando.
+function guardingPapers(w){
+ const at=PROLOGUE_POINTS.papers,close=p=>Math.hypot(p.x-at.x,p.y-at.y)<PAPERS_GUARD_RADIUS;
+ return w.actors.some(a=>a.prologueEnemy&&a.hp>0&&close(a.home||a))||!!w.adventure.groups?.some(g=>g.state!=='clear'&&close(g));
+}
 function placeRiders(w){const j=w.adventure.journey;for(const a of w.actors)if(a.ride){a.x=a.ride.x;a.y=j.y+a.ride.y;a.jumpZ=.99+j.bob;a.animationTime=w.time;}else if(a.journeyHorse){a.x=0;a.y=j.y-4.4;a.jumpZ=j.bob*.2;a.walkDistance=j.distance;a.animationTime=w.time;a.animation=j.speed>.01?'walk':'idle';}}
 export function tickPrologue(s,dt){
  if(!isPrologue(s)||s.world.paused||s.world.player.hp<=0)return;
  const w=s.world,r=w.adventure,p=s.save.campaign.prologue;
  if(r.intro)return;
+ tickSceneGroups(w,dt);
  if(r.stage==='travel'){
   r.elapsed+=dt;w.time+=dt;const j=r.journey;
   if(j.braking)j.speed=Math.max(0,j.speed-dt*1.2);
@@ -82,7 +94,7 @@ export function tickPrologue(s,dt){
   placeRiders(w);return;
  }
  if(r.stage==='ambush'&&!living(w))return advance(s,'farewell');
- if(r.stage==='cave'&&!living(w)&&!p.caveCleared){p.caveCleared=true;w.progressChanged=true;}
+ if(r.stage==='cave'&&!guardingPapers(w)&&!p.caveCleared){p.caveCleared=true;w.progressChanged=true;}
  if(r.stage==='cave'){
   r.name=caveTitle(p);
   if(!p.caveHeard&&!p.caveCleared&&(w.player.x < -25 || w.player.y < 105)){dialogue(s,'cave_whispers');return;}

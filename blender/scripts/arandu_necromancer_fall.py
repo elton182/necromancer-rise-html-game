@@ -1,5 +1,5 @@
-"""Adiciona um clipe próprio de queda em cópia do player atual, sem alterá-lo.
-Blender --background blender/models/v2_player.blend --python blender/scripts/arandu_player_fall.py
+"""Adiciona um clipe próprio de queda em cópia do necromante atual, sem alterá-lo.
+Blender --background blender/models/v2_necromancer.blend --python blender/scripts/arandu_necromancer_fall.py
 """
 import bpy,math
 from pathlib import Path
@@ -35,5 +35,5 @@ track=arm.animation_data.nla_tracks.new();track.name='fall';track.strips.new('fa
 sc.frame_set(1);bpy.ops.object.select_all(action='DESELECT')
 for obj in bpy.data.objects:
  if obj.type in ['ARMATURE','MESH','EMPTY'] and not obj.hide_render and obj.name!='Icosphere':obj.select_set(True)
-bpy.ops.export_scene.gltf(filepath=str(BASE/'exports'/'arandu_player_fall.glb'),export_format='GLB',use_selection=True,export_yup=True,export_animations=True,export_animation_mode='ACTIONS',export_force_sampling=True,export_frame_range=False)
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models'/'arandu_player_fall.blend'),copy=True)
+bpy.ops.export_scene.gltf(filepath=str(BASE/'exports'/'arandu_necromancer_fall.glb'),export_format='GLB',use_selection=True,export_yup=True,export_animations=True,export_animation_mode='ACTIONS',export_force_sampling=True,export_frame_range=False)
+bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models'/'arandu_necromancer_fall.blend'),copy=True)

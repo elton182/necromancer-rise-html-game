@@ -207,6 +207,8 @@ IDLE = {}
 CLIPS = {
  'idle': (48, True, None),
  'walk': (24, True, None),
+ 'strafe_left': (24, True, None),
+ 'strafe_right': (24, True, None),
  'slash': (18, False, [(0, atk(R(-75), r=.5, z=.8, pitch=R(15), lean=-.05)),
                        (.22, atk(R(-95), r=.42, z=.9, pitch=R(30), lean=-.14, push=-.05, tilt=-.08)),
                        (.52, atk(0, r=.85, z=.68, lean=.24, push=.12, pitchb=.12, float=.22)),
@@ -299,6 +301,7 @@ def min_z(names):
 def polar(pyaw, r, z):
     return Vector((CENTER[0] + r * math.sin(pyaw), CENTER[1] - r * math.cos(pyaw), z))
 
+HOVER = ('idle', 'walk', 'strafe_left', 'strafe_right')
 def apply(st, name, u, f, length):
     for b in arm.pose.bones:
         b.rotation_mode = 'QUATERNION'
@@ -312,7 +315,7 @@ def apply(st, name, u, f, length):
     hip = st['hipyaw'] if st['hipyaw'] is not None else (.25 * max(-1.2, min(1.2, yaw)) if conduct else 0)
     twist = st['twist'] if st['twist'] is not None else (.55 * max(-1.3, min(1.3, yaw)) if conduct else 0)
     sway = 0.0
-    if name in ('idle', 'walk'):
+    if name in HOVER:
         # Voo parado: pés, pernas e braços não se mexem; o corpo e a foice só sobem e descem, em fases diferentes.
         phi = u * math.tau
         bob = math.sin(phi)
@@ -322,7 +325,10 @@ def apply(st, name, u, f, length):
             base.update(trail=.2, pitchb=.1, lean=.04, head=-.05)
         if name == 'idle':
             base.update(pyaw=R(-110), r=.55)
-        st = dict(st, **base, float=(.22 if name == 'walk' else .2) + .035 * bob, z=.74 + .04 * math.sin(phi - 1.1))
+        if name.startswith('strafe'):
+            # Sem passos: desliza de lado inclinado para onde vai, com as pernas ficando para trás da curva.
+            base.update(trail=.12, pitchb=.03, lean=.02, bank=.2 if name == 'strafe_left' else -.2)
+        st = dict(st, **base, float=(.2 if name == 'idle' else .22) + .035 * bob, z=.74 + .04 * math.sin(phi - 1.1))
     # pernas: soltas e penduradas para trás (nunca em passo)
     k = st['trail']
     rotate('LeftUpLeg', (1, 0, 0), .55 * k); rotate('RightUpLeg', (1, 0, 0), .55 * k)
@@ -360,7 +366,7 @@ def apply(st, name, u, f, length):
     bpy.context.view_layer.update()
     chest = pose_matrix(bone('Spine2')) @ bone('Spine2').bone.matrix_local.inverted()
     hips = pose_matrix(bone('Hips')) @ bone('Hips').bone.matrix_local.inverted()
-    ref = hips if name in ('idle', 'walk') else chest
+    ref = hips if name in HOVER else chest
     # mãos: relaxadas, ou conduzindo a foice
     rest_r, rest_l = head('RightHand'), head('LeftHand')
     py = st['pyaw']
@@ -376,7 +382,7 @@ def apply(st, name, u, f, length):
         rh = chest @ Vector(st['RH'])
     if st['LH'] is not None:
         lh = chest @ Vector(st['LH'])
-    if name in ('idle', 'walk'):
+    if name in HOVER:
         rh = rh + Vector((0, -.03 * sway, .02 * sway)); lh = lh + Vector((0, .03 * sway, .02 * sway))
     reach_hand('Right', rh, (-.5, .6, -.8))
     reach_hand('Left', lh, (.5, .6, -.8))
@@ -386,7 +392,7 @@ def apply(st, name, u, f, length):
     if st['arms'] == 'open':
         hand_pose('Right', -1.2, .22); hand_pose('Left', 1.2, .22)
     # foice
-    g = (ref @ polar(py, st['r'], st['z'])) if name in ('idle', 'walk') else (chest @ polar(py, st['r'], st['z']))
+    g = (ref @ polar(py, st['r'], st['z'])) if name in HOVER else (chest @ polar(py, st['r'], st['z']))
     if st['dk']:
         g = Vector(g).lerp(Vector(st['Gd']), st['dk'])   # foice solta: cai ao chão quando o controle se perde
     d, bl = rotation(st['yaw'], st['pitch'], st['roll'])

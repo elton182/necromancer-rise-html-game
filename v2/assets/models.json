@@ -1,11 +1,13 @@
 {
-  "player": {
-    "path": "blender/exports/v2_player.glb",
-    "source": "blender/models/v2_player.blend",
+  "necromancer": {
+    "path": "blender/exports/v2_necromancer.glb",
+    "source": "blender/models/v2_necromancer.blend",
     "height": 2.25,
     "requiredAnimations": [
       "idle",
       "walk",
+      "strafe_left",
+      "strafe_right",
       "cast",
       "death",
       "jump"
@@ -13,11 +15,14 @@
     "durations": {
       "idle": 2,
       "walk": 0.6666666667,
+      "strafe_left": 0.6666666667,
+      "strafe_right": 0.6666666667,
       "cast": 0.375,
       "death": 0.8,
       "jump": 0.5
     },
-    "stride": 1.5
+    "stride": 1.5,
+    "strafeStride": 1.1
   },
   "skeleton": {
     "path": "blender/reference/skeleton.glb",
@@ -120,6 +125,8 @@
     "requiredAnimations": [
       "idle",
       "walk",
+      "strafe_left",
+      "strafe_right",
       "slash_1",
       "slash_2",
       "slash_3",
@@ -127,7 +134,8 @@
       "shield_bash",
       "death"
     ],
-    "stride": 1.5
+    "stride": 2.2,
+    "strafeStride": 1.8
   },
   "enemyArcher": {
     "path": "blender/exports/lowpoly_earcher.glb",
@@ -175,8 +183,8 @@
   "cryptHound": {
     "path": "blender/exports/v2_enemy_wolf.glb",
     "source": "blender/models/v2_enemy_wolf.blend",
-    "height": 0.95,
-    "stride": 2,
+    "height": 1.0925,
+    "stride": 2.25,
     "requiredAnimations": [
       "idle",
       "walk",
@@ -355,6 +363,8 @@
     "requiredAnimations": [
       "idle",
       "walk",
+      "strafe_left",
+      "strafe_right",
       "slash",
       "combo_1",
       "combo_2",
@@ -478,9 +488,9 @@
     "height": 6,
     "requiredAnimations": []
   },
-  "playerFalling": {
-    "path": "blender/exports/arandu_player_fall.glb",
-    "source": "blender/models/arandu_player_fall.blend",
+  "necromancerFalling": {
+    "path": "blender/exports/arandu_necromancer_fall.glb",
+    "source": "blender/models/arandu_necromancer_fall.blend",
     "height": 2.25,
     "requiredAnimations": [
       "idle",
@@ -522,6 +532,12 @@
       "death": 0.8
     },
     "matchPlayerHeight": true
+  },
+  "mapKit": {
+    "path": "blender/exports/v2_map_kit.glb",
+    "source": "blender/scripts/v2_map_kit.py",
+    "requiredAnimations": [],
+    "role": "scenery"
   },
   "warriorShield": {
     "path": "blender/exports/warrior_shield.glb",

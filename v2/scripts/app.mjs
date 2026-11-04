@@ -9,6 +9,8 @@ import {launchExpedition,launchConquest} from 'v2-expedition';
 import {launchLab} from 'v2-lab';
 import {createLabPanel} from 'v2-lab-panel';
 import {createLibrary} from 'v2-map-model';
+import {useCampaignMaps} from 'v2-campaign-maps';
+import {terrainStatus} from 'v2-map-terrain';
 import {launchMap,isCustomMap} from 'v2-map-play';
 import {createMapEditor} from 'v2-map-editor';
 import {createMapPanel} from 'v2-map-panel';
@@ -100,6 +102,7 @@ async function boot(){
  const labPanel=createLabPanel(session,{view,show:id=>gameUI.show(id),focus:()=>$('view').focus({preventScroll:true}),enter:()=>{if(launchLab(session)){gameUI.close();input.clear();ui();$('view').focus({preventScroll:true});}},exit:()=>{gameUI.close();if(session.save.campaign.started)returnAdventure(session);else go('menu');input.clear();ui();}});
  // Mapas personalizados: biblioteca no navegador (chave própria), editor em tela cheia e aba no Relicário.
  const mapLibrary=createLibrary(storage);
+ useCampaignMaps(mapLibrary,JSON.parse($('campaign-maps')?.textContent||'null'));
  const leaveMap=()=>{if(session.save.campaign.started)returnAdventure(session);else go('menu');};
  const enterMap=map=>{if(isCustomMap(session))leaveMap();const result=launchMap(session,map,mapLibrary.lookup);if(!result.ok){message(result.message);return;}gameUI.close();input.clear();ui();$('view').focus({preventScroll:true});};
  const mapEditor=createMapEditor({game:view,library:mapLibrary,enemyTypes:ENEMY_TYPES.map((t,index)=>({index,name:t.name})).filter(t=>!(t.index in DISABLED_TYPES)),play:id=>{const map=mapLibrary.get(id);if(map)enterMap(map);},closed:()=>mapPanel.render()});
@@ -134,9 +137,10 @@ async function boot(){
   $('health').textContent=world.player.hp>0?`Vida · ${Math.ceil(world.player.hp)} / ${world.player.maxHp}`:'Você caiu';$('boss-health').hidden=!world.actors.includes(world.boss)||world.boss.hp<=0||!!(world.boss.home&&!world.boss.alert);$('boss-health').textContent=`Rei Caído · ${Math.max(0,world.boss.hp)} / ${world.boss.maxHp}`;
   $('spell-status').textContent=(world.player.barrier>0?'Escudo · '+Math.ceil(world.player.barrier)+' / '+world.player.barrierMax+' · ':'')+Object.entries(world.spellCooldowns).filter(([,t])=>t>1e-9).map(([id,t])=>actionName(id)+' · '+t.toFixed(1)+'s').join(' | ');
   if(world.notice){message(world.notice);world.notice=null;}
+  const chip=$('terrain-chip'),ground=session.scene==='training'&&world.player.hp>0?terrainStatus(world.arena,world.player):'';if(chip&&chip.textContent!==ground){chip.textContent=ground;chip.hidden=!ground;}
   $('mana').textContent=`Mana · ${Math.floor(world.player.mp)} / ${world.player.maxMp}`;$('bolt-cd').textContent=world.castCooldown>1e-9?`Tiro · ${world.castCooldown.toFixed(1)} s`:`Tiro de Osso · ${boltCost(world)} MP`;$('dash-cd').textContent=world.dash.remaining>0?'Dash · protegido':world.dash.cooldown>1e-9?`Dash · ${world.dash.cooldown.toFixed(1)} s`:'Esquiva pronta · C';const hasDash=true;if(!hasDash)$('dash-cd').textContent='Dash não equipado';$('dash').disabled=!hasDash||session.scene!=='training'||world.paused||world.dash.cooldown>1e-9;if(world.armyMode==='groups')$('cast').textContent='Slot 1 · '+actionName(world.army.loadout[0]);else $('cast').textContent='Tiro de Osso [1]';
  }
  view.renderer.setAnimationLoop(now=>{try{frame(now);}catch(error){fail(error);}});$('status').textContent='Pronto · '+Object.keys(view.models).length+' modelos carregados';document.body.dataset.ready='true';loading.done();
- window.NecromancerV2={audio,ui:gameUI,campaign:campaignPanel,stage:'E10c',gear:gearPanel,session,world,view,store,cast:()=>castSession(session),dash:controls=>dashSession(session,controls),slot:i=>activateSlot(session,i),equip:(i,id)=>equip(i,id),revive:()=>reviveSession(session),order:p=>orderSession(session,p),pause,restart,go,save:saveNow,preview};
+ window.NecromancerV2={playMap:map=>enterMap(map),audio,ui:gameUI,campaign:campaignPanel,stage:'E10c',gear:gearPanel,session,world,view,store,cast:()=>castSession(session),dash:controls=>dashSession(session,controls),slot:i=>activateSlot(session,i),equip:(i,id)=>equip(i,id),revive:()=>reviveSession(session),order:p=>orderSession(session,p),pause,restart,go,save:saveNow,preview};
  window.addEventListener('pagehide',()=>{audio.dispose();input.dispose();view.dispose();window.removeEventListener('resize',resize);},{once:true});
 }

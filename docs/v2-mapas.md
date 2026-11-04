@@ -1,7 +1,202 @@
 # V2 — Editor de mapas
 
-Editor dentro do jogo para criar mapas, jogar neles e usá-los como base de outros. É uma ferramenta de criação: não faz
-parte da campanha, da vila nem dos modos de ondas, e não altera nenhum mapa existente.
+Editor dentro do jogo para criar mapas, jogar neles, usá-los como base de outros e **editar os mapas da campanha**: estilo,
+tamanho, relevo, água, rios, peças, inimigos e spawn. As edições são salvas sozinhas. Vila de Eldrin, fases antigas do Ato I e
+modos de ondas não passam pelo editor.
+
+## Cliente do editor
+
+O editor tem página própria, só para criar o jogo. Na raiz do projeto:
+
+```bash
+node v2/tools/map-editor-server.cjs
+```
+
+Depois, abra o endereço indicado (`http://localhost:4177/`). A porta pode ser trocada: `node v2/tools/map-editor-server.cjs 4178`.
+
+- **Sem build para editar:** a página `v2/map-editor.html` usa as fontes de `v2/scripts/` diretamente e carrega só os modelos de cenário e o personagem de referência. Basta recarregar para ver mudanças de código.
+- **Mapas em arquivos:** cada edição da campanha fica em `v2/assets/maps/campaign-<mapa>.json`, e cada mapa pessoal em `v2/assets/maps/custom/<id>.json`, com uma peça por linha para o Git mostrar o que mudou. O limite de tamanho do navegador não se aplica.
+- **Falha de gravação:** a barra superior avisa, a edição continua na fila e a gravação é tentada de novo a cada 3 s.
+- **Testar:** abre o jogo real em outra aba, com os mapas atuais do disco, sem rebuild, e entra direto no mapa como campo de treino. O editor continua aberto. Se as fontes forem mais novas que `v2/necromancer-3d.html`, a barra avisa que mudanças de código exigem publicar; os mapas valem mesmo assim. O endereço `/play` abre o jogo normal, pela tela inicial, para jogar a campanha com as edições.
+- **Publicar:** o botão **Publicar no jogo**, na barra do editor e na lista de mapas, salva o que está aberto, espera chegar ao disco e roda `node v2/tools/build.cjs` em outro processo; o comando continua valendo. O build embute `v2/assets/maps/campaign-*.json` em `v2/necromancer-3d.html` e leva junto o código atual de `v2/scripts/`. O botão compara o disco com o que está embutido no jogo e mostra quantos mapas faltam (inclusive os restaurados), `código novo` ou `em dia`; o título lista os nomes. Depois de publicar, recarregue a aba do jogo. Mapas pessoais não entram na distribuição. Um arquivo de campanha inválido impede a publicação antes de o build começar, e uma falha aparece na barra sem perder a edição. Uma edição local na aba Mapas do jogo, naquele navegador, continua tendo prioridade sobre a embutida.
+- **Medidor:** a barra mostra os quadros por segundo da vista 3D, quanto levou a última alteração e a última pintura do chão, e os triângulos por quadro.
+- **Segurança:** o servidor escuta só em `127.0.0.1`, recusa outros nomes de host e origens e entrega apenas as fontes de que o editor precisa. Ele não faz parte da distribuição.
+
+**Migrar edições do navegador:** na aba Mapas do jogo, use **Exportar edições da campanha** e **Exportar** em cada mapa pessoal; depois, **Importar…** no cliente grava os arquivos no projeto. A chave `necromancer_v2_maps` não é apagada.
+
+A aba **Mapas** continua no jogo até o cliente fazer tudo o que ela faz; depois, ela sai da distribuição. O `file://` do jogo e o endereço do servidor têm armazenamentos separados, então uma edição feita na aba não aparece no cliente até ser importada.
+
+**Medição** (Intel Iris Xe, navegador do aplicativo): o cliente fica pronto em cerca de 2,8 s e baixa 7,3 MB de modelos, contra os 87 MB da distribuição. A primeira pintura do chão leva cerca de 730 ms, e as seguintes cerca de 240 ms no mundo de 360 u. Os FPS não foram medidos, porque o painel estava oculto e o navegador limitava os quadros.
+
+## Construir no 3D
+
+O cliente abre direto na vista 3D, que usa o mesmo cenário do jogo. As ferramentas da paleta funcionam nela como na vista de cima.
+
+| Comando | Efeito |
+| --- | --- |
+| Esquerdo | Usa a ferramenta. Com Selecionar, clicar pega a peça e arrastar a move; arrastar em área vazia gira a câmera |
+| Direito / Meio | Gira a câmera / move a vista |
+| Roda | Zoom no ponto sob o ponteiro |
+| WASD | Move a câmera (ou o personagem, com **Câmera livre** desligada); setas também, mas empurram a peça quando há uma selecionada |
+| T ou **Vista de cima** | Enquadra o mapa inteiro de cima, sem névoa; girar a câmera sai desse modo |
+| C | Liga e desliga a câmera livre |
+
+**Alças da peça selecionada**, desenhadas por cima de tudo:
+
+- **Amarelas:** nas peças retangulares, cada uma move um lado e mantém o oposto parado, para encostar em outra peça; nas redondas, mudam raio ou escala.
+- **Azul:** altura. Arraste para cima ou para baixo.
+- **Laranja:** giro livre, em qualquer peça menos trilhas e poças; com Shift, passos de 15°. A tecla **R** gira a selecionada 15° (Shift+R volta), e o campo *Giro (graus)* aceita o valor exato. Nas peças retangulares, inclusive pontes, a colisão e as alças giram junto; nas redondas, a colisão é a mesma em qualquer ângulo.
+
+A grade continua valendo para posição e medidas: numa peça girada, o encaixe das alças de lado é na medida do lado, não nas linhas do mapa.
+
+**Peça herdada:** clicar seleciona, sem mudar nada. Ao arrastar ou usar uma alça, a peça da planta fica oculta e uma cópia entra no mapa, tudo em um só passo de desfazer. Em mapas da campanha, todas as peças começam herdadas.
+
+**Limite atual:** os pincéis de relevo e a superfície funcionam no 3D, mas o resultado só aparece ao soltar o botão.
+
+### Atualização da cena
+
+A vista fica em camadas (`map-preview.mjs`): o chão, uma por tipo de peça e uma só para a peça selecionada. Cada alteração refaz apenas a camada que mudou. Mover uma peça não repinta o chão: a sombra de contato no chão é atualizada cerca de 1,5 s depois de a edição parar. Ao arrastar uma trilha, ela acompanha pelo contorno, e o chão é repintado ao soltar. Relevo, trilhas, água, tamanho, bioma e estilo repintam na hora. Peças de caravana e caverna ficam em uma camada conjunta; em caverna sem relevo, entram na camada do chão, porque o piso depende delas.
+
+Peças giradas do catálogo são instâncias normais. As demais (`rotatedParts` em `toArena`) são desenhadas uma a uma, então muitas delas custam mais chamadas de desenho.
+
+Para isso, cada peça na vista tem tom próprio, derivado do id. O jogo sorteia em sequência, então o tom de uma peça pode diferir um pouco entre a vista e o jogo. Forma, posição e colisão são as mesmas.
+
+A seleção não usa a malha desenhada: `map-handles.mjs` testa o raio do ponteiro contra caixas calculadas a partir de cada peça, com tronco e copa separados nas árvores. Peças muito irregulares podem ter um pouco de folga em volta.
+
+## Tamanho e desempenho
+
+**Limites por mapa:** de 12 a 360 u por lado, 2.000 peças e 40 pontos de inimigos, com até 30 inimigos cada. A área em si quase não pesa: o custo vem da quantidade de peças.
+
+Duas otimizações valem para todo o jogo, sem mudar regras:
+
+- **Colisão por setores** (`nearbySolids` em `terrain.mjs`): cada movimento testa só os colisores próximos, em células de 8 u. Arenas com menos de 48 colisores seguem na varredura direta. Um teste compara milhares de movimentos com e sem o índice.
+- **Cenário por setores** (`scene-sectors.mjs`): famílias com 128 instâncias ou mais são divididas em regiões de 48 u, e a câmera descarta o que está fora da tela. Posição, cor e material não mudam. Camadas planas sem teste de profundidade ficam inteiras, porque nelas a ordem das instâncias faz parte do desenho.
+
+Medições, com a mesma cena antes e depois. Triângulos e chamadas não dependem da GPU; a colisão foi medida em Node, por movimento de um ator:
+
+| Medida | Antes | Depois |
+| --- | --- | --- |
+| Mundo de Jacarandá, triângulos por quadro | 3,37 milhões | 650 mil |
+| Mundo de Jacarandá, chamadas de desenho | cerca de 71 | cerca de 89 |
+| Mapa vazio de 60 u, triângulos por quadro | 813 mil | 246 mil |
+| Colisão no mundo (766 colisores) | 92 µs | 4,6 µs |
+| Colisão com 2.000 colisores | 182 µs | 2,8 µs |
+
+Ainda sem medição de FPS em GPU real. A **vista de cima** enquadra o mapa inteiro, então a câmera descarta pouco e o custo volta a ser próximo ao de antes. A textura do chão segue limitada a 2048 px por mapa: em 360 u, trilhas e sombras têm 5,3 px por unidade, contra 32 em mapas pequenos, enquanto a grama continua nítida.
+
+## Mapas da campanha
+
+A aba **Mapas** e o cliente listam os cinco mapas da campanha nova:
+
+| Mapa | Cenas | Observações |
+| --- | --- | --- |
+| Mundo de Jacarandá | Mundo contínuo | Grupos de missão protegidos; a vila fixa, depois da defesa, aplaina o relevo sob ela |
+| Estrada de Itavera | Viagem da caravana | Cinemática: só cenário e estilo, sem relevo nem inimigos |
+| Desembarque da caravana | Emboscada, despedida e queda | A queda é mostrada sem relevo; o bloqueio da estrada só existe na emboscada |
+| Caverna dos bandidos | Esconderijo | Com relevo ou chão escolhido, o chão pintado substitui o piso da caverna |
+| Caminho de Jacarandá | Encontro com o mensageiro | — |
+
+**Editar** abre o editor; **Testar** entra no mapa como campo de treino, sem diálogos nem missões; **Restaurar** pede confirmação
+e apaga a edição. Cada edição é uma variação viva da planta embutida: guarda só as diferenças (`base` + `hidden` + objetos e
+campos próprios), com id fixo `campaign-<mapa>` e campo `campaign`.
+
+Fonte: `v2/scripts/campaign-maps.mjs`. A campanha lê `editedCampaignMap` ao abrir cada cena (`launchWorld`, `prologueArena`), então
+uma alteração vale na próxima vez que a cena abrir. Sem edição, o caminho original é usado.
+
+A história não muda com a edição:
+
+- **Lugares da história** aparecem como losangos dourados, no 2D e na prévia 3D. A **Verificação** dá erro se um deles sai do mapa e
+  aviso se não há caminho a pé do início até ele. Em Jacarandá, NPCs e pilhas continuam nas mesmas coordenadas.
+- **Grupos de missão** (guardas do posto, bando da mina, guardas das pilhas) podem ser movidos e configurados, mas não removidos
+  nem configurados para voltar. Se faltarem, por exemplo em um arquivo importado, voltam da planta ao abrir a cena. O que é missão vem de
+  `WORLD_ENCOUNTERS`, não do mapa.
+- **Caverna:** as ordens só exigem derrotar os grupos a até 20 u delas, com todas as ondas. Grupos em outras salas são opcionais: não coloque ali nada de que a história dependa.
+- O início só vale na cripta (primeira entrada no mundo) e nas cenas de emboscada, caverna e mensageiro.
+
+### Salvar
+
+- **Salvamento automático:** cerca de 0,7 s depois da última alteração, a edição é gravada: em arquivo no cliente, na chave `necromancer_v2_maps` na aba Mapas do jogo. **Salvar** e
+  **Testar** gravam na hora; **Fechar** grava o que estiver pendente e só pergunta se a gravação falhar. Ctrl+Z continua valendo na sessão.
+- **Na aba do jogo:** uma edição local tem prioridade sobre a embutida, e **Restaurar** volta à embutida.
+- **Importar…** aceita o arquivo de **Exportar edições da campanha** e substitui a edição dos mapas que ele traz.
+
+## Relevo e água
+
+Cada mapa pode ter um terreno próprio, em `terrain` no documento: grade de alturas (célula de 1 u, ou 2 u em mapas de 360 u), grade de
+superfícies e rios como linhas. Abaixo da cota 0 é água. Mapas sem `terrain` seguem planos e sem nenhum efeito novo. As regras ficam em
+`v2/scripts/map-terrain.mjs` e o desenho em `terrain-scene.mjs` e `painted-ground.mjs`.
+
+| Ferramenta | Uso |
+| --- | --- |
+| Elevar, Rebaixar, Aplainar, Suavizar | Pincéis de relevo: usam *Raio*, *Força* e, em Aplainar, *Altura* |
+| Platô (penhasco) | Põe o trecho na *Altura*, com borda dura: a borda fica intransitável, então deixe uma rampa com Suavizar |
+| Rio | Arraste para desenhar. *Largura* e *Fundura* ficam no inspetor; a seta mostra a correnteza, e **Inverter correnteza** a troca |
+| Lago, Secar | Abrem água com a profundidade de *Altura* e devolvem o trecho à cota 0 |
+| Trilha de cantos retos (grupo Chão) | Desenhe arrastando. É um retângulo exato, que estica por qualquer lado, gira livremente e não colide; combina com a Trilha redonda para caminhos mistos |
+| Superfície | Pinta Terra, Areia, Pedra, Neve ou Lama sobre o chão |
+| Ponte de madeira, Ponte de pedra, Píer | Desenhe arrastando sobre a água: abrem passagem na largura da peça, em arco ou plana |
+
+### Como isso muda o jogo
+
+Valores em `TERRAIN_RULES` e `SURFACES`; provisórios, sem passagem pelo `balance-simulator/`.
+
+| Terreno | Efeito | Como o jogador lê |
+| --- | --- | --- |
+| Água rasa (até 0,7 u) | −40% de velocidade | Personagem com as pernas na água; aviso no alto da tela |
+| Correnteza de rio | Sobre os −40%: até +25% a favor e −25% contra | Filetes correndo no sentido da água |
+| Água funda (mais de 0,7 u) | Barra quem anda; tiros e linha de visão passam | Água mais escura, com linha clara no limite |
+| Penhasco (inclinação acima de 1,15) | Barra quem anda; tiros e linha de visão passam | Encosta em tom de rocha |
+| Ladeira | Subir custa até −35%; descer rende até +12% | Inclinação visível do chão |
+| Terreno alto (1,2 u acima do alvo) | +20% de dano, para os dois lados, em ataques com origem | Aviso «Terreno alto» quando o jogador está a 1,2 u ou mais acima da cota 0 |
+| Lama, Neve, Areia | −30%, −15%, −10% de velocidade (fora da água) | Cor do chão e aviso |
+
+Valem para jogador, horda e inimigos. O Humanoide Grifo ignora o atraso de água e ladeira, mas não atravessa água funda nem penhasco, porque
+a colisão é a mesma de quem anda. O Dash não sofre atraso e para na água funda. Água funda e penhascos viram colisores comuns (`terrainBlock`) em
+`toArena`, então colisão, busca de caminho, itens e a Verificação do editor usam o mesmo caminho. `terrain.mjs` só os ignora para raios de até 0,1 u
+(tiros e linha de visão).
+
+**Aparência da água** (`terrain-scene.mjs`): um ladrilho gerado uma vez dá as ondas, com cor por profundidade, reflexo do céu, brilhos do sol, reflexos no fundo raso e espuma quebrada na margem. No rio, o desenho desliza no sentido da correnteza. A margem desenhada é suavizada, numa grade mais fina que a do terreno, então o limite real da colisão pode variar até cerca de 1 u em relação a ela. O estilo do mapa regula o brilho da água, para ela não parecer acesa à noite.
+
+Na cena, `liftScenery` assenta o cenário e o renderizador sobe atores e efeitos até o chão apenas durante o desenho; as regras seguem em x/y.
+A água que chega à borda continua além dela, junto com o chão.
+
+## Estilo
+
+A seção **Estilo** guarda, por mapa: céu e névoa, luz e cor do sol, luz ambiente, névoa, tom do chão, tipo de chão (Grama, Terra batida, Areia, Neve, Pedra,
+Cinzas, Musgo), cor da água e densidade de grama e flores. **Clima e hora** aplica predefinições (Amanhecer, Meio-dia, Entardecer, Noite, Névoa,
+Inverno, Seca, Charco, Terra arrasada). Só apresentação: nada muda colisão nem dano. Com **Chão claro**, o céu do estilo não se aplica, para manter a
+conferência em fundo claro. Fonte: `STYLE_PRESETS` e `normalizeStyle` em `map-model.mjs`; `applyMapStyle` em `scene-look.mjs`.
+
+## Inimigos e spawn
+
+Na aba do mapa, **Vida dos inimigos (×)** e **Experiência dos inimigos (×)** ajustam todos os grupos do mapa, em todas as ondas, de 0,1 a 10; o padrão é 1. A experiência reduz personagem e maestria; ouro, dano e chance de item não mudam. Os outros modos não são afetados. A Caverna dos bandidos está com vida ×1,5 e experiência ×0,25: com todos os grupos derrotados, o personagem termina a caverna no nível 4 em vez do 7. São valores iniciais, sem medição de dificuldade em partida real.
+
+Selecione um ponto de inimigos para configurar o grupo:
+
+| Campo | Efeito |
+| --- | --- |
+| Composição | Linhas de tipo e quantidade, até 30 integrantes |
+| Líder | O primeiro integrante vira Mágico ou Raro |
+| Nível | Escala de atributos e itens do grupo; 0 usa o nível do mapa |
+| Dispersão | Raio do anel de nascimento; 0 usa a espiral compacta |
+| Quando | Ao entrar no mapa, quando o jogador se aproxima (*Raio de ativação*, desenhado no 2D) ou depois de um tempo (*Atraso*) |
+| Ondas, Entre ondas | Quantas vezes o grupo nasce e a espera depois de derrotado |
+| Volta após | Segundos até rearmar, depois de derrotado e com o jogador fora do raio; 0 não volta. Grupos de missão não voltam |
+| Espera parado | O grupo fica no lugar até detectar o jogador, sofrer dano ou ser alertado (regra das Expedições) |
+
+Fonte: `v2/scripts/map-spawns.mjs`. Em mapas salvos antes desta mudança, todos os grupos nascem ao entrar, como antes. No prólogo, a cena só avança quando não há
+grupo vivo nem por nascer; um grupo com gatilho em lugar inalcançável segura a cena, e a Verificação avisa de pontos isolados.
+
+## Catálogo de peças
+
+A paleta tem busca e grupos: Colisores, Enfeites, Chão, Água, Relevo, Acampamento, Ruínas, Natureza, Povoado, Cripta, Caverna e Caravana.
+O kit novo (`mapKit`, 29 peças, gerado por `blender/scripts/v2_map_kit.py`) soma pontes, píer, juncos, nenúfares, rochedos, tendas, fogueira,
+paliçada, torre de vigia, muro de pedra, arco, estátua, obelisco, árvore morta, barraca de feira e outras. Poços, postes, carroça aberta, flores e lápides musgosas
+reaproveitam os kits existentes. Uma peça nova é só uma entrada em `PROPS` com `kit:{model,part}`.
+
+- **Aumentar e reduzir:** botões do inspetor ou `[` e `]` para a peça selecionada; **− 20 u** e **+ 20 u** para o mapa, a partir do centro, preservando o relevo no lugar.
+- **Girar:** alça laranja no 3D, tecla **R**, **Girar 90°** ou o campo *Giro (graus)*. O giro é salvo em `rot`, em graus inteiros.
+- **Apagar:** arrastar remove o que o ponteiro tocar, e o traço inteiro é um passo de desfazer.
 
 ## Como abrir
 
@@ -102,8 +297,8 @@ muda junto quando a base é editada.
 flores, manchas) é sorteada de forma determinística pelo id do mapa e evita colisores. `map-play.mjs` põe o jogador no início e
 cria os inimigos com `spawnEnemy`; Bruto e Acólito de Guerra, desativados na v2, não aparecem como opção.
 
-Regras do jogo não mudam. Um mapa é um campo de treino com cenário próprio: sem chefe, sem fim de encontro e com as
-recompensas (XP, ouro e equipamentos) do treino, nivelados pelo **nível dos inimigos**.
+Um mapa jogado pela aba é um campo de treino com cenário próprio: sem chefe, sem fim de encontro e com as recompensas (XP, ouro e
+equipamentos) do treino, nivelados pelo **nível dos inimigos**. O terreno muda deslocamento, colisão e dano como descrito em [Relevo e água](#relevo-e-água).
 
 ## Limites
 
@@ -111,19 +306,26 @@ recompensas (XP, ouro e equipamentos) do treino, nivelados pelo **nível dos ini
   de .8 u), os inimigos de fora não acham caminho: ficam parados junto à barreira e tentam de novo a cada 1,5 a 2,5 s. A
   busca de caminho (`terrain.mjs`) descarta esses casos antes de rodar e tem limite de 400 nós; foi o que travava mapas com
   o início cercado. A **Verificação** do editor avisa "parecem isolados do início".
-- Os colisores são círculos e caixas alinhadas aos eixos (sem rotação); a altura é visual.
-- O cenário é provisório como o das Expedições: não há iluminação própria nem peças novas.
+- Os colisores são círculos e caixas, que podem girar no plano do chão (`angle` em `terrain.mjs`); a altura é visual. Só os mapas do editor giram peças.
+- O cenário segue o das Expedições, com o estilo do mapa por cima; não há fontes de luz novas (a fogueira e as runas só brilham no material).
 - O jogo usa a biblioteca do navegador onde foi aberto: `file://` e servidores locais têm bibliotecas separadas. Use Exportar e
   Importar para levar mapas entre eles.
-- Não há tela de mapa na campanha nem uso de mapas personalizados em missões, Arena ou Conquista.
+- Mapas personalizados não entram em missões, Arena ou Conquista. Vila de Eldrin, a defesa de Jacarandá e as fases antigas do Ato I não usam o formato do editor e não podem ser editados.
+- A grade de terreno tem célula de até 2 u: em mapas de 360 u, os limites reais de água funda e penhasco variam até cerca de 1 u em relação ao desenho, que é mais fino.
+- A água fica sempre na cota 0: não há lago em altitude.
+- Tiros não sobem nem descem com o relevo: a altura só muda o dano. Não há recuo em penhasco nem nado.
+- Testar um mapa da campanha não roda diálogos nem missões; para isso, jogue a campanha.
 
 ## Verificação
 
-Fontes: `v2/scripts/map-model.mjs` (modelo, herança, validação e biblioteca), `map-editor.mjs`, `map-preview.mjs` (vista 3D), `map-panel.mjs`,
-`map-play.mjs` e `maps.css`. Teste das regras: `node --test v2/tests/map-model.test.mjs`. A interface foi conferida manualmente no navegador
-(criar, mover, desenhar muro, desfazer, herdar, ocultar, copiar, salvar, testar no jogo, persistir após recarregar, excluir base
-com dependentes e largura de celular), incluindo a vista 3D (modos 2D, 2D + 3D e 3D, andar, girar, zoom, atualização ao editar e
-liberação ao fechar); não há `*-browser-check.cjs` automatizado para o editor.
+Fontes: `v2/map-editor.html`, `v2/tools/map-editor-server.cjs`, `v2/scripts/map-editor-app.mjs`, `map-disk-store.mjs`, `map-handles.mjs`, `scene-sectors.mjs`, `map-model.mjs` (modelo, herança, validação e biblioteca), `map-terrain.mjs`, `map-spawns.mjs`, `campaign-maps.mjs`, `terrain-scene.mjs`, `map-editor.mjs`, `map-preview.mjs` (vista 3D), `map-panel.mjs`,
+`map-play.mjs` e `maps.css`. Testes das regras: `node --test v2/tests/map-model.test.mjs v2/tests/map-terrain.test.mjs v2/tests/map-editor-server.test.mjs v2/tests/scene-sectors.test.mjs v2/tests/terrain.test.mjs`.
+
+`node v2/tests/map-editor-3d-browser-check.cjs` constrói pelo mouse na vista 3D: coloca, seleciona, move, usa as alças de raio, altura, giro e lado, desfaz, copia peça herdada e apaga, e confere que mexer em uma peça do mundo de 360 u não repinta o chão. Evidências em `review/v2/map-editor-3d/`. Regras de seleção e alças: `node --test v2/tests/map-handles.test.mjs`.
+
+`node v2/tests/map-editor-client-browser-check.cjs` percorre o cliente em uma pasta temporária de mapas: edita, confere o arquivo, abre o jogo pelo Testar, recarrega, simula uma falha de gravação e restaura. Evidências em `review/v2/map-editor-client/`.
+
+`node v2/tests/map-editor-browser-check.cjs` (Playwright e Edge, armazenamento isolado) edita o Caminho de Jacarandá pelos controles reais: rio, relevo, lama, ponte, composição e gatilho de spawn, estilo e tamanho. Confere o salvamento automático, a recarga, a entrada no mapa, a colisão e o aviso de terreno, sem erros de página; evidências em `review/v2/map-editor/`, incluindo catálogo, mundo de 360 u em fundo escuro e claro, e borda do mapa com zoom máximo em qualidade baixa. O teste roda com WebGL por software, então o tempo de quadro medido não representa uma GPU real; o custo em máquina real e a dificuldade com relevo não foram medidos. O kit novo foi conferido no jogo, não no Blender aberto, porque o MCP estava desconectado.
 
 ## Protótipo da campanha integrada
 

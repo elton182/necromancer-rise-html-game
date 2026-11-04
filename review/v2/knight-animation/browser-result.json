@@ -1,17 +1,17 @@
 {
   "inventory": [
     {
-      "model": "warrior",
+      "model": "enemySoldier",
       "meshes": 3,
       "clips": [
-        "walk",
-        "recover",
-        "idle",
-        "hit",
-        "heavy_windup",
-        "heavy_attack",
+        "attack",
         "death",
-        "attack"
+        "heavy_attack",
+        "heavy_windup",
+        "hit",
+        "idle",
+        "recover",
+        "walk"
       ]
     },
     {
@@ -38,6 +38,7 @@
         "charge",
         "death",
         "hit",
+        "howl",
         "idle",
         "recover",
         "walk",
@@ -62,15 +63,17 @@
       "model": "enemyGriffin",
       "meshes": 5,
       "clips": [
-        "walk",
-        "recover",
-        "idle",
-        "hit",
-        "death",
-        "claw_windup",
-        "claw",
         "attack",
-        "fly"
+        "claw",
+        "claw_windup",
+        "death",
+        "feather",
+        "feather_windup",
+        "fly",
+        "hit",
+        "idle",
+        "recover",
+        "walk"
       ]
     },
     {
@@ -90,43 +93,43 @@
   ],
   "samples": [
     {
-      "model": "warrior",
-      "clip": "walk",
+      "model": "enemySoldier",
+      "clip": "attack",
       "moving": true
     },
     {
-      "model": "warrior",
-      "clip": "recover",
-      "moving": true
-    },
-    {
-      "model": "warrior",
-      "clip": "idle",
-      "moving": true
-    },
-    {
-      "model": "warrior",
-      "clip": "hit",
-      "moving": true
-    },
-    {
-      "model": "warrior",
-      "clip": "heavy_windup",
-      "moving": true
-    },
-    {
-      "model": "warrior",
-      "clip": "heavy_attack",
-      "moving": true
-    },
-    {
-      "model": "warrior",
+      "model": "enemySoldier",
       "clip": "death",
       "moving": true
     },
     {
-      "model": "warrior",
-      "clip": "attack",
+      "model": "enemySoldier",
+      "clip": "heavy_attack",
+      "moving": true
+    },
+    {
+      "model": "enemySoldier",
+      "clip": "heavy_windup",
+      "moving": true
+    },
+    {
+      "model": "enemySoldier",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "enemySoldier",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "enemySoldier",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "enemySoldier",
+      "clip": "walk",
       "moving": true
     },
     {
@@ -201,6 +204,11 @@
     },
     {
       "model": "cryptHound",
+      "clip": "howl",
+      "moving": true
+    },
+    {
+      "model": "cryptHound",
       "clip": "idle",
       "moving": true
     },
@@ -261,32 +269,7 @@
     },
     {
       "model": "enemyGriffin",
-      "clip": "walk",
-      "moving": true
-    },
-    {
-      "model": "enemyGriffin",
-      "clip": "recover",
-      "moving": true
-    },
-    {
-      "model": "enemyGriffin",
-      "clip": "idle",
-      "moving": true
-    },
-    {
-      "model": "enemyGriffin",
-      "clip": "hit",
-      "moving": true
-    },
-    {
-      "model": "enemyGriffin",
-      "clip": "death",
-      "moving": true
-    },
-    {
-      "model": "enemyGriffin",
-      "clip": "claw_windup",
+      "clip": "attack",
       "moving": true
     },
     {
@@ -296,12 +279,47 @@
     },
     {
       "model": "enemyGriffin",
-      "clip": "attack",
+      "clip": "claw_windup",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "death",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "feather",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "feather_windup",
       "moving": true
     },
     {
       "model": "enemyGriffin",
       "clip": "fly",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "hit",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "idle",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "recover",
+      "moving": true
+    },
+    {
+      "model": "enemyGriffin",
+      "clip": "walk",
       "moving": true
     },
     {
@@ -347,20 +365,16 @@
   ],
   "proportions": [
     {
-      "model": "player",
-      "height": 2.278634799153551
-    },
-    {
-      "model": "warrior",
-      "height": 2.278634908031254
+      "model": "necromancer",
+      "height": 2.2856340314410586
     },
     {
       "model": "livingMage",
-      "height": 2.2786346859642053
+      "height": 2.2856339179040353
     },
     {
       "model": "enemyThief",
-      "height": 2.27863510744008
+      "height": 2.2856343406745463
     }
   ],
   "flight": {

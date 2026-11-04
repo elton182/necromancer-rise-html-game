@@ -1,4 +1,7 @@
 export const CAVE_ROOMS=[{x:0,y:165},{x:36,y:165},{x:36,y:125},{x:-8,y:125},{x:-44,y:125},{x:-44,y:85},{x:0,y:85},{x:0,y:45},{x:0,y:5}];
+export const PROLOGUE_POINTS={papers:{x:0,y:0},exit:{x:0,y:-22},messenger:{x:0,y:-8}};
+// Quem conta como guarda das ordens: a sala delas. Grupos mais longe são opcionais, para uma sala lateral não travar a história.
+export const PAPERS_GUARD_RADIUS=20;
 export const CAVE_LINKS=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[3,6]];
 // Fonte comum da campanha e do editor. Somente dados, sem motor ou normalizador.
 export function prologueMapData(stage){

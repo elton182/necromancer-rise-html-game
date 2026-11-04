@@ -30,6 +30,16 @@ for(let stage=0;stage<3;stage++){
  await page.waitForFunction(()=>!NecromancerV2.world.warriorAction);
 }
 assert.deepEqual(comboStages,[0,1,2]);assert.equal(await page.evaluate(()=>NecromancerV2.world.warriorCombo),null);
+// Personagem novo: habilidades ficam bloqueadas, e cada uma é liberada pela árvore.
+await page.waitForFunction(()=>[...document.querySelectorAll('button')].filter(b=>b.textContent.includes('Libere na árvore')).length===4);
+const lockedBefore=await page.evaluate(()=>{const mp=NecromancerV2.world.player.mp,results=[1,2,4,5].map(i=>NecromancerV2.slot(i));return {results,spent:mp-NecromancerV2.world.player.mp,action:NecromancerV2.world.warriorAction};});
+assert.deepEqual(lockedBefore,{results:[false,false,false,false],spent:0,action:null});
+await page.keyboard.press('2');await page.keyboard.press('3');assert.equal(await page.evaluate(()=>NecromancerV2.world.warriorAction),null);
+await page.screenshot({path:path.join(dir,'locked-slots.png')});
+await page.evaluate(()=>NecromancerV2.ui.show('skills'));
+for(const [id,name] of [['thrust','Estocada'],['bash','Golpe de escudo']]){await page.locator('[data-warrior-node="'+id+'"]').click();await page.getByRole('button',{name:'Aprender '+name,exact:true}).click();}
+await page.evaluate(()=>{const api=NecromancerV2;api.ui.close();api.session.scene='training';api.world.paused=false;document.getElementById('view').focus();});
+await page.waitForFunction(()=>[...document.querySelectorAll('button')].filter(b=>b.textContent.includes('Libere na árvore')).length===2);
 assert.equal(await page.evaluate(()=>NecromancerV2.slot(1)),true);
 const thrustTargets=await page.evaluate(()=>{
  const w=NecromancerV2.world,s=w.warriorAction,ids=[];
@@ -62,5 +72,5 @@ await page.keyboard.press('t');await page.waitForFunction(()=>!!NecromancerV2.wo
 await page.evaluate(()=>NecromancerV2.save());
 
 for(const ground of ['dark','light']){await page.evaluate(g=>{NecromancerV2.session.save.settings.ground=g;NecromancerV2.view.ground(g==='light');},ground);await page.screenshot({path:path.join(dir,ground+'.png')});}
-await page.evaluate(()=>{NecromancerV2.view.quality(true);const w=NecromancerV2.world;w.paused=true;for(let i=0;i<16;i++)w.actors.push({...w.player,id:w.nextId++,model:'skeleton',team:'ally',x:w.player.x+(i%4-1.5)*1.5,y:w.player.y+3+Math.floor(i/4)*1.5});});await page.screenshot({path:path.join(dir,'group-low.png')});await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(dir,'mobile.png')});assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({errors,remote,alignment,comboStages,thrustHealth,checks:['warrior selection','three attacks render','thrust capsule visual','swept and tip targets hit','outside target missed','one click per cut','hold does not chain','timeout restarts combo','passive investment','offline','isolated storage','three skill branches','13 selectable seals and four prerequisite connections','locked and learned states','mobile branch selector','martial shop and equipment','no magical or horde stats','held tornado release','shield projectile render and return']},null,2));console.log('Guerreiro: seleção, três ações, passiva e render offline OK');
+await page.evaluate(()=>{NecromancerV2.view.quality(true);const w=NecromancerV2.world;w.paused=true;for(let i=0;i<16;i++)w.actors.push({...w.player,id:w.nextId++,model:'skeleton',team:'ally',x:w.player.x+(i%4-1.5)*1.5,y:w.player.y+3+Math.floor(i/4)*1.5});});await page.screenshot({path:path.join(dir,'group-low.png')});await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(dir,'mobile.png')});assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({errors,remote,alignment,comboStages,thrustHealth,checks:['warrior selection','skills locked until invested','three attacks render','thrust capsule visual','swept and tip targets hit','outside target missed','one click per cut','hold does not chain','timeout restarts combo','passive investment','offline','isolated storage','three skill branches','13 selectable seals and four prerequisite connections','locked and learned states','mobile branch selector','martial shop and equipment','no magical or horde stats','held tornado release','shield projectile render and return']},null,2));console.log('Guerreiro: seleção, três ações, passiva e render offline OK');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

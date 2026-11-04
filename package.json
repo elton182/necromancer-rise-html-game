@@ -1,0 +1,26 @@
+{
+  "name": "necromancer-rise",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Necromancer's Rise: jogo 3D em Three.js (v2) e versão legada em Canvas 2D.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "npm run editor",
+    "editor": "node v2/tools/map-editor-server.cjs",
+    "lab": "node tools/combat-lab-server.js",
+    "build": "node v2/tools/build.cjs",
+    "sync:legacy": "node scripts/sync-equipment.js && node scripts/sync-skill-vfx.js",
+    "test": "node v2/tools/run-tests.cjs v2/tests scripts build-simulator balance-simulator",
+    "test:v2": "node v2/tools/run-tests.cjs v2/tests",
+    "test:legacy": "node v2/tools/run-tests.cjs scripts build-simulator balance-simulator",
+    "check:legacy": "node game_check.js",
+    "check:browser": "node v2/tests/movement-browser-check.cjs && node v2/tests/browser-check.cjs",
+    "check": "npm run build && npm test && npm run check:legacy && npm run check:browser",
+    "balance": "node balance-simulator/run.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
+  }
+}

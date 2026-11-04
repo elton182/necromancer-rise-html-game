@@ -6,13 +6,16 @@ export const PASSIVES={
  shieldDefense:{name:'Guarda treinada',description:'+3 pontos percentuais de bloqueio com escudo por ponto',max:5,branch:'passives'},
  equipmentMastery:{name:'Domínio dos equipamentos',description:'+8% ao dano da espada e à armadura dos itens por ponto',max:5,branch:'passives'},
  slash:{name:'Slash · Três cortes',description:'+6% de dano dos cortes por ponto. O ataque básico já está disponível.',max:5,branch:'sword'},
- thrust:{name:'Estocada',description:'+10% de dano da estocada por ponto. O golpe básico já está disponível.',max:3,branch:'sword'},
+ thrust:{name:'Estocada',description:'Libera a estocada (botão direito / 2). +10% de dano por ponto.',max:3,branch:'sword'},
  tornado:{name:'Corte tornado',description:'Segure R/5: golpes circulares com gasto contínuo de vigor.',max:1,branch:'sword',level:6,requires:'thrust'},
- bash:{name:'Golpe de escudo',description:'+10% de dano do escudo por ponto. O golpe básico já está disponível.',max:3,branch:'shield'},
+ bash:{name:'Golpe de escudo',description:'Libera o golpe de escudo (3 / Q). +10% de dano por ponto.',max:3,branch:'shield'},
  shieldThrow:{name:'Arremesso de escudo',description:'T/6: escudo atinge na ida e no retorno. Sem bloqueio enquanto está no ar.',max:1,branch:'shield',level:6,requires:'bash'},
  riposte:{name:'Retaliação',description:'Bloquear fortalece em 10% por ponto o próximo golpe de escudo, por 4 s.',max:3,branch:'shield',level:4,requires:'shieldDefense'},
  momentum:{name:'Ímpeto',description:'Completar os três cortes fortalece em 10% por ponto a próxima estocada, por 4 s.',max:3,branch:'sword',level:4,requires:'slash'},
 };
+// Ações que dependem de um selo; cortes (0) e esquiva (3) ficam sempre disponíveis.
+const ACTION_NODES={1:'thrust',2:'bash',4:'tornado',5:'shieldThrow'};
+export const warriorActionLearned=(index,ranks)=>!ACTION_NODES[index]||(ranks?.[ACTION_NODES[index]]||0)>0;
 export function warriorLoadout(value){const base=[0,1,2,3,4,5];return Array.isArray(value)&&value.length===6&&new Set(value).size===6&&value.every(i=>base.includes(i))?[...value]:base;}
 export function normalizeWarrior(value={}){const out={};for(const [id,node]of Object.entries(PASSIVES))out[id]=Math.min(node.max,Math.max(0,Math.floor(Number(value?.[id])||0)));return out;}
 export const warriorBudget=level=>3*Math.max(1,Math.floor(level));

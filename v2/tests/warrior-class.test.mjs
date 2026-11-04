@@ -5,7 +5,7 @@ import EQ from '../scripts/warrior-equipment.mjs';
 import Shared from '../scripts/shared-equipment.mjs';
 import Build from '../scripts/shared-build.mjs';
 import {freshSave,normalizeSave,createSaveStore} from '../scripts/save-model.mjs';
-import {createSession,transition,snapshot} from '../scripts/session.mjs';
+import {createSession,transition,snapshot,equipSession} from '../scripts/session.mjs';
 import {createWorld,setPaused,step} from '../scripts/training-model.mjs';
 import {applyAttributes,snapshotFor} from '../scripts/progression.mjs';
 import {dealDamage} from '../scripts/combat.mjs';
@@ -50,6 +50,17 @@ test('árvore exige nível, investimento e orçamento sem usar bônus de equipam
  const r=warriorRanks({strength:5,shieldThrow:1,tornado:1},2);assert.equal(warriorSpent(r),5);assert.equal(r.shieldThrow,0);assert.equal(r.tornado,0);
  const w=field({regeneration:2,equipmentMastery:2});assert.ok(w.player.hpRegen>=.8);const damage=w.player.damage;applyAttributes(w);assert.equal(w.player.damage,damage);
 });
+test('só cortes funcionam sem investimento; um ponto libera cada habilidade',()=>{
+ const w=field(),mp=w.player.mp;
+ for(const index of [1,2,4,5])assert.equal(warriorAction(w,index),false,'ação '+index);
+ assert.equal(w.player.mp,mp);assert.deepEqual(w.warriorCooldowns,[]);assert.equal(w.warriorAction,null);
+ assert.ok(warriorAction(w,0));
+ for(const [index,ranks] of [[1,{thrust:1}],[2,{bash:1}],[4,{thrust:1,tornado:1}],[5,{bash:1,shieldThrow:1}]])assert.ok(warriorAction(field(ranks),index),'ação '+index);
+ const save=freshSave();Object.assign(save.character,{classId:'warrior',level:6});const s=createSession(save);
+ for(const id of [1,2,4,5])assert.equal(equipSession(s,0,id).ok,false,'slot '+id);
+ s.world.warriorRanks={thrust:1};assert.ok(equipSession(s,0,1).ok);
+});
+
 test('tornado atinge ao redor enquanto mantido e termina ao soltar, pausar, esgotar ou morrer',()=>{
  const w=field({thrust:1,tornado:1}),front=target(w,2),back=target(w,-2);assert.ok(warriorAction(w,4));const mp=w.player.mp;advance(w,.8);assert.ok(front.hp<10000);assert.equal(front.hp,back.hp);assert.ok(w.player.mp<mp);
  assert.ok(stopWarriorChannel(w));const hp=front.hp;advance(w,1);assert.equal(front.hp,hp);assert.equal(w.warriorAction,null);assert.equal(warriorAction(w,4),false);
@@ -74,5 +85,5 @@ test('sinergias são temporárias, consumidas uma vez e morte limpa o escudo',()
 test('inimigo soldado usa modelo anterior e jogador preserva só oito clipes',()=>{
  const registry=JSON.parse(readFileSync(new URL('../assets/models.json',import.meta.url)));
  assert.equal(registry.enemySoldier.path,'blender/exports/v2_enemy_knight.glb');assert.notEqual(registry.enemySoldier.path,registry.warrior.path);
- const b=readFileSync(new URL('../../blender/exports/warrior.glb',import.meta.url));const gltf=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));assert.equal(gltf.animations.length,8);assert.equal(new Set(gltf.animations.map(a=>a.name)).size,8);assert.equal(gltf.meshes.length,1);assert.ok('_WARRIOR_SHIELD' in gltf.meshes[0].primitives[0].attributes);
+ const b=readFileSync(new URL('../../blender/exports/warrior.glb',import.meta.url));const gltf=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));assert.equal(gltf.animations.length,10);assert.equal(new Set(gltf.animations.map(a=>a.name)).size,10);assert.equal(gltf.meshes.length,1);assert.ok('_WARRIOR_SHIELD' in gltf.meshes[0].primitives[0].attributes);
 });

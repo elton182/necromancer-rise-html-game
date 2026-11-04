@@ -38,7 +38,7 @@ test('teste cronometrado começa no primeiro golpe, termina na duração e ignor
 });
 
 test('catálogo só oferece modelos carregados, agrupados, e o progresso do clipe respeita o laço', () => {
- const groups=catalog(['warrior','zombie','player','lich','desconhecido']);
+ const groups=catalog(['warrior','zombie','necromancer','lich','desconhecido']);
  assert.deepEqual(groups.map(g=>g.group),['Inimigos','Chefes','Lacaios','Jogador']);
  assert.deepEqual(groups[0].items,[{id:'warrior',label:'Guerreiro'}]);
  assert.equal(modelLabel('abom'),'Abominação');assert.equal(modelLabel('x'),'x');

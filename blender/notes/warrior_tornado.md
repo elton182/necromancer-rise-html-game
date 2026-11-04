@@ -12,7 +12,7 @@ Ação `tornado` em `blender/models/warrior.blend`, criada via MCP por `blender/
 
 Verificação do ciclo: `blender/previews/warrior_tornado_draft.json`. Poses conferidas de frente, lado e três quartos pelo MCP. A palma permaneceu voltada para baixo nos 25 frames; fechamento de ciclo abaixo de 0,000001, apoio abaixo de 0,000002 e malha acima do chão nos frames amostrados.
 
-O GLB e o jogo ainda usam os oito clipes publicados. Este ciclo é um rascunho para ajuste manual, sem integração no runtime nesta entrega. Os exportadores preservam `tornado` quando presente para não apagar esse trabalho em uma exportação posterior. O gerador recusa sobrescrever uma ação `tornado` existente.
+O GLB e o jogo ainda não usam este clipe. Este ciclo é um rascunho para ajuste manual, sem integração no runtime nesta entrega. Os exportadores preservam `tornado` na cena para não apagar esse trabalho em uma exportação posterior, sem publicá-lo no GLB. O gerador recusa sobrescrever uma ação `tornado` existente.
 
 ## Pose manual do frame 1 aplicada ao restante do ciclo
 

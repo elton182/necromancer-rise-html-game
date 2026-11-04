@@ -28,8 +28,10 @@ export function rewardKill(s,enemy){
  if(!validXp(xp)||enemy.rewarded)return false;
  enemy.rewarded=true;
  if(enemy.siegeLane!==undefined&&w.adventure?.kind==='siege'&&!w.adventure.done)w.adventure.essence+=enemy.siegeBoss?80:12;
- const run=w.adventure?.conquest,characterXp=Math.round(xp*(enemy.expedition?(run?.xpMultiplier??1):1));
- const mastery=gainMastery(s,xp),c=s.save.character,level=raise(s,addExp({level:levelOf(w),exp:c.exp},characterXp));
+ // `xpScale`: ajuste do mapa. Reduz personagem e maestria; o ouro segue o valor do inimigo.
+ const gained=enemy.xpScale?Math.max(1,Math.round(xp*enemy.xpScale)):xp;
+ const run=w.adventure?.conquest,characterXp=Math.round(gained*(enemy.expedition?(run?.xpMultiplier??1):1));
+ const mastery=gainMastery(s,gained),c=s.save.character,level=raise(s,addExp({level:levelOf(w),exp:c.exp},characterXp));
  const notes=[level,mastery?.raised?.length?'Maestria ↑ '+mastery.raised.join(' · '):''].filter(Boolean);
  if(notes.length)w.notice=notes.join(' · ');
  if(level)announce(w,level,'#f0d98a');

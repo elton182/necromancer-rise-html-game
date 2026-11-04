@@ -4,6 +4,7 @@ import {initializeSpells,tickSpells,blockEnemyByWalls} from './spells.mjs';
 // Arena experimental com colisões E3. Regras completas da campanha ainda pendentes.
 // Mundo lógico: x/y no chão, distâncias em unidades, tempos em segundos.
 import {TRAINING_ARENA,resolvePosition,moveCircle,lineClear,navigate} from './terrain.mjs';
+import {terrainSpeed} from './map-terrain.mjs';
 import {warriorAction,tickWarrior,warriorPose,stopWarriorChannel} from './warrior.mjs';
 import {RULES,initializeCombat,castBolt,beginDash,moveDash,updateProjectiles,tickRot,tickBoltCharge,dealDamage} from './combat.mjs';
 import {initializeHorde,tickHorde,POSSESSION} from './horde.mjs';
@@ -26,8 +27,8 @@ export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearL
  Object.assign(w,{actors:[],effects:[],time:0,paused:false,hits:0,horde,armyMode,army:null,onAllyDeath:null,allyShots:[],command:null,castCooldown:0,arena:TRAINING_ARENA,equipment:character?.equipment||{},level:character?.level||1,gearLevel,lootFilter});
  w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.warriorCooldowns=[];w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];
  w.siegeMenu=false;w.encounterWave=encounterWave;w.hostileShots=[];w.hostileZones=[];w.curses=null;w.lootConfig=null;
- function spawn(model,team,x,y,hp){const radius=model==='player'?.45:model==='fallenKing'?.48:team==='ally'?.35:.3,pos=resolvePosition({x,y},radius,w.arena);const a={id:w.nextId++,model,team,...pos,radius,hp,maxHp:hp,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,phase:w.actors.length*2.399};w.actors.push(a);return a;}
- w.player=spawn(w.classId==='warrior'?'warrior':'player','player',0,4,RULES.base.hp);w.player.radius=.45;w.aim={x:0,y:-5};initializeCombat(w);initializeSpells(w);initializeLich(w);
+ function spawn(model,team,x,y,hp){const radius=model==='necromancer'?.45:model==='fallenKing'?.48:team==='ally'?.35:.3,pos=resolvePosition({x,y},radius,w.arena);const a={id:w.nextId++,model,team,...pos,radius,hp,maxHp:hp,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,phase:w.actors.length*2.399};w.actors.push(a);return a;}
+ w.player=spawn(w.classId==='warrior'?'warrior':'necromancer','player',0,4,RULES.base.hp);w.player.radius=.45;w.aim={x:0,y:-5};initializeCombat(w);initializeSpells(w);initializeLich(w);
  if(armyMode==='groups')initializeHorde(w,army);else for(let i=0;i<horde;i++){const a=i*2.399,r=2+i*.06;spawn('skeleton','ally',Math.sin(a)*r,4+Math.cos(a)*r,100);}
  if(w.classId==='warrior')w.actors=w.actors.filter(a=>a.team!=='ally');
  // Um encontro novo começa com vida e mana cheias, calculadas pelo nível, pela árvore e pelos itens atuais.
@@ -46,7 +47,7 @@ function tick(w,dt,input){
  const p=w.player,x=clamp(Number(input.x)||0,-1,1),y=clamp(Number(input.y)||0,-1,1);
  // Movimento relativo à tela da câmera isométrica.
  let mx=x+y,my=y-x;const length=Math.hypot(mx,my);if(length){const magnitude=Math.min(1,Math.hypot(x,y));mx=mx/length*magnitude;my=my/length*magnitude;}
- const dashing=moveDash(w,dt);let moved=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&length&&p.hp>0&&!(p.rootTime>0)){const pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*dt},p.radius,w.arena);moved=pos.distance;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
+ const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&length&&p.hp>0&&!(p.rootTime>0)){const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
  tickWarrior(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
  if(w.armyMode==='groups')tickHorde(w,dt);
  tickHostiles(w,dt);tickSiegeCombat(w,dt);w.effects=w.effects.filter(f=>!f.webRoot);for(const a of w.actors)if(a.rootTime>0&&a.hp>0)w.effects.push({id:'web-root-'+a.id,webRoot:true,x:a.x,y:a.y,radius:a.radius+.5,color:'#e3e9ec',visual:true,ground:true,fixedRadius:true,time:0,duration:10});

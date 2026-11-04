@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "map-editor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["v2/tools/map-editor-server.cjs"],
+      "port": 4177
+    },
+    {
       "name": "combat-lab",
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/combat-lab-server.js"],

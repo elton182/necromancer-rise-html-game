@@ -6,14 +6,14 @@ BASE = Path(__file__).resolve().parents[1]
 # Carrega em cena independente, preservando a cena aberta.
 scene = bpy.data.scenes.new('Mago')
 bpy.context.window.scene = scene
-with bpy.data.libraries.load(str(BASE / 'models/v2_player.blend'), link=False) as (src, dst):
+with bpy.data.libraries.load(str(BASE / 'models/v2_necromancer.blend'), link=False) as (src, dst):
     dst.objects = [n for n in src.objects if n not in ('Icosphere', 'Camera', 'Area')]
 for o in dst.objects:
     scene.collection.objects.link(o)
 arm = next(o for o in dst.objects if o.type == 'ARMATURE')
 body = next(o for o in dst.objects if o.name.startswith('tripo'))
 # Preserva explicitamente os quatro clipes, inclusive os não ativos na fonte.
-with bpy.data.libraries.load(str(BASE / 'models/v2_player.blend'), link=False) as (src, clips):
+with bpy.data.libraries.load(str(BASE / 'models/v2_necromancer.blend'), link=False) as (src, clips):
     clips.actions = [n for n in src.actions if n in ('idle','walk','cast','death')]
 arm.animation_data_create()
 for action in clips.actions:

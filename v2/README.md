@@ -54,8 +54,9 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | --- | --- |
 | `scripts/training-model.mjs` | Simulação, entidades, combate e relógio; sem DOM ou Three.js |
 | `scripts/renderer.mjs` | Modelos, câmera, animações, efeitos visuais, qualidade e descarte de recursos |
+| `scripts/locomotion.mjs` | Mistura da passada do jogador (`walk`, `strafe_left`, `strafe_right`) conforme o deslocamento em relação à mira; só visual |
 | `scripts/input.mjs` | Eventos traduzidos em ações e limpeza de entradas |
-| `scripts/terrain.mjs` | Dados da cena, varredura de colisões, limites e navegação no chão |
+| `scripts/terrain.mjs` | Dados da cena, varredura de colisões com índice por setores, caixas giradas, limites e navegação no chão |
 | `scripts/forest-map.mjs`, `forest-scene.mjs` | Mapa da Floresta de Eldrin (fase 2): colisores/decoração e visual procedural |
 | `scripts/outpost-map.mjs`, `outpost-scene.mjs`, `camp-parts.mjs` | Mapa do Posto do Capitão (fase 4) e peças de acampamento compartilhadas |
 | `scripts/trail-map.mjs`, `trail-scene.mjs` | Mapa da Trilha dos Vigias (fase 3): faixa, clareiras, barricadas e acampamento procedurais |
@@ -68,7 +69,13 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/audio.mjs` | Efeitos e música procedurais em Web Audio, portados do jogo anterior; trilhas em arquivo por tema (`tracks`); volume, mudo e preferência do aparelho |
 | `scripts/sound-events.mjs` | Lê o mundo a cada quadro e decide sons e trilha; as regras de combate não conhecem o áudio |
 | `scripts/game.css` | Apresentação da interface |
-| `scripts/map-model.mjs`, `map-editor.mjs`, `map-preview.mjs`, `map-panel.mjs`, `map-play.mjs`, `maps.css` | Editor de mapas: formato, herança de mapa base, biblioteca, editor 2D com pré-visualização 3D, aba Mapas e lançamento do mapa ([guia](../docs/v2-mapas.md)) |
+| `scripts/map-model.mjs`, `map-editor.mjs`, `map-preview.mjs`, `map-panel.mjs`, `map-play.mjs`, `maps.css` | Editor de mapas: formato, catálogo e estilo, herança de mapa base, biblioteca, editor 2D com pré-visualização 3D, aba Mapas e lançamento do mapa ([guia](../docs/v2-mapas.md)) |
+| `scripts/map-terrain.mjs`, `terrain-scene.mjs` | Relevo, água, rios e superfícies: regras de deslocamento, colisão e dano; desenho da água e assentamento do cenário |
+| `scripts/map-spawns.mjs` | Grupos de inimigos dos mapas: composição, gatilho, ondas e retorno |
+| `scripts/map-handles.mjs` | Seleção por raio e alças de edição no 3D, sem desenho |
+| `scripts/scene-sectors.mjs` | Divide famílias grandes de instâncias por região, para a câmera descartar o que está fora da tela |
+| `scripts/campaign-maps.mjs`, `assets/maps/` | Edições dos mapas da campanha: gravadas pelo editor em arquivos, embutidas pelo build e lidas ao abrir cada cena |
+| `map-editor.html`, `tools/map-editor-server.cjs`, `scripts/map-editor-app.mjs`, `map-disk-store.mjs` | Cliente do editor de mapas, só para desenvolvimento: `node v2/tools/map-editor-server.cjs` ([guia](../docs/v2-mapas.md#cliente-do-editor)) |
 | `scripts/lab-model.mjs`, `lab.mjs`, `lab-panel.mjs`, `lab.css` | Laboratório: medidor de DPS, boneco de treino, visualizador de animações e painel ([guia](../docs/v2-laboratorio.md)) |
 | `scripts/loading.mjs`, `scripts/loading.css` | Tela de carregamento: a marcação `#loading` fica no template e aparece antes dos módulos; o módulo mostra progresso dos modelos e dicas e some quando a arena está pronta |
 | `scripts/save.css` | Menu, prévia de importação e ferramentas de save |
@@ -112,17 +119,18 @@ executa seus sincronizadores nem altera a entrada principal do projeto.
 Comandos a partir da raiz do repositório:
 
 ```powershell
-node v2/tools/build.cjs
-$tests = (Get-ChildItem v2/tests/*.test.mjs).FullName
-node --test $tests
-node v2/tests/movement-browser-check.cjs
-node v2/tests/browser-check.cjs
-node game_check.js
+npm install
+npm run build
+npm run test:v2
+npm run check:browser
+npm run check:legacy
 ```
 
-O teste de navegador requer Playwright no ambiente de desenvolvimento e Edge
-instalado. Se o pacote não estiver no caminho de resolução do Node, configure
-`NODE_PATH` para a instalação local; ele não é dependência do produto.
+`npm run test:v2` usa `tools/run-tests.cjs`, que funciona igual no Node 20 e no 22;
+para um sistema só, rode `node --test v2/tests/<sistema>.test.mjs`.
+
+O teste de navegador requer Edge instalado e o Playwright, instalado por
+`npm install` como dependência de desenvolvimento; ele não é dependência do produto.
 O check antigo valida a versão anterior, não substitui os testes da v2.
 
 O empacotamento falha se um modelo não tiver os clipes exigidos ou depender de
@@ -186,9 +194,9 @@ A validação automatizada continua sem equivaler a benchmark em outras máquina
 O HTML contém cópias dos GLBs. Depois de exportar os modelos, execute
 `node v2/tools/build.cjs` na raiz e recarregue a página. Para o player, exporte
 a cena atual sem regenerá-la:
-`blender --background blender/models/rigged_player.blend --python blender/scripts/v2_player_motion.py`
-(refaz idle, walk, cast e death, grava `blender/models/v2_player.blend` e
-`blender/exports/v2_player.glb`; o `rigged_player.blend` não é alterado).
+`blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py`
+(refaz idle, walk, cast e death, grava `blender/models/v2_necromancer.blend` e
+`blender/exports/v2_necromancer.glb`; o `rigged_player.blend` não é alterado).
 O laboratório antigo usa `node tools/3d-lab/build.cjs`.
 
 Player, esqueleto, arqueiro, zumbi e Abominação têm conferências em

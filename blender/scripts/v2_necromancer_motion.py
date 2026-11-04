@@ -1,10 +1,10 @@
-"""Refaz os clipes do player (necromante, v2) a partir de models/rigged_player.blend, sem alterá-lo.
+"""Refaz os clipes do necromante (v2) a partir de models/rigged_player.blend, sem alterá-lo.
 
 Uso na raiz do projeto (ou na sessão Blender via MCP com rigged_player.blend aberto):
-  blender --background blender/models/rigged_player.blend --python blender/scripts/v2_player_motion.py
-Na sessão MCP defina `PLAYER_EXPORT = False` antes para só pré-visualizar; com True (padrão) grava models/v2_player.blend e exports/v2_player.glb.
+  blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py
+Na sessão MCP defina `PLAYER_EXPORT = False` antes para só pré-visualizar; com True (padrão) grava models/v2_necromancer.blend e exports/v2_necromancer.glb.
 O rigged_player.blend e o lab_player_current.glb continuam sendo a fonte do pipeline de sprites legado e do laboratório 3D antigo.
-Clipes (registro `player` em v2/assets/models.json): idle (2 s), walk (0,667 s, ciclo de 1,5 u), cast (0,375 s) e death (0,8 s).
+Clipes (registro `necromancer` em v2/assets/models.json): idle (2 s), walk (0,667 s, ciclo de 1,5 u), strafe_left e strafe_right (0,667 s, ciclo de 1,1 u), cast (0,375 s) e death (0,8 s).
 O motor dispara o feitiço no instante em que `cast` começa e, na carga do Tiro de Osso, mantém o último quadro; por isso `cast` começa quase
 no pico do gesto e termina numa pose de canalização com o cajado à frente.
 """
@@ -191,6 +191,37 @@ def walk(u):
     p['hips'] = (.025 * H * s, 0, .015 * H * b2)
     return p
 
+# --- strafe: passo lateral com o tronco voltado para a mira; mesma fase de apoio do walk (pé esquerdo no chão de 0,75 a 0,25), para os clipes se misturarem nas diagonais --
+STRAFE_STRIDE = 1.1     # avanço por ciclo no jogo; cada apoio cobre metade dele. A 4 u/s, passadas menores viram um trote nervoso
+STRAFE_REACH = STRAFE_STRIDE / 4 / SCALE
+STRAFE_STANCE = .14     # afastamento médio dos pés em relação ao centro (unidades locais), para não se cruzarem no ponto mais próximo
+def side_leg(side, foot_x, sway, lift):
+    # A coxa abre em torno de Y até o pé chegar em `foot_x`; levantar flexiona coxa e joelho sem mudar o X do pé, só encurta a perna.
+    hip = bone(side + 'UpLeg').bone.head_local; rest = bone(side + 'Foot').bone.head_local
+    length = math.hypot(rest.x - hip.x, rest.z - hip.z); opening = math.atan2(rest.x - hip.x, hip.z - rest.z)
+    bend = .06 + .5 * lift
+    spread = opening - math.asin((foot_x - hip.x - sway) / (length * math.cos(bend))) - (LEG_CLOSE if side == 'Left' else -LEG_CLOSE)
+    return (-bend, spread, 0), (2 * bend, 0, 0), (-bend, -spread, 0)
+def side_foot(u, offset, direction):
+    # Apoio: o pé recua em velocidade constante, sem escorregar no chão. Balanço: retorna em arco.
+    phase = (u + offset) % 1
+    if phase < .5: return direction * (1 - 4 * phase) * STRAFE_REACH, 0
+    return direction * (2 * ease((phase - .5) * 2, 's') - 1) * STRAFE_REACH, math.sin(TAU * (phase - .5))
+def strafe(u, direction):
+    s = math.sin(TAU * u); c = math.cos(TAU * u); b2 = math.cos(2 * TAU * u)
+    sway = .018 * H * c  # o peso acompanha o pé de apoio
+    left_x, left_lift = side_foot(u, .25, direction); right_x, right_lift = side_foot(u, .75, direction)
+    LU, LL, LFt = side_leg('Left', STRAFE_STANCE + left_x, sway, left_lift); RU, RL, RFt = side_leg('Right', -STRAFE_STANCE + right_x, sway, right_lift)
+    p = add(GUARD, LU=LU, LL=LL, LFt=LFt, RU=RU, RL=RL, RFt=RFt,
+            hips_rot=(0, .02 * c, .08 * direction), spine=(.04 + .015 * b2, .05 * direction, -.05 * direction), spine1=(0, 0, -.02 * direction), head=(.015 * b2, -.03 * direction, -.01 * direction),
+            LA=(-.12 * s * direction, 0, .02 * b2), RA=(.06 * s * direction, 0, 0), staff=((.05 + .02 * s) * direction, 0, .02 * c))
+    p['hips'] = (sway, 0, .015 * H * b2)
+    return p
+@clip('strafe_left', 16, True, 'feet')
+def strafe_left(u): return strafe(u, 1)   # esquerda do personagem = +X
+@clip('strafe_right', 16, True, 'feet')
+def strafe_right(u): return strafe(u, -1)
+
 # --- cast: gesto rápido; o cajado aponta para o alvo, a mão livre abre a palma à frente --------------------------------------
 CAST_PEAK = P(spine=(.14, 0, .12), spine1=(.04, 0, .06), spine2=(.1, 0, .12), neck=(-.04, 0, 0), head=(-.1, 0, -.1), hips_rot=(0, 0, .06), hips=(0, -.02 * H, -.012 * H),
               LA=(.3, -.8, .15), LF=(.15, -1, .25), lroll=(.6, 0, 0), open=(1, 0, 0),
@@ -267,7 +298,7 @@ if EXPORT:
         if obj.type in ('MESH', 'ARMATURE', 'EMPTY') and not obj.hide_render and obj.name != 'Icosphere':
             obj.hide_set(False); obj.select_set(True)
     bpy.context.view_layer.objects.active = arm
-    bpy.ops.export_scene.gltf(filepath=str(BASE / 'exports' / 'v2_player.glb'), export_format='GLB', use_selection=True, export_animation_mode='ACTIONS',
+    bpy.ops.export_scene.gltf(filepath=str(BASE / 'exports' / 'v2_necromancer.glb'), export_format='GLB', use_selection=True, export_animation_mode='ACTIONS',
                               export_skins=True, export_yup=True, export_force_sampling=True)
-    bpy.ops.wm.save_as_mainfile(filepath=str(BASE / 'models' / 'v2_player.blend'))
+    bpy.ops.wm.save_as_mainfile(filepath=str(BASE / 'models' / 'v2_necromancer.blend'))
     print('PLAYER_EXPORTED')

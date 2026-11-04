@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'gltf-loader';
 
 // Cena exclusiva da seleção; nunca avança a simulação ou altera o personagem.
-export function createTitlePreview(host,modelId='player'){
+export function createTitlePreview(host,modelId='necromancer'){
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));host.append(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(32,1,.1,50);

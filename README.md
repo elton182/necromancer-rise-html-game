@@ -121,9 +121,23 @@ A referência completa da versão legada, com fórmulas e tabelas, está em
 ## Rodando localmente
 
 **v2 (principal):** não precisa de servidor: abra `v2/necromancer-3d.html` (ou `v2/index.html`) no Edge ou Chrome com
-WebGL 2. Para regenerar o HTML depois de editar as fontes em `v2/`, rode na raiz `node v2/tools/build.cjs`.
+WebGL 2. Para regenerar o HTML depois de editar as fontes em `v2/`, rode na raiz `npm run build`.
 
 **Versão legada:** abra `necromancer-canvas.html`. O `index.html` da raiz só redireciona para ele (entrada do GitHub Pages).
+
+**Comandos de desenvolvimento:** `npm install` instala só o Playwright, usado nas verificações de navegador; o jogo não tem dependências de runtime. Build e testes de regras funcionam sem esse passo.
+
+| Comando | O que faz |
+|---|---|
+| `npm start` ou `npm run editor` | Editor de mapas da v2 em `http://localhost:4177/`; a v2 com os mapas do editor fica em `/play`. Outra porta: `npm run editor -- 4178` |
+| `npm run lab` | Arena de comparação da versão legada em `http://127.0.0.1:4173/tools/combat-lab.html` |
+| `npm run build` | Regenera `v2/necromancer-3d.html` |
+| `npm test`, `npm run test:v2`, `npm run test:legacy` | Testes de regras: todos, só da v2 ou só da versão legada e dos simuladores |
+| `npm run check:legacy` | Roda `game_check.js` |
+| `npm run check:browser` | Verificações principais da v2 no navegador; grava evidências em `review/v2/` |
+| `npm run check` | Build, testes de regras, `game_check.js` e verificações de navegador, parando na primeira falha |
+| `npm run sync:legacy` | Sincroniza os módulos embutidos no HTML legado |
+| `npm run balance` | Simulador de balanceamento |
 
 Na v2 o progresso fica no `localStorage` (chave `necromancer_rise_3d_save`; veja [docs/v2-saves.md](docs/v2-saves.md)) e a v2 importa o
 JSON exportado da versão legada. Na versão legada a chave é `necromancer_v2`. Use
@@ -154,8 +168,11 @@ Ela roda tentativas reproduzíveis em navegador isolado, preservando seu progres
 ### Verificação da v2
 
 ```bash
-node v2/tools/build.cjs
-node --test v2/tests/*.test.mjs
+npm run build
+```
+
+```bash
+npm run test:v2
 ```
 
 Os `v2/tests/*-browser-check.cjs` abrem a v2 num navegador isolado (Playwright com Edge ou Chrome, WebGL 2) e gravam evidências em
@@ -185,12 +202,12 @@ node game_check.js
 ```
 
 ```bash
-node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/minion-abilities.test.js scripts/sprite-cache.test.js scripts/skill-trees.test.js scripts/navigation-options.test.js build-simulator/model.test.js balance-simulator/model.test.js
+npm run test:legacy
 ```
 
 - `game_check.js` valida a sintaxe e roda os 71 cenários de regras.
-- Os testes `node --test` (105 casos) cobrem modelos, migrações, sinergias e
-  estatísticas.
+- `npm run test:legacy` roda os testes de `scripts/`, `build-simulator/` e
+  `balance-simulator/`, que cobrem modelos, migrações, sinergias e estatísticas.
 - Os arquivos `scripts/*-browser-check.js` abrem o jogo num Chrome headless e
   conferem fluxos de interface. Exigem Playwright e Google Chrome instalados, por
   exemplo `node scripts/loot-filter-browser-check.js`.
@@ -198,7 +215,7 @@ node --test scripts/equipment.test.js scripts/minion-care.test.js scripts/minion
 ### Arena de comparação (versão legada)
 
 ```bash
-node tools/combat-lab-server.js
+npm run lab
 ```
 
 Depois acesse `http://127.0.0.1:4173/tools/combat-lab.html`. A arena usa os sprites

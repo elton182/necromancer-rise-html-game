@@ -1,0 +1,22 @@
+{
+ "format":"necromancer-rise-map",
+ "version":1,
+ "id":"campaign-travel",
+ "name":"Estrada de Itavera",
+ "base":"builtin:arandu-travel",
+ "hidden":[],
+ "biome":null,
+ "size":null,
+ "start":null,
+ "spawns":null,
+ "level":1,
+ "enemyHp":1,
+ "enemyXp":1,
+ "objects":[
+  {"id":"oflxhihzq","type":"signpost","x":-4,"y":60.5,"r":0.2,"h":2}
+ ],
+ "terrain":null,
+ "style":null,
+ "campaign":"travel",
+ "updated":1793738242162
+}

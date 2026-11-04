@@ -9,6 +9,13 @@ export function createSceneEnvironment(renderer){
  geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));const material=new THREE.MeshBasicMaterial({vertexColors:true,side:THREE.BackSide});sky.add(new THREE.Mesh(geometry,material));
  const texture=pmrem.fromScene(sky,0).texture;pmrem.dispose();geometry.dispose();material.dispose();return texture;
 }
+// Estilo do mapa, por cima da receita do bioma. A névoa volta ao padrão quando o mapa não tem estilo próprio.
+export function applyMapStyle(scene,sun,hemisphere,style,light=false){
+ scene.fog.near=32;scene.fog.far=65;if(!style)return;
+ if(style.sky&&!light){scene.background.set(style.sky);scene.fog.color.copy(scene.background);}
+ if(style.sun!=null)sun.intensity=style.sun;if(style.sunColor)sun.color.set(style.sunColor);if(style.ambient!=null)hemisphere.intensity=style.ambient;
+ if(style.fog!=null)scene.fog.far=65-9*style.fog;
+}
 export function applySceneLook(renderer,scene,sun,hemisphere,key,environment){
  const look=SCENE_LOOK[key];renderer.toneMapping=look?THREE.ACESFilmicToneMapping:THREE.NoToneMapping;renderer.toneMappingExposure=look?.exposure??1;
  scene.environment=look?environment():null;scene.environmentIntensity=look?.env??0;

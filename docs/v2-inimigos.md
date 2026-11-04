@@ -200,7 +200,7 @@ Três especiais da v2 (números em `HOWL`, `RAIN` e `SLAM`, `enemies.mjs`). Cada
 
 Mudanças de regra: os arqueiros e o cão ganharam especiais novos (antes só tinham o tiro forte e a investida), e o Orc ganhou um segundo golpe de área maior. O equilíbrio não foi reavaliado no `balance-simulator`, que não modela esses comportamentos.
 
-Visual: o uivo usa o clipe novo `howl` do lobo (Blender: `imported_enemy_beasts.py -- --character=wolf`), a saraivada faz flechas caírem e ficarem fincadas (`arrowRain` em `vfx.mjs`) e a pancada usa a runa de perigo e a onda de choque já existentes.
+Visual: o uivo usa o clipe `howl` do lobo (Blender: `v2_enemy_wolf_motion.py`), a saraivada faz flechas caírem e ficarem fincadas (`arrowRain` em `vfx.mjs`) e a pancada usa a runa de perigo e a onda de choque já existentes.
 
 Verificação: `node --test v2/tests/special-attacks.test.mjs` e `node v2/tests/special-attacks-browser-check.cjs` (capturas em `review/v2/special-attacks/`).
 
@@ -229,3 +229,9 @@ Vida base exclusiva da v2: soldado **60 HP** (antes 40), orc **110 HP** (antes 7
 O Orc usa **Grito de Guerra** quando há outro inimigo vivo em até 8 u e o alvo está em até 12 u. Prepara por 1 s, com círculo inofensivo; ao concluir, emite som grave, onda laranja e tremor de tela, concedendo aos outros inimigos no raio **+25% de dano e +15% de velocidade de deslocamento por 6 s**. Primeira preparação após 5 s; recarga de 14 s após o grito. Não interrompe salto/pancada em curso. Os bônus não acumulam: um novo grito substitui a fonte e renova a duração. Morte da fonte encerra o bônus; matar o Orc durante a preparação impede a aplicação. Os afetados exibem um pequeno anel laranja. O estado é transitório, sem alteração dos saves. Pausa congela o relógio. Mudança de balanceamento ainda não reavaliada no simulador.
 
 Flechas dos dois tipos que usam o modelo do ladino possuem rastro fino de 0,9 u, opacidade de 30%, removido com o projétil. Não altera dano nem colisão.
+
+## Cão de Cripta: corrida e velocidade
+
+O lobo corre em galope (clipe `walk`) e a velocidade de deslocamento subiu de cerca de **4,97 u/s** para **5,89 u/s** (+18,5%): o multiplicador próprio da v2 para o índice 4 em `spawnEnemy` (`v2/scripts/enemies.mjs`) passou de 1,35 para 1,6, sobre `spd` 3,2 e `enemySpeed` 1,15. Elites e efeitos de lentidão continuam multiplicando esse valor. O lobo agora supera o teto de velocidade do jogador (5,2 u/s), portanto fugir em linha reta não basta: a resposta é Dash, sólidos, Muralha e a horda. A investida (12 u/s), a preparação, o dano e a vida não mudaram.
+
+O modelo ficou 15% maior só no visual (`height` em `v2/assets/models.json`); raio de colisão e alcance não mudaram. `stride` foi para 2,25 u para acompanhar a passada do clipe. O `balance-simulator/` lê as velocidades da versão legada e não modela esse multiplicador da v2, então a mudança não foi avaliada por ele; a conferência foi feita no jogo.

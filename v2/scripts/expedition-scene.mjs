@@ -7,9 +7,31 @@ import {buildHouses,kitFamily} from './village-kit.mjs';
 import {paintedGround} from './painted-ground.mjs';
 import {buildNature,NATURE_SWAY} from './nature-kit.mjs';
 import {buildVillage} from './village-scene.mjs';
+import {buildWater} from './terrain-scene.mjs';
+import {buildPrologueScenery} from './prologue-scene.mjs';
+const GROUND_COLORS={grass:null,dirt:'#6f5a3e',sand:'#c2a873',snow:'#e4eaee',stone:'#83847f',ash:'#3f3c3a',moss:'#3f5430'};
+const BIOME_GROUND={desert:'sand',snow:'snow',grave:'stone',cave:'stone',mountain:'stone',river:'grass'};
+const groupProps=list=>{const out={};for(const p of list)(out[p.model+'/'+p.part]??=[]).push(p);return out;};
 const box=()=>new THREE.BoxGeometry(1,1,1).translate(0,.5,0);
 const post=new THREE.CylinderGeometry(1,1,1,8).translate(0,.5,0);
-export function buildExpedition(arena,models){
+// `source.layer`: 'ground' desenha só o chão, a água e a cobertura; 'objects' desenha só as peças. Sem camada, tudo (o jogo).
+// Peças giradas fora do catálogo: cada uma é montada sozinha, no lugar, e todas as suas instâncias giram em volta do centro dela.
+const spinAt=new THREE.Matrix4(),spinMatrix=new THREE.Matrix4(),spinBack=new THREE.Matrix4(),spinOne=new THREE.Matrix4(),spinAxis=new THREE.Vector3(0,1,0);
+export function buildRotatedParts(arena,models){
+ const out=[];
+ for(const part of arena.rotatedParts||[]){
+  spinMatrix.makeRotationY(part.angle);spinAt.makeTranslation(part.x,0,part.y).multiply(spinMatrix);spinBack.makeTranslation(-part.x,0,-part.y);spinAt.multiply(spinBack);
+  const meshes=[...buildExpedition({...part.arena,layer:'objects'},models),...(part.scene?buildPrologueScenery(part.arena,models):[])];
+  for(const m of meshes){
+   if(m.isInstancedMesh){for(let i=0;i<m.count;i++){m.getMatrixAt(i,spinOne);spinOne.premultiply(spinAt);m.setMatrixAt(i,spinOne);}m.instanceMatrix.needsUpdate=true;m.computeBoundingSphere();}
+   else{const dx=m.position.x-part.x,dz=m.position.z-part.y,c=Math.cos(part.angle),s=Math.sin(part.angle);m.position.x=part.x+dx*c+dz*s;m.position.z=part.y-dx*s+dz*c;m.rotateOnWorldAxis(spinAxis,part.angle);}
+   out.push(m);
+  }
+ }
+ return out;
+}
+export function buildExpedition(source,models){
+ const layer=source.layer,arena=layer==='ground'?{...source,solids:[],kitProps:[],decor:{...source.decor,bushes:[],misc:[],braziers:[]}}:source;
  if(arena.settlement){
   const base={...arena,settlement:null,solids:arena.solids.filter(s=>!s.settlement)},out=buildExpedition(base,models);
   for(const mesh of buildVillage({...arena.settlement,groundBlend:true},models)){
@@ -22,11 +44,19 @@ export function buildExpedition(arena,models){
  const useNature=(arena.biome==='swamp'||arena.custom&&arena.biome==='forest')&&models?.natureKit;
  const forestGround=arena.custom&&arena.biome==='forest';
  // Biomas verdes usam o chão pintado de Jacarandá (grama e terra batida); o pântano escurece a grama e ganha poças.
- const painted=['forest','village','swamp'].includes(arena.biome);
+ const groundStyle=arena.style?.ground||(arena.terrain?BIOME_GROUND[arena.biome]:null),painted=['forest','village','swamp'].includes(arena.biome)||!!arena.terrain||!!arena.style?.ground;
  const base=useNature?{...arena,solids:arena.solids.filter(s=>!['pine','oak','rock'].includes(s.look)),decor:{...arena.decor,trees:[],bushes:[],grass:[],flowers:[]}}:arena;
  const forest=painted?{...base,decor:{...base.decor,path:[],patches:[]}}:base;
  const out=[...buildForest(forest)],add=m=>{if(Array.isArray(m))out.push(...m.flat(Infinity).filter(Boolean));else if(m)out.push(m);},look=name=>arena.solids.filter(s=>s.look===name),misc=name=>arena.decor.misc.filter(m=>m.look===name);
- if(painted)add(paintedGround(arena,{swamp:arena.biome==='swamp'}));
+ if(layer!=='objects'){
+  if(painted)add(paintedGround(source,{swamp:arena.biome==='swamp',base:GROUND_COLORS[groundStyle]||null,tint:arena.style?.tint||null}));
+  add(buildWater(arena));
+ }
+ // Catálogo de peças de kit: instâncias por peça; colisão e medidas vêm do objeto do mapa.
+ for(const [key,list]of Object.entries(groupProps(arena.kitProps||[]))){
+  const [model,part]=key.split('/');if(!models?.[model])continue;
+  for(const mesh of kitFamily(models[model],part,list.map(p=>({x:p.x,z:p.y,y:0,ry:p.ry,sx:p.sx,sy:p.sy,sz:p.sz})))){mesh.userData.noLift=list[0].float;add(mesh);}
+ }
  if(useNature){
   for(const mesh of buildNature(arena,models.natureKit)){
    // Isolar a paleta regional dos materiais do kit usados na vila.
@@ -77,6 +107,8 @@ export function buildExpedition(arena,models){
  add(family(box(),material({color:0x8a6a3c}),(kitProps?[]:misc('crate')),(m,i)=>{dummy.position.set(m.x,0,m.y);dummy.scale.set(.75,.7,.75);dummy.rotation.y=i;},{shadow:true}));
  // Rio: discos de água achatados sobre o chão (sem teste de profundidade, como a trilha).
  add(family(new THREE.CircleGeometry(1,16).rotateX(-Math.PI/2),material({color:0x487d87,flatShading:false,depthTest:false,depthWrite:false}),arena.decor.water,w=>{dummy.position.set(w.x,.02,w.y);dummy.scale.set(w.r,1,w.r);},{order:-1}));
+ // Trilha de cantos retos nos biomas sem chão pintado (no chão pintado, ela entra na textura).
+ add(family(new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2),material({color:0x78694c,flatShading:false,depthTest:false,depthWrite:false}),painted?[]:arena.decor.pathBoxes||[],q=>{dummy.position.set(q.x,.018,q.y);dummy.rotation.y=q.angle||0;dummy.scale.set(q.w,1,q.d);},{order:-1}));
  const torches=models?.cryptArchitecture;
  if(torches)add(kitFamily(models.cryptArchitecture,'torch',arena.decor.braziers.map(b=>({x:b.x,z:b.y}))));
  if(forestGround&&torches&&arena.decor.braziers.length){
@@ -90,5 +122,6 @@ export function buildExpedition(arena,models){
  // Brasas: poste e chama sem iluminação dinâmica.
  add(family(post,material({color:0x3d352e}),plainBraziers,b=>{dummy.position.set(b.x,0,b.y);dummy.scale.set(.1,1.2,.1);},{shadow:true}));
  add(family(new THREE.ConeGeometry(.28,.7,6).translate(0,.35,0),new THREE.MeshBasicMaterial({color:0xffa94d}),plainBraziers,b=>{dummy.position.set(b.x,1.2,b.y);}));
+ if(layer!=='ground')out.push(...buildRotatedParts(arena,models));
  return out;
 }

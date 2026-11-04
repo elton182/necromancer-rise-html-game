@@ -1,5 +1,6 @@
 import {dealDamage} from './combat.mjs';
 import {lineClear,moveCircle} from './terrain.mjs';
+import {warriorActionLearned} from './warrior-model.mjs';
 export const COMBO_WINDOW=.45;
 export const THRUST_TIMING={animation:11/30,advanceStart:6/30,impact:11/30,recovery:.12};
 export const WARRIOR_ACTIONS=[
@@ -12,7 +13,7 @@ export const WARRIOR_ACTIONS=[
 ];
 export function warriorAction(w,index=0,aim=w.aim){
  const a=WARRIOR_ACTIONS[index],p=w.player;
- if(index===3||index===4&&!w.warriorRanks?.tornado||index===5&&!w.warriorRanks?.shieldThrow||[2,5].includes(index)&&(!w.equipment?.shield||w.warriorShieldFlight))return false;
+ if(index===3||!warriorActionLearned(index,w.warriorRanks)||[2,5].includes(index)&&(!w.equipment?.shield||w.warriorShieldFlight))return false;
  if(!a||w.paused||p.hp<=0||p.dead||w.dash.remaining>0)return false;
  const dx=aim.x-p.x,dy=aim.y-p.y,d=Math.hypot(dx,dy);
  if(!Number.isFinite(d)||d<1e-9||index===1&&p.rootTime>0)return false;

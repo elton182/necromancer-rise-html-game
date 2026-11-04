@@ -9,8 +9,8 @@ Cada clique executa um único corte. O próximo clique avança a sequência se o
 | Comando | Ação | Regra inicial |
 |---|---|---|
 | Clique / 1 | Três cortes | Sem custo; durações de 0,60 / 0,533 / 0,40 s por corte. Impacto em 0,367 / 0,267 / 0,267 s após iniciar cada corte; 55%, 65% e 90% do dano físico; alcance 2,6; arco 144°. |
-| Botão direito / 2 | Estocada avançada | 20 vigor, recarga 5 s. Avança até 5 unidades entre 0,20 e 0,367 s, buscando terminar a 2,2 unidades da mira. Impacto no frame 12 (0,367 s), 220% de dano. Cápsula com raio 0,85 cobre todo o avanço até 3,4 unidades à frente da posição final, incluindo o raio do alvo. Não atravessa sólidos nem concede invulnerabilidade. A pose final é mantida por 0,12 s de recuperação; total de 0,487 s. |
-| 3 / Q | Golpe de escudo | 15 vigor, recarga 7 s. Impacto em 0,3 s, 130% de dano; alcance 1,8 e arco 117°. Empurra 0,8 unidade respeitando colisões. Recuperação total 0,8 s. |
+| Botão direito / 2 | Estocada avançada | Requer um ponto em Estocada. 20 vigor, recarga 5 s. Avança até 5 unidades entre 0,20 e 0,367 s, buscando terminar a 2,2 unidades da mira. Impacto no frame 12 (0,367 s), 220% de dano. Cápsula com raio 0,85 cobre todo o avanço até 3,4 unidades à frente da posição final, incluindo o raio do alvo. Não atravessa sólidos nem concede invulnerabilidade. A pose final é mantida por 0,12 s de recuperação; total de 0,487 s. |
+| 3 / Q | Golpe de escudo | Requer um ponto em Golpe de escudo. 15 vigor, recarga 7 s. Impacto em 0,3 s, 130% de dano; alcance 1,8 e arco 117°. Empurra 0,8 unidade respeitando colisões. Recuperação total 0,8 s. |
 | R / 5 (manter) | Corte tornado | Requer nível 6 e um ponto em Estocada. Custa 5 vigor ao iniciar e 12/s durante o giro. Acerta em 360°, raio 2,7, por 65% do dano a cada 0,3 s (primeiro impacto após 0,15 s). Movimento a 55% da velocidade; termina ao soltar, pausar, esquivar, morrer ou esgotar vigor. Recarga de 3 s ao encerrar. |
 | T / 6 | Arremesso de escudo | Requer nível 6 e um ponto em Golpe de escudo. Custa 20 vigor, recarga 7 s. Lança após 0,18 s; viaja a 14 u/s por 0,55 s e retorna ao jogador, ou volta antes ao atingir sólido. Cada alvo recebe 120% de dano uma vez na ida e outra na volta. Sem bloqueio ou golpe de escudo durante o voo. |
 | C / E / 4 | Esquiva | Reutiliza a esquiva existente. |
@@ -19,7 +19,7 @@ Alcances incluem o raio do alvo. Paredes bloqueiam os impactos. O avanço físic
 
 ## Árvore, atributos e equipamentos
 
-O treinamento tem três ramos: **Espada**, **Escudo** e **Passivas**. Três pontos por nível, incluindo o nível 1. O orçamento é recalculado pelo nível: personagens existentes recebem automaticamente os pontos adicionais, preservando os investimentos. Cortes, Estocada e Golpe de escudo continuam utilizáveis sem investimento; seus nós melhoram o dano em 6%, 10% e 10% por ponto (limites 5, 3 e 3). Tornado e Arremesso são desbloqueios de um ponto. Investimentos em `character.warriorRanks` respeitam nível, pré-requisito e orçamento ao carregar; os três IDs antigos foram preservados.
+O treinamento tem três ramos: **Espada**, **Escudo** e **Passivas**. Três pontos por nível, incluindo o nível 1. O orçamento é recalculado pelo nível: personagens existentes recebem automaticamente os pontos adicionais, preservando os investimentos. Só os Cortes e a Esquiva funcionam sem investimento. O primeiro ponto em Estocada ou Golpe de escudo libera a habilidade; até lá, o slot mostra "Libere na árvore", e o comando não gasta vigor nem inicia recarga. Os nós de Cortes, Estocada e Golpe de escudo melhoram o dano em 6%, 10% e 10% por ponto (limites 5, 3 e 3), incluindo o primeiro. Tornado e Arremesso são desbloqueios de um ponto. Personagens que já gastaram todos os pontos em outros nós só liberam essas habilidades com os pontos do próximo nível. Investimentos em `character.warriorRanks` respeitam nível, pré-requisito e orçamento ao carregar; os três IDs antigos foram preservados.
 
 Passivas, com até cinco pontos cada:
 
@@ -55,7 +55,7 @@ A guarda revisada usa alvos explícitos para braços e pernas em `warrior_pose.p
 
 Fonte reproduzível: [warrior_motion.py](../blender/scripts/warrior_motion.py). Cena: [warrior.blend](../blender/models/warrior.blend). Export: [warrior.glb](../blender/exports/warrior.glb). Nesta entrega, a geração e as inspeções foram feitas pelo MCP do Blender. O script preserva uma cópia da sessão em `blender/backups/` e exporta somente o personagem selecionado.
 
-Clipes: `idle`, `walk`, `slash_1`, `slash_2`, `slash_3`, `thrust`, `shield_bash`, `death`. Os três cortes variam preparação, torção e trajetória; a estocada alinha a lâmina para a frente no impacto. Registro em `v2/assets/models.json`; distribuição por `node v2/tools/build.cjs`.
+Clipes: `idle`, `walk`, `strafe_left`, `strafe_right`, `slash_1`, `slash_2`, `slash_3`, `thrust`, `shield_bash`, `death`. Os três cortes variam preparação, torção e trajetória; a estocada alinha a lâmina para a frente no impacto. Registro em `v2/assets/models.json`; distribuição por `node v2/tools/build.cjs`.
 
 ## Verificação e limites
 
@@ -88,6 +88,8 @@ A auditoria de poses registra a amplitude real das articulações por clipe em `
 ### Caminhada aprovada pelo usuário
 
 As cinco poses manuais do braço direito foram preservadas em `blender/reference/warrior/walk_user_poses.json` e distribuídas em um ciclo de 25 frames por `warrior_walk_refine.py`. O braço direito acompanha o pé esquerdo à frente; o escudo acompanha o lado oposto com 20% da oscilação anterior. O gerador reaplica esses dados manuais nas regenerações.
+
+As pernas à mostra denunciavam a cadência de 5,3 passos por segundo a 4 u/s, e a velocidade da perna vem de velocidade ÷ passada, não do número de quadros. `warrior_walk_stride.py` alongou a passada para 2,2 u (3,6 passos por segundo), com cada pé no chão em 34% do ciclo e um breve instante no ar; os pés ficam a 0,39 u um do outro na lateral, sob os quadris; tronco e braços não mudaram. O passo lateral tem 1,8 u por ciclo (4,4 passos por segundo). Os dois valores ficam em `stride` e `strafeStride`, em `v2/assets/models.json`, e precisam concordar com os scripts para o pé não escorregar.
 
 ### Integração das edições manuais
 

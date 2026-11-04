@@ -6,7 +6,7 @@ import {normalizeSave,freshSave,createSaveStore} from '../scripts/save-model.mjs
 import EQ from '../scripts/warrior-equipment.mjs';
 import {normalizeWarrior} from '../scripts/warrior-model.mjs';
 import {applyAttributes} from '../scripts/progression.mjs';
-function field(){const w=createWorld({horde:0,character:{classId:'warrior',equipment:{shield:EQ.generate(1,null,()=>.2,'shield')}}});w.actors=[w.player];Object.assign(w.player,{x:0,y:0});w.aim={x:9,y:0};w.arena={bounds:{minX:-15,maxX:15,minY:-15,maxY:15},solids:[]};return w;}
+function field(){const w=createWorld({horde:0,character:{classId:'warrior',warriorRanks:{thrust:1,bash:1},equipment:{shield:EQ.generate(1,null,()=>.2,'shield')}}});w.actors=[w.player];Object.assign(w.player,{x:0,y:0});w.aim={x:9,y:0};w.arena={bounds:{minX:-15,maxX:15,minY:-15,maxY:15},solids:[]};return w;}
 function enemy(w,x,y=0){const e={id:w.nextId++,team:'enemy',x,y,radius:.3,hp:1000,maxHp:1000,animation:'idle'};w.actors.push(e);return e;}
 const durations=WARRIOR_ACTIONS[0].durations;
 function advance(w,dt){if(w.paused)return;w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);tickWarrior(w,dt);}
@@ -39,7 +39,7 @@ test('estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo',()
  const w=field(),crossed=enemy(w,1,.7),tip=enemy(w,8,.8),outside=enemy(w,4,1.3),behind=enemy(w,-2);
  assert.ok(warriorAction(w,1));advance(w,THRUST_TIMING.impact-.01);
  assert.equal(crossed.hp,1000);assert.equal(tip.hp,1000);advance(w,.01);
- const hit=1000-Math.floor(w.player.damage*2.2);
+ const hit=1000-Math.floor(w.player.damage*2.2*1.1); // field() investe um ponto em Estocada.
  assert.equal(crossed.hp,hit);assert.equal(tip.hp,hit);assert.equal(outside.hp,1000);assert.equal(behind.hp,1000);
  assert.equal(warriorPose(w).progress,1);assert.ok(w.warriorAction);advance(w,THRUST_TIMING.recovery+.01);
  assert.equal(w.warriorAction,null);assert.equal(crossed.hp,hit);assert.equal(tip.hp,hit);

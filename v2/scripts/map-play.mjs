@@ -1,26 +1,24 @@
-// Jogar um mapa personalizado: arena do mapa + inimigos nos pontos marcados no editor.
+// Jogar um mapa personalizado: arena do mapa + grupos de inimigos configurados no editor.
 // É um campo de treino com cenário próprio: sem fases, chefe nem missão. Recompensas seguem as do treino.
 import {clean} from './campaign.mjs';
-import {spawnEnemy} from './enemies.mjs';
 import {resolveMap,toArena} from './map-model.mjs';
 import {resolvePosition} from './terrain.mjs';
+import {makeGroups,spawnTypes,tickGroups} from './map-spawns.mjs';
 
 export const isCustomMap=s=>s.scene==='training'&&s.world.adventure?.kind==='custom-map';
 // Abre pelo menu, pela vila ou pelo treino livre; campanhas, missões e modos de ondas em andamento ficam de fora.
 export const canLaunch=s=>['village','menu'].includes(s.scene)||s.scene==='training'&&!s.world.adventure;
 const PLAYER_RADIUS=.45;
 
-// Inimigos de cada ponto em espiral ao redor dele; `resolvePosition` empurra para fora de colisores.
+// Rearma os grupos; os que nascem ao entrar aparecem já neste quadro. Devolve o total previsto na primeira onda de todos.
 export function populateMap(w){
  const run=w.adventure;if(run?.kind!=='custom-map')return 0;
  w.actors=w.actors.filter(a=>a.team!=='enemy');w.hostileShots=[];w.hostileZones=[];
- let total=0;
- for(const spawn of run.spawns)for(let i=0;i<spawn.count;i++){
-  const angle=i*2.399,distance=i?.55*Math.sqrt(i)+.4:0;
-  spawnEnemy(w,spawn.type,spawn.x+Math.cos(angle)*distance,spawn.y+Math.sin(angle)*distance,{wave:run.level});total++;
- }
- run.enemies=total;return total;
+ run.groups=makeGroups(run.spawns);tickGroups(w,run.groups,0,{level:run.level});
+ run.enemies=run.spawns.reduce((n,s)=>n+spawnTypes(s).length*(s.waves||1),0);
+ return run.enemies;
 }
+export function tickCustomMap(s,dt){const w=s.world,run=w.adventure;if(run?.groups)tickGroups(w,run.groups,dt,{level:run.level});}
 // Entra no mapa a partir do menu ou da vila. `lookup` resolve mapas base guardados na biblioteca.
 export function launchMap(s,map,lookup){
  if(!canLaunch(s))return {ok:false,message:'Termine ou saia da missão atual para jogar um mapa.'};

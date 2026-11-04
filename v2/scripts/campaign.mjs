@@ -1,6 +1,7 @@
 import {inVillageHub,rememberVillage,villageServices} from './village-services.mjs';
 import {launchPrologue,tickPrologue} from './prologue.mjs';
 import {launchWorld,tickWorld} from './campaign-world.mjs';
+import {tickCustomMap} from './map-play.mjs';
 import {stageScale,waveCount} from './campaign-rules.mjs';
 import {available} from './actions.mjs';
 export {D} from './campaign-model.mjs';
@@ -71,9 +72,10 @@ function tickArena(s,dt){const w=s.world,r=w.adventure;
 export function returnAdventure(s){if(s.save.campaign.prologue&&s.save.campaign.prologue.stage!=='done')return launchPrologue(s);if(s.save.campaign.world){if(s.world.player.hp<=0)s.world.drops=[];return launchWorld(s);}const r=s.world.adventure,note=r?.conquest?(r.result||'Valdoria: tentativa encerrada; o progresso foi preservado.'):r?.kind==='arena'||r?.kind==='expedition'?summary(r,s.save.character.waveProgress):null;if(r&&!r.done&&s.world.player.hp<=0){s.world.drops=[];}const result=s.save.campaign.village?enterVillage(s):campaignMap(s);if(note)s.world.notice=note;return result;}
 export function tickAdventure(s,dt){const w=s.world,r=w.adventure;if(!r||w.paused||r.done||w.player.hp<=0)return;
  if(r.kind==='prologue')return tickPrologue(s,dt);
- if(r.kind==='campaign-world')return tickWorld(s);
+ if(r.kind==='campaign-world')return tickWorld(s,dt);
+ if(r.kind==='custom-map')return tickCustomMap(s,dt);
  if(r.kind==='arena')return tickArena(s,dt);
- if(r.kind==='expedition'||r.kind==='lab'||r.kind==='siege'||r.kind==='custom-map')return;
+ if(r.kind==='expedition'||r.kind==='lab'||r.kind==='siege')return;
  for(const p of r.queue)p.time-=dt;const ready=r.queue.filter(p=>p.time<=0);r.queue=r.queue.filter(p=>p.time>0);for(const p of ready){const e=campEnemy(s,p.index,p.x,p.y,p.room,r.kind==='mission');Object.assign(e,resolvePosition(e,e.radius,w.arena));}
  if(r.queue.length)return;
  if(r.n===1){for(let i=0;i<r.rooms.length;i++){const room=r.rooms[i];if(room.state==='idle'&&w.player.x>room.x0+1.8&&w.player.x<room.x1-1.8){room.state='active';w.notice='Sala selada · derrote todos para abrir as portas';r.active=i;const open=[...r.doors];if(i>0)open[i-1]=false;if(i<3)open[i]=false;doors(w,open);room.wait=.9;}

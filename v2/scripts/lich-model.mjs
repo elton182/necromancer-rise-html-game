@@ -98,7 +98,7 @@ export function exitLich(w,reason='manual'){
  const l=w.lich;if(!l||l.form==='none')return false;
  const p=w.player;
  p.mpRegen=l.mpRegen;p.mp=Math.min(p.maxMp,l.mpStored);
- if(reason!=='death')p.model='player';   // na morte o Lich cai como Lich; troca de cena recria o ator
+ if(reason!=='death')p.model='necromancer';   // na morte o Lich cai como Lich; troca de cena recria o ator
  for(const e of w.actors)delete e.reaped;
  Object.assign(l,{form:'none',souls:0,action:null,combo:null,scythe:null,invuln:false,moveFactor:1,pose:null,transformTime:0,cooldowns:{},
   entryCooldown:reason==='death'||reason==='scene'?0:LICH.enter.cooldown});
@@ -289,7 +289,7 @@ export function tickLich(w,dt){
  while(left>1e-9){
   const h=Math.min(left,1/60);left-=h;
   l.entryCooldown=Math.max(0,l.entryCooldown-h);
-  if(l.form==='none'){if(w.player.model==='lich'&&w.player.hp>0)w.player.model='player';continue;}
+  if(l.form==='none'){if(w.player.model==='lich'&&w.player.hp>0)w.player.model='necromancer';continue;}
   const p=w.player;
   p.mp=l.mpStored;
   if(l.form==='transform'){

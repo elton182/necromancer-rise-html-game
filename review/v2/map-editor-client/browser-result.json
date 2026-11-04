@@ -1,0 +1,29 @@
+{
+ "models": 10,
+ "metrics": {
+  "mapsMs": 5,
+  "modelsMs": 91,
+  "readyMs": 118
+ },
+ "fileBytes": 664,
+ "game": {
+  "name": "Caminho de Jacarandá",
+  "rivers": true,
+  "tents": 1,
+  "bundle": [
+   "campaign-trail"
+  ],
+  "scene": "training",
+  "enemyHp": 2,
+  "enemyXp": 0.5
+ },
+ "publishLabel": "Publicar no jogo · 4 mapas",
+ "publishedWidth": 60,
+ "publishFailure": "A publicação falhou: build quebrado",
+ "errorShown": true,
+ "retried": {
+  "w": 80,
+  "h": 100
+ },
+ "errors": []
+}

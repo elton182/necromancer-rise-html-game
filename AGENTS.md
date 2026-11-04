@@ -45,6 +45,7 @@ Cada arquivo novo vai para a pasta do seu tipo. Não salve assets, testes, captu
 | Páginas de teste, atalhos `?playerModel=` e ferramentas de inspeção | `tools/` |
 | Assets carregados pelo jogo fora do HTML (retratos, vila, catálogos de personagens) | `assets/<área>/` |
 | Scripts Blender, cenas, exports, atlas, quadros, prévias e notas de asset | Subpastas de `blender/`, conforme `blender/AGENTS.md` |
+| Mapas editados pelo cliente do editor (`node v2/tools/map-editor-server.cjs`) | `v2/assets/maps/` (campanha, embutidos pelo build) e `v2/assets/maps/custom/` (pessoais) |
 | Evidências de validação: capturas, logs de teste e JSON de resultado | `review/`; a v2 grava em `review/v2/<etapa>/`; use subpasta quando a entrega tiver muitos arquivos |
 | Documentação | `docs/` (guias da v2 em `docs/v2-*.md`, regras da versão legada em `docs/mecanicas/`, conceitos em `docs/concepts/`); plano da v2 em `v2/plano-migracao.md` |
 | Backups do HTML e arquivos à espera de remoção | `blender/backups/` (ignorado, usado pelos empacotadores) ou `_to_delete/` |

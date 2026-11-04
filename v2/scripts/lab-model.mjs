@@ -40,7 +40,7 @@ export const CATALOG=[
  ['Inimigos',[['warrior','Guerreiro'],['enemyArcher','Arqueiro'],['brute','Bruto'],['livingMage','Mago Vivo'],['cryptHound','Cão de Cripta'],['warAcolyte','Acólito de Guerra'],['enemyThief','Ladrão'],['enemyGriffin','Humanoide Grifo'],['enemySpider','Aranha'],['enemyRogue','Ladino Arqueiro'],['enemyOrc','Orc']]],
  ['Chefes',[['fallenKing','Rei Caído'],['lich','Lich']]],
  ['Lacaios',[['zombie','Zumbi'],['skeleton','Esqueleto'],['archer','Arqueiro Ósseo'],['specter','Espectro'],['abom','Abominação']]],
- ['Jogador',[['player','Zephyr']]],
+ ['Jogador',[['necromancer','Zephyr']]],
  ['Moradores',[['npcBram','Bram'],['npcLysa','Lysa'],['npcTilda','Tilda'],['npcMerchant','Mercador']]],
 ];
 export const catalog=available=>CATALOG.map(([group,items])=>({group,items:items.filter(([id])=>available.includes(id)).map(([id,label])=>({id,label}))})).filter(g=>g.items.length);

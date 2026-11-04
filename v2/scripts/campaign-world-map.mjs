@@ -1,5 +1,6 @@
 import {WORLD_SIZE,WORLD_POINTS,WORLD_ROUTES,WORLD_ENCOUNTERS,WORLD_PILES} from './campaign-world-model.mjs';
 import {villageArena} from './village-map.mjs';
+import {flattenBake} from './map-terrain.mjs';
 
 // A vila salva conserva a mesma planta da defesa, dentro do mundo contínuo.
 export function withIntactVillage(arena){
@@ -9,7 +10,7 @@ export function withIntactVillage(arena){
   solids:village.solids.map(s=>({...shift(s),settlement:true})),
   decor:Object.fromEntries(Object.entries(village.decor).map(([key,list])=>[key,list.map(shift)])),
   roads:village.roads.map(r=>({...r,x0:r.x0+home.x,x1:r.x1+home.x,y0:r.y0+home.y,y1:r.y1+home.y})),plaza:shift(village.plaza)};
- return {...arena,id:arena.id+'-intact',settlement,solids:[...arena.solids.filter(s=>!inside(s)),...settlement.solids],
+ return {...arena,id:arena.id+'-intact',settlement,terrain:arena.terrain?flattenBake(arena.terrain,{minX:34,maxX:86,minY:36,maxY:98}):null,solids:[...arena.solids.filter(s=>!inside(s)),...settlement.solids],
   decor:Object.fromEntries(Object.entries(arena.decor).map(([key,list])=>[key,list.filter(o=>!inside(o))]))};
 }
 // A campanha e o editor usam a mesma planta. Cópias editadas continuam independentes.
@@ -149,5 +150,5 @@ export function campaignWorldMap(){
   if(n%3===0)add('bush',+(x+1.2).toFixed(2),+(y+.8).toFixed(2),{r:.7});n++;
  }
  objects.forEach((o,i)=>o.id='world-'+i);
- return {name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:WORLD_ENCOUNTERS.map(({id,x,y,count,type})=>({id,x,y,count,type})),objects};
+ return {name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:WORLD_ENCOUNTERS.map(({id,x,y,count,type,mix,wave,leader,quest})=>({id,x,y,count,type,mix,level:wave,leader,quest,trigger:'near',radius:18,idle:true,spread:2.2})),objects};
 }

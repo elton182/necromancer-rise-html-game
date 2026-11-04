@@ -24,6 +24,7 @@ node v2/tools/build.cjs
 | Clipe | Quadros | Loop | Uso proposto |
 | --- | --- | --- | --- |
 | `idle`, `walk` | 48, 24 | sim | Repouso e deslocamento no lugar |
+| `strafe_left`, `strafe_right` | 24, 24 | sim | Deslocamento de lado em relação à mira: sem passos, inclina o corpo para onde vai |
 | `slash` | 18 | não | Ceifada (contato ≈ 52%) |
 | `combo_1`, `combo_2` | 18 | não | Golpes 1 e 2 da Colheita Tripla (2 com a lâmina invertida) |
 | `combo_3` | 30 | não | Finalizador: foice ao alto, giro de 360° e pancada à frente |

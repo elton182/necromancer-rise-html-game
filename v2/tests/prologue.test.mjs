@@ -7,11 +7,54 @@ import {normalizePrologue,travelLine} from '../scripts/prologue-model.mjs';
 import {prologueArena} from '../scripts/prologue-map.mjs';
 import {dealDamage} from '../scripts/combat.mjs';
 import {lineClear,overlaps} from '../scripts/terrain.mjs';
+import {launchPrologue} from '../scripts/prologue.mjs';
+import {normalizeMap} from '../scripts/map-model.mjs';
+import {useCampaignMaps} from '../scripts/campaign-maps.mjs';
 const fresh=()=>{const s=createSession();startCampaign(s);return s;};
 const talk=s=>{for(let i=0;i<10&&s.world.adventure?.dialogue;i++)assert.ok(nextPrologueDialogue(s));};
 const clear=s=>{for(const e of [...s.world.actors])if(e.prologueEnemy&&e.hp>0)dealDamage(s.world,e,1e8,s.world.player);tickAdventure(s,.1);};
 const go=(s,x,y)=>Object.assign(s.world.player,{x,y});
 const cave=s=>{talk(s);clear(s);talk(s);for(let i=0;i<22;i++)stepSession(s,.25,{x:1,y:1});assert.equal(s.save.campaign.prologue.stage,'cave');talk(s);};
+// Regressão: sala lateral com grupo de aproximação deixava ordens e saída travadas para sempre.
+const group=(id,x,y,extra={})=>({id,x,y,count:1,type:6,mix:null,level:1,leader:null,trigger:'start',radius:18,delay:0,waves:1,interval:1,respawn:0,idle:false,spread:0,quest:false,...extra});
+const killNear=(s,x,y,reach=19)=>{for(const e of [...s.world.actors])if(e.team==='enemy'&&e.hp>0&&Math.hypot(e.x-x,e.y-y)<reach)dealDamage(s.world,e,1e8,s.world.player);};
+const inCave=(t,spawns,extra={})=>{
+ if(spawns){useCampaignMaps(null,{maps:[{format:'necromancer-rise-map',version:1,id:'campaign-cave',name:'Caverna',base:'builtin:arandu-cave',campaign:'cave',hidden:[],objects:[],biome:null,size:null,start:null,level:1,terrain:null,style:null,spawns,...extra}]});t.after(()=>useCampaignMaps(null));}
+ const s=createSession();startCampaign(s);Object.assign(s.save.campaign.prologue,{stage:'cave',introRead:true});launchPrologue(s);talk(s);return s;
+};
+test('caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais',t=>{
+ const s=inCave(t,[group('guarda',0,4),group('segunda-onda',4,4,{waves:2}),group('lateral-dormindo',40,103,{trigger:'near',idle:true}),group('lateral-acordada',-44,85,{idle:true})]);
+ const state=id=>s.world.adventure.groups.find(g=>g.id===id).state,tick=()=>{tickAdventure(s,.25);talk(s);};
+ go(s,0,2.5);tick();assert.equal(interactPrologue(s),false,'com guardas vivos, as ordens seguem fechadas');assert.match(s.world.notice,/guardam os papéis/);
+ go(s,0,-22);assert.equal(interactPrologue(s),false,'a saída espera as ordens');
+ go(s,0,2.5);killNear(s,0,2.5);tick();assert.equal(s.save.campaign.prologue.caveCleared,false,'falta a segunda onda de um guarda');
+ for(let i=0;i<8;i++)tick();killNear(s,0,2.5);tick();tick();
+ assert.equal(state('lateral-dormindo'),'dormant');assert.ok(s.world.actors.some(a=>a.worldGroup==='lateral-acordada'&&a.hp>0),'o grupo distante segue vivo');
+ assert.equal(s.save.campaign.prologue.caveCleared,true);assert.ok(interactPrologue(s));talk(s);assert.equal(s.save.campaign.prologue.clue,true);
+ go(s,0,-22);assert.ok(interactPrologue(s));talk(s);assert.equal(s.save.campaign.prologue.stage,'trail');
+});
+test('vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam',t=>{
+ const kill=extra=>{
+  const s=inCave(t,[group('a',0,4,{waves:2,interval:0})],extra),first=s.world.actors.find(a=>a.worldGroup==='a'),before=s.save.character.exp,base={hp:first.maxHp,xp:first.xp};
+  dealDamage(s.world,first,1e8,s.world.player);const gained=s.save.character.exp-before,gold=s.world.drops.filter(d=>d.kind==='gold').reduce((n,d)=>n+d.amount,0);
+  for(let i=0;i<4;i++){tickAdventure(s,.25);talk(s);}
+  return {...base,gained,gold,secondWave:s.world.actors.find(a=>a.worldGroup==='a'&&a.hp>0)};
+ };
+ const plain=kill({}),scaled=kill({enemyHp:1.5,enemyXp:.25});
+ assert.equal(plain.gained,plain.xp,'sem ajuste, a experiência é a do inimigo');
+ assert.equal(scaled.hp,Math.round(plain.hp*1.5));assert.equal(scaled.gained,Math.round(plain.xp*.25));assert.equal(scaled.gold,plain.gold,'o ouro não muda');
+ assert.equal(scaled.secondWave.maxHp,scaled.hp,'a segunda onda também');assert.equal(scaled.secondWave.xpScale,.25);
+ const {map}=normalizeMap({name:'x',enemyHp:99,enemyXp:'nada',objects:[]});assert.equal(map.enemyHp,10);assert.equal(map.enemyXp,1,'valor inválido volta ao padrão');
+ assert.equal(normalizeMap({name:'x',objects:[]}).map.enemyHp,1,'mapa antigo não muda');
+});
+test('caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais',t=>{
+ const s=inCave(t,null),guard=s.world.actors.find(a=>a.prologueEnemy&&a.prologueBoss);assert.ok(guard,'o capitão guarda as ordens');
+ assert.ok(s.world.actors.some(a=>a.prologueEnemy&&Math.hypot(a.x,a.y)>30),'há bandidos em outras salas');
+ for(const e of s.world.actors)if(e.prologueEnemy&&e!==guard&&Math.hypot(e.x,e.y)<20)dealDamage(s.world,e,1e8,s.world.player);
+ Object.assign(guard,{x:0,y:60});tickAdventure(s,.1);talk(s);assert.equal(s.save.campaign.prologue.caveCleared,false);
+ dealDamage(s.world,guard,1e8,s.world.player);tickAdventure(s,.1);talk(s);assert.equal(s.save.campaign.prologue.caveCleared,true);
+ go(s,0,2.5);assert.ok(interactPrologue(s));
+});
 test('nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior',()=>{
  const s=fresh();assert.equal(s.save.campaign.prologue.stage,'travel');assert.equal(s.world.adventure.kind,'prologue');assert.equal(s.world.paused,true);assert.ok(s.world.adventure.intro);assert.ok(s.world.arena.caravans.length);
  const old=createSession();startCampaign(old,{opening:false});const resumed=createSession(snapshot(old));campaignMap(resumed);assert.equal(resumed.world.adventure.kind,'campaign-world');assert.equal(resumed.save.campaign.prologue,null);

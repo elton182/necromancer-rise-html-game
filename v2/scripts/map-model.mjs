@@ -5,11 +5,12 @@ import {campaignWorldMap} from './campaign-world-map.mjs';
 // o início e os inimigos, e só guarda o que mudou (objetos novos, objetos da base ocultos e campos substituídos).
 // `resolveMap` achata a herança; `toArena` converte para a arena da v2 (colisores em `solids`, enfeites em `decor`).
 import {PALETTES} from './expedition-map.mjs';
-import {TRAINING_ARENA,overlaps} from './terrain.mjs';
+import {TRAINING_ARENA,overlaps,solidDistance} from './terrain.mjs';
 import {forestArena} from './forest-map.mjs';
+import {normalizeTerrain,bakeTerrain,heightAt,TERRAIN_RULES} from './map-terrain.mjs';
 
 export const MAP_FORMAT='necromancer-rise-map',BUNDLE_FORMAT='necromancer-rise-maps',MAP_VERSION=1,STORAGE_KEY='necromancer_v2_maps';
-export const LIMITS={minSize:12,maxSize:360,maxObjects:2000,maxSpawns:40,maxCount:30,maxMaps:60,maxName:40,maxDepth:5,maxLevel:60,maxBytes:2e6};
+export const LIMITS={minSize:12,maxSize:360,maxObjects:2000,maxSpawns:40,maxCount:30,maxMaps:60,maxName:40,maxDepth:5,maxLevel:60,maxBytes:4e6};
 export const ENEMY_TYPE_COUNT=11;
 export const BIOMES={cave:'Caverna',grave:'Cemitério',forest:'Floresta',desert:'Deserto',snow:'Tundra',village:'Vila',swamp:'Pântano',river:'Rio',mountain:'Montanha'};
 export const DEFAULT_BIOME='forest';
@@ -53,10 +54,82 @@ export const PROPS={
  crate:{label:'Caixa',group:'Enfeites',shape:'circle',decor:'misc',dims:['s'],r:.4,s:1,color:'#a07a45'},
  brazier:{label:'Brasa',group:'Enfeites',shape:'circle',decor:'braziers',dims:[],r:.3,color:'#ffa94d'},
  water:{label:'Água',group:'Chão',shape:'circle',decor:'water',dims:['r'],r:3,color:'#487d87'},
- path:{label:'Trilha',group:'Chão',shape:'circle',decor:'path',dims:['r'],r:1.5,color:'#8a7650'}
+ path:{label:'Trilha',group:'Chão',shape:'circle',decor:'path',dims:['r'],r:1.5,color:'#8a7650'},
+ path_square:{label:'Trilha de cantos retos',group:'Chão',shape:'box',decor:'pathBox',dims:['w','d'],w:4,d:4,rotates:true,pickH:.05,color:'#8a7650'}
 };
+// Peças de kit: `kit` nomeia modelo e peça; as medidas padrão são as da peça no GLB, e o objeto escala em relação a elas.
+const kitProp=(model,part,label,group,extra)=>({label,group,kit:{model,part},dims:[],color:'#9a9486',shape:'circle',r:.5,...extra});
+const solidCircle=(r,h)=>({solid:true,shape:'circle',dims:['r','h'],r,h}),solidBox=(w,d,h)=>({solid:true,shape:'box',dims:['w','d','h'],w,d,h}),decor=(r=.5)=>({shape:'circle',dims:['s'],r,s:1});
+Object.assign(PROPS,{
+ bridge:kitProp('mapKit','bridge','Ponte de madeira','Água',{shape:'box',dims:['w','d'],pickH:1.4,w:10,d:3.2,bridge:true,float:true,color:'#a07a45'}),
+ stone_bridge:kitProp('mapKit','stone_bridge','Ponte de pedra','Água',{shape:'box',dims:['w','d'],pickH:1.4,w:12,d:4,bridge:true,float:true,color:'#8b8d86'}),
+ dock:kitProp('mapKit','dock','Píer','Água',{shape:'box',dims:['w','d'],pickH:.8,w:7,d:2.6,bridge:true,flat:true,float:true,color:'#8a6a45'}),
+ reeds:kitProp('mapKit','reeds','Juncos','Água',{...decor(.7),pickH:1.3,color:'#6d8a48'}),
+ lily:kitProp('mapKit','lily','Nenúfares','Água',{...decor(.9),float:true,color:'#4f9a55'}),
+ stepping:kitProp('mapKit','stepping','Pedras de travessia','Água',{...decor(1.2),color:'#8b8d86'}),
+ shore_rock:kitProp('mapKit','shore_rock','Pedra de margem','Água',{...solidCircle(.8,.7),color:'#7c8079'}),
+ cliff:kitProp('mapKit','cliff','Rochedo','Relevo',{...solidCircle(2,3.6),color:'#6e6c66'}),
+ boulder:kitProp('mapKit','boulder','Matacão','Relevo',{...solidCircle(1.1,1.5),color:'#7d7f78'}),
+ cairn:kitProp('mapKit','cairn','Pilha de pedras','Relevo',{...solidCircle(.5,.9),color:'#8d8f88'}),
+ tent:kitProp('mapKit','tent','Tenda','Acampamento',{...solidCircle(1.6,2.2),color:'#b39a6c'}),
+ campfire:kitProp('mapKit','campfire','Fogueira','Acampamento',{...solidCircle(.55,.6),color:'#d9843a'}),
+ palisade:kitProp('mapKit','palisade','Paliçada','Acampamento',{...solidBox(4,.5,2.4),color:'#7a5a38'}),
+ watchtower:kitProp('mapKit','watchtower','Torre de vigia','Acampamento',{...solidCircle(1.4,6),color:'#7a5a38'}),
+ hay:kitProp('mapKit','hay','Fardo de feno','Acampamento',{...solidCircle(.6,.9),color:'#c9a94f'}),
+ log_pile:kitProp('mapKit','log_pile','Pilha de toras','Acampamento',{...solidBox(3,1.4,1.2),color:'#7a5a38'}),
+ stone_wall:kitProp('mapKit','stone_wall','Muro de pedra','Ruínas',{...solidBox(4,.8,1.6),color:'#85857c'}),
+ arch:kitProp('mapKit','arch','Arco de pedra','Ruínas',{...decor(2.2),pickH:3.6,color:'#9b9a90'}),
+ broken_column:kitProp('mapKit','broken_column','Coluna partida','Ruínas',{...solidCircle(.7,1.8),color:'#b3ac98'}),
+ statue:kitProp('mapKit','statue','Estátua velada','Ruínas',{...solidCircle(.8,3.4),color:'#8f8e88'}),
+ obelisk:kitProp('mapKit','obelisk','Obelisco rúnico','Ruínas',{...solidCircle(.7,4.4),color:'#5e5a6e'}),
+ grave_cross:kitProp('mapKit','grave_cross','Cruz de sepultura','Ruínas',{...decor(.4),color:'#8d8d97'}),
+ dead_tree:kitProp('mapKit','dead_tree','Árvore morta','Natureza',{...solidCircle(.4,4.5),color:'#5c4a3a'}),
+ fern:kitProp('mapKit','fern','Samambaia','Natureza',{...decor(.6),color:'#4f8a3f'}),
+ mushrooms:kitProp('mapKit','mushrooms','Cogumelos','Natureza',{...decor(.4),color:'#b8574a'}),
+ signpost:kitProp('mapKit','signpost','Placa de caminho','Povoado',{...solidCircle(.2,2),color:'#8a6a45'}),
+ market_stall:kitProp('mapKit','market_stall','Barraca de feira','Povoado',{...solidBox(3,2,2.4),color:'#a8563f'}),
+ bench:kitProp('mapKit','bench','Banco de madeira','Povoado',{...decor(.7),color:'#8a6a45'}),
+ well:kitProp('villageKit','well','Poço','Povoado',{...solidCircle(1,2.7),color:'#8d8f88'}),
+ lamp:kitProp('villageKit','lamp','Poste com lanterna','Povoado',{...solidCircle(.18,2.7),color:'#c9a94f'}),
+ fence:kitProp('mapKit','fence','Cerca','Povoado',{...solidBox(3,.2,1),color:'#8a6a45'}),
+ ruined_well:kitProp('ruinedVillageKit','well','Poço abandonado','Ruínas',{...solidCircle(1,2.7),color:'#7d7f78'}),
+ ruined_lamp:kitProp('ruinedVillageKit','lamp','Poste apagado','Ruínas',{...solidCircle(.18,2.7),color:'#6e6c66'}),
+ open_cart:kitProp('caravanKit','caravan_open','Carroça aberta','Povoado',{...solidBox(3,5.3,1.5),color:'#b98b58'}),
+ wheel:kitProp('caravanKit','caravan_wheel','Roda solta','Povoado',{...decor(.65),color:'#7a5632'}),
+ banner:kitProp('caravanKit','bandit_banner','Estandarte','Acampamento',{...decor(.4),pickH:2.8,color:'#a8423a'}),
+ flowers:kitProp('natureKit','flowers','Flores','Natureza',{...decor(.5),scale:2.5,color:'#d9a0c0'}),
+ grass_tuft:kitProp('natureKit','grass','Tufo de grama','Natureza',{...decor(.4),color:'#6d9a48'}),
+ mossy_tomb_a:kitProp('swampKit','tomb_0','Lápide musgosa','Ruínas',{...decor(.5),color:'#6f7a68'}),
+ mossy_tomb_b:kitProp('swampKit','tomb_1','Lápide caída','Ruínas',{...decor(.5),color:'#6f7a68'}),
+ mossy_tomb_c:kitProp('swampKit','tomb_2','Lápide partida','Ruínas',{...decor(.5),color:'#6f7a68'}),
+ rubble:kitProp('caveFallKit','collapse_chunk','Escombro','Caverna',{...decor(.8),scale:1.6,color:'#827568'})
+});
+PROPS.water.label='Poça (só visual)';
 export const PROP_TYPES=Object.keys(PROPS);
-export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin'};
+// Toda peça gira, menos as manchas redondas de chão. Peças desenhadas em conjunto com a caverna e a caravana.
+export const canRotate=def=>!!def&&(def.group!=='Chão'||!!def.rotates);
+export const SCENE_PROPS=new Set(['caravan','road_block','cave_wall','hideout_table','hideout_cargo','hideout_bedroll','cave_support','cave_spire','fall_debris','capture_note','cave_exit']);
+export const PROP_GROUPS=[...new Set(PROP_TYPES.map(t=>PROPS[t].group))];
+// Estilo de cada mapa: céu, luz, névoa, chão, água e densidade da vegetação. `null` em um campo mantém o padrão do bioma.
+export const GROUND_STYLES={grass:'Grama',dirt:'Terra batida',sand:'Areia',snow:'Neve',stone:'Pedra',ash:'Cinzas',moss:'Musgo'};
+export const STYLE_PRESETS={
+ dawn:{name:'Amanhecer',sky:'#6d6a7c',sun:2.4,sunColor:'#ffd9b8',ambient:1.6,fog:.2,tint:'#f4ece0'},
+ noon:{name:'Meio-dia',sky:'#7fa3b8',sun:3.8,sunColor:'#fff2d8',ambient:2,fog:0,tint:'#ffffff'},
+ dusk:{name:'Entardecer',sky:'#5a4048',sun:2.6,sunColor:'#ffb98a',ambient:1.3,fog:.25,tint:'#f4e8d8'},
+ night:{name:'Noite',sky:'#0b1120',sun:1.2,sunColor:'#a4bae8',ambient:1,fog:.3,tint:'#a8b4d0'},
+ mist:{name:'Névoa',sky:'#7c8a88',sun:1.4,sunColor:'#d8e0dc',ambient:2,fog:1,tint:'#c8d0c8'},
+ winter:{name:'Inverno',sky:'#a8b6c4',sun:2.4,sunColor:'#e8f0ff',ambient:2,fog:.35,tint:'#ffffff',ground:'snow',water:'#7fa8c0',grass:0,flowers:0},
+ drought:{name:'Seca',sky:'#b09a70',sun:3.8,sunColor:'#ffe0a0',ambient:1.6,fog:.1,tint:'#e8d8a8',ground:'sand',water:'#7c8a70',grass:.15,flowers:0},
+ marsh:{name:'Charco',sky:'#2a3324',sun:1.6,sunColor:'#c8d8a0',ambient:1.2,fog:.6,tint:'#b0b890',ground:'moss',water:'#3f5a42',grass:1.4,flowers:.2},
+ ash:{name:'Terra arrasada',sky:'#2c2626',sun:1.8,sunColor:'#ff9a6a',ambient:1,fog:.4,tint:'#b8a8a0',ground:'ash',water:'#3a3a40',grass:0,flowers:0}
+};
+const color=v=>typeof v==='string'&&/^#[0-9a-f]{6}$/i.test(v)?v.toLowerCase():null;
+export function normalizeStyle(raw){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+ const range=(v,a,b)=>v==null||v===''||!Number.isFinite(+v)?null:clamp(+v,a,b),out={sky:color(raw.sky),sun:range(raw.sun,0,6),sunColor:color(raw.sunColor),ambient:range(raw.ambient,0,4),fog:range(raw.fog,0,1),tint:color(raw.tint),ground:raw.ground in GROUND_STYLES?raw.ground:null,water:color(raw.water),grass:range(raw.grass,0,2),flowers:range(raw.flowers,0,2)};
+ return Object.values(out).some(v=>v!==null)?out:null;
+}
+export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin'};
 export const isBuiltin=ref=>typeof ref==='string'&&ref.startsWith('builtin:');
 export const mapRef=id=>'map:'+id;
 
@@ -80,12 +153,17 @@ export function normalizeObject(raw,taken=new Set()){
  const o={id,type:raw.type,x:round(num(raw.x,0)),y:round(num(raw.y,0))};
  if(def.shape==='box'){o.w=clamp(round(num(raw.w,def.w)),.2,60);o.d=clamp(round(num(raw.d,def.d)),.2,60);}else o.r=clamp(round(num(raw.r,def.r)),.1,12);
  if(def.dims.includes('h'))o.h=clamp(round(num(raw.h,def.h)),.1,12);
- if(def.dims.includes('s'))o.s=clamp(round(num(raw.s,def.s)),.4,3);
+ if(def.dims.includes('s'))o.s=clamp(round(num(raw.s,def.s)),.2,6);
+ if(canRotate(def)){const rot=((Math.round(num(raw.rot,0))%360)+360)%360;if(rot)o.rot=rot;}
  return o;
 }
 export function normalizeSpawn(raw,taken=new Set()){
  let id=text(raw?.id,32);if(!id||taken.has(id))do id=makeId('s');while(taken.has(id));taken.add(id);
- return {id,x:round(num(raw?.x,0)),y:round(num(raw?.y,0)),count:clamp(Math.floor(num(raw?.count,4)),1,LIMITS.maxCount),type:clamp(Math.floor(num(raw?.type,0)),0,ENEMY_TYPE_COUNT-1)};
+ const validType=v=>clamp(Math.floor(num(v,0)),0,ENEMY_TYPE_COUNT-1),mix=Array.isArray(raw?.mix)&&raw.mix.length?raw.mix.slice(0,LIMITS.maxCount).map(validType):null;
+ return {id,x:round(num(raw?.x,0)),y:round(num(raw?.y,0)),count:mix?mix.length:clamp(Math.floor(num(raw?.count,4)),1,LIMITS.maxCount),type:mix?mix[0]:validType(raw?.type),mix,
+  level:raw?.level==null||raw.level===''?null:clamp(Math.floor(num(raw.level,1)),1,LIMITS.maxLevel),leader:['magic','rare'].includes(raw?.leader)?raw.leader:null,
+  trigger:['start','near','timer'].includes(raw?.trigger)?raw.trigger:'start',radius:clamp(round(num(raw?.radius,18)),2,80),delay:clamp(round(num(raw?.delay,0)),0,600),
+  waves:clamp(Math.floor(num(raw?.waves,1)),1,20),interval:clamp(round(num(raw?.interval,6)),0,120),respawn:clamp(round(num(raw?.respawn,0)),0,600),idle:!!raw?.idle,spread:clamp(round(num(raw?.spread,0)),0,20),quest:!!raw?.quest};
 }
 // Aceita qualquer valor; nunca lança. `problems` lista o que foi descartado ou corrigido.
 export function normalizeMap(raw){
@@ -105,7 +183,7 @@ export function normalizeMap(raw){
   format:MAP_FORMAT,version:MAP_VERSION,id:text(raw.id,40)||makeId(),name:text(raw.name,LIMITS.maxName)||'Mapa sem nome',
   base,hidden:base?[...new Set((Array.isArray(raw.hidden)?raw.hidden:[]).map(v=>text(v,32)).filter(Boolean))]:[],
   biome,size,start:point(raw.start,base?null:{x:0,y:round((size?.h??40)/2-5)}),spawns,
-  level:clamp(Math.floor(num(raw.level,1)),1,LIMITS.maxLevel),objects,updated:Number.isFinite(+raw.updated)?+raw.updated:0
+  level:clamp(Math.floor(num(raw.level,1)),1,LIMITS.maxLevel),enemyHp:enemyScale(raw.enemyHp),enemyXp:enemyScale(raw.enemyXp),objects,terrain:normalizeTerrain(raw.terrain),style:normalizeStyle(raw.style),campaign:typeof raw.campaign==='string'?text(raw.campaign,24):null,updated:Number.isFinite(+raw.updated)?+raw.updated:0
  };
  return {map,problems};
 }
@@ -121,8 +199,15 @@ function fromSolids(prefix,solids){
   return normalizeObject(circle?{id:prefix+'-'+i,type,x:s.x,y:s.y,r:s.r,h:s.height}:{id:prefix+'-'+i,type,x:s.x,y:s.y,w:s.width,d:s.depth,h:s.height})
  }).filter(Boolean).map((o,i)=>({...o,id:prefix+'-'+i}));
 }
+// Plantas embutidas não mudam durante a sessão: montar a do mundo é caro e o editor resolve a herança a cada alteração.
+const builtinCache=new Map();
 export function builtinMap(ref){
- if(ref==='builtin:arandu-caravan'||ref==='builtin:arandu-cave')return normalizeMap({...prologueMapData(ref.endsWith('cave')?'cave':'ambush'),id:ref}).map;
+ if(!builtinCache.has(ref))builtinCache.set(ref,buildBuiltin(ref));
+ return builtinCache.get(ref);
+}
+function buildBuiltin(ref){
+ const stage={'builtin:arandu-caravan':'ambush','builtin:arandu-cave':'cave','builtin:arandu-travel':'travel','builtin:arandu-trail':'trail'}[ref];
+ if(stage)return normalizeMap({...prologueMapData(stage),id:ref}).map;
  if(ref==='builtin:campaign-world')return normalizeMap({...campaignWorldMap(),id:ref}).map;
  if(ref==='builtin:training')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'grave',size:{w:30,h:30},start:{x:0,y:10},spawns:[{x:0,y:-8,count:4,type:0}]}).map,objects:fromSolids('training',TRAINING_ARENA.solids)};
  if(ref==='builtin:forest')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'forest',size:{w:40,h:40},start:{x:0,y:10},spawns:[{x:0,y:-5,count:6,type:0}]}).map,objects:fromSolids('forest',forestArena().solids)};
@@ -142,13 +227,15 @@ export function resolveMap(map,lookup=()=>null,seen=new Set(),depth=0){
  }
  const hidden=new Set(map.hidden||[]),inherited=parent?parent.map.objects.filter(o=>!hidden.has(o.id)).map(o=>({...o,inherited:true})):[];
  const size=map.size||parent?.map.size||{w:40,h:40},biome=map.biome||parent?.map.biome||DEFAULT_BIOME;
- const start=map.start||parent?.map.start||{x:0,y:round(size.h/2-5)},spawns=map.spawns||parent?.map.spawns||[];
- return {map:{...map,size,biome,start,spawns,objects:[...inherited,...map.objects.map(o=>({...o,inherited:false}))],baseObjects:parent?parent.map.objects:[],hasBase:!!parent},warnings:[...(parent?.warnings||[]),...warnings],chain:[...(parent?.chain||[]),mapRef(map.id)]};
+ const start=map.start||parent?.map.start||{x:0,y:round(size.h/2-5)},spawns=map.spawns||parent?.map.spawns||[],terrain=map.terrain||parent?.map.terrain||null,style=map.style||parent?.map.style||null;
+ return {map:{...map,size,biome,start,spawns,terrain,style,objects:[...inherited,...map.objects.map(o=>({...o,inherited:false}))],baseObjects:parent?parent.map.objects:[],hasBase:!!parent},warnings:[...(parent?.warnings||[]),...warnings],chain:[...(parent?.chain||[]),mapRef(map.id)]};
 }
+// Multiplicador de vida ou experiência dos inimigos de um mapa. Mapas antigos valem 1.
+function enemyScale(value){return Math.round(clamp(num(value,1),.1,10)*100)/100;}
 // Copia tudo da base para o próprio mapa e remove o vínculo.
 export function detach(map,lookup){
  const {map:flat}=resolveMap(map,lookup),taken=new Set();
- return {...map,base:null,hidden:[],size:flat.size,biome:flat.biome,start:flat.start,spawns:flat.spawns.map(s=>normalizeSpawn(s,taken)),objects:flat.objects.map(o=>{const {inherited,...rest}=o;return rest;})};
+ return {...map,base:null,hidden:[],size:flat.size,biome:flat.biome,start:flat.start,terrain:flat.terrain,style:flat.style,spawns:flat.spawns.map(s=>normalizeSpawn(s,taken)),objects:flat.objects.map(o=>{const {inherited,...rest}=o;return rest;})};
 }
 // Ids de mapas que dependem (direta ou indiretamente) de `id`.
 export function dependents(id,maps){
@@ -160,51 +247,86 @@ function hash(text){let h=2166136261;for(const c of String(text))h=Math.imul(h^c
 function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 const GREEN=new Set(['forest','village','swamp']);
 // Converte um mapa já resolvido. O cenário usa o tema `expedition` (paleta do bioma + peças por `look`).
-export function toArena(map){
- const bounds=centered(map.size),solids=[],decor={trees:[],bushes:[],grass:[],flowers:[],mushrooms:[],patches:[],path:[],misc:[],braziers:[],water:[]};
- const random=rng(hash(map.id)),rnd=(a,b)=>a+(b-a)*random(),tone=()=>+random().toFixed(2);
+// Assar o terreno é o passo mais caro: a última resposta fica guardada, e o editor pede várias arenas do mesmo mapa.
+let lastBake=null;
+function bakeOnce(terrain,bounds,bridges){
+ const key=JSON.stringify([terrain,bounds,bridges]);
+ if(lastBake?.key!==key)lastBake={key,value:bakeTerrain(terrain,bounds,bridges)};
+ return lastBake.value;
+}
+// `cover`: sorteia grama e flores. `stableTone`: tom de cada peça pelo próprio id, para o editor refazer um tipo sem mudar a cor dos outros.
+export function toArena(map,{cover=true,stableTone=false}={}){
+ const bounds=centered(map.size),solids=[],kitProps=[],decor={trees:[],bushes:[],grass:[],flowers:[],mushrooms:[],patches:[],path:[],pathBoxes:[],misc:[],braziers:[],water:[]};
+ const bridges=map.objects.filter(o=>PROPS[o.type]?.bridge).map(o=>({x:o.x,y:o.y,w:o.w,d:o.d,...(o.rot?{angle:o.rot*Math.PI/180}:{}),...(PROPS[o.type].flat?{flat:true}:{})}));
+ // Peça girada que não é do catálogo: é desenhada sozinha e girada em volta do próprio centro, sem precisar de um caminho de giro em cada desenho.
+ const rotatedParts=[];
+ const terrain=map.terrain?bakeOnce(map.terrain,bounds,bridges):null;
+ let random=rng(hash(map.id));const rnd=(a,b)=>a+(b-a)*random(),tone=()=>+random().toFixed(2);
  for(const o of map.objects){
   const def=PROPS[o.type];if(!def)continue;
+  if(stableTone)random=rng(hash(o.id));
+  if(def.kit){
+   const along=def.shape==='box'&&(def.w>=def.d)===(o.w>=o.d),base=(o.rot||0)*Math.PI/180;
+   const k=def.scale||1,flatScale=def.dims.includes('r')?o.r/def.r:o.s??1;
+   kitProps.push({model:def.kit.model,part:def.kit.part,float:!!def.float,x:o.x,y:o.y,ry:def.shape==='box'&&!along?base+Math.PI/2:base,
+    sx:k*(def.shape==='box'?(along?o.w/def.w:o.d/def.w):flatScale),sy:k*(def.dims.includes('h')?o.h/def.h:def.shape==='box'?1:o.s??1),sz:k*(def.shape==='box'?(along?o.d/def.d:o.w/def.d):flatScale)});
+  }
+  const drawnApart=!!o.rot&&!def.kit&&def.decor!=='pathBox'&&(!def.solid||!!def.look);
+  if(drawnApart)rotatedParts.push({angle:o.rot*Math.PI/180,x:o.x,y:o.y,scene:SCENE_PROPS.has(o.type),arena:{...toArena({...map,objects:[{...o,rot:0}],terrain:null},{cover:false,stableTone:true}),part:true}});
   if(def.solid){
    const s=def.shape==='box'?{kind:'box',x:o.x,y:o.y,width:o.w,depth:o.d,height:o.h}:{kind:'circle',x:o.x,y:o.y,r:o.r,height:o.h};
-   if(def.look)s.look=def.look;if(def.look!=='log')s.tone=tone();solids.push(s);
-  }else if(def.decor==='bushes')decor.bushes.push({x:o.x,y:o.y,size:o.r,tone:tone()});
+   if(o.rot&&def.shape==='box')s.angle=o.rot*Math.PI/180;
+   if(def.kit)s.look='kit-prop';else if(drawnApart)s.look='rotated-part';else if(def.look)s.look=def.look;if(def.look!=='log')s.tone=tone();solids.push(s);
+  }else if(def.kit||drawnApart)continue;
+  else if(def.decor==='bushes')decor.bushes.push({x:o.x,y:o.y,size:o.r,tone:tone()});
   else if(def.decor==='misc')decor.misc.push({look:o.type,x:o.x,y:o.y,size:o.s??1,tone:tone(),tilt:+rnd(-.5,.5).toFixed(2),w:+rnd(.7,1.1).toFixed(2),v:Math.floor(random()*3)});
   else if(def.decor==='braziers')decor.braziers.push({x:o.x,y:o.y});
   else if(def.decor==='water')decor.water.push({x:o.x,y:o.y,r:o.r});
   else if(def.decor==='path')decor.path.push({x:o.x,y:o.y,r:o.r});
+  else if(def.decor==='pathBox')decor.pathBoxes.push({x:o.x,y:o.y,w:o.w,d:o.d,angle:(o.rot||0)*Math.PI/180});
  }
  // Cobertura do chão: sorteada de forma determinística pelo id; não nasce sobre colisores nem sobre a trilha.
- const area=map.size.w*map.size.h,free=(x,y,r)=>!solids.some(s=>s.kind==='circle'?Math.hypot(x-s.x,y-s.y)<s.r+r:Math.abs(x-s.x)<s.width/2+r&&Math.abs(y-s.y)<s.depth/2+r)&&!decor.path.some(p=>Math.hypot(x-p.x,y-p.y)<p.r)&&!decor.water.some(p=>Math.hypot(x-p.x,y-p.y)<p.r);
+ if(terrain)solids.push(...terrain.blocks);
+ const area=map.size.w*map.size.h,arenaProbe={terrain},free=(x,y,r)=>!(terrain&&heightAt(arenaProbe,x,y)<TERRAIN_RULES.wet)&&!solids.some(s=>s.angle?solidDistance({x,y},s)<r:s.kind==='circle'?Math.hypot(x-s.x,y-s.y)<s.r+r:Math.abs(x-s.x)<s.width/2+r&&Math.abs(y-s.y)<s.depth/2+r)&&!decor.pathBoxes.some(q=>solidDistance({x,y},{kind:'box',x:q.x,y:q.y,width:q.w,depth:q.d,angle:q.angle})<=0)&&!decor.path.some(p=>Math.hypot(x-p.x,y-p.y)<p.r)&&!decor.water.some(p=>Math.hypot(x-p.x,y-p.y)<p.r);
  const scatter=(list,count,make,pad)=>{for(let n=0,t=0;n<count&&t<count*6;t++){const x=rnd(bounds.minX+pad,bounds.maxX-pad),y=rnd(bounds.minY+pad,bounds.maxY-pad);if(!free(x,y,.1))continue;list.push(make(+x.toFixed(2),+y.toFixed(2)));n++;}};
- if(GREEN.has(map.biome)){
+ if(cover&&GREEN.has(map.biome)){
   // Tetos fixos até 240 × 240; mapas maiores mantêm a mesma densidade por área.
-  const cap=n=>Math.round(n*Math.max(1,area/57600));
-  scatter(decor.grass,Math.min(cap(900),Math.round(area*.05)),(x,y)=>({x,y,height:+rnd(.2,.5).toFixed(2),tone:tone()}),1);
+  const cap=n=>Math.round(n*Math.max(1,area/57600)),grassDensity=map.style?.grass??1,flowerDensity=map.style?.flowers??1;
+  scatter(decor.grass,Math.round(Math.min(cap(900),Math.round(area*.05))*grassDensity),(x,y)=>({x,y,height:+rnd(.2,.5).toFixed(2),tone:tone()}),1);
   scatter(decor.patches,Math.min(cap(60),Math.round(area*.0035)),(x,y)=>({x,y,r:+rnd(1.2,3.2).toFixed(2),tone:tone()}),2);
-  if(map.biome==='forest')scatter(decor.flowers,Math.min(cap(160),Math.round(area*.012)),(x,y)=>({x,y,tone:tone()}),1);
+  if(map.biome==='forest')scatter(decor.flowers,Math.round(Math.min(cap(160),Math.round(area*.012))*flowerDensity),(x,y)=>({x,y,tone:tone()}),1);
  }
- return {cave:map.biome==='cave',prologue:map.biome==='cave'||solids.some(s=>s.look==='caravan')||decor.misc.some(m=>m.look==='road_block'),caravans:solids.filter(s=>s.look==='caravan').map(s=>({x:s.x,y:s.y,sx:s.width/2.8,sy:s.height/2,sz:s.depth/5.2})),roadBlocks:decor.misc.filter(m=>m.look==='road_block'),id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor};
+ return {enemyHp:map.enemyHp??1,enemyXp:map.enemyXp??1,cave:map.biome==='cave',prologue:map.biome==='cave'||solids.some(s=>s.look==='caravan')||decor.misc.some(m=>m.look==='road_block'),caravans:solids.filter(s=>s.look==='caravan').map(s=>({x:s.x,y:s.y,sx:s.width/2.8,sy:s.height/2,sz:s.depth/5.2})),roadBlocks:decor.misc.filter(m=>m.look==='road_block'),id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor,kitProps,rotatedParts,terrain,style:map.style||null};
 }
 
 // --- Verificação ---
 // Varredura em grade a partir do início: quais pontos o personagem (raio 0,45) consegue alcançar.
 export function reachable(arena,start,{radius=.45,step=.5}={}){
- const b=arena.bounds,key=(i,j)=>i+','+j,seen=new Set(),pos=(i,j)=>({x:b.minX+radius+i*step,y:b.minY+radius+j*step});
- const si=Math.max(0,Math.round((start.x-b.minX-radius)/step)),sj=Math.max(0,Math.round((start.y-b.minY-radius)/step)),queue=[[si,sj]];
- if(overlaps(pos(si,sj),radius,arena))return {seen,step,radius,origin:pos(0,0),blocked:true};
- seen.add(key(si,sj));
- for(let k=0;k<queue.length;k++){
-  const [i,j]=queue[k];
-  for(const [di,dj]of [[1,0],[-1,0],[0,1],[0,-1]]){const ni=i+di,nj=j+dj,id=key(ni,nj);if(seen.has(id))continue;const p=pos(ni,nj);if(p.x>b.maxX-radius||p.y>b.maxY-radius||p.x<b.minX+radius||p.y<b.minY+radius||overlaps(p,radius,arena))continue;seen.add(id);queue.push([ni,nj]);}
+ const b=arena.bounds,w=Math.max(1,Math.floor((b.maxX-b.minX-2*radius)/step)+1),h=Math.max(1,Math.floor((b.maxY-b.minY-2*radius)/step)+1),origin={x:b.minX+radius,y:b.minY+radius},blocked=new Uint8Array(w*h),seen=new Uint8Array(w*h);
+ // Cada colisor marca só as células que alcança; em 360 u, testar célula por célula contra todos travava a verificação.
+ for(const s of arena.solids){
+  const far=s.angle?Math.hypot(s.width,s.depth)/2:0,q=s.kind==='circle'?{x0:s.x-s.r,x1:s.x+s.r,y0:s.y-s.r,y1:s.y+s.r}:s.angle?{x0:s.x-far,x1:s.x+far,y0:s.y-far,y1:s.y+far}:{x0:s.x-s.width/2,x1:s.x+s.width/2,y0:s.y-s.depth/2,y1:s.y+s.depth/2};
+  const i0=Math.max(0,Math.ceil((q.x0-radius-origin.x)/step)),i1=Math.min(w-1,Math.floor((q.x1+radius-origin.x)/step)),j0=Math.max(0,Math.ceil((q.y0-radius-origin.y)/step)),j1=Math.min(h-1,Math.floor((q.y1+radius-origin.y)/step));
+  for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){
+   const x=origin.x+i*step,y=origin.y+j*step,d=s.angle?solidDistance({x,y},s):s.kind==='circle'?Math.hypot(x-s.x,y-s.y)-s.r:Math.hypot(x-clamp(x,q.x0,q.x1),y-clamp(y,q.y0,q.y1));
+   if(d<radius-1e-6)blocked[j*w+i]=1;
+  }
  }
- return {seen,step,radius,origin:pos(0,0),blocked:false};
+ const si=clamp(Math.round((start.x-origin.x)/step),0,w-1),sj=clamp(Math.round((start.y-origin.y)/step),0,h-1),result={seen,w,h,step,radius,origin};
+ if(blocked[sj*w+si])return {...result,blocked:true};
+ const stack=[sj*w+si];seen[stack[0]]=1;
+ while(stack.length){
+  const k=stack.pop(),i=k%w,j=(k-i)/w;
+  for(const [ni,nj]of [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]){if(ni<0||nj<0||ni>=w||nj>=h)continue;const n=nj*w+ni;if(seen[n]||blocked[n])continue;seen[n]=1;stack.push(n);}
+ }
+ return {...result,blocked:false};
 }
 export function canReach(r,p){
  // Tolera o ponto cair em cima de um colisor: basta uma célula vizinha alcançável.
  const i=Math.round((p.x-r.origin.x)/r.step),j=Math.round((p.y-r.origin.y)/r.step);
- for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++)if(r.seen.has((i+di)+','+(j+dj)))return true;return false;
+ for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++){const x=i+di,y=j+dj;if(x>=0&&y>=0&&x<r.w&&y<r.h&&r.seen[y*r.w+x])return true;}return false;
 }
+const overlapsWater=(arena,p)=>arena.terrain.blocks.some(s=>Math.abs(p.x-s.x)<=s.width/2&&Math.abs(p.y-s.y)<=s.depth/2);
 // Lista de avisos para o editor: {level:'erro'|'aviso'|'info',text}.
 export function analyze(map,lookup=()=>null){
  const out=[],{map:flat,warnings}=resolveMap(map,lookup),b=centered(flat.size);
@@ -219,12 +341,13 @@ export function analyze(map,lookup=()=>null){
   if(r.blocked)out.push({level:'erro',text:'O jogador começa preso: não há espaço livre ao redor do início.'});
   else if(bad.length)out.push({level:'aviso',text:bad.length+' ponto(s) de inimigos parecem isolados do início por obstáculos.'});
  }
+ if(flat.terrain&&overlapsWater(arena,flat.start))out.push({level:'aviso',text:'O início está em água funda ou penhasco; o jogador será empurrado para a margem.'});
  if(flat.objects.length>LIMITS.maxObjects*.8)out.push({level:'aviso',text:'Muitos objetos: o limite é '+LIMITS.maxObjects+'.'});
  return out;
 }
 
 // --- Biblioteca (armazenamento injetável; separado do save, como o áudio) ---
-export function createLibrary(storage,key=STORAGE_KEY){
+export function createLibrary(storage,key=STORAGE_KEY,{maxBytes=LIMITS.maxBytes}={}){
  const fail=message=>({ok:false,message});
  function load(){
   let raw;try{raw=storage.getItem(key);}catch{return {maps:[],status:'unavailable'};}
@@ -233,7 +356,7 @@ export function createLibrary(storage,key=STORAGE_KEY){
   catch{return {maps:[],status:'invalid'};}
  }
  function persist(maps){
-  const body=JSON.stringify({version:MAP_VERSION,maps});if(body.length>LIMITS.maxBytes)return fail('A biblioteca de mapas ficou grande demais. Exclua ou exporte mapas antigos.');
+  const body=JSON.stringify({version:MAP_VERSION,maps});if(body.length>maxBytes)return fail('A biblioteca de mapas ficou grande demais. Exclua ou exporte mapas antigos.');
   try{storage.setItem(key,body);return {ok:true};}catch{return fail('Não foi possível gravar os mapas neste navegador (armazenamento cheio ou bloqueado).');}
  }
  const api={
@@ -263,6 +386,8 @@ export function createLibrary(storage,key=STORAGE_KEY){
    const m=id.startsWith('builtin:')?builtinMap(id):api.get(id);if(!m)return fail('Mapa não encontrado.');
    return api.save(blankMap(text(m.name+' (variação)',LIMITS.maxName),{base:id.startsWith('builtin:')?id:mapRef(id)}),now);
   },
+  // Edições da campanha: arquivo que pode ser levado a outro navegador ou embutido no jogo (v2/assets/campaign-maps.json).
+  exportCampaign(){const maps=load().maps.filter(m=>m.campaign);return maps.length?JSON.stringify({format:BUNDLE_FORMAT,version:MAP_VERSION,maps},null,1):null;},
   // Exporta o mapa junto com as bases personalizadas de que ele depende.
   exportJson(id){
    const maps=load().maps,out=[];let m=maps.find(x=>x.id===id);
@@ -277,7 +402,9 @@ export function createLibrary(storage,key=STORAGE_KEY){
    const maps=current.maps,used=new Set(maps.map(m=>m.id)),rename=new Map(),imported=[],problems=[];
    for(const item of items.slice(0,LIMITS.maxDepth+1)){
     const {map,problems:p}=normalizeMap(item);if(!map)continue;problems.push(...p);
-    if(used.has(map.id)){const id=makeId();rename.set(map.id,id);map.id=id;}used.add(map.id);imported.push(map);
+    // Edições da campanha têm id fixo: importar substitui a edição anterior do mesmo mapa.
+    if(map.campaign){const i=maps.findIndex(m=>m.id===map.id);if(i>=0)maps.splice(i,1);}
+    else if(used.has(map.id)){const id=makeId();rename.set(map.id,id);map.id=id;}used.add(map.id);imported.push(map);
    }
    if(!imported.length)return fail('O arquivo não contém mapas válidos.');
    if(maps.length+imported.length>LIMITS.maxMaps)return fail('Limite de '+LIMITS.maxMaps+' mapas atingido.');

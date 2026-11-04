@@ -2,7 +2,7 @@
   "stage": "E7",
   "browser": "Edge headless",
   "controller": "Gamepad API simulada; sem controle físico",
-  "roundTripError": 1.5888218580782548e-14,
+  "roundTripError": 1.0048591735576161e-14,
   "blocked": {
     "x": -7.7750007071067815,
     "animation": "idle"

@@ -14,6 +14,8 @@ export function paintCaveFloor(canvas,arena){
  }
  g.strokeStyle='#68574755';g.lineWidth=14;g.lineCap='round';const paths=arena.decor.path;
  for(let i=1;i<paths.length;i++){const a=paths[i-1],p=paths[i];if(Math.hypot(a.x-p.x,a.y-p.y)>7)continue;g.beginPath();g.moveTo(X(a.x),Y(a.y));g.lineTo(X(p.x),Y(p.y));g.stroke();}
+ // Trilha de cantos retos, no mesmo tom do caminho gasto.
+ g.fillStyle='#68574755';for(const q of arena.decor.pathBoxes||[]){const c=Math.cos(q.angle),n=Math.sin(q.angle);g.beginPath();[[-q.w/2,-q.d/2],[q.w/2,-q.d/2],[q.w/2,q.d/2],[-q.w/2,q.d/2]].forEach(([a,e],i)=>{const x=X(q.x+a*c+e*n),y=Y(q.y-a*n+e*c);i?g.lineTo(x,y):g.moveTo(x,y);});g.closePath();g.fill();}
  // Pequenas marcas desencontradas sugerem botas e carga arrastada.
  g.fillStyle='#211e1b75';for(let y=17;y>=-20;y-=1.35){const x=Math.sin(y*.6)*.25;g.fillRect(X(x-.26),Y(y),2,3);g.fillRect(X(x+.15),Y(y-.55),2,3);}
  for(let i=0;i<6500;i++){g.fillStyle=random()>.5?'#928575':'#11191e';g.globalAlpha=.05+random()*.12;g.fillRect(random()*W,random()*H,1+random()*2,1+random()*2);}g.globalAlpha=1;

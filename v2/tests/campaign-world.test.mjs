@@ -19,7 +19,7 @@ test('campanha integrada anterior nasce no sarcófago; cenário e pontos de inim
  const s=fresh(),w=s.world,map=builtinMap('builtin:campaign-world');
  assert.equal(s.scene,'training');assert.equal(w.adventure.kind,'campaign-world');assert.equal(w.story,null);assert.equal(w.paused,false);
  assert.equal(w.player.x,WORLD_POINTS.crypt.x);assert.equal(w.player.y,WORLD_POINTS.crypt.y);assert.equal(w.actors.filter(a=>a.team==='enemy').length,0);
- assert.deepEqual(w.arena.solids,toArena(map).solids);assert.deepEqual(map.spawns,WORLD_ENCOUNTERS.map(({id,x,y,count,type})=>({id,x,y,count,type})));assert.deepEqual(map.size,{w:WORLD_SIZE,h:WORLD_SIZE});assert.equal(campaignWorldMap().objects.length,map.objects.length);assert.ok(map.objects.length<=LIMITS.maxObjects);
+ assert.deepEqual(w.arena.solids,toArena(map).solids);assert.deepEqual(map.spawns.map(({id,x,y,count,type})=>({id,x,y,count,type})),WORLD_ENCOUNTERS.map(({id,x,y,count,type})=>({id,x,y,count,type})));assert.deepEqual(map.size,{w:WORLD_SIZE,h:WORLD_SIZE});assert.equal(campaignWorldMap().objects.length,map.objects.length);assert.ok(map.objects.length<=LIMITS.maxObjects);
  assert.equal(w.actors.filter(a=>a.worldNpc&&!a.service&&inWorldVillage(a)).length,1);assert.equal(musicTheme(s),'crypt');
 });
 test('rotas contínuas e NPCs são alcançáveis sem cruzar colisores',()=>{

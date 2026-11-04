@@ -53,7 +53,7 @@ test('o slot entra na forma e passa a ativar a barra da foice; Libertar Forma de
  assert.equal(activateSlot(s,0),true,'slot 1 vira a Ceifada');advance(s,.6);assert.ok(foe.hp<10000);
  assert.equal(activateSlot(s,2),false,'Colheita Tripla ainda não aprendida');assert.equal(w.army.loadout[0],'raio','barra normal preservada');
  const souls=w.lich.souls;assert.equal(activateSlot(s,1),true);assert.ok(w.lich.souls<souls);
- assert.equal(activateSlot(s,5),true);assert.equal(w.lich.form,'none');assert.equal(p.model,'player');assert.equal(w.lich.scythe,null);
+ assert.equal(activateSlot(s,5),true);assert.equal(w.lich.form,'none');assert.equal(p.model,'necromancer');assert.equal(w.lich.scythe,null);
  assert.equal(w.army.loadout[3],'lich');
 });
 
@@ -71,7 +71,7 @@ test('morte do jogador na forma limpa tudo; ao reviver o modelo volta a ser o de
  w.actors=w.actors.filter(a=>a===w.player||a.groupType);activateSlot(s,3);advance(s,1);assert.equal(w.lich.form,'lich');w.spirits.push({id:777,x:5,y:5,value:4,age:0,ttl:8});
  const killer={id:w.nextId++,model:'warrior',team:'enemy',x:9,y:9,hp:10,maxHp:10,radius:.3};w.actors.push(killer);
  dealDamage(w,w.player,99999,killer);assert.equal(w.player.hp,0);assert.equal(w.lich.form,'none');assert.equal(w.spirits.length,0);assert.equal(w.lich.entryCooldown,0);assert.equal(w.player.model,'lich','o Lich cai como Lich');
- w.player.hp=50;advance(s,.1);assert.equal(w.player.model,'player');assert.equal(w.player.mpRegen>0,true,'a regeneração de mana foi restaurada');
+ w.player.hp=50;advance(s,.1);assert.equal(w.player.model,'necromancer');assert.equal(w.player.mpRegen>0,true,'a regeneração de mana foi restaurada');
 });
 
 test('na campanha (perfil com habilidades concedidas) a Forma da Morte também equipa depois de aprendida',()=>{

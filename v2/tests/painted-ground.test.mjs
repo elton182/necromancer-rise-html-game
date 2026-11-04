@@ -16,7 +16,7 @@ async function load(){
  globalThis.Path2D=class{moveTo(){}lineTo(){}};
  const stub=`const THREE={DataTexture:class{constructor(d,w,h){Object.assign(this,{data:d,width:w,height:h});globalThis.__sizes.push([w,h]);}dispose(){this.disposed=true;}},MeshStandardMaterial:class{constructor(v){Object.assign(this,v)}dispose(){}},PlaneGeometry:class{rotateX(){return this}},Mesh:class{constructor(g,m){this.material=m;this.position={set(){}};this.userData={}}},Color:class{},Vector4:class{constructor(x,y,z,w){Object.assign(this,{x,y,z,w})}},SRGBColorSpace:'srgb',RepeatWrapping:1,LinearFilter:2,LinearMipmapLinearFilter:3,RGBAFormat:4};`;
  globalThis.__sizes=calls.sizes;
- const {paintedGround}=await import('data:text/javascript;base64,'+Buffer.from(source.replace("import * as THREE from 'three';",stub)).toString('base64'));
+ const {paintedGround}=await import('data:text/javascript;base64,'+Buffer.from(source.replace("import * as THREE from 'three';",stub).replace("'./map-terrain.mjs'",JSON.stringify(new URL('../scripts/map-terrain.mjs',import.meta.url).href))).toString('base64'));
  return {paintedGround,calls};
 }
 test('chão pintado cobre o mundo da campanha e a floresta com sobreposição limitada',async()=>{

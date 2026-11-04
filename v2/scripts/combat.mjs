@@ -1,6 +1,7 @@
 import RULES from './combat-rules.mjs';
 import {defenseReduction,spellDamage,moveSpeed} from './shared-equipment.mjs';
 import {moveCircle,resolvePosition} from './terrain.mjs';
+import {highGround} from './map-terrain.mjs';
 import {MAX_LEVEL,levelOf} from './progression.mjs';
 import {hitFx,fx} from './vfx-events.mjs';
 export {RULES};
@@ -35,7 +36,7 @@ export function tickRot(w,dt){
 export function dealDamage(w,target,amount,source=null,tag=null){
  const result={applied:0,absorbed:0,killed:false,blocked:false};
  if(!target||target.hp<=0||target.dead||!Number.isFinite(amount)||amount<=0)return result;
- let damage=amount*(source?.curse?1-source.curse.reduction:1);
+ let damage=amount*(source?.curse?1-source.curse.reduction:1)*highGround(w.arena,source,target);
  if(target===w.player){
   if(w.dash.remaining>1e-9||w.lich?.invuln){result.blocked=true;return result;}
   if(w.classId==='warrior'&&source?.team==='enemy'&&w.equipment?.shield&&!w.warriorShieldFlight&&(w.random?.()??Math.random())<(target.blockChance||0)/100){

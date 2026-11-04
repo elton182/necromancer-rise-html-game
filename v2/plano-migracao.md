@@ -45,6 +45,12 @@ casas/decoração completa da vila e histórias em quadrinhos ficam para o acaba
 E11. Não houve nova produção de assets Blender nesta etapa. Controle físico e
 outras máquinas não conferidos. Arena/Expedições/Conquista permanecem na E10.
 
+### Registro: editor de mapas da campanha
+
+Os mapas da campanha nova (mundo e prólogo) passam a ser editáveis, com salvamento automático. Foram acrescentados relevo, água, rios e superfícies com efeito no jogo, estilo por mapa, configuração de spawn e o kit `mapKit`. Vila, defesa de Jacarandá e fases antigas do Ato I ficam de fora. Balanceamento do terreno pendente. Veja [o guia](../docs/v2-mapas.md).
+
+O editor passa a ter cliente próprio, só para desenvolvimento (etapa 1 de 5), com mapas em arquivos em `v2/assets/maps/`. Etapa 2: a vista 3D é refeita por camadas e já constrói o mapa, com seleção e alças. Adiantado a pedido: giro livre, com colisor rotacionado; colisão e cenário por setores, em todo o jogo. Propostas, ainda não feitas: escala por eixo, modos repetir/escalar, grade e ímã; relevo em tempo real no 3D e fim da vista 2D; saída da aba Mapas da distribuição.
+
 ## Objetivo e decisões estabelecidas
 
 - Migrar o jogo completo para modelos 3D em tempo real, mantendo a identidade,
@@ -111,7 +117,7 @@ vizinhos; avaliar seu acoplamento antes de reutilizá-lo diretamente.
 
 | Personagem | Fonte / export atual |
 | --- | --- |
-| Player | `../blender/models/v2_player.blend` → `../blender/exports/v2_player.glb` (clipes refeitos por `../blender/scripts/v2_player_motion.py` a partir de `rigged_player.blend`) |
+| Player | `../blender/models/v2_necromancer.blend` → `../blender/exports/v2_necromancer.glb` (clipes refeitos por `../blender/scripts/v2_necromancer_motion.py` a partir de `rigged_player.blend`) |
 | Esqueleto | `../blender/reference/skeleton.glb` |
 | Zumbi | `../blender/exports/lowpoly_zombie.glb` |
 | Fallen King v4 | `../blender/models/boss_fallenKing_v4.blend` → `../blender/exports/lab_fallen_king_v4.glb` |

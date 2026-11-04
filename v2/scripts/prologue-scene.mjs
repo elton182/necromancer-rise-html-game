@@ -11,9 +11,9 @@ export function buildPrologueScenery(arena,models){
  }
  if(arena.journey||arena.roadBlock||arena.roadBlocks?.length)for(const m of kitFamily(models.caravanKit,'road_block',arena.journey?[{x:0,z:0}]:arena.roadBlock?[{x:arena.roadBlock.x||0,z:arena.roadBlock.y}]:arena.roadBlocks.map(b=>({x:b.x,z:b.y})))){m.userData.journeyBlock=!!arena.journey;m.visible=!arena.journey;out.push(m);}
  if(arena.caravans?.length){
-  out.push(...kitFamily(models.caravanKit,'bandit_banner',[{x:7,z:-5}]));
+  if(!arena.part)out.push(...kitFamily(models.caravanKit,'bandit_banner',[{x:7,z:-5}]));
   // Flecha da cena roteirizada: apresentação separada do dano de combate.
-  for(const mesh of kitFamily(models.caravanKit,'story_arrow',[{x:0,z:0}])){mesh.userData.prologueArrow=true;mesh.visible=false;out.push(mesh);}
+  if(!arena.part)for(const mesh of kitFamily(models.caravanKit,'story_arrow',[{x:0,z:0}])){mesh.userData.prologueArrow=true;mesh.visible=false;out.push(mesh);}
  }
  if(arena.cave||arena.id==='custom-arandu-cave'){
   // Corte de caverna sem teto: a malha rochosa cobre os limites físicos, sem
@@ -25,7 +25,7 @@ export function buildPrologueScenery(arena,models){
    }
    // Continuação rochosa fora dos limites: sem colisões adicionais.
    const b=arena.bounds;
-   for(let x=b.minX-70;x<=b.maxX+70;x+=8)for(let y=b.minY-70;y<=b.maxY+70;y+=8){
+   if(!arena.part)for(let x=b.minX-70;x<=b.maxX+70;x+=8)for(let y=b.minY-70;y<=b.maxY+70;y+=8){
     if(x>b.minX-5&&x<b.maxX+5&&y>b.minY-5&&y<b.maxY+5)continue;
     const n=Math.sin(x*12.7+y*31.1)*.5+.5;
     rocks.push({x,z:y,ry:n*6,sx:8+n*3,sy:2+n*3,sz:8+n*2});
@@ -36,7 +36,9 @@ export function buildPrologueScenery(arena,models){
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=1024;paintCaveFloor(canvas,arena);
   out.push(...buildCaveHideout(arena,models));
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(arena.bounds.maxX-arena.bounds.minX,arena.bounds.maxY-arena.bounds.minY),new THREE.MeshStandardMaterial({map:texture,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=.005;floor.receiveShadow=true;floor.userData.replacesGround=true;out.push(floor);
+  // Com relevo ou chão escolhido no editor, o chão pintado já cobre a caverna.
+  if(arena.terrain||arena.style?.ground||arena.part)texture.dispose();
+  else{const floor=new THREE.Mesh(new THREE.PlaneGeometry(arena.bounds.maxX-arena.bounds.minX,arena.bounds.maxY-arena.bounds.minY),new THREE.MeshStandardMaterial({map:texture,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=.005;floor.receiveShadow=true;floor.userData.replacesGround=true;out.push(floor);}
 
   for(const point of arena.decor.misc.filter(m=>m.look==='capture_note')){
    const paper=new THREE.Mesh(new THREE.PlaneGeometry(.85,.6),new THREE.MeshBasicMaterial({color:0xe2c899,side:THREE.DoubleSide}));paper.rotation.x=-Math.PI/2;paper.position.set(point.x,arena.solids.some(s=>s.look==='hideout-table'&&Math.hypot(s.x-point.x,s.y-point.y)<1)?.997:.06,point.y);out.push(paper);

@@ -17,6 +17,13 @@ obtidos de `EquipmentModel.moveSpeed()`. Isso é uma migração explícita da re
 não uma alteração feita pelo redesenho visual. Vida 100, mana 80, regeneração
 de mana 4/s e dano mágico 40 correspondem à base atual sem equipamentos.
 
+O jogador olha para a mira enquanto anda, então a passada segue o deslocamento
+em relação a ela: para a frente toca `walk`, de ré toca `walk` ao contrário, para
+os lados toca `strafe_left` ou `strafe_right`, e as diagonais misturam os dois
+(`v2/scripts/locomotion.mjs`). É só visual: velocidade, colisão e custos não
+mudam. Inimigos e aliados sempre olham para onde andam e continuam só com `walk`,
+assim como qualquer modelo sem os clipes laterais.
+
 ## Fonte única das regras
 
 `combat-source.cjs` lê funções específicas do HTML atual e o literal de
@@ -181,4 +188,4 @@ Inimigos vivos exibem uma barra de vida sobre o modelo. Cada aplicação de dano
 
 ### Esquiva básica
 
-Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem equipar Dash. Mantém custo, distância, recarga e colisão do dash existente. O deslocamento e a proteção agora duram 0,5 s (antes 0,18 s). O necromante executa um salto direcionado com o clipe `jump`, produzido por `blender/scripts/v2_player_motion.py`; a pose acompanha a duração real da esquiva e termina ao colidir ou morrer.
+Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem equipar Dash. Mantém custo, distância, recarga e colisão do dash existente. O deslocamento e a proteção agora duram 0,5 s (antes 0,18 s). O necromante executa um salto direcionado com o clipe `jump`, produzido por `blender/scripts/v2_necromancer_motion.py`; a pose acompanha a duração real da esquiva e termina ao colidir ou morrer.

@@ -126,7 +126,8 @@ class Particles{
 export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  const textures=makeTextures(),main=new Particles(scene,1400),fire=new Particles(scene,1400,true),entries=new Map();
  // Partículas com `shape` (chamas) vão para a camada aditiva; as demais, para a normal.
- const particles={emit:o=>(o.shape?fire:main).emit(o),update:dt=>{main.update(dt);fire.update(dt);},count:()=>main.n+fire.n,reset(){for(const l of [main,fire]){l.n=0;l.points.geometry.setDrawRange(0,0);}},uniforms(scale,time){for(const l of [main,fire]){l.material.uniforms.uScale.value=scale;l.material.uniforms.uTime.value=time;}},dispose(){main.dispose(scene);fire.dispose(scene);}};
+ let lift=null;
+ const particles={emit:o=>{if(lift)o.h=(o.h||0)+lift(o.x,o.z);(o.shape?fire:main).emit(o);},update:dt=>{main.update(dt);fire.update(dt);},count:()=>main.n+fire.n,reset(){for(const l of [main,fire]){l.n=0;l.points.geometry.setDrawRange(0,0);}},uniforms(scale,time){for(const l of [main,fire]){l.material.uniforms.uScale.value=scale;l.material.uniforms.uTime.value=time;}},dispose(){main.dispose(scene);fire.dispose(scene);}};
  const plane=new THREE.PlaneGeometry(2,2),column=new THREE.CylinderGeometry(1,1,1,28,1,true);column.translate(0,.5,0);
  let density=1,time=0,shake=0,lastTime=0,failed=false;const aura={mesh:null,acc:0};
  const material=(map,color,opacity=1)=>new THREE.MeshBasicMaterial({map,color:new THREE.Color(color),transparent:true,opacity,depthWrite:false,side:THREE.DoubleSide,fog:false});
@@ -382,6 +383,9 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  }
  return {
   update,clear,dispose,
+  // Relevo: partículas nascem na altura do chão; `each` entrega as peças soltas no mundo para o renderizador assentar.
+  ground(fn){lift=fn;},
+  each(fn){for(const o of [...entries.values(),...elites.values()])for(const m of o.objs)if(m.position.x||m.position.z)fn(m);if(aura.mesh)fn(aura.mesh);},
   quality(low){density=low?.4:1;},
   // Deslocamento da câmera por tremor de impacto (decai sozinho); zero com a simulação pausada.
   shakeOffset(){return shake>0?{x:rand(-1,1)*shake*.35,z:rand(-1,1)*shake*.35}:{x:0,z:0};},

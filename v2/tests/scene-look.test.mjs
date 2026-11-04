@@ -16,7 +16,7 @@ test('vila e floresta personalizada compartilham luz; sair restaura tone mapping
  applySceneLook(forest.renderer,forest.scene,forest.sun,forest.hemisphere,'expedition',()=>{throw Error('não deve gerar ambiente');});
  assert.equal(forest.renderer.toneMapping,THREE.NoToneMapping);assert.equal(forest.scene.environment,null);assert.equal(forest.scene.environmentIntensity,0);
 });
-const {kitFamily}=await import(await load('village-kit',{'./forest-scene.mjs':await load('forest-scene',{'./painted-ground.mjs':await load('painted-ground')})}));
+const {kitFamily}=await import(await load('village-kit',{'./forest-scene.mjs':await load('forest-scene',{'./painted-ground.mjs':await load('painted-ground',{'./map-terrain.mjs':new URL('../scripts/map-terrain.mjs',import.meta.url).href})})}));
 test('famílias do kit isolam cor, transparência e descarte de material',()=>{
  const material=new THREE.MeshStandardMaterial({color:0xffffff}),node=new THREE.Mesh(new THREE.BoxGeometry(),material);node.name='kit_probe';const scene=new THREE.Group();scene.add(node);
  const a=kitFamily({scene},'probe',[{x:0,z:0}])[0],b=kitFamily({scene},'probe',[{x:1,z:1}])[0];

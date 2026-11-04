@@ -191,9 +191,14 @@ inválidas ou duplicadas são descartadas ao carregar.
 
 ## Defesa de Zephyr
 
-Capuzes, vestimentas e botas podem sortear o atributo adicional **Defesa**.
-Os pontos das peças equipadas são somados; sem equipamento com esse atributo, a defesa é zero.
-Itens antigos continuam válidos, sem ganhar atributos retroativamente.
+Capuzes, vestimentas e botas têm **Defesa própria**, que não ocupa afixo e não depende de
+raridade nem de sorteio: `10 × (1 + 0,12 × (nível da peça − 1))`, multiplicada pelo
+aprimoramento da peça. Uma peça de nível 1 sem aprimoramento dá 10 pontos.
+Essas peças também podem sortear o afixo **Defesa** em percentual, que multiplica o total:
+`soma da Defesa das peças × (1 + soma dos percentuais / 100)`. Sem nenhuma dessas peças, a defesa é zero.
+
+Itens antigos continuam válidos: peças do formato 2 com afixo de Defesa em pontos passam a ter
+o mesmo valor em percentual, e toda peça de proteção recebe a Defesa própria.
 
 A redução é `mínimo(70%; Defesa / (Defesa + K))`, com `K = 20 + 5 × (nível do monstro − 1)`.
 O intervalo útil vai de zero até `7/3 × K` pontos, quando atinge o teto; pontos acima disso

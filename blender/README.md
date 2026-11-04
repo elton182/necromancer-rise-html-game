@@ -232,6 +232,8 @@ blender --background --python blender/scripts/v2_village_kit.py
 node v2/tools/build.cjs
 ```
 
+`scripts/v2_map_kit.py` gera o catálogo do editor de mapas (`models/v2_map_kit.blend`, `exports/v2_map_kit.glb`, `mapKit`): 29 peças de água, relevo, acampamento, ruínas, natureza e povoado. As medidas seguem `PROPS` em `v2/scripts/map-model.mjs`, e o arco das pontes segue `groundAt` em `v2/scripts/map-terrain.mjs`. Use `blender --background --python blender/scripts/v2_map_kit.py` na raiz e depois `node v2/tools/build.cjs`.
+
 `scripts/v2_nature_kit.py` segue o mesmo padrão e reaproveita `Piece` e os materiais de `v2_village_kit.py`.
 Ele gera `models/v2_nature_kit.blend` e `exports/v2_nature_kit.glb` (`natureKit`) com seis peças:
 
@@ -460,7 +462,7 @@ Seis modelos com rigs importados, ações próprias e equipamento separado incor
 
 ## Lich da Forma da Morte (v2)
 
-Esqueleto de 65 ossos e foice fornecidos pelo usuário, com 13 clipes e a foice presa a um osso livre (`Scythe`). Gerar na raiz: `blender --background --python blender/scripts/lich.py` (saídas `models/v2_lich.blend`, `exports/v2_lich.glb`, `exports/v2_lich_scythe.glb`); prévias com `preview_lich.py`. Notas, clipes e limitações em [notes/lich_v2.md](notes/lich_v2.md); desenho da mecânica em [../docs/v2-morte-lich.md](../docs/v2-morte-lich.md).
+Esqueleto de 65 ossos e foice fornecidos pelo usuário, com 15 clipes e a foice presa a um osso livre (`Scythe`). Gerar na raiz: `blender --background --python blender/scripts/lich.py` (saídas `models/v2_lich.blend`, `exports/v2_lich.glb`, `exports/v2_lich_scythe.glb`); prévias com `preview_lich.py`. Notas, clipes e limitações em [notes/lich_v2.md](notes/lich_v2.md); desenho da mecânica em [../docs/v2-morte-lich.md](../docs/v2-morte-lich.md).
 
 Escudo de Carne da v2: [fonte e integração](notes/flesh_shield_v2.md), gerado por `scripts/flesh_shield.py`.
 
@@ -499,7 +501,7 @@ O gerador `scripts/arandu_caravan_kit.py` passou a produzir rodas vazadas de oit
 ## Queda na caverna do ARANDU
 
 - `scripts/arandu_cave_fall.py`: gera `models/arandu_cave_fall.blend` e `exports/arandu_cave_fall.glb`, com `kit_pit_rim`, `kit_pit_shaft` e `kit_collapse_chunk`; registro `caveFallKit` na v2. Adereços estáticos movimentados pelo tempo da cena.
-- `scripts/arandu_player_fall.py`: executar com `blender --background blender/models/v2_player.blend --python blender/scripts/arandu_player_fall.py`. Gera `models/arandu_player_fall.blend` e `exports/arandu_player_fall.glb`, com animação própria `fall` (1,5 s, 24 FPS), sem alterar o player original. Registro `playerFalling` na v2.
+- `scripts/arandu_necromancer_fall.py`: executar com `blender --background blender/models/v2_necromancer.blend --python blender/scripts/arandu_necromancer_fall.py`. Gera `models/arandu_necromancer_fall.blend` e `exports/arandu_necromancer_fall.glb`, com animação própria `fall` (1,5 s, 24 FPS), sem alterar o necromante original. Registro `necromancerFalling` na v2.
 
 Os dois GLBs são incorporados pelo build normal. Abertura, paredes e fragmentos foram conferidos no Edge; evidências em `review/v2/arandu-prologue/`. As exportações foram acionadas pelo MCP em processos separados; a cena aberta permaneceu intacta. O movimento vertical do personagem e da câmera é governado pelo runtime, e não pelo deslocamento global do rig.
 
@@ -514,10 +516,10 @@ Na raiz do repositório, `blender --background --python blender/scripts/arandu_c
 
 ### Fonte atual do Guerreiro após edição manual
 
-A fonte atual é `models/warrior.blend`, com os três cortes editados pelo usuário. Para atualizar o jogo, execute `scripts/warrior_export_manual.py` na sessão Blender via MCP e depois `node v2/tools/build.cjs`. O gerador `warrior_motion.py` é a base procedural histórica e não deve substituir automaticamente essa cena manual. O exportador mantém apenas as oito trilhas do personagem e não inclui Action Stash.
+A fonte atual é `models/warrior.blend`, com os três cortes editados pelo usuário. Para atualizar o jogo, execute `scripts/warrior_export_manual.py` na sessão Blender via MCP e depois `node v2/tools/build.cjs`. O gerador `warrior_motion.py` é a base procedural histórica e não deve substituir automaticamente essa cena manual. O exportador publica apenas as dez trilhas do personagem e não inclui Action Stash. O passo lateral (`strafe_left`, `strafe_right`) é acrescentado à cena por `scripts/warrior_strafe.py`, sem alterar as demais ações: `blender --background blender/models/warrior.blend --python blender/scripts/warrior_strafe.py`. A passada do `walk` (2,2 u por ciclo, com breve fase no ar) vem de `scripts/warrior_walk_stride.py`, executado do mesmo modo, que troca só pernas e altura do quadril e preserva tronco e braços.
 
 O exportador manual chama também `scripts/warrior_equipment_export.py`: gera a máscara de escudo no personagem e `exports/warrior_shield.glb`, usado no arremesso. Esse segundo script pode ser executado sozinho via MCP para reexportar a cena salva, usando cópias temporárias e preservando a cena ativa. A fonte editável do escudo continua dentro de `models/warrior.blend`.
 
 ### Tornado para edição manual
 
-A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a 30 fps, criada por `scripts/warrior_tornado.py` via MCP. Palma para baixo, braço à frente do peito e apoios alternados. Ela está selecionada no Pose Mode para ajuste do usuário; os clipes publicados no GLB e o jogo continuam os anteriores até a integração. Os exportadores preservam essa nona ação quando presente. [Notas de edição e validação](notes/warrior_tornado.md).
+A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a 30 fps, criada por `scripts/warrior_tornado.py` via MCP. Palma para baixo, braço à frente do peito e apoios alternados. Ela está selecionada no Pose Mode para ajuste do usuário; os clipes publicados no GLB e o jogo continuam os anteriores até a integração. Os exportadores preservam a ação na cena, mas não a publicam no GLB. [Notas de edição e validação](notes/warrior_tornado.md).

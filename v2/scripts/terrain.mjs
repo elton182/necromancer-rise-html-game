@@ -1,5 +1,8 @@
 // Colisão/navegação no plano x/y. Altura dos modelos não participa do cálculo.
+import {terrainSpeed} from './map-terrain.mjs';
 const EPS=1e-6,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+// Tiros e linhas de visão (raio fino) passam por cima de água funda e penhascos; só quem anda é barrado.
+const SIGHT=.1,skips=(s,r)=>s.terrainBlock&&r<=SIGHT;
 export const TRAINING_ARENA={id:'training-e3',bounds:{minX:-15,maxX:15,minY:-15,maxY:15},solids:[
  {id:'west-wall',kind:'box',x:-7,y:-2,width:.65,depth:7,height:.9},
  {id:'east-wall',kind:'box',x:7,y:-2,width:.65,depth:7,height:.9},
@@ -7,6 +10,47 @@ export const TRAINING_ARENA={id:'training-e3',bounds:{minX:-15,maxX:15,minY:-15,
  {id:'east-pillar',kind:'circle',x:4,y:0,r:.55,height:1.2}
 ]};
 function box(s){return {minX:s.x-s.width/2,maxX:s.x+s.width/2,minY:s.y-s.depth/2,maxY:s.y+s.depth/2};}
+// Caixa girada: `angle` no sentido de rotation.y do Three.js. As contas acontecem no referencial dela, com a caixa centrada na origem.
+const toLocal=(s,x,y)=>{const c=Math.cos(s.angle),n=Math.sin(s.angle);return {x:x*c-y*n,y:x*n+y*c};};
+const toWorld=(s,x,y)=>{const c=Math.cos(s.angle),n=Math.sin(s.angle);return {x:x*c+y*n,y:-x*n+y*c};};
+// Distância de um ponto à superfície do colisor; negativa ou zero dentro dele.
+export function solidDistance(p,s){
+ if(s.kind==='circle')return Math.hypot(p.x-s.x,p.y-s.y)-s.r;
+ const l=s.angle?toLocal(s,p.x-s.x,p.y-s.y):{x:p.x-s.x,y:p.y-s.y},hw=s.width/2,hd=s.depth/2;
+ return Math.hypot(l.x-clamp(l.x,-hw,hw),l.y-clamp(l.y,-hd,hd));
+}
+// Colisor retangular contra um círculo em movimento. Vale para a caixa alinhada e, no referencial dela, para a girada.
+function boxHit(p,d,r,q,keep){
+ for(const [axis,min,max,other,otherMin,otherMax]of [['x',q.minX-r,q.maxX+r,'y',q.minY,q.maxY],['y',q.minY-r,q.maxY+r,'x',q.minX,q.maxX]]){
+  const v=d[axis];if(Math.abs(v)<EPS)continue;const t=((v>0?min:max)-p[axis])/v,value=p[other]+d[other]*t;
+  if(value>=otherMin-EPS&&value<=otherMax+EPS)keep({t,nx:axis==='x'?(v>0?-1:1):0,ny:axis==='y'?(v>0?-1:1):0});
+ }
+ for(const x of [q.minX,q.maxX])for(const y of [q.minY,q.maxY])keep(circleHit(p,d,{x,y},r));
+}
+// Índice dos colisores: cada um entra nas células de 8 u que alcança, e a consulta só devolve os próximos, na ordem original.
+// Guardado por vetor de colisores (as portas da campanha trocam o vetor) e refeito se o tamanho mudar. Vetores pequenos seguem na varredura direta.
+export const SOLID_INDEX={cell:8,from:48};
+const INDEXES=new WeakMap();
+function buildIndex(solids){
+ const cells=new Map(),size=SOLID_INDEX.cell;
+ solids.forEach((s,i)=>{
+  const reach=s.kind==='circle'?s.r:0,far=s.angle?Math.hypot(s.width,s.depth)/2:0,x0=s.kind==='circle'?s.x-reach:s.angle?s.x-far:s.x-s.width/2,x1=s.kind==='circle'?s.x+reach:s.angle?s.x+far:s.x+s.width/2,y0=s.kind==='circle'?s.y-reach:s.angle?s.y-far:s.y-s.depth/2,y1=s.kind==='circle'?s.y+reach:s.angle?s.y+far:s.y+s.depth/2;
+  for(let cx=Math.floor(x0/size);cx<=Math.floor(x1/size);cx++)for(let cy=Math.floor(y0/size);cy<=Math.floor(y1/size);cy++){const key=(cx+32768)*65536+cy+32768;let list=cells.get(key);if(!list)cells.set(key,list=[]);list.push(i);}
+ });
+ return {count:solids.length,size,cells,seen:new Int32Array(solids.length),stamp:0,found:[],out:[]};
+}
+// Colisores que podem tocar o retângulo. O vetor devolvido é reaproveitado: vale só até a próxima consulta.
+export function nearbySolids(arena,x0,y0,x1,y1){
+ const solids=arena.solids;if(solids.length<SOLID_INDEX.from)return solids;
+ let ix=INDEXES.get(solids);if(ix?.count!==solids.length||ix.size!==SOLID_INDEX.cell){ix=buildIndex(solids);INDEXES.set(solids,ix);}
+ const {size,cells,seen,found,out}=ix,stamp=++ix.stamp;found.length=0;
+ for(let cx=Math.floor(x0/size);cx<=Math.floor(x1/size);cx++)for(let cy=Math.floor(y0/size);cy<=Math.floor(y1/size);cy++){
+  const list=cells.get((cx+32768)*65536+cy+32768);if(!list)continue;
+  for(let k=0;k<list.length;k++){const i=list[k];if(seen[i]!==stamp){seen[i]=stamp;found.push(i);}}
+ }
+ found.sort((a,b)=>a-b);out.length=found.length;for(let k=0;k<found.length;k++)out[k]=solids[found[k]];
+ return out;
+}
 function circleHit(p,d,c,r){
  const x=p.x-c.x,y=p.y-c.y,a=d.x*d.x+d.y*d.y;if(a<EPS*EPS)return null;
  const b=x*d.x+y*d.y,disc=b*b-a*(x*x+y*y-r*r);if(disc<0)return null;
@@ -22,26 +66,36 @@ function hit(p,d,r,arena){
  }
  // Descarte rápido: o círculo em movimento só pode tocar um colisor cuja caixa encosta na caixa do trajeto (alargada por r).
  const x0=Math.min(p.x,p.x+d.x)-r,x1=Math.max(p.x,p.x+d.x)+r,y0=Math.min(p.y,p.y+d.y)-r,y1=Math.max(p.y,p.y+d.y)+r;
- for(const s of arena.solids){
+ for(const s of nearbySolids(arena,x0,y0,x1,y1)){
+  if(skips(s,r))continue;
   if(s.kind==='circle'){if(s.x+s.r<x0||s.x-s.r>x1||s.y+s.r<y0||s.y-s.r>y1)continue;keep(circleHit(p,d,s,r+s.r));continue;}
-  const q=box(s);if(q.maxX<x0||q.minX>x1||q.maxY<y0||q.minY>y1)continue;
-  for(const [axis,min,max,other,otherMin,otherMax]of [['x',q.minX-r,q.maxX+r,'y',q.minY,q.maxY],['y',q.minY-r,q.maxY+r,'x',q.minX,q.maxX]]){
-   const v=d[axis];if(Math.abs(v)<EPS)continue;const t=((v>0?min:max)-p[axis])/v,value=p[other]+d[other]*t;
-   if(value>=otherMin-EPS&&value<=otherMax+EPS)keep({t,nx:axis==='x'?(v>0?-1:1):0,ny:axis==='y'?(v>0?-1:1):0});
+  if(s.angle){
+   const reach=Math.hypot(s.width,s.depth)/2;if(s.x+reach<x0||s.x-reach>x1||s.y+reach<y0||s.y-reach>y1)continue;
+   boxHit(toLocal(s,p.x-s.x,p.y-s.y),toLocal(s,d.x,d.y),r,{minX:-s.width/2,maxX:s.width/2,minY:-s.depth/2,maxY:s.depth/2},h=>{if(!h)return;const n=toWorld(s,h.nx,h.ny);keep({t:h.t,nx:n.x,ny:n.y});});
+   continue;
   }
-  for(const x of [q.minX,q.maxX])for(const y of [q.minY,q.maxY])keep(circleHit(p,d,{x,y},r));
+  const q=box(s);if(q.maxX<x0||q.minX>x1||q.maxY<y0||q.minY>y1)continue;
+  boxHit(p,d,r,q,keep);
  }
  return best;
 }
 export function overlaps(p,r,arena=TRAINING_ARENA){
  const b=arena.bounds;if(p.x<b.minX+r-EPS||p.x>b.maxX-r+EPS||p.y<b.minY+r-EPS||p.y>b.maxY-r+EPS)return true;
- return arena.solids.some(s=>{if(s.kind==='circle')return Math.hypot(p.x-s.x,p.y-s.y)<r+s.r-EPS;const q=box(s);return Math.hypot(p.x-clamp(p.x,q.minX,q.maxX),p.y-clamp(p.y,q.minY,q.maxY))<r-EPS;});
+ return nearbySolids(arena,p.x-r-.01,p.y-r-.01,p.x+r+.01,p.y+r+.01).some(s=>{if(skips(s,r))return false;if(s.angle)return solidDistance(p,s)<r-EPS;if(s.kind==='circle')return Math.hypot(p.x-s.x,p.y-s.y)<r+s.r-EPS;const q=box(s);return Math.hypot(p.x-clamp(p.x,q.minX,q.maxX),p.y-clamp(p.y,q.minY,q.maxY))<r-EPS;});
 }
 export function resolvePosition(p,r,arena=TRAINING_ARENA){
  const out={x:p.x,y:p.y},b=arena.bounds;
  for(let pass=0;pass<12;pass++){
   out.x=clamp(out.x,b.minX+r,b.maxX-r);out.y=clamp(out.y,b.minY+r,b.maxY-r);
-  for(const s of arena.solids){
+  // Folga na consulta: um empurrão dentro desta passada pode encostar em um colisor vizinho.
+  for(const s of nearbySolids(arena,out.x-r-1,out.y-r-1,out.x+r+1,out.y+r+1)){
+   if(skips(s,r))continue;
+   if(s.angle){
+    const l=toLocal(s,out.x-s.x,out.y-s.y),hw=s.width/2,hd=s.depth/2,ex=l.x-clamp(l.x,-hw,hw),ey=l.y-clamp(l.y,-hd,hd),d=Math.hypot(ex,ey);
+    if(d<EPS){const c=[{d:l.x+hw,x:-hw-r-EPS,y:l.y},{d:hw-l.x,x:hw+r+EPS,y:l.y},{d:l.y+hd,x:l.x,y:-hd-r-EPS},{d:hd-l.y,x:l.x,y:hd+r+EPS}].sort((a,b)=>a.d-b.d)[0],q=toWorld(s,c.x,c.y);out.x=s.x+q.x;out.y=s.y+q.y;}
+    else if(d<r){const n=toWorld(s,ex/d,ey/d);out.x+=n.x*(r-d+EPS);out.y+=n.y*(r-d+EPS);}
+    continue;
+   }
    let x,y,min=r;if(s.kind==='circle'){x=out.x-s.x;y=out.y-s.y;min+=s.r;}else{const q=box(s);x=out.x-clamp(out.x,q.minX,q.maxX);y=out.y-clamp(out.y,q.minY,q.maxY);if(Math.hypot(x,y)<EPS){const choices=[{d:out.x-q.minX,x:q.minX-r-EPS,y:out.y},{d:q.maxX-out.x,x:q.maxX+r+EPS,y:out.y},{d:out.y-q.minY,x:out.x,y:q.minY-r-EPS},{d:q.maxY-out.y,x:out.x,y:q.maxY+r+EPS}];choices.sort((a,b)=>a.d-b.d);Object.assign(out,{x:choices[0].x,y:choices[0].y});continue;}}
    const length=Math.hypot(x,y);if(length<min){if(length<EPS){x=1;y=0;}const n=length<EPS?1:length;out.x+=x/n*(min-length+EPS);out.y+=y/n*(min-length+EPS);}
   }
@@ -74,9 +128,9 @@ function regions(arena,r){
  // Rasteriza cada colisor só nas células que ele alcança (em vez de testar todas as células contra todos os colisores).
  const span=(lo,hi,min,count)=>[Math.max(0,Math.ceil((lo-min)/step)),Math.min(count-1,Math.floor((hi-min)/step))];
  for(const s of arena.solids){
-  const q=s.kind==='circle'?{minX:s.x-s.r,maxX:s.x+s.r,minY:s.y-s.r,maxY:s.y+s.r}:box(s),[i0,i1]=span(q.minX-rr,q.maxX+rr,b.minX,w),[j0,j1]=span(q.minY-rr,q.maxY+rr,b.minY,h);
+  const reach=s.angle?Math.hypot(s.width,s.depth)/2:0,q=s.kind==='circle'?{minX:s.x-s.r,maxX:s.x+s.r,minY:s.y-s.r,maxY:s.y+s.r}:s.angle?{minX:s.x-reach,maxX:s.x+reach,minY:s.y-reach,maxY:s.y+reach}:box(s),[i0,i1]=span(q.minX-rr,q.maxX+rr,b.minX,w),[j0,j1]=span(q.minY-rr,q.maxY+rr,b.minY,h);
   for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){
-   const x=b.minX+i*step,y=b.minY+j*step,d=s.kind==='circle'?Math.hypot(x-s.x,y-s.y)-s.r:Math.hypot(x-clamp(x,q.minX,q.maxX),y-clamp(y,q.minY,q.maxY));
+   const x=b.minX+i*step,y=b.minY+j*step,d=s.angle?solidDistance({x,y},s):s.kind==='circle'?Math.hypot(x-s.x,y-s.y)-s.r:Math.hypot(x-clamp(x,q.minX,q.maxX),y-clamp(y,q.minY,q.maxY));
    if(d<rr)blocked[j*w+i]=1;
   }
  }
@@ -136,5 +190,5 @@ export function navigate(a,target,speed,dt,arena=TRAINING_ARENA){
   if(!a.navPath.length){a.navPath=null;return {...a,distance:0};}waypoint=a.navPath[0];
   if(!lineClear(a,waypoint,r,arena)){a.navPath=null;return {...a,distance:0};}
  }else a.navPath=null;
- const dx=waypoint.x-a.x,dy=waypoint.y-a.y,d=Math.hypot(dx,dy),travel=Math.min(d,speed*dt);return moveCircle(a,{x:d?dx/d*travel:0,y:d?dy/d*travel:0},r,arena);
+ const dx=waypoint.x-a.x,dy=waypoint.y-a.y,d=Math.hypot(dx,dy),travel=Math.min(d,speed*(a.model==='enemyGriffin'?1:terrainSpeed(arena,a.x,a.y,dx,dy))*dt);return moveCircle(a,{x:d?dx/d*travel:0,y:d?dy/d*travel:0},r,arena);
 }
