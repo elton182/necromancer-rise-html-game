@@ -138,12 +138,12 @@ A vila deixou de ser uma arena vazia. `v2/scripts/village-map.mjs` define o layo
 (`villageKit`, veja **Aparência**); árvores, rochas, grama e flores reutilizam `forest-scene.mjs`. As peças do
 modelo medieval antigo (`medievalVillage`) saíram da periferia da vila; continuam só no campo de treino.
 
-- **Colisores (46):** onze construções (fileira de casas ao norte, ferraria de Bram a oeste,
-  casa de Lysa a leste, casas laterais ao sul e a estalagem fechando a rua principal),
+- **Colisores (46):** onze construções (fileira de casas ao norte, ferraria de Bruno a oeste,
+  casa de Lucia a leste, casas laterais ao sul e a estalagem fechando a rua principal),
   duas barracas do mercador, quadro do mapa, pilares do portal, poço no centro da praça,
   postes, barris, caixas, cercas, árvores e pedras. Pisos e ruas são só desenho.
-- **Pontos de interação:** portal `(0,-9)`, mapa `(-6,-8)`, mercador `(8,-6)`, Bram `(-11,1)`,
-  Lysa `(11,1)`, Tilda `(-6,8)` e Vesper `x 0, y 5,9` ficam livres, ligados por rua e praça,
+- **Pontos de interação:** portal `(0,-9)`, mapa `(-6,-8)`, mercador `(8,-6)`, Bruno `(-11,1)`,
+  Lucia `(11,1)`, Julia `(-6,8)` e Vesper `x 0, y 5,9` ficam livres, ligados por rua e praça,
   dentro do alcance de 3,2 u da tecla G. Os testes conferem rota a pé, a partir da chegada
   `(0,9)`, e que nenhum ator nasce dentro de um sólido.
 - **Aparência (fatia vertical do acabamento visual):**
@@ -198,7 +198,7 @@ o consumível não é gasto.
 
 ## Vila de Eldrin
 
-Bram, Lysa, Tilda e Vesper usam as falas e categorias de missão atuais. Aproxime-se
+Bruno, Lucia, Julia e Vesper usam as falas e categorias de missão atuais. Na versão legada eles se chamam Bram, Lysa e Tilda; a v2 troca só o nome exibido (`VILLAGE_NAMES` em `campaign.mjs`), sem mudar ids nem falas da fonte compartilhada. Aproxime-se
 e pressione **G**, ou use o botão de interação. A oferta fica estável até sair da vila.
 Ao aceitar, o personagem entra numa arena de ondas ou numa trilha de três emboscadas,
 com Rei Caído no final. O prêmio de missão segue a fonte: XP da oferta e
@@ -274,14 +274,38 @@ São 21 grupos fixos com tipos misturados (Guerreiro, Arqueiro, Mago Vivo, Cão 
 
 | Quest | Como progride | Prêmio |
 | --- | --- | --- |
-| Uma voz entre as ruínas → Resgate o prefeito | Falar com Lia na praça; derrotar os três guardas do posto; libertar Oren; falar com ele na praça | 90 ouro, 120 XP |
-| O ferreiro de Eldrin | Aberta ao concluir o resgate. Derrotar o bando da Mina de Valfundo (Orc líder, Ladrão, Ladino Arqueiro, Arqueiro); falar com Bran na entrada; falar com ele na forja da vila | 100 ouro, 150 XP. Depois, Bran abre a forja (painel de equipamentos) |
-| Madeira para Eldrin | Aberta junto com a do ferreiro. Cada uma das três pilhas da serraria tem seu grupo de guardas; com o grupo derrotado, **G** marca a pilha. Com as três marcadas, falar com Oren | 110 ouro, 160 XP |
+| Uma voz entre as ruínas → Resgate o prefeito | Falar com Lili na praça; derrotar os três guardas do posto; libertar Joaquim; falar com ele na praça | 90 ouro, 120 XP |
+| O ferreiro de Eldrin | Aberta ao concluir o resgate. Derrotar o bando da Mina de Valfundo (Orc líder, Ladrão, Ladino Arqueiro, Arqueiro); falar com Bruno na entrada; falar com ele na forja da vila | 100 ouro, 150 XP. Depois, Bruno abre a forja (painel de equipamentos) |
+| Madeira para Eldrin | Aberta junto com a do ferreiro. Cada uma das três pilhas da serraria tem seu grupo de guardas; com o grupo derrotado, **G** marca a pilha. Com as três marcadas, falar com Joaquim | 110 ouro, 160 XP |
+| O rastro de João | Só nas campanhas que passaram pelo prólogo, depois da forja e da madeira. Marta, na praça, aponta a Várzea de Itaúna; o livro do acampamento leva à Gruta das Tecelãs; o contrato fica no Forte da Pedra Negra; João espera na praça. Detalhes em [Várzea de Itaúna](v2-itauna.md#o-rastro-de-joão) | 600 ouro e 1550 XP, em três partes |
 
 As duas quests ficam ativas ao mesmo tempo: o painel lista ambas, a bússola segue a primeira e o mapa marca todos os objetivos e as pilhas restantes. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem. Cada prêmio é pago uma vez. Saves que já tinham concluído o resgate recebem as duas quests ativas ao carregar.
 
+### Relevo, níveis, densidade e retorno à vila (05/11/2026)
+
+- **Relevo e regiões** ([`world-relief.mjs`](../v2/scripts/world-relief.mjs)):
+  - Colinas largas por onde as estradas sobem suaves.
+  - Terras altas de pedra ao norte, até a Mina de Valfundo.
+  - Cumes nevados a nordeste, com −15% de velocidade.
+  - Colinas cinzentas da cripta, com árvores mortas e cruzes.
+  - Baixada alagada na serraria, com lama e uma lagoa.
+  - Alto do cemitério e penhascos rochosos longe das estradas.
+  - Cripta, vila, pátio da mina e capela ficam nivelados. O vale acompanha o rio da edição publicada.
+- **Edição publicada:** o relevo foi mesclado com `node v2/tools/world-relief.cjs`. Alturas esculpidas à mão ficam com a maior das duas, e o rio e as superfícies pintadas continuam. A cópia anterior fica em `blender/backups/campaign-world.before-relief.json`. Rodar de novo parte dessa cópia, então substitui alterações de relevo feitas depois no editor.
+- **Níveis e densidade** ([`area-tuning.mjs`](../v2/scripts/area-tuning.mjs)):
+  - Nível das áreas: Jacarandá 10, Várzea de Itaúna 20, Gruta das Tecelãs 30, Forte da Pedra Negra 40. Cada grupo soma a diferença do seu nível para o da planta, então missões mais duras continuam mais duras.
+  - **Nível do loot:** o equipamento que cai de um inimigo usa o nível do grupo dele (o `gearWave` de `spawnEnemy`). Drops sem grupo usam o nível da área. A recuperação de nível de `dropRoll` continua valendo por cima: com o equipamento vestido abaixo desse nível, parte dos drops sobe até +10. Antes os drops do mundo e das áreas caíam sempre no nível 1.
+  - Cada grupo tem o dobro de integrantes e o triplo de ondas, 5 s entre elas: seis vezes mais inimigos.
+  - Grupos que não são de missão renascem 90 s depois de vencidos, se o jogador estiver longe. Ao voltar à vila, todos rearmam na hora.
+  - Vale no jogo e no **Testar** de mapas da campanha. O editor continua mostrando a composição salva.
+- **Teleporte à vila:** botão no painel de objetivos que leva à praça de Jacarandá, a partir do mundo ou de qualquer área ligada, com a passagem escura.
+  - Aparece depois que a vila é alcançada uma vez e some dentro dela.
+  - Fica desligado com inimigo em combate a menos de 16 u, para fugir de uma luta continuar exigindo correr.
+  - Chegar pelo teleporte conta como chegar ao abrigo: os grupos rearmam e a área é esquecida no save.
+
 ### Limitações
 
+- **Personagem recém-saído do prólogo:** sai em torno do nível 4 ou 5. Numa simulação no navegador, parado e só lançando o Tiro de Osso, com horda e equipamento iniciais, ele venceu os grupos da floresta, do acampamento, das ruínas e da estrada da mina. Cada grupo com três ondas levou de 23 a 134 s. O cemitério (nível 13, oito inimigos e líder raro) o matou em 6 a 21 s. Números em [`review/v2/itauna/survival-after-prologue.json`](../review/v2/itauna/survival-after-prologue.json). O teste não se move nem recua, e a experiência ganha com seis vezes mais inimigos não foi revista.
 - A conclusão das quests não altera o cenário: as pilhas marcadas continuam visíveis e a vila não é reconstruída.
 - Os números de grupos, tipos, `wave` e prêmios são provisórios, sem passagem pelo `balance-simulator/`.
 - Testes: `node --test v2/tests/campaign-world.test.mjs` cobre rotas livres de colisores, pontos alcançáveis, grupos mistos e líderes, ordem das quests, prêmio único, retomada após morte e recarga, e migração de saves. `node v2/tests/campaign-world-browser-check.cjs` percorre as regiões no Edge com teleporte e abates injetados, abre o mapa e conclui a forja; capturas em `review/v2/campaign-world/`. Não valida dificuldade. A medição de quadro feita ali no Edge headless não representa a GPU do jogador.

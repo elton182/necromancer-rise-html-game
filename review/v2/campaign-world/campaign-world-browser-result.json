@@ -3,7 +3,7 @@
     "kind": "campaign-world",
     "x": -98,
     "y": -86,
-    "solids": 943,
+    "solids": 938,
     "bounds": {
       "minX": -180,
       "maxX": 180,
@@ -13,43 +13,43 @@
   },
   "perf": {
     "crypt": {
-      "median": 14.1,
-      "p90": 28,
+      "median": 20.7,
+      "p90": 34.6,
       "enemies": 0
     },
     "forest": {
-      "median": 13.8,
+      "median": 13.9,
       "p90": 21,
       "enemies": 3
     },
     "mineRoad": {
-      "median": 13.8,
-      "p90": 20.7,
+      "median": 13.9,
+      "p90": 20.9,
       "enemies": 6
     },
     "mine": {
-      "median": 13.8,
+      "median": 13.9,
       "p90": 20.8,
       "enemies": 10
     },
     "mill": {
-      "median": 6.9,
-      "p90": 7.1,
+      "median": 13.8,
+      "p90": 20.9,
       "enemies": 10
     },
     "graveyard": {
-      "median": 13.6,
-      "p90": 20.7,
+      "median": 14,
+      "p90": 20.9,
       "enemies": 14
     },
     "village": {
       "median": 13.9,
-      "p90": 20.8,
+      "p90": 21,
       "enemies": 0
     },
     "villageLow": {
-      "median": 7,
-      "p90": 13.9,
+      "median": 13.8,
+      "p90": 14.1,
       "enemies": 0
     }
   },

@@ -23,7 +23,8 @@ test('chão pintado cobre o mundo da campanha e a floresta com sobreposição li
  const oldDocument=globalThis.document,oldPath=globalThis.Path2D;
  try{
   const {paintedGround,calls}=await load();
-  const world=toArena(TEMPLATES.find(t=>t.id==='campaign-world').make());
+  // O relevo do mundo usa a malha do terreno, que o Three.js simulado aqui não monta: a sobreposição é a mesma com ou sem relevo.
+  const world=toArena({...TEMPLATES.find(t=>t.id==='campaign-world').make(),terrain:null});
   assert.ok(world.decor.path.length>50);
   const mesh=paintedGround(world);
   assert.ok(mesh.userData.replacesGround&&mesh.userData.paintedGround);

@@ -4,7 +4,7 @@ Uso na raiz do projeto (ou na sessão Blender via MCP com rigged_player.blend ab
   blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py
 Na sessão MCP defina `PLAYER_EXPORT = False` antes para só pré-visualizar; com True (padrão) grava models/v2_necromancer.blend e exports/v2_necromancer.glb.
 O rigged_player.blend e o lab_player_current.glb continuam sendo a fonte do pipeline de sprites legado e do laboratório 3D antigo.
-Clipes (registro `necromancer` em v2/assets/models.json): idle (2 s), walk (0,667 s, ciclo de 1,5 u), strafe_left e strafe_right (0,667 s, ciclo de 1,1 u), cast (0,375 s) e death (0,8 s).
+Clipes (registro `necromancer` em v2/assets/models.json): idle (2 s), walk (0,667 s, ciclo de 1,5 u), strafe_left e strafe_right (0,667 s, ciclo de 1,1 u), cast (0,375 s), death (0,8 s) e dodge (0,5 s, a duração da esquiva).
 O motor dispara o feitiço no instante em que `cast` começa e, na carga do Tiro de Osso, mantém o último quadro; por isso `cast` começa quase
 no pico do gesto e termina numa pose de canalização com o cajado à frente.
 """
@@ -116,7 +116,7 @@ GUARD = dict(
     spine=(.02, 0, 0), spine1=(0, 0, 0), spine2=(.02, 0, 0), neck=(0, 0, 0), head=(-.02, 0, 0),
     LA=(.15, -.05, -1), LF=(.1, -.35, -.9), lroll=(0, 0, 0), open=(.4, 0, 0),
     RA=(-.12, -.15, -1), RF=(-.1, -.75, -.5), staff=(0, -.04, 1),
-    LU=(0, 0, 0), LL=(0, 0, 0), LFt=(0, 0, 0), RU=(0, 0, 0), RL=(0, 0, 0), RFt=(0, 0, 0))
+    LU=(0, 0, 0), LL=(0, 0, 0), LFt=(0, 0, 0), RU=(0, 0, 0), RL=(0, 0, 0), RFt=(0, 0, 0), spin=(0, 0, 0))
 def P(**kw):
     p = dict(GUARD); p.update(kw); return p
 def add(p, **kw):
@@ -158,6 +158,8 @@ def apply(p):
     aim('LeftArm', p['LA']); aim('LeftForeArm', p['LF']); roll_forearm('Left', p['lroll'][0])
     aim('RightArm', p['RA']); aim('RightForeArm', clamp_forearm(p['RF'], p['staff']))
     orient_staff(p['staff'])
+    # Rolamento: a pose encolhida é montada em pé e o giro entra por último no quadril, levando o corpo inteiro junto.
+    if p['spin'][0]: rotate('Hips', (1, 0, 0), p['spin'][0])
 
 CLIPS = {}
 def clip(name, length, loop, ground):
@@ -248,11 +250,22 @@ DEATH_FLAT = P(spine=(-.35, 0, 0), spine1=(-.12, 0, 0), spine2=(-.2, 0, 0), neck
 def death(u):
     return sample([(0, GUARD, 's'), (.2, DEATH_STAGGER, 'out'), (.55, DEATH_KNEES, 's'), (1, DEATH_FLAT, 'in')], u)
 
-JUMP_CROUCH = P(spine=(.2, 0, 0), hips=(0, 0, -.12 * H), LU=(-.65, 0, 0), LL=(1.1, 0, 0), RU=(-.65, 0, 0), RL=(1.1, 0, 0))
-JUMP_AIR = P(spine=(.18, 0, 0), LU=(-.55, 0, 0), LL=(.8, 0, 0), RU=(.25, 0, 0), RL=(.55, 0, 0))
-@clip('jump', 24, False, 'feet')
-def jump(u):
-    return sample([(0, GUARD, 's'), (.15, JUMP_CROUCH, 's'), (.4, JUMP_AIR, 's'), (.72, JUMP_AIR, 's'), (.88, JUMP_CROUCH, 's'), (1, GUARD, 's')], u)
+# --- dodge: rolamento à frente na direção da esquiva. Encolhe, dá uma volta inteira e levanta já em guarda; o cajado atravessa o peito, paralelo ao eixo do giro, e nunca toca o chão --
+DODGE_DIP = P(spine=(.42, 0, 0), spine1=(.16, 0, 0), spine2=(.16, 0, 0), head=(.1, 0, 0), hips=(0, -.04 * H, -.1 * H),
+              LA=(.3, -.75, -.6), LF=(-.45, -.8, .2), open=(.2, 0, 0), RA=(-.2, -.7, -.65), RF=(.5, -.75, .25), staff=(.9, -.2, .35),
+              LU=(-.95, 0, 0), LL=(1.25, 0, 0), RU=(-.35, 0, 0), RL=(.75, 0, 0), LFt=(-.3, 0, 0), RFt=(-.3, 0, 0))
+DODGE_TUCK = P(spine=(.58, 0, 0), spine1=(.26, 0, 0), spine2=(.26, 0, 0), neck=(.14, 0, 0), head=(.3, 0, 0),
+               LA=(.25, -.7, -.65), LF=(-.65, -.7, .28), RA=(-.18, -.72, -.65), RF=(.62, -.68, .3), staff=(1, -.05, .1),
+               LU=(-1.75, 0, 0), LL=(2.05, 0, 0), RU=(-1.65, 0, 0), RL=(2.05, 0, 0), LFt=(.2, 0, 0), RFt=(.2, 0, 0))
+DODGE_RISE = P(spine=(.26, 0, 0), spine1=(.05, 0, 0), spine2=(.08, 0, 0), head=(-.1, 0, 0), hips=(0, -.03 * H, -.14 * H),
+               LA=(.25, -.25, -.9), LF=(.2, -.55, -.5), RA=(-.14, -.4, -.9), RF=(-.05, -.85, -.25), staff=(.2, -.2, .95),
+               LU=(-.3, 0, 0), LL=(.72, 0, 0), RU=(-.95, 0, 0), RL=(1.2, 0, 0), LFt=(-.2, 0, 0), RFt=(-.2, 0, 0))
+DODGE_SPIN_START, DODGE_SPIN_END = .1, .78
+@clip('dodge', 24, False, 'roll')
+def dodge(u):
+    p = sample([(0, GUARD, 's'), (.12, DODGE_DIP, 'out'), (.3, DODGE_TUCK, 's'), (.62, DODGE_TUCK, 's'), (.84, DODGE_RISE, 's'), (1, GUARD, 's')], u)
+    p['spin'] = (TAU * ease(max(0, min(1, (u - DODGE_SPIN_START) / (DODGE_SPIN_END - DODGE_SPIN_START))), 's'), 0, 0)
+    return p
 
 # --- gravação ---------------------------------------------------------------------------------------------------------
 def bake():
@@ -269,11 +282,13 @@ def bake():
             p = fn(f / length)
             apply(p); hip = Vector(p['hips']); set_hips(hip)
             # Pés no chão (o robe passa abaixo do chão no repouso, então os pés é que valem); na queda vale o corpo todo.
-            low = lowest(ground) - (rest_feet if ground == 'feet' else rest_mesh)
+            if ground == 'roll':
+                # No rolamento o apoio passa dos pés para as costas e volta aos pés.
+                u = f / length; back = ease(max(0, min(1, u / .22)), 's') * (1 - ease(max(0, min(1, (u - .68) / .28)), 's'))
+                low = (lowest('feet') - rest_feet) * (1 - back) + (lowest('mesh') - rest_mesh) * back
+            else:
+                low = lowest(ground) - (rest_feet if ground == 'feet' else rest_mesh)
             hip.z -= low
-            if name == 'jump':
-                u = f / length
-                hip.z += (.42 / SCALE) * math.sin(math.pi * max(0, min(1, (u - .15) / .73)))
             set_hips(hip)
             pts = local_points(); height.append(float(pts[:, 2].max() - pts[:, 2].min()))
             fore = bone('RightForeArm'); shaft = staff.matrix_world.to_3x3() @ Vector((0, 0, 1))
@@ -292,13 +307,7 @@ arm.animation_data.action_slot = bpy.data.actions['idle'].slots[0]
 sc.frame_start = 1; sc.frame_end = 49; sc.render.fps = 24; sc.frame_set(1)
 print('PLAYER_MOTION', report)
 if EXPORT:
-    bpy.ops.object.select_all(action='DESELECT')
-    for obj in sc.objects:
-        # A cena contém uma esfera auxiliar sem material, fora do rig.
-        if obj.type in ('MESH', 'ARMATURE', 'EMPTY') and not obj.hide_render and obj.name != 'Icosphere':
-            obj.hide_set(False); obj.select_set(True)
-    bpy.context.view_layer.objects.active = arm
-    bpy.ops.export_scene.gltf(filepath=str(BASE / 'exports' / 'v2_necromancer.glb'), export_format='GLB', use_selection=True, export_animation_mode='ACTIONS',
-                              export_skins=True, export_yup=True, export_force_sampling=True)
-    bpy.ops.wm.save_as_mainfile(filepath=str(BASE / 'models' / 'v2_necromancer.blend'))
+    # Material e repintura (v2_necromancer_look.py) partem da textura original do Tripo; o mesmo script exporta o GLB e grava o .blend.
+    look = BASE / 'scripts' / 'v2_necromancer_look.py'
+    exec(compile(look.read_text(encoding='utf-8'), str(look), 'exec'), {'__file__': str(look), '__name__': 'look', 'LOOK_RUN': True, 'LOOK_EXPORT': True})
     print('PLAYER_EXPORTED')

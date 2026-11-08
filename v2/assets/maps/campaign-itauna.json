@@ -1,0 +1,20 @@
+{
+ "format":"necromancer-rise-map",
+ "version":1,
+ "id":"campaign-itauna",
+ "name":"Várzea de Itaúnasdd",
+ "base":"builtin:itauna",
+ "hidden":[],
+ "biome":null,
+ "size":null,
+ "start":null,
+ "spawns":null,
+ "level":1,
+ "enemyHp":1,
+ "enemyXp":1,
+ "objects":[],
+ "terrain":null,
+ "style":null,
+ "campaign":"itauna",
+ "updated":1793823734255
+}

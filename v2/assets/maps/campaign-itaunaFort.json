@@ -1,0 +1,20 @@
+{
+ "format":"necromancer-rise-map",
+ "version":1,
+ "id":"campaign-itaunaFort",
+ "name":"Forte da Pedra Negraw",
+ "base":"builtin:itauna-fort",
+ "hidden":[],
+ "biome":null,
+ "size":null,
+ "start":null,
+ "spawns":null,
+ "level":1,
+ "enemyHp":1,
+ "enemyXp":1,
+ "objects":[],
+ "terrain":null,
+ "style":null,
+ "campaign":"itaunaFort",
+ "updated":1793823770115
+}

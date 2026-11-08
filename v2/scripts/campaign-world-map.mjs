@@ -1,6 +1,7 @@
-import {WORLD_SIZE,WORLD_POINTS,WORLD_ROUTES,WORLD_ENCOUNTERS,WORLD_PILES} from './campaign-world-model.mjs';
+import {WORLD_SIZE,WORLD_POINTS,WORLD_ROUTES,WORLD_ENCOUNTERS,WORLD_PILES,WORLD_ROAD_ITAUNA} from './campaign-world-model.mjs';
 import {villageArena} from './village-map.mjs';
-import {flattenBake} from './map-terrain.mjs';
+import {flattenBake,closeGrid} from './map-terrain.mjs';
+import {worldRelief,MARSH,POND} from './world-relief.mjs';
 
 // A vila salva conserva a mesma planta da defesa, dentro do mundo contínuo.
 export function withIntactVillage(arena){
@@ -150,5 +151,37 @@ export function campaignWorldMap(){
   if(n%3===0)add('bush',+(x+1.2).toFixed(2),+(y+.8).toFixed(2),{r:.7});n++;
  }
  objects.forEach((o,i)=>o.id='world-'+i);
- return {name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:WORLD_ENCOUNTERS.map(({id,x,y,count,type,mix,wave,leader,quest})=>({id,x,y,count,type,mix,level:wave,leader,quest,trigger:'near',radius:18,idle:true,spread:2.2})),objects};
+ // Estrada para a Várzea de Itaúna: acrescentada depois dos ids, para as edições publicadas continuarem apontando para as mesmas peças.
+ const onRoad=o=>roadDistance(o,WORLD_ROAD_ITAUNA)<4.6&&['oak','pine','rock','stump','log','ruin','column','bush','wall'].includes(o.type);
+ for(let i=objects.length-1;i>=0;i--)if(onRoad(objects[i]))objects.splice(i,1);
+ let next=objects.length+4000;const extra=(type,x,y,more={})=>objects.push({id:'world-road-'+(next++),type,x,y,...more});
+ const road=WORLD_ROAD_ITAUNA;for(let i=1;i<road.length;i++){const a=road[i-1],b=road[i],n=Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/3);for(let j=0;j<=n;j++)extra('path',+(a[0]+(b[0]-a[0])*j/n).toFixed(2),+(a[1]+(b[1]-a[1])*j/n).toFixed(2),{r:2.6});}
+ extra('arch',167,95.6,{s:1.5,rot:88});for(const y of [91,101])extra('brazier',165,y);extra('signpost',160,100);extra('banner',163,90);
+ extra('signpost',96,70);extra('column',110,79,{r:.7,h:3.6});extra('brazier',112,79.5);
+ // Relevo e regiões (world-relief.mjs): a grade é gerada pelas trilhas do próprio mapa; as peças de cada região vêm depois dos ids antigos.
+ const relief=worldRelief({paths:objects.filter(o=>o.type==='path')}),at=(x,y)=>{const g=relief,fx=Math.max(0,Math.min(g.cols-1,(x-g.x0)/g.cell)),fy=Math.max(0,Math.min(g.rows-1,(y-g.y0)/g.cell)),i=Math.min(g.cols-2,Math.floor(fx)),j=Math.min(g.rows-2,Math.floor(fy)),u=fx-i,v=fy-j,k=j*g.cols+i;return (g.h[k]*(1-u)+g.h[k+1]*u)*(1-v)+(g.h[k+g.cols]*(1-u)+g.h[k+g.cols+1]*u)*v;};
+ const slopeAt=(x,y)=>Math.hypot(at(x+1,y)-at(x-1,y),at(x,y+1)-at(x,y-1))/2,surface=(x,y)=>relief.s[Math.round((y-relief.y0)/relief.cell)*relief.cols+Math.round((x-relief.x0)/relief.cell)];
+ const busy=objects.filter(o=>['oak','pine','rock','stump','house','column','ruin','wall','cryptwall','log','tomb'].includes(o.type)).map(o=>[o.x,o.y]);
+ const pathsNow=objects.filter(o=>o.type==='path'),onPath=(x,y,pad)=>pathsNow.some(p=>Math.hypot(x-p.x,y-p.y)<p.r+pad);
+ const free=(x,y,pad=4)=>!onPath(x,y,pad)&&!inZone(x,y,2)&&!busy.some(([a,b])=>Math.hypot(x-a,y-b)<2.6)&&!(x>30&&x<90&&y>32&&y<102)&&!(x>-118&&x<-52&&y>-112&&y<-58);
+ let relieved=0;const place=(type,x,y,more={})=>{objects.push({id:'world-relief-'+(relieved++),type,x:+x.toFixed(2),y:+y.toFixed(2),...more});busy.push([x,y]);};
+ let seed3=6131;const r3=()=>{seed3=(Math.imul(seed3,1664525)+1013904223)|0;return(seed3>>>0)/4294967296;},b3=(a,b)=>a+(b-a)*r3();
+ // Penhascos e cumes: rochedos acompanham as encostas fortes; gelo só nos cumes nevados.
+ for(let n=0,t=0;n<110&&t<4000;t++){const x=b3(-178,178),y=b3(-178,178);if(slopeAt(x,y)<.75||at(x,y)<.6||!free(x,y,6))continue;place('cliff',x,y,{r:+b3(1.4,2.8).toFixed(2),h:+b3(2.6,4.8).toFixed(2),rot:Math.round(b3(0,359))});n++;}
+ for(let n=0,t=0;n<14&&t<2000;t++){const x=b3(-178,178),y=b3(-178,178);if(surface(x,y)!==4||!free(x,y,6))continue;place('ice',x,y,{r:+b3(.5,.9).toFixed(2),h:+b3(1.2,2.2).toFixed(2)});n++;}
+ // Terras altas do norte: pinheiros escuros e matacões.
+ for(let n=0,t=0;n<70&&t<3000;t++){const x=b3(-178,178),y=b3(-178,-96);if(at(x,y)<2.4||slopeAt(x,y)>.55||!free(x,y,5))continue;place(r3()<.75?'pine':'boulder',x,y,r3()<.75?{r:.45,h:+b3(5.4,7.2).toFixed(2)}:{r:+b3(.8,1.4).toFixed(2),h:+b3(1,1.7).toFixed(2)});n++;}
+ // Colinas cinzentas da cripta: árvores mortas, cruzes e pilhas de pedra.
+ for(let n=0,t=0;n<34&&t<2000;t++){const a=b3(0,Math.PI*2),d=b3(8,58),x=-130+Math.cos(a)*d,y=-30+Math.sin(a)*d;if(!free(x,y,5)||at(x,y)<.5)continue;const k=r3();place(k<.5?'dead_tree':k<.75?'grave_cross':'cairn',x,y,k<.5?{r:.4,h:+b3(3.6,5.2).toFixed(2)}:{});n++;}
+ // Baixada alagada da serraria: juncos e nenúfares na lagoa, árvores mortas e cogumelos no charco.
+ for(let i=0;i<34;i++){const a=i/34*Math.PI*2,k=b3(.92,1.12),x=POND.x+Math.cos(a)*POND.rx*k,y=POND.y+Math.sin(a)*POND.ry*k;if(!onPath(x,y,3))place(i%6?'reeds':'shore_rock',x,y,i%6?{s:+b3(.9,1.3).toFixed(2)}:{r:.6,h:.6});}
+ for(let i=0;i<12;i++){const a=b3(0,Math.PI*2),k=b3(.3,.75);place('lily',POND.x+Math.cos(a)*POND.rx*k,POND.y+Math.sin(a)*POND.ry*k,{s:+b3(.9,1.4).toFixed(2)});}
+ for(let n=0,t=0;n<30&&t<2000;t++){const a=b3(0,Math.PI*2),d=b3(6,MARSH.r*.9),x=MARSH.x+Math.cos(a)*d,y=MARSH.y+Math.sin(a)*d;if(Math.abs(x)>176||Math.abs(y)>176||!free(x,y,4)||at(x,y)<.25)continue;const k=r3();place(k<.4?'dead_tree':k<.7?'mushrooms':'fern',x,y,k<.4?{r:.4,h:+b3(3.2,4.6).toFixed(2)}:{s:+b3(.9,1.4).toFixed(2)});n++;}
+ // Alto do cemitério: pedras de lápide tombadas e pilhas de pedra na encosta.
+ for(let n=0,t=0;n<16&&t<1500;t++){const a=b3(0,Math.PI*2),d=b3(30,50),x=144+Math.cos(a)*d,y=30+Math.sin(a)*d;if(Math.abs(x)>176||Math.abs(y)>176||!free(x,y,4))continue;place(r3()<.6?'mossy_tomb_'+'abc'[Math.floor(r3()*3)]:'cairn',x,y,{s:+b3(.9,1.2).toFixed(2)});n++;}
+ // Bosque central: samambaias nas bordas das matas.
+ for(let n=0,t=0;n<40&&t<2000;t++){const x=b3(-90,100),y=b3(-60,100);if(!free(x,y,3)||!busy.some(([a,b])=>Math.hypot(x-a,y-b)<5))continue;place('fern',x,y,{s:+b3(.9,1.4).toFixed(2)});n++;}
+ // Marcos de pedra ao longo da subida da mina, para a estrada ler como caminho seguro.
+ for(const [x,y] of [[48,-70],[38,-98],[34,-120]])for(const s of [-1,1])if(free(x+s*5,y,1))place('cairn',x+s*5,y);
+ return {terrain:closeGrid(relief,[]),name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:WORLD_ENCOUNTERS.map(({id,x,y,count,type,mix,wave,leader,quest})=>({id,x,y,count,type,mix,level:wave,leader,quest,trigger:'near',radius:18,idle:true,spread:2.2})),objects};
 }

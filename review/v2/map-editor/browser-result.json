@@ -1,6 +1,6 @@
 {
- "slots": 5,
- "tools": 98,
+ "slots": 8,
+ "tools": 108,
  "saved": {
   "rivers": 1,
   "campaign": "trail",
@@ -33,6 +33,6 @@
   }
  },
  "chip": "Lama · −30% de velocidade",
- "frame": 2611.6849999994038,
+ "frame": 1252.6899999976158,
  "errors": []
 }

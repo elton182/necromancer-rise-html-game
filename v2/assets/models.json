@@ -10,7 +10,7 @@
       "strafe_right",
       "cast",
       "death",
-      "jump"
+      "dodge"
     ],
     "durations": {
       "idle": 2,
@@ -19,7 +19,7 @@
       "strafe_right": 0.6666666667,
       "cast": 0.375,
       "death": 0.8,
-      "jump": 0.5
+      "dodge": 0.5
     },
     "stride": 1.5,
     "strafeStride": 1.1
@@ -132,8 +132,12 @@
       "slash_3",
       "thrust",
       "shield_bash",
-      "death"
+      "death",
+      "dodge"
     ],
+    "durations": {
+      "dodge": 0.5
+    },
     "stride": 2.2,
     "strafeStride": 1.8
   },
@@ -375,8 +379,12 @@
       "spin",
       "transform",
       "hit",
-      "death"
-    ]
+      "death",
+      "dodge"
+    ],
+    "durations": {
+      "dodge": 0.5
+    }
   },
   "lichScythe": {
     "path": "blender/exports/v2_lich_scythe.glb",
@@ -533,6 +541,12 @@
     },
     "matchPlayerHeight": true
   },
+  "fortKit": {
+    "path": "blender/exports/v2_fort_kit.glb",
+    "source": "blender/scripts/v2_fort_kit.py",
+    "requiredAnimations": [],
+    "role": "scenery"
+  },
   "mapKit": {
     "path": "blender/exports/v2_map_kit.glb",
     "source": "blender/scripts/v2_map_kit.py",
@@ -544,5 +558,123 @@
     "source": "blender/models/warrior.blend",
     "height": 1.05,
     "requiredAnimations": []
+  },
+  "druid": {
+    "path": "blender/exports/flora_tripo_druid_t.glb",
+    "source": "blender/models/flora_tripo_druid_t.blend",
+    "height": 2.9,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "cast",
+      "cast_up",
+      "slam",
+      "death",
+      "dodge",
+      "strafe_left",
+      "strafe_right"
+    ],
+    "durations": {
+      "dodge": 0.5
+    },
+    "stride": 1.9,
+    "strafeStride": 1.12
+  },
+  "druidWolf": {
+    "path": "blender/exports/flora_tripo_wolf.glb",
+    "source": "blender/models/flora_tripo_wolf.blend",
+    "height": 2.55,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "claw_1",
+      "claw_2",
+      "leap",
+      "howl",
+      "death",
+      "dodge",
+      "strafe_left",
+      "strafe_right"
+    ],
+    "durations": {
+      "dodge": 0.5
+    },
+    "stride": 2.55,
+    "strafeStride": 1.51
+  },
+  "archerHero": {
+    "path": "blender/exports/archer_hero.glb",
+    "source": "blender/scripts/ranged_heroes.py",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "strafe_left",
+      "strafe_right",
+      "shoot",
+      "dodge",
+      "death",
+      "shoot_up",
+      "leap_back"
+    ],
+    "durations": {
+      "dodge": 0.5
+    },
+    "stride": 1.43,
+    "strafeStride": 1.1,
+    "layered": true
+  },
+  "mercenary": {
+    "path": "blender/exports/mercenary.glb",
+    "source": "blender/scripts/ranged_heroes.py",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "strafe_left",
+      "strafe_right",
+      "shoot",
+      "dodge",
+      "death",
+      "throw",
+      "plant"
+    ],
+    "durations": {
+      "dodge": 0.5
+    },
+    "stride": 1.43,
+    "strafeStride": 1.1,
+    "layered": true
+  },
+  "falcon": {
+    "path": "blender/exports/falcon.glb",
+    "source": "blender/scripts/falcon.py",
+    "height": 1,
+    "requiredAnimations": [
+      "idle",
+      "glide",
+      "dive"
+    ]
+  },
+  "mageHero": {
+    "path": "blender/exports/mage_hero.glb",
+    "source": "blender/scripts/mage_hero.py",
+    "height": 2.25,
+    "requiredAnimations": [
+      "idle",
+      "walk",
+      "strafe_left",
+      "strafe_right",
+      "cast",
+      "cast_up",
+      "dodge",
+      "death"
+    ],
+    "durations": {
+      "dodge": 0.5
+    },
+    "stride": 1.29,
+    "strafeStride": 1.01,
+    "layered": true
   }
 }

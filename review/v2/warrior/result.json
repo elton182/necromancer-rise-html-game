@@ -12,12 +12,13 @@
     2
   ],
   "thrustHealth": [
-    928,
-    928,
+    921,
+    921,
     1000
   ],
   "checks": [
     "warrior selection",
+    "skills locked until invested",
     "three attacks render",
     "thrust capsule visual",
     "swept and tip targets hit",
@@ -28,8 +29,13 @@
     "passive investment",
     "offline",
     "isolated storage",
-    "three skill branches",
-    "13 selectable seals and four prerequisite connections",
+    "19 selectable seals and eight prerequisite connections",
+    "four skill branches",
+    "tornado variant refused near enemies and persists away from them",
+    "ricochet chain with real command",
+    "stance toggle and ground ring",
+    "slot picker offers eight actions",
+    "steel wave and war cry from the bar",
     "locked and learned states",
     "mobile branch selector",
     "martial shop and equipment",

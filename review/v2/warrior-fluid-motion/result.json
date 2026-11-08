@@ -1,0 +1,46 @@
+{
+  "errors": [],
+  "remote": [],
+  "alignment": {
+    "x": 0.006888372389659904,
+    "z": -0.06391699469904516,
+    "distance": 0.06428710512642793
+  },
+  "comboStages": [
+    0,
+    1,
+    2
+  ],
+  "thrustHealth": [
+    921,
+    921,
+    1000
+  ],
+  "checks": [
+    "warrior selection",
+    "skills locked until invested",
+    "three attacks render",
+    "thrust capsule visual",
+    "swept and tip targets hit",
+    "outside target missed",
+    "one click per cut",
+    "hold does not chain",
+    "timeout restarts combo",
+    "passive investment",
+    "offline",
+    "isolated storage",
+    "19 selectable seals and eight prerequisite connections",
+    "four skill branches",
+    "tornado variant refused near enemies and persists away from them",
+    "ricochet chain with real command",
+    "stance toggle and ground ring",
+    "slot picker offers eight actions",
+    "steel wave and war cry from the bar",
+    "locked and learned states",
+    "mobile branch selector",
+    "martial shop and equipment",
+    "no magical or horde stats",
+    "held tornado release",
+    "shield projectile render and return"
+  ]
+}

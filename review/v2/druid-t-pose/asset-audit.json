@@ -1,0 +1,16 @@
+[
+  {
+    "mesh": "flora_tripo_druid_t_mesh.001",
+    "triangles": 18634,
+    "materials": 1,
+    "unweighted": 0,
+    "uv_layers": 1
+  },
+  {
+    "mesh": "Flora_staff.001",
+    "triangles": 176,
+    "materials": 2,
+    "unweighted": 0,
+    "uv_layers": 0
+  }
+]

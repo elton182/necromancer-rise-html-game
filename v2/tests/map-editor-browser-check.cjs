@@ -10,7 +10,7 @@ const dir=path.resolve(__dirname,'../../review/v2/map-editor'),file=process.env.
  await boot();
  await page.getByRole('button',{name:'Editor de mapas',exact:true}).click();
  await page.waitForSelector('#maps-content [data-slot="trail"]');
- result.slots=await page.locator('#maps-content [data-slot]').count();assert.equal(result.slots,5,'cinco mapas da campanha');
+ result.slots=await page.locator('#maps-content [data-slot]').count();assert.equal(result.slots,8,'oito mapas da campanha');
  await page.locator('#maps-content [data-slot="trail"]').getByRole('button',{name:'Editar',exact:true}).click();
  await page.waitForSelector('#map-editor[open]');
  result.tools=await page.locator('#map-editor [data-tool]').count();assert.ok(result.tools>=70,'paleta com muitas peças: '+result.tools);

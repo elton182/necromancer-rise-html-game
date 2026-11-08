@@ -96,7 +96,7 @@ Contratos que o renderizador entende e que qualquer cena nova pode usar:
 | Item | Situação | Caminho sugerido |
 | --- | --- | --- |
 | Barracas do mercador, quadro de avisos, pilares do portal e Pedra do Infinito | Primitivas (`buildFurniture` em `village-scene.mjs`) | Novas peças no kit da vila (`stall`, `board`, `portal_pillar`, `monolith`) |
-| Ferraria de Bram e estalagem | Usam o mesmo enxaimel das casas | Variações: forja/bigorna e alpendre na ferraria (`smithy`), placa e varanda na estalagem (`inn`) |
+| Ferraria de Bruno e estalagem | Usam o mesmo enxaimel das casas | Variações: forja/bigorna e alpendre na ferraria (`smithy`), placa e varanda na estalagem (`inn`) |
 | Oclusão de NPCs, aliados e inimigos | Só o jogador ganha o círculo | Estender `updateSceneryFx` a uma lista curta de alvos (uniforme em vetor) ou contorno dos personagens atrás de cenário |
 | Borda do terreno | Implementado: duas faixas irregulares de árvores e sub-bosque fora do limite caminhável, clareiras nos eixos e escurecimento gradual do chão | Conferência visual pendente nesta revisão |
 | Histórias abertas na vila | Corrigido: palco usa `NoToneMapping` e exposição 1; valores da vila são restaurados após o desenho | Conferência visual pendente nesta revisão |

@@ -6,7 +6,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],remote=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});page.on('console',m=>{if(m.type()==='error'&&m.text().includes('Efeitos visuais desativados'))errors.push(m.text());});
   await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});await page.waitForFunction(()=>!document.getElementById('loading'));
-  await page.click('[data-title="campaign"]');await page.getByRole('button',{name:'Guerreiro / Soldado',exact:false}).click();await page.locator('#character-name').fill('Comparação e vila');await page.getByRole('button',{name:'Iniciar jornada',exact:false}).click();await page.waitForFunction(()=>NecromancerV2.session.scene!=='menu');
+  await page.click('[data-title="campaign"]');await page.locator('.class-choice[data-class="warrior"]').click();await page.locator('#character-name').fill('Comparação e vila');await page.getByRole('button',{name:'Iniciar jornada',exact:false}).click();await page.waitForFunction(()=>NecromancerV2.session.scene!=='menu');
   await page.evaluate(async()=>{
    const api=NecromancerV2,s=api.session,{launchWorld}=await import('v2-campaign-world');s.save.campaign.prologue.stage='done';s.save.campaign.world={stage:'village'};launchWorld(s);api.campaign.update();
    const EQ=(await import('v2-warrior-equipment')).default;

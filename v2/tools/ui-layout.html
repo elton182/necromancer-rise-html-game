@@ -3,7 +3,7 @@
   <div class="hud-wing life-wing" aria-label="Vida e habilidades">
 <div class="resource-vessel life-vessel" id="hp-vessel" title="Vida de Zephyr">
     <div class="vessel-crown" aria-hidden="true">✦</div>
-    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="hp-fill"></div><span class="vessel-rune" aria-hidden="true">♜</span></div>
+    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="hp-fill"><i class="vessel-swirl" aria-hidden="true"></i></div><span class="vessel-rune" aria-hidden="true">♜</span></div>
     <div class="vessel-caption"><span>VIDA</span><strong id="hp-val">100/100</strong></div>
   </div>
 <div class="hud-left-dock" aria-label="Personagem e habilidades">
@@ -32,21 +32,21 @@
 </div>
 <div class="resource-vessel mana-vessel" id="mp-vessel" title="Mana disponível para lançar habilidades">
     <div class="vessel-crown" aria-hidden="true">✧</div>
-    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="mp-fill"></div><span class="vessel-rune" aria-hidden="true">◈</span></div>
+    <div class="vessel-glass"><div class="bar-fill vessel-liquid" id="mp-fill"><i class="vessel-swirl" aria-hidden="true"></i></div><span class="vessel-rune" aria-hidden="true">◈</span></div>
     <div class="vessel-caption"><span>MANA</span><strong id="mp-val">80/80</strong></div>
   </div>
 </div>
 </div>
 
-<nav id="game-nav" aria-label="Menus do jogo"><button id="open-reliquary" type="button">☰ Relicário · Esc</button><span id="menu-shortcuts"></span><button id="open-help" type="button">? Ajuda · H</button></nav>
+<nav id="game-nav" aria-label="Menus do jogo"><button id="open-reliquary" type="button">Relicário · Esc</button><span id="menu-shortcuts"></span><button id="open-help" type="button">Ajuda · H</button></nav>
 <div id="objective-bar"><strong id="hud-location"></strong><span id="hud-objective"></span></div>
 <section id="boss-bar" aria-label="Vida do chefe" hidden><div><strong>REI CAÍDO</strong><span id="boss-phase"></span></div><div class="boss-track"><div id="boss-fill"></div></div><span id="boss-numbers"></span></section>
-<section id="minimap-panel" aria-label="Minimapa"><canvas id="hud-minimap" width="180" height="112" aria-label="Posições do personagem, aliados, inimigos e portais"></canvas><span id="minimap-caption"></span></section>
+<section id="minimap-panel" aria-label="Minimapa"><canvas id="hud-minimap" width="160" height="160" aria-label="Posições do personagem, aliados, inimigos e portais"></canvas><span id="minimap-caption"></span></section>
 <div id="horde-status" aria-label="Grupos da horda"></div>
 <button id="reanimate-hint" type="button" hidden>V · Reanimar agora · 30 MP</button>
 <div id="inv-bar" aria-label="Consumíveis"></div>
 <dialog id="pause-dialog" class="reliquary-menu" aria-label="Relicário de Zephyr"><div class="menu-top"><div id="menu-summary" class="menu-summary"></div><button id="close-reliquary" type="button" aria-label="Fechar Relicário">✕</button></div><nav id="menu-tabs" aria-label="Abas do Relicário"></nav><div id="menu-body"><section id="menu-character" data-menu-panel="character"><div id="character-summary"></div></section><section id="menu-army" data-menu-panel="horde" hidden></section><section id="menu-system" data-menu-panel="system" hidden></section></div><footer class="menu-actions"><button id="resume-game" type="button">▶ Continuar <small>ESC</small></button><button id="footer-help" type="button">Ajuda <small>H</small></button><button id="menu-campaign-return" type="button" hidden>Voltar ao mapa</button><span id="legacy-actions"></span></footer></dialog>
 <dialog id="action-picker" class="reliquary-menu" aria-labelledby="picker-title"><header><small>SEIS SLOTS · SEU PACTO</small><h2 id="picker-title">Habilidades equipadas</h2><button id="close-picker" type="button" aria-label="Fechar seleção de habilidades">✕</button></header><p>Escolha uma habilidade para este slot. Trocar grupos em combate mantém os custos e tempos de recuperação.</p><div id="picker-options" class="action-picker-list"></div><p id="picker-message" role="status"></p></dialog>
-<dialog id="help-dialog" class="reliquary-menu" aria-labelledby="help-title"><header><small>O GRIMÓRIO DO VIAJANTE</small><h2 id="help-title">Ajuda e controles</h2><button id="close-help" type="button" aria-label="Fechar ajuda">✕</button></header><div class="help-columns"><section><h3>Zephyr</h3><p>WASD / setas · mover<br>Mouse · mirar<br>Clique esquerdo / 1 · slot 1<br>Clique direito / 2 · slot 2<br>3 / Q · slot 3 · 4 / E · slot 4<br>5 / R · slot 5 · 6 / T · slot 6<br>C · Dash equipado<br>Espaço · Escudo de Carne equipado</p></section><section><h3>Seu pacto</h3><p>Clique num slot do HUD para trocar sua habilidade.<br>Shift + clique direito · comandar a horda<br>V · reanimar aliado caído (30 MP)<br>F1–F5 · consumíveis<br>G · moradores e portal<br>I · inventário · H · ajuda<br>Esc · Relicário / fechar janela<br>Roda do mouse · zoom</p></section><section><h3>Controle</h3><p>Stick esquerdo · mover / navegar<br>Stick direito · mirar<br>A / RT · slot 1<br>L3 · Dash · LT · comandar<br>Select · reanimar · Start · pausa<br>Nos menus: direcional ou stick para selecionar, A para confirmar.</p><h3>Recursos</h3><p>Vida à esquerda, mana à direita. A faixa dourada mostra XP; os pontos abrem o Grimório. Os grupos mostram integrantes vivos e caídos. No minimapa: vermelho é inimigo, verde é aliado e violeta é portal.</p></section></div></dialog>
+<dialog id="help-dialog" class="reliquary-menu" aria-labelledby="help-title"><header><small>O GRIMÓRIO DO VIAJANTE</small><h2 id="help-title">Ajuda e controles</h2><button id="close-help" type="button" aria-label="Fechar ajuda">✕</button></header><div class="help-columns"><section><h3>Zephyr</h3><p>WASD / setas · mover<br>Mouse · mirar<br>Clique esquerdo / 1 · slot 1<br>Clique direito / 2 · slot 2<br>3 / Q · slot 3 · 4 / E · slot 4<br>5 / R · slot 5 · 6 / T · slot 6<br>C · Dash equipado<br>Espaço · Escudo de Carne equipado</p></section><section><h3>Seu pacto</h3><p>Clique num slot do HUD para trocar sua habilidade.<br>Shift + clique direito · comandar a horda<br>V · reanimar aliado caído (30 MP)<br>F · Postura de Batalha (Guerreiro)<br>F1–F5 · consumíveis<br>G · moradores e portal<br>I · inventário · H · ajuda<br>Esc · Relicário / fechar janela<br>Roda do mouse · zoom</p></section><section><h3>Controle</h3><p>Stick esquerdo · mover / navegar<br>Stick direito · mirar<br>A / RT · slot 1<br>L3 · Dash · LT · comandar<br>Select · reanimar / trocar postura · Start · pausa<br>Nos menus: direcional ou stick para selecionar, A para confirmar.</p><h3>Recursos</h3><p>Vida à esquerda, mana à direita. A faixa dourada mostra XP; os pontos abrem o Grimório. Os grupos mostram integrantes vivos e caídos. No minimapa: vermelho é inimigo, verde é aliado e violeta é portal.</p></section></div></dialog>
 
 <div id="tl" aria-label="Tela inicial"><canvas id="tl-cv"></canvas><div class="wrap" id="tl-wrap"></div></div>

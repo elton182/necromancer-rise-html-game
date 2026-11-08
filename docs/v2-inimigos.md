@@ -90,6 +90,34 @@ avisos hostis para evasão; a aura do acólito não é tratada como área de dan
 Pausa congela a simulação; menu, morte do jogador e reinício limpam projéteis,
 fogo, habilidades e estados temporários. O chão e as entidades nunca entram no save.
 
+### Revisão de dificuldade do Rei (07/11/2026, mudança de regra)
+
+Simulações com o motor real (`node v2/tests/king-simulation.mjs`, evidências em `review/v2/king-balance/`) mostraram
+que a horda segurava o Rei o tempo todo: ele sempre mira o aliado mais próximo a menos de 5 u, a Queda nunca disparava
+(a horda fica a menos de 2,5 u) e o jogador não levava dano em nenhum cenário. Fora da Fase 4, a vida-base de 350
+(o antigo Guardião dos Ossos) acabava em 3–6 s. A revisão fica toda em `V2_KING` (`v2/scripts/fallen-king.mjs`); o
+modelo canônico e a versão legada não mudam.
+
+| Regra | Valor |
+| --- | --- |
+| Vida fora da Fase 4 | ×12 (`V2_KING.hp`) sobre a vida-base nas Expedições, na Conquista, nas missões da vila e no treino (1000 → 12 000). A Fase 4 continua com a vida do Capitão; o cerco não muda |
+| Queda do Rei em Zephyr | com a recarga pronta e Zephyr entre 2,5 e 9 u, a Queda mira Zephyr mesmo com a horda colada no Rei. Sem Zephyr no alcance, ela segue a regra do modelo |
+| Giro da Coroa (novo) | com 3 ou mais aliados a até 3,4 u: aviso em círculo de 3,4 u no Rei, preparação de 1,1 s, giro de 0,15 s, recuperação de 0,8 s; dano ×1,3 em todos no círculo; recarga de 8 s (4 s no início) |
+| Rastro de Brasas (novo) | com Zephyr entre 6 e 14 u e linha de visão: a direção é travada no início, o aviso é uma linha de 12 u × 1,1 u, preparação de 0,9 s; dano ×0,7 em quem estiver na linha; deixa três poças de fogo (a 3, 6 e 9 u; raio de 1,1 u; 2,5 s; 15% do dano do Rei por segundo); recarga de 6,5 s (3 s no início) |
+| Prioridade | Chamado (fase II) > Giro > Queda em Zephyr > Corte > Brasas > Queda no alvo próximo |
+| Fase II | os golpes novos usam o relógio ×1,3 e a recarga ×0,8 do modelo, como os outros; a transição espera o golpe terminar |
+
+O dano dos golpes novos só ocorre no evento, pelo caminho comum de `dealDamage` (Dash, barreira e Escudo de Ossos
+continuam valendo). Os avisos usam `dangerRune` (Giro) e `dangerLine` (Brasas); a horda evita o círculo do Giro como
+os outros avisos. Na animação, o Giro reaproveita `windup`/`attack`/`recover` com o corpo dando uma volta, e as Brasas
+usam `cast`/`recover`. Morte, reinício e perda de alerta limpam `kingV2`, os avisos e as poças.
+
+Resultado da simulação (6 sementes; bot que mira sem parar; "esquiva" sai dos avisos e usa o Dash): o perfil forte
+(nível 24) vence todos os cenários, em 13–40 s; o perfil médio (nível 12) vence esquivando, com 27–100% de vida
+mínima, e morre quando fica parado na Fase 4 e na Expedição w12, por causa das Quedas seguidas. A horda passa a perder
+aliados para o Giro. Limites: o bot não usa Muralha, Escudo, comandos nem reanimação; o guerreiro não foi simulado; a
+Fase 4 real só tem Zumbis.
+
 ## Modelos e validação
 
 Na entrega original da E8, quinze GLBs eram incorporados ao HTML. Os tipos usavam os assets existentes:
@@ -200,7 +228,7 @@ Três especiais da v2 (números em `HOWL`, `RAIN` e `SLAM`, `enemies.mjs`). Cada
 
 Mudanças de regra: os arqueiros e o cão ganharam especiais novos (antes só tinham o tiro forte e a investida), e o Orc ganhou um segundo golpe de área maior. O equilíbrio não foi reavaliado no `balance-simulator`, que não modela esses comportamentos.
 
-Visual: o uivo usa o clipe `howl` do lobo (Blender: `v2_enemy_wolf_motion.py`), a saraivada faz flechas caírem e ficarem fincadas (`arrowRain` em `vfx.mjs`) e a pancada usa a runa de perigo e a onda de choque já existentes.
+Visual: o uivo usa o clipe `howl` do lobo (Blender: `v2_enemy_wolf_motion.py`), a saraivada faz flechas caírem e ficarem fincadas (`arrowRain` em `vfx.mjs`) e a pancada usa o aviso hostil em círculo e a onda de choque já existentes.
 
 Verificação: `node --test v2/tests/special-attacks.test.mjs` e `node v2/tests/special-attacks-browser-check.cjs` (capturas em `review/v2/special-attacks/`).
 

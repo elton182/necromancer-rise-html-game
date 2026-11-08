@@ -16,6 +16,7 @@ import {resolvePosition} from './terrain.mjs';
 import EQ from './shared-equipment.mjs';
 import Endgame from './shared-endgame.mjs';
 import R from './enemy-rules.mjs';
+import {V2_KING} from './fallen-king.mjs';
 export const BIOME_NAMES={grave:'Cemitério',forest:'Floresta',desert:'Deserto',snow:'Tundra',village:'Vila'};
 export const ENTRY_RANGE=3,EXIT_RANGE=4;
 const GROUPS={expedition:8,fortress:6,apothecary:4,drowned:4};
@@ -42,7 +43,7 @@ function load(s,wave){
   if(run){Object.assign(e,{gearWave:run.reward.itemLevel,hp:Math.round(e.hp*scale.hp),maxHp:Math.round(e.maxHp*scale.hp),dmg:Math.round(e.dmg*scale.damage),xp:Math.round(e.xp*scale.xp)});if(index%5===0)e.infected=true;}
   index++;
  }
- const bs=run?{hp:scale.hp*Endgame.encounters[run.kind].hp,damage:scale.damage,xp:scale.xp}:EQ.waveStats(wave),hp=Math.round(R.boss.hp*bs.hp),pos=resolvePosition({x:plan.exit.x-4,y:plan.exit.y},.48,arena);
+ const bs=run?{hp:scale.hp*Endgame.encounters[run.kind].hp,damage:scale.damage,xp:scale.xp}:EQ.waveStats(wave),hp=Math.round(R.boss.hp*bs.hp*V2_KING.hp),pos=resolvePosition({x:plan.exit.x-4,y:plan.exit.y},.48,arena);
  const boss={id:w.nextId++,model:'fallenKing',team:'enemy',...pos,radius:.48,hp,maxHp:hp,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,phase:0,xp:Math.round(R.boss.xp*bs.xp),dmg:Math.round(R.boss.dmg*bs.damage),isBoss:true,gearWave:run?run.reward.itemLevel:wave,lootTier:'common',expedition:true,expeditionBoss:true,alert:false,home:{...pos}};
  w.boss=boss;w.actors.push(boss);w.spawnKingAdd=(p,owner)=>spawnEnemy(w,0,p.x,p.y,{wave:run?1:wave,owner:owner.id});
  // Poças permanentes junto aos primeiros grupos da expedição de Valdoria.

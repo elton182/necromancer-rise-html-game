@@ -1,0 +1,85 @@
+--- C:\Users\elton\AppData\Local\Temp/king-exp/base/v2/scripts/shared-fallen-king.mjs	2026-11-07 19:42:45.353068300 -0300
++++ C:\Users\elton\AppData\Local\Temp/king-exp/proposta/v2/scripts/shared-fallen-king.mjs	2026-11-07 19:44:17.145458900 -0300
+@@ -11,16 +11,22 @@
+   phases:[['windup',.8],['swing',.093,'hit'],['follow',.207],['recover',.5]]},
+  leap:{name:'Queda do Rei',min:2.5,max:7,radius:2.6,mult:2,height:1.1,cooldown:7,color:'#ffb347',
+   phases:[['windup',1],['air',.55,'impact'],['recover',1]]},
++ spin:{name:'Giro da Coroa',range:3.4,arc:Math.PI*2,mult:1.3,cooldown:8,crowd:3,color:'#ff5a2a',phases:[['windup',1.1],['swing',.15,'spin'],['recover',.8]]},
++ embers:{name:'Rastro de Brasas',min:6,max:14,length:12,width:1.1,mult:.7,cooldown:6.5,color:'#ff9a3a',phases:[['windup',.9],['cast',.1,'embers'],['recover',.6]]},
+  summon:{name:'Chamado da Coroa',count:2,limit:4,spread:1.6,cooldown:14,color:'#5fe8d8',
+   phases:[['windup',1.2,'summon'],['recover',.6]]}
+ };
+ const GAP=.9,ENRAGE=.5,ENRAGED_COOLDOWN=.8;
+-function reset(e){e.king=null;e.kingGap=1.5;e.kingCd={slash:0,leap:2,summon:3};e.kingPhase2=false;e.jumpZ=0;}
++function reset(e){e.king=null;e.kingGap=1.5;e.kingCd={slash:0,leap:2,summon:3,spin:4,embers:3};e.kingPhase2=false;e.jumpZ=0;}
+ function phaseOf(a){return skills[a.kind].phases[a.index];}
+-function choose(e,distance,adds){
+- if(e.kingPhase2&&e.kingCd.summon<=0&&adds<skills.summon.limit)return 'summon';
+- if(distance<=skills.slash.range&&e.kingCd.slash<=0)return 'slash';
+- if(distance>=skills.leap.min&&distance<=skills.leap.max+2&&e.kingCd.leap<=0)return 'leap';
++function choose(e,distance,adds,ctx={}){
++ if(e.kingPhase2&&e.kingCd.summon<=0&&adds<skills.summon.limit)return ['summon'];
++ if((ctx.crowd||0)>=skills.spin.crowd&&e.kingCd.spin<=0)return ['spin'];
++ const pd=ctx.playerDistance??distance;
++ if(ctx.player&&pd>=skills.leap.min&&pd<=skills.leap.max+2&&e.kingCd.leap<=0)return ['leap',ctx.player];
++ if(distance<=skills.slash.range&&e.kingCd.slash<=0)return ['slash'];
++ if(ctx.player&&pd>=skills.embers.min&&pd<=skills.embers.max&&e.kingCd.embers<=0)return ['embers',ctx.player];
++ if(distance>=skills.leap.min&&distance<=skills.leap.max+2&&e.kingCd.leap<=0)return ['leap'];
+  return null;
+ }
+ function start(e,kind,target,io){
+@@ -37,6 +43,8 @@
+  if(event==='hit')io.cone(e.x,e.y,a.dx,a.dy,s.range,s.arc,damage,s.color);
+  if(event==='impact'){e.x=a.tx;e.y=a.ty;e.jumpZ=0;io.area(a.tx,a.ty,s.radius,damage,s.color);}
+  if(event==='summon')io.summon(a.points,e);
++ if(event==='spin')io.ring(e.x,e.y,s.range,damage,s.color);
++ if(event==='embers')io.line(e.x,e.y,a.dx,a.dy,s.length,s.width,damage,s.color);
+ }
+ function finish(e,a){
+  e.king=null;e.jumpZ=0;e.kingGap=GAP;e.atkTimer=Math.max(e.atkTimer||0,.6);
+@@ -67,9 +75,9 @@
+  e.kingGap=Math.max(0,e.kingGap-dt);
+  if(e.kingGap>0)return false;
+  const target=io.target();if(!target)return false;
+- const kind=choose(e,Math.hypot(target.x-e.x,target.y-e.y),io.adds?.(e)||0);
+- if(!kind)return false;
+- start(e,kind,target,io);return true;
++ const p=io.player?.(),pick=choose(e,Math.hypot(target.x-e.x,target.y-e.y),io.adds?.(e)||0,{crowd:io.crowd?.(skills.spin.range)||0,player:p,playerDistance:p?Math.hypot(p.x-e.x,p.y-e.y):undefined});
++ if(!pick)return false;
++ start(e,pick[0],pick[1]||target,io);return true;
+ }
+ // Progresso normalizado (0..1) de cada animação, para o desenho seguir o estado real.
+ function pose(e){
+@@ -87,6 +95,7 @@
+   if(phase==='air')return {anim:'slam',progress:u*13/17,face};
+   return u<.25?{anim:'slam',progress:13/17+u/.25*4/17,face}:{anim:'slam_recover',progress:(u-.25)/.75,face};
+  }
++ if(a.kind==='spin')return {anim:phase==='windup'?'windup':phase==='recover'?'recover':'attack',progress:u,face};
+  return {anim:phase==='windup'?'cast':'recover',progress:phase==='windup'?u:.5+u*.5,face};
+ }
+ // Áreas de perigo para a esquiva da horda: círculos ou cápsulas.
+--- C:\Users\elton\AppData\Local\Temp/king-exp/base/v2/scripts/fallen-king.mjs	2026-11-07 19:42:45.232368900 -0300
++++ C:\Users\elton\AppData\Local\Temp/king-exp/proposta/v2/scripts/fallen-king.mjs	2026-11-07 19:44:17.243690800 -0300
+@@ -63,6 +63,11 @@
+    fx(w,'shockwave',{kind:'kingSlam',x,y,radius:reach,color:EMBER,mood:'fire',shake:.55,duration:.75});
+    (w.hostileZones||=[]).push({id:w.nextId++,source:e.id,gearWave:e.gearWave,x,y,radius:reach*V2_KING.fireRatio,life,span:life,tick:1,damage:Math.max(1,Math.round(e.dmg*V2_KING.fireShare[ph])),fire:true,color:EMBER});
+   },
++  player:()=>w.player.hp>0?w.player:null,
++  crowd:r=>targets().filter(t=>t.team==='ally'&&Math.hypot(t.x-e.x,t.y-e.y)<=r).length,
++  ring:(x,y,r,n)=>{damage(t=>Math.hypot(t.x-x,t.y-y)<=r,n);fx(w,'shockwave',{kind:'kingSlam',x,y,radius:r,color:'#ff5a2a',mood:'fire',shake:.4,duration:.6});},
++  line:(x,y,dx,dy,len,width,n)=>{damage(t=>{const vx=t.x-x,vy=t.y-y,along=vx*dx+vy*dy,side=Math.abs(vx*-dy+vy*dx);return along>=0&&along<=len&&side<=width/2+(t.radius||0);},n);
++   (w.hostileZones||=[]).push(...[3,6,9].map(s=>({id:w.nextId++,source:e.id,gearWave:e.gearWave,x:x+dx*s,y:y+dy*s,radius:1.1,life:2.5,span:2.5,tick:1,damage:Math.max(1,Math.round(e.dmg*.15)),fire:true,color:EMBER})));},
+   summon:points=>{
+    for(const p of points){if(w.spawnKingAdd)w.spawnKingAdd(p,e);else spawnEnemy(w,0,p.x,p.y,{wave:e.gearWave||1,owner:e.id});fx(w,'summonBurst',{kind:'kingSummon',x:p.x,y:p.y,radius:1.3,color:King.skills.summon.color,duration:.9});}
+    fx(w,'summonBurst',{x:e.x,y:e.y,radius:3,color:King.skills.summon.color,duration:.9});
+@@ -76,7 +81,9 @@
+  const a=e.king;if(!a)return;
+  const s=King.skills[a.kind],event=s.phases.findIndex(p=>p[2]);if(a.index>event)return;
+  const progress=lead(a),direction=Math.atan2(a.dy,a.dx);
+- if(a.kind==='summon'){
++ if(a.kind==='spin')warn(w,e,0,{x:e.x,y:e.y,radius:s.range,fx:'dangerRune',mood:'fire',progress,color:s.color});
++ else if(a.kind==='embers'){for(let i=0;i<6;i++)warn(w,e,i,{x:e.x+a.dx*(1+i*2),y:e.y+a.dy*(1+i*2),radius:s.width*.9,fx:'dangerRune',mood:'fire',progress,color:s.color});}
++ else if(a.kind==='summon'){
+   a.points.forEach((p,i)=>warn(w,e,i,{x:p.x,y:p.y,radius:1.15,harmless:true,fx:'summonRune',progress,color:s.color}));
+   warn(w,e,'boss',{x:e.x,y:e.y,radius:3.1,harmless:true,fx:'summonRune',progress,color:s.color});
+  }else if(a.kind==='leap'){

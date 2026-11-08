@@ -234,6 +234,8 @@ node v2/tools/build.cjs
 
 `scripts/v2_map_kit.py` gera o catálogo do editor de mapas (`models/v2_map_kit.blend`, `exports/v2_map_kit.glb`, `mapKit`): 29 peças de água, relevo, acampamento, ruínas, natureza e povoado. As medidas seguem `PROPS` em `v2/scripts/map-model.mjs`, e o arco das pontes segue `groundAt` em `v2/scripts/map-terrain.mjs`. Use `blender --background --python blender/scripts/v2_map_kit.py` na raiz e depois `node v2/tools/build.cjs`.
 
+`scripts/v2_fort_kit.py` gera o kit do forte e da gruta (`models/v2_fort_kit.blend`, `exports/v2_fort_kit.glb`, `fortKit`): muralha, torre, portaria, grade, torre de menagem, armeiro, boneco de treino, boca de caverna, teia, ninho de ovos e restos de presa. Reaproveita `v2_village_kit.py` e `v2_map_kit.py`. Uso: `blender --background --python blender/scripts/v2_fort_kit.py`.
+
 `scripts/v2_nature_kit.py` segue o mesmo padrão e reaproveita `Piece` e os materiais de `v2_village_kit.py`.
 Ele gera `models/v2_nature_kit.blend` e `exports/v2_nature_kit.glb` (`natureKit`) com seis peças:
 
@@ -462,7 +464,7 @@ Seis modelos com rigs importados, ações próprias e equipamento separado incor
 
 ## Lich da Forma da Morte (v2)
 
-Esqueleto de 65 ossos e foice fornecidos pelo usuário, com 15 clipes e a foice presa a um osso livre (`Scythe`). Gerar na raiz: `blender --background --python blender/scripts/lich.py` (saídas `models/v2_lich.blend`, `exports/v2_lich.glb`, `exports/v2_lich_scythe.glb`); prévias com `preview_lich.py`. Notas, clipes e limitações em [notes/lich_v2.md](notes/lich_v2.md); desenho da mecânica em [../docs/v2-morte-lich.md](../docs/v2-morte-lich.md).
+Esqueleto de 65 ossos e foice fornecidos pelo usuário, com 16 clipes e a foice presa a um osso livre (`Scythe`). Gerar na raiz: `blender --background --python blender/scripts/lich.py` (saídas `models/v2_lich.blend`, `exports/v2_lich.glb`, `exports/v2_lich_scythe.glb`); depois rode `scripts/lich_dodge.py`, que acrescenta a esquiva (`dodge`) à cena e regrava o GLB; prévias com `preview_lich.py`. Notas, clipes e limitações em [notes/lich_v2.md](notes/lich_v2.md); desenho da mecânica em [../docs/v2-morte-lich.md](../docs/v2-morte-lich.md).
 
 Escudo de Carne da v2: [fonte e integração](notes/flesh_shield_v2.md), gerado por `scripts/flesh_shield.py`.
 
@@ -510,16 +512,72 @@ Os dois GLBs são incorporados pelo build normal. Abertura, paredes e fragmentos
 
 Na raiz do repositório, `blender --background --python blender/scripts/arandu_cave_hideout.py` gera `blender/models/arandu_cave_hideout.blend` e `blender/exports/arandu_cave_hideout.glb`. Peças: `kit_hideout_table`, `kit_hideout_cargo`, `kit_hideout_bedroll`, `kit_cave_support` e `kit_cave_spire`. Registro `caveHideoutKit` em `v2/assets/models.json`; incorporar com `node v2/tools/build.cjs`. A exportação foi acionada via MCP em processo separado, preservando a cena aberta do usuário. Conferência no jogo em `review/v2/arandu-cave-story/`.
 
+## Necromante jogável: material e repintura (v2)
+
+Desde 2026-11-07, `scripts/v2_necromancer_look.py` define o visual de `models/v2_necromancer.blend` / `exports/v2_necromancer.glb`. O material de emissão herdado do Tripo (textura inteira no canal emissivo) deixava o necromante sem luz no toon do jogo e destoando do guerreiro. Agora:
+
+- os dois materiais (corpo e cajado) são Principled, com a textura na cor base e um mapa de brilho próprio na emissão;
+- a textura é repintada a partir da original: robe violeta saturado para violeta dessaturado, ouro da fivela para marfim, e couro e madeira um pouco menos saturados;
+- olhos, gema da fivela e cristal do cajado passam ao verde-água da energia dos ossos (`#8bd4bd`) e são os únicos emissivos. As três regiões são localizadas pela geometria, porque o atlas é fragmentado demais para separá-las só pela cor.
+
+A paleta já desconta o reforço de saturação (×1,8) e de brilho (×1,18) que o toon do jogo aplica ao mapa de cor. A textura original fica no `.blend` com fake user e o script sempre parte dela, então pode ser executado de novo. As imagens são exportadas em JPEG, como as originais.
+
+```powershell
+blender --background blender/models/v2_necromancer.blend --python blender/scripts/v2_necromancer_look.py
+blender --background blender/models/v2_necromancer.blend --python blender/scripts/arandu_necromancer_fall.py
+node v2/tools/build.cjs
+node v2/tests/necromancer-look-browser-check.cjs
+```
+
+`v2_necromancer_motion.py` aplica o mesmo script antes de exportar, então regerar os clipes mantém a repintura. Comparação antes da mudança: `review/v2/comparacao-necromante-guerreiro/`. Resultado no jogo: `review/v2/necromancer-look/`.
+
 ## Guerreiro jogável
 
 `models/warrior.blend` e `exports/warrior.glb`, gerados por `scripts/warrior_motion.py` a partir de `reference/warrior/warrior_source.glb`. Equipamentos vinculados às mãos, três cortes, estocada e golpe de escudo; [integração](../docs/v2-guerreiro.md). Geração desta entrega realizada via MCP.
 
 ### Fonte atual do Guerreiro após edição manual
 
-A fonte atual é `models/warrior.blend`, com os três cortes editados pelo usuário. Para atualizar o jogo, execute `scripts/warrior_export_manual.py` na sessão Blender via MCP e depois `node v2/tools/build.cjs`. O gerador `warrior_motion.py` é a base procedural histórica e não deve substituir automaticamente essa cena manual. O exportador publica apenas as dez trilhas do personagem e não inclui Action Stash. O passo lateral (`strafe_left`, `strafe_right`) é acrescentado à cena por `scripts/warrior_strafe.py`, sem alterar as demais ações: `blender --background blender/models/warrior.blend --python blender/scripts/warrior_strafe.py`. A passada do `walk` (2,2 u por ciclo, com breve fase no ar) vem de `scripts/warrior_walk_stride.py`, executado do mesmo modo, que troca só pernas e altura do quadril e preserva tronco e braços.
+A fonte atual é `models/warrior.blend`, com os três cortes editados pelo usuário. Para atualizar o jogo, execute `scripts/warrior_export_manual.py` na sessão Blender via MCP e depois `node v2/tools/build.cjs`. O gerador `warrior_motion.py` é a base procedural histórica e não deve substituir automaticamente essa cena manual. O exportador publica apenas as onze trilhas do personagem e não inclui Action Stash. A esquiva (`dodge`) é acrescentada à cena por `scripts/warrior_dodge.py`, sem alterar as demais ações; rode na sessão Blender via MCP ou com `blender --background blender/models/warrior.blend --python blender/scripts/warrior_dodge.py`, e publique com `scripts/warrior_equipment_export.py` (com outro arquivo aberto na sessão, ou fora dela). O passo lateral (`strafe_left`, `strafe_right`) é acrescentado à cena por `scripts/warrior_strafe.py`, sem alterar as demais ações: `blender --background blender/models/warrior.blend --python blender/scripts/warrior_strafe.py`. A passada do `walk` (2,2 u por ciclo, com breve fase no ar) vem de `scripts/warrior_walk_stride.py`, executado do mesmo modo, que troca só pernas e altura do quadril e preserva tronco e braços.
+
+Desde 2026-11-06, `walk`, `slash_1`, `slash_2` e `slash_3` são gerados por `scripts/warrior_fluid_motion.py`, que substitui só as chaves dessas quatro ações na cena aberta. Os cortes autorais anteriores ficam em `backups/warrior_before_fluid_motion_original_20261104.blend`. A versão com passos e mais torção do tronco nos cortes substituiu a primeira; a anterior ficou em `backups/warrior_before_body_motion_20261106_193824.blend`. No dicionário `COMBO`, as chaves opcionais `left_step`/`right_step` deslocam a planta de cada pé e `hip_roll` tomba a bacia. Para rodá-lo na sessão via MCP: `exec(compile(open(p).read(), p, 'exec'), {'__file__': p})`; para regerar só parte dos clipes, passe `ONLY` (por exemplo `['walk']`) e `SAVE=False` nesse dicionário. Depois, publique com `warrior_export_manual.py`. Como o exportador não lê o próprio arquivo aberto, conclua com `blender --background --factory-startup --python blender/scripts/warrior_equipment_export.py`.
 
 O exportador manual chama também `scripts/warrior_equipment_export.py`: gera a máscara de escudo no personagem e `exports/warrior_shield.glb`, usado no arremesso. Esse segundo script pode ser executado sozinho via MCP para reexportar a cena salva, usando cópias temporárias e preservando a cena ativa. A fonte editável do escudo continua dentro de `models/warrior.blend`.
 
 ### Tornado para edição manual
 
 A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a 30 fps, criada por `scripts/warrior_tornado.py` via MCP. Palma para baixo, braço à frente do peito e apoios alternados. Ela está selecionada no Pose Mode para ajuste do usuário; os clipes publicados no GLB e o jogo continuam os anteriores até a integração. Os exportadores preservam a ação na cena, mas não a publicam no GLB. [Notas de edição e validação](notes/warrior_tornado.md).
+
+## Druida jogável (v2)
+
+`scripts/flora_game_motion.py` acrescenta os clipes de jogo a `models/flora_druid.blend` (`cast`, `cast_up`, `slam`, `dodge`) e a `models/flora_werewolf.blend` (`claw_1`, `claw_2`, `leap`, `howl`, `dodge`) e exporta `exports/flora_druid.glb` e `exports/flora_werewolf.glb`. Deve rodar pelo MCP com o `.blend` aberto na sessão. É aditivo: preserva `idle`, `walk`, `attack` e `death` do estudo e faz backup antes de salvar. Notas em `notes/FLORA-PROTOTYPE.md`; regras em `../docs/v2-druida.md`.
+
+## Arqueira e Mercenário jogáveis (v2)
+
+`scripts/ranged_heroes.py` gera `models/archer_hero.blend` / `exports/archer_hero.glb` e `models/mercenary.blend` / `exports/mercenary.glb` a partir das fontes Tripo em `reference/archer_hero/` e `reference/mercenary/` (personagem com rig Mixamo + prancha com as armas). Recorta a arma da prancha, prende-a à mão com peso rígido e cria `idle`, `walk`, `strafe_left`, `strafe_right`, `shoot`, `dodge` e `death`, mais `shoot_up` e `leap_back` (Arqueira) e `throw` e `plant` (Mercenário). O falcão da Arqueira vem de `reference/falcon/falcon_source.glb` por `scripts/falcon.py` (`models/falcon.blend`, `exports/falcon.glb`; clipes `idle` = batida de asas, `glide` e `dive`): `blender --background --python blender/scripts/falcon.py`. Uso: `blender --background --python blender/scripts/ranged_heroes.py -- archer` (ou `mercenary`); pelo MCP, sobre um arquivo vazio, com `HERO` definido no namespace. Prancha de revisão: `scripts/ranged_heroes_review.py`. [Integração](../docs/v2-arqueira-mercenario.md).
+
+## Mago jogável (v2)
+
+`scripts/mage_hero.py` corrige os pesos do rig Tripo de `reference/mage/mage_source.glb` (cajado rígido na mão direita, chapéu, rosto e barba na cabeça, luvas nas mãos, barra do manto entre quadril e coxas) e gera `models/mage_hero.blend` / `exports/mage_hero.glb` com `idle`, `walk`, `strafe_left`, `strafe_right`, `cast`, `cast_up`, `dodge` e `death`. Uso: `blender --background --python blender/scripts/mage_hero.py`. Pranchas em `previews/mage_hero_*`. [Integração](../docs/v2-mago.md).
+
+## Moldura dos orbes do HUD (v2)
+
+Fonte: `examples/hud_orb_frame_tripo.glb`, relevo do HUD inteiro gerado no Tripo a partir da referência visual, fornecido pelo usuário. O script separa só as peças de bronze em volta de cada orbe (35 à esquerda, 36 à direita) e descarta as esferas com texto pintado, a bandeira vermelha e a poção. Cada lado é renderizado de frente, em câmera ortográfica, Eevee, fundo transparente e luz própria; o lado direito é a peça espelhada do próprio relevo, não um espelhamento da imagem, então a luz fica coerente nos dois orbes.
+
+```powershell
+blender --background --python blender/scripts/hud_orb_frame.py   # frames/hud_orb_frame/{left,right}.png e models/hud_orb_frame.blend
+python blender/scripts/pack_hud_orb_frame.py                     # assets/hud/orb-frame-{left,right}.webp e orb-frame.json
+node v2/tools/build.cjs
+```
+
+O empacotador descarta lascas soltas, mede o furo do aro pela borda do bronze (ajuste de círculo na metade de cima), apaga o miolo e a parede interna cinza, corta a margem e grava WebP de 560 px (~35 KB cada). `orb-frame.json` traz centro e raio do furo; os números de largura e deslocamento em `v2/scripts/hud-ornate.css` vêm dele e precisam ser atualizados se o render mudar. Conferência: `previews/hud_orb_frame_check.png` e `review/v2/hud-ornate/`.
+# Druida — modelos atuais fornecidos pelo usuário
+
+Os IDs `druid` e `druidWolf` da v2 usam `exports/flora_tripo_druid.glb` e
+`exports/flora_tripo_wolf.glb`. Fontes editáveis em `models/flora_tripo_*.blend`;
+GLBs de origem em `reference/flora-tripo/`. O gerador `scripts/flora_tripo_motion.py`
+cria cenas próprias e exporta os clipes exigidos pelo jogo. Executar via MCP com
+`__file__` definido; depois, na raiz, `node v2/tools/build.cjs`.
+Os modelos e geradores anteriores da Flora foram preservados como estudo.
+
+
+Flora humana atual: models/flora_tripo_druid_t.blend e exports/flora_tripo_druid_t.glb, derivados de reference/flora-tripo/druid-t-source.glb. O gerador scripts/flora_tripo_motion.py adapta a pose T às ações e cria o cajado separado. A forma de lobo continua flora_tripo_wolf. Bases humanas anteriores preservadas.

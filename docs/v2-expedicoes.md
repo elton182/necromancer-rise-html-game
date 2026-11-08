@@ -7,7 +7,7 @@ compartilham recorde, desbloqueios, seleção de wave e personagem. A [Conquista
 
 > **Boss provisório:** o jogo antigo usa o **Guardião de Almas** (`soul-warden-model.js`), que
 > não existe na v2 (sem modelo, clipes nem IA). A Expedição usa o **Rei Caído** já portado, com
-> vida, dano e XP de `R.boss` × a escala da wave (a mesma conta do encontro de treino). Ele usa o
+> vida, dano e XP de `R.boss` × a escala da wave (a mesma conta do encontro de treino; a vida também leva o ×12 de `V2_KING.hp`). Ele usa o
 > modelo, as poses, o corte, o salto e a invocação reais do Rei, mas **não é o chefe do original**.
 
 ## Fontes

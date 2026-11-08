@@ -1,0 +1,27 @@
+{
+  "objetivo": "Personagem pós-prólogo contra os grupos de Jacarandá com os níveis novos (área 10) e a densidade 6x.",
+  "metodo": "HTML empacotado no Edge headless, save isolado com campanha do mundo concluída. Necromante com horda (zumbis e esqueletos), build válida para o nível e equipamento gerado em 5 espaços. O personagem fica parado a 6 u do grupo e lança o Tiro de Osso no inimigo mais próximo a cada 0,12 s; sem esquiva nem recuo. Limite de 150 s por grupo. Save recarregado antes de cada luta.",
+  "limites": "Jogador real se move, recua e usa mais habilidades; o teste é um piso. Uma rodada por grupo, com sorteio de combate não fixado.",
+  "nivel5_equipamento3": {
+    "personagem": {"vida": 175, "mana": 115, "dano_magico": 71, "defesa": 37.2, "aliados": 6, "build": {"zombie": 4, "bolt": 4, "skeleton": 2, "dash": 1, "shield": 1}},
+    "lutas": [
+      {"grupo": "forest-a", "nivel": 10, "integrantes": 4, "ondas": 3, "venceu": true, "segundos": 23, "vida_minima": "100%", "aliados": "6/6", "antes": {"nivel": 1, "integrantes": 2, "segundos": 2}},
+      {"grupo": "old-camp", "nivel": 11, "integrantes": 6, "ondas": 3, "venceu": true, "segundos": 109, "vida_minima": "78%", "aliados": "6/6", "antes": {"nivel": 2, "integrantes": 3, "segundos": 3}},
+      {"grupo": "west-ruins", "nivel": 11, "integrantes": 6, "ondas": 3, "venceu": true, "segundos": 134, "vida_minima": "70%", "aliados": "4/6", "antes": {"nivel": 2, "integrantes": 3, "segundos": 5}},
+      {"grupo": "forest-b", "nivel": 10, "integrantes": 6, "ondas": 3, "venceu": true, "segundos": 35, "vida_minima": "34%", "aliados": "5/6", "antes": {"nivel": 1, "integrantes": 3, "segundos": 9}},
+      {"grupo": "mine-road-b", "nivel": 12, "integrantes": 6, "ondas": 3, "venceu": true, "segundos": 121, "vida_minima": "80%", "aliados": "5/6", "antes": {"nivel": 3, "integrantes": 3, "segundos": 2}},
+      {"grupo": "graveyard", "nivel": 13, "integrantes": 8, "ondas": 3, "venceu": false, "morreu_em_segundos": 21, "vida_minima": "3%", "aliados": "5/6", "antes": {"nivel": 4, "integrantes": 4, "segundos": 3}}
+    ]
+  },
+  "nivel4_equipamento1": {
+    "personagem": {"vida": 158, "mana": 107, "dano_magico": 64, "defesa": 30, "aliados": 6, "build": {"zombie": 3, "bolt": 3, "skeleton": 2, "dash": 1}},
+    "lutas": [
+      {"grupo": "forest-a", "nivel": 10, "venceu": true, "segundos": 24, "vida_minima": "89%", "aliados": "5/6"},
+      {"grupo": "old-camp", "nivel": 11, "venceu": true, "segundos": 101, "vida_minima": "57%", "aliados": "6/6"},
+      {"grupo": "west-ruins", "nivel": 11, "venceu": false, "sobreviveu": true, "segundos": 150, "vida_minima": "31%", "aliados": "6/6", "nota": "não terminou as 3 ondas no limite de tempo"},
+      {"grupo": "forest-b", "nivel": 10, "venceu": true, "segundos": 37, "vida_minima": "51%", "aliados": "5/6"},
+      {"grupo": "mine-road-b", "nivel": 12, "venceu": true, "segundos": 96, "vida_minima": "56%", "aliados": "5/6"},
+      {"grupo": "graveyard", "nivel": 13, "venceu": false, "morreu_em_segundos": 6, "vida_minima": "4%", "aliados": "3/6"}
+    ]
+  }
+}

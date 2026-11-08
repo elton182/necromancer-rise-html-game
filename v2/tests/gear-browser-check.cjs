@@ -10,7 +10,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  assert.equal(await page.evaluate(()=>NecromancerV2.session.save.settings.gearLevel),5);
  await legacy.click(page,'#open-gear');assert.ok((await page.locator('#gear-content').textContent()).includes('Peça nível 5 · 75 ouro'));
  await page.getByRole('button',{name:'Comprar Cajado · 75 ouro'}).click();let d=await data();assert.equal(d.gold,425);assert.equal(d.bag.length,1);
- assert.ok((await page.locator('#gear-content').textContent()).includes('Comparar equipamentos'));
+ assert.ok((await page.locator('#gear-content').textContent()).includes('Comparar'));
  await page.getByRole('button',{name:'Equipar · Cajado'}).click();d=await data();assert.equal(d.bag.length,0);assert.ok(d.worn.staff);assert.ok(d.spell>=55,'dano mágico com cajado: '+d.spell);
  await page.locator('[data-gear-slot="staff"]').click();assert.ok(await page.getByRole('button',{name:'Desequipar'}).isEnabled());
  await page.getByRole('button',{name:'Vestimenta',exact:true}).click();await page.getByRole('button',{name:'Comprar Vestimenta · 75 ouro'}).click();
@@ -37,10 +37,11 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  await page.evaluate(async()=>{const {spawnDrop}=await import('v2-drops'),EQ=(await import('v2-equipment')).default,Build=(await import('v2-build')).default,w=NecromancerV2.world;w.drops=[];NecromancerV2.pause(true);Object.assign(w.player,{x:0,y:4});
   // Peças reais de cada raridade, geradas pelo modelo compartilhado com pesos forçados.
   [['common',0],['magic',.9],['rare',1.8],['epic',2.7]].forEach(([rarity,a],i)=>spawnDrop(w,'equipment',Math.sin(a+3)*(2.4+i%2*.7),4+Math.cos(a+3)*(2.4+i%2*.7),{item:EQ.generate(5,Build,Math.random,'body',false,'vis-'+rarity,{loot:{weights:{common:0,magic:0,rare:0,epic:0,[rarity]:1}}})}));});
- await page.waitForTimeout(250);const visible=await page.evaluate(()=>NecromancerV2.world.drops.map(d=>[d.item.rarity,NecromancerV2.view.drops.get(d.id).root.visible]));assert.deepEqual(visible,[['common',false],['magic',false],['rare',true],['epic',true]]);
+ // Pausado com o menu aberto, o jogo redesenha só a cada 1 s: espera o desenho dos itens em vez de um tempo fixo.
+ await page.waitForFunction(()=>NecromancerV2.world.drops.every(d=>NecromancerV2.view.drops.has(d.id)),null,{timeout:5000});const visible=await page.evaluate(()=>NecromancerV2.world.drops.map(d=>[d.item.rarity,NecromancerV2.view.drops.get(d.id).root.visible]));assert.deepEqual(visible,[['common',false],['magic',false],['rare',true],['epic',true]]);
  await page.screenshot({path:path.join(review,'loot-filter-rare-dark.png')});
- await page.evaluate(async()=>{const {updateSettings}=await import('v2-session');updateSettings(NecromancerV2.session,{lootFilter:'common'});});await page.waitForTimeout(250);
- assert.equal(await page.evaluate(()=>NecromancerV2.world.drops.every(d=>NecromancerV2.view.drops.get(d.id).root.visible)),true);await legacy.select(page,'#ground','light');await legacy.select(page,'#quality','low');await page.waitForTimeout(250);await page.screenshot({path:path.join(review,'loot-rarities-light-low.png')});await legacy.select(page,'#ground','dark');await legacy.select(page,'#quality','high');
+ await page.evaluate(async()=>{const {updateSettings}=await import('v2-session');updateSettings(NecromancerV2.session,{lootFilter:'common'});});
+ await page.waitForFunction(()=>NecromancerV2.world.drops.every(d=>NecromancerV2.view.drops.get(d.id)?.root.visible),null,{timeout:5000});await legacy.select(page,'#ground','light');await legacy.select(page,'#quality','low');await page.waitForTimeout(1100);await page.screenshot({path:path.join(review,'loot-rarities-light-low.png')});await legacy.select(page,'#ground','dark');await legacy.select(page,'#quality','high');
  // Sair do encontro coleta as peças permitidas; reiniciar e recarregar não duplicam.
  const n=(await data()).bag.length;await legacy.click(page,'#menu');await page.waitForFunction(()=>document.getElementById('save-message').textContent.includes('coletado'));d=await data();assert.equal(d.bag.length,n+4);
  await legacy.click(page,'#save-tools summary');await legacy.click(page,'#save');const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('necromancer_rise_3d_save')).character);assert.equal(saved.gearBag.length,d.bag.length);

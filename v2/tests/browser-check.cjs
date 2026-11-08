@@ -2,8 +2,9 @@
 const legacy=require('./legacy-controls.cjs');
 // Requer Playwright no ambiente de desenvolvimento e Microsoft Edge instalado.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),{pathToFileURL}=require('node:url');
+const {gzipSync,gunzipSync}=require('node:zlib');
 (async()=>{
- const root=path.resolve(__dirname,'..'),review=path.resolve(root,'../review/v2/e8');fs.mkdirSync(review,{recursive:true});
+ const root=path.resolve(__dirname,'..'),review=path.resolve(root,'../review/v2/distribution');fs.mkdirSync(review,{recursive:true});
  const temp=fs.mkdtempSync(path.join(os.tmpdir(),'necromancer-v2-e5-')),standalone=path.join(temp,'arena.html');fs.copyFileSync(path.join(root,'necromancer-3d.html'),standalone);
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
@@ -41,7 +42,10 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   await upload();await page.waitForSelector('#import-dialog[open]');await page.click('#confirm-import');assert.match(await page.locator('#import-error').innerText(),/Não foi possível gravar/);assert.equal(await page.evaluate(key=>localStorage.getItem(key),key),current);await page.click('#cancel-import');
   assert.equal(await page.evaluate(()=>localStorage.getItem('necromancer_v2')),oldText);assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
   const failure=await context.newPage();await failure.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl2'?null:original.call(this,type,...args);};});await failure.goto(pathToFileURL(standalone).href);await failure.waitForSelector('#failure:visible');assert.match(await failure.locator('#failure-message').innerText(),/WebGL 2/);await failure.screenshot({path:path.join(review,'webgl-failure.png')});
-  const broken=path.join(temp,'broken.html');fs.writeFileSync(broken,fs.readFileSync(standalone,'utf8').replace('"requiredAnimations":["idle"','"requiredAnimations":["missing"'));
+  const broken=path.join(temp,'broken.html');fs.writeFileSync(broken,fs.readFileSync(standalone,'utf8').replace(/(<script id="assets"[^>]*>)([^<]+)(<\/script>)/,(_,open,packed,close)=>{
+   const assets=JSON.parse(gunzipSync(Buffer.from(packed,'base64')));Object.values(assets)[0].requiredAnimations[0]='missing';
+   return open+gzipSync(Buffer.from(JSON.stringify(assets))).toString('base64')+close;
+  }));
   const assetFailure=await context.newPage();await assetFailure.goto(pathToFileURL(broken).href);await assetFailure.waitForSelector('#failure:visible');assert.match(await assetFailure.locator('#failure-message').innerText(),/animação missing ausente/);
   const blockedContext=await browser.newContext(),blocked=await blockedContext.newPage();await blocked.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}});});await blocked.goto(pathToFileURL(standalone).href);await blocked.waitForFunction(()=>!!window.NecromancerV2);assert.match(await blocked.locator('#save-message').innerText(),/não permitiu acessar/);await blocked.evaluate(()=>document.getElementById('enter').click());assert.equal(await blocked.evaluate(()=>NecromancerV2.session.scene),'training');await blockedContext.close();
   const report={stage:'E8',browser:'Microsoft Edge headless',viewport:'1440x900',checks:['HTML copiado abre sozinho por file://','modelos do catálogo carregados','movimento e magia','pausa e retomada','64 aliados e qualidade baixa','reinício sem crescimento de geometria/textura','menu e morte limpam efeitos','salvar e continuar após reload','prévia e cancelamento de importação','arquivo antigo integral e chave preservados','backup do save v2 anterior','exportação JSON sem estado transitório','JSON inválido não altera save','quota impede substituição','arena utilizável com armazenamento bloqueado','nenhuma requisição HTTP ou erro de página','diagnósticos de WebGL2 e clipe ausente'],counts,errors,remote};

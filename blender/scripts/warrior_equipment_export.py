@@ -40,7 +40,7 @@ try:
  if body.animation_data:body.animation_data.action=None
  rig.animation_data.action=None
  # O tornado segue só na cena, para edição, até ser integrado ao jogo.
- expected={'idle','walk','strafe_left','strafe_right','slash_1','slash_2','slash_3','thrust','shield_bash','death'}
+ expected={'idle','walk','strafe_left','strafe_right','slash_1','slash_2','slash_3','thrust','shield_bash','death','dodge'}
  for track in list(rig.animation_data.nla_tracks):
   if track.name not in expected:rig.animation_data.nla_tracks.remove(track);continue
   strip=track.strips[0];lo,hi=strip.action.frame_range;strip.action_frame_start=lo;strip.action_frame_end=hi;strip.frame_start=1;strip.scale=1;strip.repeat=1;strip.frame_end=1+hi-lo;track.mute=False

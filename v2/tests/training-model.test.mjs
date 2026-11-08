@@ -23,5 +23,5 @@ test('subpassos resolvem impacto igualmente em passos diferentes',()=>{
  const a=bossEncounter(),b=bossEncounter();for(let i=0;i<6;i++)step(a,.2);advance(b,1.2);assert.equal(a.player.hp,b.player.hp);assert.ok(a.player.hp<100);assert.equal(a.effects.length,b.effects.length);
 });
 test('limites, diagonal normalizada, valores inválidos e alvo fora do alcance',()=>{
- const a=createWorld({horde:0}),b=createWorld({horde:0});step(a,.2,{x:1});step(b,.2,{x:1,y:1});assert.ok(Math.abs(Math.hypot(a.player.x,a.player.y-4)-Math.hypot(b.player.x,b.player.y-4))<1e-9);advance(a,8,{x:1});assert.ok(a.player.x<=15&&a.player.y>=-15);assert.throws(()=>resetWorld(a,{horde:Infinity}));const t=a.time;step(a,NaN);assert.equal(a.time,t);a.aim={x:NaN,y:0};assert.equal(cast(a),false);a.aim={x:1000,y:1000};cast(a);assert.equal(a.projectiles.at(-1).remaining,9);
+ const a=createWorld({horde:0}),b=createWorld({horde:0});step(a,.2,{x:1});step(b,.2,{x:1,y:1});assert.ok(Math.abs(Math.hypot(a.player.x,a.player.y-4)-Math.hypot(b.player.x,b.player.y-4))<1e-9);a.player.hp=a.player.maxHp=1e9;advance(a,8,{x:1});assert.ok(a.player.x<=15&&a.player.y>=-15);assert.throws(()=>resetWorld(a,{horde:Infinity}));const t=a.time;step(a,NaN);assert.equal(a.time,t);a.aim={x:NaN,y:0};assert.equal(cast(a),false);a.aim={x:1000,y:1000};cast(a);assert.equal(a.projectiles.at(-1).remaining,9);
 });

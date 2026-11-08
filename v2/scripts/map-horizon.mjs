@@ -4,14 +4,19 @@ import * as THREE from 'three';
 export function buildMapHorizon(source){
  source.updateMatrixWorld(true);
  const box=new THREE.Box3().setFromObject(source),width=box.max.x-box.min.x,depth=box.max.z-box.min.z;
- const geometry=new THREE.PlaneGeometry(width+2048,depth+2048).rotateX(-Math.PI/2);
- const center=box.getCenter(new THREE.Vector3()),p=geometry.attributes.position,uv=geometry.attributes.uv;
+ const center=box.getCenter(new THREE.Vector3());
  // Chão de ladrilhos (painted-ground.mjs): o próprio material continua a grama e escurece com a distância.
+ // Moldura em volta da malha, na cota da borda: o relevo já desce a zero ali, e assim o fundo dos lagos não define a altura de tudo o que fica além do mapa.
  if(source.userData.paintedGround){
-  const mesh=new THREE.Mesh(geometry,source.material);
-  mesh.name='map-horizon';mesh.position.set(center.x,box.min.y-.018,center.z);mesh.receiveShadow=true;mesh.renderOrder=-4;mesh.userData.horizonSource=source;
+  const reach=1024,hw=width/2-.5,hd=depth/2-.5,quad=(x0,z0,x1,z1)=>new THREE.PlaneGeometry(x1-x0,z1-z0).rotateX(-Math.PI/2).translate((x0+x1)/2,0,(z0+z1)/2);
+  const parts=[quad(-hw-reach,-hd-reach,hw+reach,-hd),quad(-hw-reach,hd,hw+reach,hd+reach),quad(-hw-reach,-hd,-hw,hd),quad(hw,-hd,hw+reach,hd)],positions=[],indices=[];
+  for(const part of parts){const base=positions.length/3;positions.push(...part.attributes.position.array);indices.push(...Array.from(part.index.array,i=>i+base));part.dispose();}
+  const frame=new THREE.BufferGeometry();frame.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));frame.setAttribute('normal',new THREE.Float32BufferAttribute(positions.flatMap((_,i)=>i%3===1?[1]:[0]),3));frame.setIndex(indices);
+  const mesh=new THREE.Mesh(frame,source.material);
+  mesh.name='map-horizon';mesh.position.set(center.x,source.position.y-.018,center.z);mesh.receiveShadow=true;mesh.renderOrder=-4;mesh.userData.horizonSource=source;mesh.frustumCulled=false;
   return mesh;
  }
+ const geometry=new THREE.PlaneGeometry(width+2048,depth+2048).rotateX(-Math.PI/2),p=geometry.attributes.position,uv=geometry.attributes.uv;
  for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+width/2)/width,1-(p.getZ(i)+depth/2)/depth);
  const material=new THREE.MeshStandardMaterial({map:source.material.map,color:source.material.color,roughness:source.material.roughness});
  const tint=new THREE.Color(1,1,1),image=source.material.map?.image;

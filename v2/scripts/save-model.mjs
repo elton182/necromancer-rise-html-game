@@ -1,5 +1,11 @@
 import WarriorGear from './warrior-equipment.mjs';
-import {warriorRanks,warriorLoadout} from './warrior-model.mjs';
+import {warriorRanks,warriorLoadout,warriorStanceId,warriorTornado} from './warrior-model.mjs';
+import {druidRanks} from './druid-model.mjs';
+import {marksmanRanks} from './marksman-model.mjs';
+import {CLASS_IDS,isMartial,isMarksman} from './class-registry.mjs';
+import {gearCatalog} from './class-gear.mjs';
+import {starterWeapon,weaponType} from './marksman-equipment.mjs';
+export {CLASS_IDS};
 import {normalizeSiege} from './siege-model.mjs';
 import {normalizeCampaign} from './campaign-model.mjs';
 // Contrato persistido independente do mundo, DOM e armazenamento.
@@ -23,7 +29,7 @@ function normalizeGear(equipment,gearBag,waveProgress,arenaBest,classId='necroma
  if(gearBag!==undefined&&!Array.isArray(gearBag))throw Error('Mochila inválida.');
  if(waveProgress!==undefined&&!object(waveProgress))throw Error('Progresso de waves inválido.');
  // O recorde da arena anterior (camp.eb) pode ser mais novo que waveProgress; o modelo compartilhado usa o maior.
- const {equipment:worn,gearBag:bag,waveProgress:waves}=(classId==='warrior'?WarriorGear:EQ).migrate({equipment:copy(equipment??{}),gearBag:copy(gearBag??[]),waveProgress:copy(waveProgress??{}),camp:{eb:arenaBest}},Build);return {equipment:worn,gearBag:bag,waveProgress:waves};
+ const {equipment:worn,gearBag:bag,waveProgress:waves}=gearCatalog(classId).migrate({equipment:copy(equipment??{}),gearBag:copy(gearBag??[]),waveProgress:copy(waveProgress??{}),camp:{eb:arenaBest}},Build);return {equipment:worn,gearBag:bag,waveProgress:waves};
 }
 function record(v,name){if(!object(v))throw Error(name+' inválido.');return v;}
 function number(v,fallback,name,max=Number.MAX_SAFE_INTEGER){if(v===undefined)return fallback;if(typeof v!=='number'||!Number.isFinite(v)||v<0||v>max)throw Error(name+' inválido.');return v;}
@@ -42,17 +48,23 @@ export function normalizeSave(raw){
  const gearLevel=number(s.gearLevel,1,'Nível dos itens',60);if(!Number.isInteger(gearLevel)||gearLevel<1)throw Error('Nível dos itens inválido.');
  if(s.lootFilter!==undefined&&!RARITY_ORDER.includes(s.lootFilter))throw Error('Filtro de loot inválido.');
  if(s.ground!==undefined&&!['dark','light'].includes(s.ground)||s.quality!==undefined&&!['high','low'].includes(s.quality))throw Error('Opções inválidas.');
- const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress,undefined,p.classId),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
+ const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),playTime:number(p.playTime,0,'Tempo de jogo'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress,undefined,p.classId),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
  if(!MODES.includes(result.settings.waveMode))throw Error('Modelo de waves inválido.');
  result.settings.armyMode=s.armyMode??(raw.settings?'load':'groups');if(!['load','groups'].includes(result.settings.armyMode))throw Error('Modo da horda inválido.');result.horde=normalizeHorde(raw.horde);
  // Nível do personagem e do perfil do Grimório são o mesmo progresso: vale o maior, e o XP respeita o nível final.
  const profileLevel=result.horde.profile.level;
  if(profileLevel>result.character.level)result.character.level=profileLevel;
  else if(profileLevel<result.character.level)result.horde=normalizeHorde({...result.horde,profile:{...result.horde.profile,level:result.character.level}});
- result.character.classId=p.classId||'necromancer';if(!['necromancer','warrior'].includes(result.character.classId))throw Error('Classe inválida.');result.character.warriorLoadout=warriorLoadout(p.warriorLoadout);result.character.warriorRanks=warriorRanks(p.warriorRanks,result.character.level);
+ result.character.classId=p.classId||'necromancer';if(!CLASS_IDS.includes(result.character.classId))throw Error('Classe inválida.');result.character.druidRanks=druidRanks(p.druidRanks,result.character.level);result.character.marksmanRanks=marksmanRanks(result.character.classId,p.marksmanRanks,result.character.level);result.character.warriorLoadout=warriorLoadout(p.warriorLoadout);result.character.warriorRanks=warriorRanks(p.warriorRanks,result.character.level);result.character.warriorStance=warriorStanceId(p.warriorStance);result.character.warriorTornadoVariant=warriorTornado(p.warriorTornadoVariant,result.character.warriorRanks).id;
  if(result.character.classId==='warrior'&&p.warriorEquipmentVersion!==1){
   for(const type of ['sword','shield']){const id='starter-'+type+'-'+(p.slotId||'imported');if(!result.character.equipment[type]&&!result.character.gearBag.some(i=>i.id===id))result.character.equipment[type]=WarriorGear.generate(1,null,()=>.2,type,false,id);}
   result.character.warriorEquipmentVersion=1;
+ }
+ // Arqueira e Mercenário recebem a arma inicial uma única vez (personagens das etapas 1 e 2 não tinham arma como item).
+ if(weaponType(result.character.classId)&&p.marksmanEquipmentVersion!==1){
+  const id='starter-'+weaponType(result.character.classId)+'-'+(p.slotId||'imported');
+  if(!result.character.equipment[weaponType(result.character.classId)]&&!result.character.gearBag.some(i=>i.id===id))result.character.equipment[weaponType(result.character.classId)]=starterWeapon(result.character.classId,p.slotId);
+  result.character.marksmanEquipmentVersion=1;
  }
  result.character.exp=clampExp(result.character.level,result.character.exp);
  if(!['free','campaign'].includes(result.character.mode))throw Error('Modo de personagem inválido.');
@@ -89,9 +101,10 @@ export function createSaveStore(storage){
   return save(value,{backup:true});
  }catch(error){return {ok:false,message:'Não foi possível trocar de personagem. '+error.message};}}
  function createCharacter(name,classId='necromancer'){
-  if(!['necromancer','warrior'].includes(classId))return {ok:false,message:'Classe inválida.'};
+  if(!CLASS_IDS.includes(classId))return {ok:false,message:'Classe inválida.'};
   if(typeof name!=='string'||!name.trim()||name.trim().length>32)return {ok:false,message:'Escolha um nome de até 32 caracteres.'};
   const value=freshSave();Object.assign(value.character,{name:name.trim(),classId,slotId:globalThis.crypto.randomUUID()});value.savedAt=Date.now();
+  if(weaponType(classId))value.character.equipment[weaponType(classId)]=starterWeapon(classId,value.character.slotId);
   if(classId==='warrior')for(const type of ['sword','shield'])value.character.equipment[type]=WarriorGear.generate(1,null,()=>.2,type,false,'starter-'+type+'-'+value.character.slotId);
   const result=switchCharacter(value);return result.ok?{ok:true,save:value}:result;
  }

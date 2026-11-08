@@ -1,6 +1,6 @@
 # Necromancer’s Rise — v2
 
-**ARANDU — nova abertura:** Novo Jogo cria um personagem nomeado, com seleção de Necromante ou Guerreiro e saves separados. A campanha nova começa na caravana e segue por emboscada, caverna, mensageiro e defesa de Jacarandá. [Fluxo, fontes, saves e limitações](../docs/v2-prologo-arandu.md). Os resumos E9/E10 abaixo preservam o histórico da base e dos modos existentes.
+**ARANDU — nova abertura:** Novo Jogo cria um personagem nomeado, com seleção de Necromante, Guerreiro, Druida, Arqueira, Mercenário ou Mago e saves separados. A campanha nova começa na caravana e segue por emboscada, caverna, mensageiro e defesa de Jacarandá. [Fluxo, fontes, saves e limitações](../docs/v2-prologo-arandu.md). Os resumos E9/E10 abaixo preservam o histórico da base e dos modos existentes.
 
 
 **A v2 é o jogo principal do projeto.** A versão Canvas 2D (`../necromancer-canvas.html`) é legada: novidades vão para cá e o build lê as regras compartilhadas dela (`node v2/tools/build.cjs`, na raiz). Convenções de trabalho em [../AGENTS.md](../AGENTS.md).
@@ -54,7 +54,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | --- | --- |
 | `scripts/training-model.mjs` | Simulação, entidades, combate e relógio; sem DOM ou Three.js |
 | `scripts/renderer.mjs` | Modelos, câmera, animações, efeitos visuais, qualidade e descarte de recursos |
-| `scripts/locomotion.mjs` | Mistura da passada do jogador (`walk`, `strafe_left`, `strafe_right`) conforme o deslocamento em relação à mira; só visual |
+| `scripts/locomotion.mjs` | Mistura da passada do jogador (`walk`, `strafe_left`, `strafe_right`) conforme o deslocamento em relação à mira, e giro do corpo na esquiva; só visual |
 | `scripts/input.mjs` | Eventos traduzidos em ações e limpeza de entradas |
 | `scripts/terrain.mjs` | Dados da cena, varredura de colisões com índice por setores, caixas giradas, limites e navegação no chão |
 | `scripts/forest-map.mjs`, `forest-scene.mjs` | Mapa da Floresta de Eldrin (fase 2): colisores/decoração e visual procedural |
@@ -71,13 +71,18 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/game.css` | Apresentação da interface |
 | `scripts/map-model.mjs`, `map-editor.mjs`, `map-preview.mjs`, `map-panel.mjs`, `map-play.mjs`, `maps.css` | Editor de mapas: formato, catálogo e estilo, herança de mapa base, biblioteca, editor 2D com pré-visualização 3D, aba Mapas e lançamento do mapa ([guia](../docs/v2-mapas.md)) |
 | `scripts/map-terrain.mjs`, `terrain-scene.mjs` | Relevo, água, rios e superfícies: regras de deslocamento, colisão e dano; desenho da água e assentamento do cenário |
+| `scripts/area-tuning.mjs` | Nível por área e densidade dos encontros da campanha integrada (dobro de integrantes, triplo de ondas, renascimento) |
+| `scripts/world-relief.mjs`, `tools/world-relief.cjs` | Relevo e regiões do mundo de Jacarandá; a ferramenta mescla o relevo na edição publicada |
+| `scripts/itauna-model.mjs`, `itauna-map.mjs`, `area-scene.mjs` | Várzea de Itaúna: passagens entre mapas, plantas da várzea, do forte e da gruta, grade e anéis. Veja [v2-itauna.md](../docs/v2-itauna.md) |
+| `scripts/nilo-model.mjs`, `nilo-quest.mjs` | O rastro de João: missão de Marta que liga Jacarandá, várzea, gruta e forte; etapas, pontos, falas e prêmios. Veja [v2-itauna.md](../docs/v2-itauna.md#o-rastro-de-joão) |
 | `scripts/map-spawns.mjs` | Grupos de inimigos dos mapas: composição, gatilho, ondas e retorno |
 | `scripts/map-handles.mjs` | Seleção por raio e alças de edição no 3D, sem desenho |
 | `scripts/scene-sectors.mjs` | Divide famílias grandes de instâncias por região, para a câmera descartar o que está fora da tela |
 | `scripts/campaign-maps.mjs`, `assets/maps/` | Edições dos mapas da campanha: gravadas pelo editor em arquivos, embutidas pelo build e lidas ao abrir cada cena |
 | `map-editor.html`, `tools/map-editor-server.cjs`, `scripts/map-editor-app.mjs`, `map-disk-store.mjs` | Cliente do editor de mapas, só para desenvolvimento: `node v2/tools/map-editor-server.cjs` ([guia](../docs/v2-mapas.md#cliente-do-editor)) |
 | `scripts/lab-model.mjs`, `lab.mjs`, `lab-panel.mjs`, `lab.css` | Laboratório: medidor de DPS, boneco de treino, visualizador de animações e painel ([guia](../docs/v2-laboratorio.md)) |
-| `scripts/loading.mjs`, `scripts/loading.css` | Tela de carregamento: a marcação `#loading` fica no template e aparece antes dos módulos; o módulo mostra progresso dos modelos e dicas e some quando a arena está pronta |
+| `scripts/journey-model.mjs` | Resumo de cada jornada salva para Suas jornadas: classe, atributos, XP, local de retomada, tempo de jogo e horda exibida no palco; a tela fica em `title.mjs` e as cenas 3D (palco e retratos) em `title-preview.mjs`. Verificação: `node v2/tests/journeys-browser-check.cjs` |
+| `scripts/loading.mjs`, `scripts/loading.css` | Tela de carregamento: a marcação `#loading` fica no template e aparece antes dos módulos, sobre a arte `assets/title/arandu-loading.webp` (brasão, título e moldura da barra já desenhados; o build a embute no lugar de `ARANDU_LOADING`). O módulo preenche a barra, a porcentagem, o rótulo e as dicas e some quando a arena está pronta. Verificação: `node v2/tests/loading-browser-check.cjs` |
 | `scripts/save.css` | Menu, prévia de importação e ferramentas de save |
 | `scripts/combat.mjs` | Dano comum, Tiro de Osso, mana, Dash e morte |
 | `scripts/horde.mjs` | Grupos, comandos, recuperação e persistência dos integrantes |
@@ -85,6 +90,13 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/spells.mjs` | Cinco magias, áreas, Muralha e limpeza |
 | `scripts/progression.mjs`, `rewards.mjs`, `drops.mjs` | Atributos, XP, crédito único, drops e coleta |
 | `scripts/gear.mjs`, `consumables.mjs` | Mochila, equipamento, mercador e consumíveis |
+| `scripts/gear-panel.mjs`, `inventory-preview.mjs`, `inventory.css` | Aba de inventário: mochila, ficha da peça, modelo 3D da classe com os slots e atributos ([guia](../docs/v2-interface.md#equipamentos)) |
+| `scripts/character-panel.mjs`, `character-stats.mjs`, `character.css` | Aba Personagem: modelo 3D, origem dos atributos, resumo com Poder de Combate e XP ([guia](../docs/v2-interface.md#personagem)) |
+| `scripts/class-registry.mjs`, `scripts/class-gear.mjs` | Registro das classes jogáveis (nome, modelo, recurso, brasão, catálogo) e catálogo de equipamento por classe ([guia](../docs/v2-arqueira-mercenario.md#registro-de-classes)) |
+| `scripts/marksman-equipment.mjs` | Catálogo da Arqueira e do Mercenário: Arco ou Besta da classe mais as peças marciais, arma inicial |
+| `scripts/marksman-model.mjs`, `scripts/marksman.mjs` | Arqueira, Mercenário e Mago ([guia do Mago](../docs/v2-mago.md)): árvores, atributos, catálogo restrito, tiros com projétil, Recuo, Chuva de Flechas, bombas, minas, fogo e o falcão da Arqueira ([guia](../docs/v2-arqueira-mercenario.md)) |
+| `scripts/druid-model.mjs`, `scripts/druid.mjs` | Druida: árvore, atributos e formas; magias de raio e plantas, garras e Salto do lobo ([guia](../docs/v2-druida.md)) |
+| `scripts/talents-panel.mjs`, `talents.css` | Árvores de talentos do Guerreiro, da Druida, da Arqueira e do Mercenário: ramos, selos, pré-requisitos e detalhe ([guia](../docs/v2-interface.md#treinamento-do-guerreiro)) |
 | `scripts/enemies.mjs`, `fallen-king.mjs` | Arquétipos, projéteis hostis e Rei Caído |
 | `scripts/enemy-tactics.mjs` | IA tática dos inimigos: papéis (frente, flanco, distância), vagas de ataque e leque de atiradores; só decide o posicionamento |
 | `scripts/campaign-model.mjs` | Progresso, desbloqueios e prêmios únicos |
@@ -101,6 +113,20 @@ Edite as fontes, depois empacote; não edite somente `necromancer-3d.html`.
 O empacotamento usa apenas Node nativo. Os ES modules são incorporados como
 dados e resolvidos por um import map interno. A simulação usa x/y no chão;
 o renderizador converte para x/z do Three.js. Altura visual fica separada.
+
+O catálogo de modelos é embutido com gzip sem perdas e restaurado pelo
+`DecompressionStream` nativo antes de iniciar o jogo. Edge/Chrome atualizado
+continua abrindo o HTML sozinho, offline; nenhum GLB precisa ser baixado.
+O build informa o tamanho final e impede gerar uma distribuição com 100 MiB
+ou mais, limite por arquivo do GitHub. O upload pelo site tem limite de
+25 MiB; para este HTML, use Git pelo terminal ou GitHub Desktop.
+Veja os [limites do GitHub](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github).
+Verifique a integridade dos modelos com `node --test v2/tests/distribution.test.mjs`.
+
+Se uma tentativa anterior de push incluiu um HTML acima de 100 MiB, apenas
+adicionar outro commit menor não remove o arquivo grande do histórico a enviar.
+O commit local que incluiu esse arquivo precisa ser corrigido antes de repetir
+o push. Preserve as demais mudanças locais ao preparar essa correção.
 
 Fontes canônicas compartilhadas nesta etapa:
 
@@ -195,8 +221,10 @@ O HTML contém cópias dos GLBs. Depois de exportar os modelos, execute
 `node v2/tools/build.cjs` na raiz e recarregue a página. Para o player, exporte
 a cena atual sem regenerá-la:
 `blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py`
-(refaz idle, walk, cast e death, grava `blender/models/v2_necromancer.blend` e
-`blender/exports/v2_necromancer.glb`; o `rigged_player.blend` não é alterado).
+(refaz idle, walk, strafe, cast, death e dodge, grava `blender/models/v2_necromancer.blend` e
+`blender/exports/v2_necromancer.glb`; o `rigged_player.blend` não é alterado). O material e a repintura vêm de
+`blender/scripts/v2_necromancer_look.py`, aplicado pelo script de movimento antes da exportação ou sozinho sobre
+`v2_necromancer.blend`; depois regenere a queda do prólogo com `arandu_necromancer_fall.py`.
 O laboratório antigo usa `node tools/3d-lab/build.cjs`.
 
 Player, esqueleto, arqueiro, zumbi e Abominação têm conferências em
@@ -279,7 +307,7 @@ transições; não equivale a validar a dificuldade de uma partida completa.
 
 Tela inicial com arte (Continuar, Nova campanha, Modo livre, Opções, Créditos, Sair), HUD e menu "Relicário" (Esc) portados do jogo atual: frascos, seis slots, minimapa,
 barra do chefe e cinco abas (Personagem, Habilidades, Horda, Equipamentos, Sistema).
-Fonte do estilo: `tools/ui-source.cjs` (gera `scripts/shared-hud.css`); lógica em
+Fonte do estilo: `tools/ui-source.cjs` (gera `scripts/shared-hud.css`); a camada ornamentada da v2 (bronze, molduras SVG, orbes em garras, minimapa circular) fica em `scripts/hud-ornate.css`; lógica em
 `scripts/game-ui.mjs`. Detalhes e limites em [interface da V2](../docs/v2-interface.md).
 
 Verificação: `node v2/tests/ui-browser-check.cjs` e `node v2/tests/title-browser-check.cjs` (Playwright/Edge); evidências em
@@ -287,6 +315,10 @@ Verificação: `node v2/tests/ui-browser-check.cjs` e `node v2/tests/title-brows
 movidos para dentro do Relicário por `tests/legacy-controls.cjs`.
 
 O **Cerco ao Ritual** abre pelo painel da Vila de Eldrin após o Ato I: oito ondas, quatro torres, runas e vinte graus de endgame. Veja [o guia do cerco](../docs/v2-cerco.md).
+
+## Druida (Flora)
+
+Novo personagem oferece também a Druida: Faísca, Corrente de Raios, Raízes, Tempestade e Rejuvenescer na forma humana; F transforma em lobisomem, com Garras, Salto Feroz e Uivo. Consulte [regras e limites](../docs/v2-druida.md). Verificação: `node --test v2/tests/druid.test.mjs` e `node v2/tests/druid-browser-check.cjs`.
 
 ## Guerreiro / Soldado
 

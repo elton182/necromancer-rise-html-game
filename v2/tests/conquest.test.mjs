@@ -12,6 +12,7 @@ import {freshSave,normalizeSave,importSave} from '../scripts/save-model.mjs';
 import {step} from '../scripts/training-model.mjs';
 import {equipGroup,TEST_PROFILE} from '../scripts/horde.mjs';
 import R from '../scripts/enemy-rules.mjs';
+import {V2_KING} from '../scripts/fallen-king.mjs';
 
 const village=(group=false)=>{const s=createSession();s.save.campaign=normalizeCampaign({started:true,cleared:{1:1,2:1,3:1,4:1}});startCampaign(s);for(let i=0;i<200&&s.world.story;i++)nextStory(s);assert.ok(enterVillage(s));if(group){assert.ok(useProfile(s,TEST_PROFILE).ok);assert.ok(equipGroup(s.world,1,'skeleton',{preparation:true}).ok);}return s;};
 const foes=s=>s.world.actors.filter(a=>a.team==='enemy');
@@ -34,7 +35,7 @@ test('acesso: só pela vila; fortaleza bloqueada devolve mensagem e não consome
 test('rota: bioma da rota, no máximo 8 grupos, escala regional, infectados e poças da expedição',()=>{
  const s=village();const r=launchConquest(s,'expedition');assert.ok(r.ok);const w=s.world,run=r.run;
  assert.equal(s.scene,'training');assert.equal(w.arena.biome,run.biome);assert.equal(w.arena.plan.groups.length,8);assert.equal(s.save.character.conquest.attempts,1);
- const scale=Endgame.combatScale(1);assert.equal(w.boss.maxHp,Math.round(R.boss.hp*scale.hp*Endgame.encounters.expedition.hp));assert.equal(w.boss.gearWave,run.reward.itemLevel);assert.equal(w.gearLevel,run.reward.itemLevel);
+ const scale=Endgame.combatScale(1);assert.equal(w.boss.maxHp,Math.round(R.boss.hp*scale.hp*Endgame.encounters.expedition.hp*V2_KING.hp));assert.equal(w.boss.gearWave,run.reward.itemLevel);assert.equal(w.gearLevel,run.reward.itemLevel);
  const mobs=foes(s).filter(e=>!e.isBoss);assert.equal(mobs.length,w.arena.plan.groups.reduce((n,g)=>n+g.mobs.length,0));assert.equal(mobs.filter(e=>e.infected).length,Math.ceil(mobs.length/5));
  assert.ok(mobs.every(e=>e.home&&!e.alert&&e.gearWave===run.reward.itemLevel));assert.equal(w.hostileZones.length,4);assert.ok(w.hostileZones.every(z=>z.delay>0&&z.life>1e6));
  for(const biome of ['swamp','river','mountain'])assert.ok(expeditionArena(1,{biome,groups:4}).solids.length>5);assert.ok(expeditionArena(1,{biome:'river'}).decor.water.length>10);

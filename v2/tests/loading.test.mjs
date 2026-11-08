@@ -12,7 +12,7 @@ test('o progresso dos modelos ocupa o miolo da barra e nunca sai de 0–1', () =
 });
 
 function fakeDoc() {
-  const nodes = { 'loading-bar': { style: {} }, 'loading-label': { textContent: '' }, 'loading-tip': { textContent: '' } };
+  const nodes = { 'loading-bar': { style: {} }, 'loading-label': { textContent: '' }, 'loading-tip': { textContent: '' }, 'loading-percent': { textContent: '' } };
   const attrs = {}, listeners = [], classes = new Set();
   let removed = false;
   const root = {
@@ -32,6 +32,7 @@ test('a tela atualiza barra, rótulo e dica, e conclui uma única vez', () => {
   loading.step(.5, 'Modelos');
   assert.equal(fake.nodes['loading-bar'].style.width, '50%');
   assert.equal(fake.attrs['aria-valuenow'], '50');
+  assert.equal(fake.nodes['loading-percent'].textContent, '50%');
   assert.equal(fake.nodes['loading-label'].textContent, 'Modelos');
   loading.done();
   assert.ok(fake.classes.has('done'));

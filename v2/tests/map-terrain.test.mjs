@@ -4,7 +4,7 @@ import {bakeTerrain,flattenBake,fineWater,encodeGrid,decodeGrid,blankTerrain,ope
 import {normalizeMap,normalizeSpawn,toArena,resolveMap,blankMap,createLibrary,builtinMap,analyze,PROPS,STYLE_PRESETS,normalizeStyle} from '../scripts/map-model.mjs';
 import {overlaps,moveCircle,lineClear,findPath,resolvePosition,navigate} from '../scripts/terrain.mjs';
 import {makeGroups,tickGroups,spawnTypes,spawnSlots} from '../scripts/map-spawns.mjs';
-import {useCampaignMaps,campaignDocument,editedCampaignMap,campaignMapId,checkCampaignMap,CAMPAIGN_SLOTS,isRequiredSpawn} from '../scripts/campaign-maps.mjs';
+import {useCampaignMaps,campaignDocument,campaignEditStatus,editedCampaignMap,campaignMapId,checkCampaignMap,CAMPAIGN_SLOTS,isRequiredSpawn} from '../scripts/campaign-maps.mjs';
 import {prologueArena} from '../scripts/prologue-map.mjs';
 import {createSession,transition} from '../scripts/session.mjs';
 import {startCampaign} from '../scripts/campaign.mjs';
@@ -104,6 +104,28 @@ test('mapa personalizado usa gatilhos: quem espera não nasce na entrada',()=>{
  assert.ok(launchMap(s,map,()=>null).ok);assert.equal(s.world.actors.filter(a=>a.team==='enemy').length,2);assert.equal(s.world.adventure.enemies,5);
  s.world.player.x=25;s.world.player.y=24;tickGroups(s.world,s.world.adventure.groups,.1,{level:s.world.adventure.level});assert.equal(s.world.actors.filter(a=>a.team==='enemy').length,5);
 });
+test('edição da campanha: vale a mais recente entre a do navegador e a publicada',()=>{
+ const published={format:'necromancer-rise-map',version:1,id:'campaign-world',name:'Publicada',base:'builtin:campaign-world',campaign:'world',objects:[],hidden:[],biome:null,size:null,start:null,spawns:null,updated:2000};
+ const storage=memory(),library=createLibrary(storage),keep=(name,when)=>library.save({...published,name},when);
+ try{
+  useCampaignMaps(library,{maps:[published]});
+  assert.equal(editedCampaignMap('world').name,'Publicada','sem edição local vale a publicada');
+  assert.deepEqual({source:campaignEditStatus('world').source,differs:campaignEditStatus('world').differs},{source:'published',differs:false});
+  keep('Antiga',1000);
+  assert.equal(editedCampaignMap('world').name,'Publicada','uma publicação nova ganha da cópia antiga do navegador');
+  assert.equal(campaignDocument('world').name,'Publicada','o editor abre a mesma versão que o jogo usa');
+  assert.deepEqual({source:campaignEditStatus('world').source,differs:campaignEditStatus('world').differs},{source:'published',differs:true});
+  assert.equal(library.get(campaignMapId('world')).name,'Antiga','a cópia que perde continua guardada');
+  keep('Nova',3000);
+  assert.equal(editedCampaignMap('world').name,'Nova','uma edição local posterior ganha da publicada');
+  assert.deepEqual({source:campaignEditStatus('world').source,differs:campaignEditStatus('world').differs},{source:'local',differs:true});
+  keep('Publicada',2000);
+  assert.equal(campaignEditStatus('world').source,'local','empate fica com a do navegador');
+  assert.equal(campaignEditStatus('world').differs,false,'só a data diferente não é diferença de conteúdo');
+  assert.ok(library.remove(campaignMapId('world')).ok);
+  assert.equal(editedCampaignMap('world').name,'Publicada','apagar a cópia local volta à publicada');
+ }finally{useCampaignMaps(null);}
+});
 test('edição da campanha: fica salva, entra no jogo e não quebra a história',()=>{
  const storage=memory(),library=createLibrary(storage);useCampaignMaps(library);
  try{
@@ -119,9 +141,9 @@ test('edição da campanha: fica salva, entra no jogo e não quebra a história'
   assert.ok(flat.spawns.some(s=>s.id==='mine-guards'),'grupo de missão removido volta da planta');assert.ok(isRequiredSpawn('world','mine-guards'));
   const s=createSession();startCampaign(s,{opening:false,legacy:false});const w=s.world;
   assert.equal(w.adventure.kind,'campaign-world');assert.ok(w.arena.terrain,'o mundo recebe o relevo');assert.equal(w.arena.style.sky,'#0b1120');assert.ok(w.arena.kitProps.some(p=>p.part==='tent'));
-  const g=w.adventure.groups.find(x=>x.id==='forest-a');assert.equal(g.count,4);assert.equal(g.radius,30);
+  const g=w.adventure.groups.find(x=>x.id==='forest-a');assert.equal(g.count,8,'composição do editor, dobrada pela densidade da campanha');assert.deepEqual(g.mix,Array(8).fill(4));assert.equal(g.radius,30);
   const quest=w.adventure.groups.find(x=>x.id==='mine-guards');assert.equal(quest.quest,true,'o que é missão vem do jogo');
-  w.player.x=g.x+25;w.player.y=g.y;tickWorld(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a').length,4,'composição e raio editados valem em jogo');
+  w.player.x=g.x+25;w.player.y=g.y;tickWorld(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a').length,8,'composição e raio editados valem em jogo, com a densidade da campanha');
   doc.size={w:100,h:100};const problems=checkCampaignMap(doc,reloaded.lookup);assert.ok(problems.some(p=>p.level==='erro'&&/Fora do mapa/.test(p.text)),'reduzir o mapa avisa dos lugares da história');
   assert.ok(reloaded.remove(doc.id).ok);assert.equal(editedCampaignMap('world'),null,'restaurar volta ao original');
   const cave=campaignDocument('cave');cave.terrain=blankTerrain({w:144,h:360});library.save(cave);useCampaignMaps(createLibrary(storage));

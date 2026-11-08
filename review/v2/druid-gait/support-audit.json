@@ -1,0 +1,38 @@
+[
+  {
+    "model": "flora_tripo_druid",
+    "clip": "walk",
+    "max_support_ankle_height_error": 0.0005388334393501282,
+    "frames": 27
+  },
+  {
+    "model": "flora_tripo_druid",
+    "clip": "strafe_left",
+    "max_support_ankle_height_error": 1.2032687664031982e-05,
+    "frames": 25
+  },
+  {
+    "model": "flora_tripo_druid",
+    "clip": "strafe_right",
+    "max_support_ankle_height_error": 1.1958181858062744e-05,
+    "frames": 25
+  },
+  {
+    "model": "flora_tripo_wolf",
+    "clip": "walk",
+    "max_support_ankle_height_error": 3.5762786865234375e-07,
+    "frames": 22
+  },
+  {
+    "model": "flora_tripo_wolf",
+    "clip": "strafe_left",
+    "max_support_ankle_height_error": 2.2351741790771484e-07,
+    "frames": 25
+  },
+  {
+    "model": "flora_tripo_wolf",
+    "clip": "strafe_right",
+    "max_support_ankle_height_error": 1.7881393432617188e-07,
+    "frames": 25
+  }
+]

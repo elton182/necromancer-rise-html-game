@@ -1,5 +1,6 @@
 import {prologueMapData} from './prologue-map-data.mjs';
 import {campaignWorldMap} from './campaign-world-map.mjs';
+import {itaunaMap,fortMap,caveMap} from './itauna-map.mjs';
 // Mapas personalizados: dados puros (sem DOM nem Three.js). Um mapa é um documento JSON com objetos posicionados,
 // ponto de início e pontos de inimigos. Pode ter um mapa base (`base`): herda dele os objetos, o bioma, o tamanho,
 // o início e os inimigos, e só guarda o que mudou (objetos novos, objetos da base ocultos e campos substituídos).
@@ -102,7 +103,17 @@ Object.assign(PROPS,{
  mossy_tomb_a:kitProp('swampKit','tomb_0','Lápide musgosa','Ruínas',{...decor(.5),color:'#6f7a68'}),
  mossy_tomb_b:kitProp('swampKit','tomb_1','Lápide caída','Ruínas',{...decor(.5),color:'#6f7a68'}),
  mossy_tomb_c:kitProp('swampKit','tomb_2','Lápide partida','Ruínas',{...decor(.5),color:'#6f7a68'}),
- rubble:kitProp('caveFallKit','collapse_chunk','Escombro','Caverna',{...decor(.8),scale:1.6,color:'#827568'})
+ rubble:kitProp('caveFallKit','collapse_chunk','Escombro','Caverna',{...decor(.8),scale:1.6,color:'#827568'}),
+ fort_wall:kitProp('fortKit','fort_wall','Muralha','Forte',{...solidBox(6,1.4,5),color:'#85827a'}),
+ fort_tower:kitProp('fortKit','fort_tower','Torre da muralha','Forte',{...solidCircle(3,9),color:'#85827a'}),
+ fort_gatehouse:kitProp('fortKit','fort_gatehouse','Portaria (vão livre)','Forte',{...decor(3),pickH:7,color:'#a09c90'}),
+ fort_keep:kitProp('fortKit','fort_keep','Torre de menagem','Forte',{...solidBox(30,18,12),color:'#6f6d66'}),
+ fort_rack:kitProp('fortKit','fort_rack','Armeiro','Forte',{...solidBox(2.4,.6,1.8),color:'#5a4029'}),
+ fort_dummy:kitProp('fortKit','fort_dummy','Boneco de treino','Forte',{...solidCircle(.35,1.9),color:'#b89c54'}),
+ cave_mouth:kitProp('fortKit','cave_mouth','Boca de caverna','Caverna',{...decor(3.5),pickH:6,color:'#6c6a62'}),
+ spider_web:kitProp('fortKit','spider_web','Teia','Caverna',{...decor(1.6),pickH:2.8,color:'#e2dfd4'}),
+ egg_sac:kitProp('fortKit','egg_sac','Ninho de ovos','Caverna',{...decor(.9),color:'#d8d0ac'}),
+ bone_pile:kitProp('fortKit','bone_pile','Restos de presa','Caverna',{...decor(.9),color:'#d8ceb0'})
 });
 PROPS.water.label='Poça (só visual)';
 export const PROP_TYPES=Object.keys(PROPS);
@@ -129,7 +140,7 @@ export function normalizeStyle(raw){
  const range=(v,a,b)=>v==null||v===''||!Number.isFinite(+v)?null:clamp(+v,a,b),out={sky:color(raw.sky),sun:range(raw.sun,0,6),sunColor:color(raw.sunColor),ambient:range(raw.ambient,0,4),fog:range(raw.fog,0,1),tint:color(raw.tint),ground:raw.ground in GROUND_STYLES?raw.ground:null,water:color(raw.water),grass:range(raw.grass,0,2),flowers:range(raw.flowers,0,2)};
  return Object.values(out).some(v=>v!==null)?out:null;
 }
-export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin'};
+export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin','builtin:itauna':'Várzea de Itaúna','builtin:itauna-fort':'Forte da Pedra Negra','builtin:itauna-cave':'Gruta das Tecelãs'};
 export const isBuiltin=ref=>typeof ref==='string'&&ref.startsWith('builtin:');
 export const mapRef=id=>'map:'+id;
 
@@ -209,6 +220,9 @@ function buildBuiltin(ref){
  const stage={'builtin:arandu-caravan':'ambush','builtin:arandu-cave':'cave','builtin:arandu-travel':'travel','builtin:arandu-trail':'trail'}[ref];
  if(stage)return normalizeMap({...prologueMapData(stage),id:ref}).map;
  if(ref==='builtin:campaign-world')return normalizeMap({...campaignWorldMap(),id:ref}).map;
+ if(ref==='builtin:itauna')return normalizeMap({...itaunaMap(),id:ref}).map;
+ if(ref==='builtin:itauna-fort')return normalizeMap({...fortMap(),id:ref}).map;
+ if(ref==='builtin:itauna-cave')return normalizeMap({...caveMap(),id:ref}).map;
  if(ref==='builtin:training')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'grave',size:{w:30,h:30},start:{x:0,y:10},spawns:[{x:0,y:-8,count:4,type:0}]}).map,objects:fromSolids('training',TRAINING_ARENA.solids)};
  if(ref==='builtin:forest')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'forest',size:{w:40,h:40},start:{x:0,y:10},spawns:[{x:0,y:-5,count:6,type:0}]}).map,objects:fromSolids('forest',forestArena().solids)};
  return null;

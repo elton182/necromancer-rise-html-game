@@ -11,7 +11,7 @@ import {dealDamage} from '../scripts/combat.mjs';
 import {musicTheme} from '../scripts/sound-events.mjs';
 const fresh=()=>{const s=createSession();startCampaign(s,{opening:false});return s;};
 const go=(s,p)=>{Object.assign(s.world.player,{x:p.x,y:p.y});tickAdventure(s,.1);};
-const clear=(s,id)=>{for(const e of [...s.world.actors])if(e.worldGroup===id&&e.hp>0)dealDamage(s.world,e,1e6,s.world.player);tickAdventure(s,.1);};
+const clear=(s,id)=>{const kill=()=>{for(const e of [...s.world.actors])if(e.worldGroup===id&&e.hp>0)dealDamage(s.world,e,1e6,s.world.player);tickAdventure(s,.1);},g=()=>s.world.adventure.groups.find(g=>g.id===id);kill();for(let i=0;i<30&&g()?.state==='between';i++){g().timer=0;tickAdventure(s,.1);kill();}};
 const accept=s=>{go(s,WORLD_POINTS.child);assert.equal(interactWorld(s),true);assert.equal(worldDialogueAction(s),true);};
 const rescue=s=>{go(s,WORLD_POINTS.prison);clear(s,'prison-guards');assert.equal(interactWorld(s),true);assert.equal(worldDialogueAction(s),true);};
 
@@ -33,16 +33,16 @@ test('rotas contínuas e NPCs são alcançáveis sem cruzar colisores',()=>{
 });
 test('encontros são locais; pausa não cria inimigos; Tiro de Osso usa combate e recompensa comuns',()=>{
  const s=fresh(),w=s.world;w.paused=true;go(s,{x:-48,y:-76});assert.equal(w.actors.filter(a=>a.worldGroup).length,0);
- w.paused=false;tickAdventure(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup).length,2);assert.equal(w.adventure.groups[1].state,'dormant');
+ w.paused=false;tickAdventure(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup).length,4,'dobro de integrantes');assert.equal(w.adventure.groups[1].state,'dormant');
  const enemy=w.actors.find(a=>a.worldGroup);Object.assign(w.player,{x:enemy.x,y:enemy.y-6});w.aim={x:enemy.x,y:enemy.y};
- assert.equal(castSession(s),true);for(let i=0;i<30;i++)stepSession(s,1/60,{});assert.ok(enemy.hp<enemy.maxHp,'projétil acerta um inimigo real');
+ assert.equal(castSession(s),true);for(let i=0;i<30;i++)stepSession(s,1/60,{});assert.ok(w.actors.some(a=>a.worldGroup==='forest-a'&&a.hp<a.maxHp),'projétil acerta um inimigo real do grupo');
  const xp=s.save.character.exp;clear(s,'forest-a');assert.ok(s.save.character.exp>xp);assert.equal(w.adventure.groups[0].state,'clear');
 });
 test('pedido, guardas, libertação e retorno: ordem obrigatória e prêmio único',()=>{
  const s=fresh(),w=s.world;go(s,WORLD_POINTS.prison);assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false);closeWorldOverlay(s);
  accept(s);assert.equal(s.save.campaign.world.stage,'rescue');go(s,WORLD_POINTS.prison);
  assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false,'não liberta com guardas vivos');closeWorldOverlay(s);
- const guards=w.actors.filter(a=>a.worldGroup==='prison-guards');assert.equal(guards.length,3);
+ const guards=w.actors.filter(a=>a.worldGroup==='prison-guards');assert.equal(guards.length,6);
  dealDamage(w,guards[0],1e6,w.player);tickAdventure(s,.1);assert.equal(s.save.campaign.world.guardsCleared,false);
  clear(s,'prison-guards');assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),true);assert.equal(s.save.campaign.world.stage,'return');
  assert.equal(w.actors.filter(a=>a.worldNpc&&!a.service&&inWorldVillage(a)).length,2);assert.equal(w.landmarks.some(l=>l.key==='mayor'&&l.y<0),false);
@@ -52,7 +52,7 @@ test('pedido, guardas, libertação e retorno: ordem obrigatória e prêmio úni
 test('retorno à vila limpa ameaças e rearma só encontros repetíveis',()=>{
  const s=fresh(),w=s.world;go(s,WORLD_ENCOUNTERS[0]);clear(s,'forest-a');assert.equal(w.adventure.groups[0].state,'clear');
  go(s,WORLD_POINTS.child);assert.equal(w.adventure.groups[0].state,'dormant');assert.equal(w.actors.some(a=>a.team==='enemy'),false);assert.equal(s.save.campaign.world.checkpoint,'village');assert.equal(musicTheme(s),'village');
- go(s,WORLD_ENCOUNTERS[0]);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a'&&a.hp>0).length,2);
+ go(s,WORLD_ENCOUNTERS[0]);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a'&&a.hp>0).length,4);
  accept(s);rescue(s);go(s,WORLD_POINTS.mayor);go(s,WORLD_POINTS.prison);assert.equal(w.actors.some(a=>a.worldGroup==='prison-guards'),false);
 });
 test('morte retoma no último abrigo; recarga mantém a missão, sem serializar combate',()=>{
@@ -75,11 +75,11 @@ test('todos os pontos de quest, pilhas e encontros ficam em espaço livre e alca
 });
 test('grupos misturam tipos, escalam por região e trazem líder de elite',()=>{
  const s=fresh(),w=s.world,g=WORLD_ENCOUNTERS.find(e=>e.id==='mine-guards');go(s,{x:g.x,y:g.y+10});
- const foes=w.actors.filter(a=>a.worldGroup==='mine-guards');assert.equal(foes.length,g.mix.length);
- assert.deepEqual(foes.map(e=>e.typeIndex).sort(),[...g.mix].sort());assert.equal(foes[0].lootTier,'magic');assert.equal(foes[1].gearWave,3);
+ const foes=w.actors.filter(a=>a.worldGroup==='mine-guards');assert.equal(foes.length,g.mix.length*2);
+ assert.deepEqual(foes.map(e=>e.typeIndex).sort(),[...g.mix,...g.mix].sort());assert.equal(foes[0].lootTier,'magic');assert.equal(foes[1].gearWave,12,'nível da área (10) mais o bônus do grupo');
  assert.ok(WORLD_ENCOUNTERS.length>=20);assert.ok(new Set(WORLD_ENCOUNTERS.flatMap(e=>e.mix)).size>=8);
 });
-test('Oren abre as duas quests; Bran exige a mina livre, volta à forja e paga uma vez',()=>{
+test('Joaquim abre as duas quests; Bruno exige a mina livre, volta à forja e paga uma vez',()=>{
  const s=fresh(),w=s.world,p=()=>s.save.campaign.world;finish(s);
  assert.equal(p().smith,'active');assert.equal(p().lumber,'active');assert.equal(worldObjectives(p()).length,2);
  go(s,WORLD_POINTS.mine);assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false,'bando vivo');closeWorldOverlay(s);
@@ -89,7 +89,7 @@ test('Oren abre as duas quests; Bran exige a mina livre, volta à forja e paga u
  go(s,WORLD_POINTS.forge);assert.ok(interactWorld(s));const gold=s.save.character.gold;assert.ok(worldDialogueAction(s));assert.equal(s.save.character.gold,gold+100);assert.equal(p().smith,'done');
  assert.ok(interactWorld(s));assert.equal(worldDialogue(s).kind,'forge');assert.equal(worldDialogueAction(s),false);assert.equal(s.save.character.gold,gold+100);
 });
-test('madeira: cada pilha exige seus guardas; Oren só paga com as três marcadas',()=>{
+test('madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas',()=>{
  const s=fresh(),w=s.world,p=()=>s.save.campaign.world;finish(s);
  const [a,b,c]=WORLD_PILES;go(s,a);assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false,'guardas vivos');closeWorldOverlay(s);
  clear(s,a.guard);assert.ok(interactWorld(s));assert.ok(worldDialogueAction(s));assert.deepEqual(p().piles,[1,0,0]);assert.equal(w.landmarks.some(l=>l.key===a.key),false);
@@ -99,7 +99,7 @@ test('madeira: cada pilha exige seus guardas; Oren só paga com as três marcada
  assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false);
  const resumed=createSession(snapshot(s));campaignMap(resumed);assert.deepEqual(resumed.save.campaign.world.piles,[1,1,1]);assert.equal(resumed.save.campaign.world.lumber,'done');
 });
-test('saves concluídos antes das novas quests recebem os pedidos de Oren',()=>{
+test('saves concluídos antes das novas quests recebem os pedidos de Joaquim',()=>{
  assert.deepEqual(normalizeWorld({stage:'complete',guardsCleared:true}),{stage:'complete',checkpoint:'village',guardsCleared:true,smith:'active',lumber:'active',piles:[0,0,0],cleared:[]});
  assert.equal(normalizeWorld({stage:'rescue',smith:'done'}).smith,'locked');assert.deepEqual(normalizeWorld({stage:'complete',cleared:['mine-guards','forest-a','x']}).cleared,['mine-guards']);
 });

@@ -1,0 +1,169 @@
+/* Talentos do Guerreiro (aba Habilidades): ramos coloridos, selos quadrados com contador, ligações
+   de pré-requisito e painel de detalhe. Camada só visual; reaproveita as cores --orn-* do HUD. */
+#pause-dialog .wt{--wt-gold:var(--orn-gold,#e2bd73);--wt-gold-hi:var(--orn-gold-hi,#f6dfa2);--wt-bronze:var(--orn-bronze,#9c743c);--wt-bronze-dk:var(--orn-bronze-dk,#5a3d1c);--wt-text:var(--orn-text,#efe2c2);--wt-muted:var(--orn-muted,#c9b48c);--wt-serif:var(--orn-serif,"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif);display:grid;grid-template-columns:minmax(220px,250px) minmax(0,1fr) minmax(270px,320px);grid-template-rows:minmax(0,1fr) auto;gap:12px 14px;font-family:var(--wt-serif);color:var(--wt-text)}
+#pause-dialog .wt h2,#pause-dialog .wt h3,#pause-dialog .wt h4{font-family:var(--wt-serif);font-weight:400;font-variant:normal;letter-spacing:0;border:0;padding:0;margin:0;text-align:left}
+#pause-dialog .wt small{letter-spacing:0}
+#pause-dialog .wt button{font-family:var(--wt-serif)}
+#pause-dialog .wt-side,#pause-dialog .wt-detail{position:relative;box-sizing:border-box;padding:14px;border:1px solid var(--wt-bronze);border-radius:3px;background:linear-gradient(165deg,#1e150def,#0d0907f5 60%,#140e09f3);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 4px #1f150c,inset 0 0 32px #000c,0 6px 18px #0009}
+
+/* Barra lateral */
+.wt-side{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.wt-banner{width:96px;height:112px;display:grid;place-items:center;padding-bottom:14px;box-sizing:border-box;clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%);background:linear-gradient(#a3261d,#5a100c 70%,#3a0a08);color:var(--wt-gold-hi);filter:drop-shadow(0 4px 6px #000)}
+.wt-banner svg{width:62px;height:66px;stroke-width:2.2;filter:drop-shadow(0 2px 2px #000)}
+#pause-dialog .wt-side h2{font-size:28px;color:var(--wt-gold-hi);text-align:center;text-shadow:0 2px 4px #000}
+#pause-dialog .wt-side h3{font-size:17px;color:var(--wt-text);text-align:center;padding-top:6px;border-top:1px solid #6b4a2288;width:100%}
+.wt-side>p{margin:0;font-size:12.5px;line-height:1.5;color:var(--wt-muted)}
+.wt-points{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;box-sizing:border-box;padding:7px 12px;border:1px solid var(--wt-bronze-dk);border-radius:22px;background:radial-gradient(ellipse,#2a1d10,#0c0806 80%);box-shadow:inset 0 0 0 3px #120c07,inset 0 0 0 4px #3b2a18}
+.wt-points span{font-size:14px;color:var(--wt-text)}
+#pause-dialog .wt-points b{font:400 30px/1 var(--wt-serif);color:var(--wt-gold-hi);text-align:center}
+.wt-branches{display:grid;gap:7px;width:100%;margin-top:4px}
+#pause-dialog .wt-branches button{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:10px;margin:0;min-height:44px;padding:6px 12px;text-align:left;color:var(--wt-text);background:linear-gradient(#21170e,#100b07);border:1px solid var(--wt-bronze-dk);border-radius:3px;box-shadow:inset 0 0 10px #000}
+#pause-dialog .wt-branches svg{width:26px;height:28px;color:var(--branch-accent)}
+#pause-dialog .wt-branches span{font-size:17px}
+#pause-dialog .wt-branches b{font-weight:400;font-size:14px;color:var(--wt-muted)}
+#pause-dialog .wt-branches button[aria-pressed=true]{border-color:var(--wt-gold);background:linear-gradient(90deg,color-mix(in srgb,var(--branch-accent) 30%,#2a1c0d),#1a1109);box-shadow:inset 0 0 12px #f6dfa222,0 0 8px #e2bd7333;outline:0}
+#pause-dialog .wt-branches button[aria-pressed=true] b{color:var(--wt-gold-hi)}
+
+/* Quadro dos ramos */
+.wt-board{display:flex;flex-direction:column;min-width:0}
+.wt-board-head{display:flex;align-items:baseline;justify-content:flex-end;gap:14px;padding:0 4px;margin-bottom:30px}
+.wt-board-head p{margin:0;font-size:15px;color:var(--wt-text)}
+.wt-board-head p b{font:400 26px/1 var(--wt-serif);color:var(--wt-gold-hi);margin-right:6px}
+.wt-board-head small{font-size:12px;color:var(--wt-muted)}
+#pause-dialog .wt-tree{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;flex:1}
+#pause-dialog .wt-school{position:relative;min-width:0;margin:0;padding:0 8px 10px;border:1px solid color-mix(in srgb,var(--branch-accent) 55%,#5a3d1c);border-radius:3px;background:linear-gradient(180deg,color-mix(in srgb,var(--branch-accent) 24%,#120c08),color-mix(in srgb,var(--branch-accent) 8%,#0b0705) 55%,#0b0705);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 4px color-mix(in srgb,var(--branch-accent) 12%,#0c0806),inset 0 0 40px #000a}
+#pause-dialog .wt-school[data-active=true]{border-color:color-mix(in srgb,var(--branch-accent) 70%,var(--wt-gold));box-shadow:inset 0 0 0 1px #000,inset 0 0 0 4px color-mix(in srgb,var(--branch-accent) 18%,#0c0806),inset 0 0 40px #0008,0 0 16px color-mix(in srgb,var(--branch-accent) 30%,transparent)}
+#pause-dialog .wt-school-head{text-align:center;padding:0 2px 8px;border-bottom:1px solid color-mix(in srgb,var(--branch-accent) 35%,#3b2a18)}
+.wt-crest{display:grid;place-items:center;width:52px;height:52px;margin:-26px auto 4px;border-radius:50%;border:2px solid var(--wt-gold);color:var(--wt-gold-hi);background:radial-gradient(circle,color-mix(in srgb,var(--branch-accent) 60%,#1a0f08),#120a05 75%);box-shadow:0 0 0 3px #0c0806,0 0 12px color-mix(in srgb,var(--branch-accent) 45%,transparent)}
+.wt-crest svg{width:30px;height:32px}
+#pause-dialog .wt-school-head h3{font-size:19px;letter-spacing:2px;text-transform:uppercase;text-align:center;color:var(--wt-text)}
+#pause-dialog .wt-school-head small{display:block;font-size:12px;color:var(--wt-muted);margin-top:2px}
+.wt-graph{position:relative;max-width:230px;margin:12px auto 0}
+.wt-graph>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wt-graph .warrior-link{fill:none;stroke:#4c3d2b;stroke-width:2;vector-effect:non-scaling-stroke}
+.wt-graph .warrior-link.available{stroke:color-mix(in srgb,var(--branch-accent) 70%,#8a6a3a)}
+.wt-graph .warrior-link.learned{stroke:var(--wt-gold)}
+.wt-graph .warrior-affinity{fill:none;stroke:color-mix(in srgb,var(--branch-accent) 55%,#5a3d1c);stroke-width:1.5;stroke-dasharray:3 4;vector-effect:non-scaling-stroke}
+#pause-dialog .wt-node{position:absolute;transform:translateX(-50%);display:block;width:56px;height:auto;min-height:0;margin:0;padding:0;background:none;border:0;box-shadow:none;cursor:pointer}
+.wt-tile{position:relative;display:grid;place-items:center;width:56px;height:56px;box-sizing:border-box;border:1px solid #5a4630;border-radius:4px;background:radial-gradient(circle at 50% 40%,#2a2018,#0d0907 80%);box-shadow:inset 0 0 0 2px #0a0705,inset 0 0 12px #000,0 3px 8px #000a;color:#8a7a62}
+.wt-tile svg{width:34px;height:34px;display:block}
+#pause-dialog .wt-node>em{position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);min-width:32px;padding:1px 5px;box-sizing:border-box;font:12px/1.3 var(--wt-serif);font-style:normal;text-align:center;color:var(--wt-text);background:#0c0806;border:1px solid #5a4630;border-radius:2px}
+#pause-dialog .wt-node.available .wt-tile{border-color:var(--branch-accent);color:color-mix(in srgb,var(--branch-accent) 45%,#e8d6b4);box-shadow:inset 0 0 0 2px #0a0705,inset 0 0 12px #000,0 3px 8px #000a}
+#pause-dialog .wt-node.learned .wt-tile{border-color:var(--wt-gold);color:#fff0cf;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--branch-accent) 45%,#24140a),#140a05 80%);box-shadow:inset 0 0 0 2px #2a1a0b,inset 0 0 10px #000a,0 3px 8px #000a}
+#pause-dialog .wt-node.learned>em{border-color:var(--wt-gold);color:var(--wt-gold-hi)}
+#pause-dialog .wt-node.locked .wt-tile{filter:grayscale(.9) brightness(.65)}
+.wt-lock{position:absolute;right:-4px;top:-5px;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#0c0806;border:1px solid #5a4630;color:#b9a684}
+.wt-lock svg{width:12px;height:13px}
+#pause-dialog .wt-node.selected .wt-tile{outline:2px solid var(--wt-gold-hi);outline-offset:3px}
+#pause-dialog .wt-node:focus-visible{outline:0}
+#pause-dialog .wt-node:focus-visible .wt-tile{outline:2px solid #fff;outline-offset:3px}
+#pause-dialog .wt-node:hover .wt-tile{border-color:var(--wt-gold-hi)}
+
+/* Detalhe */
+#pause-dialog .wt-detail{display:flex;flex-direction:column;gap:10px;position:relative;top:auto;max-height:none;border-color:color-mix(in srgb,var(--branch-accent) 40%,var(--wt-bronze))}
+.wt-detail-head{display:flex;align-items:center;gap:14px;padding-bottom:12px;border-bottom:1px solid #6b4a2288}
+.wt-detail-icon{position:relative;flex:none;width:78px;height:78px;display:grid;place-items:center;border:1px solid var(--wt-gold);border-radius:4px;color:#fff0cf;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--branch-accent) 45%,#24140a),#140a05 80%);box-shadow:inset 0 0 0 3px #1a0f07,0 3px 10px #000a}
+.wt-detail-icon svg{width:48px;height:48px;display:block}
+.wt-detail-icon em{position:absolute;right:-6px;bottom:-8px;padding:1px 6px;font:13px var(--wt-serif);font-style:normal;background:#0c0806;border:1px solid var(--wt-gold);color:var(--wt-gold-hi)}
+#pause-dialog .wt-detail-head h3{font-size:22px;line-height:1.2;color:var(--wt-text)}
+.wt-detail-head p{margin:3px 0 0;font-size:14px;color:var(--wt-muted)}
+#pause-dialog .wt-detail h4{font-size:17px;color:var(--wt-gold);padding-top:8px;border-top:1px solid #6b4a2244}
+#pause-dialog .wt-detail h4 small{display:block;font-size:12px;color:var(--wt-muted)}
+.wt-effects,.wt-req{margin:0;padding:0 0 0 2px;list-style:none;font-size:14px;line-height:1.5}
+.wt-effects li{position:relative;padding-left:16px}
+.wt-effects li:before{content:'';position:absolute;left:2px;top:.6em;width:5px;height:5px;transform:rotate(45deg);background:var(--wt-gold)}
+.wt-req li{display:flex;align-items:center;gap:8px}
+.wt-req svg{width:18px;height:19px;flex:none}
+.wt-req .ok svg{color:#93dc8c}.wt-req .no{color:var(--wt-muted)}.wt-req .no svg{color:#d9a07e}
+.wt-invest{margin-top:auto;padding-top:6px}
+#pause-dialog .wt-invest .invest{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:50px;margin:0;font-size:17px;color:#fff3cf;background:linear-gradient(#80602b,#3b2911);border:1px solid var(--wt-gold);border-radius:3px;box-shadow:inset 0 0 12px #f6dfa244,0 0 12px #e2bd7333}
+#pause-dialog .wt-invest .invest svg{width:20px;height:21px;color:#93dc8c}
+#pause-dialog .wt-invest .invest:disabled{opacity:1;cursor:default;color:var(--wt-muted);background:linear-gradient(#22180f,#0f0a06);box-shadow:inset 0 0 10px #000}
+#pause-dialog .wt-invest .invest.maxed:disabled{color:var(--wt-text);border-color:var(--wt-gold)}
+#pause-dialog .wt-reason{margin:0;font-size:12.5px;color:var(--wt-muted)}
+#pause-dialog .wt-detail .warrior-variant{margin:0;padding-top:10px;border-top:1px solid #6b4a2244}
+#pause-dialog .wt-detail .warrior-variant small,#pause-dialog .wt-detail .warrior-combat-note small{display:block;font-size:12px;color:var(--wt-gold);margin-bottom:6px}
+#pause-dialog .wt-detail .warrior-variant-options{display:flex;flex-wrap:wrap;gap:6px}
+#pause-dialog .wt-detail .warrior-variant-options .btn{margin:0;min-height:32px;padding:5px 10px}
+#pause-dialog .wt-detail .warrior-variant-options .btn[aria-pressed=true]{border-color:var(--wt-gold);color:var(--wt-gold-hi);background:#3a2a14}
+#pause-dialog .wt-detail .warrior-combat-note{padding-top:8px;border-top:1px solid #6b4a2244}
+#pause-dialog .wt-detail .warrior-combat-note p{margin:0;font-size:12.5px;line-height:1.5;color:var(--wt-muted)}
+
+/* Rodapé */
+.wt-footer{grid-column:1/-1;display:flex;align-items:center;gap:20px;padding-top:10px;border-top:1px solid #6b4a2288}
+.wt-xp{flex:1;display:flex;align-items:center;gap:14px;min-width:0}
+.wt-xp>b{font-weight:400;font-size:19px;white-space:nowrap}
+.wt-xp-bar{position:relative;flex:1;max-width:760px;height:20px;border:1px solid var(--wt-bronze);background:#0a0705;box-shadow:inset 0 0 6px #000;border-radius:2px;overflow:hidden}
+.wt-xp-bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(#f6dfa2,#c99a3f 55%,#8a6424)}
+.wt-xp-bar span{position:relative;display:block;text-align:center;font-size:13px;line-height:18px;color:#fff3cf;text-shadow:0 1px 2px #000,0 0 3px #000}
+.wt-legend{display:flex;gap:14px;font-size:12px;color:var(--wt-muted)}
+.wt-legend span:before{content:'';display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px;border:1px solid #5a4630;background:#0d0907;border-radius:2px}
+.wt-legend .learned:before{border-color:var(--wt-gold);background:#8a4a24}
+.wt-legend .available:before{border-color:#c98f6b;box-shadow:0 0 6px #c98f6b}
+.wt-legend .locked:before{filter:grayscale(1);opacity:.6}
+
+@media(max-width:1300px){#pause-dialog .wt{grid-template-columns:minmax(0,1fr) minmax(260px,300px)}#pause-dialog .wt-side{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;justify-content:center;text-align:left}.wt-banner{width:58px;height:70px;padding-bottom:8px}.wt-banner svg{width:38px;height:40px}.wt-side>p,#pause-dialog .wt-side h3{display:none}.wt-points{width:auto}.wt-branches{grid-template-columns:repeat(4,minmax(0,1fr));flex:1 1 520px;margin:0}}
+@media(max-width:760px){#pause-dialog .wt{grid-template-columns:minmax(0,1fr)}.wt-branches{grid-template-columns:repeat(2,minmax(0,1fr));flex-basis:100%}#pause-dialog .wt-tree{grid-template-columns:minmax(0,1fr)}#pause-dialog .wt-school[data-active=false]{display:none}.wt-board-head{justify-content:center}.wt-footer{flex-direction:column;align-items:stretch}.wt-legend{flex-wrap:wrap}}
+
+/* Selos: traço uniforme (sem gradiente, que some em segmentos retos) e sem halos ou pulsos. */
+#pause-dialog .wt-tile svg path,#pause-dialog .wt-detail-icon svg path,#pause-dialog .wt-crest svg path,#pause-dialog .wt-banner svg path,#pause-dialog .wt-branches svg path{stroke-width:1.8px;vector-effect:non-scaling-stroke}
+#pause-dialog .wt-node.learned .wt-tile svg,#pause-dialog .wt-detail-icon svg{color:#f3d08a;filter:drop-shadow(0 1px 1px #000)}
+#pause-dialog .wt-tile,#pause-dialog .wt-detail-icon{border-radius:6px}
+#pause-dialog .wt-tile:before{content:'';position:absolute;inset:3px;border-radius:4px;border:1px solid #ffffff10;pointer-events:none}
+
+/* Grimório do Necromante (grimoire-panel.mjs) no mesmo quadro: ícones são glifos de texto (forçados
+   a apresentação monocromática), finais exclusivas são redondas e as classes lg-* antigas são neutralizadas. */
+#pause-dialog .wt-necro .wt-banner{background:linear-gradient(#5b2a7a,#2e1240 70%,#1c0a28)}
+#pause-dialog .wt-glyph{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","DejaVu Sans",serif;font-style:normal;font-weight:400;line-height:1;display:block;text-align:center}
+#pause-dialog .wt-necro .wt-tile .wt-glyph{font-size:28px}
+#pause-dialog .wt-necro .wt-crest .wt-glyph{font-size:24px}
+#pause-dialog .wt-necro .wt-banner .wt-glyph{font-size:56px;color:#f3d08a;text-shadow:0 2px 3px #000}
+#pause-dialog .wt-necro .wt-detail-icon .wt-glyph{font-size:40px}
+#pause-dialog .wt-necro .wt-branches .wt-glyph{font-size:20px;color:var(--branch-accent)}
+#pause-dialog .wt-necro .wt-node.learned .wt-tile,#pause-dialog .wt-necro .wt-detail-icon{color:#f3d08a}
+#pause-dialog .wt-necro .wt-node.final .wt-tile,#pause-dialog .wt-necro .wt-node.final .wt-tile:before{border-radius:50%}
+#pause-dialog .wt-necro .wt-tree{grid-template-columns:repeat(var(--wt-columns,3),minmax(0,1fr));gap:14px;margin:0;padding:0;background:none;border:0;align-self:stretch}
+#pause-dialog .wt-necro .lg-school{display:block;min-height:0}
+#pause-dialog .wt-necro .lg-node{height:auto;min-height:0;flex-direction:initial;gap:0;font:inherit;color:inherit}
+#pause-dialog .wt-necro .wt-branches{display:grid;gap:7px;margin-top:4px;padding:0;border:0;background:none}
+#pause-dialog .wt-necro .wt-branches button{flex:none;width:100%}
+#pause-dialog .wt-necro .wt-branches button[aria-selected=true]{border-color:var(--wt-gold);background:linear-gradient(90deg,color-mix(in srgb,var(--branch-accent) 30%,#2a1c0d),#1a1109);color:var(--wt-text);box-shadow:inset 0 0 12px #f6dfa222;outline:0}
+#pause-dialog .wt-necro .wt-branches button[aria-selected=true] b{color:var(--wt-gold-hi)}
+.wt-side-actions{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;margin-top:auto;padding-top:8px;border-top:1px solid #6b4a2266}
+#pause-dialog .wt-necro .lg-reset{width:100%;margin:0;min-height:36px;padding:6px;font-size:13px;color:var(--wt-text);background:linear-gradient(#22180f,#0f0a06);border:1px solid var(--wt-bronze-dk);border-radius:3px}
+#pause-dialog .wt-necro .lg-gold{margin:0;font-size:13px;color:var(--wt-gold-hi);background:none;border:0;padding:0}
+#pause-dialog .wt-necro .lg-detail{position:relative;top:auto;max-height:560px;overflow:auto;margin:0;align-self:start;scrollbar-width:thin;scrollbar-color:var(--wt-bronze) #120c08}
+#pause-dialog .wt-necro .wt-board,#pause-dialog .wt-necro .wt-side{align-self:start}
+#pause-dialog .wt-necro .wt-desc{margin:0;font-size:13.5px;line-height:1.5;color:var(--wt-text)}
+#pause-dialog .wt-necro .lg-requirement{margin:0;padding:0 0 0 2px;border:0;background:none;color:var(--wt-text);font-size:14px}
+#pause-dialog .wt-necro .wt-req li{gap:6px}#pause-dialog .wt-necro .wt-req .ok{color:#cfe8c4}#pause-dialog .wt-necro .wt-req .no{color:#d9a07e}
+#pause-dialog .wt-necro .wt-invest{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;border:0;background:none}
+#pause-dialog .wt-necro .wt-invest .invest{min-height:44px;font-size:15px;white-space:nowrap}
+#pause-dialog .wt-necro .wt-invest .refund{width:100%;margin:0;min-height:44px;font-size:14px;white-space:nowrap;color:var(--wt-text);background:linear-gradient(#22180f,#0f0a06);border:1px solid var(--wt-bronze-dk);border-radius:3px}
+#pause-dialog .wt-necro .wt-invest .refund:disabled{opacity:.55}
+#pause-dialog .wt-necro .lg-note{margin:0;font-size:12px;line-height:1.5;color:var(--wt-muted);background:none;border:0;padding:0}
+#pause-dialog .wt-necro .wt-equip{margin:0;padding:8px 0 0;border:0;border-top:1px solid #6b4a2244;background:none}
+#pause-dialog .wt-necro .wt-equip h4{font-size:15px;color:var(--wt-gold);border:0;padding:0;margin:0 0 6px}
+.wt-equip-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#pause-dialog .wt-necro .wt-equip-slots .btn{margin:0;min-height:30px;padding:4px 6px;font-size:12px;white-space:normal;color:var(--wt-text);background:linear-gradient(#21170e,#100b07);border:1px solid var(--wt-bronze-dk);border-radius:3px}
+#pause-dialog .wt-necro .wt-equip-slots .lg-equip-help{border-color:var(--wt-gold);color:var(--wt-gold-hi)}
+#pause-dialog .wt-necro .wt-fold{margin:0;padding:6px 0 0;border:0;border-top:1px solid #6b4a2244;background:none}
+#pause-dialog .wt-necro .wt-fold summary{cursor:pointer;font-size:14px;color:var(--wt-gold)}
+#pause-dialog .wt-necro .lg-bonuses{margin-top:6px;font-size:12.5px}
+#pause-dialog .wt-necro .wt-detail h4 small{display:block;font-size:12px;color:var(--wt-muted)}
+#pause-dialog .wt-necro .wt-legend .final:before{border-radius:50%;border-color:var(--wt-gold)}
+#pause-dialog .wt-necro .wt-mastery{grid-column:2/-1;min-width:0;margin:0}
+@media(max-width:1300px){#pause-dialog .wt-necro .wt-mastery{grid-column:1/-1}}
+@media(max-width:760px){#pause-dialog .wt-necro .wt-tree{grid-template-columns:minmax(0,1fr);gap:34px}#pause-dialog .wt-necro .wt-school[data-active=false]{display:block}}
+/* Maestrias do Necromante na paleta dos talentos. */
+#pause-dialog .wt-necro .wt-mastery{padding:14px;border:1px solid var(--wt-bronze);border-radius:3px;background:linear-gradient(165deg,#1e150def,#0d0907f5 60%,#140e09f3);box-shadow:inset 0 0 0 1px #000,inset 0 0 0 4px #1f150c,inset 0 0 32px #000c;font-family:var(--wt-serif);color:var(--wt-text)}
+#pause-dialog .wt-necro .wt-mastery .mastery-panel,#pause-dialog .wt-necro .wt-mastery .mastery-selected-tree{background:none;border:0;box-shadow:none;padding:0}
+#pause-dialog .wt-necro .wt-mastery .mastery-specialization,#pause-dialog .wt-necro .wt-mastery .mastery-node{border:1px solid var(--wt-bronze-dk);border-radius:3px;background:linear-gradient(#21170e,#100b07);box-shadow:inset 0 0 10px #000;color:var(--wt-text);font-family:var(--wt-serif)}
+#pause-dialog .wt-necro .wt-mastery .mastery-specialization.selected,#pause-dialog .wt-necro .wt-mastery .mastery-specialization[aria-pressed=true]{border-color:var(--wt-gold);background:linear-gradient(#5c4321,#2a1c0d);box-shadow:inset 0 0 12px #f6dfa233;outline:0}
+#pause-dialog .wt-necro .wt-mastery .mastery-node.learned{border-color:var(--wt-gold);background:linear-gradient(#3a2a14,#160e07)}
+#pause-dialog .wt-necro .wt-mastery h3,#pause-dialog .wt-necro .wt-mastery h4,#pause-dialog .wt-necro .wt-mastery b{color:var(--wt-text);font-family:var(--wt-serif)}
+#pause-dialog .wt-necro .wt-mastery small,#pause-dialog .wt-necro .wt-mastery p,#pause-dialog .wt-necro .wt-mastery em,#pause-dialog .wt-necro .wt-mastery summary,#pause-dialog .wt-necro .wt-mastery label{color:var(--wt-muted);letter-spacing:0}
+#pause-dialog .wt-necro .wt-mastery progress{accent-color:var(--wt-gold)}
+#pause-dialog .wt-necro .wt-mastery .btn{border:1px solid var(--wt-bronze-dk);border-radius:3px;background:linear-gradient(#22180f,#0f0a06);color:var(--wt-text)}
+#pause-dialog .wt-necro .wt-mastery .mastery-invest:not(:disabled){border-color:var(--wt-gold);color:var(--wt-gold-hi)}
+@media(max-width:760px){#pause-dialog .wt-branches button{grid-template-columns:20px minmax(0,1fr) auto;gap:6px;padding:6px 8px;min-height:40px}#pause-dialog .wt-branches span{font-size:13.5px;line-height:1.15}#pause-dialog .wt-branches b{font-size:12px}#pause-dialog .wt-board-head{display:none}#pause-dialog .wt-tree{margin-top:30px}}

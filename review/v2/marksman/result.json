@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "classId": "archer",
+      "checks": [
+        "seleção",
+        "HUD",
+        "flecha",
+        "atira andando",
+        "tiro contínuo segurando o tiro",
+        "esquiva",
+        "equipamentos e arma inicial",
+        "árvore",
+        "Flecha Perfurante",
+        "Recuo",
+        "Chuva de Flechas",
+        "Leque",
+        "Falcão (automático, F e marca)",
+        "chão claro e qualidade baixa",
+        "sons"
+      ],
+      "errors": [],
+      "remote": []
+    },
+    {
+      "classId": "mercenary",
+      "checks": [
+        "seleção",
+        "HUD",
+        "virote perfurante",
+        "atira andando",
+        "tiro contínuo segurando o tiro",
+        "esquiva",
+        "equipamentos e arma inicial",
+        "árvore",
+        "Rajada",
+        "Bomba",
+        "Mina",
+        "Garrafa incendiária",
+        "chão claro e qualidade baixa",
+        "sons"
+      ],
+      "errors": [],
+      "remote": []
+    }
+  ]
+}

@@ -12,6 +12,15 @@ export function blendGait(current,target,dt){
  const k=dt>0?1-Math.exp(-dt/BLEND_TIME):0;
  return{walk:current.walk+(target.walk-current.walk)*k,left:current.left+(target.left-current.left)*k,right:current.right+(target.right-current.right)*k,reverse:target.reverse};
 }
+// Esquiva: o personagem olha para onde vai e, ao terminar, volta para a mira. A regra troca o ângulo de uma vez; aqui o corpo vira em um instante curto, em vez de estalar.
+const DODGE_TURN_TIME=.09;
+export function dodgeYaw(state,angle,dodging,dt){
+ if(dodging!==!!state.dodging){state.dodging=dodging;state.turnFrom=state.yaw??angle;state.turnLeft=DODGE_TURN_TIME;}
+ state.turnLeft=Math.max(0,(state.turnLeft||0)-dt);
+ if(state.turnLeft<=0)return state.yaw=angle;
+ const u=1-state.turnLeft/DODGE_TURN_TIME,delta=Math.atan2(Math.sin(angle-state.turnFrom),Math.cos(angle-state.turnFrom));
+ return state.yaw=state.turnFrom+delta*u*u*(3-2*u);
+}
 // Passadas têm comprimentos diferentes; a fase acumula o avanço para não saltar quando a mistura muda.
 export function advanceGaitPhase(phase,distance,gait,stride,strafeStride=stride){
  const cycles=distance*(gait.walk/stride+(gait.left+gait.right)/strafeStride);

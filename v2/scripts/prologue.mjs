@@ -38,7 +38,7 @@ export function launchPrologue(s){
  clean(s,arena,['ambush','cave','trail'].includes(stage)&&arena.prologueStart||start);s.scene='training';w.paused=false;w.gearLevel=1;w.aim={x:0,y:0};
  w.adventure={kind:'prologue',name:stage==='cave'?caveTitle(p):arena.name||'Jacarandá',stage,done:false,queue:[],zones:[],dialogue:null,cinematic:['travel','fall'].includes(stage),elapsed:0,wave:0};
  if(['travel','ambush','farewell','fall'].includes(stage)){
-  person(w,'marta','npcLysa','Marta',1,6);person(w,'nilo','npcBram','Nilo',-1,-1);
+  person(w,'marta','npcLysa','Marta',1,6);person(w,'nilo','npcBram','João',-1,-1);
   person(w,'guard','npcLysa','Guarda da caravana',-5,0);
   if(stage==='travel'){
    w.actors=w.actors.filter(a=>a===w.player||a.key==='marta'||a.key==='nilo');
@@ -52,7 +52,8 @@ export function launchPrologue(s){
   if(stage==='ambush')placeEnemies(w,arena,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
   if(stage==='farewell')dialogue(s,'farewell');
   if(stage==='fall'){
-   w.player.model='necromancerFalling';
+   /* Só o necromante tem a variante com animação de queda; o guerreiro cai com o próprio modelo (inclinação e afundamento do renderer). */
+   if(w.player.model==='necromancer')w.player.model='necromancerFalling';
    person(w,'archer','enemyRogue','Arqueiro na encosta',7,-5,{animation:'attack'});
    w.adventure.shot={from:{x:7,y:-5},to:{x:0,y:10},x:7,y:-5,visible:false};
   }
@@ -67,7 +68,7 @@ export function launchPrologue(s){
   placeEnemies(w,arena,[[6,-3,3],[6,3,-1]]);w.landmarks=[{key:'messenger',name:'Ajudar Tomás',...PROLOGUE_POINTS.messenger}];
  }
  if(['defense','reunion'].includes(stage)){
-  person(w,'marta','npcLysa','Marta',1,7);person(w,'oren','npcBram','Oren',-3,5);
+  person(w,'marta','npcLysa','Marta',1,7);person(w,'oren','npcBram','Joaquim',-3,5);
   person(w,'guard','npcLysa','Guarda da caravana',3,5,{team:stage==='defense'?'ally':'neutral',hp:1000,maxHp:1000,phase:0});
   if(stage==='defense'){enemies(w,[[6,-5,0],[9,5,-5],[6,0,-8],[0,-9,-3]]);w.notice='Marta: Você está vivo! Precisamos de ajuda na praça!';}
   else dialogue(s,'reunion');
@@ -145,7 +146,7 @@ export function nextPrologueDialogue(s){
  else if(d.key==='messenger')advance(s,'defense');
  else if(d.key==='reunion'){
   const p=s.save.campaign.prologue;if(p.stage!=='reunion')return false;p.stage='done';
-  // A defesa substitui o antigo resgate de Oren somente nas campanhas novas.
+  // A defesa substitui o antigo resgate de Joaquim somente nas campanhas novas.
   s.save.campaign.world={stage:'complete',smith:'active',lumber:'active',passengerMissing:true};
   s.save.character.gold+=90;grantExperience(s,120);launchWorld(s);w.progressChanged=true;
  }else {if(d.key==='clue'){s.save.campaign.prologue.clue=true;w.progressChanged=true;}if(d.key==='cave_whispers'){s.save.campaign.prologue.caveHeard=true;w.progressChanged=true;}if(r.stage==='cave')r.name=caveTitle(s.save.campaign.prologue);r.dialogue=null;w.paused=false;}
@@ -164,11 +165,11 @@ export function renderProloguePanel(s,{host,node,button,interact}){
   const caption=node('div','A CAMINHO DE ITAVERA');caption.className='journey-caption';return;
  }
  if(r.dialogue){const pages=PROLOGUE_TEXT[r.dialogue.key],[speaker,text]=pages[r.dialogue.index];
-  host.dataset.view='travel-dialogue';host.dataset.speaker=speaker.startsWith('Marta')?'marta':speaker==='Nilo'?'nilo':speaker.startsWith('Tomás')?'messenger':'player';
+  host.dataset.view='travel-dialogue';host.dataset.speaker=speaker.startsWith('Marta')?'marta':speaker==='João'?'nilo':speaker.startsWith('Tomás')?'messenger':'player';
   node('small',speaker==='Você'?(s.save.character.name||'Você'):speaker);speech(node,r.dialogue,text);button('Continuar · G',()=>nextPrologueDialogue(s));return;}
 
  if(r.stage==='fall'){
-  const [title,text]=({shot:['O último disparo','Nilo: Cuidado! Na encosta!'],stagger:['O chão está cedendo','Uma rachadura se abre sob seus pés.'],collapse:['A estrada desaba','Terra e pedras cedem de uma vez.'],descent:['Sob a estrada','A luz da superfície se afasta…']})[r.phase||'shot'];
+  const [title,text]=({shot:['O último disparo','João: Cuidado! Na encosta!'],stagger:['O chão está cedendo','Uma rachadura se abre sob seus pés.'],collapse:['A estrada desaba','Terra e pedras cedem de uma vez.'],descent:['Sob a estrada','A luz da superfície se afasta…']})[r.phase||'shot'];
   node('h3',title);node('p',text);return;
  }
  const [title,text]=prologueObjective(p);node('small',r.name);node('h3',title);node('p',text);

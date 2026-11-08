@@ -1,0 +1,9242 @@
+{
+  "config": {
+    "runs": 6,
+    "hpMult": 1,
+    "profiles": {
+      "medio": {
+        "version": 1,
+        "level": 12,
+        "act1": false,
+        "ranks": {
+          "zombie": 2,
+          "vigor": 2,
+          "skeleton": 2,
+          "armor": 2,
+          "archer": 2,
+          "shot": 1
+        }
+      },
+      "forte": {
+        "version": 1,
+        "level": 24,
+        "act1": false,
+        "ranks": {
+          "zombie": 2,
+          "vigor": 2,
+          "abom": 2,
+          "colossus": 1,
+          "burst": 1,
+          "skeleton": 2,
+          "armor": 2,
+          "archer": 2,
+          "blades": 2,
+          "shot": 1,
+          "guard": 1,
+          "specter": 2,
+          "ethereal": 2,
+          "step": 1,
+          "drain": 2,
+          "bond": 1
+        }
+      },
+      "solo": {
+        "version": 1,
+        "level": 24,
+        "act1": false,
+        "ranks": {
+          "zombie": 2,
+          "vigor": 2,
+          "abom": 2,
+          "colossus": 1,
+          "burst": 1,
+          "skeleton": 2,
+          "armor": 2,
+          "archer": 2,
+          "blades": 2,
+          "shot": 1,
+          "guard": 1,
+          "specter": 2,
+          "ethereal": 2,
+          "step": 1,
+          "drain": 2,
+          "bond": 1
+        }
+      }
+    },
+    "encounters": {
+      "fase4": {
+        "hp": 20000,
+        "dmg": 46,
+        "spd": 2
+      },
+      "expedicao-w5": {
+        "hp": 6612,
+        "dmg": 27,
+        "spd": 1.6
+      },
+      "expedicao-w12": {
+        "hp": 14604,
+        "dmg": 45,
+        "spd": 1.6
+      },
+      "treino": {
+        "hp": 12000,
+        "dmg": 19.5,
+        "spd": 1.6
+      }
+    },
+    "policies": [
+      "parado",
+      "esquiva"
+    ],
+    "kingSkills": {
+      "slash": {
+        "name": "Corte Real",
+        "range": 2.8,
+        "arc": 2.0943951023931953,
+        "mult": 1.5,
+        "cooldown": 4.5,
+        "color": "#ff7a4a",
+        "phases": [
+          [
+            "windup",
+            0.8
+          ],
+          [
+            "swing",
+            0.093,
+            "hit"
+          ],
+          [
+            "follow",
+            0.207
+          ],
+          [
+            "recover",
+            0.5
+          ]
+        ]
+      },
+      "leap": {
+        "name": "Queda do Rei",
+        "min": 2.5,
+        "max": 7,
+        "radius": 2.6,
+        "mult": 2,
+        "height": 1.1,
+        "cooldown": 7,
+        "color": "#ffb347",
+        "phases": [
+          [
+            "windup",
+            1
+          ],
+          [
+            "air",
+            0.55,
+            "impact"
+          ],
+          [
+            "recover",
+            1
+          ]
+        ]
+      },
+      "summon": {
+        "name": "Chamado da Coroa",
+        "count": 2,
+        "limit": 4,
+        "spread": 1.6,
+        "cooldown": 14,
+        "color": "#5fe8d8",
+        "phases": [
+          [
+            "windup",
+            1.2,
+            "summon"
+          ],
+          [
+            "recover",
+            0.6
+          ]
+        ]
+      }
+    }
+  },
+  "summary": [
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 24.5,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 152,
+        "giro": 0,
+        "brasas": 43,
+        "chamas": 61,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1.3
+      },
+      "attacksAvg": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 1.3,
+        "embers": 1.3
+      },
+      "allyTakenAvg": {
+        "corte": 314,
+        "queda": 99,
+        "giro": 381,
+        "brasas": 26,
+        "chamas": 37,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 1,
+      "allies": 8,
+      "hordeShare": 0.79,
+      "phase2AtP50": null,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 96.3,
+      "minHpP50": 0.39,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 107,
+        "giro": 0,
+        "brasas": 5,
+        "chamas": 45,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 1.2,
+        "giro": 0,
+        "brasas": 0.2
+      },
+      "attacksAvg": {
+        "slash": 16,
+        "leap": 6.8,
+        "summon": 2.3,
+        "spin": 6,
+        "embers": 5
+      },
+      "allyTakenAvg": {
+        "corte": 1521,
+        "queda": 219,
+        "giro": 1021,
+        "brasas": 113,
+        "chamas": 295,
+        "rei": 0,
+        "outro": 82
+      },
+      "allyDeathsAvg": 10.3,
+      "allies": 8,
+      "hordeShare": 0.8,
+      "phase2AtP50": 41.2,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0.67,
+      "deathRate": 0.33,
+      "timeP50": 27.7,
+      "minHpP50": 0.1,
+      "takenAvg": {
+        "corte": 53,
+        "queda": 87,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 1.3,
+        "queda": 1.7,
+        "giro": 1,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 5,
+        "leap": 1.8,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 308,
+        "queda": 143,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeathsAvg": 0,
+      "allies": 8,
+      "hordeShare": 0.79,
+      "phase2AtP50": 13.6,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 26.7,
+      "minHpP50": 0.7,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 45,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 11,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0.8,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 418,
+        "queda": 29,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 127,
+        "rei": 0,
+        "outro": 89
+      },
+      "allyDeathsAvg": 0.2,
+      "allies": 8,
+      "hordeShare": 0.76,
+      "phase2AtP50": 12.9,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 11.8,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 8,
+      "hordeShare": 0.75,
+      "phase2AtP50": null,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 0.83,
+      "deathRate": 0.17,
+      "timeP50": 67.9,
+      "minHpP50": 0.27,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 96,
+        "giro": 0,
+        "brasas": 26,
+        "chamas": 60,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 1.2,
+        "giro": 0,
+        "brasas": 0.8
+      },
+      "attacksAvg": {
+        "slash": 10.5,
+        "leap": 4.8,
+        "summon": 1.8,
+        "spin": 3.8,
+        "embers": 3
+      },
+      "allyTakenAvg": {
+        "corte": 1078,
+        "queda": 124,
+        "giro": 691,
+        "brasas": 72,
+        "chamas": 258,
+        "rei": 0,
+        "outro": 76
+      },
+      "allyDeathsAvg": 6.7,
+      "allies": 8,
+      "hordeShare": 0.79,
+      "phase2AtP50": 28.8,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 41.9,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeathsAvg": 0,
+      "allies": 8,
+      "hordeShare": 0.81,
+      "phase2AtP50": 22.8,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 48.1,
+      "minHpP50": 1,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 210,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0.2
+      },
+      "attacksAvg": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "allyTakenAvg": {
+        "corte": 341,
+        "queda": 41,
+        "giro": 265,
+        "brasas": 17,
+        "chamas": 104,
+        "rei": 0,
+        "outro": 43
+      },
+      "allyDeathsAvg": 0.3,
+      "allies": 8,
+      "hordeShare": 0.8,
+      "phase2AtP50": 22.6,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 41.1,
+      "minHpP50": 0.89,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "attacksAvg": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "allyTakenAvg": {
+        "corte": 898,
+        "queda": 0,
+        "giro": 1040,
+        "brasas": 333,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 45
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.96,
+      "phase2AtP50": 19.8,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 40,
+      "minHpP50": 0.56,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 107,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 1.2,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 6.7,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2.2,
+        "embers": 1.3
+      },
+      "allyTakenAvg": {
+        "corte": 1063,
+        "queda": 160,
+        "giro": 608,
+        "brasas": 121,
+        "chamas": 487,
+        "rei": 0,
+        "outro": 30
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.82,
+      "phase2AtP50": 17.9,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 15,
+      "minHpP50": 0.94,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 154,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.95,
+      "phase2AtP50": 8.3,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 12.9,
+      "minHpP50": 1,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "allyTakenAvg": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 215,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.77,
+      "phase2AtP50": 7.6,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 31.3,
+      "minHpP50": 0.89,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "attacksAvg": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "allyTakenAvg": {
+        "corte": 909,
+        "queda": 0,
+        "giro": 729,
+        "brasas": 202,
+        "chamas": 2,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.98,
+      "phase2AtP50": 15.8,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 27.9,
+      "minHpP50": 1,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 4.8,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "allyTakenAvg": {
+        "corte": 630,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 231,
+        "chamas": 336,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.81,
+      "phase2AtP50": 14.2,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 25.7,
+      "minHpP50": 0.96,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "attacksAvg": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "allyTakenAvg": {
+        "corte": 307,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 98,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.97,
+      "phase2AtP50": 12.9,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 22.6,
+      "minHpP50": 1,
+      "takenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 314,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeathsAvg": 0,
+      "allies": 10,
+      "hordeShare": 0.8,
+      "phase2AtP50": 11.9,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 31.4,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "attacksAvg": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": null,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 70.7,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 355,
+        "queda": 107,
+        "giro": 0,
+        "brasas": 11,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 5.5,
+        "queda": 1.2,
+        "giro": 0,
+        "brasas": 0.3
+      },
+      "attacksAvg": {
+        "slash": 6.3,
+        "leap": 4.5,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": null,
+      "bossHp": 20000,
+      "bossDmg": 46
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 113.9,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": null,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 1,
+      "deathRate": 0,
+      "timeP50": 93.4,
+      "minHpP50": 0.43,
+      "takenAvg": {
+        "corte": 68,
+        "queda": 207,
+        "giro": 0,
+        "brasas": 25,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 50
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 1.7,
+        "queda": 3.8,
+        "giro": 0,
+        "brasas": 1.3
+      },
+      "attacksAvg": {
+        "slash": 5.3,
+        "leap": 9.7,
+        "summon": 3.8,
+        "spin": 0,
+        "embers": 4
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": 35.6,
+      "bossHp": 6612,
+      "bossDmg": 27
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 28.2,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": null,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 1,
+      "timeP50": 121.8,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 113,
+        "queda": 441,
+        "giro": 0,
+        "brasas": 26,
+        "chamas": 130,
+        "rei": 0,
+        "outro": 18
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 1.7,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 0.8
+      },
+      "attacksAvg": {
+        "slash": 5.3,
+        "leap": 13.5,
+        "summon": 2.8,
+        "spin": 0,
+        "embers": 5.8
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": 97.5,
+      "bossHp": 14604,
+      "bossDmg": 45
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "runs": 6,
+      "winRate": 0,
+      "deathRate": 0,
+      "timeP50": 300,
+      "minHpP50": 0.64,
+      "takenAvg": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": null,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "runs": 6,
+      "winRate": 0.17,
+      "deathRate": 0.83,
+      "timeP50": 141.4,
+      "minHpP50": 0,
+      "takenAvg": {
+        "corte": 185,
+        "queda": 169,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 59,
+        "rei": 0,
+        "outro": 139
+      },
+      "playerHp": 330,
+      "hitsAvg": {
+        "corte": 6.5,
+        "queda": 4.3,
+        "giro": 0,
+        "brasas": 1
+      },
+      "attacksAvg": {
+        "slash": 10.5,
+        "leap": 14.2,
+        "summon": 4.7,
+        "spin": 0,
+        "embers": 6.3
+      },
+      "allyTakenAvg": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeathsAvg": 0,
+      "allies": 0,
+      "hordeShare": 0,
+      "phase2AtP50": 76.5,
+      "bossHp": 12000,
+      "bossDmg": 19.5
+    }
+  ],
+  "results": [
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 164,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 306,
+        "queda": 148,
+        "giro": 288,
+        "brasas": 26,
+        "chamas": 44,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 4981,
+        "jogador": 1344,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 24.5,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.684
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 164,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 306,
+        "queda": 148,
+        "giro": 288,
+        "brasas": 26,
+        "chamas": 44,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 4981,
+        "jogador": 1344,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 24.5,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.684
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 164,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 306,
+        "queda": 148,
+        "giro": 288,
+        "brasas": 26,
+        "chamas": 44,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 4981,
+        "jogador": 1344,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 24.5,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.684
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 129,
+        "giro": 0,
+        "brasas": 64,
+        "chamas": 70,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 330,
+        "queda": 0,
+        "giro": 568,
+        "brasas": 26,
+        "chamas": 22,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 6220,
+        "jogador": 1512,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 29.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.613
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 164,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 306,
+        "queda": 148,
+        "giro": 288,
+        "brasas": 26,
+        "chamas": 44,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 4981,
+        "jogador": 1344,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 24.5,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.684
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 129,
+        "giro": 0,
+        "brasas": 64,
+        "chamas": 70,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 330,
+        "queda": 0,
+        "giro": 568,
+        "brasas": 26,
+        "chamas": 22,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 6220,
+        "jogador": 1512,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 0,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 29.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.613
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 184,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 60,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1754,
+        "queda": 243,
+        "giro": 925,
+        "brasas": 200,
+        "chamas": 216,
+        "rei": 0,
+        "outro": 106
+      },
+      "allyDeaths": 11,
+      "bossDamage": {
+        "horda": 15824,
+        "jogador": 4176,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 7,
+        "summon": 2,
+        "spin": 6,
+        "embers": 5
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 41,
+      "dashes": 9,
+      "time": 94,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1610,
+        "queda": 148,
+        "giro": 862,
+        "brasas": 162,
+        "chamas": 262,
+        "rei": 0,
+        "outro": 99
+      },
+      "allyDeaths": 12,
+      "bossDamage": {
+        "horda": 15821,
+        "jogador": 4179,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 7,
+        "summon": 2,
+        "spin": 6,
+        "embers": 6
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 40.8,
+      "dashes": 8,
+      "time": 96.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1401,
+        "queda": 515,
+        "giro": 1101,
+        "brasas": 26,
+        "chamas": 365,
+        "rei": 0,
+        "outro": 56
+      },
+      "allyDeaths": 9,
+      "bossDamage": {
+        "horda": 15904,
+        "jogador": 4096,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 7,
+        "summon": 2,
+        "spin": 6,
+        "embers": 5
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 40.5,
+      "dashes": 8,
+      "time": 94.8,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1347,
+        "queda": 74,
+        "giro": 1185,
+        "brasas": 110,
+        "chamas": 192,
+        "rei": 0,
+        "outro": 106
+      },
+      "allyDeaths": 9,
+      "bossDamage": {
+        "horda": 16199,
+        "jogador": 3801,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 6,
+        "summon": 3,
+        "spin": 6,
+        "embers": 3
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 41.2,
+      "dashes": 8,
+      "time": 94.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 1490,
+        "queda": 166,
+        "giro": 1024,
+        "brasas": 130,
+        "chamas": 375,
+        "rei": 0,
+        "outro": 62
+      },
+      "allyDeaths": 9,
+      "bossDamage": {
+        "horda": 15867,
+        "jogador": 4133,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 7,
+        "summon": 2,
+        "spin": 6,
+        "embers": 6
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 41.8,
+      "dashes": 9,
+      "time": 96.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1521,
+        "queda": 166,
+        "giro": 1027,
+        "brasas": 52,
+        "chamas": 362,
+        "rei": 0,
+        "outro": 60
+      },
+      "allyDeaths": 12,
+      "bossDamage": {
+        "horda": 15988,
+        "jogador": 4012,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 16,
+        "leap": 7,
+        "summon": 3,
+        "spin": 6,
+        "embers": 5
+      },
+      "minHpPct": 0.39350793650793225,
+      "phase2At": 41.4,
+      "dashes": 8,
+      "time": 98.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 112,
+        "queda": 54,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 3,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 297,
+        "queda": 0,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 4907,
+        "jogador": 1260,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 24.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.067
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 41,
+        "queda": 108,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 2,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 264,
+        "queda": 172,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5226,
+        "jogador": 1386,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.10357142857140307,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 41,
+        "queda": 108,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 2,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 264,
+        "queda": 258,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5253,
+        "jogador": 1359,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.10357142857140307,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 27.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 41,
+        "queda": 108,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 2,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 231,
+        "queda": 215,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5226,
+        "jogador": 1386,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.10357142857140307,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 27.8,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 297,
+        "queda": 0,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5310,
+        "jogador": 1302,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.3984603174603087,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 26.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 82,
+        "queda": 89,
+        "giro": 35,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 2,
+        "queda": 2,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 495,
+        "queda": 215,
+        "giro": 140,
+        "brasas": 64,
+        "chamas": 18,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5241,
+        "jogador": 1344,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 13.6,
+      "dashes": 0,
+      "time": 26.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.004
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 11,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 495,
+        "queda": 43,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 135,
+        "rei": 0,
+        "outro": 92
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 4974,
+        "jogador": 1638,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.7009523809523796,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 27,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 11,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 330,
+        "queda": 43,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 126,
+        "rei": 0,
+        "outro": 92
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5016,
+        "jogador": 1596,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.7009523809523796,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 26.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 22,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 495,
+        "queda": 43,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 102,
+        "rei": 0,
+        "outro": 68
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 5016,
+        "jogador": 1596,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.6590476190476162,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 26.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 11,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 495,
+        "queda": 43,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 126,
+        "rei": 0,
+        "outro": 92
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 4974,
+        "jogador": 1638,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.7009523809523796,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 27.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 363,
+        "queda": 0,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 135,
+        "rei": 0,
+        "outro": 96
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5016,
+        "jogador": 1596,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 26.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 11,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 330,
+        "queda": 0,
+        "giro": 168,
+        "brasas": 15,
+        "chamas": 135,
+        "rei": 0,
+        "outro": 92
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5016,
+        "jogador": 1596,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.7009523809523796,
+      "phase2At": 12.9,
+      "dashes": 2,
+      "time": 26.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 47,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 1,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 54,
+        "queda": 0,
+        "giro": 235,
+        "brasas": 106,
+        "chamas": 33,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 2051,
+        "jogador": 672,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 0,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 11.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.814
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 1235,
+        "queda": 120,
+        "giro": 755,
+        "brasas": 75,
+        "chamas": 242,
+        "rei": 0,
+        "outro": 68
+      },
+      "allyDeaths": 7,
+      "bossDamage": {
+        "horda": 11700,
+        "jogador": 2904,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 11,
+        "leap": 5,
+        "summon": 2,
+        "spin": 4,
+        "embers": 2
+      },
+      "minHpPct": 0.26777777777775935,
+      "phase2At": 28.8,
+      "dashes": 7,
+      "time": 65.2,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 124,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 731,
+        "queda": 45,
+        "giro": 634,
+        "brasas": 50,
+        "chamas": 119,
+        "rei": 0,
+        "outro": 70
+      },
+      "allyDeaths": 4,
+      "bossDamage": {
+        "horda": 9488,
+        "jogador": 2520,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 4,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0,
+      "phase2At": 28.7,
+      "dashes": 6,
+      "time": 51.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.178
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 986,
+        "queda": 117,
+        "giro": 690,
+        "brasas": 81,
+        "chamas": 282,
+        "rei": 0,
+        "outro": 64
+      },
+      "allyDeaths": 6,
+      "bossDamage": {
+        "horda": 11490,
+        "jogador": 3114,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 11,
+        "leap": 5,
+        "summon": 2,
+        "spin": 4,
+        "embers": 4
+      },
+      "minHpPct": 0.5317142857142713,
+      "phase2At": 29.1,
+      "dashes": 6,
+      "time": 68.5,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 978,
+        "queda": 45,
+        "giro": 764,
+        "brasas": 50,
+        "chamas": 270,
+        "rei": 0,
+        "outro": 68
+      },
+      "allyDeaths": 7,
+      "bossDamage": {
+        "horda": 11619,
+        "jogador": 2985,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 11,
+        "leap": 5,
+        "summon": 2,
+        "spin": 4,
+        "embers": 2
+      },
+      "minHpPct": 0.2704761904761848,
+      "phase2At": 28.8,
+      "dashes": 6,
+      "time": 65.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 1168,
+        "queda": 189,
+        "giro": 724,
+        "brasas": 50,
+        "chamas": 331,
+        "rei": 0,
+        "outro": 110
+      },
+      "allyDeaths": 8,
+      "bossDamage": {
+        "horda": 11364,
+        "jogador": 3240,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 12,
+        "leap": 5,
+        "summon": 2,
+        "spin": 4,
+        "embers": 4
+      },
+      "minHpPct": 0.23076190476188463,
+      "phase2At": 28.7,
+      "dashes": 7,
+      "time": 69.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1369,
+        "queda": 230,
+        "giro": 576,
+        "brasas": 125,
+        "chamas": 304,
+        "rei": 0,
+        "outro": 74
+      },
+      "allyDeaths": 8,
+      "bossDamage": {
+        "horda": 11615,
+        "jogador": 2989,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 11,
+        "leap": 5,
+        "summon": 2,
+        "spin": 4,
+        "embers": 3
+      },
+      "minHpPct": 0.2704761904761848,
+      "phase2At": 28.8,
+      "dashes": 6,
+      "time": 67.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 117,
+        "giro": 71,
+        "brasas": 14,
+        "chamas": 88,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 3,
+        "giro": 3,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 138,
+        "queda": 217,
+        "giro": 280,
+        "brasas": 47,
+        "chamas": 159,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 8191,
+        "jogador": 1974,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": 22.8,
+      "dashes": 0,
+      "time": 41.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.153
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 299,
+        "queda": 62,
+        "giro": 220,
+        "brasas": 11,
+        "chamas": 109,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9606,
+        "jogador": 2394,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 1,
+      "phase2At": 22.6,
+      "dashes": 3,
+      "time": 48.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 368,
+        "queda": 31,
+        "giro": 289,
+        "brasas": 22,
+        "chamas": 91,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 9606,
+        "jogador": 2394,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 1,
+      "phase2At": 22.6,
+      "dashes": 4,
+      "time": 48.8,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 260,
+        "brasas": 11,
+        "chamas": 103,
+        "rei": 0,
+        "outro": 58
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9648,
+        "jogador": 2352,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.9335079365079365,
+      "phase2At": 22.6,
+      "dashes": 4,
+      "time": 47.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 365,
+        "queda": 62,
+        "giro": 280,
+        "brasas": 22,
+        "chamas": 123,
+        "rei": 0,
+        "outro": 58
+      },
+      "allyDeaths": 1,
+      "bossDamage": {
+        "horda": 9648,
+        "jogador": 2352,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 1,
+      "phase2At": 22.6,
+      "dashes": 3,
+      "time": 48.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 368,
+        "queda": 31,
+        "giro": 280,
+        "brasas": 22,
+        "chamas": 109,
+        "rei": 0,
+        "outro": 38
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9634,
+        "jogador": 2366,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 1,
+      "phase2At": 22.6,
+      "dashes": 4,
+      "time": 47.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "medio",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 12,
+      "playerHp": 210,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 8,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 260,
+        "brasas": 11,
+        "chamas": 91,
+        "rei": 0,
+        "outro": 48
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9606,
+        "jogador": 2394,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 1,
+      "phase2At": 22.6,
+      "dashes": 3,
+      "time": 47.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 935,
+        "queda": 0,
+        "giro": 1104,
+        "brasas": 324,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 41.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 935,
+        "queda": 0,
+        "giro": 1056,
+        "brasas": 324,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 41.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 880,
+        "queda": 0,
+        "giro": 1104,
+        "brasas": 350,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 38
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 41.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 935,
+        "queda": 0,
+        "giro": 1104,
+        "brasas": 324,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 48
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 41.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 880,
+        "queda": 0,
+        "giro": 960,
+        "brasas": 324,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 64
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 41.1,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 96,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 3
+      },
+      "allyTaken": {
+        "corte": 825,
+        "queda": 0,
+        "giro": 912,
+        "brasas": 350,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 54
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 19208,
+        "jogador": 792,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 0,
+        "summon": 1,
+        "spin": 3,
+        "embers": 3
+      },
+      "minHpPct": 0.888717171717167,
+      "phase2At": 19.8,
+      "dashes": 0,
+      "time": 40.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1100,
+        "queda": 148,
+        "giro": 576,
+        "brasas": 78,
+        "chamas": 529,
+        "rei": 0,
+        "outro": 6
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16370,
+        "jogador": 3630,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2,
+        "embers": 1
+      },
+      "minHpPct": 0.5587878787878694,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 39.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 990,
+        "queda": 148,
+        "giro": 576,
+        "brasas": 104,
+        "chamas": 407,
+        "rei": 0,
+        "outro": 6
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16370,
+        "jogador": 3630,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2,
+        "embers": 1
+      },
+      "minHpPct": 0.5587878787878694,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 39.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 990,
+        "queda": 148,
+        "giro": 624,
+        "brasas": 156,
+        "chamas": 491,
+        "rei": 0,
+        "outro": 36
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16352,
+        "jogador": 3648,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.5587878787878694,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 40.2,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 184,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1155,
+        "queda": 148,
+        "giro": 672,
+        "brasas": 130,
+        "chamas": 435,
+        "rei": 0,
+        "outro": 48
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16436,
+        "jogador": 3564,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2,
+        "embers": 1
+      },
+      "minHpPct": 0.4644646464646061,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 40,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 1265,
+        "queda": 148,
+        "giro": 624,
+        "brasas": 156,
+        "chamas": 627,
+        "rei": 0,
+        "outro": 38
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16370,
+        "jogador": 3630,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 3,
+        "summon": 1,
+        "spin": 3,
+        "embers": 1
+      },
+      "minHpPct": 0.5587878787878694,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 40.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 880,
+        "queda": 222,
+        "giro": 576,
+        "brasas": 104,
+        "chamas": 435,
+        "rei": 0,
+        "outro": 48
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 16502,
+        "jogador": 3498,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.5587878787878694,
+      "phase2At": 17.9,
+      "dashes": 4,
+      "time": 38.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 165,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 14.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 165,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 15,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 132,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 15,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 165,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 15,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 165,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 15,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 8,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 132,
+        "queda": 0,
+        "giro": 224,
+        "brasas": 79,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 6282,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 2,
+        "leap": 0,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 0.9426565656565656,
+      "phase2At": 8.3,
+      "dashes": 0,
+      "time": 15,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 224,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5094,
+        "jogador": 1518,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 13,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 196,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5094,
+        "jogador": 1518,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 13,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 224,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5097,
+        "jogador": 1515,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 12.8,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 224,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5094,
+        "jogador": 1518,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 12.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 196,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5094,
+        "jogador": 1518,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 12.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 66,
+        "queda": 43,
+        "giro": 224,
+        "brasas": 0,
+        "chamas": 72,
+        "rei": 0,
+        "outro": 32
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 5129,
+        "jogador": 1483,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 1,
+        "leap": 1,
+        "summon": 1,
+        "spin": 1,
+        "embers": 0
+      },
+      "minHpPct": 1,
+      "phase2At": 7.6,
+      "dashes": 1,
+      "time": 12.8,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 864,
+        "queda": 0,
+        "giro": 705,
+        "brasas": 206,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 918,
+        "queda": 0,
+        "giro": 705,
+        "brasas": 206,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 864,
+        "queda": 0,
+        "giro": 752,
+        "brasas": 181,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 918,
+        "queda": 0,
+        "giro": 752,
+        "brasas": 206,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 918,
+        "queda": 0,
+        "giro": 752,
+        "brasas": 206,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 14,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 972,
+        "queda": 0,
+        "giro": 705,
+        "brasas": 206,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 14274,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.8917474747474701,
+      "phase2At": 15.8,
+      "dashes": 0,
+      "time": 31.3,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 648,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 231,
+        "chamas": 352,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11826,
+        "jogador": 2778,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 594,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 231,
+        "chamas": 340,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11832,
+        "jogador": 2772,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 594,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 206,
+        "chamas": 354,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11819,
+        "jogador": 2785,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 648,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 256,
+        "chamas": 340,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11826,
+        "jogador": 2778,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 648,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 231,
+        "chamas": 332,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11826,
+        "jogador": 2778,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.9,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 648,
+        "queda": 288,
+        "giro": 329,
+        "brasas": 231,
+        "chamas": 298,
+        "rei": 0,
+        "outro": 12
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11571,
+        "jogador": 3033,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 2
+      },
+      "minHpPct": 1,
+      "phase2At": 14.2,
+      "dashes": 2,
+      "time": 27.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 276,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 91,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 102,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 102,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 276,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 91,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 102,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 6,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 0,
+        "giro": 160,
+        "brasas": 102,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 22
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 11670,
+        "jogador": 330,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 0,
+        "summon": 1,
+        "spin": 2,
+        "embers": 2
+      },
+      "minHpPct": 0.9575757575757575,
+      "phase2At": 12.9,
+      "dashes": 0,
+      "time": 25.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.7,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.5,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 276,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.6,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "forte",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 10,
+      "taken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 322,
+        "queda": 31,
+        "giro": 140,
+        "brasas": 58,
+        "chamas": 50,
+        "rei": 0,
+        "outro": 28
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 9624,
+        "jogador": 2376,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 3,
+        "leap": 2,
+        "summon": 1,
+        "spin": 1,
+        "embers": 1
+      },
+      "minHpPct": 1,
+      "phase2At": 11.9,
+      "dashes": 1,
+      "time": 22.5,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 858,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 0
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 31.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.957
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 5610,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 5,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 10,
+      "time": 70.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.72
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 314,
+        "queda": 276,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 84,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 3,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 8712,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 9,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 17,
+      "time": 118.3,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.564
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 527,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 8,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 5808,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 8,
+        "leap": 3,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 11,
+      "time": 73.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.71
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 324,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 4488,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 9,
+      "time": 53.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.776
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 321,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 5016,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 4,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 10,
+      "time": 61.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.749
+    },
+    {
+      "profile": "solo",
+      "encounter": "fase4",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 20000,
+      "bossDmg": 46,
+      "allies": 0,
+      "taken": {
+        "corte": 324,
+        "queda": 92,
+        "giro": 0,
+        "brasas": 32,
+        "chamas": 42,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 4488,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 3,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 9,
+      "time": 53.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.776
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 730,
+        "queda": 54,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 32,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 18,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 18,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 113.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.86
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 41,
+        "queda": 270,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 92,
+        "rei": 0,
+        "outro": 70
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 9,
+        "summon": 3,
+        "spin": 0,
+        "embers": 3
+      },
+      "minHpPct": 0.33007070707057035,
+      "phase2At": 35.6,
+      "dashes": 13,
+      "time": 84.2,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 41,
+        "queda": 270,
+        "giro": 0,
+        "brasas": 19,
+        "chamas": 92,
+        "rei": 0,
+        "outro": 58
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 10,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0.36560606060592293,
+      "phase2At": 35.6,
+      "dashes": 14,
+      "time": 92.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 41,
+        "queda": 162,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 51,
+        "rei": 0,
+        "outro": 42
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 3,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 10,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0.6940101010100623,
+      "phase2At": 36.7,
+      "dashes": 13,
+      "time": 95.5,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 205,
+        "queda": 108,
+        "giro": 0,
+        "brasas": 76,
+        "chamas": 52,
+        "rei": 0,
+        "outro": 42
+      },
+      "hitsOnPlayer": {
+        "corte": 5,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 4
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 7,
+        "leap": 9,
+        "summon": 4,
+        "spin": 0,
+        "embers": 5
+      },
+      "minHpPct": 0.4285353535352037,
+      "phase2At": 35.6,
+      "dashes": 18,
+      "time": 91.2,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 41,
+        "queda": 162,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 51,
+        "rei": 0,
+        "outro": 42
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 3,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 10,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0.6944747474747087,
+      "phase2At": 36.7,
+      "dashes": 13,
+      "time": 95.5,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w5",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 6612,
+      "bossDmg": 27,
+      "allies": 0,
+      "taken": {
+        "corte": 41,
+        "queda": 270,
+        "giro": 0,
+        "brasas": 38,
+        "chamas": 92,
+        "rei": 0,
+        "outro": 45
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 6612,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 10,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0.40485858585844814,
+      "phase2At": 35.6,
+      "dashes": 15,
+      "time": 93.4,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 264,
+        "queda": 90,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 56,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 4,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 4,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 28.2,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.937
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 68,
+        "queda": 540,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 166,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 6,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 8582,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 12,
+        "summon": 2,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0,
+      "phase2At": 97.5,
+      "dashes": 16,
+      "time": 120.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.412
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 204,
+        "queda": 180,
+        "giro": 0,
+        "brasas": 31,
+        "chamas": 77,
+        "rei": 0,
+        "outro": 65
+      },
+      "hitsOnPlayer": {
+        "corte": 3,
+        "queda": 2,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 7722,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 9,
+        "summon": 1,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0,
+      "phase2At": 98.2,
+      "dashes": 14,
+      "time": 105.1,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.471
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 68,
+        "queda": 540,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 166,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 6,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 8582,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 12,
+        "summon": 2,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0,
+      "phase2At": 97.5,
+      "dashes": 16,
+      "time": 120.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.412
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 136,
+        "queda": 540,
+        "giro": 0,
+        "brasas": 60,
+        "chamas": 116,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 2,
+        "queda": 6,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 9587,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 14,
+        "summon": 3,
+        "spin": 0,
+        "embers": 6
+      },
+      "minHpPct": 0,
+      "phase2At": 96.5,
+      "dashes": 19,
+      "time": 137.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.344
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 68,
+        "queda": 397,
+        "giro": 0,
+        "brasas": 62,
+        "chamas": 107,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 12997,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 22,
+        "summon": 7,
+        "spin": 0,
+        "embers": 14
+      },
+      "minHpPct": 0,
+      "phase2At": 100.5,
+      "dashes": 25,
+      "time": 202.9,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.11
+    },
+    {
+      "profile": "solo",
+      "encounter": "expedicao-w12",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 14604,
+      "bossDmg": 45,
+      "allies": 0,
+      "taken": {
+        "corte": 136,
+        "queda": 450,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 148,
+        "rei": 0,
+        "outro": 45
+      },
+      "hitsOnPlayer": {
+        "corte": 2,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 8712,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 6,
+        "leap": 12,
+        "summon": 2,
+        "spin": 0,
+        "embers": 3
+      },
+      "minHpPct": 0,
+      "phase2At": 97.5,
+      "dashes": 17,
+      "time": 121.8,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.403
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "parado",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 1392,
+        "queda": 39,
+        "giro": 0,
+        "brasas": 14,
+        "chamas": 24,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 48,
+        "queda": 1,
+        "giro": 0,
+        "brasas": 1
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 924,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 48,
+        "leap": 1,
+        "summon": 0,
+        "spin": 0,
+        "embers": 1
+      },
+      "minHpPct": 0.6376060606053734,
+      "phase2At": null,
+      "dashes": 0,
+      "time": 300,
+      "won": false,
+      "dead": false,
+      "bossHpLeftPct": 0.923
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 101,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 191,
+        "queda": 195,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 68,
+        "rei": 0,
+        "outro": 157
+      },
+      "hitsOnPlayer": {
+        "corte": 7,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 9873,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 10,
+        "leap": 13,
+        "summon": 4,
+        "spin": 0,
+        "embers": 7
+      },
+      "minHpPct": 0,
+      "phase2At": 76.5,
+      "dashes": 22,
+      "time": 141.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.177
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 8020,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 191,
+        "queda": 195,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 68,
+        "rei": 0,
+        "outro": 157
+      },
+      "hitsOnPlayer": {
+        "corte": 7,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 9873,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 10,
+        "leap": 13,
+        "summon": 4,
+        "spin": 0,
+        "embers": 7
+      },
+      "minHpPct": 0,
+      "phase2At": 76.5,
+      "dashes": 22,
+      "time": 141.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.177
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 15939,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 232,
+        "queda": 156,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 68,
+        "rei": 0,
+        "outro": 140
+      },
+      "hitsOnPlayer": {
+        "corte": 8,
+        "queda": 4,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 9475,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 12,
+        "leap": 12,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0,
+      "phase2At": 76.3,
+      "dashes": 19,
+      "time": 135.6,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.21
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 23858,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 29,
+        "queda": 195,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 44,
+        "rei": 0,
+        "outro": 0
+      },
+      "hitsOnPlayer": {
+        "corte": 1,
+        "queda": 5,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 12000,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 5,
+        "leap": 20,
+        "summon": 7,
+        "spin": 0,
+        "embers": 11
+      },
+      "minHpPct": 0.8057777777777518,
+      "phase2At": 76.3,
+      "dashes": 23,
+      "time": 181.2,
+      "won": true,
+      "dead": false,
+      "bossHpLeftPct": 0
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 31777,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 232,
+        "queda": 156,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 68,
+        "rei": 0,
+        "outro": 141
+      },
+      "hitsOnPlayer": {
+        "corte": 8,
+        "queda": 4,
+        "giro": 0,
+        "brasas": 0
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 9475,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 12,
+        "leap": 12,
+        "summon": 4,
+        "spin": 0,
+        "embers": 4
+      },
+      "minHpPct": 0,
+      "phase2At": 76.3,
+      "dashes": 19,
+      "time": 135.7,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.21
+    },
+    {
+      "profile": "solo",
+      "encounter": "treino",
+      "policy": "esquiva",
+      "seed": 39696,
+      "level": 24,
+      "playerHp": 330,
+      "bossHp": 12000,
+      "bossDmg": 19.5,
+      "allies": 0,
+      "taken": {
+        "corte": 232,
+        "queda": 117,
+        "giro": 0,
+        "brasas": 28,
+        "chamas": 36,
+        "rei": 0,
+        "outro": 236
+      },
+      "hitsOnPlayer": {
+        "corte": 8,
+        "queda": 3,
+        "giro": 0,
+        "brasas": 2
+      },
+      "allyTaken": {
+        "corte": 0,
+        "queda": 0,
+        "giro": 0,
+        "brasas": 0,
+        "chamas": 0,
+        "rei": 0,
+        "outro": 0
+      },
+      "allyDeaths": 0,
+      "bossDamage": {
+        "horda": 0,
+        "jogador": 10879,
+        "outro": 0
+      },
+      "attacks": {
+        "slash": 14,
+        "leap": 15,
+        "summon": 5,
+        "spin": 0,
+        "embers": 5
+      },
+      "minHpPct": 0,
+      "phase2At": 77.3,
+      "dashes": 26,
+      "time": 160.4,
+      "won": false,
+      "dead": true,
+      "bossHpLeftPct": 0.093
+    }
+  ]
+}

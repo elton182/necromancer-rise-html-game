@@ -79,8 +79,11 @@
 .maps-create select{flex:1 1 180px;min-width:0}
 .maps-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .maps-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center;background:#0b140f;border:1px solid #3c4a30;padding:7px 9px}
-.maps-info{display:grid;gap:2px;min-width:200px;flex:1}.maps-info small{color:#a8a687}
+.maps-info{display:grid;gap:2px;min-width:200px;flex:1}.maps-info small{color:#a8a687}.maps-info small.maps-warn{color:#e8c777}
 .maps-actions{display:flex;gap:4px;flex-wrap:wrap}
 .maps-actions .btn,.maps-create .btn{font-size:11px;padding:5px 8px}
 .maps-current{display:grid;gap:6px;background:#1b2514;border:1px solid #d4af37;padding:8px 10px;margin:8px 0}
 .maps-message{color:#e8c777;font-weight:bold}
+/* Passagem entre mapas: cobre a troca de arena e diz para onde o jogador vai. */
+#area-fade{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:#07090b;color:#e8dcb8;font:600 clamp(20px,3vw,34px) Georgia,serif;letter-spacing:.04em;text-align:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .26s ease}
+#area-fade.on{opacity:1;pointer-events:auto}

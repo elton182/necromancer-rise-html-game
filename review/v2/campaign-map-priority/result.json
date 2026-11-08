@@ -1,0 +1,17 @@
+{
+  "semCopia": {
+    "text": "Mundo de Jacarandá\nFloresta · 360×360 · 1464 objetos · 57 inimigos · edição embutida no jogo\nEditar\nTestar",
+    "terrain": true,
+    "rivers": 1
+  },
+  "copiaAntiga": {
+    "text": "Mundo de Jacarandá\nFloresta · 360×360 · 1464 objetos · 57 inimigos · edição embutida no jogo\nValendo a versão publicada, mais recente. A cópia antiga deste navegador foi ignorada e continua guardada.\nEditar\nTestar\nApagar cópia local",
+    "terrain": true,
+    "rivers": 1
+  },
+  "copiaNova": {
+    "text": "Mundo de Jacarandá\nFloresta · 360×360 · 1436 objetos · 57 inimigos · editado em 31/12/2099, 21:00\nEste navegador está usando a própria edição, mais recente que a publicada. «Restaurar» volta à publicada.\nEditar\nTestar\nRestaurar",
+    "terrain": false,
+    "rivers": 0
+  }
+}

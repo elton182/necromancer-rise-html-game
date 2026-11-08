@@ -1,0 +1,41 @@
+{
+  "etapas": [
+    {
+      "label": "aceita",
+      "nilo": "road",
+      "area": null,
+      "gold": 0,
+      "objective": "O rastro de João"
+    },
+    {
+      "label": "livro",
+      "nilo": "cave",
+      "area": "itauna",
+      "gold": 0,
+      "objective": "O rastro de João"
+    },
+    {
+      "label": "resgate",
+      "nilo": "fort",
+      "area": "itauna-cave",
+      "gold": 150,
+      "objective": "O contrato da Pedra Negra"
+    },
+    {
+      "label": "contrato",
+      "nilo": "return",
+      "area": "itauna-fort",
+      "gold": 350,
+      "objective": "O rastro de João"
+    },
+    {
+      "label": "fim",
+      "nilo": "done",
+      "area": null,
+      "gold": 600,
+      "objective": "Jacarandá se reergue"
+    }
+  ],
+  "errors": [],
+  "requests": []
+}

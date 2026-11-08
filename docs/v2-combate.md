@@ -188,4 +188,12 @@ Inimigos vivos exibem uma barra de vida sobre o modelo. Cada aplicação de dano
 
 ### Esquiva básica
 
-Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem equipar Dash. Mantém custo, distância, recarga e colisão do dash existente. O deslocamento e a proteção agora duram 0,5 s (antes 0,18 s). O necromante executa um salto direcionado com o clipe `jump`, produzido por `blender/scripts/v2_necromancer_motion.py`; a pose acompanha a duração real da esquiva e termina ao colidir ou morrer.
+Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem equipar Dash. Mantém custo, distância, recarga e colisão do dash existente. O deslocamento e a proteção agora duram 0,5 s (antes 0,18 s). Cada personagem toca o próprio clipe `dodge`, de 0,5 s:
+
+| Personagem | Movimento | Fonte |
+| --- | --- | --- |
+| Necromante | Rolamento à frente, com o cajado atravessado no peito | `blender/scripts/v2_necromancer_motion.py` |
+| Guerreiro | Rolamento de combate, com a espada para o lado e o escudo colado ao corpo | `blender/scripts/warrior_dodge.py` |
+| Lich | Rasante em parafuso, sem tocar o chão, com a foice girando atrás dele | `blender/scripts/lich_dodge.py` |
+
+A pose acompanha a duração real da esquiva e termina ao colidir ou morrer; ao colidir, o corpo volta à pose normal em 0,08 s, de onde estiver. O personagem olha para onde vai e, no fim, volta para a mira; esse giro leva 0,09 s só na apresentação (`dodgeYaw` em `v2/scripts/locomotion.mjs`), sem alterar o ângulo das regras. A animação não muda distância, duração, recarga, colisão nem proteção. Verificação: `node v2/tests/dodge-browser-check.cjs` (na raiz, com Playwright e Edge), que grava pranchas em `review/v2/dodge/`.

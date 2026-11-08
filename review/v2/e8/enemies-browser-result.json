@@ -9,13 +9,13 @@
       "zones": 0,
       "adds": 0,
       "models": [
-        "player",
-        "warrior",
-        "enemyArcher",
-        "brute",
+        "necromancer",
+        "enemySoldier",
+        "enemyRogue",
+        "enemyOrc",
         "livingMage",
         "cryptHound",
-        "warAcolyte"
+        "enemyRogue"
       ]
     },
     {
@@ -27,13 +27,13 @@
       "zones": 0,
       "adds": 0,
       "models": [
-        "player",
-        "warrior",
-        "enemyArcher",
-        "brute",
+        "necromancer",
+        "enemySoldier",
+        "enemyRogue",
+        "enemyOrc",
         "livingMage",
         "cryptHound",
-        "warAcolyte"
+        "enemyRogue"
       ]
     },
     {
@@ -48,7 +48,7 @@
       "phase": 0,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -64,7 +64,7 @@
       "phase": 0,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -80,7 +80,7 @@
       "phase": 1,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -94,10 +94,10 @@
       "phase2": true,
       "adds": 2,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing",
-        "warrior",
-        "warrior"
+        "enemySoldier",
+        "enemySoldier"
       ]
     },
     {
@@ -109,13 +109,13 @@
       "zones": 0,
       "adds": 0,
       "models": [
-        "player",
-        "warrior",
-        "enemyArcher",
-        "brute",
+        "necromancer",
+        "enemySoldier",
+        "enemyRogue",
+        "enemyOrc",
         "livingMage",
         "cryptHound",
-        "warAcolyte"
+        "enemyRogue"
       ]
     },
     {
@@ -127,13 +127,13 @@
       "zones": 0,
       "adds": 0,
       "models": [
-        "player",
-        "warrior",
-        "enemyArcher",
-        "brute",
+        "necromancer",
+        "enemySoldier",
+        "enemyRogue",
+        "enemyOrc",
         "livingMage",
         "cryptHound",
-        "warAcolyte"
+        "enemyRogue"
       ]
     },
     {
@@ -148,7 +148,7 @@
       "phase": 0,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -164,7 +164,7 @@
       "phase": 0,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -180,7 +180,7 @@
       "phase": 1,
       "adds": 0,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing"
       ]
     },
@@ -194,10 +194,10 @@
       "phase2": true,
       "adds": 2,
       "models": [
-        "player",
+        "necromancer",
         "fallenKing",
-        "warrior",
-        "warrior"
+        "enemySoldier",
+        "enemySoldier"
       ]
     }
   ],

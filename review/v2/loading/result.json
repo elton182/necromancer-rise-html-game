@@ -1,0 +1,246 @@
+{
+ "views": [
+  {
+   "name": "desktop",
+   "width": 1440,
+   "height": 900,
+   "stage": {
+    "left": -80,
+    "top": 0,
+    "right": 1520,
+    "bottom": 900
+   },
+   "track": {
+    "left": 353,
+    "top": 752,
+    "right": 1079,
+    "bottom": 771
+   },
+   "label": {
+    "left": 240,
+    "top": 695,
+    "right": 1200,
+    "bottom": 726
+   },
+   "percent": {
+    "left": 1115,
+    "top": 752,
+    "right": 1154,
+    "bottom": 771
+   },
+   "hint": {
+    "left": 112,
+    "top": 806,
+    "right": 1328,
+    "bottom": 835
+   },
+   "scrollX": false
+  },
+  {
+   "name": "native",
+   "width": 1672,
+   "height": 941,
+   "stage": {
+    "left": 0,
+    "top": 0,
+    "right": 1672,
+    "bottom": 941
+   },
+   "track": {
+    "left": 452,
+    "top": 786,
+    "right": 1212,
+    "bottom": 806
+   },
+   "label": {
+    "left": 334,
+    "top": 726,
+    "right": 1338,
+    "bottom": 759
+   },
+   "percent": {
+    "left": 1249,
+    "top": 786,
+    "right": 1290,
+    "bottom": 806
+   },
+   "hint": {
+    "left": 201,
+    "top": 843,
+    "right": 1471,
+    "bottom": 873
+   },
+   "scrollX": false
+  },
+  {
+   "name": "ultrawide",
+   "width": 2560,
+   "height": 1080,
+   "stage": {
+    "left": 243,
+    "top": -44,
+    "right": 2317,
+    "bottom": 1124
+   },
+   "track": {
+    "left": 804,
+    "top": 931,
+    "right": 1746,
+    "bottom": 956
+   },
+   "label": {
+    "left": 658,
+    "top": 857,
+    "right": 1902,
+    "bottom": 898
+   },
+   "percent": {
+    "left": 1792,
+    "top": 931,
+    "right": 1843,
+    "bottom": 956
+   },
+   "hint": {
+    "left": 492,
+    "top": 1002,
+    "right": 2068,
+    "bottom": 1039
+   },
+   "scrollX": false
+  },
+  {
+   "name": "square",
+   "width": 1000,
+   "height": 1000,
+   "stage": {
+    "left": -350,
+    "top": 22,
+    "right": 1350,
+    "bottom": 978
+   },
+   "track": {
+    "left": 110,
+    "top": 821,
+    "right": 882,
+    "bottom": 841
+   },
+   "label": {
+    "left": 126,
+    "top": 760,
+    "right": 874,
+    "bottom": 794
+   },
+   "percent": {
+    "left": 920,
+    "top": 821,
+    "right": 962,
+    "bottom": 841
+   },
+   "hint": {
+    "left": 92,
+    "top": 879,
+    "right": 908,
+    "bottom": 938
+   },
+   "scrollX": false
+  },
+  {
+   "name": "mobile",
+   "width": 375,
+   "height": 812,
+   "stage": {
+    "left": -131,
+    "top": 227,
+    "right": 506,
+    "bottom": 585
+   },
+   "track": {
+    "left": 41,
+    "top": 526,
+    "right": 331,
+    "bottom": 534
+   },
+   "label": {
+    "left": 47,
+    "top": 504,
+    "right": 328,
+    "bottom": 517
+   },
+   "percent": {
+    "left": 345,
+    "top": 526,
+    "right": 362,
+    "bottom": 534
+   },
+   "hint": {
+    "left": 35,
+    "top": 548,
+    "right": 341,
+    "bottom": 573
+   },
+   "scrollX": false
+  }
+ ],
+ "samples": [
+  {
+   "bar": "31%",
+   "pct": "31%",
+   "label": "Despertando os modelos 3D (14/49)…",
+   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+  },
+  {
+   "bar": "38%",
+   "pct": "38%",
+   "label": "Despertando os modelos 3D (18/49)…",
+   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+  },
+  {
+   "bar": "41%",
+   "pct": "41%",
+   "label": "Despertando os modelos 3D (20/49)…",
+   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+  },
+  {
+   "bar": "43%",
+   "pct": "43%",
+   "label": "Despertando os modelos 3D (21/49)…",
+   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+  },
+  {
+   "bar": "51%",
+   "pct": "51%",
+   "label": "Despertando os modelos 3D (26/49)…",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  },
+  {
+   "bar": "56%",
+   "pct": "56%",
+   "label": "Despertando os modelos 3D (29/49)…",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  },
+  {
+   "bar": "61%",
+   "pct": "61%",
+   "label": "Despertando os modelos 3D (32/49)…",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  },
+  {
+   "bar": "83%",
+   "pct": "83%",
+   "label": "Despertando os modelos 3D (46/49)…",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  },
+  {
+   "bar": "88%",
+   "pct": "88%",
+   "label": "Despertando os modelos 3D (49/49)…",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  },
+  {
+   "bar": "100%",
+   "pct": "100%",
+   "label": "Pronto",
+   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+  }
+ ]
+}

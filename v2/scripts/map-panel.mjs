@@ -1,7 +1,7 @@
 // Aba "Mapas" do Relicário: lista da biblioteca, jogar, editar, criar variações (mapas base), importar e exportar.
 import {BIOMES,BUILTIN_BASES,TEMPLATES,LIMITS,blankMap,builtinMap,dependents,resolveMap} from './map-model.mjs';
 import {isCustomMap,populateMap} from './map-play.mjs';
-import {CAMPAIGN_SLOTS,campaignDocument,savedCampaignMap,bakedCampaignMap,campaignMapId} from './campaign-maps.mjs';
+import {CAMPAIGN_SLOTS,campaignDocument,campaignEditStatus,campaignMapId} from './campaign-maps.mjs';
 
 // `standalone`: página própria do editor, em que os mapas ficam em arquivos do projeto.
 export function createMapPanel(s,{library,editor,play,exit,focus,standalone=false,publishButton=null}){
@@ -67,18 +67,19 @@ export function createMapPanel(s,{library,editor,play,exit,focus,standalone=fals
   const refresh=button('↻ Atualizar modelos',()=>location.reload(),create);refresh.id='maps-refresh-models';refresh.title=standalone?'Recarrega fontes e modelos. As edições já estão no disco.':'Recarrega o HTML atualizado. Salve o mapa antes; alterações não salvas serão perdidas.';
   button('Revisar campanha integrada',()=>editor.open(TEMPLATES.find(t=>t.id==='campaign-world').make()),create).id='maps-campaign-world';
   node('h3','Mapas da campanha',host);
-  node('p','Edite as fases da campanha: estilo, tamanho, relevo, água, peças e inimigos. Cada edição é salva sozinha '+(standalone?'em v2/assets/maps/ e entra no jogo com «Publicar no jogo»':'neste navegador e vale na próxima vez que a cena abrir')+'; «Restaurar» volta à planta original. A história continua igual: lugares e grupos de missão ficam marcados e protegidos.',host,'section-note');
+  node('p','Edite as fases da campanha: estilo, tamanho, relevo, água, peças e inimigos. Cada edição é salva sozinha '+(standalone?'em v2/assets/maps/ e entra no jogo com «Publicar no jogo»; «Restaurar» volta à planta original':'neste navegador e vale na próxima vez que a cena abrir, se for mais recente que a publicada; «Restaurar» volta à publicada ou, sem ela, à planta original')+'. A história continua igual: lugares e grupos de missão ficam marcados e protegidos.',host,'section-note');
   const camp=node('ul',undefined,host,'maps-list');
   for(const [slot,def] of Object.entries(CAMPAIGN_SLOTS)){
-   const li=node('li',undefined,camp,'maps-row'),info=node('div',undefined,li,'maps-info'),edit=savedCampaignMap(slot),baked=bakedCampaignMap(slot),flat=resolveMap(campaignDocument(slot),library.lookup).map;
-   node('strong',def.name,info);node('small',BIOMES[flat.biome]+' · '+flat.size.w+'×'+flat.size.h+' · '+flat.objects.length+' objetos · '+flat.spawns.reduce((n,p)=>n+p.count,0)+' inimigos · '+(edit?'editado'+(edit.updated?' em '+when(edit.updated):''):baked?'edição embutida no jogo':'original'),info);
+   const li=node('li',undefined,camp,'maps-row'),info=node('div',undefined,li,'maps-info'),{saved:edit,source,differs}=campaignEditStatus(slot),flat=resolveMap(campaignDocument(slot),library.lookup).map;
+   node('strong',def.name,info);node('small',BIOMES[flat.biome]+' · '+flat.size.w+'×'+flat.size.h+' · '+flat.objects.length+' objetos · '+flat.spawns.reduce((n,p)=>n+p.count,0)+' inimigos · '+(source==='local'?'editado'+(edit.updated?' em '+when(edit.updated):''):source==='published'?'edição embutida no jogo':'original'),info);
+   if(differs)node('small',source==='local'?'Este navegador está usando a própria edição, mais recente que a publicada. «Restaurar» volta à publicada.':'Valendo a versão publicada, mais recente. A cópia antiga deste navegador foi ignorada e continua guardada.',info,'maps-warn');
    const a=node('div',undefined,li,'maps-actions');a.dataset.slot=slot;
    button('Editar',()=>editor.open(campaignDocument(slot)),a,'btn pri');
    button('Testar',()=>play(campaignDocument(slot)),a);
    if(edit&&confirming==='slot:'+slot){
     button('Confirmar: apagar a edição',()=>{confirming=null;const r=library.remove(campaignMapId(slot));say(r.ok?def.name+': edição removida.':r.message);},a,'btn danger');
     button('Cancelar',()=>{confirming=null;render();},a);
-   }else if(edit)button('Restaurar',()=>{confirming='slot:'+slot;render();},a);
+   }else if(edit)button(source==='published'?'Apagar cópia local':'Restaurar',()=>{confirming='slot:'+slot;render();},a);
   }
   const pack=node('div',undefined,host,'maps-create');
   if(standalone)publishButton?.(pack,'btn');

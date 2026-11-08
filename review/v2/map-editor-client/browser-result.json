@@ -1,9 +1,9 @@
 {
  "models": 10,
  "metrics": {
-  "mapsMs": 5,
-  "modelsMs": 91,
-  "readyMs": 118
+  "mapsMs": 7,
+  "modelsMs": 177,
+  "readyMs": 225
  },
  "fileBytes": 664,
  "game": {

@@ -1,10 +1,11 @@
 // Aba Habilidades do Relicário: árvores Senhor dos Mortos (minions), Carne e Ossos (spells), Morte e Maestrias.
-// Estrutura e classes seguem scripts/skill-trees.js e skill-mastery.js (jogo anterior); regras em grimoire.mjs.
+// Regras em grimoire.mjs; o visual segue a tela de talentos do Guerreiro (talents.css + grimoire-necro no fim dela).
 import {Build,Model,changeRank,changeMastery,resetRanks,editReason} from './grimoire.mjs';
 import {ACTIONS,SPELL_NODES,available,actionName} from './actions.mjs';
 import R from './horde-rules.mjs';
 import {D} from './campaign-model.mjs';
 import {LICH_MASTERY_IDS} from './lich-mastery.mjs';
+import {xpNext} from './progression.mjs';
 const ICON={empty:'＋',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠',ceifada:'⚔',giratoria:'✧',colheita:'✂',arco:'⤶',ciclone:'✷'};
 const KEYS=['M1 · 1','M2 · 2','3 · Q','4 · E','5 · R','6 · T'];
 const POSITIONS=[[50,8],[23,104],[77,104],[23,200],[77,200],[23,296],[77,296]];
@@ -16,48 +17,65 @@ export function createGrimoirePanel(session,{open,changed,equip}){
  let tab='minions',selected='zombie',masterySlot=0,lichSub='lich';const api={render,isOpen:()=>false,openPicker:index=>window.NecromancerV2?.ui?.chooseSlot(index)};
  const el=(tag,cls,html,parent)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;parent?.append(e);return e;};
  function result(r){status.textContent=r.message;changed();render();}
+ // Visual alinhado aos talentos do Guerreiro (talents.css): lateral com as árvores, colunas das escolas,
+ // selos com contador, detalhe e barra de XP. Classes lg-* e data-* ficam por compatibilidade com os testes.
+ const TREES=[['minions','Senhor dos Mortos','☠','#7fa35a'],['spells','Carne e Ossos','✧','#b0489f'],['death','Morte','☽','#8f7ad6'],['mastery','Maestrias','✦','#c99a3f']];
+ const SCHOOL_COLOR={flesh:'#b8473a',bone:'#c9b27a',spirit:'#4fb0a8',osso:'#c9b27a',blood:'#b8323a',shadow:'#7a5ac4',scythe:'#8f7ad6',harvest:'#4fa58a'};
+ const glyphOf=c=>'<span class="wt-glyph">'+c+'︎</span>';
+ const TILE=56,GRAPH=336,Y=v=>Math.round(v*.9);
  function render(){
   const w=session.world;host.replaceChildren();const reason=editReason(session);warning.textContent=reason||'';
   if(!w.army){el('p','lg-note','Ative Grupos reais para abrir seu perfil.',host);return;}
   const profile=w.army.profile,remaining=Build.budget(profile.level)-Build.spent(profile.ranks),mastery=tab==='mastery',gold=session.save.character.gold||0;
-  const shell=el('div','live-grimoire'+(tab==='spells'?' profana':'')+(mastery?' mastery-view':''),undefined,host);
-  shell.innerHTML='<div class="lg-heading"><div><small>O LEGADO DE ZEPHYR</small><h2>'+(mastery?'Maestrias das habilidades':'Grimório dos Mortos')+'</h2></div><div><b>'+remaining+'</b> pontos disponíveis<small>3 pontos por nível · nível '+profile.level+'</small></div></div><div class="lg-toolbar"><div class="lg-tabs" role="tablist" aria-label="Árvore de habilidades"></div><button type="button" class="btn lg-reset"></button><span class="lg-gold">🪙 '+gold+' ouro</span></div>';
-  const tabs=shell.querySelector('.lg-tabs');
-  for(const [id,title] of [['minions','☠ Senhor dos Mortos'],['spells','✧ Carne e Ossos'],['death','☽ Morte'],['mastery','✦ Maestrias']]){const b=el('button',undefined,title,tabs);b.type='button';b.dataset.tree=id;b.setAttribute('role','tab');b.setAttribute('aria-selected',String(tab===id));b.onclick=()=>{tab=id;if(id!=='mastery'&&Build.byId[selected]?.tree!==id)selected=Build.nodes.find(n=>n.tree===id).id;render();};}
+  const c=session.save.character,next=xpNext(profile.level),exp=next?Math.min(c.exp||0,next):0,learned=t=>Build.nodes.filter(n=>n.tree===t&&profile.ranks[n.id]>0).length,total=t=>Build.nodes.filter(n=>n.tree===t).length;
+  const shell=el('div','wt wt-necro'+(mastery?' wt-mastery-view':''),undefined,host);
+  shell.innerHTML='<div class="wt-side"><div class="wt-banner" aria-hidden="true">'+glyphOf('☠')+'</div><h2>Necromante</h2><h3>'+(mastery?'Maestrias das habilidades':'Grimório dos Mortos')+'</h3><p>Domine a carne, o osso e a morte. Escolha um selo para conhecer a habilidade e investir seus pontos.</p>'
+   +'<div class="wt-points"><span>Pontos disponíveis</span><b>'+remaining+'</b></div><nav class="wt-branches lg-tabs" role="tablist" aria-label="Árvore de habilidades"></nav><div class="wt-side-actions"><button type="button" class="btn lg-reset"></button><span class="lg-gold">'+gold+' ouro</span></div></div>'
+   +'<div class="wt-footer"><div class="wt-xp"><b>Nível '+profile.level+'</b><div class="wt-xp-bar" role="progressbar" aria-label="Experiência" aria-valuemin="0" aria-valuemax="'+(next||1)+'" aria-valuenow="'+(next?Math.floor(exp):1)+'"><i style="width:'+(next?Math.min(100,exp/next*100):100).toFixed(1)+'%"></i><span>'+(next?Math.floor(exp).toLocaleString('pt-BR')+' / '+next.toLocaleString('pt-BR')+' XP':'Nível máximo')+'</span></div></div><div class="wt-legend"><span class="learned">Aprendida</span><span class="available">Pode investir</span><span class="locked">Bloqueada</span><span class="final">Final exclusiva</span></div></div>';
+  const tabs=shell.querySelector('.wt-branches');
+  for(const [id,title,icon,color] of TREES){const b=el('button',undefined,glyphOf(icon)+'<span>'+title+'</span><b>'+(id==='mastery'?w.army.loadout.filter(a=>Model.skills[a]).length+' / 6':learned(id)+' / '+total(id))+'</b>',tabs);b.type='button';b.dataset.tree=id;b.style.setProperty('--branch-accent',color);b.setAttribute('role','tab');b.setAttribute('aria-label',title);b.setAttribute('aria-selected',String(tab===id));b.onclick=()=>{tab=id;if(id!=='mastery'&&Build.byId[selected]?.tree!==id)selected=Build.nodes.find(n=>n.tree===id).id;render();};}
   const resetCost=Build.spent(profile.ranks)*REFUND_GOLD,reset=shell.querySelector('.lg-reset');reset.textContent='Redistribuir · '+resetCost+' ouro';reset.disabled=!resetCost||!!reason||gold<resetCost;reset.title=REFUND_GOLD+' ouro por ponto devolvido · Seu ouro: '+gold;reset.hidden=mastery;reset.onclick=()=>result(resetRanks(session));
-  if(mastery)renderMastery(shell,w,reason);else renderTree(shell,w,profile,remaining,reason,gold);
+  if(mastery){const box=el('div','wt-mastery live-grimoire mastery-view',undefined,null);shell.insertBefore(box,shell.querySelector('.wt-footer'));renderMastery(box,w,reason);}
+  else renderTree(shell,w,profile,remaining,reason,gold);
  }
  function renderTree(shell,w,profile,remaining,reason,gold){
-  const layout=el('div','lg-layout','<div class="lg-schools"></div><section class="lg-detail" aria-live="polite"></section>',shell),schools=layout.querySelector('.lg-schools');
-  for(const school of Build.schools.filter(s=>s.tree===tab)){
-   const section=el('section','lg-school','<h3>'+school.name+'</h3><div class="lg-paths"><span>'+school.paths[0]+'</span><span>'+school.paths[1]+'</span></div><div class="lg-graph"></div>',schools),graph=section.querySelector('.lg-graph'),list=Build.nodes.filter(n=>n.school===school.id),svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-   svg.setAttribute('viewBox','0 0 100 390');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
-   list.forEach((n,i)=>{if(!n.requires)return;const p=list.findIndex(x=>x.id===n.requires),[x,y]=POSITIONS[i],[px,py]=POSITIONS[p],path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d','M '+px+' '+(py+82)+' V '+(y-8)+' H '+x+' V '+y);if(profile.ranks[n.id])path.classList.add('learned');svg.append(path);});graph.append(svg);
-   list.forEach((n,i)=>{const b=el('button',undefined,undefined,graph),rank=profile.ranks[n.id]||0,blocked=Build.reason(n,profile.ranks,profile.level);
-    b.type='button';b.dataset.node=n.id;b.className='lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(n.max===1?' final':'')+(n.id===selected?' selected':'');b.style.left=POSITIONS[i][0]+'%';b.style.top=POSITIONS[i][1]+'px';
-    b.setAttribute('aria-label',n.name+', '+rank+' de '+n.max+' pontos'+(blocked?' · '+blocked:''));b.title=blocked||n.name+' · Selecione para ver os efeitos';b.setAttribute('aria-pressed',String(n.id===selected));
-    b.innerHTML='<span class="lg-seal"><i>'+n.icon+'</i><em>'+rank+'/'+n.max+'</em></span><span>'+n.name+'</span>';b.onclick=()=>{selected=n.id;render();};});
+  const board=el('div','wt-board','<div class="wt-board-head"><p><b>'+remaining+'</b> pontos disponíveis</p><small>3 pontos por nível • Nível '+profile.level+'</small></div><div class="wt-tree lg-schools"></div>',null),detail=el('section','wt-detail lg-detail',undefined,null);
+  shell.insertBefore(board,shell.querySelector('.wt-footer'));shell.insertBefore(detail,shell.querySelector('.wt-footer'));detail.setAttribute('aria-live','polite');
+  const schools=board.querySelector('.wt-tree'),schoolList=Build.schools.filter(s=>s.tree===tab);schools.style.setProperty('--wt-columns',schoolList.length);
+  for(const school of schoolList){
+   const nodes=Build.nodes.filter(n=>n.school===school.id),accent=SCHOOL_COLOR[school.id]||'#c99a3f',section=el('section','wt-school lg-school',undefined,schools);section.dataset.branch=school.id;section.dataset.active=String(nodes.some(n=>n.id===selected));section.style.setProperty('--branch-accent',accent);section.setAttribute('aria-label','Escola '+school.name);
+   let links='',seals='';
+   nodes.forEach((n,i)=>{if(!n.requires)return;const p=nodes.findIndex(x=>x.id===n.requires),[x,yr]=POSITIONS[i],[px,pyr]=POSITIONS[p],y=Y(yr),py=Y(pyr),from=py+TILE+12,mid=Math.round((from+y)/2),state=profile.ranks[n.id]?' learned':!Build.reason(n,profile.ranks,profile.level)?' available':'';links+='<path class="warrior-link'+state+'" d="M '+px+' '+from+' V '+mid+' H '+x+' V '+(y-2)+'"/>';});
+   nodes.forEach((n,i)=>{const rank=profile.ranks[n.id]||0,blocked=Build.reason(n,profile.ranks,profile.level),open=!blocked&&rank<n.max&&remaining>0&&!reason;
+    seals+='<button type="button" class="wt-node lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(open?' available':'')+(n.max===1?' final':'')+(n.id===selected?' selected':'')+'" data-node="'+n.id+'" style="left:'+POSITIONS[i][0]+'%;top:'+Y(POSITIONS[i][1])+'px" aria-pressed="'+(n.id===selected)+'" aria-label="'+n.name+', '+rank+' de '+n.max+' pontos'+(blocked?' · '+blocked:'')+'" title="'+(blocked||n.name)+'"><span class="wt-tile">'+glyphOf(n.icon)+(blocked?'<i class="wt-lock"><svg viewBox="7 5 24 31" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 18v-5a7 7 0 0 1 14 0v5M9 18h20v16H9ZM19 24v5"/></svg></i>':'')+'</span><em>'+rank+'/'+n.max+'</em></button>';});
+   section.innerHTML='<header class="wt-school-head"><span class="wt-crest">'+glyphOf(nodes[0]?.icon||'✦')+'</span><h3>'+school.name+'</h3><small>'+school.paths.join(' · ')+'</small></header><div class="wt-graph" style="height:'+GRAPH+'px"><svg viewBox="0 0 100 '+GRAPH+'" preserveAspectRatio="none" aria-hidden="true">'+links+'</svg>'+seals+'</div>';
+   for(const b of section.querySelectorAll('[data-node]'))b.onclick=()=>{selected=b.dataset.node;render();shell.isConnected&&host.querySelector('[data-node="'+selected+'"]')?.focus({preventScroll:true});};
   }
   if(Build.byId[selected]?.tree!==tab)selected=Build.nodes.find(n=>n.tree===tab).id;
-  const n=Build.byId[selected],rank=profile.ranks[n.id]||0,error=Build.reason(n,profile.ranks,profile.level),detail=layout.querySelector('.lg-detail');
+  const n=Build.byId[selected],rank=profile.ranks[n.id]||0,error=Build.reason(n,profile.ranks,profile.level),school=Build.schools.find(s=>s.id===n.school),treeName=TREES.find(t=>t[0]===tab)[1];
   const blocked=reason||error||rank>=n.max&&'Habilidade no máximo.'||remaining<=0&&'Sem pontos disponíveis.';
-  const school=Build.schools.find(s=>s.id===n.school);
-  detail.innerHTML='<small>'+(tab==='minions'?'SENHOR DOS MORTOS':tab==='spells'?'CARNE E OSSOS':'MORTE')+' · '+school.name+'</small><h3>'+n.icon+' '+n.name+'</h3><b>'+rank+'/'+n.max+' pontos</b><p>'+n.description+'</p><div class="lg-requirement">'+(error||'Nível '+n.level+(n.requires?' · 2 pontos em '+Build.byId[n.requires].name:''))+'</div>'+(n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+Build.byId[n.exclusive].name+'.</p>':'')+'<h4>Por ponto investido</h4><ul>'+Object.entries(n.effects).map(([k,v])=>'<li>'+pct(k,v)+' '+k.toLowerCase()+'</li>').join('')+'</ul><div class="lg-invest"><button type="button" class="btn invest">+ Investir ponto</button><button type="button" class="btn refund">− Devolver ponto</button></div>';
+  const levelOk=profile.level>=n.level,reqOk=!n.requires||(profile.ranks[n.requires]||0)>=2;
+  const req='<li class="'+(levelOk?'ok':'no')+'">'+(levelOk?'✓':'✕')+' Nível '+n.level+'</li>'+(n.requires?'<li class="'+(reqOk?'ok':'no')+'">'+(reqOk?'✓':'✕')+' 2 pontos em '+Build.byId[n.requires].name+'</li>':'')+(error&&levelOk&&reqOk?'<li class="no">✕ '+error+'</li>':'');
+  detail.style.setProperty('--branch-accent',SCHOOL_COLOR[n.school]||'#c99a3f');
+  detail.innerHTML='<div class="wt-detail-head"><div class="wt-detail-icon">'+glyphOf(n.icon)+'<em>'+rank+'/'+n.max+'</em></div><div><h3>'+n.name+'</h3><p>'+treeName+' • '+school.name+'</p></div></div><p class="wt-desc">'+n.description+'</p>'
+   +'<h4>Por ponto investido <small>'+rank+' / '+n.max+' pontos investidos</small></h4><ul class="wt-effects">'+Object.entries(n.effects).map(([k,v])=>'<li>'+pct(k,v)+' '+k.toLowerCase()+'</li>').join('')+'</ul>'
+   +(n.exclusive?'<p class="lg-note">Escolha final exclusiva com '+Build.byId[n.exclusive].name+'.</p>':'')
+   +'<h4>Pré-requisito</h4><ul class="wt-req lg-requirement">'+req+'</ul><div class="wt-invest lg-invest"><button type="button" class="btn invest">+ Investir ponto</button><button type="button" class="btn refund">− Devolver ponto</button></div>';
   const invest=detail.querySelector('.invest'),refund=detail.querySelector('.refund'),points=Build.refund(structuredClone(profile),n.id),cost=points*REFUND_GOLD;
   invest.disabled=!!blocked;invest.title=blocked||'Investir 1 ponto em '+n.name;invest.onclick=()=>result(changeRank(session,n.id));
   refund.disabled=!!reason||!points||gold<cost;refund.setAttribute('aria-label','Devolver ponto de '+n.name+' por '+cost+' ouro');refund.title='Devolve '+points+' ponto(s), incluindo dependentes · '+cost+' ouro';refund.onclick=()=>result(changeRank(session,n.id,{refund:true}));
-  el('p','lg-note lg-refund-feedback',reason||(!rank?'Este nó não tem pontos investidos para devolver.':gold<cost?'Ouro insuficiente: precisa de '+cost+' ouro para devolver '+points+' ponto(s), incluindo dependentes. Seu saldo: '+gold+'.':'Devolve '+points+' ponto(s), incluindo dependentes, por '+cost+' ouro.'),detail).setAttribute('role','status');
+  el('p','lg-note lg-refund-feedback wt-reason',reason||(!rank?'Este nó não tem pontos investidos para devolver.':gold<cost?'Ouro insuficiente: precisa de '+cost+' ouro para devolver '+points+' ponto(s), incluindo dependentes. Seu saldo: '+gold+'.':'Devolve '+points+' ponto(s), incluindo dependentes, por '+cost+' ouro.'),detail).setAttribute('role','status');
   const action=Object.entries(SPELL_NODES).find(([,node])=>node===n.id)?.[0]||(ACTIONS.includes(n.id)?n.id:null);
   if(action){
-   const slots=el('div','lg-equip',undefined,detail);el('h4',undefined,'Equipar nos slots',slots);const learned=available(w.army,action);
-   if(!learned){const ranked=rank>0,stage=D.stages.find(s=>s?.grant===(R.types.includes(action)?'summon':action));el('p','lg-note',!ranked?'Invista um ponto para poder equipar.':stage?'Ponto investido. Esta habilidade é liberada na campanha ao iniciar "'+stage.name+'".':'Ponto investido, mas esta habilidade ainda não está liberada na campanha.',slots);}
-   w.army.loadout.forEach((id,i)=>{const b=el('button','btn',(i+1)+' · '+actionName(id)+(id===action?' ✓':''),slots);b.type='button';b.classList.toggle('lg-equip-help',id===action);b.disabled=!learned;b.dataset.equipSlot=i;b.onclick=()=>{const r=equip(i,action);result({...r,message:r.ok?'Slot '+(i+1)+': '+actionName(action)+'.':r.message});};});
+   const slots=el('div','lg-equip wt-equip',undefined,detail);el('h4',undefined,'Equipar nos slots',slots);const learnedAction=available(w.army,action);
+   if(!learnedAction){const ranked=rank>0,stage=D.stages.find(s=>s?.grant===(R.types.includes(action)?'summon':action));el('p','lg-note',!ranked?'Invista um ponto para poder equipar.':stage?'Ponto investido. Esta habilidade é liberada na campanha ao iniciar "'+stage.name+'".':'Ponto investido, mas esta habilidade ainda não está liberada na campanha.',slots);}
+   const grid=el('div','wt-equip-slots',undefined,slots);
+   w.army.loadout.forEach((id,i)=>{const b=el('button','btn',(i+1)+' · '+actionName(id)+(id===action?' ✓':''),grid);b.type='button';b.classList.toggle('lg-equip-help',id===action);b.disabled=!learnedAction;b.dataset.equipSlot=i;b.onclick=()=>{const r=equip(i,action);result({...r,message:r.ok?'Slot '+(i+1)+': '+actionName(action)+'.':r.message});};});
   }
   const bonuses=Object.entries(Build.effects(profile.ranks)).filter(([,v])=>v);
-  const fold=el('details','lg-bonus-fold','<summary>Bônus acumulados da build</summary>',detail);const list=el('div','lg-bonuses',undefined,fold);
+  const fold=el('details','lg-bonus-fold wt-fold','<summary>Bônus acumulados da build</summary>',detail);const list=el('div','lg-bonuses',undefined,fold);
   if(bonuses.length)for(const [k,v] of bonuses)el('div',undefined,'<span>'+k+'</span><b>'+pct(k,v)+'</b>',list);else list.textContent='Invista pontos para fortalecer sua build.';
-  el('p','lg-note','Bônus para habilidades ainda não aprendidas ficam dormentes. A devolução custa '+REFUND_GOLD+' ouro por ponto e só é possível no menu, na vila, no mapa ou pausado. Aliados detonados/sacrificados precisam terminar a recuperação.',detail);
-  el('p','lg-note','Linhas: pré-requisitos · Diamantes: especializações finais exclusivas · Sinergias somam pontos diretos.',shell);
+  el('p','lg-note wt-reason','Bônus para habilidades ainda não aprendidas ficam dormentes. A devolução custa '+REFUND_GOLD+' ouro por ponto e só é possível no menu, na vila, no mapa ou pausado. Aliados detonados/sacrificados precisam terminar a recuperação.',detail);
  }
  function renderMastery(shell,w,reason){
   const slots=w.army.loadout;masterySlot=Math.min(masterySlot,slots.length-1);

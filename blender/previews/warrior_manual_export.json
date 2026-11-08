@@ -54,5 +54,33 @@
       31.0
     ],
     "duration": 1.0
+  },
+  "tornado": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
+  },
+  "strafe_left": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
+  },
+  "strafe_right": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
+  },
+  "dodge": {
+    "frames": [
+      1.0,
+      25.0
+    ],
+    "duration": 0.8
   }
 }

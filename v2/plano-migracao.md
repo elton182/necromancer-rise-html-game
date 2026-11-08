@@ -566,7 +566,55 @@ Três ramos marciais (Espada, Escudo e Passivas), Tornado mantido, Arremesso de 
 
 Refinamento visual da árvore marcial: selos com ícones vetoriais, ramos conectados, cores e estados próprios, painel de investimento e seleção de ramo no celular. Conferência de seleção, pré-requisitos visuais e investimento pelo check do Guerreiro no Edge. Regras e saves preservados.
 
+Novas habilidades do Guerreiro: Ricochete, variantes Ciclone e Turbilhão do Tornado, Postura de Batalha (F), Brado de Guerra e Onda de Aço, com quarto ramo Veterano e barra de seis slots para oito ações. Regras em [v2-guerreiro.md](../docs/v2-guerreiro.md); testes em `v2/tests/warrior-skills.test.mjs`; evidências em `review/v2/warrior/`. Números iniciais, sem balanceamento de campanha.
+
 
 ### Comparação de equipamentos e NPCs dos modos — 02/11/2026
 
 Diferenças de status destacadas com sinal, seta e cores para ganho/perda. Jacarandá recebe Guardião das Ondas, Cartógrafa de Valdoria e Mestre do Cerco, com acesso por G aos modos existentes, sem exigir o Ato I. Entradas também mantidas em Eldrin; retorno restaura a praça e preserva quests e progressão dos modos. Regras em `village-services.mjs`; evidências no Edge em `review/v2/village-services/`.
+# Atualização visual da Druida — 2026-11-07
+
+Integrados os modelos Tripo fornecidos para Flora e lobisomem, com cenas editáveis
+e gerador próprio de animações. Mantidos IDs, escala registrada e regras de combate.
+Novos ciclos de descanso/caminhada/morte e ações específicas das duas formas.
+Build, 12 testes de regras e conferência de navegador aprovados; evidências em
+`review/v2/druid-tripo/`. Transformação ainda usa clarão, sem clipe dedicado.
+
+
+Segunda passagem das animações da Druida: caminhada com contraposição do corpo e articulação dos pés, respiração com movimentos defasados, preparação/recuperação dos ataques e pouso do Salto Feroz. Build, 12 testes e navegador aprovados; evidências em review/v2/druid-motion-polish/. Sem IK de contato em terreno irregular.
+
+Correção da locomoção da Druida: compensada a orientação lateral do rosto na fonte Tripo, adicionadas passadas laterais nas duas formas e autoria com IK assada dos tornozelos. Mantida a mira do cursor e ativada a mistura walk/strafe/ré já existente. Build, 23 testes e navegador com deslocamento nas quatro teclas aprovados. Evidências em review/v2/druid-direction/.
+
+Refino das passadas da Druida e do lobo: corrigida a velocidade do pé de apoio em relação ao stride, reduzida a abertura das pernas e estabilizada a orientação do pé com IK assada. Transferência lateral do quadril e alcance das pernas revisados. Build e 23 testes aprovados; evidências e auditoria em review/v2/druid-gait/.
+
+Postura de marcha humana da Flora refeita: tronco e quadril preparados para avançar, cotovelo livre flexionado, balanço do braço mais legível e base dos pés mais estreita. Passada visual 1,9 sem alterar velocidade. Build, 23 testes, cenário de combate e teste específico de mistura idle/locomoção aprovados; evidências em review/v2/druid-walk-posture/.
+
+Alinhamento facial da Flora corrigido na bind pose: malha e repouso do esqueleto ajustados antes da autoria, substituindo o offset insuficiente dos clipes. Conferência frontal sem ação ativa e prévia Cycles em review/v2/druid-face/front-rest.png. Build e 23 testes aprovados.
+
+Movimentação e ataques do lobo: guarda comum entre descanso, locomoção e ações; garras alternadas refeitas com preparação de quadril/ombro, extensão e recuperação; patas apoiadas por IK assada nos golpes e no Uivo. Conferidos clipes no Blender e deslocamentos nas quatro teclas, duas garras, salto e Uivo no navegador. Build e 23 testes aprovados; evidências em review/v2/druid-wolf-motion/. Tempos de impacto e regras preservados.
+
+Flora humana migrada para o modelo fornecido em pose T. Fonte preservada em blender/reference/flora-tripo/druid-t-source.glb; cena e export flora_tripo_druid_t. Animações adaptadas à base neutra, sem correção facial herdada; cajado separado e rigidamente preso à mão. Lobo e regras preservados. Build, 23 testes e navegador com magias/transformação/deslocamentos aprovados. Evidências em review/v2/druid-t-pose/.
+
+# Arqueira e Mercenário jogáveis, etapa 1 — 2026-11-08
+
+Novo Jogo oferece Arqueira (arco) e Mercenário (besta), com modelos Tripo do usuário, arma presa à mão e sete clipes gerados por `blender/scripts/ranged_heroes.py`. Tiro básico com projétil real (flecha de alvo único; virote que atravessa até três inimigos com queda de 25%), esquiva comum, base marcial própria e catálogo marcial sem espada e escudo. Criado `class-registry.mjs` para as telas consultarem as cinco classes. Testes `v2/tests/marksman.test.mjs` e `marksman-browser-check.cjs`; evidências em `review/v2/marksman/`. Pendentes: árvore, habilidades especiais, bombas do Mercenário, arcos e bestas como itens, sons próprios e camada de tronco para atirar andando. [Guia](../docs/v2-arqueira-mercenario.md).
+Flora humana recebeu nova pegada de cajado no idle e na marcha, com fechamento dos dedos, transporte da haste acima do piso e revisão da fase do braço livre e da rolagem dos pés. Evidência em review/v2/flora-pegada/.
+Corrigida a inversão dos joelhos na locomoção humana da Flora. Perfil animado e medição de caminhada e passos laterais em review/v2/flora-joelho/.
+
+# Arqueira e Mercenário, etapa 2 — 2026-11-08
+
+Árvores próprias (Arco/Caça/Passivas e Besta/Pólvora/Passivas) em `character.marksmanRanks`, com barra fixa de seis ações. Arqueira: Flecha Perfurante, Recuo, Chuva de Flechas, Leque, Tiro de Emboscada e o **Falcão** (modelo Tripo do usuário, `blender/scripts/falcon.py`): companheiro que mergulha sozinho e, pelo F, marca um alvo para +15% de dano das flechas. Mercenário: Rajada, Perfuração, Bomba de fragmentação, Estilhaços, Mina de pólvora e Garrafa incendiária. Clipes novos `shoot_up`, `leap_back`, `throw` e `plant`; efeito `lob` no VFX. Testes `marksman-skills.test.mjs` e `marksman-browser-check.cjs` ampliados; evidências em `review/v2/marksman/`. Pendentes: arcos e bestas como itens, sons próprios, camada de tronco para atirar andando. [Guia](../docs/v2-arqueira-mercenario.md).
+
+# Arqueira e Mercenário, etapa 3 — 2026-11-08
+
+Arco e Besta como itens (`marksman-equipment.mjs`): slot próprio por classe, dano-base somado ao dano físico, afixos próprios, arma inicial no Novo Jogo e entrega única para personagens anteriores (`marksmanEquipmentVersion`). Mercador, loot, forja, comparação e inventário usam o catálogo da classe. Sons procedurais novos (`bowShot`, `crossbowShot`, `bombThrow`, `powderBlast`, `mineArm`, `fireIgnite`, `falconCry`) ligados pelos eventos de combate; as ações dos atiradores deixaram de tocar o som do Tiro de Osso. Testes `marksman-equipment.test.mjs` e `marksman-browser-check.cjs` ampliados. [Guia](../docs/v2-arqueira-mercenario.md).
+
+A forma de lobo passou a caminhar em quatro apoios. As garras têm cortes descendente e ascendente, e o Salto Feroz pousa nas dianteiras. Build, 23 testes e cenário de movimento e combate no navegador aprovados. Prévias em review/v2/lobo-quadrupede/.
+
+Ajustes de jogabilidade dos atiradores (2026-11-08): atirar andando com camadas de tronco e pernas no renderizador (`layered` em `models.json`), fator de velocidade por ação, tiro contínuo segurando o botão esquerdo ou a tecla 1, tolerância de acerto na faixa do Tiro de Osso (antes 0,48 u) e mira do mouse na altura do tronco para Arqueira e Mercenário. As checagens `gear` e `movement` passaram a esperar o quadro em vez de um tempo fixo, por causa do redesenho de 1 s com o jogo pausado.
+
+Galope da forma de lobo integrado à locomoção direcional, com impulsão das traseiras, aterrissagem das dianteiras e suspensão. Prévia animada e medições em review/v2/lobo-galope/.
+
+# Mago jogável — 2026-11-08
+
+Sexta classe: fogo, gelo e arcano sobre o motor dos atiradores (Seta Arcana, Bola de Fogo, Rajada de Gelo, Teleporte, Meteoro; Combustão, Estilhaçar e Eco Arcano), catálogo arcano compartilhado e sons próprios. Modelo Tripo do usuário com os pesos do rig corrigidos por `blender/scripts/mage_hero.py` (cajado, barba, aba do chapéu, luvas e barra do manto). Testes `mage.test.mjs` e `mage-browser-check.cjs`; evidências em `review/v2/mage/`. [Guia](../docs/v2-mago.md).

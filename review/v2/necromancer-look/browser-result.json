@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "necromante e guerreiro lado a lado",
+    "materiais do necromante com mapa de cor e cor base não preta",
+    "emissão só por mapa de brilho",
+    "chão escuro e claro, qualidade alta e baixa",
+    "sem erros de página"
+  ],
+  "materials": [
+    {
+      "type": "MeshToonMaterial",
+      "map": true,
+      "emissiveMap": true,
+      "color": 16777215
+    },
+    {
+      "type": "MeshToonMaterial",
+      "map": true,
+      "emissiveMap": true,
+      "color": 16777215
+    }
+  ],
+  "errors": []
+}

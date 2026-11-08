@@ -1,9 +1,10 @@
-// Tela de carregamento da v2. A marcação (#loading) está no template e aparece antes dos módulos;
-// aqui ficam o progresso, as dicas e o encerramento. Não conhece o motor nem o renderizador.
+// Tela de carregamento da v2. A marcação (#loading) e a arte estão no template e aparecem antes dos módulos;
+// aqui ficam o progresso (barra e porcentagem), as dicas e o encerramento. Não conhece o motor nem o renderizador.
 export const TIPS=[
  'Esc abre o Relicário: Grimório, horda e equipamentos.',
  'Shift + botão direito ordena a horda; V reanima os caídos.',
  'C usa o Dash e protege você durante o movimento.',
+ 'Use o Dash para se reposicionar rapidamente e evitar ataques em área.',
  'Perda de foco pausa o jogo; volte e continue de onde parou.',
  'A roda do mouse ajusta o zoom da câmera.',
  'Cada abate rende XP às habilidades equipadas antes do personagem.'
@@ -16,12 +17,12 @@ export function progressOf(done,total,{start=.1,end=.9}={}){
 export function createLoading(doc=document){
  const root=doc.getElementById('loading');
  if(!root)return {step(){},tip(){},done(){},fail(){}};
- const bar=root.querySelector('#loading-bar'),label=root.querySelector('#loading-label'),tipEl=root.querySelector('#loading-tip');
+ const bar=root.querySelector('#loading-bar'),label=root.querySelector('#loading-label'),tipEl=root.querySelector('#loading-tip'),percentEl=root.querySelector('#loading-percent');
  let ended=false,timer=0,tipIndex=Math.floor(Math.random()*TIPS.length);
  function step(fraction,text){
   if(ended)return;
   const percent=Math.round(Math.max(0,Math.min(1,fraction))*100);
-  bar.style.width=percent+'%';root.setAttribute('aria-valuenow',String(percent));
+  bar.style.width=percent+'%';if(percentEl)percentEl.textContent=percent+'%';root.setAttribute('aria-valuenow',String(percent));
   if(text)label.textContent=text;
  }
  function tip(){tipEl.textContent=TIPS[tipIndex++%TIPS.length];}

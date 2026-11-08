@@ -14,14 +14,14 @@ export const PROLOGUE_INTRO=[
 export const PROLOGUE_TEXT={
  travel:[
   ['Marta','Ah, então você é quem a caravana contratou para a proteção? Tem certeza de que dá conta? Parece um novato.','marta'],
-  ['Nilo','Marta… Você vai assustar a nossa proteção antes mesmo de chegarmos a Itavera.','nilo'],
+  ['João','Marta… Você vai assustar a nossa proteção antes mesmo de chegarmos a Itavera.','nilo'],
   ['Marta','Estou só perguntando! Da última vez, o sujeito prometeu enfrentar um ogro. Fugiu quando ouviu um lobo.','marta'],
-  ['Nilo','Deixe {player} em paz. Se veio de tão longe por esse contrato, deve saber se virar.','nilo'],
+  ['João','Deixe {player} em paz. Se veio de tão longe por esse contrato, deve saber se virar.','nilo'],
   ['Marta','É o que eu espero. Primeiro Jacarandá, uma cama de verdade… Depois, as muralhas de Itavera.','marta'],
   ['Cocheiro','Ô! Esperem… Tem alguma coisa bloqueando a estrada!','driver'],
   ['Cocheiro','Ei, {player}! Você precisa ver isso.','driver']
  ],
- farewell:[['Marta','Você conseguiu! Os passageiros estão bem. Vamos tirar as carroças daqui.'],['Nilo','Obrigado. Eu… Cuidado! Na encosta!']],
+ farewell:[['Marta','Você conseguiu! Os passageiros estão bem. Vamos tirar as carroças daqui.'],['João','Obrigado. Eu… Cuidado! Na encosta!']],
  cave:[
   ['Sob a estrada','Por um instante, só existe o som da sua respiração. A poeira arranha a garganta. Muito acima, uma faixa de luz revela o buraco por onde você caiu. Não há como subir por ali.'],
   ['Você','Ainda consigo me mexer… Ótimo começo para o primeiro trabalho. Marta? Alguém está me ouvindo?'],
@@ -36,13 +36,13 @@ export const PROLOGUE_TEXT={
   ['Você','Estavam esperando outras caravanas… Ou já roubaram muitas antes da nossa.']
  ],
  clue:[
-  ['Ordens sobre a mesa','Ao lado de uma vela, um papel foi preso sob uma adaga. A ordem é curta: “Nilo. Viaja com a caravana que segue para Itavera. Parada prevista em Jacarandá.”'],
+  ['Ordens sobre a mesa','Ao lado de uma vela, um papel foi preso sob uma adaga. A ordem é curta: “João. Viaja com a caravana que segue para Itavera. Parada prevista em Jacarandá.”'],
   ['Uma captura encomendada','“Confirmem o nome antes de agir. O homem deve ser entregue vivo. A carga fica com o bando; o pagamento é pelo passageiro.” O trecho com a identificação do remetente foi arrancado.'],
-  ['Você','Nilo… O homem da carroça. Não era só um roubo. Preciso alcançar a caravana antes que tentem de novo.']
+  ['Você','João… O homem da carroça. Não era só um roubo. Preciso alcançar a caravana antes que tentem de novo.']
  ],
  cave_exit:[['Ar do lado de fora','Uma corrente de ar frio atravessa a passagem. Além das rochas, a luz do dia revela uma trilha entre as árvores. Jacarandá: foi lá que Marta disse que a caravana pararia. Ainda pode haver tempo.']],
  messenger:[['Tomás · mensageiro ferido','Você… está vindo da estrada? Eu tentava buscar ajuda em Itavera. Os bandidos estão atacando Jacarandá!'],['Tomás','Uma caravana chegou há pouco. Os guardas ficaram para ajudar. Siga esta trilha até a praça. Ainda pode dar tempo!']],
- reunion:[['Marta · reencontro','Você está vivo! Vimos a terra ceder… Não conseguimos alcançar você. Achei que tínhamos perdido mais alguém.'],['Marta','A vila resistiu, mas levaram Nilo durante o ataque. Sabiam o nome dele. Não estavam aqui só para roubar.'],['Uma nova dívida','Você conta sobre a lista encontrada na caverna. Oren oferece abrigo em Jacarandá. O passageiro continua desaparecido; descobrir quem o procurava será o próximo passo.']]
+ reunion:[['Marta · reencontro','Você está vivo! Vimos a terra ceder… Não conseguimos alcançar você. Achei que tínhamos perdido mais alguém.'],['Marta','A vila resistiu, mas levaram João durante o ataque. Sabiam o nome dele. Não estavam aqui só para roubar.'],['Uma nova dívida','Você conta sobre a lista encontrada na caverna. Joaquim oferece abrigo em Jacarandá. O passageiro continua desaparecido; descobrir quem o procurava será o próximo passo.']]
 };
 export function travelLine(index,name='Zephyr'){
  const [speaker,text,actor]=PROLOGUE_TEXT.travel[index]||PROLOGUE_TEXT.travel[0];
@@ -50,7 +50,7 @@ export function travelLine(index,name='Zephyr'){
 }
 export const caveTitle=p=>p.clue?'Esconderijo dos salteadores':p.caveCleared?'Depósito dos salteadores':p.caveHeard?'Galeria ocupada':'Sob a estrada';
 export function caveObjective(p){
- if(p.clue)return ['Alcance a caravana','Nilo era o alvo. Siga a corrente de ar até a saída ao norte.'];
+ if(p.clue)return ['Alcance a caravana','João era o alvo. Siga a corrente de ar até a saída ao norte.'];
  if(p.caveCleared)return ['O que eles procuravam?','Examine as ordens sobre a mesa antes de deixar o esconderijo.'];
  if(p.caveHeard)return ['Vozes entre as pedras','Há bandidos nas galerias adiante. Avance com cuidado e investigue as ordens.'];
  return ['Encontre outra saída','O buraco ficou alto demais. Siga as marcas no chão e a luz das tochas.'];
@@ -64,5 +64,5 @@ export function prologueObjective(p){return {
  trail:['Um pedido de socorro','Siga a trilha, derrote os perseguidores e ajude o mensageiro ferido.'],
  defense:['Defenda Jacarandá','Reencontre a caravana e derrote os bandidos que atacam a praça.'],
  reunion:['Salvamos Jacarandá','Fale com Marta sobre o passageiro desaparecido.'],
- done:['O passageiro desaparecido','Nilo foi levado. Jacarandá agora oferece abrigo.']
+ done:['O passageiro desaparecido','João foi levado. Jacarandá agora oferece abrigo.']
  }[p.stage];}

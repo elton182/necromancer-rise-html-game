@@ -1,9 +1,13 @@
+import {isMarksman} from './class-registry.mjs';
 import {worldRegion} from './campaign-world-model.mjs';
+import {AREAS} from './itauna-model.mjs';
 // Traduz o estado da simulação em sons e trilhas. Só lê o mundo: regras de combate não conhecem o áudio.
 import {levelOf} from './progression.mjs';
 // Efeitos visuais duram frações de segundo e podem expirar dentro de um quadro longo; por isso só habilidades de aliados
 // vêm deles. Tiro, Dash e acertos são lidos de recargas e contadores, que sobrevivem a quadros lentos.
 export const EFFECT_SOUNDS={allyAbility:'hit'};
+// Eventos de combate → efeito sonoro. Os dos atiradores vêm de marksman.mjs.
+const EVENT_SOUNDS={soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut',bowShot:'bowShot',crossbowShot:'crossbowShot',bombThrow:'bombThrow',powderBlast:'powderBlast',mineArm:'mineArm',fireIgnite:'fireIgnite',falconCry:'falconCry',falconDive:'windCut',arcaneBolt:'arcaneBolt',frostBlast:'frostBlast',blink:'blink',meteorCast:'fireIgnite',meteorImpact:'explosao'};
 // Sons de magia seguem o jogo anterior: Muralha e Escudo de Carne usam o timbre de reanimação.
 export const SPELL_SOUNDS={explosao:'explosao',chuva:'chuva',maos:'revive',barreira:'revive',maldicao:'summon'};
 export const PICKUP_SOUNDS={hp:'pickupHp',mp:'pickupMp',gold:'pickupMp',equipment:'pickupMp'};
@@ -39,11 +43,12 @@ export function createSoundObserver(){
    if(!LIVE_SCENES.includes(s.scene)||w.paused||prev.events!==w.combatEvents){prev=snapshot(s);return out;}
    const now=snapshot(s);
    for(const e of w.effects)if(!prev.seen.has(e)&&EFFECT_SOUNDS[e.kind])out.push(EFFECT_SOUNDS[e.kind]);
-   if(now.cast>prev.cast+1e-9||now.dash>prev.dash+1e-9)out.push('raio');
+   // Atiradores têm som próprio para cada ação (combatEvents); o 'raio' fica com a esquiva e as demais classes.
+   if(now.cast>prev.cast+1e-9&&!isMarksman(w.classId)||now.dash>prev.dash+1e-9)out.push('raio');
    // Na Forma da Morte o som do golpe é o vento da foice (scytheWind); o ruído de impacto do Tiro de Osso soaria por cima.
    if(now.hits>prev.hits&&!(w.lich&&w.lich.form!=='none'))out.push('hit');
    for(const [id,t] of Object.entries(now.cooldowns))if(t>(prev.cooldowns[id]||0)+1e-9&&SPELL_SOUNDS[id])out.push(SPELL_SOUNDS[id]);
-   for(const e of w.combatEvents.slice(prev.cursor))if(({soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut'})[e.kind])out.push(({soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut'})[e.kind]);
+   for(const e of w.combatEvents.slice(prev.cursor))if(EVENT_SOUNDS[e.kind])out.push(EVENT_SOUNDS[e.kind]);
    for(const e of w.combatEvents.slice(prev.cursor))if(e.kind==='death'&&e.team==='enemy')out.push(w.boss&&e.target===w.boss.id?'explosao':'enemyDeath');
    for(const [id,dead] of now.groups){const was=prev.groups.get(id);if(was===undefined||was===dead)continue;out.push(dead?'minionDeath':'revive');}
    if(now.level>prev.level)out.push('levelUp');
@@ -71,7 +76,7 @@ export function musicTheme(s,{title=false}={}){
  const a=w.adventure;if(!a)return 'field';
  if(w.actors.includes(w.boss)&&w.boss.hp>0&&!(w.boss.home&&!w.boss.alert))return 'boss';
  if(a.kind==='prologue')return a.stage==='cave'?'crypt':a.stage==='defense'?'boss':a.stage==='reunion'?'village':'forest';
- if(a.kind==='campaign-world'){if(a.inVillage)return 'village';const region=worldRegion(w.player);return region==='Cripta Esquecida'||region==='Mina de Valfundo'?'crypt':'forest';}
+ if(a.kind==='campaign-world'){if(a.area)return AREAS[a.area].music;if(a.inVillage)return 'village';const region=worldRegion(w.player);return region==='Cripta Esquecida'||region==='Mina de Valfundo'?'crypt':'forest';}
  if(a.kind==='stage')return {1:'crypt',2:'forest',3:'strip',4:'boss'}[a.n]||'forest';
  return a.mission?.layout==='strip'?'strip':'forest';
 }

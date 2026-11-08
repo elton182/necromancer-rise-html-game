@@ -125,3 +125,14 @@ test('Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo',
   assert.equal(state.save.campaign.world.passengerMissing,true);
  }
 });
+// Regressão: a queda trocava o jogador pelo necromante mesmo quando a classe era o guerreiro.
+test('queda do prólogo usa o modelo da classe ativa e o restaura na caverna',async()=>{
+ const {freshSave}=await import('../scripts/save-model.mjs');
+ for(const [classId,falling,base] of [['necromancer','necromancerFalling','necromancer'],['warrior','warrior','warrior']]){
+  const save=freshSave();save.character.classId=classId;const s=createSession(save);startCampaign(s);
+  Object.assign(s.save.campaign.prologue,{stage:'fall',introRead:true});launchPrologue(s);
+  assert.equal(s.world.player.model,falling,classId);
+  for(let i=0;i<24&&s.save.campaign.prologue.stage==='fall';i++)stepSession(s,.25,{});
+  assert.equal(s.save.campaign.prologue.stage,'cave',classId);assert.equal(s.world.player.model,base,classId);
+ }
+});

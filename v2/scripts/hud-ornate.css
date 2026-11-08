@@ -1,0 +1,192 @@
+/* HUD ornamentado: bronze e ouro velho sobre couro escuro, molduras com cantoneiras em SVG.
+   Camada só visual, carregada depois de ui.css e das folhas de campanha; não muda regra, custo nem atalho.
+   Não editar shared-hud.css (gerado da versão legada): os ajustes da v2 ficam aqui. */
+:root{
+ --orn-serif:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+ --orn-gold:#e2bd73;--orn-gold-hi:#f6dfa2;--orn-bronze:#9c743c;--orn-bronze-dk:#5a3d1c;
+ --orn-ink:#0c0806;--orn-leather:#1d140d;--orn-text:#efe2c2;--orn-muted:#c9b48c;
+ --orn-panel:linear-gradient(165deg,#1e150ded,#0d0907f2 60%,#140e09f0);
+ /* Moldura em nove fatias: cantoneiras com arabesco, bordas lisas que esticam sem distorcer. */
+ --orn-frame:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><defs><g id='c'><path d='M1.6 17V1.6H17' fill='none' stroke='%23e8c47c' stroke-width='2.2'/><path d='M5.5 13V5.5H13' fill='none' stroke='%236b4a22' stroke-width='1.4'/><path d='M3 3h6.5L3 9.5z' fill='%23f6dfa2'/><path d='M9 9c3.5-3 7.5-2.6 10 .6M9 9c-3 3.5-2.6 7.5.6 10' fill='none' stroke='%23c99a52' stroke-width='1.1'/><circle cx='19.2' cy='3.2' r='1.3' fill='%23e8c47c'/><circle cx='3.2' cy='19.2' r='1.3' fill='%23e8c47c'/></g></defs><rect x='1.6' y='1.6' width='56.8' height='56.8' fill='none' stroke='%23a37a3d' stroke-width='1.3'/><rect x='5.5' y='5.5' width='49' height='49' fill='none' stroke='%234a3218' stroke-width='1'/><use href='%23c'/><use href='%23c' transform='matrix(-1 0 0 1 60 0)'/><use href='%23c' transform='matrix(1 0 0 -1 0 60)'/><use href='%23c' transform='rotate(180 30 30)'/></svg>");
+ --orn-claws:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23f6dfa2'/><stop offset='.5' stop-color='%23b8874a'/><stop offset='1' stop-color='%234e3418'/></linearGradient><g id='k'><path d='M70 1c-7 8-9 15-6 22l6-7 6 7c3-7 1-14-6-22z' fill='url(%23g)' stroke='%232a1b0c' stroke-width='1'/><path d='M57 9c-5 2-8 6-8 11 3-3 6-4 10-4zM83 9c5 2 8 6 8 11-3-3-6-4-10-4z' fill='%23a37a3d' stroke='%232a1b0c' stroke-width='.8'/></g></defs><circle cx='70' cy='70' r='58' fill='none' stroke='%232a1b0c' stroke-width='6'/><circle cx='70' cy='70' r='58' fill='none' stroke='url(%23g)' stroke-width='3'/><circle cx='70' cy='70' r='63.5' fill='none' stroke='%237a5528' stroke-width='1' stroke-dasharray='1 5'/><use href='%23k' transform='rotate(45 70 70)'/><use href='%23k' transform='rotate(-45 70 70)'/><use href='%23k' transform='rotate(135 70 70)'/><use href='%23k' transform='rotate(-135 70 70)'/></svg>");
+ --orn-castle:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 26'><path d='M7 25V12h3V9h3v3h3V6h2V3h2v3h4V3h2v3h2v6h3V9h3v3h3v13H26v-6a4 4 0 0 0-8 0v6z' fill='%23d6ad62' stroke='%232a1b0c' stroke-width='1'/><path d='M22 3V0' stroke='%23d6ad62' stroke-width='1'/><path d='M22 0l5 1.5-5 1.5z' fill='%23b8473a'/></svg>");
+ --orn-scroll:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f0d08c' stroke-width='1.5' stroke-linejoin='round'><path d='M7 4h10.5A2.5 2.5 0 0 1 20 6.5V18'/><path d='M7 4a2.5 2.5 0 0 0-2.5 2.5V8H9'/><path d='M7 4a2.5 2.5 0 0 1 2.5 2.5v11A2.5 2.5 0 0 0 12 20h8a2.5 2.5 0 0 1-2.5-2.5'/><path d='M12 9h5M12 12h5M12 15h3'/></svg>");
+ --ico-reliquary:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c47c' stroke-width='1.6' stroke-linecap='round'><path d='M12 2.5v19M6.5 8h11M9 2.5h6M9.5 21.5h5'/><circle cx='12' cy='8' r='2.2' fill='%23e8c47c'/><path d='M4.5 8c0-1 .7-1.8 2-1.8M19.5 8c0-1-.7-1.8-2-1.8'/></svg>");
+ --ico-bag:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c47c' stroke-width='1.6' stroke-linejoin='round'><path d='M9 6.5 7.5 3h9L15 6.5'/><path d='M8.5 6.5h7c3 2.5 5 6 5 9.5 0 3-2.5 5-8.5 5S3.5 19 3.5 16c0-3.5 2-7 5-9.5z'/><path d='M8 6.5h8'/><circle cx='12' cy='14' r='2.4' fill='%23e8c47c'/></svg>");
+ --ico-book:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c47c' stroke-width='1.6' stroke-linejoin='round'><path d='M12 6.5C9.5 4.5 6.5 4 3 5v14c3.5-1 6.5-.5 9 1.5 2.5-2 5.5-2.5 9-1.5V5c-3.5-1-6.5-.5-9 1.5z'/><path d='M12 6.5v14'/><path d='M6 9c1.5-.3 2.8 0 4 .6M6 12.5c1.5-.3 2.8 0 4 .6M14 9.6c1.2-.6 2.5-.9 4-.6'/></svg>");
+ --ico-help:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c47c' stroke-width='1.6' stroke-linecap='round'><path d='M12 2.5 21.5 12 12 21.5 2.5 12z'/><path d='M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2.9-1.2 1.8v.4'/><circle cx='12' cy='16.6' r='.9' fill='%23e8c47c'/></svg>");
+}
+
+/* ---------- Barra superior ---------- */
+#game-nav{gap:7px;max-width:none;flex-wrap:nowrap}
+#game-nav button,#game-nav #menu-shortcuts button{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:5px 11px 5px 8px;border:1px solid #8c6633;border-radius:5px;background:linear-gradient(#2e2115,#150e09 55%,#1d140c);box-shadow:inset 0 1px #f0cf8a40,inset 0 0 0 2px #0b0705,0 2px 6px #000a;color:var(--orn-text);font:13px/1 var(--orn-serif);white-space:nowrap;letter-spacing:.02em;text-shadow:0 1px 2px #000}
+#game-nav button:hover:not(:disabled){border-color:var(--orn-gold);background:linear-gradient(#45311c,#1c130b 60%,#281b0f);color:#fff2cf}
+#game-nav button:before{content:'';flex:0 0 19px;height:19px;background:var(--ico-reliquary) center/contain no-repeat;filter:drop-shadow(0 1px 1px #000)}
+#game-nav #open-gear:before{background-image:var(--ico-bag)}
+#game-nav #open-grimoire:before{background-image:var(--ico-book)}
+#game-nav #open-help:before{background-image:var(--ico-help)}
+#game-nav #map-back:before{display:none}
+#game-nav button[hidden]{display:none}
+
+/* Título da área: cartucho com torre e filetes de ouro. */
+#objective-bar{top:12px;gap:2px;max-width:min(400px,36vw);padding:26px 22px 12px;background:radial-gradient(ellipse 60% 70% at 50% 55%,#0b0705c4,#0b070566 60%,transparent 75%);font-family:var(--orn-serif)}
+#objective-bar:before{content:'';position:absolute;left:50%;top:0;width:40px;height:24px;transform:translateX(-50%);background:var(--orn-castle) center/contain no-repeat;filter:drop-shadow(0 2px 2px #000)}
+#objective-bar:after{content:'';position:absolute;left:8px;right:8px;bottom:0;height:9px;background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M5 .5 9.5 5 5 9.5.5 5z' fill='%23f0d08c' stroke='%232a1b0c'/></svg>") center/9px no-repeat,linear-gradient(90deg,transparent,#b8874a 18%,#f0d08c calc(50% - 8px),transparent calc(50% - 8px) calc(50% + 8px),#f0d08c calc(50% + 8px),#b8874a 82%,transparent) center/100% 1px no-repeat}
+#objective-bar strong{font:600 26px/1.1 var(--orn-serif);color:#f6e1ad;letter-spacing:.03em;text-shadow:0 2px 3px #000,0 0 14px #000}
+#objective-bar span{font:15px/1.25 var(--orn-serif);color:#eadcbc;letter-spacing:.02em;text-shadow:0 1px 3px #000}
+
+/* ---------- Painel de missão (lado esquerdo) ---------- */
+#campaign-panel[data-view="world"],body[data-scene=training][data-story=false][data-adventure-done=false] #campaign-panel:not([data-view]),body[data-scene=village][data-story=false] #campaign-panel:not([data-view]){top:76px;width:300px;padding:10px 26px 14px 14px;border:0;border-left:2px solid #b8874a;border-radius:0;background:linear-gradient(90deg,#0e0906ee,#0e0906c9 62%,#0e090600);box-shadow:inset 1px 0 #f0d08c55;font:14px/1.45 var(--orn-serif);color:var(--orn-text);text-shadow:0 1px 2px #000;scrollbar-width:thin;scrollbar-color:#8c6633 transparent}
+#campaign-panel[data-view="world"]>small:first-child{display:block;font:11px var(--orn-serif);letter-spacing:.16em;text-transform:uppercase;color:#bda57a;margin-bottom:6px}
+#campaign-panel[data-view="world"] h3,body[data-scene=training] #campaign-panel:not([data-view]) h3{position:relative;display:flex;align-items:center;gap:9px;margin:0 0 6px;padding-bottom:7px;font:600 17px/1.2 var(--orn-serif);color:#f3dca6;background:linear-gradient(90deg,#b8874a,#b8874a00) left bottom/100% 1px no-repeat}
+#campaign-panel[data-view="world"] h3:before,body[data-scene=training] #campaign-panel:not([data-view]) h3:before{content:'';flex:0 0 30px;height:30px;border:1px solid #c99a52;border-radius:50%;background:var(--orn-scroll) center/18px no-repeat,radial-gradient(circle,#3b2814,#140d08 70%);box-shadow:0 0 0 2px #0c0806,0 0 0 3px #6b4a22,0 2px 5px #000}
+#campaign-panel[data-view="world"] h4{margin:10px 0 2px;padding-left:12px;font:600 14px var(--orn-serif);color:#e6cf98;position:relative}
+#campaign-panel[data-view="world"] h4:before{content:'';position:absolute;left:0;top:.45em;width:5px;height:5px;transform:rotate(45deg);background:#c99a52}
+#campaign-panel[data-view="world"] p,body[data-scene=training] #campaign-panel:not([data-view]) p{margin:3px 0 6px;color:#e7dcc4;font-size:13.5px}
+#campaign-panel[data-view="world"]>small:not(:first-child){display:flex;align-items:center;gap:8px;margin:6px 0;font:14px var(--orn-serif);letter-spacing:.02em;color:#f0e1bd}
+#campaign-panel[data-view="world"]>small:not(:first-child):before{content:'';flex:0 0 7px;height:7px;transform:rotate(45deg);border:1.5px solid var(--orn-gold);box-shadow:0 0 6px #e2bd7366}
+#campaign-panel[data-view="world"] button,body[data-scene=training][data-story=false][data-adventure-done=false] #campaign-panel:not([data-view]) button,body[data-scene=village][data-story=false] #campaign-panel:not([data-view]) button{margin:6px 6px 0 0;padding:6px 12px;border:1px solid #8c6633;border-radius:4px;background:linear-gradient(#2e2115,#150e09);box-shadow:inset 0 1px #f0cf8a33,inset 0 0 0 2px #0b0705;color:var(--orn-text);font:13px var(--orn-serif)}
+#campaign-panel[data-view="world"] button:hover:not(:disabled){border-color:var(--orn-gold);color:#fff2cf}
+/* Painel de missão sem rolagem: o nome da região já está no título central; textos longos ficam em
+   3 linhas (objetivo principal) e 2 (secundários) — o texto inteiro está no mapa (M). Botões compactos
+   numa linha. A aba à esquerda recolhe o painel ao título, à distância e à conversa (G). */
+#campaign-panel[data-view="world"]{max-height:none;overflow:visible;padding-left:16px}
+#campaign-panel[data-view="world"]>small:first-child{display:none}
+#campaign-panel[data-view="world"]>p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+#campaign-panel[data-view="world"]>h4+p{-webkit-line-clamp:2;font-size:13px;color:#d6cbb2}
+#campaign-panel[data-view="world"]>button{display:inline-flex;align-items:center;margin:4px 6px 0 0;padding:4px 10px;font-size:12.5px;line-height:1.2}
+#campaign-panel[data-view="world"]>button.tracker-toggle{position:absolute;left:-16px;top:10px;width:15px;height:38px;margin:0;padding:0;justify-content:center;border-radius:0 4px 4px 0;border-left:0;font:700 15px/1 var(--orn-serif);color:#f3dca6}
+#campaign-panel[data-view="world"][data-collapsed="true"]{width:auto;max-width:300px;padding-bottom:8px}
+#campaign-panel[data-view="world"][data-collapsed="true"]>p,#campaign-panel[data-view="world"][data-collapsed="true"]>h4,#campaign-panel[data-view="world"][data-collapsed="true"]>#world-home,#campaign-panel[data-view="world"][data-collapsed="true"]>.world-map-button,#campaign-panel[data-view="world"][data-collapsed="true"]>#world-home+small{display:none}
+#campaign-panel[data-view="world"][data-collapsed="true"] h3{margin-bottom:2px}
+
+#campaign-panel:empty{display:none}
+
+/* Diálogos e mapa da região: mesma moldura. */
+#campaign-panel[data-view="world-map"],#campaign-panel[data-view="world-dialogue"],#campaign-panel[data-view="travel-dialogue"],#campaign-panel[data-view="prologue-intro"]{border:1px solid transparent;border-image:var(--orn-frame) 20/20px/4px stretch;background:var(--orn-panel);box-shadow:0 16px 70px #000c;font-family:var(--orn-serif);color:var(--orn-text)}
+#campaign-panel[data-view="world-map"] h2,#campaign-panel[data-view="world-dialogue"] h2{font-family:var(--orn-serif);color:#f6e1ad;letter-spacing:.03em}
+
+/* O painel ornamentado é escuro; sobrescreve as cores do antigo balão claro. */
+#campaign-panel[data-view="travel-dialogue"] p{color:#f0e1c5}
+#campaign-panel[data-view="travel-dialogue"]>small{color:#edc780}
+#campaign-panel[data-view="travel-dialogue"] button{color:#edc780;border-bottom-color:#b89351}
+#campaign-panel[data-view="travel-dialogue"] button:hover,#campaign-panel[data-view="travel-dialogue"] button:focus-visible{background:#49351f;color:#fff0cd}
+
+/* ---------- Minimapa circular com bússola ---------- */
+#minimap-panel{top:14px;right:18px;width:184px;padding:12px 12px 0;border:0;background:none;box-shadow:none;text-align:center}
+#minimap-panel:before{content:'';position:absolute;left:50%;top:-2px;width:192px;height:192px;transform:translateX(-50%);background:var(--orn-claws) center/contain no-repeat;filter:drop-shadow(0 4px 6px #000c);pointer-events:none;z-index:1}
+#minimap-panel:after{content:'N';position:absolute;left:50%;top:-6px;width:22px;height:22px;transform:translateX(-50%);border:1.5px solid var(--orn-gold);border-radius:50%;background:radial-gradient(circle,#3a2814,#120c07);box-shadow:0 0 0 2px #0c0806,0 2px 4px #000;font:700 12px/20px var(--orn-serif);color:#f6dfa2;z-index:2}
+#hud-minimap{width:160px;height:160px;margin:0 auto;border-radius:50%;background:#0c0a08;box-shadow:inset 0 0 18px #000,0 0 0 2px #0c0806}
+#minimap-caption{position:relative;z-index:3;display:inline-block;margin-top:-4px;padding:4px 16px;border:1px solid transparent;border-image:var(--orn-frame) 20/10px/2px stretch;background:linear-gradient(#21170e,#0e0906);font:13px var(--orn-serif);letter-spacing:.06em;color:#f0e1bd;text-shadow:0 1px 2px #000;white-space:nowrap}
+
+/* ---------- Barra do chefe, ganhos, consumíveis e horda ---------- */
+#boss-bar{top:118px;padding:12px 18px;border:1px solid transparent;border-image:var(--orn-frame) 20/18px/3px stretch;background:var(--orn-panel);font-family:var(--orn-serif)}
+#boss-bar>div:first-child{color:#f3dca6;font-size:11px;letter-spacing:.14em}
+.boss-track{height:10px;border:1px solid #6b4a22;border-radius:2px;background:#140706;box-shadow:inset 0 2px 3px #000}
+#boss-fill{background:linear-gradient(#f08a6c,#b52a2a 45%,#5c0f12)}
+#boss-numbers{color:#efd9b4}
+#feed li{font:12px var(--orn-serif);background:linear-gradient(90deg,#140d08e0,#140d0880);border-left-color:#c99a52;color:var(--orn-text)}
+#inv-bar button,#horde-status button,#reanimate-hint{border:1px solid #8c6633;border-radius:5px;background:linear-gradient(#2e2115,#150e09);box-shadow:inset 0 1px #f0cf8a33,inset 0 0 0 2px #0b0705,0 2px 5px #000a;color:var(--orn-text);font-family:var(--orn-serif)}
+#inv-bar button:hover:not(:disabled),#horde-status button:hover,#reanimate-hint:hover:not(:disabled){border-color:var(--orn-gold)}
+
+/* ---------- Doca inferior: couro escuro, filete de ouro, orbes em garras ---------- */
+#hud{bottom:20px;border:0;background:none;box-shadow:none;font-family:var(--orn-serif)}
+#hud:before{content:'';position:absolute;z-index:-1;left:calc(var(--orb-size) * .62);right:calc(var(--orb-size) * .62);top:4px;bottom:0;border:1px solid transparent;border-image:var(--orn-frame) 20/18px/2px stretch;background:radial-gradient(ellipse 50% 90% at 50% 0,#3a291733,transparent 70%),repeating-linear-gradient(90deg,#ffffff03 0 2px,transparent 2px 5px),linear-gradient(#22170e,#110b07 25%,#0b0705 80%,#1a110a);box-shadow:0 10px 26px #000c}
+#hud .hud-crest span{padding:5px 22px;border:1px solid #c99a52;border-radius:0;background:linear-gradient(#3a2814,#170f08);clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 50%,calc(100% - 10px) 100%,10px 100%,0 50%);box-shadow:none;font:600 10px var(--orn-serif);letter-spacing:.2em;color:#f6dfa2}
+#hud .hud-crest{filter:drop-shadow(0 0 0 #c99a52) drop-shadow(0 2px 3px #000)}
+
+/* Faixa de estado (nível, ouro, pontos, horda/postura): um estandarte com pontas. */
+#hud #top-left{gap:0;padding:0 12px;border:1px solid #8c6633;background:linear-gradient(#2a1d12,#110b07);clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);box-shadow:inset 0 1px #f0cf8a33}
+#hud #top-left>div:not(#wave-txt){border:0;border-radius:0;background:none;box-shadow:none;font:600 12px/16px var(--orn-serif)!important;color:#f0e1bd;position:relative}
+#hud #top-left>div:not(#wave-txt)+div:not(#wave-txt):before{content:'';position:absolute;left:0;top:7px;bottom:7px;width:1px;background:linear-gradient(transparent,#c99a52,transparent)}
+#hud #sp-pts-txt:before,#hud .horde-meter:before{content:''}
+#hud #sp-pts-txt:hover{background:linear-gradient(#4a3420,#24180d)}
+#hud #level-txt:before{color:var(--orn-gold)}
+#hud #warrior-stance{border:0;background:none;font:600 12px/16px var(--orn-serif);color:#f6dfa2;letter-spacing:.04em}
+
+/* Habilidades: quadros de ouro com tecla em aba, ícone ao centro. */
+#hud .action-slots{gap:10px}
+#hud .action-equipped{position:relative;grid-template-rows:minmax(0,1fr) 13px 11px;padding:12px 3px 5px;overflow:visible;border:2px solid #b8874a;border-radius:3px;background:radial-gradient(circle at 50% 38%,#4a321a,#1a110a 62%,#0c0805);box-shadow:inset 0 0 0 1px #0b0705,inset 0 0 0 3px #6b4a2266,inset 0 0 14px #000,0 0 0 1px #0b0705,0 3px 5px #000b;color:var(--orn-text)}
+#hud .action-equipped:hover{background:radial-gradient(circle at 50% 38%,#6a4824,#24170c 62%,#0e0906);border-color:var(--orn-gold-hi)}
+#hud .action-equipped>small{position:absolute;top:-9px;left:50%;transform:translateX(-50%);min-width:26px;padding:0 6px;border:1px solid #c99a52;border-radius:2px;background:linear-gradient(#3a2814,#150e08);font:700 10px/15px var(--orn-serif);color:#f6dfa2;text-align:center;white-space:nowrap;z-index:2}
+#hud .action-equipped>span{font-size:30px;line-height:34px;filter:drop-shadow(0 0 7px #ffb34f55) drop-shadow(0 2px 2px #000)}
+#hud .action-equipped>b{font:600 11px/13px var(--orn-serif);color:#f3e2bb;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hud .action-equipped>em{font:italic 9px/11px var(--orn-serif);color:#c9b48c;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hud .action-equipped.locked{opacity:.55;filter:saturate(.35)}
+#hud .action-equipped.no-mana{border-color:#9c4a3a;box-shadow:inset 0 0 0 1px #0b0705,inset 0 0 18px #7a1c1466,0 0 0 1px #0b0705}
+#hud .action-equipped .action-cd{top:auto;bottom:25px;right:50%;transform:translateX(50%);padding:1px 6px;border-radius:2px;background:#0c0806e0;border:1px solid #6b4a22;font:700 11px var(--orn-serif);color:#f6dfa2}
+body[data-lich="lich"] #hud .action-equipped,body[data-lich="transform"] #hud .action-equipped{border-color:#a585e0}
+
+/* Experiência: régua fina com ponteiras de losango. */
+#hud .experience-line{bottom:9px}
+#hud .experience-track{height:13px;border:1px solid #8c6633;border-radius:1px;background:linear-gradient(#060403,#160f09);box-shadow:inset 0 2px 3px #000,0 0 0 1px #0b0705}
+#hud #exp-fill{background:linear-gradient(#ffe9ac,#e0a84a 45%,#8f5a1f);box-shadow:inset 0 1px #fff2c5,0 0 8px #f0b24f66}
+#hud .experience-line:before,#hud .experience-line:after{content:'';position:absolute;top:2px;width:9px;height:9px;transform:rotate(45deg);border:1px solid #2a1b0c;background:linear-gradient(135deg,#f6dfa2,#9c743c);z-index:1}
+#hud .experience-line:before{left:-5px}#hud .experience-line:after{right:-5px}
+#hud .experience-line #exp-val{font:600 10px/13px var(--orn-serif)}
+#hud .experience-line{left:calc(var(--xp-inset) + 74px)}
+#hud .experience-line #hud-level{display:block;position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);padding:2px 12px;border:1px solid transparent;border-image:var(--orn-frame) 20/9px/1px stretch;background:linear-gradient(#21170e,#0e0906);font:600 13px/16px var(--orn-serif);color:#f3e2bb;white-space:nowrap;text-shadow:0 1px 2px #000}
+#hud #top-left>div#level-txt{display:none}
+#hud #top-left{grid-template-columns:repeat(3,minmax(0,1fr));top:-4px;height:30px;box-shadow:inset 0 1px #f0cf8a33,0 3px 6px #000a}
+/* A faixa de estado faz o papel de fita no alto da barra; o selo de classe sai. */
+#hud .hud-crest{display:none}
+
+/* Orbes: esfera de vidro maior que a doca, presa por garras de bronze; valor e nome no centro.
+   --orb-d é o diâmetro do vidro; --orb-cy, o centro vertical dentro do frasco; --orb-dx empurra o orbe para fora. */
+#hud{--orb-size:146px}
+#hud .hud-wing .resource-vessel{--orb-d:calc(var(--orb-size) * 1.1);--orb-cy:58px;--orb-dx:calc(var(--orb-size) * -.08);position:relative;overflow:visible}
+#hud .hud-wing .mana-vessel{--orb-dx:calc(var(--orb-size) * .08)}
+/* Moldura de bronze renderizada no Blender (blender/scripts/hud_orb_frame.py e pack_hud_orb_frame.py);
+   furo e proporção vêm de assets/hud/orb-frame.json. O vidro entra 3% sob o aro. */
+#hud .hud-wing .resource-vessel:before{content:'';position:absolute;left:calc(50% + var(--orb-dx));top:var(--orb-cy);width:calc(var(--orb-d) / 0.5418);aspect-ratio:560/399;height:auto;transform:translate(-55.13%,-48.10%);background:url(HUD_ORB_FRAME_LEFT) center/100% 100% no-repeat;filter:drop-shadow(0 4px 6px #000c);pointer-events:none;z-index:2}
+#hud .hud-wing .mana-vessel:before{width:calc(var(--orb-d) / 0.6081);aspect-ratio:560/445;transform:translate(-37.84%,-48.83%);background-image:url(HUD_ORB_FRAME_RIGHT)}
+#hud .hud-wing .vessel-glass{z-index:1;left:calc(50% + var(--orb-dx));top:var(--orb-cy);right:auto;bottom:auto;width:var(--orb-d);height:var(--orb-d);transform:translate(-50%,-50%);border:0;border-radius:50%;background:radial-gradient(ellipse 34% 22% at 50% 30%,#ffffff12,transparent 70%),radial-gradient(circle at 46% 42%,color-mix(in srgb,var(--fluid-deep) 60%,#1c1514),#080505 74%);box-shadow:0 0 16px #000c}
+#hud .resource-vessel .vessel-liquid{height:calc(var(--fill) * .98);background:radial-gradient(circle at 44% 46%,var(--fluid-glow),transparent 60%),linear-gradient(var(--fluid-top),var(--fluid-mid) 40%,var(--fluid-deep))!important;background-size:var(--orb-d) var(--orb-d),100% 100%!important;background-position:center bottom,0 0!important;background-repeat:no-repeat!important}
+#hud .resource-vessel{--fluid-glow:#cc1f38;--fluid-top:#9c0f26;--fluid-mid:#7a081b;--fluid-deep:#260107;--fluid-edge:#ff8a96;--fluid-rim:#ff4a5e66}
+#hud .mana-vessel{--fluid-glow:#8248e6;--fluid-top:#5a24b4;--fluid-mid:#43168f;--fluid-deep:#100326;--fluid-edge:#c6a4ff;--fluid-rim:#a070ff66}
+body[data-lich="lich"] #hud .mana-vessel,body[data-lich="transform"] #hud .mana-vessel{--fluid-glow:#c7b0ff;--fluid-top:#9b7ae8;--fluid-mid:#6a48c8;--fluid-deep:#1e0d48}
+#hud .vessel-glass:after{z-index:2;background:radial-gradient(ellipse 10% 6.5% at 67% 23%,#fffffff4,#ffffffa8 35%,transparent 76%),radial-gradient(ellipse 30% 12% at 52% 12%,#ffffff42,#ffffff12 55%,transparent 80%),radial-gradient(ellipse 4% 2.6% at 29% 31%,#ffffff70,transparent 80%),radial-gradient(ellipse 50% 19% at 50% 93%,var(--fluid-rim),transparent 72%),radial-gradient(circle at 50% 44%,transparent 50%,#0000003a 69%,#000000b4 100%);box-shadow:inset 0 0 0 1.5px #000c,inset 0 -10px 18px #0008,inset -5px 4px 10px #ffffff0e}
+#hud .vessel-crown{display:none}
+/* Líquido vivo. Duas cristas de onda acima da superfície plana (forma fixa por máscara, deslizando
+   por transform: a frente clara e rápida, a de trás escura e no sentido oposto) e, dentro do líquido,
+   um mármore de ruído fractal do tamanho da esfera girando devagar em volta do centro.
+   Animar a posição da máscara deixava uma linha reta na borda da camada; transform não deixa. */
+#hud .resource-vessel .vessel-liquid{border-radius:0;overflow:visible;box-shadow:inset 0 -10px 16px #0006}
+#hud .resource-vessel .vessel-liquid:before,#hud .resource-vessel .vessel-liquid:after{content:'';position:absolute;left:0;right:auto;top:-9px;bottom:auto;inset-inline:auto;width:calc(100% + 120px);height:10px;border-radius:0;box-shadow:none;opacity:1;mix-blend-mode:normal;-webkit-mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12'><path d='M0 7Q15 1 30 7T60 7T90 7T120 7V12H0Z'/></svg>") 0 0/120px 100% repeat-x;mask:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='12'><path d='M0 7Q15 1 30 7T60 7T90 7T120 7V12H0Z'/></svg>") 0 0/120px 100% repeat-x;transform-origin:0 0;pointer-events:none}
+#hud .resource-vessel .vessel-liquid:before{z-index:2;top:-11px;height:15px;background:linear-gradient(var(--fluid-edge),var(--fluid-top) 38%,var(--fluid-top) 72%,transparent);animation:orb-wave 3.8s linear infinite}
+#hud .resource-vessel .vessel-liquid:after{z-index:1;top:-15px;height:19px;left:-60px;background:linear-gradient(color-mix(in srgb,var(--fluid-top) 70%,#000),var(--fluid-top));opacity:.9;animation:orb-wave 6.5s linear infinite reverse}
+#hud .mana-vessel .vessel-liquid:before{animation-duration:4.6s;animation-direction:reverse}
+#hud .mana-vessel .vessel-liquid:after{animation-duration:7.4s;animation-direction:normal}
+@keyframes orb-wave{from{transform:translateX(0)}to{transform:translateX(-120px)}}
+#hud .vessel-swirl{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+#hud .vessel-swirl:before{content:'';position:absolute;left:calc(50% - var(--orb-d) * .75);bottom:calc(var(--orb-d) * -.25);width:calc(var(--orb-d) * 1.5);height:calc(var(--orb-d) * 1.5);background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.014 .022' numOctaves='3' seed='11'/><feColorMatrix values='2.6 0 0 0 -.8 2.6 0 0 0 -.8 2.6 0 0 0 -.8 0 0 0 0 1'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>") center/100% 100% no-repeat;mix-blend-mode:overlay;opacity:.45;border-radius:50%;animation:orb-swirl 48s linear infinite}
+#hud .mana-vessel .vessel-swirl:before{animation-duration:56s;animation-direction:reverse}
+@keyframes orb-swirl{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#hud .resource-vessel .vessel-liquid:before,#hud .resource-vessel .vessel-liquid:after,#hud .vessel-swirl:before{animation:none}}
+#hud .hud-wing .vessel-caption{z-index:4;left:calc(50% + var(--orb-dx));right:auto;top:var(--orb-cy);bottom:auto;transform:translate(-50%,-50%);flex-direction:column-reverse;align-items:center;gap:1px;pointer-events:none}
+#hud .vessel-caption strong{font:700 20px/1.05 var(--orn-serif);letter-spacing:0;white-space:nowrap;color:#fff6e2;text-shadow:0 0 3px #000,0 1px 2px #000,0 0 12px #000c}
+#hud .vessel-caption span{display:block;font:16px/1.1 var(--orn-serif);letter-spacing:.02em;text-transform:lowercase;color:#f6ead0;text-shadow:0 0 3px #000,0 1px 2px #000,0 0 10px #000c}
+#hud .vessel-caption span::first-letter{text-transform:uppercase}
+
+/* ---------- Rótulos do mundo ---------- */
+.world-label{font-family:var(--orn-serif)}
+.world-label.service-label{border-color:#8c6633;border-radius:3px;background:linear-gradient(#21170ee6,#0e0906e6);color:var(--orn-text)}
+.enemy-health{height:7px;border:1px solid #0b0705;border-radius:1px;background:#1a0b08;box-shadow:0 0 0 1px #6b4a2299,0 1px 3px #000}
+.enemy-health span{background:linear-gradient(#f07a5c,#b8282a 55%,#6a1012)}
+
+/* ---------- Telas menores ---------- */
+@media(max-width:1380px){#objective-bar{top:54px}}
+@media(max-width:1100px){#objective-bar{top:62px;padding:22px 30px 10px}#objective-bar strong{font-size:21px}#objective-bar span{font-size:13px}#boss-bar{top:150px}}
+@media(max-width:760px){
+ #game-nav #open-grimoire{display:none}
+ #game-nav button,#game-nav #menu-shortcuts button{min-height:30px;padding:4px 8px 4px 5px;font-size:11px;gap:4px}#game-nav button:before{flex-basis:16px;height:16px}
+ #objective-bar{top:58px;left:8px;transform:none;max-width:210px;padding:18px 10px 8px;text-align:left;background:none}#objective-bar:before{left:10px;transform:none;width:30px;height:18px}#objective-bar:after{display:none}#objective-bar strong{font-size:16px}#objective-bar span{font-size:11px}
+ #minimap-panel{width:112px;top:10px;right:10px;padding:8px 8px 0}#minimap-panel:before{width:118px;height:118px;top:-1px}#minimap-panel:after{width:18px;height:18px;font-size:10px;line-height:16px;top:-5px}#hud-minimap{width:96px;height:96px}#minimap-caption{font-size:9px;padding:2px 8px;margin-top:-2px;letter-spacing:.02em}
+ #campaign-panel[data-view="world"],body[data-scene=training][data-story=false][data-adventure-done=false] #campaign-panel:not([data-view]),body[data-scene=village][data-story=false] #campaign-panel:not([data-view]){top:118px;width:200px;padding:7px 14px 9px 9px;font-size:11px}
+ #campaign-panel[data-view="world"]{max-height:none;bottom:auto;padding-left:12px}#campaign-panel[data-view="world"]>button.tracker-toggle{left:-12px;width:12px;height:30px;font-size:12px}#campaign-panel[data-view="world"]>button{font-size:10.5px;padding:3px 7px}#campaign-panel[data-view="world"]>p{-webkit-line-clamp:2}#campaign-panel[data-view="world"]>h4+p{display:none}#campaign-panel[data-view="world"] h4{font-size:12px;margin-top:6px}
+ #campaign-panel[data-view="world"] h3{font-size:13px;gap:6px}#campaign-panel[data-view="world"] h3:before{flex-basis:22px;height:22px;background-size:13px,auto}#campaign-panel[data-view="world"] p{font-size:11px}#campaign-panel[data-view="world"]>small:not(:first-child){font-size:11px}
+ #hud .action-slots{gap:5px}#hud .action-equipped{padding:10px 1px 4px;grid-template-rows:minmax(0,1fr) 11px 9px}#hud .action-equipped>span{font-size:20px;line-height:24px}#hud .action-equipped>b{font-size:8px;line-height:11px}#hud .action-equipped>em{font-size:7px;line-height:9px}#hud .action-equipped>small{font-size:8px;line-height:12px;min-width:20px;padding:0 3px;top:-7px}
+ #hud{--orb-size:70px}#hud .hud-wing .resource-vessel{--orb-cy:44px}#hud .vessel-caption strong{font-size:11px}#hud .vessel-caption span{font-size:9px}
+ #hud #top-left>div:not(#wave-txt){font-size:9px!important}#hud #warrior-stance{font-size:9px}
+}
+@media(max-width:420px){#hud{--orb-size:52px}#hud .hud-wing .resource-vessel{--orb-cy:38px}#hud .vessel-caption strong{font-size:9px}#hud .vessel-caption span{font-size:8px}#hud #top-left{padding:0 8px}}

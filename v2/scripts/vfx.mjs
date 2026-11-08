@@ -36,7 +36,6 @@ function runeRing(seed,{glyphs=12,inner=.5,star=5,ticks=48,band=[.7,.88]}={}){
  }
  return texture(c);
 }
-function edgeTexture(){const S=512,c=makeCanvas(S),g=c.getContext('2d');g.translate(S/2,S/2);for(const [w,col]of [[28,'rgba(0,0,0,.55)'],[15,'#fff']]){g.lineWidth=w;g.strokeStyle=col;g.beginPath();g.arc(0,0,S/2-12,0,TAU);g.stroke();}return texture(c);}
 function columnTexture(){const c=makeCanvas(4,128),g=c.getContext('2d'),gr=g.createLinearGradient(0,0,0,128);gr.addColorStop(0,'rgba(255,255,255,0)');gr.addColorStop(.65,'rgba(255,255,255,.3)');gr.addColorStop(1,'rgba(255,255,255,.9)');g.fillStyle=gr;g.fillRect(0,0,4,128);return texture(c);}
 // Mancha de queimado: borda irregular escura (lê bem em chão claro). Rachaduras: linhas ramificadas que recebem a cor do fogo.
 function scorchTexture(){
@@ -58,7 +57,7 @@ function cracksTexture(){
 }
 function makeTextures(){return {scorch:scorchTexture(),cracks:cracksTexture(),
  runeA:runeRing(11,{glyphs:14,star:5}),runeB:runeRing(23,{glyphs:9,star:6,inner:.46,ticks:24,band:[.64,.86]}),runeD:runeRing(37,{glyphs:18,star:0,ticks:60}),
- edge:edgeTexture(),column:columnTexture(),
+ column:columnTexture(),
  shock:radial([[0,0],[.5,0],[.8,.25],[.93,.85],[.97,1],[.99,.8],[1,0]]),disc:radial([[0,.1],[.7,.28],[.93,.42],[1,0]]),heat:radial([[0,.3],[.5,.4],[.9,.65],[1,0]]),
  glow:radial([[0,1],[.25,.6],[.6,.15],[1,0]]),arc:radial([[0,0],[.45,0],[.7,.25],[.93,1],[.985,.8],[1,0]]),
 };}
@@ -90,6 +89,40 @@ void main(){
   c=mix(c,vec3(1.,.94,.72),smoothstep(.95,1.35,heat));
   gl_FragColor=vec4(mix(c,vColor,.1),smoothstep(.03,.28,heat)*vAlpha);
  }else{float d=length(uv-vec2(.5))*2.;if(d>1.)discard;float a=smoothstep(1.,.05,d);gl_FragColor=vec4(mix(vColor,vec3(1.),smoothstep(.6,0.,d)*.6),a*vAlpha);}
+}`;
+// ---------- Aviso hostil no chão: uma forma só (círculo, setor ou linha), medida em unidades de mundo ----------
+// A borda tem a mesma espessura em qualquer raio, o interior fica translúcido para não esconder o chão e uma frente
+// clara avança até a borda no instante do dano. A sombra externa mantém o contorno legível em chão claro.
+const WARN_VERT=`uniform vec2 uHalf;varying vec2 vP;void main(){vP=position.xy*uHalf;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+const WARN_FRAG=`uniform vec3 uColor;uniform float uShape,uSize,uSide,uP,uMode,uTime,uAlpha;varying vec2 vP;
+const float TAU=6.2831853;
+float shapeDistance(vec2 p){
+ if(uShape<.5)return length(p)-uSize;
+ if(uShape<1.5){vec2 q=vec2(abs(p.y),p.x),c=vec2(sin(uSide),cos(uSide));return max(length(q)-uSize,length(q-c*clamp(dot(q,c),0.,uSize))*sign(c.y*q.x-c.x*q.y));}
+ vec2 q=abs(p)-vec2(uSize*.5,uSide);return length(max(q,0.))+min(max(q.x,q.y),0.);
+}
+void main(){
+ vec2 p=vP;float d=shapeDistance(p),aa=max(fwidth(d),.002),inside=smoothstep(aa,-aa,d);
+ float rimWidth=clamp(.04+uSize*.009,.05,.1);if(uShape>1.5)rimWidth=min(rimWidth,uSide*.22);
+ float rim=inside*smoothstep(-rimWidth-aa,-rimWidth+aa,d);
+ float glow=inside*exp(d/.55),along=uShape>1.5?p.x+uSize*.5:length(p),a,hot=0.;
+ if(uMode<.5){
+  float front=uSize*uP,charged=inside*smoothstep(front+aa,front-aa,along);
+  float band=inside*smoothstep(.07+aa,0.,abs(along-front))*step(.001,uP)*(1.-step(.995,uP));
+  float urgent=smoothstep(.7,1.,uP),beat=.5+.5*sin(uTime*(7.+20.*uP));
+  a=.06+.3*glow+charged*(.2+.14*urgent*beat)+band*.6+rim*.95;hot=max(band*.18,rim*.5*urgent*beat);
+  if(uShape>1.5){float s=fract((p.x-abs(p.y)*1.2)/1.15-uTime*1.3),arrow=smoothstep(0.,.07,s)*smoothstep(.34,.27,s);a+=inside*arrow*.4;}
+ }else if(uMode<1.5){
+  float n=max(6.,floor(TAU*uSize/.85)),s=fract(atan(p.y,p.x)/TAU*n+uTime*.16),dash=smoothstep(0.,.05,s)*smoothstep(.6,.55,s);
+  a=.1*glow+rim*dash*.8;hot=rim*dash*.25;
+ }else{
+  a=.16+.28*glow+rim*(.7+.1*sin(uTime*2.));
+ }
+ a=clamp(a,0.,1.)*inside;
+ float shade=(1.-inside)*exp(-max(d,0.)/.12)*.3,total=a+shade*(1.-a);
+ if(total<.004)discard;
+ gl_FragColor=vec4(mix(uColor,vec3(1.),hot)*(a/max(total,.001)),total*uAlpha);
+ #include <colorspace_fragment>
 }`;
 class Particles{
  constructor(scene,max,additive=false){
@@ -195,30 +228,39 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  };
  RUN.shockwave=(o,e)=>{const t=life(e),t2=clamp01(t*1.2-.12);o.ring.scale.setScalar(Math.max(.05,o.r*(.15+.85*easeOut(t))));o.ring.material.opacity=Math.pow(1-t,1.4)*.95;o.ring2.scale.setScalar(Math.max(.05,o.r*(.1+.7*easeOut(t2))));o.ring2.material.opacity=Math.pow(1-t2,1.8)*.6*(t>.04?1:0);if(o.glow){o.glow.scale.setScalar(o.r*(.5+.5*easeOut(t)));o.glow.material.opacity=Math.pow(1-t,1.6)*.8;}};
 
- // Fase II do Rei: pilares de fogo em anel e onda grande, só visuais.
+ // Fase II do Rei: pilares de fogo em anel e onda grande, só visuais. Grito de guerra e uivo (`mood`) ficam só com a onda.
  INIT.roar=(o,e)=>{
-  INIT.shockwave(o,e);o.rune=decal(o,textures.runeA,e.color||'#ff7a2a',{y:.072});o.rune.position.set(e.x,.072,e.y);
-  if(e.mood!=='war')for(let k=0;k<14;k++){const a=k/14*TAU,x=e.x+Math.cos(a)*3.2,z=e.y+Math.sin(a)*3.2;for(let j=0;j<Math.round(5*density);j++)flame(x,z,{up:6.5,spread:.35,life:1.1,size:1.5});}
+  INIT.shockwave(o,e);if(e.mood==='war'||e.mood==='howl')return;
+  o.rune=decal(o,textures.runeA,e.color||'#ff7a2a',{y:.072});o.rune.position.set(e.x,.072,e.y);
+  for(let k=0;k<14;k++){const a=k/14*TAU,x=e.x+Math.cos(a)*3.2,z=e.y+Math.sin(a)*3.2;for(let j=0;j<Math.round(5*density);j++)flame(x,z,{up:6.5,spread:.35,life:1.1,size:1.5});}
  };
- RUN.roar=(o,e)=>{RUN.shockwave(o,e);const t=life(e);o.rune.scale.setScalar(lerp(2.5,6,easeOut(t)));o.rune.rotation.z=time*1.2;o.rune.material.opacity=Math.pow(1-t,1.2);};
+ RUN.roar=(o,e)=>{RUN.shockwave(o,e);if(!o.rune)return;const t=life(e);o.rune.scale.setScalar(lerp(2.5,6,easeOut(t)));o.rune.rotation.z=time*1.2;o.rune.material.opacity=Math.pow(1-t,1.2);};
 
  // Fratura temporária do chão, combinada com poeira e onda de choque.
  INIT.groundBreak=(o,e)=>{INIT.shockwave(o,e);o.cracks=decal(o,textures.cracks,'#231c19',{y:.065});o.cracks.position.set(e.x,.065,e.y);o.cracks.scale.setScalar(e.radius);};
  RUN.groundBreak=(o,e)=>{RUN.shockwave(o,e);o.cracks.material.opacity=Math.min(1,(1-life(e))*3);};
- // Marca de perigo: círculo rúnico, preenchimento que cresce até a borda quando o golpe acontece e chamas na borda.
- INIT.dangerRune=(o,e)=>{
-  const c=e.color||'#ff784e';o.rune=decal(o,textures.runeD,c,{y:.06});
-  if(!e.noFill)o.fill=decal(o,textures.heat,c,{y:.058,opacity:0});
-  o.edge=decal(o,textures.edge,c,{y:.064});o.seed=Math.random()*TAU;o.acc=0;
- };
+ // Aviso hostil (ver WARN_FRAG). `shape`: 0 círculo, 1 setor, 2 linha; `size`: raio ou comprimento; `side`: meio ângulo ou meia largura.
+ const WARN_PAD=.5,warnMode=e=>e.mood==='aura'||e.noFill?1:e.mood==='pool'?2:0;
+ function warningMesh(o){
+  const m=new THREE.Mesh(plane,new THREE.ShaderMaterial({uniforms:{uColor:{value:new THREE.Color()},uHalf:{value:new THREE.Vector2(1,1)},uShape:{value:0},uSize:{value:1},uSide:{value:0},uP:{value:0},uMode:{value:0},uTime:{value:0},uAlpha:{value:0}},vertexShader:WARN_VERT,fragmentShader:WARN_FRAG,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
+  m.rotation.x=-Math.PI/2;m.position.y=.062;m.renderOrder=4;scene.add(m);o.objs.push(m);o.mesh=m;o.fade=.35;o.acc=0;return m;
+ }
+ function drawWarning(o,e,step,{shape,size,side=0,x=e.x,y=e.y,halfX=size+WARN_PAD,halfY=size+WARN_PAD,angle=0}){
+  const m=o.mesh,u=m.material.uniforms;o.fade=Math.min(1,o.fade+step*7);
+  if(o.color!==e.color){o.color=e.color;u.uColor.value.set(e.color||'#ff784e');}
+  m.position.set(x,m.position.y,y);m.rotation.z=-angle;m.scale.set(halfX,halfY,1);u.uHalf.value.set(halfX,halfY);
+  u.uShape.value=shape;u.uSize.value=size;u.uSide.value=side;u.uP.value=clamp01(e.progress??1);u.uMode.value=warnMode(e);u.uTime.value=time;u.uAlpha.value=o.fade;
+ }
+ // O nome `dangerRune` continua porque a simulação e os testes identificam o aviso por ele; o desenho já não usa runas.
+ INIT.dangerRune=o=>{warningMesh(o);};
  RUN.dangerRune=(o,e,step)=>{
   const r=e.radius,p=clamp01(e.progress??1);
-  for(const m of [o.rune,o.edge,o.fill])if(m)m.position.set(e.x,m.position.y,e.y);
-  o.rune.scale.setScalar(r*.97);o.rune.rotation.z=o.seed+time*.35;o.rune.material.opacity=.5+.25*Math.sin(time*6);
-  o.edge.scale.setScalar(r);o.edge.material.opacity=e.mood==='aura'?.6:.7+.3*Math.sin(time*(6+p*14));
-  if(o.fill){o.fill.scale.setScalar(Math.max(.04,r*p));o.fill.material.opacity=.3+.5*p;}
-  if(e.mood==='fire'&&p>.1){o.acc+=step*r*(3+p*7)*density;while(o.acc>=1){o.acc--;const a=rand(0,TAU);flame(e.x+Math.cos(a)*r*.96,e.y+Math.sin(a)*r*.96,{up:1.6+p,size:.4+.2*p,life:.6});}}
+  if(e.arc)drawWarning(o,e,step,{shape:1,size:r,side:e.arc/2,angle:e.direction||0});else drawWarning(o,e,step,{shape:0,size:r});
+  if(e.mood==='fire'&&!e.arc&&p>.1){o.acc+=step*r*(2+p*5)*density;while(o.acc>=1){o.acc--;const a=rand(0,TAU);flame(e.x+Math.cos(a)*r*.98,e.y+Math.sin(a)*r*.98,{up:1.2+p,spread:.2,size:.3+.15*p,life:.5});}}
  };
+ // Linha de um tiro ou investida: da origem até o alcance, na direção travada.
+ INIT.dangerLine=o=>{warningMesh(o);};
+ RUN.dangerLine=(o,e,step)=>{const L=e.length,W=e.radius;drawWarning(o,e,step,{shape:2,size:L,side:W,x:e.x+e.dx*L/2,y:e.y+e.dy*L/2,halfX:L/2+WARN_PAD,halfY:W+WARN_PAD,angle:Math.atan2(e.dy,e.dx)});};
 
  // Chão em chamas (Erupção, Queda do Rei): disco quente sobre uma runa queimada, com labaredas.
  INIT.fireField=(o,e)=>{o.base=decal(o,textures.scorch,'#ffffff',{y:.052,opacity:.95});o.glow=decal(o,textures.heat,e.color||'#ff7a2a',{y:.056,opacity:.4});o.cracks=decal(o,textures.cracks,'#ff6a1a',{y:.06});o.acc=0;o.emb=0;o.smk=0;o.seed=Math.random()*TAU;};
@@ -258,6 +300,46 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
   o.col.position.set(e.x,.05,e.y);o.col.scale.set(r*.5*(1-t*.5),lerp(1,3.6,easeOut(t)),r*.5*(1-t*.5));o.col.material.opacity=Math.pow(1-t,1.2)*.8;
  };
 
+ // ── Druida ──
+ // Raio: trilha irregular entre dois pontos (do cajado ao alvo, ou do céu ao chão), núcleo branco e halo colorido.
+ const boltSegment=new THREE.CylinderGeometry(1,1,1,5,1,true);boltSegment.translate(0,.5,0);
+ const thornCone=new THREE.ConeGeometry(.2,1,5);thornCone.translate(0,.5,0);
+ const UP=new THREE.Vector3(0,1,0);
+ INIT.lightning=(o,e)=>{
+  const a=new THREE.Vector3(e.x,e.h0??1.5,e.y),b=new THREE.Vector3(e.tx??e.x,e.h1??1,e.ty??e.y),dir=b.clone().sub(a),length=dir.length()||.01,w=e.width||1;dir.normalize();
+  let side=new THREE.Vector3().crossVectors(dir,UP);if(side.lengthSq()<1e-4)side.set(1,0,0);side.normalize();const side2=new THREE.Vector3().crossVectors(dir,side).normalize();
+  const n=Math.max(3,Math.min(12,Math.round(length/.7))),jag=Math.min(.45,length*.08),pts=[a];
+  for(let i=1;i<n;i++)pts.push(a.clone().addScaledVector(dir,length*i/n).addScaledVector(side,rand(-jag,jag)).addScaledVector(side2,rand(-jag,jag)*.6));pts.push(b);
+  const c=new THREE.Color(e.color||'#bfe4ff'),core=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:1,depthWrite:false,fog:false}),glow=new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.45,depthWrite:false,blending:THREE.AdditiveBlending,fog:false});
+  o.mats=[core,glow];
+  for(let i=0;i<pts.length-1;i++){const p=pts[i],q=pts[i+1],d=q.clone().sub(p),len=d.length();if(len<1e-4)continue;const quat=new THREE.Quaternion().setFromUnitVectors(UP,d.normalize());
+   for(const [mat,rad] of [[core,.035*w],[glow,.13*w]]){const m=new THREE.Mesh(boltSegment,mat);m.position.copy(p);m.quaternion.copy(quat);m.scale.set(rad,len,rad);m.renderOrder=12;scene.add(m);o.objs.push(m);}}
+  const cc=hex(e.color||'#bfe4ff');
+  particles.emit({x:b.x,h:b.y,z:b.z,life:.18,s0:1.6*w,s1:.5,c0:WHITE,c1:cc,a0:.9});
+  for(let i=0;i<Math.round(8*density);i++){const ang=rand(0,TAU),sp=rand(2,6);particles.emit({x:b.x,h:Math.max(.1,b.y),z:b.z,vx:Math.cos(ang)*sp,vh:rand(.5,3),vz:Math.sin(ang)*sp,life:rand(.15,.35),s0:rand(.1,.18),s1:.02,c0:WHITE,c1:cc,grav:6,drag:3});}
+  if(e.h0>4)shake=Math.max(shake,.05);
+ };
+ RUN.lightning=(o,e)=>{const t=life(e),flick=t<.5?(Math.random()<.25?.35:1):1;o.mats[0].opacity=Math.pow(1-t,1.4)*flick;o.mats[1].opacity=.45*Math.pow(1-t,1.2)*flick;};
+ // Raízes: espinhos que brotam do chão, seguram enquanto a prisão dura e afundam no fim.
+ INIT.thorns=(o,e)=>{
+  const r=e.radius||2.4,c=hex(e.color||'#8fd16a');o.ring=shockRing(o,e);o.ring.position.set(e.x,.07,e.y);o.ring.scale.setScalar(r);
+  o.mat=new THREE.MeshLambertMaterial({color:0x8a6b33,emissive:0x2c3a12,transparent:true,opacity:1});o.mat2=new THREE.MeshLambertMaterial({color:0x7fbf45,emissive:0x2a4a12,transparent:true,opacity:1});o.thorns=[];
+  const n=Math.round((8+r*6)*Math.max(.5,density));
+  for(let i=0;i<n;i++){const a=rand(0,TAU),d=r*Math.sqrt(Math.random())*.95,m=new THREE.Mesh(thornCone,i%3?o.mat:o.mat2);m.position.set(e.x+Math.cos(a)*d,0,e.y+Math.sin(a)*d);m.rotation.set(rand(-.35,.35),rand(0,TAU),rand(-.35,.35));m.userData.h=rand(.8,1.7);m.userData.delay=rand(0,.08);m.scale.set(1,.01,1);m.castShadow=true;scene.add(m);o.objs.push(m);o.thorns.push(m);}
+  for(let i=0;i<Math.round(14*density);i++){const a=rand(0,TAU),d=rand(0,r);particles.emit({x:e.x+Math.cos(a)*d,h:.15,z:e.y+Math.sin(a)*d,vx:rand(-.6,.6),vh:rand(1.5,3.5),vz:rand(-.6,.6),life:rand(.4,.8),s0:rand(.14,.24),s1:.04,c0:mix(c,WHITE,.3),c1:[.35,.5,.18],grav:5,drag:1.2});}
+ };
+ RUN.thorns=(o,e)=>{
+  const t=life(e),dur=e.duration||1,elapsed=t*dur,out=clamp01((dur-elapsed)/.3);
+  for(const m of o.thorns){const grow=easeOut(clamp01((elapsed-m.userData.delay)/.16));m.scale.set(1,Math.max(.01,m.userData.h*grow*out),1);}
+  o.mat.opacity=o.mat2.opacity=Math.min(1,out*1.5);o.ring.material.opacity=Math.pow(1-t,1.2)*.8;
+ };
+ // Tempestade: sombra fria no chão, borda da área e nuvem baixa de fumaça escura enquanto os raios caem.
+ INIT.stormCloud=(o,e)=>{const r=e.radius||3.5;o.shadow=decal(o,textures.disc,'#1d2740',{y:.058,opacity:0});o.shadow.position.set(e.x,.058,e.y);o.shadow.scale.setScalar(r*1.05);o.ring=shockRing(o,e);o.ring.position.set(e.x,.07,e.y);o.ring.scale.setScalar(r);o.rune=decal(o,textures.runeB,e.color||'#bfe4ff',{y:.066,opacity:0});o.rune.position.set(e.x,.066,e.y);o.rune.scale.setScalar(r*.9);o.acc=0;o.seed=Math.random()*TAU;};
+ RUN.stormCloud=(o,e,step)=>{
+  const t=life(e),dur=e.duration||4,fade=clamp01(t*dur/.3)*clamp01((1-t)*dur/.4),r=e.radius||3.5;
+  o.shadow.material.opacity=.55*fade;o.ring.material.opacity=.75*fade;o.rune.material.opacity=.35*fade;o.rune.rotation.z=o.seed+time*.4;
+  o.acc+=step*r*r*1.6*density*fade;while(o.acc>=1){o.acc--;const a=rand(0,TAU),d=r*Math.sqrt(Math.random());particles.emit({x:e.x+Math.cos(a)*d,h:rand(4.2,5.2),z:e.y+Math.sin(a)*d,vx:rand(-.4,.4),vh:rand(-.1,.1),vz:rand(-.4,.4),life:rand(.8,1.4),s0:rand(.9,1.4),s1:rand(1.6,2.2),c0:[.2,.23,.32],c1:[.32,.35,.45],a0:.32,drag:.5});}
+ };
  // Tiro de Osso no jogador: clarão na mão do cajado, faíscas na direção da mira e anel rúnico sob os pés.
  INIT.boltCast=(o,e)=>{
   const c=hex(e.color||'#b8f2d0'),hx=e.x+e.dx*.55,hz=e.y+e.dy*.55,base=Math.atan2(e.dy,e.dx);
@@ -296,17 +378,27 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  };
  // Projétil hostil: orbe luminoso e rastro de faíscas.
  INIT.projectile=(o,e)=>{
-  const magic=e.shot!=='arrow'&&e.shot!=='feather',s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.shot==='feather'?'#f0e0b8':magic?'#e0a0ff':'#fff0b0'),transparent:true,depthTest:false,depthWrite:false}));
+  // Tiro do jogador (e.ally): cor da classe e rastro em linha, para não confundir com as flechas hostis.
+  const magic=e.shot!=='arrow'&&e.shot!=='feather',s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.ally?e.color:e.shot==='feather'?'#f0e0b8':magic?'#e0a0ff':'#fff0b0'),transparent:true,depthTest:false,depthWrite:false}));
   s.renderOrder=11;scene.add(s);o.objs.push(s);o.orb=s;o.lx=e.x;o.lz=e.y;
-  if(e.rogueTrail){const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xe4d3a8,transparent:true,opacity:.3,depthWrite:false}));line.userData.ownGeometry=true;scene.add(line);o.objs.push(line);o.trail=line;}
+  if(e.rogueTrail||e.ally){const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const line=new THREE.Line(geo,new THREE.LineBasicMaterial({color:e.ally?new THREE.Color(e.color):0xe4d3a8,transparent:true,opacity:e.ally?.85:.3,depthWrite:false}));line.userData.ownGeometry=true;scene.add(line);o.objs.push(line);o.trail=line;}
 
  };
  RUN.projectile=(o,e,step)=>{
-  const feather=e.shot==='feather',magic=e.shot!=='arrow'&&!feather,c=magic?[.82,.5,1]:feather?[.94,.86,.66]:[.95,.82,.4],size=feather?.4:magic?1:.6;
-  if(o.trail){const a=o.trail.geometry.attributes.position;a.setXYZ(0,e.x,.85,e.y);a.setXYZ(1,e.x-e.dx*.9,.85,e.y-e.dy*.9);a.needsUpdate=true;o.trail.geometry.computeBoundingSphere();}
+  const feather=e.shot==='feather',magic=e.shot!=='arrow'&&!feather,c=e.ally?(o.c??=new THREE.Color(e.color).toArray()):magic?[.82,.5,1]:feather?[.94,.86,.66]:[.95,.82,.4],size=e.ally?e.size||.32:feather?.4:magic?1:.6;
+  if(o.trail){const a=o.trail.geometry.attributes.position;a.setXYZ(0,e.x,.85,e.y);a.setXYZ(1,e.x-e.dx*(e.ally?1.3:.9),.85,e.y-e.dy*(e.ally?1.3:.9));a.needsUpdate=true;o.trail.geometry.computeBoundingSphere();}
   o.orb.position.set(e.x,.85,e.y);o.orb.scale.setScalar(size*(.9+.1*Math.sin(time*40)));
   if(step>0){const n=Math.max(1,Math.round(step*80*density));for(let i=0;i<n;i++){const k=Math.random();particles.emit({x:lerp(o.lx,e.x,k),h:.85+rand(-.08,.08),z:lerp(o.lz,e.y,k),vx:rand(-.3,.3),vh:rand(-.2,.4),vz:rand(-.3,.3),life:rand(.18,.35),s0:(magic?.26:.14)*rand(.8,1.2),s1:.02,c0:mix(c,WHITE,.4),c1:c,a0:.8});}}
   o.lx=e.x;o.lz=e.y;
+ };
+
+ // Arremesso em arco (bomba e garrafa do Mercenário): a posição sai do tempo do evento, sem estado na simulação.
+ let lobGeo=null;
+ INIT.lob=(o,e)=>{lobGeo=lobGeo||new THREE.SphereGeometry(.2,12,8);const m=new THREE.Mesh(lobGeo,new THREE.MeshBasicMaterial({color:new THREE.Color(e.color||'#2a2420')}));m.renderOrder=11;scene.add(m);o.objs.push(m);o.m=m;};
+ RUN.lob=(o,e)=>{
+  const u=clamp01(e.time/e.duration),x=lerp(e.x,e.tx,u),z=lerp(e.y,e.ty,u),h=lerp(1.1,.2,u)+(e.peak||2)*4*u*(1-u);
+  o.m.position.set(x,h,z);o.m.rotation.set(u*9,u*5,0);
+  const n=Math.max(1,Math.round(2*density));for(let i=0;i<n;i++)particles.emit({x,h:h+.2,z,vx:rand(-.4,.4),vh:rand(.2,1),vz:rand(-.4,.4),life:rand(.15,.3),s0:e.fuse?.14:.2,s1:.02,c0:e.fuse?[1,.9,.5]:[1,.6,.2],c1:[1,.35,.05],a0:.9});
  };
 
  // Forma de Lich: aura que evapora do corpo, vento da foice em voo e fiapos dos espíritos.

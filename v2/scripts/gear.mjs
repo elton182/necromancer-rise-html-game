@@ -2,14 +2,16 @@
 // Geração, validação, preços e bônus pertencem ao modelo compartilhado de equipamentos.
 import SharedEQ from './shared-equipment.mjs';
 import WarriorEQ,{allowed as warriorAllowed} from './warrior-equipment.mjs';
-const EQ=SharedEQ,gearModel=s=>s.world.classId==='warrior'?WarriorEQ:SharedEQ;
+import {gearCatalog} from './class-gear.mjs';
+import {isMartial} from './class-registry.mjs';
+const EQ=SharedEQ,gearModel=s=>gearCatalog(s.world.classId);
 import Build from './shared-build.mjs';
 import {syncSkills} from './grimoire.mjs';
 import {recalculateHorde} from './horde.mjs';
 import {lootAllowed} from './drops.mjs';
 export const CAPACITY=EQ.CAPACITY,RARITIES=['common','magic','rare','epic'];
 const ok=message=>({ok:true,message}),no=message=>({ok:false,message});
-export const gearName=item=>(item.special==='carcomido'?'Osso Carcomido · ':'')+(item.classId==='warrior'?WarriorEQ:SharedEQ).slots[item.type].name+' '+EQ.rarities[item.rarity].name+(item.enhancement?' +'+item.enhancement:'');
+export const gearName=item=>(item.special==='carcomido'?'Osso Carcomido · ':'')+gearCatalog(item.classId).slots[item.type].name+' '+EQ.rarities[item.rarity].name+(item.enhancement?' +'+item.enhancement:'');
 export const compatible=(item,slot)=>item.type===slot||item.type.startsWith('ring')&&slot.startsWith('ring');
 // IDs seguem o padrão aceito pelo validador (letras, números, hífen e sublinhado).
 export function newItemId(s){s.gearSerial=(s.gearSerial||0)+1;return 'eq-'+Date.now().toString(36)+'-'+s.gearSerial+'-'+Math.floor(s.world.random()*36**4).toString(36);}
@@ -19,7 +21,7 @@ const blocked=s=>s.scene==='dead'?'Você caiu: a mochila só muda em uma nova te
 export function equip(s,id,slot){
  const EQ=gearModel(s),c=s.save.character,reason=blocked(s);if(reason)return no(reason);
  const index=c.gearBag.findIndex(i=>i.id===id),item=c.gearBag[index];
- if(!item||!EQ.slots[slot]||s.world.classId==='warrior'&&!warriorAllowed(item)||s.world.classId!=='warrior'&&item.classId==='warrior'||!compatible(item,slot))return no('Peça incompatível com este espaço.');
+ if(!item||!EQ.slots[slot]||isMartial(s.world.classId)&&!EQ.allowed(item)||!isMartial(s.world.classId)&&item.classId==='warrior'||!compatible(item,slot))return no('Peça incompatível com este espaço.');
  const old=c.equipment[slot];c.gearBag.splice(index,1);if(old)c.gearBag.push(old);c.equipment[slot]=item;refreshGear(s);return ok(gearName(item)+' equipado.');
 }
 export function unequip(s,slot){
@@ -52,14 +54,14 @@ export function collectAll(s){
  w.drops=[];return {collected,left};
 }
 
-// Bran melhora a base em 25% por grau; afixos e nível permanecem intactos.
+// Bruno melhora a base em 25% por grau; afixos e nível permanecem intactos.
 export const forgePrice=item=>EQ.price(item.level)*((item.enhancement||0)+1);
 export const rerollPrice=item=>EQ.price(item.level)*2;
 export function forge(s,id,index=null){
- const c=s.save.character,item=[...c.gearBag,...Object.values(c.equipment)].find(i=>i.id===id),EQ=item?.classId==='warrior'?WarriorEQ:SharedEQ;
- if(s.scene!=='village')return no('Bran atende apenas na vila.');
+ const c=s.save.character,item=[...c.gearBag,...Object.values(c.equipment)].find(i=>i.id===id),EQ=gearCatalog(item?.classId);
+ if(s.scene!=='village')return no('Bruno atende apenas na vila.');
  if(!item)return no('Peça não encontrada.');
- if(s.world.classId==='warrior'&&!warriorAllowed(item))return no('Esta peça é exclusiva do Necromante.');
+ if(isMartial(s.world.classId)&&!gearModel(s).allowed(item))return no(s.world.classId==='warrior'?'Esta peça é exclusiva do Necromante.':'Esta peça não serve a esta classe.');
  const upgrade=index===null,cost=upgrade?forgePrice(item):rerollPrice(item);
  if(upgrade&&(item.enhancement||0)>=5)return no('Aprimoramento máximo: +5.');
  if(!upgrade&&(!Number.isInteger(index)||!item.affixes[index]))return no('Atributo inválido.');
@@ -71,5 +73,5 @@ export function forge(s,id,index=null){
   const stat=pool[Math.floor(s.world.random()*pool.length)],def=EQ.attributes[stat],scale=def.fixed?1:1+(item.level-1)*.12;
   item.affixes[index]={stat,value:Math.round(def.base*scale*(.7+s.world.random()*.6)*100)/100};
  }
- c.gold-=cost;refreshGear(s);return ok(upgrade?'Bran aprimorou a peça para +'+item.enhancement+'.':'Bran substituiu o atributo.');
+ c.gold-=cost;refreshGear(s);return ok(upgrade?'Bruno aprimorou a peça para +'+item.enhancement+'.':'Bruno substituiu o atributo.');
 }

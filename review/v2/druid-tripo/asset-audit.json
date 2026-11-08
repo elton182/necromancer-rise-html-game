@@ -1,0 +1,37 @@
+[
+  {
+    "model": "flora_tripo_druid",
+    "triangles": 18938,
+    "materials": 1,
+    "bones": 65,
+    "unweighted": 0,
+    "uv_layers": 1,
+    "clips": [
+      "idle",
+      "walk",
+      "cast",
+      "cast_up",
+      "slam",
+      "dodge",
+      "death"
+    ]
+  },
+  {
+    "model": "flora_tripo_wolf",
+    "triangles": 19526,
+    "materials": 1,
+    "bones": 65,
+    "unweighted": 0,
+    "uv_layers": 1,
+    "clips": [
+      "idle",
+      "walk",
+      "claw_1",
+      "claw_2",
+      "howl",
+      "leap",
+      "dodge",
+      "death"
+    ]
+  }
+]

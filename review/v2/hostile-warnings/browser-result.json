@@ -1,0 +1,256 @@
+{
+  "results": {
+    "slam": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 3.2,
+          "arc": null,
+          "length": null,
+          "progress": 0.5784313725490203,
+          "mood": "plain"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "smash": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 1.6,
+          "arc": null,
+          "length": null,
+          "progress": 0.6190476190476191,
+          "mood": "plain"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "area": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 2.6,
+          "arc": null,
+          "length": null,
+          "progress": 0.6666666666666666,
+          "mood": "plain"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "fire": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 2.2,
+          "arc": null,
+          "length": null,
+          "progress": 0.4416666666666672,
+          "mood": "fire"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "rain": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 2.8,
+          "arc": null,
+          "length": null,
+          "progress": 0.6833333333333338,
+          "mood": "plain"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "pool": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 2.5,
+          "arc": null,
+          "length": null,
+          "progress": null,
+          "mood": "pool"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "cut": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 3.5,
+          "arc": 2.356194490192345,
+          "length": null,
+          "progress": 0.5476190476190476,
+          "mood": null
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "sector": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 5,
+          "arc": 1.6,
+          "length": null,
+          "progress": 0.55,
+          "mood": null
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "shot": {
+      "drawn": [
+        {
+          "fx": "dangerLine",
+          "radius": 0.2,
+          "arc": null,
+          "length": 15,
+          "progress": 0.5897435897435896,
+          "mood": null
+        }
+      ],
+      "hazards": 15,
+      "loose": 0
+    },
+    "feathers": {
+      "drawn": [
+        {
+          "fx": "dangerLine",
+          "radius": 0.15,
+          "arc": null,
+          "length": 8.5,
+          "progress": 0.5555555555555556,
+          "mood": null
+        },
+        {
+          "fx": "dangerLine",
+          "radius": 0.15,
+          "arc": null,
+          "length": 8.5,
+          "progress": 0.5555555555555556,
+          "mood": null
+        },
+        {
+          "fx": "dangerLine",
+          "radius": 0.15,
+          "arc": null,
+          "length": 8.5,
+          "progress": 0.5555555555555556,
+          "mood": null
+        }
+      ],
+      "hazards": 24,
+      "loose": 0
+    },
+    "web": {
+      "drawn": [
+        {
+          "fx": "dangerLine",
+          "radius": 0.22,
+          "arc": null,
+          "length": 8,
+          "progress": 0.5777777777777777,
+          "mood": null
+        }
+      ],
+      "hazards": 8,
+      "loose": 0
+    },
+    "charge": {
+      "drawn": [
+        {
+          "fx": "dangerLine",
+          "radius": 0.5,
+          "arc": null,
+          "length": 6,
+          "progress": 0.3333333333333333,
+          "mood": null
+        }
+      ],
+      "hazards": 7,
+      "loose": 0
+    },
+    "cry": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 8,
+          "arc": null,
+          "length": null,
+          "progress": 0.5833333333333335,
+          "mood": null
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "howl": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 3.909090909090912,
+          "arc": null,
+          "length": null,
+          "progress": 0.6818181818181823,
+          "mood": "aura"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    },
+    "group": {
+      "drawn": [
+        {
+          "fx": "dangerRune",
+          "radius": 3.2,
+          "arc": null,
+          "length": null,
+          "progress": 0.43137254901960814,
+          "mood": "plain"
+        },
+        {
+          "fx": "dangerRune",
+          "radius": 3.2,
+          "arc": null,
+          "length": null,
+          "progress": 0.43137254901960814,
+          "mood": "plain"
+        },
+        {
+          "fx": "dangerRune",
+          "radius": 2.8,
+          "arc": null,
+          "length": null,
+          "progress": 0.39999999999999997,
+          "mood": "plain"
+        },
+        {
+          "fx": "dangerRune",
+          "radius": 2.6,
+          "arc": null,
+          "length": null,
+          "progress": 1,
+          "mood": "plain"
+        }
+      ],
+      "hazards": 0,
+      "loose": 0
+    }
+  },
+  "errors": [],
+  "remote": []
+}

@@ -1,4 +1,4 @@
-import {warriorLoadout} from './warrior-model.mjs';
+import {warriorLoadout,warriorStanceId,warriorTornado,warriorVigorFactor} from './warrior-model.mjs';
 import {tickSiegeCombat,tickSiegeEnemy} from './siege-combat.mjs';
 import {initializeSpells,tickSpells,blockEnemyByWalls} from './spells.mjs';
 // Arena experimental com colisões E3. Regras completas da campanha ainda pendentes.
@@ -6,12 +6,16 @@ import {initializeSpells,tickSpells,blockEnemyByWalls} from './spells.mjs';
 import {TRAINING_ARENA,resolvePosition,moveCircle,lineClear,navigate} from './terrain.mjs';
 import {terrainSpeed} from './map-terrain.mjs';
 import {warriorAction,tickWarrior,warriorPose,stopWarriorChannel} from './warrior.mjs';
+import {initializeDruid,druidAction,tickDruid,druidPose} from './druid.mjs';
+import {isWolf,WOLF} from './druid-model.mjs';
+import {initializeMarksman,marksmanAction,tickMarksman,marksmanPose,marksmanMove} from './marksman.mjs';
+import {classInfo,isMarksman} from './class-registry.mjs';
 import {RULES,initializeCombat,castBolt,beginDash,moveDash,updateProjectiles,tickRot,tickBoltCharge,dealDamage} from './combat.mjs';
 import {initializeHorde,tickHorde,POSSESSION} from './horde.mjs';
 import {applyAttributes} from './progression.mjs';
 import {clearDrops,tickDrops} from './drops.mjs';
 import EQ from './shared-equipment.mjs';
-import {tickKing} from './fallen-king.mjs';
+import {tickKing,V2_KING} from './fallen-king.mjs';
 import {initializeLich,tickLich} from './lich-model.mjs';
 import {spawnEnemy,composition,tickEnemy,tickSleep,tickHostiles,R,CORPSE_LIFETIME} from './enemies.mjs';
 export {dealDamage};
@@ -25,42 +29,42 @@ export function createWorld(options={}){
 export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearLevel=1,lootFilter='common',encounterWave=null}={}){
  if(!Number.isInteger(horde)||horde<0||horde>64)throw Error('Quantidade de aliados inválida.');
  Object.assign(w,{actors:[],effects:[],time:0,paused:false,hits:0,horde,armyMode,army:null,onAllyDeath:null,allyShots:[],command:null,castCooldown:0,arena:TRAINING_ARENA,equipment:character?.equipment||{},level:character?.level||1,gearLevel,lootFilter});
- w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.warriorCooldowns=[];w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];
- w.siegeMenu=false;w.encounterWave=encounterWave;w.hostileShots=[];w.hostileZones=[];w.curses=null;w.lootConfig=null;
+ w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.warriorCooldowns=[];w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};w.warriorStance=warriorStanceId(character?.warriorStance);w.warriorStanceReady=0;w.warriorTornadoVariant=warriorTornado(character?.warriorTornadoVariant,w.warriorRanks).id;w.warriorRally=null;w.warriorWaves=[];initializeDruid(w,character);initializeMarksman(w,character);clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];
+ w.siegeMenu=false;w.encounterWave=encounterWave;w.hostileShots=[];w.hostileZones=[];w.curses=null;w.lootConfig=null;w.lootLevelOf=null;
  function spawn(model,team,x,y,hp){const radius=model==='necromancer'?.45:model==='fallenKing'?.48:team==='ally'?.35:.3,pos=resolvePosition({x,y},radius,w.arena);const a={id:w.nextId++,model,team,...pos,radius,hp,maxHp:hp,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,phase:w.actors.length*2.399};w.actors.push(a);return a;}
- w.player=spawn(w.classId==='warrior'?'warrior':'necromancer','player',0,4,RULES.base.hp);w.player.radius=.45;w.aim={x:0,y:-5};initializeCombat(w);initializeSpells(w);initializeLich(w);
+ w.player=spawn(classInfo(w.classId).model,'player',0,4,RULES.base.hp);w.player.radius=.45;w.aim={x:0,y:-5};initializeCombat(w);initializeSpells(w);initializeLich(w);
  if(armyMode==='groups')initializeHorde(w,army);else for(let i=0;i<horde;i++){const a=i*2.399,r=2+i*.06;spawn('skeleton','ally',Math.sin(a)*r,4+Math.cos(a)*r,100);}
- if(w.classId==='warrior')w.actors=w.actors.filter(a=>a.team!=='ally');
+ if(w.classId!=='necromancer')w.actors=w.actors.filter(a=>a.team!=='ally');
  // Um encontro novo começa com vida e mana cheias, calculadas pelo nível, pela árvore e pelos itens atuais.
  applyAttributes(w,{fill:true});
  if(encounterWave){const list=composition(encounterWave,8,w.random);for(let i=0;i<list.length;i++)spawnEnemy(w,list[i],(i%4-1.5)*4,-7-Math.floor(i/4)*4,{wave:encounterWave,tier:encounterWave<6?'common':i===7?'rare':i===5?'magic':'common'});}
  else for(let i=0;i<8;i++)spawn('zombie','enemy',(i%4-1.5)*4,-7-Math.floor(i/4)*4,60).xp=RULES.rewards.enemyXp;
- const bs=EQ.waveStats(encounterWave||1);w.boss=spawn('fallenKing','enemy',1,-13,encounterWave?Math.round(R.boss.hp*bs.hp):1000);Object.assign(w.boss,{xp:Math.round(R.boss.xp*bs.xp),dmg:encounterWave?Math.round(R.boss.dmg*bs.damage):R.boss.dmg,isBoss:true,gearWave:encounterWave||1});
+ const bs=EQ.waveStats(encounterWave||1);w.boss=spawn('fallenKing','enemy',1,-13,Math.round((encounterWave?R.boss.hp*bs.hp:1000)*V2_KING.hp));Object.assign(w.boss,{xp:Math.round(R.boss.xp*bs.xp),dmg:encounterWave?Math.round(R.boss.dmg*bs.damage):R.boss.dmg,isBoss:true,gearWave:encounterWave||1});
 }
 export function cast(w){
- return w.classId==='warrior'?warriorAction(w):castBolt(w);
+ return w.classId==='warrior'?warriorAction(w):w.classId==='druid'?druidAction(w,0):isMarksman(w.classId)?marksmanAction(w):castBolt(w);
 }
 export function dash(w,input={}){return beginDash(w,input);}
 export function setPaused(w,paused){w.paused=!!paused;if(paused){w.boltCharge=null;stopWarriorChannel(w);}}
 function tick(w,dt,input){
- for(const a of w.actors)a.rootTime=Math.max(0,(a.rootTime||0)-dt);w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);w.dash.cooldown=Math.max(0,w.dash.cooldown-dt);w.player.mp=Math.min(w.player.maxMp,w.player.mp+w.player.mpRegen*dt);if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+w.player.hpRegen*dt);w.player.veilTime=Math.max(0,w.player.veilTime-dt);if(w.player.veilTime<1e-9)w.player.veilTime=0;
+ for(const a of w.actors)a.rootTime=Math.max(0,(a.rootTime||0)-dt);w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);w.dash.cooldown=Math.max(0,w.dash.cooldown-dt);if(!isWolf(w))w.player.mp=Math.min(w.player.maxMp,w.player.mp+w.player.mpRegen*warriorVigorFactor(w)*dt);if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+w.player.hpRegen*dt);w.player.veilTime=Math.max(0,w.player.veilTime-dt);if(w.player.veilTime<1e-9)w.player.veilTime=0;
  const p=w.player,x=clamp(Number(input.x)||0,-1,1),y=clamp(Number(input.y)||0,-1,1);
  // Movimento relativo à tela da câmera isométrica.
  let mx=x+y,my=y-x;const length=Math.hypot(mx,my);if(length){const magnitude=Math.min(1,Math.hypot(x,y));mx=mx/length*magnitude;my=my/length*magnitude;}
- const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&length&&p.hp>0&&!(p.rootTime>0)){const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?.55:1)*(w.lich?.moveFactor??1)*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
- tickWarrior(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
+ const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&!w.druidAction?.lock&&marksmanMove(w)>0&&length&&p.hp>0&&!(p.rootTime>0)){const form=(isWolf(w)?WOLF.move:1)*marksmanMove(w);const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
+ tickWarrior(w,dt);tickDruid(w,dt);tickMarksman(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
  if(w.armyMode==='groups')tickHorde(w,dt);
  tickHostiles(w,dt);tickSiegeCombat(w,dt);w.effects=w.effects.filter(f=>!f.webRoot);for(const a of w.actors)if(a.rootTime>0&&a.hp>0)w.effects.push({id:'web-root-'+a.id,webRoot:true,x:a.x,y:a.y,radius:a.radius+.5,color:'#e3e9ec',visual:true,ground:true,fixedRadius:true,time:0,duration:10});
  for(const a of w.actors){
   if(a.groupType)continue;
   a.slowTime=Math.max(0,(a.slowTime||0)-dt);a.timer=Math.max(0,a.timer-dt);a.animationTime+=dt;a.pose=a.labPose||null;
-  if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.web=null;a.rootTime=0;a.jumpZ=0;if(a===w.boss){a.king=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
+  if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.web=null;a.rootTime=0;a.jumpZ=0;if(a===w.boss){a.king=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
   if(a.dummy||a.team==='neutral'||a.siegeGuard)continue;
   if(a.siegeLane!==undefined){tickSiegeEnemy(w,a,dt);continue;}
   if(a.home&&!tickSleep(w,a,dt))continue;
   if(a===w.boss){tickKing(w,a,dt);continue;}
   if(a.typeIndex!==undefined){tickEnemy(w,a,dt);continue;}
-  if(a===p){if(w.classId==='warrior'&&w.warriorCombo&&!dashing&&!length){a.pose=warriorPose(w);continue;}if(w.warriorAction){a.pose=warriorPose(w);if(w.warriorAction.index!==4)a.angle=Math.atan2(w.warriorAction.dx,w.warriorAction.dy);continue;}if(dashing){animate(a,'idle');a.angle=Math.atan2(w.dash.dx,w.dash.dy);}else{if(a.timer<=0)animate(a,moved>1e-5?'walk':'idle');else if(a.animation==='cast')a.pose={anim:'cast',progress:Math.min(1,a.animationTime/.375)};a.angle=Math.atan2(w.aim.x-p.x,w.aim.y-p.y);if(w.lich?.pose)a.pose=w.lich.pose;}continue;}
+  if(a===p){if(w.marksmanAction){a.pose=marksmanPose(w);a.angle=Math.atan2(w.marksmanAction.dx,w.marksmanAction.dy);if(a.pose.upper)animate(a,moved>1e-5?'walk':'idle');continue;}if(w.druidAction){a.pose=druidPose(w);a.angle=w.druidAction.lock||dashing?Math.atan2(w.druidAction.dx,w.druidAction.dy):Math.atan2(w.aim.x-p.x,w.aim.y-p.y);continue;}if(w.classId==='warrior'&&w.warriorCombo&&!dashing&&!length){a.pose=warriorPose(w);continue;}if(w.warriorAction){a.pose=warriorPose(w);if(w.warriorAction.index!==4)a.angle=Math.atan2(w.warriorAction.dx,w.warriorAction.dy);continue;}if(dashing){animate(a,'idle');a.angle=Math.atan2(w.dash.dx,w.dash.dy);}else{if(a.timer<=0)animate(a,moved>1e-5?'walk':'idle');else if(a.animation==='cast')a.pose={anim:'cast',progress:Math.min(1,a.animationTime/.375)};a.angle=Math.atan2(w.aim.x-p.x,w.aim.y-p.y);if(w.lich?.pose)a.pose=w.lich.pose;}continue;}
   let target=p;
   if(a.team==='ally'){
    target=null;let nearest=Infinity;

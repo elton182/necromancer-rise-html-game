@@ -174,7 +174,7 @@ Campanha integrada: `campaign.world` é opcional (`null` nos saves do Ato I por 
 
 Equipamentos na versão 3: os itens v1 e v2 são normalizados pelo modelo compartilhado. Na passagem de v2 para v3, o afixo `defense` é convertido em `defensePercent` com o mesmo valor; os demais dados válidos são preservados. A defesa inerente de vestimenta, capuz e botas é calculada pelo tipo e nível, sem campo adicional no save.
 
-Aprimoramentos de Bran persistem no campo opcional `enhancement` do equipamento (inteiro de 0 a 5; ausente equivale a +0). A base original permanece armazenada; o bônus é calculado ao usar o item. Afixos substituídos usam o mesmo contrato dos afixos sorteados.
+Aprimoramentos de Bruno persistem no campo opcional `enhancement` do equipamento (inteiro de 0 a 5; ausente equivale a +0). A base original permanece armazenada; o bônus é calculado ao usar o item. Afixos substituídos usam o mesmo contrato dos afixos sorteados.
 
 `character.siege` persiste o Cerco ao Ritual: `unlocked` (1–20), `best` (0–20), `wins`, `shards`, `rune` e `runes` (bone/frost/plague/crypt, níveis 0–3). Saves anteriores recebem padrões por `normalizeSiege`; filas, essência, integridade, torres, guardiões e partida corrente não são salvos. Vitória atualiza esse progresso uma vez; importar/carregar começa em cena limpa.
 
@@ -192,22 +192,40 @@ Testes: `node --test v2/tests/character-saves.test.mjs v2/tests/save-session.tes
 
 ## ARANDU — abertura opcional da campanha
 
-`campaign.prologue` persiste etapa, pista da lista e vitória no esconderijo; ausente recebe `null`, preservando o fluxo dos saves anteriores. Personagens de campanhas novas começam em `travel`. `done` encerra a abertura e ativa o abrigo e as quests locais de Jacarandá. `campaign.world.passengerMissing: true` preserva o gancho de Nilo. Entidades, temporizador da flecha, posição e página de diálogo não persistem. Contrato completo em [abertura do ARANDU](v2-prologo-arandu.md).
+`campaign.prologue` persiste etapa, pista da lista e vitória no esconderijo; ausente recebe `null`, preservando o fluxo dos saves anteriores. Personagens de campanhas novas começam em `travel`. `done` encerra a abertura e ativa o abrigo e as quests locais de Jacarandá. `campaign.world.passengerMissing: true` preserva o gancho de João. Entidades, temporizador da flecha, posição e página de diálogo não persistem. Contrato completo em [abertura do ARANDU](v2-prologo-arandu.md).
 
 
 A introdução textual anterior à carroça usa o campo opcional `campaign.prologue.introRead`. Personagens novos recebem `false`; saves anteriores sem o campo assumem `true`. Confirmar **Começar a jornada** registra a leitura antes da primeira conversa, sem alterar etapa, recompensas ou formato do save.
 
 
+### Tempo de jogo
+
+`character.playTime` guarda os segundos jogados fora do menu, sem contar pausa ou aba oculta. O campo é opcional: saves anteriores começam em `0`, e valores negativos ou não numéricos são recusados. O tempo acumula em memória e vai para o disco nas gravações normais. O que se jogou depois da última gravação não aparece em Suas jornadas.
+
 ### Excluir jornadas
 
-Em Carregar, cada personagem tem um botão Excluir. A confirmação identifica o nome e avisa sobre a perda do progresso. Cancelar preserva o save. Excluir remove o personagem do catálogo e, se ativo, remove também seu slot e limpa a sessão em memória. Os demais personagens e o save legado são preservados.
+Em Suas jornadas, o botão Excluir age sobre o personagem selecionado. A confirmação identifica o nome e avisa sobre a perda do progresso. Cancelar preserva o save. Excluir remove o personagem do catálogo e, se ativo, remove também seu slot e limpa a sessão em memória. Os demais personagens e o save legado são preservados.
 
 
 A descoberta da caverna também persiste `campaign.prologue.caveHeard`. O campo é marcado ao concluir a conversa dos guardas. Se ausente, assume `true` quando `clue` ou `caveCleared` já eram verdadeiros, e `false` nos demais casos. Não modifica o formato nem a chave do save.
 
 ### Classe Guerreiro
 
-`character.classId` aceita `necromancer` (padrão para saves antigos) ou `warrior`. `character.warriorRanks` guarda `strength`, `vitality` e `armor`, com valores de 0 a 5, limitados ao orçamento do nível. Animação, combo, avanço e recargas não são persistidos. Veja [Guerreiro](v2-guerreiro.md).
+`character.classId` aceita `necromancer` (padrão para saves antigos), `warrior` ou `druid`. `character.warriorRanks` guarda `strength`, `vitality` e `armor`, com valores de 0 a 5, limitados ao orçamento do nível. Animação, combo, avanço e recargas não são persistidos. Veja [Guerreiro](v2-guerreiro.md).
 
 
-O Guerreiro também persiste os investimentos dos três ramos em `character.warriorRanks` e os itens marciais com `classId: "warrior"`. `character.warriorEquipmentVersion: 1` marca a entrega única de espada/escudo para saves anteriores da classe; retirar ou vender essas peças não as recria. Itens antigos incompatíveis são preservados, com opção de guardar; afixos mágicos/de horda não contribuem aos atributos marciais. Voo do escudo, canalização e bônus de Ímpeto/Retaliação são transitórios e não são gravados. Consulte [Guerreiro](v2-guerreiro.md).
+`character.warriorStance` aceita `offensive` ou `defensive` (padrão) e `character.warriorTornadoVariant` aceita `base` (padrão), `cyclone` ou `whirl`; uma variante cujo nó não foi aprendido volta a `base`. `character.warriorLoadout` guarda seis ações distintas entre as oito, sempre com Cortes (0) e Esquiva (3); um valor fora disso volta à barra padrão. Saves antigos recebem esses padrões sem migração. Recarga da postura, efeito do Brado e ondas em voo não são persistidos.
+
+O Guerreiro também persiste os investimentos dos ramos em `character.warriorRanks` e os itens marciais com `classId: "warrior"`. `character.warriorEquipmentVersion: 1` marca a entrega única de espada/escudo para saves anteriores da classe; retirar ou vender essas peças não as recria. Itens antigos incompatíveis são preservados, com opção de guardar; afixos mágicos/de horda não contribuem aos atributos marciais. Voo do escudo, canalização e bônus de Ímpeto/Retaliação são transitórios e não são gravados. Consulte [Guerreiro](v2-guerreiro.md).
+
+Arqueira e Mercenário (`classId: "archer"` / `"mercenary"`) persistem a árvore em `character.marksmanRanks`, normalizada pelo nível e pelos nós da classe. As armas próprias (Arco, Besta) levam o `classId` da classe; as demais peças, o selo marcial. `character.marksmanEquipmentVersion: 1` marca a entrega única da arma inicial a personagens anteriores; vender ou guardar a arma não a recria. Ações, projéteis, bombas, zonas, minas e o falcão são transitórios e não são gravados. Consulte [Arqueira e Mercenário](v2-arqueira-mercenario.md). O Mago (`classId: "mage"`) usa o mesmo campo `character.marksmanRanks` com os nós da classe e o catálogo arcano compartilhado; não recebe arma inicial nem `marksmanEquipmentVersion`.
+
+### Classe Druida
+
+`character.druidRanks` guarda os 14 nós da árvore da Druida (`spark`, `chain`, `storm`, `roots`, `thornbind`, `rejuvenate`, `wolf`, `leap`, `wildHeart`, `howl`, `vitality`, `wisdom`, `sap`, `attunement`), de 0 até o máximo de cada nó, recalculados pelo orçamento e pelos pré-requisitos do nível ao carregar. Saves sem o campo, de qualquer classe, recebem zeros. A Druida usa os itens do catálogo do Necromante. Forma de lobo, ações, recargas, nuvens da Tempestade e cura em andamento são transitórios e não são gravados. Consulte [Druida](v2-druida.md).
+
+## Áreas ligadas (Várzea de Itaúna)
+
+`campaign.world.nilo` guarda a etapa de [O rastro de João](v2-itauna.md#o-rastro-de-joão): `road`, `cave`, `fort`, `return` ou `done`. Fica ausente enquanto a missão não foi aceita (equivale a `locked`), só vale com `stage` `complete` e valores desconhecidos são descartados; saves anteriores continuam sem o campo.
+
+`campaign.world.area` e `campaign.world.entry` guardam a última passagem usada fora do mundo de Jacarandá. Saves anteriores não têm os campos e continuam no mundo; uma área desconhecida é ignorada ao normalizar. `campaign.world.cleared` também aceita os grupos permanentes da área. Ao morrer, o jogador retoma nessa entrada; **Retomar no abrigo** apaga os dois campos. Veja [v2-itauna.md](v2-itauna.md).

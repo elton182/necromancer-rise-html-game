@@ -1,0 +1,47 @@
+{
+ "errors": [],
+ "layout": [
+  {
+   "id": "hud",
+   "left": 321,
+   "top": 742,
+   "right": 1120,
+   "bottom": 880
+  },
+  {
+   "id": "game-nav",
+   "left": 16,
+   "top": 16,
+   "right": 587,
+   "bottom": 50
+  },
+  {
+   "id": "minimap-panel",
+   "left": 1238,
+   "top": 14,
+   "right": 1422,
+   "bottom": 210
+  },
+  {
+   "id": "objective-bar",
+   "left": 593,
+   "top": 12,
+   "right": 847,
+   "bottom": 81
+  },
+  {
+   "id": "campaign-panel",
+   "left": 0,
+   "top": 0,
+   "right": 0,
+   "bottom": 0
+  }
+ ],
+ "nav": [
+  "pause:Relicário · Esc",
+  "open-gear:Inventário [I]",
+  "open-grimoire:Grimório e maestrias",
+  "open-help:Ajuda · H"
+ ],
+ "warrior": "warrior"
+}

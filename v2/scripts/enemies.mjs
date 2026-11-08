@@ -46,6 +46,9 @@ function area(w,e,x,y,r,n,mult=1,def=null){
  if(def)fx(w,'shockwave',{x,y,radius:r,color:def.color,mood:def.kind==='fire'?'fire':'dust',shake:def.kind==='leap'?.3:.12,duration:.5});
 }
 function mark(w,e,key,x,y,r,color,extra={}){w.effects.push({id:`enemy-${e.id}-${key}`,enemyWarning:e.id,x,y,radius:r,color,kind:'enemyWarning',harmless:e.typeIndex===5,visual:true,ground:true,fixedRadius:true,time:0,duration:10,...extra});}
+// Aviso em linha: um único desenho no chão. As marcas por trecho continuam em `w.effects`, sem desenho, porque guiam a evasão da horda.
+function markLine(w,e,key,x,y,dx,dy,length,r,color,progress,points){mark(w,e,key+'-line',x,y,r,color,{kind:'enemyLine',fx:'dangerLine',dx,dy,length,progress});for(const [i,k] of points.entries())mark(w,e,key+'-'+i,x+dx*length*k,y+dy*length*k,r,color,{fx:'hazardPoint'});}
+const pointsEvery=(length,step=1)=>Array.from({length:Math.floor(length/step)},(_,i)=>(i+1)*step/length);
 export function shoot(w,e,dx,dy,damage,speed,life,kind='arrow',mult=1){w.hostileShots.push({id:w.nextId++,source:e.id,x:e.x,y:e.y,dx,dy,speed,damage:Math.round(power(w,e,damage)*mult),remaining:speed*life,kind,rogueTrail:kind==='arrow'&&e.model==='enemyRogue'});fx(w,'muzzle',{x:e.x,y:e.y,dx,dy,color:kind==='arrow'?'#edce77':kind==='feather'?FEATHER.color:'#d08cff',duration:.22});}
 // Inimigos vivos e ativos ao redor do alvo, para a IA tática (papéis, vagas de ataque e leque de atiradores).
 const mates=(w,t)=>w.actors.filter(a=>a.team==='enemy'&&a.typeIndex!==undefined&&a.siegeLane===undefined&&alive(a)&&(!a.home||a.alert)&&Math.hypot(a.x-t.x,a.y-t.y)<16);
@@ -56,7 +59,7 @@ export function tickSleep(w,e,dt){
  const p=w.player,close=Math.hypot(e.x-p.x,e.y-p.y)<11||w.actors.some(a=>a.team==='ally'&&alive(a)&&Math.hypot(e.x-a.x,e.y-a.y)<7);
  if(close||e.hp<(e.lastHp??e.maxHp))e.alert=true;
  e.lastHp=e.hp;
- if(e.alert&&Math.hypot(e.x-p.x,e.y-p.y)>30&&!close){e.alert=false;e.ability=null;e.strike=null;e.volley=null;e.slam=null;e.cry=null;e.cut=null;e.jumpZ=0;e.rain=null;e.howl=null;e.king=null;e.pose=null;}
+ if(e.alert&&Math.hypot(e.x-p.x,e.y-p.y)>30&&!close){e.alert=false;e.ability=null;e.strike=null;e.volley=null;e.slam=null;e.cry=null;e.cut=null;e.jumpZ=0;e.rain=null;e.howl=null;e.king=null;e.kingV2=null;e.pose=null;}
  if(e.lootTier&&e.lootTier!=='common'){e.abilityLabel=e.isBoss?'Rei Caído':e.type.name+' · '+Expedition.tiers[e.lootTier].name;e.labelTime=.2;}
  if(e.alert)return true;
  if(e.patrol){
@@ -101,14 +104,14 @@ export function tickEnemy(w,e,dt){
  if(e.typeIndex===8){
   e.webCd=Math.max(0,(e.webCd??3)-dt);
   if(e.web){const a=e.web;a.time+=dt;e.angle=Math.atan2(a.dx,a.dy);e.animation='attack';
-   for(let i=1;i<=8;i++)mark(w,e,'web'+i,e.x+a.dx*i,e.y+a.dy*i,.22,'#e3e9ec');
+   markLine(w,e,'web',e.x,e.y,a.dx,a.dy,8,.22,'#e3e9ec',a.time/.75,pointsEvery(8));
    if(a.time>=.75){shoot(w,e,a.dx,a.dy,1,10,.9,'web');e.web=null;e.webCd=7;e.timer=.35;}return;
   }
   if(e.webCd<=0&&d>=2&&d<=8&&lineClear(e,t,.1,w.arena)){e.web={time:0,dx:dx/d,dy:dy/d};e.actionId++;return;}
  }
  if(e.typeIndex===0){
   if(e.cut){const a=e.cut;a.time+=dt;e.angle=Math.atan2(a.dx,a.dy);
-   if(a.time<CUT.wind){e.pose={anim:'heavy_windup',progress:a.time/CUT.wind};mark(w,e,'cut',e.x,e.y,CUT.range,'#efb76b',{arc:CUT.arc,direction:Math.atan2(a.dy,a.dx),progress:a.time/CUT.wind});}
+   if(a.time<CUT.wind){e.pose={anim:'heavy_windup',progress:a.time/CUT.wind};mark(w,e,'cut',e.x,e.y,CUT.range,'#efb76b',{fx:'dangerRune',arc:CUT.arc,direction:Math.atan2(a.dy,a.dx),progress:a.time/CUT.wind});}
    else{if(!a.hit){a.hit=true;for(const victim of targets(w)){const vx=victim.x-e.x,vy=victim.y-e.y,distance=Math.hypot(vx,vy);if(distance<=CUT.range&&(distance<.1||(vx*a.dx+vy*a.dy)/distance>=Math.cos(CUT.arc/2))&&lineClear(e,victim,.05,w.arena))dealDamage(w,victim,power(w,e,e.dmg)*CUT.mult,e);}fx(w,'slash',{x:e.x,y:e.y,dx:a.dx,dy:a.dy,radius:CUT.range,arc:CUT.arc,color:'#ffe2ae',h:.9,sparks:16,duration:.4});w.combatEvents.push({kind:'soldierCut'});}
     e.pose={anim:'heavy_attack',progress:Math.min(1,(a.time-CUT.wind)/.2)};}
    e.animation=e.pose.anim;if(a.time>=CUT.wind+.25){e.cut=null;e.abilityCd=CUT.cooldown;e.atkTimer=.5;}return;
@@ -119,15 +122,15 @@ export function tickEnemy(w,e,dt){
  if(STRIKE_CLIPS[e.typeIndex]){
   const clip=STRIKE_CLIPS[e.typeIndex],orc=e.typeIndex===10,wind=orc?SMASH.wind:.25,swing=.15,total=orc?SMASH.total:.6,range=(orc?SMASH.range:1.4*e.type.sc)+(t.radius||.3);
   if(e.slam){const a=e.slam;a.time+=dt;e.angle=a.angle;
-   if(a.time<SLAM.wind+SLAM.flight)mark(w,e,'landing',a.px,a.py,SLAM.radius,SLAM.color,{fx:'dangerRune',progress:Math.min(1,a.time/(SLAM.wind+SLAM.flight))});
-   if(a.time<SLAM.wind){e.pose={anim:'smash_windup',progress:a.time/SLAM.wind};mark(w,e,'slam',a.px,a.py,SLAM.radius,SLAM.color,{fx:'dangerRune',progress:a.time/SLAM.wind,mood:'plain'});}
+   if(a.time<SLAM.wind+SLAM.flight)mark(w,e,'landing',a.px,a.py,SLAM.radius,SLAM.color,{fx:'dangerRune',progress:Math.min(1,a.time/(SLAM.wind+SLAM.flight)),mood:'plain'});
+   if(a.time<SLAM.wind)e.pose={anim:'smash_windup',progress:a.time/SLAM.wind};
    else if(a.time<SLAM.wind+SLAM.flight){const u=Math.min(1,(a.time-SLAM.wind)/SLAM.flight);e.x=a.sx+(a.px-a.sx)*u;e.y=a.sy+(a.py-a.sy)*u;e.jumpZ=Math.sin(u*Math.PI)*3;e.pose={anim:'smash_windup',progress:1};}
    else{e.x=a.px;e.y=a.py;e.jumpZ=0;if(!a.hit){a.hit=true;w.combatEvents.push({kind:'orcSlam'});fx(w,'groundBreak',{x:a.px,y:a.py,radius:SLAM.radius,color:'#bfa282',shake:.5,duration:1.2});area(w,e,a.px,a.py,SLAM.radius,e.dmg,SLAM.mult,{color:SLAM.color,kind:'leap'});}
     e.pose=a.time<SLAM.wind+SLAM.flight+SLAM.hit?{anim:'smash',progress:(a.time-SLAM.wind-SLAM.flight)/SLAM.hit}:{anim:'recover',progress:Math.min(1,(a.time-SLAM.wind-SLAM.flight-SLAM.hit)/(SLAM.total-SLAM.wind-SLAM.flight-SLAM.hit))};}
    e.animation=e.pose.anim;if(a.time>=SLAM.total){e.slam=null;e.abilityCd=SLAM.cooldown;e.atkTimer=Math.max(e.atkTimer,.6);}return;
   }
   if(e.volley){const v=e.volley;v.time+=dt;e.angle=Math.atan2(v.dx,v.dy);
-   if(v.time<FEATHER.wind){e.pose={anim:'feather_windup',progress:v.time/FEATHER.wind};featherDirs(v).forEach((q,j)=>{for(let i=1;i<=Math.floor(FEATHER.reach);i++)mark(w,e,'f'+j+'-'+i,e.x+q.x*i,e.y+q.y*i,.15,FEATHER.color);});}
+   if(v.time<FEATHER.wind){e.pose={anim:'feather_windup',progress:v.time/FEATHER.wind};featherDirs(v).forEach((q,j)=>markLine(w,e,'f'+j,e.x,e.y,q.x,q.y,FEATHER.reach,.15,FEATHER.color,v.time/FEATHER.wind,pointsEvery(FEATHER.reach)));}
    else{if(!v.fired){v.fired=true;for(const q of featherDirs(v))shoot(w,e,q.x,q.y,e.dmg,FEATHER.speed,FEATHER.reach/FEATHER.speed,'feather',FEATHER.mult);}
     e.pose=v.time<FEATHER.wind+FEATHER.throw?{anim:'feather',progress:(v.time-FEATHER.wind)/FEATHER.throw}:{anim:'recover',progress:Math.min(1,(v.time-FEATHER.wind-FEATHER.throw)/(FEATHER.total-FEATHER.wind-FEATHER.throw))};}
    e.animation=e.pose.anim;if(v.time>=FEATHER.total){e.volley=null;e.abilityCd=FEATHER.cooldown;e.atkTimer=Math.max(e.atkTimer,.6);}return;
@@ -162,13 +165,13 @@ export function tickEnemy(w,e,dt){
    if(a.time>=HOWL.total){e.howl=null;e.howlCd=HOWL.cooldown;e.atkTimer=Math.max(e.atkTimer,.8);}return;
   }
   if(!e.ability){e.howlCd=Math.max(0,(e.howlCd??HOWL.initial[0]+w.random()*(HOWL.initial[1]-HOWL.initial[0]))-dt);
-   if(e.howlCd<=0&&d<=HOWL.range){const alive=w.actors.filter(a=>a.hp>0&&a.typeIndex===4);if(alive.filter(a=>a.summoned===e.id).length<HOWL.cap&&alive.length<HOWL.hounds){e.howl={time:0,called:false};w.combatEvents.push({kind:'wolfHowl'});fx(w,'roar',{x:e.x,y:e.y,radius:HOWL.radius,color:HOWL.color,duration:HOWL.wind});e.actionId++;e.pose={anim:'howl',progress:0};e.animation='howl';return;}}}
+   if(e.howlCd<=0&&d<=HOWL.range){const alive=w.actors.filter(a=>a.hp>0&&a.typeIndex===4);if(alive.filter(a=>a.summoned===e.id).length<HOWL.cap&&alive.length<HOWL.hounds){e.howl={time:0,called:false};w.combatEvents.push({kind:'wolfHowl'});fx(w,'roar',{x:e.x,y:e.y,radius:HOWL.radius,color:HOWL.color,mood:'howl',duration:HOWL.wind});e.actionId++;e.pose={anim:'howl',progress:0};e.animation='howl';return;}}}
  }
  if(e.type.id==='cryptHound'){
  const base=e.dmg;e.dmg=power(w,e,base);const busy=Hound.update(e,dt,{target:()=>target(w,e),bound:(x,y)=>resolvePosition({x,y},.5,w.arena),sweep:(ax,ay,bx,by)=>{
  const q=moveCircle({x:ax,y:ay},{x:bx-ax,y:by-ay},.5,w.arena,{slide:false}),len=Math.hypot(bx-ax,by-ay);let hit=q.blocked?{t:len?q.distance/len:0,target:null}:null;
  const wall=firstWallHit(w,{x:ax,y:ay},{x:bx,y:by},.5);if(wall&&(!hit||wall.t<=hit.t))hit={t:wall.t,target:null};for(const a of targets(w)){const f=Hound.circleHit(ax,ay,bx,by,a.x,a.y,.5);if(f!==null&&(!hit||f<hit.t))hit={t:f,target:a};}return hit;},damage:(a,n)=>dealDamage(w,a,n,e)});e.dmg=base;
- if(busy){const a=e.ability;if(a){e.angle=Math.atan2(a.dx,a.dy);e.animation=a.phase==='charge'?'charge':a.phase==='recover'?'recover':'windup';e.pose={anim:e.animation,progress:Math.min(1,a.time/(a.phase==='windup'?Hound.ability.windup:a.phase==='recover'?Hound.ability.recovery:Hound.ability.distance/Hound.ability.speed))};if(a.phase==='windup')for(let i=0;i<=6;i++)mark(w,e,i,a.sx+a.dx*a.distance*i/6,a.sy+a.dy*a.distance*i/6,.5,Hound.ability.color);}return;}
+ if(busy){const a=e.ability;if(a){e.angle=Math.atan2(a.dx,a.dy);e.animation=a.phase==='charge'?'charge':a.phase==='recover'?'recover':'windup';e.pose={anim:e.animation,progress:Math.min(1,a.time/(a.phase==='windup'?Hound.ability.windup:a.phase==='recover'?Hound.ability.recovery:Hound.ability.distance/Hound.ability.speed))};if(a.phase==='windup')markLine(w,e,'charge',a.sx,a.sy,a.dx,a.dy,a.distance,.5,Hound.ability.color,a.time/Hound.ability.windup,[0,1/6,2/6,3/6,4/6,5/6,1]);}return;}
  }else if(e.type.id==='warAcolyte'){
  if(Acolyte.update(e,dt,{target:()=>target(w,e),allies:()=>w.actors.filter(a=>a.team==='enemy')})){const a=e.ability;if(a){e.animation=a.phase==='channel'?'channel':'windup';e.pose={anim:e.animation,progress:a.time/(a.phase==='channel'?Acolyte.skill.duration:Acolyte.skill.windup)};mark(w,e,'aura',e.x,e.y,Acolyte.skill.radius,Acolyte.skill.color,{fx:'dangerRune',progress:1,mood:'aura',noFill:true});}return;}
  }else{
@@ -176,7 +179,7 @@ export function tickEnemy(w,e,dt){
  if(a.phase==='air'){const u=Math.min(1,a.time/.45);e.x=a.sx+(a.tx-a.sx)*u;e.y=a.sy+(a.ty-a.sy)*u;e.jumpZ=Math.sin(u*Math.PI)*2.7;e.pose={anim:'attack',progress:.5+u*.5};if(u>=1){e.jumpZ=0;area(w,e,a.tx,a.ty,def.radius,e.dmg,def.mult,def);e.ability=null;e.abilityCd=def.cooldown;e.atkTimer=1;}}
  else if(a.time+1e-9>=def.windup){if(def.kind==='powerShot')shoot(w,e,a.dx,a.dy,e.dmg,18,15/18,'arrow',def.mult);else if(def.kind==='leap'){a.phase='air';a.time=0;a.sx=e.x;a.sy=e.y;}else{area(w,e,a.tx,a.ty,def.radius,e.dmg,def.mult,def);if(def.kind==='fire')w.hostileZones.push({id:w.nextId++,source:e.id,x:a.tx,y:a.ty,radius:def.radius,life:3,span:3,tick:1,damage:Math.max(1,Math.round(power(w,e,e.dmg)*.3)),fire:true,color:def.color});}if(def.kind!=='leap'){e.ability=null;e.abilityCd=def.cooldown;e.atkTimer=1;}}
  if(!e.ability&&(e.typeIndex===0||e.typeIndex===3)){e.castRecovery={time:0,clip:e.typeIndex===0?'heavy_attack':'eruption_cast'};e.actionId++;e.pose={anim:e.castRecovery.clip,progress:0};}
- if(e.ability){if(def.kind==='powerShot')for(let i=1;i<=15;i++)mark(w,e,i,e.x+a.dx*i,e.y+a.dy*i,.2,def.color);else mark(w,e,'area',a.tx,a.ty,def.radius,def.color,{fx:'dangerRune',progress:a.phase==='air'?1:Math.min(1,a.time/def.windup),mood:def.kind==='fire'?'fire':'plain'});}return;
+ if(e.ability){if(def.kind==='powerShot')markLine(w,e,'shot',e.x,e.y,a.dx,a.dy,15,.2,def.color,a.time/def.windup,pointsEvery(15));else mark(w,e,'area',a.tx,a.ty,def.radius,def.color,{fx:'dangerRune',progress:a.phase==='air'?1:Math.min(1,a.time/def.windup),mood:def.kind==='fire'?'fire':'plain'});}return;
  }
  e.abilityCd=Math.max(0,e.abilityCd-dt);if(def&&e.abilityCd<=0&&d<=def.range&&d>=(def.minRange||0)){const p=def.kind==='heavy'?e:def.kind==='leap'?resolvePosition(t,e.radius,w.arena):t;e.ability={phase:'windup',time:0,tx:p.x,ty:p.y,dx:dx/d,dy:dy/d};e.actionId++;return;}
  }
@@ -197,5 +200,5 @@ export function tickHostiles(w,dt){
  }
  // Poças com `delay` só avisam (cor clara) e depois causam dano a cada segundo; `gearWave` vem da fonte ou do próprio dado.
  for(const z of w.hostileZones){if(z.delay>0){z.delay-=dt;continue;}const active=Math.min(dt,z.life);z.tick-=active;while(z.tick<=1e-9){for(const t of targets(w))if(Math.hypot(t.x-z.x,t.y-z.y)<=z.radius)dealDamage(w,t,z.damage,{gearWave:z.gearWave??w.actors.find(a=>a.id===z.source)?.gearWave??1});z.tick++;}z.life-=dt;}
- w.hostileZones=w.hostileZones.filter(z=>z.life>1e-9);w.effects=w.effects.filter(f=>!f.hostileZone);for(const z of w.hostileZones)w.effects.push({id:`zone-${z.id}`,hostileZone:true,x:z.x,y:z.y,radius:z.radius,color:z.delay>0?'#c6d48a':z.color||'#ff8951',visual:true,ground:true,fixedRadius:true,time:0,duration:10,...(z.fire&&!(z.delay>0)?{fx:'fireField',remaining:z.life,span:z.span||z.life}:{})});
+ w.hostileZones=w.hostileZones.filter(z=>z.life>1e-9);w.effects=w.effects.filter(f=>!f.hostileZone);for(const z of w.hostileZones){const waiting=z.delay>0;if(waiting)z.delayTotal??=z.delay;w.effects.push({id:`zone-${z.id}`,hostileZone:true,x:z.x,y:z.y,radius:z.radius,color:waiting?z.color||'#c6d48a':z.color||'#ff8951',visual:true,ground:true,fixedRadius:true,time:0,duration:10,...(z.fire&&!waiting?{fx:'fireField',remaining:z.life,span:z.span||z.life}:waiting?{fx:'dangerRune',mood:'plain',progress:1-z.delay/z.delayTotal}:{fx:'dangerRune',mood:'pool'})});}
 }

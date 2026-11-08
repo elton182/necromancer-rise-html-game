@@ -85,5 +85,5 @@ test('sinergias são temporárias, consumidas uma vez e morte limpa o escudo',()
 test('inimigo soldado usa modelo anterior e jogador preserva só oito clipes',()=>{
  const registry=JSON.parse(readFileSync(new URL('../assets/models.json',import.meta.url)));
  assert.equal(registry.enemySoldier.path,'blender/exports/v2_enemy_knight.glb');assert.notEqual(registry.enemySoldier.path,registry.warrior.path);
- const b=readFileSync(new URL('../../blender/exports/warrior.glb',import.meta.url));const gltf=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));assert.equal(gltf.animations.length,10);assert.equal(new Set(gltf.animations.map(a=>a.name)).size,10);assert.equal(gltf.meshes.length,1);assert.ok('_WARRIOR_SHIELD' in gltf.meshes[0].primitives[0].attributes);
+ const b=readFileSync(new URL('../../blender/exports/warrior.glb',import.meta.url));const gltf=JSON.parse(b.subarray(20,20+b.readUInt32LE(12)));assert.equal(gltf.animations.length,11);assert.equal(new Set(gltf.animations.map(a=>a.name)).size,11);assert.equal(gltf.meshes.length,1);assert.ok('_WARRIOR_SHIELD' in gltf.meshes[0].primitives[0].attributes);
 });

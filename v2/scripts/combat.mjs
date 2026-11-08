@@ -4,6 +4,8 @@ import {moveCircle,resolvePosition} from './terrain.mjs';
 import {highGround} from './map-terrain.mjs';
 import {MAX_LEVEL,levelOf} from './progression.mjs';
 import {hitFx,fx} from './vfx-events.mjs';
+import {activeStance} from './warrior-model.mjs';
+import {isWolf,WOLF,rootedBonus} from './druid-model.mjs';
 export {RULES};
 export const DODGE_DURATION=.5;
 // O custo do Tiro de Osso cresce de 5 MP no nível 1 até o valor das regras (RULES.bolt.cost) no nível máximo.
@@ -15,12 +17,12 @@ export function initializeCombat(w){
 }
 function kill(w,a,source){
  if(a.dead)return;a.dead=true;a.hp=0;a.animation='death';a.animationTime=0;a.pose=null;a.timer=0;a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);
- if(a===w.boss){a.king=null;a.kingRoar=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);w.hostileZones=(w.hostileZones||[]).filter(z=>z.source!==a.id);for(const add of w.actors)if(add.kingOwner===a.id&&add.hp>0){add.hp=0;add.dead=true;add.animation='death';add.animationTime=0;add.kingOwner=null;}}
+ if(a===w.boss){a.king=null;a.kingRoar=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);w.hostileZones=(w.hostileZones||[]).filter(z=>z.source!==a.id);for(const add of w.actors)if(add.kingOwner===a.id&&add.hp>0){add.hp=0;add.dead=true;add.animation='death';add.animationTime=0;add.kingOwner=null;}}
  w.combatEvents.push({kind:'death',id:w.nextId++,target:a.id,team:a.team,source:source?.id??null});
  if(a.groupType)w.onAllyDeath?.(a);
  if(a.team==='enemy')w.onEnemyDeath?.(a,source);
  if(a.team==='enemy')w.onLichKill?.(a);
- if(a===w.player){w.warriorShieldFlight=null;w.warriorMomentum=null;w.warriorRiposte=null;w.actors=w.actors.filter(e=>!e.warriorProjectile);w.warriorAction=null;w.warriorCombo=null;w.boltCharge=null;w.onPlayerDeath?.();w.projectiles=[];w.effects=[];w.dash.remaining=0;}
+ if(a===w.player){w.druidAction=null;w.druidStorms=[];w.druidHeal=null;w.marksmanAction=null;w.marksmanShots=[];w.marksmanLobs=[];w.marksmanZones=[];w.marksmanMines=[];w.marksmanAmbush=0;if(w.falcon){w.actors=w.actors.filter(e=>e!==w.falcon);w.falcon=null;}w.warriorShieldFlight=null;w.warriorMomentum=null;w.warriorRiposte=null;w.actors=w.actors.filter(e=>!e.warriorProjectile);w.warriorAction=null;w.warriorCombo=null;w.boltCharge=null;w.onPlayerDeath?.();w.projectiles=[];w.effects=[];w.dash.remaining=0;}
 }
 // Osso Carcomido (cajado especial): o Tiro de Osso aplica Podridão, até 5 cargas por 5 s; 12% do dano bruto do projétil por carga, a cada segundo.
 export const ROT={stacks:5,ttl:5,share:.12,tick:1};
@@ -39,9 +41,12 @@ export function dealDamage(w,target,amount,source=null,tag=null){
  let damage=amount*(source?.curse?1-source.curse.reduction:1)*highGround(w.arena,source,target);
  if(target===w.player){
   if(w.dash.remaining>1e-9||w.lich?.invuln){result.blocked=true;return result;}
-  if(w.classId==='warrior'&&source?.team==='enemy'&&w.equipment?.shield&&!w.warriorShieldFlight&&(w.random?.()??Math.random())<(target.blockChance||0)/100){
-   result.blocked=true;w.warriorRiposte={until:w.time+4,bonus:(w.warriorRanks?.riposte||0)*.1};fx(w,'impact',{x:target.x,y:target.y,h:1,color:'#a8d4ec',radius:.7,duration:.3});return result;
+  const stance=activeStance(w);
+  if(w.classId==='warrior'&&source?.team==='enemy'&&w.equipment?.shield&&!w.warriorShieldFlight&&(w.random?.()??Math.random())<Math.max(0,Math.min(75,(target.blockChance||0)+(stance?.block||0)))/100){
+   result.blocked=true;w.warriorRiposte={until:w.time+4,bonus:(w.warriorRanks?.riposte||0)*.1};if(stance?.healOnBlock)target.hp=Math.min(target.maxHp,target.hp+target.maxHp*stance.healOnBlock);fx(w,'impact',{x:target.x,y:target.y,h:1,color:'#a8d4ec',radius:.7,duration:.3});return result;
   }
+  if(stance)damage*=stance.taken;
+  if(isWolf(w))damage*=WOLF.taken;
   if(target.veilTime>0)damage*=.75;
   if(w.lich?.form==='lich')damage*=w.lich.stats.damageTaken;
   damage*=1-defenseReduction(target.defense*(w.lich?.form==='lich'?(w.lich.stats.defenseFactor??1):1),source?.gearWave??source?.level??1);
@@ -49,7 +54,7 @@ export function dealDamage(w,target,amount,source=null,tag=null){
   if(damage<=0)return result;
   if(target.boneShield){target.boneShield=false;result.blocked=true;return result;}
  }else if(target.team==='ally'&&['skeleton','zombie','abom'].includes(target.model))damage=Math.max(1,Math.round(damage*RULES.frontlineDamageTaken));
- else if(target.team==='enemy')damage=Math.floor(damage*(w.curses?.damage??1));
+ else if(target.team==='enemy')damage=Math.floor(damage*(w.curses?.damage??1)*rootedBonus(w,target));
  result.applied=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
  if(result.applied>0&&(target.team==='enemy'||target.labDummy)){const numbers=w.damageNumbers||(w.damageNumbers=[]);numbers.push({id:w.nextId++,x:target.x,y:target.y,amount:result.applied,time:w.time,offset:((numbers.length%5)-2)*.24});if(numbers.length>200)numbers.shift();}
  if(result.applied>0&&source?.team==='enemy'&&(target===w.player||target.team==='ally'))hitFx(w,target,source);
@@ -80,6 +85,8 @@ export function beginDash(w,input={}){
  const length=Math.hypot(dx,dy);if(!Number.isFinite(length)||length<1e-9){dx=Math.sin(w.player.angle)||1;dy=Math.cos(w.player.angle);}
  const n=Math.hypot(dx,dy),m=w.modifiers;
  if(w.classId==='warrior'){if(w.warriorAction?.index===4)(w.warriorCooldowns??=[])[4]=w.time+3;w.warriorAction=null;w.warriorCombo=null;w.castCooldown=0;w.player.timer=0;}
+ if(w.classId==='druid'&&w.druidAction){w.druidAction=null;w.castCooldown=0;w.player.timer=0;}
+ if(w.marksmanAction){w.marksmanAction=null;w.castCooldown=0;w.player.timer=0;}
  w.boltCharge=null;
  Object.assign(w.dash,{remaining:DODGE_DURATION,cooldown:Math.max(1.5,RULES.dash.cooldown*(1+Math.max(-50,m.dashCooldownPercent||0)/100)*(1-Math.min(50,Math.max(0,m.gearCooldown||0))/100))*(1-(m.dashMasteryCooldown||0)/100),dx:dx/n,dy:dy/n,origin:{x:w.player.x,y:w.player.y}});
  return true;

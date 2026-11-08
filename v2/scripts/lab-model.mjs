@@ -41,7 +41,7 @@ export const CATALOG=[
  ['Chefes',[['fallenKing','Rei Caído'],['lich','Lich']]],
  ['Lacaios',[['zombie','Zumbi'],['skeleton','Esqueleto'],['archer','Arqueiro Ósseo'],['specter','Espectro'],['abom','Abominação']]],
  ['Jogador',[['necromancer','Zephyr']]],
- ['Moradores',[['npcBram','Bram'],['npcLysa','Lysa'],['npcTilda','Tilda'],['npcMerchant','Mercador']]],
+ ['Moradores',[['npcBram','Bruno'],['npcLysa','Lucia'],['npcTilda','Julia'],['npcMerchant','Mercador']]],
 ];
 export const catalog=available=>CATALOG.map(([group,items])=>({group,items:items.filter(([id])=>available.includes(id)).map(([id,label])=>({id,label}))})).filter(g=>g.items.length);
 export const modelLabel=id=>CATALOG.flatMap(([,items])=>items).find(([key])=>key===id)?.[1]||id;

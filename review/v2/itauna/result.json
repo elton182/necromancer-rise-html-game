@@ -1,0 +1,137 @@
+{
+  "passagens": {
+    "varzea": 4565,
+    "forte": 1662,
+    "saidaForte": 2139,
+    "gruta": 2764,
+    "saidaGruta": 2037,
+    "volta": 2224,
+    "teleporteVila": 3675
+  },
+  "render": {
+    "world-crypt-hills": {
+      "calls": 102,
+      "triangles": 724366
+    },
+    "world-north": {
+      "calls": 99,
+      "triangles": 718160
+    },
+    "world-peaks": {
+      "calls": 120,
+      "triangles": 816780
+    },
+    "world-marsh": {
+      "calls": 124,
+      "triangles": 348780
+    },
+    "world-graveyard": {
+      "calls": 110,
+      "triangles": 761222
+    },
+    "world-forest": {
+      "calls": 118,
+      "triangles": 708738
+    },
+    "bridge": {
+      "calls": 138,
+      "triangles": 283306
+    },
+    "ford": {
+      "calls": 102,
+      "triangles": 248632
+    },
+    "lake-pier": {
+      "calls": 133,
+      "triangles": 274140
+    },
+    "camp": {
+      "calls": 121,
+      "triangles": 275810
+    },
+    "ramp": {
+      "calls": 118,
+      "triangles": 283798
+    },
+    "fort-facade": {
+      "calls": 142,
+      "triangles": 331084
+    },
+    "mirror": {
+      "calls": 104,
+      "triangles": 250156
+    },
+    "shrine": {
+      "calls": 97,
+      "triangles": 240778
+    },
+    "tower": {
+      "calls": 101,
+      "triangles": 260270
+    },
+    "butte": {
+      "calls": 131,
+      "triangles": 308614
+    },
+    "mountains": {
+      "calls": 126,
+      "triangles": 356878
+    },
+    "cave-mouth": {
+      "calls": 101,
+      "triangles": 342012
+    },
+    "map-edge": {
+      "calls": 91,
+      "triangles": 455378
+    },
+    "fort-entry": {
+      "calls": 105,
+      "triangles": 447090
+    },
+    "fort-camp": {
+      "calls": 91,
+      "triangles": 348864
+    },
+    "fort-training": {
+      "calls": 103,
+      "triangles": 394064
+    },
+    "fort-inner": {
+      "calls": 75,
+      "triangles": 252704
+    },
+    "fort-keep": {
+      "calls": 71,
+      "triangles": 251760
+    },
+    "cave-entry": {
+      "calls": 32,
+      "triangles": 78846
+    },
+    "cave-den": {
+      "calls": 33,
+      "triangles": 89400
+    },
+    "cave-lake": {
+      "calls": 37,
+      "triangles": 104466
+    },
+    "cave-nursery": {
+      "calls": 26,
+      "triangles": 81912
+    },
+    "cave-queen": {
+      "calls": 37,
+      "triangles": 93990
+    }
+  },
+  "densidade": {
+    "inimigos": 6,
+    "ondas": 3,
+    "nivel": 10,
+    "mediana": 13.7,
+    "p90": 20.8
+  },
+  "errors": []
+}

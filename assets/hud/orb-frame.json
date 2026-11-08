@@ -1,0 +1,20 @@
+{
+  "left": {
+    "width": 560,
+    "height": 399,
+    "holeX": 0.5513,
+    "holeY": 0.481,
+    "holeRadius": 0.263,
+    "samples": 46,
+    "droppedFragments": 1
+  },
+  "right": {
+    "width": 560,
+    "height": 445,
+    "holeX": 0.3784,
+    "holeY": 0.4883,
+    "holeRadius": 0.2952,
+    "samples": 46,
+    "droppedFragments": 0
+  }
+}

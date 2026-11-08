@@ -2,8 +2,9 @@
 
 > Caminhos relativos à pasta `blender/`.
 
-Protótipo independente da druida e de sua forma de lobisomem, baseado nas
-referências fornecidas. Não adiciona classes, regras, magias ou sprites ao jogo.
+Protótipo da druida e de sua forma de lobisomem, baseado nas referências
+fornecidas. Desde 2026-11-07 as duas formas são a classe jogável **Druida** da v2
+(veja a seção Integração na v2 no fim); os atlas de sprites continuam só estudo.
 O urso permanece uma referência para uma etapa futura.
 
 Direção: volumes facetados, verdes de folhagem, couro e galhos; cristal verde no
@@ -90,3 +91,20 @@ descanso, ataque e morte inspecionadas; 32 quadros RGBA com movimento nas
 oito direções, atlas de 896 × 1792 px e margem transparente mínima de 37 px.
 Leitura conferida em fundos claro e escuro a 24, 36 e 56 px/u. As ações são
 protótipos de rig, ainda sem sincronização com combate ou validação no jogo.
+
+## Integração na v2 (2026-11-07)
+
+`scripts/flora_game_motion.py`, executado pelo MCP na sessão do Blender sobre
+`models/flora_druid.blend` e depois sobre `models/flora_werewolf.blend`,
+acrescenta os clipes de jogo e exporta os GLBs da v2:
+
+- Flora: `cast`, `cast_up`, `slam` e `dodge` → `exports/flora_druid.glb`
+  (id `druid`).
+- Lobisomem: `claw_1`, `claw_2`, `leap`, `howl` e `dodge` →
+  `exports/flora_werewolf.glb` (id `druidWolf`).
+
+O gerador é aditivo. Preserva `idle`, `walk`, `attack` e `death` do estudo e
+faz backup em `backups/flora_*_before_game_motion_*.blend`. As poses são
+rotações no espaço do armature convertidas para cada osso; o tempo de cada
+clipe no jogo segue o progresso da regra. Regras, números e limites:
+[docs/v2-druida.md](../../docs/v2-druida.md).

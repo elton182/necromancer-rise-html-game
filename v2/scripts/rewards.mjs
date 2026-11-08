@@ -8,6 +8,8 @@ import {spawnDrop,announce,lootAllowed} from './drops.mjs';
 import SharedEQ from './shared-equipment.mjs';
 const EQ=SharedEQ;
 import WarriorEQ from './warrior-equipment.mjs';
+import {gearCatalog} from './class-gear.mjs';
+import {resourceName} from './class-registry.mjs';
 import Build from './shared-build.mjs';
 import {newItemId,gearName,CAPACITY} from './gear.mjs';
 export {levelOf,xpNext};
@@ -17,7 +19,7 @@ function raise(s,progress){
  c.exp=progress.exp;c.level=progress.level;
  if(!levels)return '';
  levelUp(w,levels);syncSkills(w);if(w.armyMode==='groups')recalculateHorde(w);
- return 'Nível '+progress.level+' · +'+levels*P.levelUp.hp+' vida e +'+levels*P.levelUp.mp+(w.classId==='warrior'?' vigor':' mana');
+ return 'Nível '+progress.level+' · +'+levels*P.levelUp.hp+' vida e +'+levels*P.levelUp.mp+' '+resourceName(w.classId);
 }
 export function grantExperience(s,amount){return raise(s,addExp({level:levelOf(s.world),exp:s.save.character.exp},amount));}
 // Recompensa de abate. O XP de maestria é creditado antes do nível, como no jogo atual.
@@ -45,7 +47,7 @@ export function rewardKill(s,enemy){
   }
   // Chefes sempre deixam uma peça; a recuperação de nível favorece quem está atrasado em relação ao drop.
   const boss=enemy===w.boss;
-  if(boss||w.random()<(Expedition.tiers[enemy.lootTier]?.chance??P.gear.chance)){const EQ=w.classId==='warrior'?WarriorEQ:SharedEQ;const roll=EQ.dropRoll(w.equipment,w.gearLevel,w.random),region=w.lootConfig?.(enemy,roll),item=EQ.generate(region?.level??roll.level,Build,w.random,region?.type??roll.type,boss,newItemId(s),{loot:{weights:region?.weights??(enemy.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:Expedition.lootWeights(enemy.lootTier)),unboundedLevel:!!region},extraAffixes:['lifesteal']});if(region?.special&&w.classId!=='warrior')item.special='carcomido';spawnDrop(w,'equipment',enemy.x,enemy.y,{item,upgrade:roll.upgrade});}
+  if(boss||w.random()<(Expedition.tiers[enemy.lootTier]?.chance??P.gear.chance)){const EQ=gearCatalog(w.classId);const roll=EQ.dropRoll(w.equipment,w.lootLevelOf?.(enemy)??w.gearLevel,w.random),region=w.lootConfig?.(enemy,roll),item=EQ.generate(region?.level??roll.level,Build,w.random,region?.type??roll.type,boss,newItemId(s),{loot:{weights:region?.weights??(enemy.expeditionBoss?{common:0,magic:0,rare:75,epic:25}:Expedition.lootWeights(enemy.lootTier)),unboundedLevel:!!region},extraAffixes:['lifesteal']});if(region?.special&&w.classId==='necromancer')item.special='carcomido';spawnDrop(w,'equipment',enemy.x,enemy.y,{item,upgrade:roll.upgrade});}
  }
  return mastery;
 }
@@ -54,7 +56,7 @@ export function collect(s,drop){
  const w=s.world,p=w.player,c=s.save.character;
  if(drop.kind==='gold'){c.gold+=drop.amount;announce(w,'+'+drop.amount+' ouro','#e2c46d');return true;}
  if(drop.kind==='hp'){const heal=Math.floor(p.maxHp*P.orbs.hpRestore);p.hp=Math.min(p.maxHp,p.hp+heal);announce(w,'+'+heal+' vida','#ff7a6a');return true;}
- if(drop.kind==='mp'){const restore=Math.floor(p.maxMp*P.orbs.mpRestore);p.mp=Math.min(p.maxMp,p.mp+restore);announce(w,'+'+restore+(w.classId==='warrior'?' vigor':' mana'),'#78a2ff');return true;}
+ if(drop.kind==='mp'){const restore=Math.floor(p.maxMp*P.orbs.mpRestore);p.mp=Math.min(p.maxMp,p.mp+restore);announce(w,'+'+restore+' '+resourceName(w.classId),'#78a2ff');return true;}
  if(drop.kind==='equipment'){
   if(!lootAllowed(drop,w.lootFilter))return false;
   if(c.gearBag.length>=CAPACITY){if(w.time>=(w.bagNoticeAt||0)){announce(w,'Mochila cheia · I para equipamentos','#e8c777');w.bagNoticeAt=w.time+3;}return false;}

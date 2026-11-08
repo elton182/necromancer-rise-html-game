@@ -113,3 +113,51 @@ test('efeitos pontuais têm teto, expiram sozinhos e não contam os avisos cont�
  w.effects.push({id:'aviso',fx:'dangerRune',visual:true,time:0,duration:10});assert.equal(fx(w,'impact',{x:0,y:0}),null);
  advance(w,1);assert.equal(fxOf(w,'impact').length,0);assert.ok(w.effects.some(f=>f.id==='aviso'));
 });
+
+test('avisos hostis: um desenho por golpe, linha única e marcas da horda preservadas', () => {
+ const near=arena(),orc=spawnEnemy(near,10,0,-2);orc.abilityCd=0;advance(near,.3);
+ const circles=near.effects.filter(f=>f.enemyWarning===orc.id&&f.fx==='dangerRune');
+ assert.equal(circles.length,1,'a pancada desenha um círculo só');assert.ok(circles[0].progress>0&&circles[0].progress<.5);
+ const w=arena(),a=spawnEnemy(w,1,0,-6,{legacy:true});Object.assign(a,{abilityCd:0,atkTimer:1e9,rainCd:1e9});advance(w,.3);
+ const line=fxOf(w,'dangerLine').find(f=>f.enemyWarning===a.id),points=fxOf(w,'hazardPoint').filter(f=>f.enemyWarning===a.id);
+ assert.ok(line&&line.length===15&&line.progress>0&&line.progress<=1);
+ assert.notEqual(line.kind,'enemyWarning','o desenho da linha não conta como perigo para a horda');
+ assert.ok(points.length===15&&points.every(f=>f.kind==='enemyWarning'),'a evasão da horda segue com as marcas por trecho');
+ assert.ok(!w.effects.some(f=>f.enemyWarning===a.id&&!f.fx),'nenhum aviso cai no anel antigo do renderizador');
+ dealDamage(w,a,1e9,w.player);assert.ok(!w.effects.some(f=>f.enemyWarning===a.id),'a morte limpa linha e marcas');
+});
+
+test('poça hostil: enche durante o aviso, fica estável com dano e não vira fogo', () => {
+ const w=arena();w.player.x=9;w.hostileZones.push({id:w.nextId++,source:null,x:0,y:0,radius:2.5,delay:.5,life:2,tick:1,damage:1});advance(w,.25);
+ const waiting=w.effects.find(f=>f.hostileZone);assert.equal(waiting.fx,'dangerRune');assert.ok(waiting.progress>.3&&waiting.progress<.7);assert.notEqual(waiting.mood,'pool');
+ advance(w,.5);const active=w.effects.find(f=>f.hostileZone);assert.equal(active.fx,'dangerRune');assert.equal(active.mood,'pool');assert.equal(active.color,'#ff8951');
+});
+
+// Golpes só da v2: Giro da Coroa (anti-horda), Rastro de Brasas (Zephyr longe) e Queda mirando Zephyr.
+const ally=(w,x,y)=>{const a={id:w.nextId++,model:'zombie',team:'ally',x,y,radius:.35,hp:1000,maxHp:1000,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:1e9,phase:0};w.actors.push(a);return a;};
+test('Giro da Coroa: horda amontoada recebe aviso em círculo e só leva dano no giro', () => {
+ const w=arena(),e=king(w,{x:0,y:-8,kingV2Cd:{spin:0,embers:99}}),S=V2_KING.spin,crowd=[[1,-8],[-1,-8],[0,-7]].map(([x,y])=>ally(w,x,y));
+ advance(w,.1);assert.equal(e.kingV2?.kind,'spin');assert.ok(!e.king);
+ const warn=w.effects.find(f=>f.kingWarning===e.id&&f.fx==='dangerRune');assert.ok(warn&&!warn.harmless&&warn.radius===S.range);
+ assert.ok(crowd.every(a=>a.hp===1000),'sem dano na preparação');
+ advance(w,S.phases[0][1]+S.phases[1][1]);assert.ok(crowd.every(a=>a.hp<1000),'o giro atinge todos em volta');
+ assert.ok(!w.effects.some(f=>f.kingWarning===e.id&&f.fx==='dangerRune'),'aviso some depois do golpe');
+ advance(w,S.phases[2][1]+.05);assert.equal(e.kingV2,null);assert.ok(Math.abs(e.kingV2Cd.spin-(S.cooldown-.05))<.1);
+});
+test('Rastro de Brasas: linha travada em Zephyr, desviar evita o dano e o fogo fica no chão', () => {
+ const run=dodge=>{const w=arena(),e=king(w,{x:0,y:-10,kingV2Cd:{spin:99,embers:0}}),E=V2_KING.embers;w.player.x=0;w.player.y=0;
+  advance(w,.05);assert.equal(e.kingV2?.kind,'embers');
+  const line=w.effects.find(f=>f.kingWarning===e.id&&f.fx==='dangerLine');assert.ok(line&&line.length===E.length&&Math.abs(line.dy-1)<1e-6);
+  if(dodge)w.player.x=2;const hp=w.player.hp;advance(w,E.phases[0][1]+E.phases[1][1]);
+  return {lost:hp-w.player.hp,pools:w.hostileZones.filter(z=>z.source===e.id).length,dmg:Math.round(e.dmg*E.mult)};};
+ const hit=run(false),miss=run(true);
+ assert.equal(hit.lost,hit.dmg);assert.equal(miss.lost,0);assert.equal(hit.pools,V2_KING.embers.pools.length);
+});
+test('Queda do Rei procura Zephyr mesmo com a horda colada no chefe', () => {
+ const w=arena(),e=king(w,{x:0,y:-6,kingCd:{slash:99,leap:0,summon:99},kingV2Cd:{spin:99,embers:99}});ally(w,.6,-6);
+ advance(w,.1);assert.equal(e.king?.kind,'leap');assert.ok(Math.hypot(e.king.tx-w.player.x,e.king.ty-w.player.y)<1,'pouso sobre Zephyr');
+});
+test('morte do Rei no meio de um golpe da v2 limpa o golpe e os avisos', () => {
+ const w=arena(),e=king(w,{x:0,y:-10,kingV2Cd:{spin:99,embers:0}});advance(w,.3);assert.ok(e.kingV2);
+ dealDamage(w,e,1e9,w.player);advance(w,.1);assert.equal(e.kingV2,null);assert.equal(w.effects.filter(f=>f.kingWarning===e.id).length,0);
+});

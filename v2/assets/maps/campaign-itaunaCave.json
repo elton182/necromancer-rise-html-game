@@ -1,0 +1,20 @@
+{
+ "format":"necromancer-rise-map",
+ "version":1,
+ "id":"campaign-itaunaCave",
+ "name":"Gruta das Tecelãswa",
+ "base":"builtin:itauna-cave",
+ "hidden":[],
+ "biome":null,
+ "size":null,
+ "start":null,
+ "spawns":null,
+ "level":1,
+ "enemyHp":1,
+ "enemyXp":1,
+ "objects":[],
+ "terrain":null,
+ "style":null,
+ "campaign":"itaunaCave",
+ "updated":1793823786391
+}

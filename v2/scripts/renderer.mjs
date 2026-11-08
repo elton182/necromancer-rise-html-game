@@ -1,5 +1,8 @@
+import {isMarksman} from './class-registry.mjs';
+const AIM_LIFT=1;
 import {buildForestBorder} from './forest-border.mjs';
 import {buildMapHorizon,updateMapHorizon} from './map-horizon.mjs';
+import {buildAreaScenery,updateAreaScenery} from './area-scene.mjs';
 import {createFallGroundMask,buildFallScenery,updateFallScenery,clearFallFade} from './fall-presentation.mjs';
 import {buildPrologueScenery,updatePrologueScenery,positionTravelSpeech} from './prologue-scene.mjs';
 import {sceneLookKey,createSceneEnvironment,applySceneLook,applyMapStyle} from './scene-look.mjs';
@@ -7,9 +10,9 @@ import {liftScenery,updateWater} from './terrain-scene.mjs';
 import {splitSceneIntoSectors} from './scene-sectors.mjs';
 import {groundAt} from './map-terrain.mjs';
 import {PADS as SIEGE_PADS,TOWERS as SIEGE_TOWERS} from './siege-model.mjs';
-import {gaitTarget,blendGait,advanceGaitPhase} from './locomotion.mjs';
+import {gaitTarget,blendGait,advanceGaitPhase,dodgeYaw} from './locomotion.mjs';
 import {buildSiege} from './siege-scene.mjs';
-import {LANCE,lanceShape} from './combat.mjs';
+import {LANCE,lanceShape,DODGE_DURATION} from './combat.mjs';
 import * as THREE from 'three';
 import {GLTFLoader} from 'gltf-loader';
 import {clone} from 'skeleton-utils';
@@ -75,7 +78,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  const graveGeometry=new THREE.BoxGeometry(.8,1.35,.35),graveMaterial=new THREE.MeshStandardMaterial({color:0x69736b,roughness:1});
  const graves=new THREE.Group();scene.add(graves);for(let i=0;i<18;i++){const a=i*Math.PI*2/18,o=new THREE.Mesh(graveGeometry,graveMaterial);o.position.set(Math.sin(a)*19,.675,Math.cos(a)*19);o.rotation.y=-a;o.castShadow=true;o.receiveShadow=true;graves.add(o);}
  const collisionView=new THREE.Group();collisionView.visible=false;scene.add(collisionView);
- const scenery=new THREE.Group();scene.add(scenery);const villageScenery=new THREE.Group();villageScenery.name='medieval-village';scene.add(villageScenery);let sceneryKey='';
+ const scenery=new THREE.Group();scene.add(scenery);const villageScenery=new THREE.Group();villageScenery.name='medieval-village';scene.add(villageScenery);let sceneryKey='',areaMovers=[];
  function placeVillagePart(part,x,z,height,angle=0){const source=models.medievalVillage.scene.getObjectByName('tripo_part_'+part);if(!source)throw Error('Peça medieval ausente: '+part);const body=source.clone(true);body.position.set(0,0,0);body.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(body),scale=height/(box.max.y-box.min.y),center=box.getCenter(new THREE.Vector3());body.scale.setScalar(scale);body.position.set(-center.x*scale,-box.min.y*scale,-center.z*scale);body.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});const root=new THREE.Group();root.add(body);root.position.set(x,0,z);root.rotation.y=angle;villageScenery.add(root);}
  function syncVillage(a){villageScenery.clear();/* Só o campo de treino: a Vila de Eldrin usa o kit novo e dispensa as peças antigas da periferia. */const active=a.id===TRAINING_ARENA.id;grid.visible=!active;if(!active)return;const b=a.bounds;/* Peças fora do limite caminhável: ambientação sem colisões invisíveis. */
  const north=b.minY-5,west=b.minX-5,east=b.maxX+5;placeVillagePart(1,west,north,6);placeVillagePart(0,4,north,6.5);placeVillagePart(2,east,north,7);for(const [i,x,z]of [[12,west,0],[5,east,1],[23,west,12],[10,east,13]])placeVillagePart(i,x,z,5);placeVillagePart(4,west,7,3);placeVillagePart(3,east,7,4);
@@ -93,7 +96,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  function syncScenery(w){const a=w.arena,key=a.id+':'+(w.sceneryRevision||0);portalMark.visible=!!w.portal;if(w.portal)portalMark.position.set(w.portal.x,.06,w.portal.y);exitMark.visible=!!w.exitPortal;if(w.exitPortal)exitMark.position.set(w.exitPortal.x,.06,w.exitPortal.y);if(key===sceneryKey)return;sceneryKey=key;vfx.clear();
  for(const g of [scenery,collisionView]){for(const o of [...g.children]){g.remove(o);o.geometry?.dispose();o.material?.dispose();o.dispose?.();}}
  syncVillage(a);lookKey=sceneLookKey(a);theme=a.theme||'default';palette=a.palette||null;mapStyle=a.style||null;vfx.ground(a.terrain?(x,z)=>groundAt(a,x,z):null);if(a.theme){grid.visible=false;for(const o of ({siege:buildSiege,forest:buildForestScene,village:buildVillage,crypt:buildCrypt,trail:buildTrail,outpost:buildOutpost,expedition:buildExpedition})[a.theme](a,models))scenery.add(o);}for(const o of [...buildPrologueScenery(a,models),...buildFallScenery(a,models)])scenery.add(o);if(a.fallSite)for(const o of scenery.children)if(o.userData.replacesGround)fallMask.patch(o.material);ground.visible=!scenery.children.some(o=>o.userData.replacesGround);graves.visible=false;const b=a.bounds,cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2;const margin=(a.id==='village'||a.id===TRAINING_ARENA.id||a.theme==='forest'||a.theme==='expedition')?24:0;ground.scale.set((b.maxX-b.minX+margin)/60,(b.maxY-b.minY+margin)/60,1);ground.position.set(cx,0,cy);grid.position.set(cx,.012,cy);grid.scale.set((b.maxX-b.minX)/60,1,(b.maxY-b.minY)/60);
- const horizon=buildMapHorizon(scenery.children.find(o=>o.userData.replacesGround)||ground);if(a.fallSite)fallMask.patch(horizon.material);scenery.add(horizon);for(const mesh of buildForestBorder(a,models))scenery.add(mesh);paint();
+ const horizon=buildMapHorizon(scenery.children.find(o=>o.userData.replacesGround)||ground);if(a.fallSite)fallMask.patch(horizon.material);scenery.add(horizon);for(const mesh of buildForestBorder(a,models))scenery.add(mesh);areaMovers=buildAreaScenery(a,models);for(const mesh of areaMovers)scenery.add(mesh);paint();
  for(const landmark of w.landmarks||[]){const marker=new THREE.Mesh(new THREE.RingGeometry(.5,.6,24),new THREE.MeshBasicMaterial({color:0xd4af37,side:THREE.DoubleSide}));marker.rotation.x=-Math.PI/2;marker.position.set(landmark.x,.05,landmark.y);scenery.add(marker);}
  for(const r of a.theme==='crypt'?[]:a.walk||[]){const floor=new THREE.Mesh(new THREE.PlaneGeometry(r.x1-r.x0,r.y1-r.y0),new THREE.MeshStandardMaterial({color:0x4b455b,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.set((r.x0+r.x1)/2,.015,(r.y0+r.y1)/2);floor.receiveShadow=true;scenery.add(floor);}
  for(const solid of a.solids){if(!solid.look||!a.theme){const h=solid.height||.9,geometry=solid.kind==='circle'?new THREE.CylinderGeometry(solid.r,solid.r,h,16):new THREE.BoxGeometry(solid.width,h,solid.depth),o=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:solid.door?0x8c5449:0x74877c,roughness:1}));o.position.set(solid.x,h/2,solid.y);o.rotation.y=solid.angle||0;o.castShadow=true;o.receiveShadow=true;scenery.add(o);}const g=solid.kind==='circle'?new THREE.RingGeometry(solid.r-.02,solid.r+.02,24):new THREE.PlaneGeometry(solid.width,solid.depth),mark=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x87d8d1,side:THREE.DoubleSide,wireframe:solid.kind==='box'}));mark.rotation.x=-Math.PI/2;mark.rotation.z=solid.angle||0;mark.position.set(solid.x,.03,solid.y);collisionView.add(mark);}
@@ -164,7 +167,22 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   const mixer=new THREE.AnimationMixer(body),actions={};
   for(const original of model.animations){const clip=original.clone(),duration=asset.durations?.[clip.name];if(duration&&clip.duration>0){const factor=duration/clip.duration;for(const t of clip.tracks)for(let i=0;i<t.times.length;i++)t.times[i]*=factor;clip.duration=duration;}actions[clip.name]=mixer.clipAction(clip);}
   let flightShadow=null;if(a.model==='enemyGriffin'||a.model==='lich'){flightShadow=new THREE.Mesh(new THREE.CircleGeometry(a.model==='lich'?.75:.4,24),new THREE.MeshBasicMaterial({color:0x10191a,transparent:true,opacity:.23,depthWrite:false}));flightShadow.rotation.x=-Math.PI/2;root.add(flightShadow);}
-  return {root,body,mixer,actions,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
+  // Camadas (Arqueira, Mercenário): ações em pé ou andando tocam só no tronco; a passada fica nas pernas.
+  let upper=null,lower=null;if(asset.layered){upper={};lower={};const top=/Spine|Neck|Head|Shoulder|Arm|Hand/i,part=(clip,keep,name)=>{const c=clip.clone();c.name=name;c.tracks=c.tracks.filter(t=>keep(top.test(t.name.split('.')[0])));return mixer.clipAction(c);};
+   for(const [name,action] of Object.entries(actions)){const clip=action.getClip();if(['idle','walk','strafe_left','strafe_right'].includes(name))lower[name]=part(clip,up=>!up,'lower:'+name);else upper[name]=part(clip,up=>up,'upper:'+name);}}
+  return {root,body,mixer,actions,upper,lower,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
+ }
+ // Tronco com a ação (pose.upper) e pernas com a passada misturada pela direção do passo em relação à mira.
+ function layered(o,a,pose,elapsed,frozen){
+  const walking=a.animation==='walk',up=o.upper[pose.anim],L=o.lower,set=walking?[L.walk,L.strafe_left,L.strafe_right]:[L.idle],upKey=pose.anim+':'+a.actionId,lowKey=walking?'walk':'idle';
+  const start=action=>{action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(.08);action.play();},stop=action=>{if(frozen)action.stop();else action.fadeOut(.08);};
+  if(o.state!=='layer'){for(const action of Object.values(o.actions))stop(action);o.state='layer';o.upKey=o.lowKey=null;o.deathTime=0;}
+  if(o.upKey!==upKey){for(const action of Object.values(o.upper))if(action!==up)stop(action);start(up);o.upKey=upKey;}
+  if(o.lowKey!==lowKey){for(const action of Object.values(L))if(!set.includes(action))stop(action);for(const action of set)start(action);o.lowKey=lowKey;o.gait=null;}
+  if(walking){const target=gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse);o.gait=o.gait?blendGait(o.gait,target,elapsed):target;L.walk.weight=o.gait.walk;L.strafe_left.weight=o.gait.left;L.strafe_right.weight=o.gait.right;const asset=assets[a.model];o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-(o.gaitDistance??a.walkDistance)),o.gait,asset.stride||1.5,asset.strafeStride);}
+  o.gaitDistance=a.walkDistance;o.mixer.update(elapsed);
+  const legs=walking?o.gaitPhase:(a.animationTime/L.idle.getClip().duration)%1;for(const action of set)action.time=THREE.MathUtils.clamp(legs,0,1)*action.getClip().duration;
+  up.time=THREE.MathUtils.clamp(pose.progress,0,1)*up.getClip().duration;o.mixer.update(0);
  }
  function resize(){const width=canvas.clientWidth||innerWidth,height=canvas.clientHeight||innerHeight,aspect=width/height,span=camera.userData.descent?5.5:camera.userData.journey?(aspect<.8?6:4.6):zoom;Object.assign(camera,{left:-span*aspect,right:span*aspect,top:span,bottom:-span,near:.1,far:120});camera.updateProjectionMatrix();renderer.setSize(width,height,false);}
  // Palco narrativo separado da simulacao de combate.
@@ -208,14 +226,16 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    if(o.flightShadow)o.flightShadow.position.y=.025-o.root.position.y;
    const elapsed=w.paused&&!animateWhilePaused?0:dt;
    if(a.hp<o.lastHp&&a.hp>0&&o.actions.hit)o.hitTime=.16;o.lastHp=a.hp;
-   let pose=a.pose;if(a===w.player&&a.hp>0&&w.dash.remaining>0)pose={anim:'jump',progress:1-w.dash.remaining/assets.necromancer.durations.jump};
+   if(a===w.player)o.root.rotation.y=dodgeYaw(o,a.angle,w.dash.remaining>0,elapsed);
+   let pose=a.pose;const dodging=a===w.player&&a.hp>0&&w.dash.remaining>0;if(dodging)pose={anim:'dodge',progress:1-w.dash.remaining/DODGE_DURATION};
    if(!pose&&a.model==='enemyGriffin'&&a.hp>0&&['idle','walk'].includes(a.animation))pose={anim:'fly',progress:(w.time/o.actions.fly.getClip().duration)%1};
    // Reação visual não interrompe ataques nem altera o estado de combate.
-   if(a.hp>0&&o.hitTime>0&&['idle','walk'].includes(a.animation))pose={anim:'hit',progress:1-o.hitTime/.16};
+   if(!dodging&&a.hp>0&&o.hitTime>0&&['idle','walk'].includes(a.animation))pose={anim:'hit',progress:1-o.hitTime/.16};
    o.hitTime=Math.max(0,o.hitTime-elapsed);
+   if(pose?.upper&&o.upper?.[pose.anim]&&a.hp>0){layered(o,a,pose,elapsed,w.paused&&!animateWhilePaused);continue;}
    const name=pose?.anim||a.animation,next=o.actions[name]||o.actions.idle;if(!next)continue;
    const entered=o.state!==name||o.actionId!==a.actionId,frozen=w.paused&&!animateWhilePaused,sides=name==='walk'&&o.actions.strafe_left&&o.actions.strafe_right?[o.actions.strafe_left,o.actions.strafe_right]:null;
-   if(entered){for(const action of Object.values(o.actions))if(action!==next){if(frozen)action.stop();else action.fadeOut(.08);}for(const action of [next,...(sides||[])]){action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(.08);action.play();}o.state=name;o.actionId=a.actionId;o.deathTime=0;}
+   if(entered){for(const action of [...Object.values(o.actions),...Object.values(o.upper||{}),...Object.values(o.lower||{})])if(action!==next){if(frozen)action.stop();else action.fadeOut(.08);}for(const action of [next,...(sides||[])]){action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(.08);action.play();}o.state=name;o.actionId=a.actionId;o.deathTime=0;}
    // Passada do jogador: frente, ré e passo lateral misturados conforme o deslocamento em relação à mira.
    const gaited=sides&&!pose&&a===w.player;if(sides){const target=gaited?gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse):{walk:1,left:0,right:0,reverse:false};o.gait=entered||!gaited?target:blendGait(o.gait,target,elapsed);next.weight=o.gait.walk;sides[0].weight=o.gait.left;sides[1].weight=o.gait.right;if(gaited){const asset=assets[a.model],from=entered?a.walkDistance:o.gaitDistance??a.walkDistance;o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-from),o.gait,asset.stride||1.5,asset.strafeStride);o.gaitDistance=a.walkDistance;}}
    o.mixer.update(elapsed);
@@ -299,7 +319,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   cursor.position.set(w.aim.x,.035,w.aim.y);cursor.visible=!w.paused;
   vfx.update(w,dt,{frozen:w.paused&&!animateWhilePaused});follow(w);
   const shake=vfx.shakeOffset();if(shake.x||shake.z){camera.position.x+=shake.x;camera.position.z+=shake.z;camera.updateMatrixWorld();}
-  if(w.story)renderStory(w);else {storyKey='';updateSceneryFx(renderer,camera,w.player,theme==='village'||lookKey==='custom-forest'||w.arena.cave);if(w.arena.terrain){updateWater(scenery,w.time);liftWorld(w);}renderer.render(scene,camera);settleWorld();positionTravelSpeech(camera,w,canvas);}
+  if(w.story)renderStory(w);else {storyKey='';updateSceneryFx(renderer,camera,w.player,theme==='village'||lookKey==='custom-forest'||w.arena.cave);updateAreaScenery(areaMovers,w,dt);if(w.arena.terrain){updateWater(scenery,w.time);liftWorld(w);}renderer.render(scene,camera);settleWorld();positionTravelSpeech(camera,w,canvas);}
  }
  const ray=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),point=new THREE.Vector3();
  function follow(w){
@@ -316,9 +336,11 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  }
  resize();
  return {render,resize,dispose,renderer,models,assets,actors,effects,projectiles,drops,vfx,
-  aim(x,y,w){if(w)follow(w);const r=canvas.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2),camera);if(!ray.ray.intersectPlane(plane,point))return null;
+  aim(x,y,w){if(w)follow(w);const r=canvas.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((x-r.left)/r.width*2-1,1-(y-r.top)/r.height*2),camera);
+   // Atiradores miram na altura do tronco: clicar no corpo do inimigo aponta para onde ele pisa, não para o chão atrás dele.
+   const lift=isMarksman(w?.classId)?AIM_LIFT:0;if(!ray.ray.intersectPlane(lift?new THREE.Plane(plane.normal,-lift):plane,point))return null;
    // Mira sobre o relevo: refina o ponto contra a altura do chão onde o raio cai.
-   if(w?.arena?.terrain)for(let i=0;i<3;i++){const h=groundAt(w.arena,point.x,point.z),level=new THREE.Plane(plane.normal,-h);if(!ray.ray.intersectPlane(level,point))break;}
+   if(w?.arena?.terrain)for(let i=0;i<3;i++){const h=groundAt(w.arena,point.x,point.z),level=new THREE.Plane(plane.normal,-(h+lift));if(!ray.ray.intersectPlane(level,point))break;}
    return {x:point.x,y:point.z};},
   screen(x,y,w){if(w)follow(w);const p=new THREE.Vector3(x,w?groundAt(w.arena,x,y):0,y).project(camera),r=canvas.getBoundingClientRect();return {x:r.left+(p.x+1)*r.width/2,y:r.top+(1-p.y)*r.height/2};},
   colliders(visible){collisionView.visible=visible;},

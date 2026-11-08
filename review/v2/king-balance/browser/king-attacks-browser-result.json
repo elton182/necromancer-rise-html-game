@@ -1,0 +1,149 @@
+{
+  "results": [
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "spin-windup",
+      "action": "spin",
+      "v2": "spin",
+      "shared": null,
+      "warnings": [
+        "dangerRune"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "windup"
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "spin-hit",
+      "action": "spin",
+      "v2": "spin",
+      "shared": null,
+      "warnings": [],
+      "zones": 0,
+      "hurtAllies": 16,
+      "leapTarget": null,
+      "anim": "recover"
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "embers-windup",
+      "action": "embers",
+      "v2": "embers",
+      "shared": null,
+      "warnings": [
+        "dangerLine"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "cast"
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "embers-hit",
+      "action": "embers",
+      "v2": "embers",
+      "shared": null,
+      "warnings": [],
+      "zones": 3,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "recover"
+    },
+    {
+      "ground": "dark",
+      "quality": "high",
+      "kind": "leap-player",
+      "action": "leap",
+      "v2": null,
+      "shared": "leap",
+      "warnings": [
+        "dangerRune"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": 0,
+      "anim": "slam_windup"
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "spin-windup",
+      "action": "spin",
+      "v2": "spin",
+      "shared": null,
+      "warnings": [
+        "dangerRune"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "windup"
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "spin-hit",
+      "action": "spin",
+      "v2": "spin",
+      "shared": null,
+      "warnings": [],
+      "zones": 0,
+      "hurtAllies": 16,
+      "leapTarget": null,
+      "anim": "recover"
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "embers-windup",
+      "action": "embers",
+      "v2": "embers",
+      "shared": null,
+      "warnings": [
+        "dangerLine"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "cast"
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "embers-hit",
+      "action": "embers",
+      "v2": "embers",
+      "shared": null,
+      "warnings": [],
+      "zones": 3,
+      "hurtAllies": 0,
+      "leapTarget": null,
+      "anim": "recover"
+    },
+    {
+      "ground": "light",
+      "quality": "low",
+      "kind": "leap-player",
+      "action": "leap",
+      "v2": null,
+      "shared": "leap",
+      "warnings": [
+        "dangerRune"
+      ],
+      "zones": 0,
+      "hurtAllies": 0,
+      "leapTarget": 0,
+      "anim": "slam_windup"
+    }
+  ],
+  "errors": [],
+  "remote": [],
+  "limits": "Cenas controladas avançam a simulação real; o enquadramento da câmera é o do treino."
+}

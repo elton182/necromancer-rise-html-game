@@ -27,17 +27,17 @@ const {chromium}=require('playwright'),fs=require('node:fs'),path=require('node:
   perf.mine=await visit(30,-122);await shot('mine');
   perf.mill=await visit(-100,120);await shot('mill');
   perf.graveyard=await visit(130,32);await shot('graveyard');
-  // Progresso controlado: rescue concluído, quests abertas, mina limpa e conversa com Bran.
+  // Progresso controlado: rescue concluído, quests abertas, mina limpa e conversa com Bruno.
   const quest=await page.evaluate(async()=>{
    const n=NecromancerV2,s=n.session,w=n.world,{tickAdventure}=await import('v2-campaign'),{dealDamage}=await import('v2-combat'),W=await import('v2-campaign-world'),M=await import('v2-campaign-world-model');
-   const go=p=>{Object.assign(w.player,{x:p.x,y:p.y});tickAdventure(s,.1);},clear=id=>{for(const e of [...w.actors])if(e.worldGroup===id&&e.hp>0)dealDamage(w,e,1e9,w.player);tickAdventure(s,.1);};
+   const go=p=>{Object.assign(w.player,{x:p.x,y:p.y});tickAdventure(s,.1);},clear=id=>{const kill=()=>{for(const e of [...w.actors])if(e.worldGroup===id&&e.hp>0)dealDamage(w,e,1e9,w.player);tickAdventure(s,.1);},g=()=>w.adventure.groups.find(g=>g.id===id);kill();for(let i=0;i<30&&g()?.state==='between';i++){g().timer=0;tickAdventure(s,.1);kill();}};
    go(M.WORLD_POINTS.child);W.interactWorld(s);W.worldDialogueAction(s);go(M.WORLD_POINTS.prison);clear('prison-guards');W.interactWorld(s);W.worldDialogueAction(s);go(M.WORLD_POINTS.mayor);W.interactWorld(s);W.worldDialogueAction(s);
    const opened={smith:s.save.campaign.world.smith,lumber:s.save.campaign.world.lumber};
    go({x:30,y:-140});clear('mine-guards');go(M.WORLD_POINTS.mine);W.interactWorld(s);n.campaign.update();return {opened,dialogue:W.worldDialogue(s).title};
   });
   assert.deepEqual(quest.opened,{smith:'active',lumber:'active'});
   await shot('bran-dialogue',500);
-  await page.getByRole('button',{name:'Mandar Bran para a vila',exact:true}).click();
+  await page.getByRole('button',{name:'Mandar Bruno para a vila',exact:true}).click();
   await page.evaluate(()=>{const w=NecromancerV2.world;Object.assign(w.player,{x:-100,y:122});w.paused=false;NecromancerV2.campaign.update();});
   await page.locator('#view').focus();await page.keyboard.press('KeyM');await page.waitForSelector('#campaign-panel[data-view="world-map"] canvas');await shot('world-map',400);
   await page.keyboard.press('KeyM');

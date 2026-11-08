@@ -18,7 +18,7 @@ const house=(x,y,width,depth,height,tone,extra={})=>({kind:'box',look:'house',x,
 const SOLIDS=[
  // Fileira ao norte, com o corredor do portal livre ao centro.
  house(-15,-14.5,6,4.6,3,.1,{chimney:true}),house(-7.5,-15.5,5,4,2.8,.6),house(7.5,-15.5,5,4,2.8,.35),house(15,-14.5,6,4.6,3.1,.85,{chimney:true}),
- // Oeste (ferraria de Bram) e leste (casa de Lysa), de frente para a rua principal.
+ // Oeste (ferraria de Bruno) e leste (casa de Lucia), de frente para a rua principal.
  house(-14.5,-2.2,6,4.5,3.2,.45,{chimney:true,smithy:true}),house(14.5,-2.2,6,4.5,2.8,.9,{chimney:true}),
  house(-14.5,8.5,5.5,5,3,.25),house(14.5,8.5,5.5,5,3,.7,{chimney:true}),
  house(-14,16.5,6,4.5,2.9,.8),house(14,16.5,6,4.5,2.9,.15),

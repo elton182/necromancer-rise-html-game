@@ -20,11 +20,13 @@ Evitar contorno preto espesso, múltiplos anéis sobrepostos e dezenas de fragme
 | Carne | Tons médios orgânicos | Verde/castanho dessaturado | Massa, pulsação e dissolução |
 | Espíritos | Azul/ciano | Azul acinzentado | Formas leves e deslocamento curto |
 | Sombras | Violeta com centro legível | Violeta dessaturado | Símbolos e bordas definidas |
-| Perigo inimigo | Cor quente a definir por família | Contraste com o chão | Área delimitada e aviso de execução |
+| Perigo inimigo | Cor quente da habilidade | Sombra externa suave | Área delimitada e aviso de execução |
 
-As três últimas famílias ainda são diretrizes para os próximos cartões, sem
+Carne, espíritos e sombras ainda são diretrizes para os próximos cartões, sem
 afirmar que todas as skills existentes já seguem este padrão. Avisos hostis
-devem diferir dos aliados também pela forma e pelo movimento.
+devem diferir dos aliados também pela forma e pelo movimento: na v2, runas são
+aliadas ou de invocação; área de dano é forma lisa com frente que avança até a
+borda. Regras em [v2-efeitos-visuais.md](v2-efeitos-visuais.md#avisos-hostis-no-chão).
 
 ## Tiro de Osso — SK-01
 

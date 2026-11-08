@@ -1,0 +1,34 @@
+[
+  {
+    "key": "KeyS",
+    "label": "forward",
+    "animation": "walk",
+    "stepX": 0.02163746750431761,
+    "stepY": 0.02163746750431761,
+    "angle": -0.06668764290047674
+  },
+  {
+    "key": "KeyW",
+    "label": "backward",
+    "animation": "walk",
+    "stepX": -0.022273863607376265,
+    "stepY": -0.022273863607376265,
+    "angle": -0.042174362117110745
+  },
+  {
+    "key": "KeyD",
+    "label": "left",
+    "animation": "walk",
+    "stepX": 0.022273863607376265,
+    "stepY": -0.022273863607376265,
+    "angle": -0.06412833941883167
+  },
+  {
+    "key": "KeyA",
+    "label": "right",
+    "animation": "walk",
+    "stepX": -0.021319269452765188,
+    "stepY": 0.021319269452765133,
+    "angle": -0.04428798179212474
+  }
+]

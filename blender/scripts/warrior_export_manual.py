@@ -4,7 +4,7 @@ from datetime import datetime
 import bpy,json
 ROOT=Path(__file__).resolve().parents[1]
 rig=bpy.data.objects['WarriorRig'];body=bpy.data.objects['WarriorBody'];scene=bpy.context.scene
-names=['idle','walk','strafe_left','strafe_right','slash_1','slash_2','slash_3','thrust','shield_bash','death']
+names=['idle','walk','strafe_left','strafe_right','slash_1','slash_2','slash_3','thrust','shield_bash','death','dodge']
 if any(t.name=='tornado' for t in rig.animation_data.nla_tracks):names.append('tornado')
 backup=ROOT/'backups'/('warrior_before_manual_export_'+datetime.now().strftime('%Y%m%d_%H%M%S')+'.blend')
 bpy.ops.wm.save_as_mainfile(filepath=str(backup),copy=True)

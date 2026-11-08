@@ -25,15 +25,15 @@
     "playback": [
       {
         "loop": false,
-        "duration": 3
-      },
-      {
-        "loop": false,
-        "duration": 3
-      },
-      {
-        "loop": false,
         "duration": 6
+      },
+      {
+        "loop": false,
+        "duration": 3
+      },
+      {
+        "loop": false,
+        "duration": 3
       },
       {
         "loop": true,

@@ -1,0 +1,52 @@
+{
+  "live": [
+    {
+      "model": "necromancer",
+      "ok": true,
+      "states": [
+        "dodge"
+      ],
+      "window": 0.5,
+      "distance": 4.499999999999998,
+      "protectedHit": true,
+      "after": "idle",
+      "hasClip": true,
+      "yawLag": 0.5239301554456083
+    },
+    {
+      "model": "warrior",
+      "ok": true,
+      "states": [
+        "dodge"
+      ],
+      "window": 0.5,
+      "distance": 4.499999999999997,
+      "protectedHit": true,
+      "after": "idle",
+      "hasClip": true,
+      "yawLag": 0.2552760430321817
+    },
+    {
+      "model": "lich",
+      "ok": true,
+      "states": [
+        "dodge"
+      ],
+      "window": 0.5,
+      "distance": 4.499999999999999,
+      "protectedHit": true,
+      "after": "idle",
+      "hasClip": true,
+      "yawLag": 0.10460508914253452
+    }
+  ],
+  "errors": [],
+  "remote": [],
+  "checks": [
+    "clipe dodge em cada modelo",
+    "distância, duração e proteção da regra",
+    "pranchas por fase",
+    "fundos claro e escuro em qualidade baixa",
+    "grupo com horda"
+  ]
+}

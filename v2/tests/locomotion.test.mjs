@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {gaitTarget,blendGait,advanceGaitPhase} from '../scripts/locomotion.mjs';
+import {gaitTarget,blendGait,advanceGaitPhase,dodgeYaw} from '../scripts/locomotion.mjs';
 
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,a+' ≠ '+b);
 // Com mira em +Y a frente é +Y e a esquerda do modelo é +X.
@@ -44,4 +44,19 @@ test('a fase avança pela passada de cada clipe e recua de ré',()=>{
  near(advanceGaitPhase(0,.75,walk,1.5,1),.5);near(advanceGaitPhase(0,.25,side,1.5,1),.25);
  near(advanceGaitPhase(.1,.3,{...walk,reverse:true},1.5,1),.9);
  near(advanceGaitPhase(.5,1.5,walk,1.5),.5);
+});
+test('fora da esquiva o corpo segue o ângulo da regra sem atraso',()=>{
+ const s={};near(dodgeYaw(s,1,false,1/60),1);near(dodgeYaw(s,-2,false,1/60),-2);
+});
+test('a esquiva vira o corpo aos poucos, pelo caminho curto, e chega ao ângulo da regra',()=>{
+ const s={};dodgeYaw(s,3,false,1/60);
+ const first=dodgeYaw(s,-3,true,1/60),from=3,way=Math.PI*2-6;
+ assert.ok(first>from&&first<from+way,'o giro de 3 para -3 passa por π: '+first);
+ let yaw=first;for(let i=0;i<5;i++)yaw=dodgeYaw(s,-3,true,1/60);near(yaw,-3);
+});
+test('o fim da esquiva também suaviza, e a pausa congela o giro',()=>{
+ const s={};dodgeYaw(s,0,false,1/60);for(let i=0;i<8;i++)dodgeYaw(s,1,true,1/60);
+ const paused=dodgeYaw(s,0,false,0);near(paused,1);near(dodgeYaw(s,0,false,0),1);
+ const moving=dodgeYaw(s,0,false,1/60);assert.ok(moving<1&&moving>0);
+ for(let i=0;i<6;i++)dodgeYaw(s,0,false,1/60);near(s.yaw,0);
 });
