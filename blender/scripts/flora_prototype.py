@@ -1,4 +1,9 @@
 """Flora: protótipo independente. Blender --background --python este_arquivo."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import os, sys, math, random, json
 from mathutils import Vector
 sys.path.insert(0, os.path.dirname(__file__))
@@ -210,7 +215,7 @@ def make(wolf):
     target=Vector((0,0,1.35));cam.location=(3,-7,4.0);cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
     for folder in ['models','previews','frames','spritesheets']:os.makedirs(os.path.join(BASE,folder),exist_ok=True)
     sc['prototype_scope']='Estudo visual independente; sem integracao ao jogo. Oito direcoes, idle de 4 quadros.'
-    bpy.ops.wm.save_as_mainfile(filepath=os.path.join(BASE,'models',name+'.blend'))
+    bpy.ops.wm.save_as_mainfile(filepath=asset_path(os.path.join(BASE,'models',name+'.blend')))
     sc.render.filepath=os.path.join(BASE,'previews',name+'.png');bpy.ops.render.render(write_still=True)
     sc.render.resolution_x=224;sc.render.resolution_y=224
     p=math.radians(35);forward=Vector((0,cos(p),-sin(p)));target=Vector((0,sin(p),cos(p)))*(165-112)/56

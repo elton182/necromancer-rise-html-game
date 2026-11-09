@@ -83,12 +83,17 @@ test('Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; rec
  const near=field({blink:1});near.aim={x:2,y:0};marksmanAction(near,4);advance(near,1/60,30);assert.ok(Math.abs(near.player.x-2)<1e-6,'para no ponto mirado');
 });
 
-test('Meteoro: área marcada, cai depois de 1 s com 320% e some',()=>{
+test('Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em chamas por 3 s',()=>{
  const w=field({fireball:1,meteor:1}),inside=target(w,8,1),out=target(w,8,4.5);
- assert.ok(marksmanAction(w,5));advance(w,1/60,Math.ceil((A[5].release+A[5].delay)*60)-3);
+ assert.ok(marksmanAction(w,5));advance(w,1/60,Math.ceil(A[5].release*60)+1);
+ const fall=w.effects.find(f=>f.fx==='meteor');assert.ok(fall,'bola de fogo caindo');assert.equal(fall.duration,A[5].delay);assert.deepEqual([fall.x,fall.y],[8,0]);
+ advance(w,1/60,Math.ceil(A[5].delay*60)-6);
  assert.equal(lost(inside),0);assert.ok(w.effects.some(f=>f.marksmanRing));
- advance(w,1/60,20);assert.equal(lost(inside),dmg(w,5));assert.equal(lost(out),0);assert.equal(w.marksmanZones.length,0);
+ advance(w,1/60,10);assert.equal(lost(inside),dmg(w,5));assert.equal(lost(out),0);
  assert.ok(w.effects.some(f=>f.fx==='groundBreak'));
+ assert.equal(w.marksmanZones.length,1);assert.equal(w.marksmanZones[0].kind,'fire');assert.ok(w.effects.some(f=>f.fx==='fireField'),'chão queimando visível');
+ const B=A[5].burn,pulse=Math.max(1,Math.floor(w.player.spellDamage*B.multiplier));
+ advance(w,1/60,Math.ceil(B.time*60)+5);assert.equal(lost(inside),dmg(w,5)+pulse*B.time/B.interval);assert.equal(lost(out),0);assert.equal(w.marksmanZones.length,0);
 });
 
 test('esquiva cancela; troca de cena limpa projéteis e chamas',()=>{

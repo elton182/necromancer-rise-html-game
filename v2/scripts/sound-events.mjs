@@ -7,7 +7,7 @@ import {levelOf} from './progression.mjs';
 // vêm deles. Tiro, Dash e acertos são lidos de recargas e contadores, que sobrevivem a quadros lentos.
 export const EFFECT_SOUNDS={allyAbility:'hit'};
 // Eventos de combate → efeito sonoro. Os dos atiradores vêm de marksman.mjs.
-const EVENT_SOUNDS={soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut',bowShot:'bowShot',crossbowShot:'crossbowShot',bombThrow:'bombThrow',powderBlast:'powderBlast',mineArm:'mineArm',fireIgnite:'fireIgnite',falconCry:'falconCry',falconDive:'windCut',arcaneBolt:'arcaneBolt',frostBlast:'frostBlast',blink:'blink',meteorCast:'fireIgnite',meteorImpact:'explosao'};
+const EVENT_SOUNDS={soldierCut:'swordSlash',orcSlam:'heavySlam',wolfHowl:'wolfHowl',orcCry:'battleCry',scytheWind:'windCut',bowShot:'bowShot',crossbowShot:'crossbowShot',bombThrow:'bombThrow',powderBlast:'powderBlast',mineArm:'mineArm',fireIgnite:'fireIgnite',falconCry:'falconCry',falconDive:'windCut',arcaneBolt:'arcaneBolt',frostBlast:'frostBlast',blink:'blink',meteorCast:'fireIgnite',meteorImpact:'explosao',summon:'summon'};
 // Sons de magia seguem o jogo anterior: Muralha e Escudo de Carne usam o timbre de reanimação.
 export const SPELL_SOUNDS={explosao:'explosao',chuva:'chuva',maos:'revive',barreira:'revive',maldicao:'summon'};
 export const PICKUP_SOUNDS={hp:'pickupHp',mp:'pickupMp',gold:'pickupMp',equipment:'pickupMp'};

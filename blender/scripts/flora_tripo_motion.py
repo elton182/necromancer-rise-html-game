@@ -3,6 +3,11 @@
 Executar via MCP com __file__ definido. Fontes em reference/flora-tripo/.
 Cria cenas próprias; não altera os modelos anteriores.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, math, json
 from pathlib import Path
 from mathutils import Euler, Matrix, Vector
@@ -491,7 +496,7 @@ def main(wolf=False):
     bpy.context.view_layer.active_layer_collection=bpy.context.view_layer.layer_collection
     scene.render.fps=30
     old=set(bpy.data.objects)
-    bpy.ops.import_scene.gltf(filepath=str(ROOT/'reference/flora-tripo'/('wolf-source.glb' if wolf else 'druid-t-source.glb')))
+    bpy.ops.import_scene.gltf(filepath=asset_path(str(ROOT/'reference/flora-tripo'/('wolf-source.glb' if wolf else 'druid-t-source.glb'))))
     imported=set(bpy.data.objects)-old
     rig=next(o for o in imported if o.type=='ARMATURE')
     mesh=next(o for o in imported if o.type=='MESH' and o.parent==rig)
@@ -530,10 +535,10 @@ def main(wolf=False):
     for child in rig.children:child.select_set(True)
     bpy.context.view_layer.objects.active=rig
     # Salva somente esta cena e suas dependências, sem levar cenas do usuário.
-    bpy.data.libraries.write(str(ROOT/'models'/f'{stem}.blend'),{scene},fake_user=True)
+    bpy.data.libraries.write(asset_path(str(ROOT/'models'/f'{stem}.blend')),{scene},fake_user=True)
     rig.animation_data.action=None
     for track in rig.animation_data.nla_tracks: track.mute=False
-    bpy.ops.export_scene.gltf(filepath=str(ROOT/'exports'/f'{stem}.glb'),use_selection=True,export_format='GLB',
+    bpy.ops.export_scene.gltf(filepath=asset_path(str(ROOT/'exports'/f'{stem}.glb')),use_selection=True,export_format='GLB',
         use_active_scene=True,export_animations=True,export_animation_mode='NLA_TRACKS',export_force_sampling=True,export_anim_slide_to_zero=True)
     for track in rig.animation_data.nla_tracks: track.mute=True
     rig.animation_data.action=actions[0][1]

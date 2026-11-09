@@ -72,7 +72,7 @@
     },
     {
       "path": "v2/tools/horde-source.cjs",
-      "sha256": "6013c77f5832f70a3fc109c2a72d141746def075633adb61aa202de82667f1b7"
+      "sha256": "e4e060576ff39b66f03820865147869e8e5152f18af6b85496af1f4647474411"
     },
     {
       "path": "scripts/minion-abilities.js",
@@ -81,6 +81,14 @@
     {
       "path": "build-simulator/model.js",
       "sha256": "3ef1acf0a563129212af8c31017285f6e882eeea9da535b6e10af6d93192b6cb"
+    },
+    {
+      "path": "v2/tools/skill-tree-source.cjs",
+      "sha256": "32f56812141b390a0d58fdb0a616f084543e8ecb3f9d472eb64509fb1226c24b"
+    },
+    {
+      "path": "docs/habilidades/arvores.json",
+      "sha256": "c866a8dda0985b2b459f31a687e594cb680c8c0050d4c3a60c1858c5c4b45d23"
     },
     {
       "path": "scripts/skill-mastery-model.js",
@@ -175,20 +183,36 @@
       "sha256": "21c73ec209d8281887c75101517250596ccabb6d3bd9284428175c907af6823c"
     },
     {
+      "path": "v2/scripts/skill-tree-data.mjs",
+      "sha256": "d524e78760d0f83a20f250a763c90a0f97f9a021d574e8200e3eb30852ff3dc6"
+    },
+    {
+      "path": "v2/scripts/skill-tree.mjs",
+      "sha256": "0ed0920dbbbd570b29b9ad807d70614cccbf41e145891544d84f20b68fb59eee"
+    },
+    {
+      "path": "v2/scripts/skill-loadout.mjs",
+      "sha256": "e0a04fe9d3c84d09201a47181bbf7e456275b590555a517fd8d7aaf7da400a3d"
+    },
+    {
+      "path": "v2/scripts/companions.mjs",
+      "sha256": "f48634e558b675432d2dbe0093d35ab087cba16c2a67d51309e4e6df3edceb2a"
+    },
+    {
       "path": "v2/scripts/warrior-model.mjs",
-      "sha256": "f431b689ca005bf7be9b3385e5087e86dca4b241c5b552fec10532f39b22081a"
+      "sha256": "9bd7029d6e751319b2afbbeaeba29ae3b78ab63e9890f0a8524a04e5fe999f06"
     },
     {
       "path": "v2/scripts/warrior.mjs",
-      "sha256": "0ee5d8217a044e837ed6036956d0397c9bfb009fff85b32151f991b54ef713c6"
+      "sha256": "da46e3bbbb4712d72bca686e126ab9e0a8054a0ef3b28eee650ac4ae54ca6b3e"
     },
     {
       "path": "v2/scripts/druid-model.mjs",
-      "sha256": "26fb87e14c88c944f22ebadda35ac8e840126fb22350f877e2d3aea42f61e8b4"
+      "sha256": "6324ea4ea40cc6aaf4497a1580c85b9a8a65c3364bf55bfd424404fa1faa7495"
     },
     {
       "path": "v2/scripts/druid.mjs",
-      "sha256": "da1dcc49e7839ad34e983e5472960cc3febd608a4992fc298d13c95502444e1e"
+      "sha256": "80d2542e388810ca21c734badcd581b17f818e1cfc483a23fa88e7e651e92df2"
     },
     {
       "path": "v2/scripts/class-registry.mjs",
@@ -200,7 +224,7 @@
     },
     {
       "path": "v2/scripts/marksman-model.mjs",
-      "sha256": "3cee27dd1e121e33c38e7f0ef9c183a23e01b4eb8dc2d1cfc6639478b5438b4c"
+      "sha256": "30c8491999cc2cc61c017151f8ddf16c972b5a92082c9544a48d671589f7acc3"
     },
     {
       "path": "v2/scripts/marksman-equipment.mjs",
@@ -208,7 +232,7 @@
     },
     {
       "path": "v2/scripts/marksman.mjs",
-      "sha256": "28a0cdf0f082d5c86195758d79e5945d1792367ad68c11936c3949ae3aa5d001"
+      "sha256": "94cfaba4765d37af855d488bbd5ecc4a6ac58458faaa8b3a3878b9b83decdc8a"
     },
     {
       "path": "v2/scripts/cave-hideout.mjs",
@@ -308,7 +332,7 @@
     },
     {
       "path": "v2/scripts/game-ui.mjs",
-      "sha256": "ac44094913e0350048641b2850c8492ae55145173d360a4a801009e370a7ddd1"
+      "sha256": "10fd4a491bbf803dbc1b122c035f1e76469c7946e00e199363407520b17607d9"
     },
     {
       "path": "v2/scripts/campaign.mjs",
@@ -416,7 +440,7 @@
     },
     {
       "path": "v2/scripts/actions.mjs",
-      "sha256": "c242b02ec21826249b537cf4aa4c3efbb104dcedff51c373ccbda05f36d71e4f"
+      "sha256": "3fb9826006c8143a28083ce0567c15da6e348acefb8f87e50556af60aabf0d50"
     },
     {
       "path": "v2/scripts/spell-rules.mjs",
@@ -424,7 +448,7 @@
     },
     {
       "path": "v2/scripts/spells.mjs",
-      "sha256": "232a77cac794884f14e20744b4aca0e6873fb8b74103a88ad17df93e2c850d21"
+      "sha256": "f0020a2115abde13f1b3b8ab3512ec468b7872ae033f885e69f1440db3df988d"
     },
     {
       "path": "v2/scripts/death-tree.mjs",
@@ -436,7 +460,7 @@
     },
     {
       "path": "v2/scripts/full-build.mjs",
-      "sha256": "f3b89f660e20e5fb5f4be3f5304ae8579590edab8b962fb50ed5e88bfb4049c5"
+      "sha256": "36b1edc5b1aeb37fc95c455611d5d507d6352cf6687c57d67e077ccec3e0ff06"
     },
     {
       "path": "v2/scripts/lich-model.mjs",
@@ -528,7 +552,7 @@
     },
     {
       "path": "v2/scripts/mastery.mjs",
-      "sha256": "8a7d1b921911775c3121c2654edec7bdd01961ecff99037ff683e9bbdff1fe2b"
+      "sha256": "4a2fb2e8e736a9343ecb8b416247fe8227052b7bf87232562276b05ae1488381"
     },
     {
       "path": "v2/scripts/progression-rules.mjs",
@@ -568,7 +592,7 @@
     },
     {
       "path": "v2/scripts/talents-panel.mjs",
-      "sha256": "864e48efa870d55c628055dfab1c8d75a54d9f80ccecf14da455fa171d6c92cb"
+      "sha256": "908653a70e33b9fcbd889a56e64a98194ad6e73a1dfd62c3a230c5707e24971f"
     },
     {
       "path": "v2/scripts/item-icons.mjs",
@@ -584,11 +608,11 @@
     },
     {
       "path": "v2/scripts/grimoire-panel.mjs",
-      "sha256": "a56d5200506875abc80a6bc569486c865fed7f11f0e3f8760347aa905264fdc5"
+      "sha256": "094a716e64e67e7a24a27b7d92ca4a5e5cfbd3928d2ed2e3eea732985245d0ec"
     },
     {
       "path": "v2/scripts/horde-rules.mjs",
-      "sha256": "7e72b0c285faf91d2b9b821b62627c1d473f035a9cdf8cb00bdd3be2bf5cddd8"
+      "sha256": "0d91b41ee067cb83b9e390e3d93f71d7fcf7e8d03f6a17e30a43e73fb66ab8b2"
     },
     {
       "path": "v2/scripts/horde-stats.mjs",
@@ -596,7 +620,7 @@
     },
     {
       "path": "v2/scripts/horde.mjs",
-      "sha256": "535066201af8ed74790a26cb979c913a4a5665fb2b98206cfbd06e8f878af256"
+      "sha256": "b057c75b5c228a1b9e1cf1cd219b8d285474cfb7592e59ae8dff0a75bfabd820"
     },
     {
       "path": "v2/scripts/horde-panel.mjs",
@@ -608,7 +632,7 @@
     },
     {
       "path": "v2/scripts/training-model.mjs",
-      "sha256": "6ff6c3fed96989484da2a5310fb7aaa4306c9dc917c0ae1ab666a107b1a7fd53"
+      "sha256": "79d7c95dbb5108d478d9314c94dd369aa78a8a00313fc72fcf4c5d64be39edfa"
     },
     {
       "path": "v2/scripts/locomotion.mjs",
@@ -620,7 +644,7 @@
     },
     {
       "path": "v2/scripts/sound-events.mjs",
-      "sha256": "7ea89b06fe7a94e451865879e18e511eb8d50f4d9169e1296dc06d836e264890"
+      "sha256": "d004800dccd70c860999cac8a33dd32e44d683c8eef763dae404fc9b24b74119"
     },
     {
       "path": "v2/scripts/lab-model.mjs",
@@ -640,11 +664,11 @@
     },
     {
       "path": "v2/scripts/vfx.mjs",
-      "sha256": "d765a3ab9b31a3b2718c2c1a67a05bf251e9ae48979e50e9dea985e0c1e1864d"
+      "sha256": "8340bd18eab0004b400b7c5ca59c304a997a3f6f614cc6eea3f65bcd1881508d"
     },
     {
       "path": "v2/scripts/renderer.mjs",
-      "sha256": "c75e73a35248adf8ff2165818f8cc49ce18214af8a81a0f0ce279b76160be692"
+      "sha256": "11cc61a6d6adebfc0a80c2e1433c0c1b9887daba400c0a5c6786b8d5f490324e"
     },
     {
       "path": "v2/scripts/input.mjs",
@@ -652,19 +676,23 @@
     },
     {
       "path": "v2/scripts/save-model.mjs",
-      "sha256": "14d5cd987b77e155ea546fbda5e7b5a0ef70f455673ab815b014c7215062d410"
+      "sha256": "e5db4e57d6b92d9e96d428eb5241192295019d1213593f2bd4a05da7e474b830"
+    },
+    {
+      "path": "v2/scripts/test-tools.mjs",
+      "sha256": "9d2a5127ef5592f87c551b250e94b7e918ca4f8934df6a53df2d29d847d9a841"
     },
     {
       "path": "v2/scripts/session.mjs",
-      "sha256": "4db03ff3d39db93606c8ece6a27f31ab4ae684dee465b231b9e4c207276d52e7"
+      "sha256": "450a13e581d1339f05a9e8148492ea59cfa59ebb3ad7a203f569c744c00b6276"
     },
     {
       "path": "v2/scripts/app.mjs",
-      "sha256": "98c2931ace90647a02633dfbf05c6490f7063ac8e880873d15acdc29227738c7"
+      "sha256": "6151f58ef836e93ef77f69d8179513a4549aabe330e13f7fe8a6d16087e89c6b"
     },
     {
       "path": "v2/assets/models.json",
-      "sha256": "fb8c967359b533606098e2d02dd3e7d1ff66a42d5d2587f359abe80df840f6fb"
+      "sha256": "fe7c6cb74a35e457615e7448040f519e4c17356d94fe48c6359f727bb3168034"
     },
     {
       "path": "blender/exports/v2_necromancer.glb",
@@ -863,12 +891,12 @@
       "sha256": "21ca577defe8136ea79f26696c1f7fe621853a6349d1dfa6e2d1eb309df0d326"
     },
     {
-      "path": "blender/exports/flora_tripo_druid_t.glb",
-      "sha256": "4009f625100bdcaf634bcf802a1e82427be3715eeefe968f7515db9eab1be190"
+      "path": "blender/exports/flora_human_revised.glb",
+      "sha256": "d66b107ef23eedf01b0f3d3f0c607b9d0b6cdfbf6335cfe59a96917fb47a1810"
     },
     {
-      "path": "blender/exports/flora_tripo_wolf.glb",
-      "sha256": "387b1c0dc91322d27a52938a53bae9b79d75ca622fffbc329b6ffb42fc940d52"
+      "path": "blender/exports/flora_wolf_dynamic.glb",
+      "sha256": "cf675dbd71ffd94b5a68a8cdde154c1b8d50157fa33df3d1822f1b458b5b7bfc"
     },
     {
       "path": "blender/exports/archer_hero.glb",
@@ -883,8 +911,8 @@
       "sha256": "e536b0ca1b6e71458e246fd63a21ea6852fe6e0b8f7a4b633caaa82507424fef"
     },
     {
-      "path": "blender/exports/mage_hero.glb",
-      "sha256": "d6dfd766ff2c2840ea1282017de5fb79905192ba083fdc6d49bdf1331c95f36c"
+      "path": "blender/exports/mage_hero_t.glb",
+      "sha256": "60b9ad6a87eef17e6c8b68491bd0d315fe31693e5dce9e4d11e224f281d2b059"
     },
     {
       "path": "v2/assets/music.json",
@@ -944,7 +972,7 @@
     },
     {
       "path": "v2/scripts/game.css",
-      "sha256": "4274c668753efafed601bfaf84313755997b4ad9ae683cd87318514c42896265"
+      "sha256": "49a12215a13f6aeba608d178e7f8c37fcbec1f84fac70204114c096e12221b67"
     },
     {
       "path": "v2/scripts/save.css",
@@ -1004,7 +1032,7 @@
     },
     {
       "path": "v2/scripts/ui.css",
-      "sha256": "86a8d37bfbe9b83cb35ca2e7b1844aedb783d8fb88a67b68aac15f7c560c4b20"
+      "sha256": "69d346497cdd799daf28fcecab570a6667d9c235c361fd27e323f67fbc19e1eb"
     },
     {
       "path": "v2/scripts/campaign-world.css",

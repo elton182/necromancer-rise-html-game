@@ -1,6 +1,9 @@
+import {testAction} from './test-tools.mjs';
 import {inVillageHub} from './village-services.mjs';
 import {WARRIOR_ACTIONS} from './warrior.mjs';
-import {PASSIVES,warriorRanks,warriorBudget,warriorSpent,canLearn,warriorActionLearned,activeStance,warriorTornado,TORNADO_VARIANTS} from './warrior-model.mjs';
+import {PASSIVES,warriorRanks,warriorBudget,warriorSpent,canLearn,warriorActionLearned,activeStance,warriorTornado,TORNADO_VARIANTS,WARRIOR_ACTION_COUNT} from './warrior-model.mjs';
+import {classLoadout,loadoutLearned} from './skill-loadout.mjs';
+import {DRUID_HUMAN_IDS} from './druid-model.mjs';
 import {applyAttributes} from './progression.mjs';
 import {createWarriorTalents,createDruidTalents,createMarksmanTalents} from './talents-panel.mjs';
 import {marksmanActions,marksmanLearned,marksmanRanks,marksmanBudget,marksmanSpent} from './marksman-model.mjs';
@@ -21,7 +24,7 @@ import {levelOf,points,snapshotFor,xpNext} from './progression.mjs';
 import {returnAdventure,D} from './campaign.mjs';
 import Endgame from './shared-endgame.mjs';
 import portrait from './shared-portrait.mjs';
-const ICON={empty:'—',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠'};
+const ICON={empty:'—',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠',caoZumbi:'🐕',mages:'🧙'};
 const LICH_ICON={ceifada:'⚔',giratoria:'✧',colheita:'✂',arco:'⤶',ciclone:'✷',libertar:'✕'};
 const KEYS=['M1 · 1','M2 · 2','3 · Q','4 · E','5 · R','6 · T'];
 export function createGameUI(s,handlers){
@@ -45,7 +48,16 @@ export function createGameUI(s,handlers){
  const valdoriaSection=node('section',undefined,$('menu-body'));valdoriaSection.dataset.menuPanel='valdoria';valdoriaSection.hidden=true;valdoriaSection.id='valdoria-content';
  const labSection=node('section',undefined,$('menu-body'));labSection.dataset.menuPanel='lab';labSection.hidden=true;labSection.id='lab-content';
  const mapsSection=node('section',undefined,$('menu-body'));mapsSection.dataset.menuPanel='maps';mapsSection.hidden=true;mapsSection.id='maps-content';
- const defs=[['equipment','Equipamentos'],['character','Personagem'],['skills','Habilidades'],['horde','Horda'],['lab','Laboratório'],['maps','Mapas'],['system','Sistema']];
+ const testSection=node('section',undefined,$('menu-body'));testSection.dataset.menuPanel='tests';testSection.hidden=true;
+ node('h2','Ferramentas de teste',testSection);
+ node('p','Os ajustes afetam o personagem atual e entram no próximo salvamento, inclusive automático. Remover nível zera o XP e exige pontos compatíveis com o novo nível.',testSection);
+ const testButtons=node('div',undefined,testSection);testButtons.className='test-tools-actions';
+ const testMessage=node('p','',testSection);testMessage.id='test-tools-message';testMessage.setAttribute('role','status');
+ for(const [id,label] of [['level-up','+1 nível'],['level-down','−1 nível'],['gold-up','+1.000 ouro'],['gold-down','−1.000 ouro'],['restore','Restaurar vida e recurso']]){
+  const b=button(label,()=>{const result=testAction(s,id);testMessage.textContent=result.message;handlers.changed();update(true);},testButtons);b.dataset.testAction=id;
+ }
+ const openTests=button('Testes',()=>show('tests'),$('game-nav'));openTests.id='open-test-tools';
+ const defs=[['equipment','Equipamentos'],['character','Personagem'],['skills','Habilidades'],['horde','Horda'],['lab','Laboratório'],['maps','Mapas'],['system','Sistema'],['tests','Testes']];
  for(const [id,title] of defs){const b=button(title,()=>selectTab(id),$('menu-tabs'));b.dataset.menuTab=id;b.setAttribute('role','tab');}
  const martial=node('section',undefined,skills);martial.hidden=true;
  const talents=createWarriorTalents(s,{tornadoVariant:id=>handlers.tornadoVariant(id),changed:()=>update(true)});
@@ -55,15 +67,16 @@ export function createGameUI(s,handlers){
  const marksmanTalents=createMarksmanTalents(s,{changed:()=>update(true)});
  // Pontos livres na árvore da classe atual.
  function spare(level){return isMarksman(w.classId)?marksmanBudget(level)-marksmanSpent(w.classId,marksmanRanks(w.classId,w.marksmanRanks,level)):w.classId==='warrior'?warriorBudget(level)-warriorSpent(warriorRanks(w.warriorRanks,level)):w.classId==='druid'?druidBudget(level)-druidSpent(druidRanks(w.druidRanks,level)):points(level,w.army?.profile.ranks||{});}
- const DRUID_ICON={spark:'⚡',chain:'⛓',roots:'🌿',dodge:'➶',storm:'⛈',rejuvenate:'🍃',claws:'🐾',leap:'⤴',howl:'🐺'};
+ const DRUID_ICON={spark:'⚡',chain:'⛓',roots:'🌿',dodge:'➶',storm:'⛈',rejuvenate:'🍃',turbilhao:'🌀',tornado:'🌪',claws:'🐾',leap:'⤴',howl:'🐺',corteSangrento:'🩸',garraDeGelo:'❄'};
  // Barra fixa da Druida: muda inteira com a forma (humana ou lobo).
  function druidBar(){const p=w.player,wolf=isWolf(w),list=wolf?WOLF_ACTIONS:HUMAN_ACTIONS,form=wolf?'wolf':'human';
-  for(let i=0;i<6;i++){const a=list[i],o=slotButtons[i];o.b.hidden=!a;if(!a)continue;const learned=druidActionLearned(form,i,w.druidRanks),remaining=a.id==='dodge'?w.dash.cooldown:druidCooldown(w,a.id);o.icon.textContent=DRUID_ICON[a.id];o.name.textContent=a.name;o.state.textContent=!learned?'Libere na árvore':a.cost?a.cost+' MP':a.id==='claws'?'+3 mana por acerto':a.id==='dodge'?'Sem mana':'Sem custo';o.b.title=a.name+' · '+KEYS[i]+(learned?'':' · libere na árvore');o.b.setAttribute('aria-label','Slot '+(i+1)+': '+o.b.title);o.b.classList.toggle('locked',!learned);o.b.classList.toggle('no-mana',p.mp<a.cost);o.cd.hidden=remaining<=1e-9;o.cd.textContent=remaining.toFixed(1)+'s';}
+  const bar=wolf?null:classLoadout('druid',w.skillLoadout);
+  for(let i=0;i<6;i++){const k=wolf?i:DRUID_HUMAN_IDS.indexOf(bar[i]),a=list[k],o=slotButtons[i];o.b.hidden=!a;if(!a)continue;const learned=druidActionLearned(form,k,w.druidRanks),remaining=a.id==='dodge'?w.dash.cooldown:druidCooldown(w,a.id);o.icon.textContent=DRUID_ICON[a.id];o.name.textContent=a.name;o.state.textContent=!learned?'Libere na árvore':a.cost?a.cost+' MP':a.id==='claws'?'+3 mana por acerto':a.id==='dodge'?'Sem mana':'Sem custo';o.b.title=a.name+' · '+KEYS[i]+(learned?'':' · libere na árvore')+(wolf?'':' · clique para trocar');o.b.setAttribute('aria-label','Slot '+(i+1)+': '+o.b.title);o.b.classList.toggle('locked',!learned);o.b.classList.toggle('no-mana',p.mp<a.cost);o.cd.hidden=remaining<=1e-9;o.cd.textContent=remaining.toFixed(1)+'s';}
  }
  // Barra dos atiradores nesta etapa: tiro (1) e esquiva (4).
- const MARKSMAN_ICON={arcane:'✦',fireball:'🔥',frost:'❄',blink:'✧',meteor:'☄',arrow:'🏹',pierce:'➶',leap:'↶',dodge:'➶',rain:'🌧',fan:'⋔',quarrel:'➹',volley:'⇶',bomb:'💣',mine:'⚙',firebomb:'🔥'};
- // Barra fixa dos atiradores: cada ação no seu slot; as que dependem de selo aparecem bloqueadas até aprender.
- function marksmanBar(){const p=w.player,list=marksmanActions(w.classId),res=resourceName(w.classId);for(let i=0;i<6;i++){const a=list[i],o=slotButtons[i];o.b.hidden=!a;if(!a)continue;const dodge=a.kind==='dodge',learned=marksmanLearned(w.classId,i,w.marksmanRanks),remaining=dodge?w.dash.cooldown:marksmanCooldown(w,a.id);o.icon.textContent=MARKSMAN_ICON[a.id]||'✦';o.name.textContent=a.name;o.state.textContent=!learned?'Libere na árvore':w.marksmanAction?.index===i?'Em ação':a.cost?a.cost+' '+res:'Sem custo';o.b.title=a.name+' · '+KEYS[i]+(learned?'':' · libere na árvore');o.b.setAttribute('aria-label','Slot '+(i+1)+': '+o.b.title);o.b.classList.toggle('locked',!learned);o.b.classList.toggle('no-mana',p.mp<a.cost);o.cd.hidden=remaining<=1e-9;o.cd.textContent=remaining.toFixed(1)+'s';}}
+ const MARKSMAN_ICON={arcane:'✦',fireball:'🔥',frost:'❄',blink:'✧',meteor:'☄',arrow:'🏹',pierce:'➶',leap:'↶',dodge:'➶',rain:'🌧',fan:'⋔',saraivadaSeguidora:'➶',impactoCeleste:'🦅',penasVoadoras:'🪶',quarrel:'➹',volley:'⇶',bomb:'💣',mine:'⚙',firebomb:'🔥',redeDeCaca:'🕸',armadilhaDeUrso:'🪤',setasPerseguidoras:'➶',esferaDeGelo:'❄',familiarDeFogo:'🔥',golemDeGelo:'🗿'};
+ // Barra montável dos atiradores: cada slot mostra a ação escolhida; as que dependem de selo aparecem bloqueadas até aprender.
+ function marksmanBar(){const p=w.player,list=marksmanActions(w.classId),res=resourceName(w.classId),bar=classLoadout(w.classId,w.skillLoadout);for(let i=0;i<6;i++){const k=list.findIndex(x=>x.id===bar[i]),a=list[k],o=slotButtons[i];o.b.hidden=!a;if(!a)continue;const dodge=a.kind==='dodge',learned=marksmanLearned(w.classId,k,w.marksmanRanks),remaining=dodge?w.dash.cooldown:marksmanCooldown(w,a.id);o.icon.textContent=MARKSMAN_ICON[a.id]||'✦';o.name.textContent=a.name;o.state.textContent=!learned?'Libere na árvore':w.marksmanAction?.index===k?'Em ação':a.cost?a.cost+' '+res:'Sem custo';o.b.title=a.name+' · '+KEYS[i]+(learned?'':' · libere na árvore')+' · clique para trocar';o.b.setAttribute('aria-label','Slot '+(i+1)+': '+o.b.title);o.b.classList.toggle('locked',!learned);o.b.classList.toggle('no-mana',p.mp<a.cost);o.cd.hidden=remaining<=1e-9;o.cd.textContent=remaining.toFixed(1)+'s';}}
  function selectTab(id){tab=id;menu.dataset.tab=id;for(const p of menu.querySelectorAll('[data-menu-panel]'))p.hidden=p.dataset.menuPanel!==id;for(const b of $('menu-tabs').children){b.setAttribute('aria-selected',String(b.dataset.menuTab===id));b.classList.toggle('on',b.dataset.menuTab===id);}if(id==='skills'){const warrior=w.classId!=='necromancer';for(const child of skills.children)child.hidden=child===martial?!warrior:warrior;if(warrior)renderMartial();else handlers.grimoire.render();}if(id==='equipment')handlers.gear.render();if(id==='character')handlers.character?.render($('character-summary'),show);if(id==='waves')handlers.waves.render();if(id==='valdoria')handlers.valdoria.render();if(id==='lab')handlers.lab?.render();if(id==='maps')handlers.maps?.render();handlers.army.update(true);update(true);}
  function show(id='equipment'){
   if(picker.open||help.open)return;if((id==='waves'||id==='valdoria')&&!inVillageHub(s))id='character';previousPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);selectTab(id);if(!menu.open){menu.showModal();update(true);}$('close-reliquary').focus();
@@ -79,8 +92,14 @@ export function createGameUI(s,handlers){
  function showHelp(){if(help.open){help.close();return;}if(picker.open)return;overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);help.showModal();}
  $('open-help').onclick=showHelp;$('footer-help').onclick=showHelp;$('close-help').onclick=()=>help.close();help.addEventListener('close',()=>{if(!menu.open&&s.scene===overlayScene)handlers.setPaused(overlayPause);handlers.focus();});help.addEventListener('cancel',e=>{e.preventDefault();help.close();});
  $('close-picker').onclick=()=>picker.close();picker.addEventListener('close',()=>{if(!menu.open&&s.scene===overlayScene)handlers.setPaused(overlayPause);handlers.focus();});picker.addEventListener('cancel',e=>{e.preventDefault();picker.close();});
- function chooseSlot(i){if(w.classId==='druid'||isMarksman(w.classId))return;if(w.classId==='warrior'){overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);pickerSlot=i;$('picker-title').textContent='Slot '+(i+1)+' · '+KEYS[i];$('picker-options').replaceChildren();$('picker-message').textContent='Uma habilidade da barra troca de lugar; uma de fora substitui a do slot. Cortes e Esquiva ficam sempre na barra.';WARRIOR_ACTIONS.forEach((a,id)=>{const b=button(a.name,()=>{const result=handlers.equip(i,id);if(result.ok){picker.close();update(true);}else $('picker-message').textContent=result.message;},$('picker-options'));b.dataset.pickerSkill=id;b.disabled=!warriorActionLearned(id,w.warriorRanks);if(w.warriorLoadout?.[i]===id)b.classList.add('equipped');});picker.showModal();return;}if(w.armyMode!=='groups'){show('horde');return;}overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);pickerSlot=i;$('picker-title').textContent='Slot '+(i+1)+' · '+KEYS[i];$('picker-options').replaceChildren();$('picker-message').textContent='';
+ function chooseSlot(i){if(w.classId==='druid'||isMarksman(w.classId)){chooseLoadout(i);return;}if(w.classId==='warrior'){overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);pickerSlot=i;$('picker-title').textContent='Slot '+(i+1)+' · '+KEYS[i];$('picker-options').replaceChildren();$('picker-message').textContent='Uma habilidade da barra troca de lugar; uma de fora substitui a do slot. Cortes e Esquiva ficam sempre na barra.';WARRIOR_ACTIONS.slice(0,WARRIOR_ACTION_COUNT).forEach((a,id)=>{const b=button(a.name,()=>{const result=handlers.equip(i,id);if(result.ok){picker.close();update(true);}else $('picker-message').textContent=result.message;},$('picker-options'));b.dataset.pickerSkill=id;b.disabled=!warriorActionLearned(id,w.warriorRanks);if(w.warriorLoadout?.[i]===id)b.classList.add('equipped');});picker.showModal();return;}if(w.armyMode!=='groups'){show('horde');return;}overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);pickerSlot=i;$('picker-title').textContent='Slot '+(i+1)+' · '+KEYS[i];$('picker-options').replaceChildren();$('picker-message').textContent='';
   for(const id of ACTIONS){const b=button('',()=>{const result=handlers.equip(pickerSlot,id);$('picker-message').textContent=result.message||'Habilidade equipada.';if(result.ok){picker.close();update(true);}},$('picker-options'));b.className='group-choice';b.dataset.pickerSkill=id;b.disabled=!available(w.army,id);if(b.disabled&&id==='lich')b.title='Invista em Forma da Morte, na aba Morte do Grimório, para equipar.';node('span',ICON[id],b);const description=node('div',undefined,b);node('b',skillName(id),description);node('small',id==='empty'?'Liberar este slot':cost(id)?cost(id)+' MP':id==='dash'?'Sem mana · recarga própria':'Grupo da horda',description);if(w.army.loadout[i]===id)b.classList.add('equipped');}
+  picker.showModal();
+ }
+ // Barra montável dos atiradores e da forma humana da Druida (skill-loadout.mjs). Na forma de lobo a barra é fixa.
+ function chooseLoadout(i){if(isWolf(w))return;overlayPause=w.paused;overlayScene=s.scene;handlers.setPaused(true);pickerSlot=i;$('picker-title').textContent='Slot '+(i+1)+' · '+KEYS[i];$('picker-options').replaceChildren();$('picker-message').textContent='Uma habilidade da barra troca de lugar; uma de fora substitui a do slot. O ataque básico e a Esquiva ficam sempre na barra.';
+  const druid=w.classId==='druid',ranks=druid?w.druidRanks:w.marksmanRanks,bar=classLoadout(w.classId,w.skillLoadout),list=druid?HUMAN_ACTIONS:marksmanActions(w.classId);
+  for(const a of list){const b=button(a.name,()=>{const result=handlers.equip(i,a.id);if(result.ok){picker.close();update(true);}else $('picker-message').textContent=result.message;},$('picker-options'));b.dataset.pickerSkill=a.id;b.disabled=!loadoutLearned(w.classId,a.id,ranks);if(!loadoutLearned(w.classId,a.id,ranks))b.title='Libere na árvore para equipar.';if(bar[i]===a.id)b.classList.add('equipped');}
   picker.showModal();
  }
  const stanceButton=button('',()=>{handlers.stance?.();update(true);},$('hud-slots').parentElement);stanceButton.id='warrior-stance';stanceButton.hidden=true;

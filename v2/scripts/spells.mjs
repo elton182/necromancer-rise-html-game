@@ -24,7 +24,7 @@ export function castSpell(w,id){
  w.spellCooldowns[id]=Math.max(rule.cooldown*.5,rule.cooldown*gear)*masteryCooldown(w,id);
  p.animation='cast';p.animationTime=0;p.actionId++;p.timer=.375;p.angle=Math.atan2(x-p.x,y-p.y);
  if(id==='explosao'){
-  const radius=R.radius*rule.radius*Math.sqrt(factor('area')),damage=p.spellDamage*rule.damage*(1+((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100)*factor('damage');
+  const radius=R.radius*rule.radius*Math.sqrt(factor('area'))*percent('Tamanho da área de explosão'),damage=p.spellDamage*rule.damage*(1+((e['Dano da Explosão Necrótica']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0))/100)*factor('damage');
   // Explosão imediata: o desenho nunca agenda um segundo impacto.
   for(const enemy of w.actors.filter(a=>a.team==='enemy'&&living(a)))if(dist(enemy,point)<radius)dealDamage(w,enemy,damage,p,'Explosão Necrótica');
   ring(w,x,y,radius,'#c17cdd',.85);

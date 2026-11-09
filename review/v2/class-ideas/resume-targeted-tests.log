@@ -1,0 +1,380 @@
+TAP version 13
+# Subtest: Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+ok 1 - Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+  ---
+  duration_ms: 23.528
+  ...
+# Subtest: Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+ok 2 - Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+  ---
+  duration_ms: 32.2864
+  ...
+# Subtest: lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+ok 3 - lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+  ---
+  duration_ms: 10.0514
+  ...
+# Subtest: Setas Perseguidoras curvam até um alvo fora do leque
+ok 4 - Setas Perseguidoras curvam até um alvo fora do leque
+  ---
+  duration_ms: 14.6677
+  ...
+# Subtest: Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+ok 5 - Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+  ---
+  duration_ms: 51.3635
+  ...
+# Subtest: Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+ok 6 - Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+  ---
+  duration_ms: 33.3045
+  ...
+# Subtest: Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+ok 7 - Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+  ---
+  duration_ms: 43.1854
+  ...
+# Subtest: Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+ok 8 - Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+  ---
+  duration_ms: 1.477
+  ...
+# Subtest: Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+ok 9 - Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+  ---
+  duration_ms: 95.4409
+  ...
+# Subtest: Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+ok 10 - Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+  ---
+  duration_ms: 19.4968
+  ...
+# Subtest: cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+ok 11 - cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+  ---
+  duration_ms: 70.2777
+  ...
+# Subtest: Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+ok 12 - Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+  ---
+  duration_ms: 40.7404
+  ...
+# Subtest: Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+ok 13 - Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+  ---
+  duration_ms: 20.9137
+  ...
+# Subtest: o modelo compartilhado do Rei não é alterado pelos ajustes da v2
+ok 14 - o modelo compartilhado do Rei não é alterado pelos ajustes da v2
+  ---
+  duration_ms: 2.2786
+  ...
+# Subtest: Queda do Rei: raio maior que o canônico e chão em chamas que acaba sozinho
+ok 15 - Queda do Rei: raio maior que o canônico e chão em chamas que acaba sozinho
+  ---
+  duration_ms: 48.805
+  ...
+# Subtest: Corte Real: alcance e abertura maiores, com travamento de direção preservado
+ok 16 - Corte Real: alcance e abertura maiores, com travamento de direção preservado
+  ---
+  duration_ms: 7.3075
+  ...
+# Subtest: Fase II: transição ocupa o chefe, não ataca durante o rugido e depois volta mais rápido
+ok 17 - Fase II: transição ocupa o chefe, não ataca durante o rugido e depois volta mais rápido
+  ---
+  duration_ms: 17.6876
+  ...
+# Subtest: Fase II: golpes ocorrem mais depressa e o Corte se encadeia em par
+ok 18 - Fase II: golpes ocorrem mais depressa e o Corte se encadeia em par
+  ---
+  duration_ms: 22.5783
+  ...
+# Subtest: Chamado da Coroa: avisos de runas acompanham a preparação e a chegada gera efeito
+ok 19 - Chamado da Coroa: avisos de runas acompanham a preparação e a chegada gera efeito
+  ---
+  duration_ms: 17.6
+  ...
+# Subtest: Salto: aviso rúnico preenche até o impacto e a morte do Rei limpa avisos, fogo e transição
+ok 20 - Salto: aviso rúnico preenche até o impacto e a morte do Rei limpa avisos, fogo e transição
+  ---
+  duration_ms: 6.6432
+  ...
+# Subtest: golpes de inimigos geram faíscas só quando causam dano
+ok 21 - golpes de inimigos geram faíscas só quando causam dano
+  ---
+  duration_ms: 4.6764
+  ...
+# Subtest: ataques corpo a corpo e à distância mostram rastro, disparo e área
+ok 22 - ataques corpo a corpo e à distância mostram rastro, disparo e área
+  ---
+  duration_ms: 9.9167
+  ...
+# Subtest: Tiro de Osso mostra o lançamento no jogador e o impacto no alvo
+ok 23 - Tiro de Osso mostra o lançamento no jogador e o impacto no alvo
+  ---
+  duration_ms: 13.0461
+  ...
+# Subtest: invocar, equipar e levantar integrantes mostra círculos de runas na cor do grupo
+ok 24 - invocar, equipar e levantar integrantes mostra círculos de runas na cor do grupo
+  ---
+  duration_ms: 19.013
+  ...
+# Subtest: efeitos pontuais têm teto, expiram sozinhos e não contam os avisos contínuos
+ok 25 - efeitos pontuais têm teto, expiram sozinhos e não contam os avisos contínuos
+  ---
+  duration_ms: 5.224
+  ...
+# Subtest: avisos hostis: um desenho por golpe, linha única e marcas da horda preservadas
+ok 26 - avisos hostis: um desenho por golpe, linha única e marcas da horda preservadas
+  ---
+  duration_ms: 10.284
+  ...
+# Subtest: poça hostil: enche durante o aviso, fica estável com dano e não vira fogo
+ok 27 - poça hostil: enche durante o aviso, fica estável com dano e não vira fogo
+  ---
+  duration_ms: 4.0319
+  ...
+# Subtest: Giro da Coroa: horda amontoada recebe aviso em círculo e só leva dano no giro
+ok 28 - Giro da Coroa: horda amontoada recebe aviso em círculo e só leva dano no giro
+  ---
+  duration_ms: 11.9812
+  ...
+# Subtest: Rastro de Brasas: linha travada em Zephyr, desviar evita o dano e o fogo fica no chão
+ok 29 - Rastro de Brasas: linha travada em Zephyr, desviar evita o dano e o fogo fica no chão
+  ---
+  duration_ms: 9.4994
+  ...
+# Subtest: Queda do Rei procura Zephyr mesmo com a horda colada no chefe
+ok 30 - Queda do Rei procura Zephyr mesmo com a horda colada no chefe
+  ---
+  duration_ms: 3.3513
+  ...
+# Subtest: morte do Rei no meio de um golpe da v2 limpa o golpe e os avisos
+ok 31 - morte do Rei no meio de um golpe da v2 limpa o golpe e os avisos
+  ---
+  duration_ms: 2.3608
+  ...
+# Subtest: Grimório aplica pré-requisitos, pontos diretos e limites sem mutação em falha
+ok 32 - Grimório aplica pré-requisitos, pontos diretos e limites sem mutação em falha
+  ---
+  duration_ms: 57.9749
+  ...
+# Subtest: devolução custa por ponto inclusive dependentes; falha por ouro preserva build e grupos
+ok 33 - devolução custa por ponto inclusive dependentes; falha por ouro preserva build e grupos
+  ---
+  duration_ms: 20.1886
+  ...
+# Subtest: combate, morte e indisponibilidade bloqueiam edição e redistribuição
+ok 34 - combate, morte e indisponibilidade bloqueiam edição e redistribuição
+  ---
+  duration_ms: 22.4301
+  ...
+# Subtest: no treino a edição só vale com o Relicário aberto e preserva a vida dos integrantes
+ok 35 - no treino a edição só vale com o Relicário aberto e preserva a vida dos integrantes
+  ---
+  duration_ms: 12.6469
+  ...
+# Subtest: recálculo preserva proporção da saúde e recuperação, sem multiplicadores cumulativos
+ok 36 - recálculo preserva proporção da saúde e recuperação, sem multiplicadores cumulativos
+  ---
+  duration_ms: 17.4828
+  ...
+# Subtest: maestria só recebe XP e aplica bônus quando equipada; progressão persiste ao sair da barra
+ok 37 - maestria só recebe XP e aplica bônus quando equipada; progressão persiste ao sair da barra
+  ---
+  duration_ms: 18.1217
+  ...
+# Subtest: bônus de tiro e Dash combinam árvore e maestria uma vez; save e menu preservam resultado
+ok 38 - bônus de tiro e Dash combinam árvore e maestria uma vez; save e menu preservam resultado
+  ---
+  duration_ms: 21.4132
+  ...
+# Subtest: maestria dos aliados aumenta atributos sem curar proporcionalmente e reset não consome pontos do Grimório
+ok 39 - maestria dos aliados aumenta atributos sem curar proporcionalmente e reset não consome pontos do Grimório
+  ---
+  duration_ms: 15.689
+  ...
+# Subtest: campos de maestria são opcionais nos saves anteriores e normalizados pelo modelo canônico
+ok 40 - campos de maestria são opcionais nos saves anteriores e normalizados pelo modelo canônico
+  ---
+  duration_ms: 3.5708
+  ...
+# Subtest: abate concede uma vez o XP lido das fontes às ações equipadas, inclusive por aliado
+ok 41 - abate concede uma vez o XP lido das fontes às ações equipadas, inclusive por aliado
+  ---
+  duration_ms: 30.8337
+  ...
+# Subtest: XP de abate sem novo nível não recalcula horda; subida de nível avisa e aplica pontos
+ok 42 - XP de abate sem novo nível não recalcula horda; subida de nível avisa e aplica pontos
+  ---
+  duration_ms: 9.5623
+  ...
+# Subtest: modo de carga e XP inválido não concedem maestria
+ok 43 - modo de carga e XP inválido não concedem maestria
+  ---
+  duration_ms: 11.8779
+  ...
+# Subtest: redistribuição total devolve todos os pontos por 20 ouro cada e falha sem ouro sem alterar a build
+ok 44 - redistribuição total devolve todos os pontos por 20 ouro cada e falha sem ouro sem alterar a build
+  ---
+  duration_ms: 17.0226
+  ...
+# Subtest: definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+ok 45 - definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+  ---
+  duration_ms: 456.8336
+  ...
+# Subtest: perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+ok 46 - perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+  ---
+  duration_ms: 17.2418
+  ...
+# Subtest: equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+ok 47 - equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+  ---
+  duration_ms: 5.8668
+  ...
+# Subtest: morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+ok 48 - morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+  ---
+  duration_ms: 191.9051
+  ...
+# Subtest: detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+ok 49 - detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+  ---
+  duration_ms: 158.5252
+  ...
+# Subtest: sacrifício espera 20 segundos e não é elegível para reanimação
+ok 50 - sacrifício espera 20 segundos e não é elegível para reanimação
+  ---
+  duration_ms: 237.269
+  ...
+# Subtest: persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+ok 51 - persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+  ---
+  duration_ms: 204.1411
+  ...
+# Subtest: região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+ok 52 - região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+  ---
+  duration_ms: 214.1145
+  ...
+# Subtest: automáticas por tipo usam recarga própria e chefes não recebem lentidão
+ok 53 - automáticas por tipo usam recarga própria e chefes não recebem lentidão
+  ---
+  duration_ms: 17.132
+  ...
+# Subtest: salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+ok 54 - salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+  ---
+  duration_ms: 14.4514
+  ...
+# Subtest: separação respeita terreno; esquiva não concede invulnerabilidade
+ok 55 - separação respeita terreno; esquiva não concede invulnerabilidade
+  ---
+  duration_ms: 14.3723
+  ...
+# Subtest: horda malformada e build inválida são recusadas sem alterar estado
+ok 56 - horda malformada e build inválida são recusadas sem alterar estado
+  ---
+  duration_ms: 1.6499
+  ...
+# Subtest: Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+ok 57 - Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+  ---
+  duration_ms: 6.3719
+  ...
+# Subtest: botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+ok 58 - botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+  ---
+  duration_ms: 2.2521
+  ...
+# Subtest: save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+ok 59 - save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+  ---
+  duration_ms: 27.1383
+  ...
+# Subtest: saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+ok 60 - saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+  ---
+  duration_ms: 6.6598
+  ...
+# Subtest: rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+ok 61 - rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+  ---
+  duration_ms: 13.5251
+  ...
+# Subtest: armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+ok 62 - armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+  ---
+  duration_ms: 22.5666
+  ...
+# Subtest: save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+ok 63 - save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+  ---
+  duration_ms: 6.9326
+  ...
+# Subtest: quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+ok 64 - quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+  ---
+  duration_ms: 10.9855
+  ...
+# Subtest: falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+ok 65 - falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+  ---
+  duration_ms: 6.3483
+  ...
+# Subtest: somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+ok 66 - somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+  ---
+  duration_ms: 34.1936
+  ...
+# Subtest: menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+ok 67 - menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+  ---
+  duration_ms: 17.3722
+  ...
+# Subtest: morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+ok 68 - morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+  ---
+  duration_ms: 14.6525
+  ...
+# Subtest: aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+ok 69 - aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+  ---
+  duration_ms: 12.0867
+  ...
+# Subtest: módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+ok 70 - módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+  ---
+  duration_ms: 19.2662
+  ...
+# Subtest: só nós jogáveis entram no jogo; ideias e planos ficam fora
+ok 71 - só nós jogáveis entram no jogo; ideias e planos ficam fora
+  ---
+  duration_ms: 1.3515
+  ...
+# Subtest: cada ação que depende de selo tem o nó correspondente na árvore da classe
+ok 72 - cada ação que depende de selo tem o nó correspondente na árvore da classe
+  ---
+  duration_ms: 1.088
+  ...
+# Subtest: painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+ok 73 - painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+  ---
+  duration_ms: 2.3307
+  ...
+# Subtest: Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+ok 74 - Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+  ---
+  duration_ms: 2.4803
+  ...
+1..74
+# tests 74
+# suites 0
+# pass 74
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2377.393

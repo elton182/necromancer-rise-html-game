@@ -1,4 +1,9 @@
 """Variação de mago a partir do necromante; executar no Blender com --python."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, math
 from mathutils import Vector
@@ -6,14 +11,14 @@ BASE = Path(__file__).resolve().parents[1]
 # Carrega em cena independente, preservando a cena aberta.
 scene = bpy.data.scenes.new('Mago')
 bpy.context.window.scene = scene
-with bpy.data.libraries.load(str(BASE / 'models/v2_necromancer.blend'), link=False) as (src, dst):
+with bpy.data.libraries.load(asset_path(str(BASE / 'models/v2_necromancer.blend')), link=False) as (src, dst):
     dst.objects = [n for n in src.objects if n not in ('Icosphere', 'Camera', 'Area')]
 for o in dst.objects:
     scene.collection.objects.link(o)
 arm = next(o for o in dst.objects if o.type == 'ARMATURE')
 body = next(o for o in dst.objects if o.name.startswith('tripo'))
 # Preserva explicitamente os quatro clipes, inclusive os não ativos na fonte.
-with bpy.data.libraries.load(str(BASE / 'models/v2_necromancer.blend'), link=False) as (src, clips):
+with bpy.data.libraries.load(asset_path(str(BASE / 'models/v2_necromancer.blend')), link=False) as (src, clips):
     clips.actions = [n for n in src.actions if n in ('idle','walk','cast','death')]
 arm.animation_data_create()
 for action in clips.actions:
@@ -51,7 +56,7 @@ bpy.ops.object.select_all(action='DESELECT')
 body.select_set(True);hat.select_set(True);bpy.context.view_layer.objects.active=hat
 # Salva somente a cena do mago em biblioteca editável.
 scene.frame_set(1)
-bpy.data.libraries.write(str(BASE/'models/mage.blend'),{scene},fake_user=True)
+bpy.data.libraries.write(asset_path(str(BASE/'models/mage.blend')),{scene},fake_user=True)
 print('Mago salvo em',BASE/'models/mage.blend')
 
 # Segunda direção visual: azul, ouro e barba de marfim.
@@ -104,7 +109,7 @@ for o in dst.objects:
       mask=(px[:,2]>px[:,0]*.85)&(px[:,2]>px[:,1]*1.2)
       px[mask,0]*=.2;px[mask,1]=np.minimum(1,px[mask,2]*1.4);im.pixels.foreach_set(px.ravel());im.pack()
 scene.frame_set(1)
-bpy.data.libraries.write(str(BASE/'models/mage.blend'),{scene},fake_user=True)
+bpy.data.libraries.write(asset_path(str(BASE/'models/mage.blend')),{scene},fake_user=True)
 
 
 

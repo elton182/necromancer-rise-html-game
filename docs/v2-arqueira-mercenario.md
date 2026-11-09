@@ -19,7 +19,9 @@ Implementado na v2. O Novo Jogo oferece cinco classes: Necromante, Guerreiro, Dr
 
 ## Barra
 
-A barra é fixa: cada ação tem seu slot, e as que dependem de selo mostram "Libere na árvore". Sem o selo, o comando não gasta recurso nem inicia recarga.
+Desde 08/11/2026 a barra é **montável** (`v2/scripts/skill-loadout.mjs`): clicar num slot do HUD abre o seletor com todas as ações da classe. Escolher uma ação que já está na barra troca as duas de lugar; escolher uma de fora substitui a do slot. O tiro básico e a Esquiva ficam sempre na barra, em qualquer posição. Ações sem selo aparecem bloqueadas no seletor e, se estiverem na barra, mostram "Libere na árvore"; sem o selo, o comando não gasta recurso nem inicia recarga. A barra fica em `character.skillLoadout` (ids de ação); saves sem ela recebem a barra padrão abaixo.
+
+Barra padrão (as seis primeiras ações da tabela de cada classe):
 
 | Slot | Arqueira | Mercenário |
 |---|---|---|
@@ -28,7 +30,7 @@ A barra é fixa: cada ação tem seu slot, e as que dependem de selo mostram "Li
 | 3 / Q | Recuo | Bomba de fragmentação |
 | C / E / 4 | Esquiva | Esquiva |
 | R / 5 | Chuva de Flechas | Mina de pólvora |
-| T / 6 | Leque | Garrafa incendiária |
+| T / 6 | Tiro Seguidor | Molotov |
 | F / botão de revivência do controle | Comando do Falcão | — |
 
 ### Atirar andando
@@ -62,7 +64,10 @@ A direção e o ponto-alvo ficam fixos ao iniciar. A esquiva cancela a ação; o
 | Flecha Perfurante | 20 foco / 5 s | 0,75 s, solta em 0,55 s | 200% do dano. A linha de 16 u aparece no chão durante a carga, que pode ser feita andando a metade da velocidade. Flecha a 34 u/s que atravessa todos os inimigos, com dano cheio em cada um. |
 | Recuo | 15 foco / 6 s (−0,5 s por ponto) | 0,40 s | Salto de 5 u para trás, de frente para a mira, entre 0,05 e 0,35 s, respeitando paredes. Inimigos a até 2,5 u do ponto de partida (sem parede no meio) ficam 35% mais lentos por 2 s; chefes não. |
 | Chuva de Flechas | 35 foco / 12 s | 0,60 s, marca em 0,35 s | Área de raio 3 no ponto mirado (até 12 u), marcada no chão. Depois de 0,7 s caem 5 ondas, uma a cada 0,4 s, com 45% do dano em quem estiver dentro. |
-| Leque | 22 foco / 7 s | 0,50 s, solta em 0,26 s | Cinco flechas em cone de 50°, alcance 10 u, 70% do dano cada. |
+| Tiro Seguidor (antigo Leque, id `fan`) | 22 foco / 7 s | 0,50 s, solta em 0,26 s | Cinco flechas em cone de 50°, alcance 10 u, 70% do dano cada. Cada flecha vira até 4 rad/s em direção ao inimigo mais próximo à frente dela (até 6 u); a curva é visível no ar. |
+| Saraivada Seguidora | 25 foco / 9 s | 0,80 s, primeira flecha em 0,20 s | Trava no inimigo mais perto da mira (até 3,5 u dela e 13 u da Arqueira), marcado por um anel dourado. Cinco flechas, uma a cada 0,12 s, com 45% do dano cada, que viram até 9 rad/s em direção a ele. Se o alvo cair, as restantes buscam o inimigo mais próximo à frente (até 8 u). Anda a 50% durante a ação. |
+| Impacto Celeste | 25 foco / 12 s | 0,60 s, marca em 0,30 s | Marca uma área de raio 2,5 no ponto mirado (até 12 u). O falcão desce até ela e, 0,9 s depois, a área recebe 150% do dano e empurra os inimigos 1 u a partir do centro (chefes não são empurrados). Até o impacto o falcão não ataca sozinho e o comando F fica bloqueado. |
+| Penas Voadoras | 15 foco / 7 s | 0,50 s, solta em 0,30 s | Seis penas saem do falcão, uma para cada inimigo mais próximo da Arqueira (até 8 u, com linha de visão), com 40% do dano cada; seguem o alvo (até 6 rad/s). Sem alvos suficientes, as que sobram seguem a mira em leque de 0,6 rad, sem procurar alvo. |
 
 ### Falcão
 
@@ -82,13 +87,15 @@ Com o selo **Falcão** (Caça, nível 2), um falcão acompanha a Arqueira em ór
 | Rajada | 24 vigor / 7 s | 0,80 s | Três virotes, em 0,25, 0,40 e 0,55 s, com 70% do dano cada; cada um atravessa um inimigo, perdendo 25%. |
 | Bomba de fragmentação | 20 vigor / 6 s | 0,60 s, arremesso em 0,30 s | Arco de 0,6 s até o ponto mirado (entre 1,5 e 9 u). A marca de queda fica no chão durante o voo. Explode em raio 2,6 (+12% por ponto em Estilhaços) com 160% do dano e empurra 1 u para fora; paredes bloqueiam a explosão. |
 | Mina de pólvora | 25 vigor / 9 s | 0,60 s, assenta em 0,40 s | Mina à frente dos pés. Arma em 1 s (o anel muda de cor) e explode quando um inimigo chega a 1,4 u: raio 3 (+Estilhaços), 220% do dano, empurrão de 1 u. No máximo duas, e a mais antiga sai. Duram 25 s. |
-| Garrafa incendiária | 30 vigor / 12 s | 0,60 s, arremesso em 0,30 s | Arco de 0,55 s até o ponto mirado. Incendeia o chão em raio 2,4 por 4 s, com 30% do dano a cada 0,5 s em quem estiver dentro (9 pulsos). |
+| Molotov (antiga Garrafa incendiária, id `firebomb`) | 30 vigor / 12 s | 0,60 s, arremesso em 0,30 s | Arco de 0,55 s até o ponto mirado. Incendeia o chão em raio 2,4 por 4 s, com 30% do dano a cada 0,5 s em quem estiver dentro (9 pulsos). |
+| Rede de Caça | 15 vigor / 9 s | 0,60 s, arremesso em 0,30 s | Arco de 0,55 s até o ponto mirado (entre 1,5 e 9 u), com a marca de queda no chão. A rede cobre raio 2,4: 30% do dano e 50% de lentidão por 3 s (+0,5 s por ponto depois do primeiro), com anel bege sob quem ficou preso. Chefes recebem o dano, mas não ficam lentos. Paredes bloqueiam. |
+| Armadilha de Urso | 20 vigor / 10 s | 0,60 s, assenta em 0,40 s | Armadilha à frente dos pés. Arma em 0,6 s (anel cinza que clareia) e fecha no primeiro inimigo que chega a 0,9 u: 120% do dano e o prende por 2 s (chefes ficam 50% mais lentos). No máximo duas, e a mais antiga sai. Duram 30 s. |
 
 Explosões, chuva e fogo não ferem o jogador. Chefes recebem dano, mas não são empurrados nem desacelerados.
 
 ## Árvores
 
-O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao carregar como no Guerreiro e na Druida. Os investimentos ficam em `character.marksmanRanks`. Nós novos entram sempre no fim da tabela de `marksman-model.mjs`, para não alterar a distribuição de saves existentes.
+O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao carregar como no Guerreiro e na Druida. Os investimentos ficam em `character.marksmanRanks`. Nomes, textos, pontos, níveis, pré-requisitos e ramos vêm de [docs/habilidades/arvores.json](habilidades/README.md) (o ramo Pólvora do Mercenário passou a se chamar **Pólvora e Armadilhas**); as ações e números de combate continuam em `marksman-model.mjs`, com as novas sempre no fim da lista.
 
 **Arqueira:**
 
@@ -96,11 +103,14 @@ O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao car
 |---|---|---|---|---|
 | Arco | Disparo | 5 | — | +6% de dano do Disparo por ponto |
 | Arco | Flecha Perfurante | 3 | — | Libera; +10% de dano por ponto |
-| Arco | Leque | 1 | nível 4, Disparo | Libera |
+| Arco | Tiro Seguidor | 1 | nível 4, Disparo | Libera |
+| Arco | Saraivada Seguidora | 1 | nível 8, Tiro Seguidor | Libera |
 | Arco | Chuva de Flechas | 1 | nível 6, Perfurante | Libera |
 | Caça | Recuo | 3 | — | Libera; −0,5 s de recarga por ponto |
 | Caça | Tiro de Emboscada | 3 | nível 4, Recuo | Depois do Recuo, o próximo Disparo, Perfurante ou Leque em até 3 s causa +15% por ponto (uma vez) |
 | Caça | Falcão | 3 | nível 2 | Libera o falcão; +10% de dano dele por ponto |
+| Caça | Penas Voadoras | 1 | nível 4, Falcão | Libera |
+| Caça | Impacto Celeste | 1 | nível 8, Falcão | Libera |
 | Passivas | Precisão / Vitalidade / Concentração / Passo leve / Fôlego | 5 cada | — | +8% de dano / +10% de vida / +10% de foco / +3% de movimento / +0,4 vida/s |
 
 **Mercenário:**
@@ -113,7 +123,9 @@ O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao car
 | Pólvora | Bomba de fragmentação | 3 | — | Libera; +10% de dano por ponto |
 | Pólvora | Estilhaços | 3 | nível 4, Bomba | +12% de raio da Bomba e da Mina por ponto |
 | Pólvora | Mina de pólvora | 1 | nível 6, Bomba | Libera |
-| Pólvora | Garrafa incendiária | 1 | nível 6, Bomba | Libera |
+| Pólvora | Molotov | 1 | nível 6, Bomba | Libera |
+| Pólvora | Rede de Caça | 3 | nível 2 | Libera; +0,5 s de lentidão por ponto depois do primeiro |
+| Pólvora | Armadilha de Urso | 1 | nível 6, Rede de Caça | Libera |
 | Passivas | Calibre / Couro curtido / Gibão reforçado / Resistência / Fôlego | 5 cada | — | +8% de dano / +10% de vida / +4 de armadura / +10% de vigor / +0,4 vida/s |
 
 A redução de recarga dos itens (até 50%) vale para as habilidades e para o comando do falcão; os tiros básicos mantêm o ritmo autoral.
@@ -197,14 +209,16 @@ Efeitos procedurais em `v2/scripts/audio.mjs`, disparados pelos eventos de comba
 
 | Som | Quando |
 |---|---|
-| `bowShot` | Disparo, Flecha Perfurante, Leque e Chuva de Flechas (corda) |
+| `bowShot` | Disparo, Flecha Perfurante, Tiro Seguidor, Saraivada Seguidora e Chuva de Flechas (corda) |
 | `crossbowShot` | Virote pesado e cada virote da Rajada (estalo e baque) |
-| `bombThrow` | Arremesso da Bomba e da Garrafa (sopro com pavio) |
+| `bombThrow` | Arremesso da Bomba, do Molotov e da Rede de Caça (sopro com pavio) |
 | `powderBlast` | Explosão da Bomba e da Mina |
-| `mineArm` | Mina terminando de armar (dois cliques metálicos) |
-| `fireIgnite` | Garrafa incendiária acendendo o chão |
-| `falconCry` | Comando F do falcão |
-| `windCut` | Recuo e cada mergulho do falcão |
+| `mineArm` | Mina e Armadilha de Urso terminando de armar (dois cliques metálicos) |
+| `fireIgnite` | Molotov acendendo o chão |
+| `falconCry` | Comando F do falcão e início do Impacto Celeste |
+| `windCut` | Recuo, cada mergulho do falcão, Penas Voadoras e a rede caindo |
+| `heavySlam` | Impacto Celeste atingindo a área |
+| `swordSlash` | Armadilha de Urso fechando |
 
 As ações dos atiradores não tocam mais o `raio` (som do Tiro de Osso); a esquiva continua com ele, como nas outras classes. Os impactos continuam com o `hit` comum.
 
@@ -214,12 +228,17 @@ As ações dos atiradores não tocam mais o `raio` (som do Tiro de Osso); a esqu
 - A bomba e a garrafa voam como uma esfera escura com pavio aceso, sobre a marca de queda no chão. A mina mostra um anel claro enquanto arma e um anel laranja com o raio de disparo quando armada.
 - A Flecha Perfurante mostra a linha do tiro durante a carga, e a Chuva marca a área antes das ondas.
 - Inimigos marcados pelo falcão têm um anel dourado.
+- O alvo travado pela Saraivada Seguidora tem um anel dourado durante a rajada; as flechas do Tiro Seguidor e da Saraivada curvam no ar, então uma esquiva lateral rápida ainda escapa.
+- O Impacto Celeste marca a área no chão enquanto o falcão desce; o dano só vem quando ele chega.
+- A rede voa com a cor da corda, sobre a marca de queda; quem fica preso tem um anel bege. A armadilha mostra um anel cinza enquanto arma, claro quando armada, e o inimigo preso ganha um anel próprio.
 
 ## Verificação
 
 - Regras:
   - `node --test v2/tests/marksman.test.mjs`: registro, saves, atributos, tiro básico, perfuração, paredes, esquiva, barra e catálogo.
-  - `node --test v2/tests/marksman-skills.test.mjs`: árvores e orçamento, passivas, bloqueio sem selo, as oito habilidades, falcão automático, comando, marca e bônus, limpeza na morte e na troca de cena.
+  - `node --test v2/tests/marksman-skills.test.mjs`: árvores e orçamento, passivas, bloqueio sem selo, as oito habilidades originais, falcão automático, comando, marca e bônus, limpeza na morte e na troca de cena.
+  - `node --test v2/tests/marksman-new-skills.test.mjs`: curva do Tiro Seguidor, trava e perseguição da Saraivada, atraso e empurrão do Impacto Celeste, uma pena por alvo, lentidão da rede (e chefes), armadilha armando, prendendo e no limite de duas.
+  - `node --test v2/tests/skill-loadout.test.mjs`: barra montável, selo exigido, save e ativação pelo slot.
   - `node --test v2/tests/marksman-equipment.test.mjs`: Arco e Besta por classe, validação cruzada, dano da arma e aprimoramento, arma inicial e entrega única, equipar, comprar, forjar e vender, e os sons de cada ação.
   - A suíte completa da v2 continua passando.
 - Navegador: `node v2/tests/marksman-browser-check.cjs` (Playwright + Edge, perfil isolado por classe). Cobre:
@@ -233,6 +252,7 @@ As ações dos atiradores não tocam mais o `raio` (som do Tiro de Osso); a esqu
   - Sem erros de página nem requisições externas.
 
   Evidências em [review/v2/marksman](../review/v2/marksman/).
+- Habilidades novas: `node v2/tests/marksman-new-skills-browser-check.cjs` confere os selos no painel, o seletor da barra, cada habilidade nova em combate com captura, chão claro e qualidade baixa, e a barra no save, sem erros de página. Evidências em [review/v2/marksman-new-skills](../review/v2/marksman-new-skills/).
 
 ## Limites conhecidos
 

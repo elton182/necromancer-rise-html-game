@@ -14,6 +14,8 @@ function target(w,x,y=0,hp=10000){const e={id:w.nextId++,team:'enemy',dummy:true
 function advance(w,dt){w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);tickWarrior(w,dt);}
 function fly(w,seconds=4){for(let i=0;i<seconds*60;i++)advance(w,1/60);}
 const SHIELD={bash:1,shieldThrow:1};
+// Três cortes seguidos, cada um logo que o anterior termina (dentro da janela do combo).
+function combo(w){for(let i=0;i<3;i++){assert.ok(warriorAction(w,0),'corte '+(i+1));const end=w.time+w.warriorAction.duration;while(w.time<end-1e-9)advance(w,1/60);}}
 
 test('ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois acertos por inimigo',()=>{
  const w=field({...SHIELD,ricochet:3}),a=target(w,3),b=target(w,3,3),c=target(w,6,3),d=target(w,9,3),out=target(w,9,3+7.5);
@@ -91,23 +93,28 @@ test('Brado desacelera inimigos no raio, dobra o vigor por 6 s e respeita parede
  assert.equal(near.slow,.3);assert.equal(near.slowTime,4);assert.equal(far.slowTime||0,0);assert.equal(hidden.slowTime||0,0);assert.ok(w.warriorRally.until>w.time);
  advance(w,.3);assert.equal(warriorAction(w,6),false,'recarga');assert.ok(Math.abs(w.warriorCooldowns[6]-18)<1e-6);
 });
-test('Onda de Aço atravessa inimigos uma vez por alvo, alcança 7 u e para em paredes',()=>{
- assert.equal(warriorAction(field(),7),false);
+test('Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atravessa inimigos, alcança 7 u e para em paredes',()=>{
+ assert.equal(warriorAction(field({slash:1,steelWave:1}),7),false,'não é mais ação da barra');
+ const none=field({slash:1});combo(none);assert.equal(none.warriorWaves?.length||0,0,'sem o selo não há onda');
  const w=field({slash:1,steelWave:1}),a=target(w,3),b=target(w,6.5),out=target(w,9),side=target(w,4,1.5);const mp=w.player.mp;
- assert.ok(warriorAction(w,7));assert.equal(w.player.mp,mp-25);fly(w,1);
+ combo(w);assert.equal(w.player.mp,mp,'sem custo');fly(w,1);
  const hit=10000-Math.floor(w.player.damage*1.8);assert.equal(a.hp,hit);assert.equal(b.hp,hit);assert.equal(out.hp,10000);assert.equal(side.hp,10000);assert.deepEqual(w.warriorWaves,[]);
- const v=field({slash:1,steelWave:1}),behind=target(v,5);v.arena.solids=[{kind:'box',x:3,y:0,width:1,depth:8}];warriorAction(v,7);fly(v,1);assert.equal(behind.hp,10000);assert.deepEqual(v.warriorWaves,[]);
- const dead=field({slash:1,steelWave:1});warriorAction(dead,7);advance(dead,.3);assert.equal(dead.warriorWaves.length,1);dead.player.hp=0;advance(dead,.1);assert.deepEqual(dead.warriorWaves,[]);
+ combo(w);assert.equal(w.warriorWaves.length,0,'recarga de 8 s');fly(w,8);combo(w);assert.equal(w.warriorWaves.length,1,'depois da recarga');
+ const v=field({slash:1,steelWave:1}),behind=target(v,5);v.arena.solids=[{kind:'box',x:3,y:0,width:1,depth:8}];combo(v);fly(v,1);assert.equal(behind.hp,10000);assert.deepEqual(v.warriorWaves,[]);
+ const dead=field({slash:1,steelWave:1});combo(dead);assert.equal(dead.warriorWaves.length,1);dead.player.hp=0;advance(dead,.1);assert.deepEqual(dead.warriorWaves,[]);
 });
-test('barra aceita oito ações, mantém Cortes e Esquiva e preserva saves antigos',()=>{
- assert.deepEqual(warriorLoadout(undefined),[0,1,2,3,4,5]);assert.deepEqual(warriorLoadout([4,1,2,3,0,5]),[4,1,2,3,0,5]);assert.deepEqual(warriorLoadout([0,1,2,3,6,7]),[0,1,2,3,6,7]);
+test('barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço de saves antigos',()=>{
+ assert.deepEqual(warriorLoadout(undefined),[0,1,2,3,4,5]);assert.deepEqual(warriorLoadout([4,1,2,3,0,5]),[4,1,2,3,0,5]);assert.deepEqual(warriorLoadout([0,1,2,3,6,5]),[0,1,2,3,6,5]);
+ assert.deepEqual(warriorLoadout([0,1,2,3,6,7]),[0,1,2,3,6,4],'a Onda de Aço dá lugar à primeira ação fora da barra');
+ const old=freshSave();Object.assign(old.character,{classId:'warrior',level:20,warriorLoadout:[0,7,2,3,1,6]});assert.deepEqual(createSession(old).world.warriorLoadout,[0,4,2,3,1,6]);
  assert.deepEqual(warriorLoadout([1,2,3,4,5,6]),[0,1,2,3,4,5],'sem Cortes');assert.deepEqual(warriorLoadout([0,1,2,4,5,6]),[0,1,2,3,4,5],'sem Esquiva');assert.deepEqual(warriorLoadout([0,1,2,3,4,8]),[0,1,2,3,4,5],'ação inexistente');
  const save=freshSave();Object.assign(save.character,{classId:'warrior',level:20,warriorRanks:{slash:1,steelWave:1,warCry:1,thrust:1}});const s=createSession(save);s.scene='training';s.world.paused=false;s.world.aim={x:8,y:0};
- assert.equal(equipSession(s,0,7).ok,false,'Cortes não saem da barra');assert.equal(equipSession(s,3,6).ok,false,'Esquiva não sai da barra');
- assert.ok(equipSession(s,4,7).ok);assert.ok(equipSession(s,5,6).ok);assert.deepEqual(s.world.warriorLoadout,[0,1,2,3,7,6]);
- assert.ok(equipSession(s,1,7).ok);assert.deepEqual(s.world.warriorLoadout,[0,7,2,3,1,6],'ação da barra troca de lugar');
- assert.equal(equipSession(s,2,8).ok,false);assert.ok(activateSlot(s,1));assert.equal(s.world.warriorAction.index,7);
- assert.deepEqual(createSession(snapshot(s)).world.warriorLoadout,[0,7,2,3,1,6]);
+ assert.equal(equipSession(s,0,6).ok,false,'Cortes não saem da barra');assert.equal(equipSession(s,3,6).ok,false,'Esquiva não sai da barra');
+ assert.equal(equipSession(s,4,7).ok,false,'Onda de Aço não ocupa slot');
+ assert.ok(equipSession(s,5,6).ok);assert.deepEqual(s.world.warriorLoadout,[0,1,2,3,4,6]);
+ assert.ok(equipSession(s,1,6).ok);assert.deepEqual(s.world.warriorLoadout,[0,6,2,3,4,1],'ação da barra troca de lugar');
+ assert.ok(activateSlot(s,1));assert.equal(s.world.warriorAction.index,6);
+ assert.deepEqual(createSession(snapshot(s)).world.warriorLoadout,[0,6,2,3,4,1]);
 });
 test('nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos',()=>{
  assert.equal(canLearn({bash:1,shieldThrow:1},'ricochet',7),false);assert.ok(canLearn({bash:1,shieldThrow:1},'ricochet',8));assert.equal(canLearn({},'ricochet',8),false);

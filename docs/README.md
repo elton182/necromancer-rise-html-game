@@ -20,6 +20,7 @@ Guias de referência das mecânicas, em [`mecanicas/`](mecanicas/README.md):
 
 | Documento | Conteúdo |
 |---|---|
+| [habilidades/README.md](habilidades/README.md) | Fonte da verdade das árvores de habilidades de todas as classes (`arvores.json`), editor visual e guia gerado |
 | [arvores-habilidades-implementacao.md](arvores-habilidades-implementacao.md) | Integração das árvores ao jogo, migração de saves e verificação |
 | [guia-visual-combate.md](guia-visual-combate.md) | Escala, contraste e regras visuais dos efeitos; arena de comparação |
 | [v2-saves.md](v2-saves.md) | Cenas, contrato de save da v2, importação preservada e limites da integração |

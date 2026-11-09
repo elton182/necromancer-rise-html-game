@@ -1,19 +1,25 @@
 # Organização dos arquivos Blender
 
 - `scripts/`: geração de modelos, renderização, empacotamento e módulos compartilhados.
-- `models/`: cenas editáveis `.blend`.
-- `exports/`: modelos `.glb` exportados.
+- `models/`: cenas editáveis atuais da v2 e do HUD; bases necessárias em `models/sources/` e fontes Canvas 2D em `models/legacy/`.
+- `exports/`: GLBs atuais; entradas de geração/laboratório em `exports/sources/` e exports Canvas 2D em `exports/legacy/`.
 - `spritesheets/`: atlas de sprites e metadados JSON.
 - `frames/frames_<personagem>/`: quadros individuais de renderização.
 - `previews/`: imagens de conferência.
-- `backups/`: cópias de segurança `.blend1` existentes.
+- `backups/automatic_models/`: cópias automáticas `.blend1`; `backups/blocking/`: cenas intermediárias de poses.
 - `logs/`: registros de geração e renderização.
 
 Execute os comandos abaixo a partir da raiz do projeto. Os scripts usam caminhos relativos à sua própria localização.
 
+As 32 versões substituídas foram retiradas para `../_to_delete/blender-models/`.
+O [catálogo de modelos](notes/model_catalog.md) lista os atuais, as dependências mantidas
+e todos os destinos. `scripts/asset_paths.py` mantém os geradores compatíveis com a
+organização; saídas antigas também são encaminhadas ao local correspondente.
+Confira os caminhos com `python blender/scripts/organize_models.py --check`.
+
 # Arqueiro morto-vivo e espectro
 
-`models/mob_archer.blend` e `models/mob_specter.blend` contêm os modelos editáveis, rig e quatro
+`models/legacy/mob_archer.blend` e `models/mob_specter.blend` contêm os modelos editáveis, rig e quatro
 animações: `idle`, `walk`, `attack` e `death`. Os arquivos `.glb` incluem o rig e
 as animações para reutilização. O arqueiro mantém a base óssea do guerreiro,
 com olhos azuis, arco, aljava e manto de couro. O espectro usa um capuz azul,
@@ -70,7 +76,7 @@ de cada direção. A pasta `frames_bone_shard` é temporária.
 
 # Cão de Cripta
 
-`scripts/crypt_hound.py` gera `models/mob_cryptHound.blend` e `.glb` com rig quadrúpede e sete ações: idle, walk, attack, windup, charge, recover e death. `scripts/render_crypt_hound.py` usa Cycles com cel shading em três faixas, contorno fino azul acinzentado e fundo transparente. O atlas mantém células de 224 px, oito direções, 56 px/u e âncora (112, 165). O empacotador valida os 272 quadros e incorpora o WebP ao HTML independente.
+`scripts/crypt_hound.py` gera `models/legacy/mob_cryptHound.blend` e `.glb` com rig quadrúpede e sete ações: idle, walk, attack, windup, charge, recover e death. `scripts/render_crypt_hound.py` usa Cycles com cel shading em três faixas, contorno fino azul acinzentado e fundo transparente. O atlas mantém células de 224 px, oito direções, 56 px/u e âncora (112, 165). O empacotador valida os 272 quadros e incorpora o WebP ao HTML independente.
 
 ```powershell
 blender --background --threads 4 --python blender/scripts/crypt_hound.py
@@ -84,7 +90,7 @@ Se Blender não estiver no PATH, use o executável da instalação local. `previ
 
 # Rei Caído — chefe único
 
-Modelo e espada importados (`models/boss_fallenKing_v3_teste.blend`) com dez
+Modelo e espada importados (`models/sources/boss_fallenKing_v3_teste.blend`) com dez
 ações recriadas por `scripts/animate_fallen_king_v4.py`: idle, walk, windup,
 attack, recover, cast, death e o golpe saltado com as duas mãos (slam_windup,
 slam, slam_recover). As pernas usam IK com o joelho sobre o pé, cada quadro é
@@ -120,8 +126,8 @@ mostra todas as ações nas oito direções.
 # Carcereiro das Almas — boss das expedições
 
 `scripts/soul_warden.py` constrói um chefe original com armadura, crânio coroado,
-martelo de execução e jaula de almas. `models/boss_soulWarden.blend` é o modelo
-editável; `exports/boss_soulWarden.glb` inclui rig e as sete ações: idle, walk,
+martelo de execução e jaula de almas. `models/legacy/boss_soulWarden.blend` é o modelo
+editável; `exports/legacy/boss_soulWarden.glb` inclui rig e as sete ações: idle, walk,
 windup, attack, cast, recover e death.
 
 O braço do martelo tem cotovelo flexionado, punho estreito e dedos em torno
@@ -205,7 +211,7 @@ python3 blender/scripts/pack_village_npcs.py --only=bram
 
 # Cenário modular da Vila de Eldrin
 
-`scripts/village_environment.py` cria a cena editável `models/village_eldrin.blend`, com casas
+`scripts/village_environment.py` cria a cena editável `models/legacy/village_eldrin.blend`, com casas
 modulares de madeira e reboco, telhados em volume com telhas, forja, poço,
 banca, quadros de aviso, lanternas, árvores, flores, cercas e pavimento organizado.
 `scripts/pack_village_environment.py` valida os renders e produz WebP e metadados para
@@ -549,7 +555,7 @@ A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a
 
 ## Druida jogável (v2)
 
-`scripts/flora_game_motion.py` acrescenta os clipes de jogo a `models/flora_druid.blend` (`cast`, `cast_up`, `slam`, `dodge`) e a `models/flora_werewolf.blend` (`claw_1`, `claw_2`, `leap`, `howl`, `dodge`) e exporta `exports/flora_druid.glb` e `exports/flora_werewolf.glb`. Deve rodar pelo MCP com o `.blend` aberto na sessão. É aditivo: preserva `idle`, `walk`, `attack` e `death` do estudo e faz backup antes de salvar. Notas em `notes/FLORA-PROTOTYPE.md`; regras em `../docs/v2-druida.md`.
+`scripts/flora_game_motion.py` acrescenta os clipes de jogo a `../_to_delete/blender-models/models/flora_druid.blend` (`cast`, `cast_up`, `slam`, `dodge`) e a `../_to_delete/blender-models/models/flora_werewolf.blend` (`claw_1`, `claw_2`, `leap`, `howl`, `dodge`) e exporta `../_to_delete/blender-models/exports/flora_druid.glb` e `../_to_delete/blender-models/exports/flora_werewolf.glb`. Deve rodar pelo MCP com o `.blend` aberto na sessão. É aditivo: preserva `idle`, `walk`, `attack` e `death` do estudo e faz backup antes de salvar. Notas em `notes/FLORA-PROTOTYPE.md`; regras em `../docs/v2-druida.md`.
 
 ## Arqueira e Mercenário jogáveis (v2)
 
@@ -557,7 +563,11 @@ A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a
 
 ## Mago jogável (v2)
 
-`scripts/mage_hero.py` corrige os pesos do rig Tripo de `reference/mage/mage_source.glb` (cajado rígido na mão direita, chapéu, rosto e barba na cabeça, luvas nas mãos, barra do manto entre quadril e coxas) e gera `models/mage_hero.blend` / `exports/mage_hero.glb` com `idle`, `walk`, `strafe_left`, `strafe_right`, `cast`, `cast_up`, `dodge` e `death`. Uso: `blender --background --python blender/scripts/mage_hero.py`. Pranchas em `previews/mage_hero_*`. [Integração](../docs/v2-mago.md).
+**Atual:** `scripts/mage_hero_t.py` equipa a nova malha T de `models/sources/mage_hero_t_source.blend` com rig de 29 ossos e o cajado recuperado do anterior. Gera `models/mage_hero_t.blend` / `exports/mage_hero_t.glb`, com oito clipes a 30 FPS (`idle`, `walk`, `strafe_left`, `strafe_right`, `cast`, `cast_up`, `dodge`, `death`). Uso: `blender --background --python blender/scripts/mage_hero_t.py`; acrescente `-- --blocking` para poses CONSTANT em arquivo separado. Prévias em `previews/mage_hero_t/`, produzidas por `mage_hero_t_review.py` e `pack_mage_hero_t_preview.py`; auditoria por `validate_mage_hero_t.py`. [Pipeline, eventos e integração](../docs/v2-mago.md#modelo-e-rig).
+
+**Anterior, preservado:** `scripts/mage_hero.py` corrige os pesos do rig Tripo de `reference/mage/mage_source.glb` e gera `models/sources/mage_hero.blend` / `../_to_delete/blender-models/exports/mage_hero.glb`. Suas funções de movimento e a geometria do cajado são reutilizadas pelo novo gerador; os arquivos antigos permanecem intactos.
+
+A locomoção atual do Mago usa `scripts/mage_hero_gait.py`: apoio contínuo, rolamento de calcanhar/ponta, contraposição do quadril e ombros, braço livre mais baixo e balanço próprio para caminhada e passos laterais. Os três ciclos mantêm 25 frames a 30 FPS e os mesmos strides. Prévias em três vistas: execute `mage_hero_t_review.py` com `-- --gait` e depois `python blender/scripts/pack_mage_gait_preview.py`; saída em `previews/mage_gait/`. `validate_mage_hero_t.py -- --gait` inclui a auditoria de apoios e joelhos. A base anterior fica em `backups/mage_gait/`.
 
 ## Moldura dos orbes do HUD (v2)
 
@@ -572,12 +582,14 @@ node v2/tools/build.cjs
 O empacotador descarta lascas soltas, mede o furo do aro pela borda do bronze (ajuste de círculo na metade de cima), apaga o miolo e a parede interna cinza, corta a margem e grava WebP de 560 px (~35 KB cada). `orb-frame.json` traz centro e raio do furo; os números de largura e deslocamento em `v2/scripts/hud-ornate.css` vêm dele e precisam ser atualizados se o render mudar. Conferência: `previews/hud_orb_frame_check.png` e `review/v2/hud-ornate/`.
 # Druida — modelos atuais fornecidos pelo usuário
 
-Os IDs `druid` e `druidWolf` da v2 usam `exports/flora_tripo_druid.glb` e
-`exports/flora_tripo_wolf.glb`. Fontes editáveis em `models/flora_tripo_*.blend`;
-GLBs de origem em `reference/flora-tripo/`. O gerador `scripts/flora_tripo_motion.py`
-cria cenas próprias e exporta os clipes exigidos pelo jogo. Executar via MCP com
-`__file__` definido; depois, na raiz, `node v2/tools/build.cjs`.
+Os IDs `druid` e `druidWolf` da v2 usam `exports/flora_human_revised.glb` e
+`exports/flora_wolf_dynamic.glb`. As fontes e geradores atuais estão descritos abaixo;
+os GLBs de origem continuam em `reference/flora-tripo/`. O gerador anterior
+`scripts/flora_tripo_motion.py` produz as bases preservadas. Após gerar uma revisão,
+rode `node v2/tools/build.cjs` na raiz.
 Os modelos e geradores anteriores da Flora foram preservados como estudo.
 
 
-Flora humana atual: models/flora_tripo_druid_t.blend e exports/flora_tripo_druid_t.glb, derivados de reference/flora-tripo/druid-t-source.glb. O gerador scripts/flora_tripo_motion.py adapta a pose T às ações e cria o cajado separado. A forma de lobo continua flora_tripo_wolf. Bases humanas anteriores preservadas.
+Flora humana atual: `models/flora_human_revised.blend` e `exports/flora_human_revised.glb`, gerados por `scripts/flora_human_motion.py` a partir de `models/sources/flora_tripo_druid_t.blend` (preservado). Revisão de capuz, capa, apoios, conjurações, contato do cajado, esquiva e morte; nove clipes a 30 FPS. `-- --blocking` grava poses CONSTANT em cena separada. `scripts/flora_human_review.py` audita todos os frames e renderiza prévias PBR em Eevee; `scripts/pack_flora_human_review.py` monta as pranchas e GIFs em `previews/flora_human_review/`. [Pipeline e eventos](../docs/v2-druida.md#base-humana-atual--pose-t).
+
+**Lobo atual:** `models/flora_wolf_dynamic.blend` / `exports/flora_wolf_dynamic.glb`, gerados por `scripts/flora_wolf_motion.py -- --dynamic` a partir de `models/sources/flora_tripo_wolf.blend` (preservado). Dez clipes a 30 FPS e rig com 68 ossos. As garras incluem torção de quadril/tórax, deslocamento do peso e pivô da perna de impulso; cauda, mandíbula, uivo, esquiva e morte mantêm a revisão anterior. `-- --dynamic --blocking` grava poses CONSTANT em `backups/blocking/flora_wolf_dynamic_blocking.blend`. `scripts/flora_wolf_review.py -- --dynamic` audita e renderiza prévias PBR em Eevee; `scripts/pack_flora_wolf_review.py --dynamic` monta PNG/GIF em `previews/flora_wolf_dynamic/`, incluindo `attacks.gif`. Sem `--dynamic`, o gerador reproduz a versão `flora_wolf_revised`, também preservada. [Pipeline, durações e eventos](../docs/v2-druida.md#forma-de-lobo-atual).

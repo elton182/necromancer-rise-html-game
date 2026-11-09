@@ -2,6 +2,11 @@
 
 blender --background --threads 4 --python render_undead.py -- archer|specter [preview]
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import sys, os, math, json
 import bpy
 from mathutils import Vector
@@ -12,7 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import toon
 kind=sys.argv[sys.argv.index('--')+1]
 preview='preview' in sys.argv
-bpy.ops.wm.open_mainfile(filepath=os.path.join(HERE, 'models', 'mob_'+kind+'.blend'))
+bpy.ops.wm.open_mainfile(filepath=asset_path(os.path.join(HERE, 'models', 'mob_'+kind+'.blend')))
 sc=bpy.context.scene; arm=bpy.data.objects['Rig']
 sc.view_settings.view_transform='Standard'
 sc.render.engine='CYCLES'; sc.cycles.samples=1; sc.cycles.use_denoising=False

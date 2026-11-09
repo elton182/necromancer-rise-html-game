@@ -12,6 +12,18 @@ export const BASIC_PROFILE={version:1,level:1,ranks:{},act1:false};
 export const TEST_PROFILE={version:1,level:24,act1:false,ranks:{zombie:2,vigor:2,abom:2,colossus:1,burst:1,skeleton:2,armor:2,archer:2,blades:2,shot:1,guard:1,specter:2,ethereal:2,step:1,drain:2,bond:1}};
 const copy=o=>JSON.parse(JSON.stringify(o)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),alive=a=>a.hp>0&&!a.dead;
 const baseLoadout=['raio','empty','dash','empty','empty','empty'];
+// Tipos exclusivos da v2 (Cão Zumbi e Magos, de docs/habilidades/arvores.json). Cérbero: um só cão, maior e mais forte.
+// Magos: orbe à distância; com o Raio Necrótico, raio que atravessa a linha; com a Ruptura, quem eles matam explode.
+export const CERBERUS={hp:3,damage:1.6,arc:100*Math.PI/180,range:1.9,radius:.55,scale:1.45,tint:'#c0563a'};
+export const MAGE_ATTACK={color:'#b58cff',beam:{length:8,width:.6,factor:.55/.4},splash:{radius:1.5,mult:.6},rupture:{radius:2,mult:.6}};
+const cerberus=w=>(w.army?.profile?.ranks?.cerberus||0)>0;
+const rankOf=(w,id)=>w.army?.profile?.ranks?.[id]||0;
+// Atributos dos tipos da v2: mesma escala por nível da horda legada, reforçados pelos efeitos do Grimório do tipo.
+function extraStats(w,type){
+ const def=R.defs[type],e=effects(w),g=gearBonuses(w),level=w.army.profile.level,hpBonus=(e[def.hpKey]||0)+(g.hordeHp||0),damage=(e[def.dmgKey]||0)+(g.horde||0);
+ const maxHp=Math.round((def.hp*R.tuning.minionHpMultiplier+(level-1)*R.tuning.minionHpPerLevel)*(1+hpBonus/100)),baseDmg=def.dmg+level-1+(g.hordeFlat||0);
+ return {hp:maxHp,dmg:Math.round(baseDmg*(1+damage/100)),baseDmg,damageBonus:damage,spd:def.spd,regen:maxHp*R.tuning.minionRegen,rng:def.atkR};
+}
 export function normalizeHorde(raw={}){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Horda inválida.');
  const p=raw.profile??BASIC_PROFILE,v=Build.validate({version:1,level:p.level,ranks:p.ranks}),profile={...copy(p),...v,act1:!!p.act1};
@@ -26,13 +38,15 @@ export function normalizeHorde(raw={}){
 // Pontos de habilidade vêm da árvore e dos afixos de equipamento; estes só reforçam nós já investidos.
 export function effects(w){return EQ.effects(Build,w.army.profile.ranks,w.equipment||{}).effects;}
 export const gearBonuses=w=>EQ.bonuses({equipment:w.equipment||{}});
-export function groupSize(w,type){const e=effects(w);return type==='zombie'?3+(e['Zumbis adicionais']||0):type==='skeleton'?3+(e['Guerreiros adicionais']||0):type==='archer'?2+(e['Arqueiros adicionais']||0):type==='specter'?2+(e['Espectros adicionais']||0):1;}
+export function groupSize(w,type){const e=effects(w);return type==='caoZumbi'?(cerberus(w)?1:2):type==='mages'?2:type==='zombie'?3+(e['Zumbis adicionais']||0):type==='skeleton'?3+(e['Guerreiros adicionais']||0):type==='archer'?2+(e['Arqueiros adicionais']||0):type==='specter'?2+(e['Espectros adicionais']||0):1;}
 export function members(w,type){return w.actors.filter(a=>a.team==='ally'&&a.groupType===type);}
 export function locked(w,type){return members(w,type).some(a=>a.sacrificed||a.exploded);}
 const savedMember=a=>({key:a.memberKey,hp:a.hp,maxHp:a.maxHp,dead:!alive(a),deadTimer:a.deadTimer||0,sacrificed:!!a.sacrificed,exploded:!!a.exploded,abilityCooldown:a.abilityCooldown??0});
 export function snapshotHorde(w){const out=normalizeHorde(w.army);out.groups={};for(const t of TYPES)if(out.loadout.includes(t))out.groups[t]=t==='specter'?[]:members(w,t).map(savedMember);return out;}
 function memberStats(w,type){
- const stats=statsFor(type,w.army.profile.level,effects(w),gearBonuses(w));stats.hp=Math.max(1,Math.round(stats.hp*masteryFactor(w,type,'hp')*(w.curses?.hordeHp??1)));stats.baseDmg*=masteryFactor(w,type,'damage');stats.dmg=Math.round(stats.baseDmg*(1+stats.damageBonus/100));stats.spd*=masteryFactor(w,type,'speed');stats.regen=stats.hp*R.tuning.minionRegen*masteryFactor(w,type,'regen');
+ const stats=R.defs[type].v2?extraStats(w,type):statsFor(type,w.army.profile.level,effects(w),gearBonuses(w));
+ if(type==='caoZumbi'&&cerberus(w)){stats.hp=Math.round(stats.hp*CERBERUS.hp);stats.baseDmg*=CERBERUS.damage;}
+ stats.hp=Math.max(1,Math.round(stats.hp*masteryFactor(w,type,'hp')*(w.curses?.hordeHp??1)));stats.baseDmg*=masteryFactor(w,type,'damage');stats.dmg=Math.round(stats.baseDmg*(1+stats.damageBonus/100));stats.spd*=masteryFactor(w,type,'speed');stats.regen=stats.hp*R.tuning.minionRegen*masteryFactor(w,type,'regen');
  return stats;
 }
 export function recalculateHorde(w){for(const m of w.actors.filter(a=>a.groupType&&!a.possessed)){const s=memberStats(w,m.groupType),ratio=m.hp/m.maxHp;Object.assign(m,{hp:m.dead?0:Math.max(1,Math.round(s.hp*ratio)),maxHp:s.hp,dmg:s.dmg,baseDmg:s.baseDmg,damageBonus:s.damageBonus,spd:s.spd,regen:s.regen,atkR:s.rng});}}
@@ -40,8 +54,8 @@ export function recalculateHorde(w){for(const m of w.actors.filter(a=>a.groupTyp
 function summonFx(w,m){fx(w,'summonRune',{x:m.x,y:m.y,radius:m.groupType==='abom'?2.3:1.7,color:R.abilities[m.groupType].color,duration:1.2});}
 export function spawnMember(w,type,index,saved){
  const stats=memberStats(w,type);
- const radius=type==='abom'?.55:.35,a=index*2.399,r=2+Math.floor(index/8)*.8,pos=resolvePosition({x:w.player.x+Math.sin(a)*r,y:w.player.y+Math.cos(a)*r},radius,w.arena),ratio=saved?saved.hp/saved.maxHp:1;
- const m={id:w.nextId++,model:type,team:'ally',groupType:type,memberKey:saved?.key??type+'-'+w.nextId,radius,...pos,hp:saved?.dead?0:Math.max(1,Math.min(stats.hp,Math.round(stats.hp*ratio))),maxHp:stats.hp,dmg:stats.dmg,baseDmg:stats.baseDmg,damageBonus:stats.damageBonus,spd:stats.spd,regen:stats.regen,atkR:stats.rng,atkRate:R.defs[type].atkRate,angle:0,animation:saved?.dead?'death':'spawn',animationTime:0,walkDistance:0,actionId:0,timer:0,attackCooldown:0,dead:!!saved?.dead,deathHandled:!!saved?.dead,deadTimer:saved?.deadTimer||0,sacrificed:!!saved?.sacrificed,exploded:!!saved?.exploded,abilityCooldown:saved?.abilityCooldown??R.abilities[type].cooldown*(.3+.15*(index%4)),phase:a};w.actors.push(m);return m;
+ const def=R.defs[type],big=type==='caoZumbi'&&cerberus(w),look=def.tint?{tint:big?CERBERUS.tint:def.tint,scale:big?CERBERUS.scale:def.scale}:{},radius=type==='abom'||big?.55:.35,a=index*2.399,r=2+Math.floor(index/8)*.8,pos=resolvePosition({x:w.player.x+Math.sin(a)*r,y:w.player.y+Math.cos(a)*r},radius,w.arena),ratio=saved?saved.hp/saved.maxHp:1;
+ const m={id:w.nextId++,model:def.model||type,...look,ranged:!!def.ranged,team:'ally',groupType:type,memberKey:saved?.key??type+'-'+w.nextId,radius,...pos,hp:saved?.dead?0:Math.max(1,Math.min(stats.hp,Math.round(stats.hp*ratio))),maxHp:stats.hp,dmg:stats.dmg,baseDmg:stats.baseDmg,damageBonus:stats.damageBonus,spd:stats.spd,regen:stats.regen,atkR:stats.rng,atkRate:R.defs[type].atkRate,angle:0,animation:saved?.dead?'death':'spawn',animationTime:0,walkDistance:0,actionId:0,timer:0,attackCooldown:0,dead:!!saved?.dead,deathHandled:!!saved?.dead,deadTimer:saved?.deadTimer||0,sacrificed:!!saved?.sacrificed,exploded:!!saved?.exploded,abilityCooldown:saved?.abilityCooldown??R.abilities[type].cooldown*(.3+.15*(index%4)),phase:a};w.actors.push(m);return m;
 }
 export function initializeHorde(w,state){w.army=normalizeHorde(state);w.command=null;w.allyShots=[];w.onAllyDeath=m=>killMember(w,m);let i=0;for(const t of w.army.loadout)if(TYPES.includes(t)&&t!=='specter'){const saved=w.army.groups[t]||w.army.reserve[t]||[];for(let n=0;n<groupSize(w,t);n++)spawnMember(w,t,i++,saved[n]);delete w.army.reserve[t];}}
 export function equipGroup(w,index,id,{preparation=false}={}){
@@ -71,7 +85,24 @@ export function revive(w,target=null,{fromMenu=false}={}){
 }
 function restore(w,m,ratio){m.dead=false;m.deathHandled=false;m.hp=Math.max(1,Math.floor(m.maxHp*ratio));m.deadTimer=0;m.sacrificed=false;m.exploded=false;m.returning=false;m.evade=null;m.navPath=null;m.targetId=null;m.attackCooldown=0;m.animation='spawn';m.animationTime=0;m.actionId++;m.abilityCooldown=R.abilities[m.groupType].cooldown*(.3+.15*(m.id%4));const p=resolvePosition({x:w.player.x+Math.sin(m.phase)*1.8,y:w.player.y+Math.cos(m.phase)*1.8},m.radius,w.arena);m.x=p.x;m.y=p.y;summonFx(w,m);}
 export function order(w,point){if(w.paused||!Number.isFinite(point.x)||!Number.isFinite(point.y))return false;const dx=point.x-w.player.x,dy=point.y-w.player.y,d=Math.hypot(dx,dy)||1,r=Math.min(d,w.army.range),p=resolvePosition({x:w.player.x+dx/d*r,y:w.player.y+dy/d*r},.35,w.arena);w.command={...p,type:w.actors.some(e=>e.team==='enemy'&&alive(e)&&dist(e,p)<=4)?'attack':'rally',remaining:14};return true;}
-function strike(w,m,target,multiplier=1,bonus=0,drain=true){const e=effects(w),aura=dist(m,w.player)<=8?e['Dano da horda próxima']||0:0,damage=Math.max(1,Math.round(m.baseDmg*(1+(m.damageBonus+aura+bonus)/100)*multiplier)),result=dealDamage(w,target,damage,m);if(drain)drainLife(w,m,result.applied);return damage;}
+function strike(w,m,target,multiplier=1,bonus=0,drain=true){const e=effects(w),aura=dist(m,w.player)<=8?e['Dano da horda próxima']||0:0,damage=Math.max(1,Math.round(m.baseDmg*(1+(m.damageBonus+aura+bonus)/100)*multiplier)),result=dealDamage(w,target,damage,m);if(drain)drainLife(w,m,result.applied);afterHit(w,m,target,result);return damage;}
+function afterHit(w,m,target,result){
+ if(!result.killed||m.groupType!=='mages'||!rankOf(w,'rupturaNecrotica'))return;
+ const R2=MAGE_ATTACK.rupture,damage=Math.max(1,Math.floor(w.player.spellDamage*R2.mult));
+ for(const o of foes(w,target,R2.radius+.3))if(lineClear(target,o,.05,w.arena))dealDamage(w,o,damage,m,'Ruptura Necrótica');
+ fx(w,'groundBreak',{x:target.x,y:target.y,radius:R2.radius,color:MAGE_ATTACK.color,shake:.08,duration:.5});w.combatEvents?.push({kind:'powderBlast'});
+}
+// Mago: com o Raio Necrótico, raio instantâneo que atravessa a linha; sem ele, orbe (com estilhaço na habilidade e no comando).
+function mageShot(w,m,t,mult=1,{splash=false}={}){
+ const dx=t.x-m.x,dy=t.y-m.y,d=Math.hypot(dx,dy)||1,ux=dx/d,uy=dy/d;
+ if(rankOf(w,'raioNecrotico')>0){
+  const B=MAGE_ATTACK.beam,factor=B.factor*(1+(effects(w)['Dano do Raio Necrótico']||0)/100);
+  for(const e of foes(w,m,B.length+1)){const along=(e.x-m.x)*ux+(e.y-m.y)*uy;if(along<0||along>B.length+(e.radius||.3))continue;if(Math.hypot(e.x-m.x-ux*along,e.y-m.y-uy*along)>B.width+(e.radius||.3)||!lineClear(m,e,.05,w.arena))continue;strike(w,m,e,mult*factor);}
+  fx(w,'lightning',{x:m.x,y:m.y,tx:m.x+ux*B.length,ty:m.y+uy*B.length,h0:1.3,h1:1,width:1.1,color:MAGE_ATTACK.color,duration:.25,ground:false});w.combatEvents?.push({kind:'arcaneBolt'});return;
+ }
+ arrow(w,m,t,mult,false,0);const s=w.allyShots.at(-1);s.color=MAGE_ATTACK.color;if(splash)s.splash=MAGE_ATTACK.splash;w.combatEvents?.push({kind:'arcaneBolt'});
+}
+function cone(w,m,t,arc,range){const dx=t.x-m.x,dy=t.y-m.y,d=Math.hypot(dx,dy)||1;return foes(w,m,range+.3).filter(e=>{const x=e.x-m.x,y=e.y-m.y,n=Math.hypot(x,y);return n<1e-6||(x*dx+y*dy)/(n*d)>=Math.cos(arc/2);});}
 function drainLife(w,m,applied){if(m.groupType!=='specter'||applied<=0)return;const e=effects(w),healed=Math.min(m.maxHp-m.hp,applied*(e['Roubo de vida dos Espectros']||0)/100);m.hp+=healed;if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+healed*(e['Cura compartilhada com Zephyr']||0)/100);}
 function visual(w,m,radius,color='#9ac5ad',label=''){w.effects.push({id:w.nextId++,kind:'allyAbility',x:m.x,y:m.y,radius,time:0,duration:.5,visual:true,color,label});m.abilityLabel=label;m.labelTime=.9;m.animation='attack';m.animationTime=0;m.actionId++;m.timer=.4;}
 function slow(e,seconds){if(e.model==='fallenKing')return;e.slowTime=Math.max(e.slowTime||0,seconds);e.slow=.35;}
@@ -81,6 +112,8 @@ function automatic(w,m,target,d){if(m.possessed)return false;const t=m.groupType
  if(t==='zombie'){if(d>reach)return false;const damage=strike(w,m,target,1.5);slow(target,3);const decay=masteryBonus(w,'zombie').decay||0;if(decay>0&&alive(target))target.minionDecay={damage:Math.max(Math.round(damage/1.5*decay/100),target.minionDecay?.damage||0),remaining:4,tick:target.minionDecay?.tick||0,source:m.id};}
  else if(t==='skeleton'){if(d>reach)return false;for(const e of foes(w,m,2.2))strike(w,m,e,1.3);}
  else if(t==='archer'){if(d>reach)return false;const others=foes(w,m,m.atkR+1).filter(e=>e!==target&&dist(e,w.player)<=w.army.range).sort((a,b)=>dist(a,m)-dist(b,m));[target,others[0]||target,others[1]||others[0]||target].forEach(e=>arrow(w,m,e,.9));}
+ else if(t==='caoZumbi'){if(cerberus(w)){const near=cone(w,m,target,CERBERUS.arc,CERBERUS.range);if(!near.length)return false;for(const e of near)strike(w,m,e,1.6);}else{if(d>reach)return false;strike(w,m,target,1.6);}}
+ else if(t==='mages'){if(d>m.atkR+.5)return false;mageShot(w,m,target,1.8,{splash:true});}
  else if(t==='specter'){if(d>5)return false;const dx=target.x-m.x,dy=target.y-m.y,n=d||1,p=limited(w,{x:target.x+dx/n*1.2,y:target.y+dy/n*1.2},w.army.range-.5,m.radius);m.x=p.x;m.y=p.y;strike(w,m,target,2,0,false);}
  else {const near=foes(w,m,3);if(!near.length||near.length<2&&d>reach)return false;for(const e of near){strike(w,m,e);slow(e,2);}}
  m.abilityCooldown=R.abilities[t].cooldown*masteryCooldown(w,t);visual(w,m,t==='abom'?3:t==='skeleton'?2.2:.7,R.abilities[t].color,R.abilities[t].name);return true;
@@ -99,8 +132,10 @@ export function special(w,type){
  if(type==='specter')return possess(w);
  if(w.paused||w.player.hp<=0||!w.army.loadout.includes(type))return false;const def=R.commands[type],passive=R.passives[def.passive]||def.passive;if(!w.army.profile.ranks[passive]||(w.army.cooldowns[type]||0)>1e-9)return false;
  const group=members(w,type).filter(alive);if(!group.length)return false;const e=effects(w),target=foes(w,w.aim,4).filter(a=>dist(a,w.player)<=w.army.range).sort((a,b)=>dist(a,w.aim)-dist(b,w.aim))[0];
- if(type==='zombie'){const m=group.sort((a,b)=>dist(a,w.aim)-dist(b,w.aim))[0];for(const f of foes(w,m,R.tuning.zombieBurstRadius))strike(w,m,f,R.tuning.zombieBurstMultiplier,(e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0));visual(w,m,R.tuning.zombieBurstRadius);killMember(w,m,'exploded');}
+ if(type==='zombie'){const m=group.sort((a,b)=>dist(a,w.aim)-dist(b,w.aim))[0];const burstRadius=R.tuning.zombieBurstRadius*(1+(e['Tamanho da área de explosão']||0)/100);for(const f of foes(w,m,burstRadius))strike(w,m,f,R.tuning.zombieBurstMultiplier,(e['Dano da explosão de Zumbi']||0)+(e['Dano das explosões de Zumbi e Necrótica']||0));visual(w,m,burstRadius);killMember(w,m,'exploded');}
  else if(type==='archer'){if(!target)return false;for(const m of group){arrow(w,m,target,1.9,true,e['Dano do Tiro Sepulcral']||0);visual(w,m,.6);}}
+ else if(type==='caoZumbi'){if(!target)return false;for(const m of group){const p=limited(w,target,w.army.range,m.radius);m.leap={sx:m.x,sy:m.y,x:p.x,y:p.y,time:0,radius:cerberus(w)?2:1.4,mult:1.4};m.animation='attack';m.animationTime=0;m.actionId++;m.targetId=target.id;}}
+ else if(type==='mages'){if(!target)return false;for(const m of group){mageShot(w,m,target,1.9,{splash:true});visual(w,m,.6,MAGE_ATTACK.color);}}
  else if(type==='abom'){const m=group[0],p=limited(w,target||w.aim,w.army.range,m.radius),dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy)||1,q=resolvePosition({x:m.x+dx/d*Math.min(7,d),y:m.y+dy/d*Math.min(7,d)},m.radius,w.arena);m.leap={sx:m.x,sy:m.y,x:q.x,y:q.y,time:0};m.animation='attack';m.animationTime=0;m.actionId++;m.targetId=null;}
  else if(type==='specter'){const p=limited(w,w.aim,6);group.forEach((m,i)=>{const a=i*Math.PI*2/group.length,q=resolvePosition({x:p.x+Math.cos(a),y:p.y+Math.sin(a)},m.radius,w.arena);m.x=q.x;m.y=q.y;m.targetId=null;visual(w,m,.7);});}
  else {w.command={x:w.player.x,y:w.player.y,type:'rally',remaining:14};}
@@ -108,7 +143,7 @@ export function special(w,type){
 }
 function move(w,m,goal,speed,dt){if(m.rootTime>0){m.animation='idle';return;}const p=navigate(m,goal,speed,dt,w.arena),dx=p.x-m.x,dy=p.y-m.y;m.x=p.x;m.y=p.y;m.walkDistance+=p.distance;if(p.distance>1e-5)m.angle=Math.atan2(dx,dy);if(m.timer<=0){const state=p.distance>1e-5?'walk':'idle';if(m.animation!==state){m.animation=state;m.animationTime=0;}}}
 function evade(w,m,index,dt){
- if(!['zombie','skeleton','archer'].includes(m.groupType)||m.returning)return false;const hazards=w.effects.filter(e=>(e.kind==='danger'||e.kind==='kingWarning'&&!e.harmless||e.kind==='enemyWarning'&&!e.harmless||e.hostileZone)&&!e.hit&&(!e.source||alive(w.actors.find(a=>a.id===e.source)||{}))),danger=p=>hazards.reduce((s,h)=>s+Math.max(0,h.radius+.45-dist(p,h)),0);
+ if(!['zombie','skeleton','archer','caoZumbi','mages'].includes(m.groupType)||m.returning)return false;const hazards=w.effects.filter(e=>(e.kind==='danger'||e.kind==='kingWarning'&&!e.harmless||e.kind==='enemyWarning'&&!e.harmless||e.hostileZone)&&!e.hit&&(!e.source||alive(w.actors.find(a=>a.id===e.source)||{}))),danger=p=>hazards.reduce((s,h)=>s+Math.max(0,h.radius+.45-dist(p,h)),0);
  m.evadeCooldown=Math.max(0,(m.evadeCooldown||0)-dt);if(!m.evade&&danger(m)>0&&m.evadeCooldown<=0){m.reaction=(m.reaction||0)+dt;if(m.reaction<.12+(index%3)*.02)return false;let best=null,score=Infinity;for(const length of [2.2,3.5])for(let i=0;i<16;i++){const a=i*Math.PI/8+index*.7,p=limited(w,{x:m.x+Math.cos(a)*length,y:m.y+Math.sin(a)*length},w.army.range-.8,m.radius),value=danger(p)*1000+dist(m,p);if(value<score&&lineClear(m,p,m.radius,w.arena)){score=value;best=p;}}m.reaction=0;if(best&&danger(best)<danger(m)){m.evade={...best,remaining:.85};m.evadeCooldown=1.35;m.targetId=null;}}
  if(!m.evade)return false;m.evade.remaining-=dt;move(w,m,m.evade,m.spd*1.35,dt);if(dist(m,m.evade)<.15||m.evade.remaining<=0)m.evade=null;return true;
 }
@@ -124,7 +159,7 @@ export function tickHorde(w,dt){
   m.animationTime+=dt;m.timer=Math.max(0,m.timer-dt);m.attackCooldown=Math.max(0,m.attackCooldown-dt);m.abilityCooldown=Math.max(0,m.abilityCooldown-dt);m.labelTime=Math.max(0,(m.labelTime||0)-dt);m.pose=null;
   if(!alive(m)){if(!m.deathHandled)killMember(w,m,m.sacrificed?'sacrificed':m.exploded?'exploded':'normal');m.deadTimer=Math.max(0,m.deadTimer-dt);if(m.deadTimer<=1e-9)restore(w,m,R.tuning.autoReviveHealth);continue;}
   if(m.abilityCooldown<1e-9)m.abilityCooldown=0;m.hp=Math.min(m.maxHp,m.hp+m.regen*dt);
-  if(m.leap){const a=m.leap;a.time+=dt;const k=Math.min(1,a.time/.45);m.x=a.sx+(a.x-a.sx)*k;m.y=a.sy+(a.y-a.sy)*k;m.jumpZ=Math.sin(k*Math.PI)*2.6;m.animation='attack';if(k>=1){m.jumpZ=0;m.leap=null;for(const target of foes(w,m,3))strike(w,m,target,2.2,effects(w)['Dano do Salto Devastador']||0);visual(w,m,3);}continue;}
+  if(m.leap){const a=m.leap;a.time+=dt;const k=Math.min(1,a.time/.45);m.x=a.sx+(a.x-a.sx)*k;m.y=a.sy+(a.y-a.sy)*k;m.jumpZ=Math.sin(k*Math.PI)*2.6;m.animation='attack';if(k>=1){m.jumpZ=0;m.leap=null;const radius=a.radius??3;for(const target of foes(w,m,radius))strike(w,m,target,a.mult??2.2,a.mult?0:effects(w)['Dano do Salto Devastador']||0);visual(w,m,radius);}continue;}
   const far=dist(m,w.player);if(far>w.army.range)m.returning=true;
   const eligible=w.actors.filter(e=>e.team==='enemy'&&alive(e)&&dist(e,w.player)<=w.army.range&&!(e.id===m.ignoreId&&m.ignoreTime>0));m.ignoreTime=Math.max(0,(m.ignoreTime||0)-dt);
   if(m.returning){m.targetId=null;if(far>w.army.range*3){const q=limited(w,{x:w.player.x+Math.sin(index*2.4)*2,y:w.player.y+Math.cos(index*2.4)*2},w.army.range,m.radius);m.x=q.x;m.y=q.y;}else if(far>3&&!(far<=w.army.range*.7&&eligible.length)){move(w,m,w.player,Math.max(5,m.spd*1.5),dt);continue;}m.returning=false;}
@@ -132,12 +167,12 @@ export function tickHorde(w,dt){
   if(w.command?.type==='rally'){m.targetId=null;const a=index*2.399,r=1.2+Math.floor(index/8)*.8,center=limited(w,w.command,w.army.range-1,m.radius);move(w,m,{x:center.x+Math.sin(a)*r,y:center.y+Math.cos(a)*r},m.spd,dt);continue;}
   m.scan=Math.max(0,(m.scan||0)-dt);let target=eligible.find(e=>e.id===m.targetId);
   if(!target||m.scan<=0||w.command?.type==='attack'){
-   const origin=w.command?.type==='attack'?w.command:m,guards=['zombie','skeleton','abom'].includes(m.groupType)&&!w.command?eligible.filter(e=>dist(e,w.player)<=Math.min(6,w.army.range)):[],pool=guards.length?guards:eligible;pool.sort((a,b)=>dist(a,origin)-dist(b,origin));const next=pool[0];if(!target||guards.length&&!guards.includes(target)||next&&dist(next,m)<dist(target,m)-1.5||w.command?.type==='attack')target=next;m.scan=.3;if(target?.id!==m.targetId){m.chaseTime=0;m.chaseBest=Infinity;}m.targetId=target?.id??null;
+   const origin=w.command?.type==='attack'?w.command:m,guards=['zombie','skeleton','abom','caoZumbi'].includes(m.groupType)&&!w.command?eligible.filter(e=>dist(e,w.player)<=Math.min(6,w.army.range)):[],pool=guards.length?guards:eligible;pool.sort((a,b)=>dist(a,origin)-dist(b,origin));const next=pool[0];if(!target||guards.length&&!guards.includes(target)||next&&dist(next,m)<dist(target,m)-1.5||w.command?.type==='attack')target=next;m.scan=.3;if(target?.id!==m.targetId){m.chaseTime=0;m.chaseBest=Infinity;}m.targetId=target?.id??null;
   }
-  if(target){const d=dist(m,target),reach=m.atkR+(target.model==='fallenKing'?.48:.3);if(d>reach||!lineClear(m,target,.05,w.arena)){move(w,m,target,m.spd,dt);if(d<(m.chaseBest??Infinity)-.5){m.chaseBest=d;m.chaseTime=0;}else m.chaseTime=(m.chaseTime||0)+dt;if(m.chaseTime>2.5&&!w.command){m.ignoreId=target.id;m.ignoreTime=3;m.targetId=null;}}else if(m.timer<=0&&lineClear(m,target,.05,w.arena)){m.chaseTime=0;m.angle=Math.atan2(target.x-m.x,target.y-m.y);if(!automatic(w,m,target,d)&&m.attackCooldown<=0){if(m.groupType==='archer'||m.ranged)arrow(w,m,target);else strike(w,m,target);visual(w,m,.5);m.attackCooldown=m.atkRate;}else if(m.attackCooldown>0&&m.timer<=0)m.animation='idle';}}
+  if(target){const d=dist(m,target),reach=m.atkR+(target.model==='fallenKing'?.48:.3);if(d>reach||!lineClear(m,target,.05,w.arena)){move(w,m,target,m.spd,dt);if(d<(m.chaseBest??Infinity)-.5){m.chaseBest=d;m.chaseTime=0;}else m.chaseTime=(m.chaseTime||0)+dt;if(m.chaseTime>2.5&&!w.command){m.ignoreId=target.id;m.ignoreTime=3;m.targetId=null;}}else if(m.timer<=0&&lineClear(m,target,.05,w.arena)){m.chaseTime=0;m.angle=Math.atan2(target.x-m.x,target.y-m.y);if(!automatic(w,m,target,d)&&m.attackCooldown<=0){if(m.groupType==='mages')mageShot(w,m,target);else if(m.groupType==='archer'||m.ranged)arrow(w,m,target);else strike(w,m,target);visual(w,m,.5);m.attackCooldown=m.atkRate;}else if(m.attackCooldown>0&&m.timer<=0)m.animation='idle';}}
   else {const a=index*2.399+w.time*.08,r=2+Math.floor(index/8)*.8;move(w,m,limited(w,{x:w.player.x+Math.sin(a)*r,y:w.player.y+Math.cos(a)*r},w.army.range-1,m.radius),m.spd,dt);}
  }
  // Separação simétrica, limitada por dt e resolvida contra os sólidos novamente.
  for(let i=0;i<group.length;i++)for(let j=i+1;j<group.length;j++){const a=group[i],b=group[j];if(!alive(a)||!alive(b)||a.leap||b.leap)continue;let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),min=a.radius+b.radius+.08;if(d>=min)continue;if(d<1e-6){dx=Math.cos(i*2.399);dy=Math.sin(i*2.399);d=1;}const amount=Math.min(.08,(min-(d===1?0:d))*.5,dt*2);for(const [m,s]of [[a,-1],[b,1]]){const p=moveCircle(m,{x:dx/d*amount*s,y:dy/d*amount*s},m.radius,w.arena);m.x=p.x;m.y=p.y;}}
- for(let i=w.allyShots.length-1;i>=0;i--){const s=w.allyShots[i],m=w.actors.find(a=>a.id===s.source),target=w.actors.find(a=>a.id===s.target);s.life-=dt;if(!m||!alive(m)||!target||!alive(target)||s.life<=0){w.allyShots.splice(i,1);continue;}if(!s.locked){const d=dist(target,s)||1;s.dx=(target.x-s.x)/d;s.dy=(target.y-s.y)/d;}const dx=s.dx*s.speed*dt,dy=s.dy*s.speed*dt,len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,((target.x-s.x)*dx+(target.y-s.y)*dy)/len)):0;if(Math.hypot(target.x-s.x-dx*t,target.y-s.y-dy*t)<.6){drainLife(w,m,dealDamage(w,target,s.damage,m).applied);w.allyShots.splice(i,1);}else{s.x+=dx;s.y+=dy;}}
+ for(let i=w.allyShots.length-1;i>=0;i--){const s=w.allyShots[i],m=w.actors.find(a=>a.id===s.source),target=w.actors.find(a=>a.id===s.target);s.life-=dt;if(!m||!alive(m)||!target||!alive(target)||s.life<=0){w.allyShots.splice(i,1);continue;}if(!s.locked){const d=dist(target,s)||1;s.dx=(target.x-s.x)/d;s.dy=(target.y-s.y)/d;}const dx=s.dx*s.speed*dt,dy=s.dy*s.speed*dt,len=dx*dx+dy*dy,t=len?Math.max(0,Math.min(1,((target.x-s.x)*dx+(target.y-s.y)*dy)/len)):0;if(Math.hypot(target.x-s.x-dx*t,target.y-s.y-dy*t)<.6){const result=dealDamage(w,target,s.damage,m);drainLife(w,m,result.applied);afterHit(w,m,target,result);if(s.splash){for(const o of foes(w,target,s.splash.radius+.3))if(o!==target)afterHit(w,m,o,dealDamage(w,o,Math.max(1,Math.round(s.damage*s.splash.mult)),m));fx(w,'shockwave',{x:target.x,y:target.y,radius:s.splash.radius,color:s.color||MAGE_ATTACK.color,duration:.35});}w.allyShots.splice(i,1);}else{s.x+=dx;s.y+=dy;}}
 }

@@ -2,6 +2,7 @@
 // Guia: docs/v2-arqueira-mercenario.md. Valores iniciais, ainda sem balanceamento de campanha completa.
 import WarriorGear from './warrior-equipment.mjs';
 import {marksmanGear,MARKSMAN_ARMOR} from './marksman-equipment.mjs';
+import {treeNodes,normalizeRanks,spentRanks,fitRanks,canLearnNode} from './skill-tree.mjs';
 
 // Base por nível, antes dos itens. O recurso usa o campo de mana do save (foco / vigor).
 export const MARKSMAN_BASE={
@@ -9,60 +10,17 @@ export const MARKSMAN_BASE={
  mercenary:{hp:[110,16],mp:[80,4],damage:[26,6.5],regen:5,move:5.8},
 };
 
-// Árvores. Nós novos entram sempre no fim: marksmanRanks distribui o orçamento na ordem destas tabelas.
-export const MARKSMAN_NODES={
- archer:{
-  shot:{name:'Disparo',description:'+6% de dano do Disparo por ponto. O ataque básico já está disponível.',max:5,branch:'bow'},
-  pierce:{name:'Flecha Perfurante',description:'Libera a Flecha Perfurante (botão direito / 2): carrega 0,55 s, andando a metade da velocidade, e atravessa todos os inimigos da linha, com 200% do dano. +10% de dano por ponto.',max:3,branch:'bow'},
-  fan:{name:'Leque',description:'T/6: cinco flechas em cone de 50°, com 70% do dano cada. Bom contra quem chega perto em grupo.',max:1,branch:'bow',level:4,requires:'shot'},
-  rain:{name:'Chuva de Flechas',description:'R/5: marca uma área de raio 3 no ponto mirado, até 12 u. Depois de 0,7 s caem cinco ondas, uma a cada 0,4 s, com 45% do dano em quem estiver dentro.',max:1,branch:'bow',level:6,requires:'pierce'},
-  leap:{name:'Recuo',description:'Libera o Recuo (3 / Q): salto de 5 u para trás, de frente para a mira. Inimigos a até 2,5 u do ponto de partida ficam 35% mais lentos por 2 s. −0,5 s de recarga por ponto.',max:3,branch:'hunt'},
-  ambush:{name:'Tiro de Emboscada',description:'Depois do Recuo, o próximo Disparo, Flecha Perfurante ou Leque em até 3 s causa +15% de dano por ponto.',max:3,branch:'hunt',level:4,requires:'leap'},
-  precision:{name:'Precisão',description:'+8% de dano por ponto.',max:5,branch:'passives'},
-  vitality:{name:'Vitalidade',description:'+10% de vida máxima por ponto.',max:5,branch:'passives'},
-  focus:{name:'Concentração',description:'+10% de foco máximo por ponto.',max:5,branch:'passives'},
-  swift:{name:'Passo leve',description:'+3% de movimento por ponto.',max:5,branch:'passives'},
-  regeneration:{name:'Fôlego',description:'+0,4 de vida por segundo por ponto.',max:5,branch:'passives'},
-  falcon:{name:'Falcão',description:'Um falcão acompanha a Arqueira. A cada 2,5 s ele mergulha no inimigo mais próximo dela, até 8 u, com 35% do dano. F: manda o falcão ao inimigo mais perto da mira (até 3,5 u da mira e 14 u de você), com 120% do dano; o alvo fica marcado por 4 s e recebe +15% de dano das flechas. Recarga de 8 s, 10 foco. +10% de dano do falcão por ponto.',max:3,branch:'hunt',level:2},
- },
- mage:{
-  bolt:{name:'Seta Arcana',description:'+6% de dano da Seta Arcana por ponto. O ataque básico já está disponível.',max:5,branch:'arcane'},
-  fireball:{name:'Bola de Fogo',description:'Libera a Bola de Fogo (botão direito / 2): explode ao tocar o primeiro inimigo, uma parede ou o fim do alcance, em raio 2,2, com 140% do dano. +10% de dano por ponto.',max:3,branch:'fire'},
-  frost:{name:'Rajada de Gelo',description:'Libera a Rajada de Gelo (3 / Q): cone de 70° e 6 u à frente, com 110% do dano, que deixa os inimigos 40% mais lentos por 3 s. +10% de dano por ponto.',max:3,branch:'frost'},
-  blink:{name:'Teleporte',description:'Libera o Teleporte (R / 5): salta até 7 u na direção da mira, sem atravessar paredes, e deixa no ponto de partida um eco arcano de raio 2,2 com 50% do dano. −1 s de recarga por ponto.',max:3,branch:'arcane'},
-  combustion:{name:'Combustão',description:'A Bola de Fogo deixa o chão em chamas por 1 s por ponto, com 25% do dano a cada 0,5 s.',max:3,branch:'fire',level:4,requires:'fireball'},
-  shatter:{name:'Estilhaçar',description:'Inimigos lentos pela Rajada de Gelo recebem +10% de dano por ponto do fogo e do arcano.',max:3,branch:'frost',level:4,requires:'frost'},
-  echo:{name:'Eco Arcano',description:'+25% de dano do eco do Teleporte por ponto.',max:3,branch:'arcane',level:4,requires:'blink'},
-  meteor:{name:'Meteoro',description:'T/6: marca uma área de raio 2,8 no ponto mirado, até 12 u. Depois de 1 s o meteoro cai e causa 320% do dano em quem estiver dentro.',max:1,branch:'fire',level:6,requires:'fireball'},
-  intellect:{name:'Intelecto',description:'+8% de dano mágico por ponto.',max:5,branch:'passives'},
-  vitality:{name:'Vitalidade',description:'+10% de vida máxima por ponto.',max:5,branch:'passives'},
-  wisdom:{name:'Sabedoria',description:'+10% de mana máxima por ponto.',max:5,branch:'passives'},
-  meditation:{name:'Meditação',description:'+15% de regeneração de mana por ponto.',max:5,branch:'passives'},
-  regeneration:{name:'Fôlego',description:'+0,4 de vida por segundo por ponto.',max:5,branch:'passives'},
- },
- mercenary:{
-  quarrel:{name:'Virote pesado',description:'+6% de dano do Virote pesado por ponto. O ataque básico já está disponível.',max:5,branch:'crossbow'},
-  volley:{name:'Rajada',description:'Libera a Rajada (botão direito / 2): três virotes em sequência, a cada 0,15 s, com 70% do dano cada e atravessando um inimigo. +10% de dano por ponto.',max:3,branch:'crossbow'},
-  breach:{name:'Perfuração',description:'O Virote pesado atravessa +1 inimigo por ponto, ainda perdendo 25% a cada um.',max:2,branch:'crossbow',level:4,requires:'quarrel'},
-  bomb:{name:'Bomba de fragmentação',description:'Libera a Bomba (3 / Q): arremesso em arco até 9 u. O ponto de queda fica marcado no chão durante o voo; ao cair, explode em raio 2,6 com 160% do dano e empurra 1 u. +10% de dano por ponto.',max:3,branch:'powder'},
-  shrapnel:{name:'Estilhaços',description:'+12% de raio da Bomba e da Mina por ponto.',max:3,branch:'powder',level:4,requires:'bomb'},
-  mine:{name:'Mina de pólvora',description:'R/5: assenta uma mina aos seus pés. Arma em 1 s e explode quando um inimigo chega a 1,4 u: raio 3 e 220% do dano. Até duas minas; cada uma dura 25 s.',max:1,branch:'powder',level:6,requires:'bomb'},
-  firebomb:{name:'Garrafa incendiária',description:'T/6: arremesso em arco até 9 u que incendeia o chão em raio 2,4 por 4 s. A cada 0,5 s, 30% do dano em quem estiver dentro.',max:1,branch:'powder',level:6,requires:'bomb'},
-  caliber:{name:'Calibre',description:'+8% de dano por ponto.',max:5,branch:'passives'},
-  vitality:{name:'Couro curtido',description:'+10% de vida máxima por ponto.',max:5,branch:'passives'},
-  armor:{name:'Gibão reforçado',description:'+4 de armadura por ponto.',max:5,branch:'passives'},
-  stamina:{name:'Resistência',description:'+10% de vigor máximo por ponto.',max:5,branch:'passives'},
-  regeneration:{name:'Fôlego',description:'+0,4 de vida por segundo por ponto.',max:5,branch:'passives'},
- },
-};
+// Árvores: nome, texto, pontos, nível e pré-requisitos vêm de docs/habilidades/arvores.json (skill-tree.mjs).
+export const MARKSMAN_NODES={archer:treeNodes('archer'),mage:treeNodes('mage'),mercenary:treeNodes('mercenary')};
 const nodesOf=classId=>MARKSMAN_NODES[classId]||MARKSMAN_NODES.archer;
-export function normalizeMarksman(classId,value={}){const out={};for(const [id,node]of Object.entries(nodesOf(classId)))out[id]=Math.min(node.max,Math.max(0,Math.floor(Number(value?.[id])||0)));return out;}
+export const normalizeMarksman=(classId,value={})=>normalizeRanks(nodesOf(classId),value);
 export const marksmanBudget=level=>3*Math.max(1,Math.floor(level));
-export const marksmanSpent=(classId,ranks)=>Object.values(normalizeMarksman(classId,ranks)).reduce((a,b)=>a+b,0);
-export function marksmanRanks(classId,value,level){const r=normalizeMarksman(classId,value);let left=marksmanBudget(level);for(const [id,node]of Object.entries(nodesOf(classId))){r[id]=Math.min(r[id],left);if((node.level||1)>level||node.requires&&!r[node.requires])r[id]=0;left-=r[id];}return r;}
-export function canLearnMarksman(classId,ranks,id,level){const n=nodesOf(classId)[id];return !!n&&(ranks[id]||0)<n.max&&level>=(n.level||1)&&(!n.requires||ranks[n.requires]>0)&&marksmanSpent(classId,ranks)<marksmanBudget(level);}
+export const marksmanSpent=(classId,ranks)=>spentRanks(nodesOf(classId),ranks);
+export const marksmanRanks=(classId,value,level)=>fitRanks(nodesOf(classId),value,level,marksmanBudget(level));
+export const canLearnMarksman=(classId,ranks,id,level)=>canLearnNode(nodesOf(classId),ranks,id,level,marksmanBudget(level));
 
-// Ações por índice fixo de barra: 0 tiro básico, 1 botão direito / 2, 2 tecla 3 / Q, 3 esquiva, 4 R / 5, 5 T / 6.
+// Ações por índice na tabela. As seis primeiras formam a barra padrão (0 tiro básico, 1 botão direito / 2,
+// 2 tecla 3 / Q, 3 esquiva, 4 R / 5, 5 T / 6); a barra montável (skill-loadout.mjs) troca as demais.
 // Tempos em segundos; `release` é o instante do efeito; `node` é o selo que libera a ação.
 // hit: distância máxima entre o centro do inimigo e a linha do projétil para acertar (o Tiro de Osso usa 1,1);
 // inimigos maiores que o raio padrão (0,3) somam a diferença.
@@ -75,7 +33,12 @@ export const MARKSMAN_ACTIONS={
   {id:'leap',move:0,name:'Recuo',kind:'leap',node:'leap',cost:15,cooldown:6,duration:.4,release:.05,clip:'leap_back',distance:5,advance:[.05,.35],slowRadius:2.5,slow:.35,slowTime:2,cooldownPerRank:.5},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},
   {id:'rain',move:0.6,name:'Chuva de Flechas',kind:'rain',node:'rain',cost:35,cooldown:12,duration:.6,release:.35,clip:'shoot_up',range:12,radius:3,delay:.7,waves:5,interval:.4,multiplier:.45,color:'#b8f07a'},
-  {id:'fan',hit:0.85,move:0.75,name:'Leque',kind:'fan',node:'fan',cost:22,cooldown:7,duration:.5,release:.26,clip:'shoot',count:5,spread:50*Math.PI/180,speed:24,range:10,radius:.18,multiplier:.7,pierce:0,color:'#b8f07a',ambush:true},
+  {id:'fan',hit:0.85,move:0.75,name:'Tiro Seguidor',kind:'fan',node:'fan',cost:22,cooldown:7,duration:.5,release:.26,clip:'shoot',count:5,spread:50*Math.PI/180,speed:24,range:10,radius:.18,multiplier:.7,pierce:0,color:'#b8f07a',ambush:true,homing:{turn:4,seek:6}},
+  // Ações novas entram no fim da lista: a barra montável guarda ids, e os índices antigos continuam válidos.
+  // homing: cada flecha vira até `turn` rad/s em direção ao inimigo mais próximo à frente, até `seek` u.
+  {id:'saraivadaSeguidora',hit:.95,move:.5,name:'Saraivada Seguidora',kind:'volley',node:'saraivadaSeguidora',cost:25,cooldown:9,duration:.8,release:.2,clip:'shoot',shots:5,gap:.12,speed:22,range:14,radius:.16,multiplier:.45,pierce:0,color:'#ffe08a',lock:{pick:3.5,range:13},homing:{turn:9,seek:8}},
+  {id:'impactoCeleste',move:.4,name:'Impacto Celeste',kind:'falconStrike',node:'impactoCeleste',cost:25,cooldown:12,duration:.6,release:.3,clip:'shoot_up',range:12,radius:2.5,delay:.9,multiplier:1.5,knockback:1,color:'#f2d17a'},
+  {id:'penasVoadoras',hit:.7,move:.6,name:'Penas Voadoras',kind:'feathers',node:'penasVoadoras',cost:15,cooldown:7,duration:.5,release:.3,clip:'shoot_up',count:6,pick:8,speed:20,range:10,radius:.14,multiplier:.4,pierce:0,color:'#f4ecd6',homing:{turn:6,seek:4}},
  ],
  mage:[
   {id:'arcane',hit:.95,move:.85,name:'Seta Arcana',kind:'shot',cost:0,cooldown:.45,duration:.45,release:.2,clip:'cast',speed:22,range:12,radius:.2,multiplier:.6,pierce:0,color:'#b78cff',size:.4,rank:'bolt',perRank:.06,element:'arcane'},
@@ -83,7 +46,19 @@ export const MARKSMAN_ACTIONS={
   {id:'frost',move:.6,name:'Rajada de Gelo',kind:'cone',node:'frost',cost:20,cooldown:7,duration:.5,release:.22,clip:'cast',range:6,arc:70*Math.PI/180,multiplier:1.1,slow:.4,slowTime:3,color:'#9fe0ff',rank:'frost',perRank:.1,element:'frost'},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},
   {id:'blink',move:0,name:'Teleporte',kind:'blink',node:'blink',cost:15,cooldown:8,cooldownPerRank:1,duration:.35,release:.15,clip:'cast',distance:7,radius:2.2,multiplier:.5,rank:'echo',perRank:.25,color:'#b78cff',element:'arcane'},
-  {id:'meteor',move:.5,name:'Meteoro',kind:'rain',node:'meteor',cost:40,cooldown:14,duration:.7,release:.45,clip:'cast_up',range:12,radius:2.8,delay:1,waves:1,interval:1,multiplier:3.2,color:'#ff6a2a',fx:'meteor',element:'fire'},
+  {id:'meteor',move:.5,name:'Meteoro',kind:'rain',node:'meteor',cost:40,cooldown:4,duration:.7,release:.45,clip:'cast_up',range:12,radius:2.8,delay:1,waves:1,interval:1,multiplier:3.2,color:'#ff6a2a',fx:'meteor',element:'fire',
+   // Depois do impacto o chão queima: 20% do dano a cada 0,5 s por 3 s em quem estiver dentro.
+   burn:{radius:2.4,time:3,interval:.5,multiplier:.2}},
+  // Mago, habilidades novas (docs/habilidades/arvores.json). A esfera solta cristais (shard) e o familiar lança
+  // bolas de fogo (bolt): definições próprias de projétil, que o runtime usa direto.
+  {id:'setasPerseguidoras',hit:.9,move:.7,name:'Setas Perseguidoras',kind:'fan',node:'setasPerseguidoras',cost:20,cooldown:6,duration:.45,release:.2,clip:'cast',count:5,spread:70*Math.PI/180,speed:18,range:12,radius:.18,multiplier:.4,pierce:0,color:'#b78cff',size:.35,element:'arcane',homing:{turn:6,seek:7}},
+  // Esfera de Gelo: um pequeno planeta com anéis que atravessa o campo bem devagar (2 u/s por 10 u) e, girando,
+  // solta cristais em espiral: dois opostos a cada 0,15 s, que curvam para inimigos a até 3 u.
+  {id:'esferaDeGelo',move:.6,name:'Esfera de Gelo',kind:'orb',node:'esferaDeGelo',cost:30,cooldown:4,duration:.5,release:.25,clip:'cast',speed:2,range:10,radius:1.1,multiplier:.5,color:'#9fe0ff',size:1,element:'frost',
+   shard:{name:'Cristal de Gelo',interval:.15,count:2,step:.55,speed:14,range:5,radius:.12,hit:.45,multiplier:.2,pierce:0,chill:true,slow:.2,slowTime:1,color:'#cff4ff',size:.25,element:'frost',homing:{turn:5,seek:3}}},
+  {id:'familiarDeFogo',move:.6,name:'Familiar de Fogo',kind:'familiar',node:'familiarDeFogo',cost:35,cooldown:25,duration:.6,release:.35,clip:'cast_up',life:20,interval:1.2,pick:9,orbit:1.3,color:'#ff7a2a',
+   bolt:{name:'Familiar de Fogo',speed:14,range:10,radius:.25,hit:.5,multiplier:.4,pierce:0,explode:1.2,color:'#ff8a3a',size:.5,element:'fire'}},
+  {id:'golemDeGelo',move:.5,name:'Golem de Gelo',kind:'summon',node:'golemDeGelo',cost:40,cooldown:30,duration:.6,release:.35,clip:'cast_up',companion:'iceGolem',color:'#9fd8ff'},
  ],
  mercenary:[
   {id:'quarrel',hit:1,move:0.7,name:'Virote pesado',kind:'shot',cost:0,cooldown:.8,duration:.8,release:.36,clip:'shoot',speed:28,range:12,radius:.22,multiplier:1.5,pierce:2,falloff:.75,knockback:.35,color:'#ffb35a',rank:'quarrel',perRank:.06,pierceRank:'breach'},
@@ -91,7 +66,11 @@ export const MARKSMAN_ACTIONS={
   {id:'bomb',move:0.8,name:'Bomba de fragmentação',kind:'lob',node:'bomb',cost:20,cooldown:6,duration:.6,release:.3,clip:'throw',range:9,minRange:1.5,flight:.6,radius:2.6,multiplier:1.6,knockback:1,color:'#ff9a3a',rank:'bomb',perRank:.1,blast:true},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},
   {id:'mine',move:0,name:'Mina de pólvora',kind:'mine',node:'mine',cost:25,cooldown:9,duration:.6,release:.4,clip:'plant',arm:1,trigger:1.4,radius:3,multiplier:2.2,max:2,life:25,knockback:1,color:'#ffb35a',blast:true},
-  {id:'firebomb',move:0.8,name:'Garrafa incendiária',kind:'lob',node:'firebomb',cost:30,cooldown:12,duration:.6,release:.3,clip:'throw',range:9,minRange:1.5,flight:.55,radius:2.4,fireTime:4,interval:.5,multiplier:.3,color:'#ff7a2a',fire:true},
+  {id:'firebomb',move:0.8,name:'Molotov',kind:'lob',node:'firebomb',cost:30,cooldown:12,duration:.6,release:.3,clip:'throw',range:9,minRange:1.5,flight:.55,radius:2.4,fireTime:4,interval:.5,multiplier:.3,color:'#ff7a2a',fire:true},
+  // Rede: lentidão de 3 s (+0,5 s por ponto depois do primeiro); chefes só recebem o dano.
+  {id:'redeDeCaca',move:0.8,name:'Rede de Caça',kind:'lob',node:'redeDeCaca',net:true,cost:15,cooldown:9,duration:.6,release:.3,clip:'throw',range:9,minRange:1.5,flight:.55,radius:2.4,multiplier:.3,slow:.5,slowTime:3,slowPerRank:.5,color:'#d8c9a0'},
+  // Armadilha: prende quem pisa (chefes ficam 50% mais lentos); até duas no chão.
+  {id:'armadilhaDeUrso',move:0,name:'Armadilha de Urso',kind:'trap',node:'armadilhaDeUrso',cost:20,cooldown:10,duration:.6,release:.4,clip:'plant',arm:.6,trigger:.9,root:2,bossSlow:.5,multiplier:1.2,max:2,life:30,color:'#c8c4b8'},
  ],
 };
 export const marksmanActions=classId=>MARKSMAN_ACTIONS[classId]||MARKSMAN_ACTIONS.archer;

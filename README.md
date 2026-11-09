@@ -239,7 +239,7 @@ legada usa spritesheets com shader toon: 8 direções para personagens e 16 para
 - `render.py` gera previews; `toon.py` e `common.py` são utilitários compartilhados.
 
 ```bash
-blender -b -P blender/scripts/sprites.py -- blender/models/necromante.blend blender/spritesheets necromante
+blender -b -P blender/scripts/sprites.py -- blender/models/legacy/necromante.blend blender/spritesheets necromante
 ```
 
 ## Migração para a v2

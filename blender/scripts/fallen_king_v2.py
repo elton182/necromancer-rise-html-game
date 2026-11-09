@@ -1,4 +1,9 @@
 """Variante com espada rígida presa à mão, preservando o primeiro estudo."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy
 from mathutils import Vector, Matrix
@@ -7,7 +12,7 @@ source=(BASE/'scripts/fallen_king.py').read_text(encoding='utf-8')
 source=source.replace('fallen_king_source.glb','fallen_king_model_v2.glb').replace('boss_fallenKing.blend','boss_fallenKing_v2.blend').replace('fallen_king_validation.json','fallen_king_v2_validation.json')
 exec(compile(source,str(BASE/'scripts/fallen_king.py'),'exec'))
 before=set(bpy.context.scene.objects)
-bpy.ops.import_scene.gltf(filepath=str(BASE/'exports/fallen_king_sword_v2.glb'))
+bpy.ops.import_scene.gltf(filepath=asset_path(str(BASE/'exports/fallen_king_sword_v2.glb')))
 swords=[o for o in bpy.context.scene.objects if o not in before and o.type=='MESH']
 hand=rig.data.bones['mixamorig:RightHand']
 for sword in swords:
@@ -30,4 +35,4 @@ for sword in swords:
     sword.matrix_parent_inverse=Matrix.Identity(4)
     sword.location=(0,-hand.length*.45,0);sword.rotation_euler=(0,0,0);sword.scale=(1,1,1)
     sword.name='Espada Rei Caído — rígida'
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/boss_fallenKing_v2.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing_v2.blend')))

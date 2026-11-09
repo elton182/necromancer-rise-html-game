@@ -94,7 +94,10 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/character-panel.mjs`, `character-stats.mjs`, `character.css` | Aba Personagem: modelo 3D, origem dos atributos, resumo com Poder de Combate e XP ([guia](../docs/v2-interface.md#personagem)) |
 | `scripts/class-registry.mjs`, `scripts/class-gear.mjs` | Registro das classes jogáveis (nome, modelo, recurso, brasão, catálogo) e catálogo de equipamento por classe ([guia](../docs/v2-arqueira-mercenario.md#registro-de-classes)) |
 | `scripts/marksman-equipment.mjs` | Catálogo da Arqueira e do Mercenário: Arco ou Besta da classe mais as peças marciais, arma inicial |
-| `scripts/marksman-model.mjs`, `scripts/marksman.mjs` | Arqueira, Mercenário e Mago ([guia do Mago](../docs/v2-mago.md)): árvores, atributos, catálogo restrito, tiros com projétil, Recuo, Chuva de Flechas, bombas, minas, fogo e o falcão da Arqueira ([guia](../docs/v2-arqueira-mercenario.md)) |
+| `scripts/marksman-model.mjs`, `scripts/marksman.mjs` | Arqueira, Mercenário e Mago ([guia do Mago](../docs/v2-mago.md)): atributos, catálogo restrito, tiros com projétil (alguns teleguiados), Recuo, Chuva de Flechas, bombas, redes, minas, armadilhas, fogo e o falcão da Arqueira com Impacto Celeste e Penas Voadoras ([guia](../docs/v2-arqueira-mercenario.md)) |
+| `scripts/skill-tree.mjs`, `scripts/skill-tree-data.mjs` (gerado), `tools/skill-tree-source.cjs` | Árvores do Guerreiro, da Druida e dos atiradores lidas de [docs/habilidades/arvores.json](../docs/habilidades/README.md): nós jogáveis, ramos e posição no painel; regras comuns de investimento |
+| `scripts/skill-loadout.mjs` | Barra montável dos atiradores e da forma humana da Druida (`character.skillLoadout`) |
+| `scripts/companions.mjs`, `scripts/horde.mjs` | Golem de Gelo temporário fora da horda; Cães Zumbis, Cérbero e Esqueletos Magos permanentes na horda, com reanimação e save. Arte provisória com tinta e escala sobre modelos existentes ([Grimório](../docs/v2-grimorio.md#nós-exclusivos-da-v2-vindos-do-arquivo-08112026)) |
 | `scripts/druid-model.mjs`, `scripts/druid.mjs` | Druida: árvore, atributos e formas; magias de raio e plantas, garras e Salto do lobo ([guia](../docs/v2-druida.md)) |
 | `scripts/talents-panel.mjs`, `talents.css` | Árvores de talentos do Guerreiro, da Druida, da Arqueira e do Mercenário: ramos, selos, pré-requisitos e detalhe ([guia](../docs/v2-interface.md#treinamento-do-guerreiro)) |
 | `scripts/enemies.mjs`, `fallen-king.mjs` | Arquétipos, projéteis hostis e Rei Caído |
@@ -220,7 +223,7 @@ A validação automatizada continua sem equivaler a benchmark em outras máquina
 O HTML contém cópias dos GLBs. Depois de exportar os modelos, execute
 `node v2/tools/build.cjs` na raiz e recarregue a página. Para o player, exporte
 a cena atual sem regenerá-la:
-`blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py`
+`blender --background blender/models/sources/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py`
 (refaz idle, walk, strafe, cast, death e dodge, grava `blender/models/v2_necromancer.blend` e
 `blender/exports/v2_necromancer.glb`; o `rigged_player.blend` não é alterado). O material e a repintura vêm de
 `blender/scripts/v2_necromancer_look.py`, aplicado pelo script de movimento antes da exportação ou sozinho sobre

@@ -1,0 +1,123 @@
+{
+  "fps": 30,
+  "bones": 29,
+  "clips": {
+    "idle": {
+      "action": "AN_MageT_idle",
+      "start": 1,
+      "end": 61,
+      "seconds": 2.0,
+      "loop": true,
+      "loop_matrix_error": 0.0,
+      "body_min_z": -2.1224332158453763e-07,
+      "foot_displacement": 8.238389162791023e-08,
+      "staff_rigidity_error": 1.2389040848848142e-07
+    },
+    "walk": {
+      "action": "AN_MageT_walk",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 1.125037670135498e-06,
+      "body_min_z": -2.4866312742233276e-07,
+      "foot_displacement": 0.32326899038143503,
+      "staff_rigidity_error": 1.7916283989565147e-07,
+      "gait": {
+        "support_xy_drift": 5.972094663188382e-07,
+        "minimum_knee_flex_degrees": 35.56164811228185,
+        "free_hand_travel": 0.15164895990058402
+      }
+    },
+    "strafe_left": {
+      "action": "AN_MageT_strafe_left",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 7.152557373046875e-07,
+      "body_min_z": -4.030007403343916e-07,
+      "foot_displacement": 0.2531988368149058,
+      "staff_rigidity_error": 1.7263917296128803e-07,
+      "gait": {
+        "support_xy_drift": 2.2794393510786228e-07,
+        "minimum_knee_flex_degrees": 7.749855472420293,
+        "free_hand_travel": 0.04983660484343426
+      }
+    },
+    "strafe_right": {
+      "action": "AN_MageT_strafe_right",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 5.960464477539062e-07,
+      "body_min_z": -4.5314664021134377e-07,
+      "foot_displacement": 0.2531988454931558,
+      "staff_rigidity_error": 1.5141368979887348e-07,
+      "gait": {
+        "support_xy_drift": 2.449927188077179e-07,
+        "minimum_knee_flex_degrees": 7.750415547932234,
+        "free_hand_travel": 0.04983658863527442
+      }
+    },
+    "cast": {
+      "action": "AN_MageT_cast",
+      "start": 1,
+      "end": 16,
+      "seconds": 0.5,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -2.461372332618339e-07,
+      "foot_displacement": 1.363457521535066e-07,
+      "staff_rigidity_error": 1.8984365919591348e-07
+    },
+    "cast_up": {
+      "action": "AN_MageT_cast_up",
+      "start": 1,
+      "end": 22,
+      "seconds": 0.7,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -2.4123872321979434e-07,
+      "foot_displacement": 1.195326311510082e-07,
+      "staff_rigidity_error": 2.1451979948413325e-07
+    },
+    "dodge": {
+      "action": "AN_MageT_dodge",
+      "start": 1,
+      "end": 16,
+      "seconds": 0.5,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -4.377712343739404e-07,
+      "foot_displacement": 0.0921954480251594,
+      "staff_rigidity_error": 1.1284602592198527e-07
+    },
+    "death": {
+      "action": "AN_MageT_death",
+      "start": 1,
+      "end": 31,
+      "seconds": 1.0,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -5.513429641723633e-07,
+      "foot_displacement": 0.15790316784517755,
+      "staff_rigidity_error": 1.592752212765213e-07
+    }
+  },
+  "weights": {
+    "MageTBody": {
+      "vertices": 11581,
+      "unweighted": 0,
+      "max_influences": 2,
+      "normalization_error": 9.47713851928711e-06
+    },
+    "MageTStaff": {
+      "vertices": 2951,
+      "unweighted": 0,
+      "max_influences": 1,
+      "normalization_error": 0.0
+    }
+  }
+}

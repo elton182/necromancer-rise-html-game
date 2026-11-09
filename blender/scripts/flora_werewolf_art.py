@@ -3,6 +3,11 @@
 Use -- preview para conferir a arte, -- sheets para renderizar a cena salva.
 Sem argumentos, executa ambas as etapas. Não modifica a Flora humana ou o jogo.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import math, sys, random, json
 import bpy
@@ -247,7 +252,7 @@ def main():
     args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
     for folder in ['models','previews','frames','spritesheets','logs']:(BASE/folder).mkdir(exist_ok=True)
     if 'sheets' in args or 'poses' in args:
-        bpy.ops.wm.open_mainfile(filepath=str(BASE/'models/flora_werewolf.blend'))
+        bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models/flora_werewolf.blend')))
         C.ARM=bpy.data.objects['Rig Lobisomem'];sc=bpy.context.scene;cam=sc.camera;ground=bpy.data.objects['Chao somente apresentacao']
         if 'poses' in args:
             pose_previews(sc,cam,ground);return
@@ -256,7 +261,7 @@ def main():
         C.finish('Flora — forma de lobisomem');animate();sc,cam,ground=F.studio()
         cam.location=(3,-8,3.8);cam.data.ortho_scale=3.60;F.aim(cam,(0,-.02,1.47))
         sc['art_direction']='Lobisomem v3: pelagem facetada, postura digitigrada e iluminacao PBR Cycles, conforme referencia.'
-        bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/flora_werewolf.blend'))
+        bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/flora_werewolf.blend')))
         F.render(sc,BASE/'previews/flora_werewolf.png')
         ground.hide_render=False;sc.render.film_transparent=False;F.render(sc,BASE/'previews/flora_werewolf_beauty.png')
         ground.hide_render=True;sc.render.film_transparent=True

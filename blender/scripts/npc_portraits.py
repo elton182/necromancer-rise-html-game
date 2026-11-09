@@ -1,4 +1,9 @@
 """Create editable dialogue-only busts and transparent portraits. Run with Blender or bpy."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, math
 from pathlib import Path
 from mathutils import Vector
@@ -74,5 +79,5 @@ for ident in ['bram','lysa','tilda','merchant']:
   bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.name=name;o.data.energy=power;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,1.5))-o.location).to_track_quat('-Z','Y').to_euler()
  bpy.ops.object.camera_add(location=(3*-0.22,-7,2.8));cam=bpy.context.object;cam.rotation_euler=(Vector((0,0,1.4))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=3.15;scene.camera=cam
  scene.render.image_settings.file_format='PNG';scene.render.filepath=str(OUT/(ident+'.png'))
- bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'blender'/'models'/('npc_'+ident+'.blend')))
+ bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(ROOT/'blender'/'models'/('npc_'+ident+'.blend'))))
  bpy.ops.render.render(write_still=True)

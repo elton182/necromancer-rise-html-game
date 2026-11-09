@@ -1,10 +1,15 @@
 """Render eight directions with the shared three-band cel shader."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy,sys,os,json,math
 from mathutils import Vector
 HERE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 for _folder in ('models', 'exports', 'frames', 'spritesheets', 'previews'):
     os.makedirs(os.path.join(HERE, _folder), exist_ok=True)
-bpy.ops.wm.open_mainfile(filepath=os.path.join(HERE, 'models', 'boss_soulWarden.blend'))
+bpy.ops.wm.open_mainfile(filepath=asset_path(os.path.join(HERE, 'models', 'boss_soulWarden.blend')))
 sc=bpy.context.scene;arm=bpy.data.objects['Rig']
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import combat_toon

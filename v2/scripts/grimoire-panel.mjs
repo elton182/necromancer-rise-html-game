@@ -6,9 +6,14 @@ import R from './horde-rules.mjs';
 import {D} from './campaign-model.mjs';
 import {LICH_MASTERY_IDS} from './lich-mastery.mjs';
 import {xpNext} from './progression.mjs';
-const ICON={empty:'＋',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠',ceifada:'⚔',giratoria:'✧',colheita:'✂',arco:'⤶',ciclone:'✷'};
+import TREES from './skill-tree-data.mjs';
+const ICON={empty:'＋',raio:'⚡',dash:'➶',zombie:'🧟',skeleton:'💀',archer:'🏹',specter:'👻',abom:'👹',chuva:'🦴',explosao:'💥',maos:'🖐',barreira:'🛡',maldicao:'🕯',lich:'☠',caoZumbi:'🐕',mages:'🧙',ceifada:'⚔',giratoria:'✧',colheita:'✂',arco:'⤶',ciclone:'✷'};
 const KEYS=['M1 · 1','M2 · 2','3 · Q','4 · E','5 · R','6 · T'];
 const POSITIONS=[[50,8],[23,104],[77,104],[23,200],[77,200],[23,296],[77,296]];
+// Posição de cada selo vinda de docs/habilidades/arvores.json (linhas de 96 px, até três selos por linha);
+// sem posição no arquivo, vale a ordem fixa acima.
+const LAYOUT=new Map((TREES.necromancer?.trees||[]).flatMap(t=>t.branches.flatMap(b=>b.nodes.map(([id,x,y])=>[id,[x,8+96*Math.round((y-18)/104)]]))));
+const placeOf=(n,i)=>LAYOUT.get(n.id)||POSITIONS[i]||[50,8];
 const REFUND_GOLD=20;
 const pct=(key,v)=>(v>0?'+':'')+v+(/adicionais/.test(key)?'':'%');
 const fmt=(stat,value)=>'+'+Number(value.toFixed(2))+(stat==='pierce'?'':stat==='curse'||stat==='lifesteal'?' p.p.':'%')+' '+Model.labels[stat];
@@ -22,7 +27,7 @@ export function createGrimoirePanel(session,{open,changed,equip}){
  const TREES=[['minions','Senhor dos Mortos','☠','#7fa35a'],['spells','Carne e Ossos','✧','#b0489f'],['death','Morte','☽','#8f7ad6'],['mastery','Maestrias','✦','#c99a3f']];
  const SCHOOL_COLOR={flesh:'#b8473a',bone:'#c9b27a',spirit:'#4fb0a8',osso:'#c9b27a',blood:'#b8323a',shadow:'#7a5ac4',scythe:'#8f7ad6',harvest:'#4fa58a'};
  const glyphOf=c=>'<span class="wt-glyph">'+c+'︎</span>';
- const TILE=56,GRAPH=336,Y=v=>Math.round(v*.9);
+ const TILE=56,GRAPH=336,Y=v=>Math.round(v*.9),graphOf=nodes=>Math.max(GRAPH,...nodes.map((n,i)=>Y(placeOf(n,i)[1])+TILE+24));
  function render(){
   const w=session.world;host.replaceChildren();const reason=editReason(session);warning.textContent=reason||'';
   if(!w.army){el('p','lg-note','Ative Grupos reais para abrir seu perfil.',host);return;}
@@ -45,10 +50,10 @@ export function createGrimoirePanel(session,{open,changed,equip}){
   for(const school of schoolList){
    const nodes=Build.nodes.filter(n=>n.school===school.id),accent=SCHOOL_COLOR[school.id]||'#c99a3f',section=el('section','wt-school lg-school',undefined,schools);section.dataset.branch=school.id;section.dataset.active=String(nodes.some(n=>n.id===selected));section.style.setProperty('--branch-accent',accent);section.setAttribute('aria-label','Escola '+school.name);
    let links='',seals='';
-   nodes.forEach((n,i)=>{if(!n.requires)return;const p=nodes.findIndex(x=>x.id===n.requires),[x,yr]=POSITIONS[i],[px,pyr]=POSITIONS[p],y=Y(yr),py=Y(pyr),from=py+TILE+12,mid=Math.round((from+y)/2),state=profile.ranks[n.id]?' learned':!Build.reason(n,profile.ranks,profile.level)?' available':'';links+='<path class="warrior-link'+state+'" d="M '+px+' '+from+' V '+mid+' H '+x+' V '+(y-2)+'"/>';});
+   nodes.forEach((n,i)=>{if(!n.requires)return;const p=nodes.findIndex(x=>x.id===n.requires);if(p<0)return;const [x,yr]=placeOf(n,i),[px,pyr]=placeOf(nodes[p],p),y=Y(yr),py=Y(pyr),from=py+TILE+12,mid=Math.round((from+y)/2),state=profile.ranks[n.id]?' learned':!Build.reason(n,profile.ranks,profile.level)?' available':'';links+='<path class="warrior-link'+state+'" d="M '+px+' '+from+' V '+mid+' H '+x+' V '+(y-2)+'"/>';});
    nodes.forEach((n,i)=>{const rank=profile.ranks[n.id]||0,blocked=Build.reason(n,profile.ranks,profile.level),open=!blocked&&rank<n.max&&remaining>0&&!reason;
-    seals+='<button type="button" class="wt-node lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(open?' available':'')+(n.max===1?' final':'')+(n.id===selected?' selected':'')+'" data-node="'+n.id+'" style="left:'+POSITIONS[i][0]+'%;top:'+Y(POSITIONS[i][1])+'px" aria-pressed="'+(n.id===selected)+'" aria-label="'+n.name+', '+rank+' de '+n.max+' pontos'+(blocked?' · '+blocked:'')+'" title="'+(blocked||n.name)+'"><span class="wt-tile">'+glyphOf(n.icon)+(blocked?'<i class="wt-lock"><svg viewBox="7 5 24 31" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 18v-5a7 7 0 0 1 14 0v5M9 18h20v16H9ZM19 24v5"/></svg></i>':'')+'</span><em>'+rank+'/'+n.max+'</em></button>';});
-   section.innerHTML='<header class="wt-school-head"><span class="wt-crest">'+glyphOf(nodes[0]?.icon||'✦')+'</span><h3>'+school.name+'</h3><small>'+school.paths.join(' · ')+'</small></header><div class="wt-graph" style="height:'+GRAPH+'px"><svg viewBox="0 0 100 '+GRAPH+'" preserveAspectRatio="none" aria-hidden="true">'+links+'</svg>'+seals+'</div>';
+    seals+='<button type="button" class="wt-node lg-node'+(rank?' learned':'')+(blocked?' locked':'')+(open?' available':'')+(n.max===1?' final':'')+(n.id===selected?' selected':'')+'" data-node="'+n.id+'" style="left:'+placeOf(n,i)[0]+'%;top:'+Y(placeOf(n,i)[1])+'px" aria-pressed="'+(n.id===selected)+'" aria-label="'+n.name+', '+rank+' de '+n.max+' pontos'+(blocked?' · '+blocked:'')+'" title="'+(blocked||n.name)+'"><span class="wt-tile">'+glyphOf(n.icon)+(blocked?'<i class="wt-lock"><svg viewBox="7 5 24 31" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 18v-5a7 7 0 0 1 14 0v5M9 18h20v16H9ZM19 24v5"/></svg></i>':'')+'</span><em>'+rank+'/'+n.max+'</em></button>';});
+   section.innerHTML='<header class="wt-school-head"><span class="wt-crest">'+glyphOf(nodes[0]?.icon||'✦')+'</span><h3>'+school.name+'</h3><small>'+school.paths.join(' · ')+'</small></header><div class="wt-graph" style="height:'+graphOf(nodes)+'px"><svg viewBox="0 0 100 '+graphOf(nodes)+'" preserveAspectRatio="none" aria-hidden="true">'+links+'</svg>'+seals+'</div>';
    for(const b of section.querySelectorAll('[data-node]'))b.onclick=()=>{selected=b.dataset.node;render();shell.isConnected&&host.querySelector('[data-node="'+selected+'"]')?.focus({preventScroll:true});};
   }
   if(Build.byId[selected]?.tree!==tab)selected=Build.nodes.find(n=>n.tree===tab).id;

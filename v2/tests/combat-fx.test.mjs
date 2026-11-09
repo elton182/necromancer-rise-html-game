@@ -98,7 +98,7 @@ test('Tiro de Osso mostra o lançamento no jogador e o impacto no alvo', () => {
 });
 
 test('invocar, equipar e levantar integrantes mostra círculos de runas na cor do grupo', () => {
- const w=createWorld({armyMode:'groups',army:normalizeHorde({profile:TEST_PROFILE,loadout:['raio',...TYPES]})});w.actors=w.actors.filter(a=>a.team!=='enemy');
+ const w=createWorld({armyMode:'groups',army:normalizeHorde({profile:TEST_PROFILE,loadout:['raio',...TYPES.filter(t=>TEST_PROFILE.ranks[t])]})});w.actors=w.actors.filter(a=>a.team!=='enemy');
  assert.equal(fxOf(w,'summonRune').length,0,'a formação inicial não repete o ritual');
  equipGroup(w,1,'empty');equipGroup(w,1,'zombie',{preparation:true});
  const zombies=members(w,'zombie'),runes=fxOf(w,'summonRune');

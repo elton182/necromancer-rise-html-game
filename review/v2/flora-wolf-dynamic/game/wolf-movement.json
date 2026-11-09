@@ -1,0 +1,30 @@
+[
+  {
+    "key": "KeyW",
+    "form": "wolf",
+    "state": "walk",
+    "idle": 0,
+    "distance": 0.005479009168241344
+  },
+  {
+    "key": "KeyS",
+    "form": "wolf",
+    "state": "walk",
+    "idle": 0,
+    "distance": 0.041917500000008864
+  },
+  {
+    "key": "KeyA",
+    "form": "wolf",
+    "state": "walk",
+    "idle": 0,
+    "distance": 0.04252499999999993
+  },
+  {
+    "key": "KeyD",
+    "form": "wolf",
+    "state": "walk",
+    "idle": 0,
+    "distance": 0.04131000000001768
+  }
+]

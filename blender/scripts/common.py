@@ -1,3 +1,8 @@
+
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
 # Utilitários comuns: materiais, esqueleto, malhas rígidas por osso, animação e exportação
 import bpy, bmesh, math, os
 from mathutils import Vector
@@ -77,5 +82,5 @@ def export(outdir,name,scene,default='idle',endf=49):
     exportdir = os.path.join(os.path.dirname(outdir), 'exports') if os.path.basename(os.path.normpath(outdir)) == 'models' else outdir
     os.makedirs(exportdir,exist_ok=True)
     bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.export_scene.gltf(filepath=os.path.join(exportdir,name+'.glb'),export_format='GLB',export_animations=True,export_animation_mode='ACTIONS',export_skins=True,export_yup=True,export_apply=False,export_force_sampling=True)
-    bpy.ops.wm.save_as_mainfile(filepath=os.path.join(outdir,name+'.blend'))
+    bpy.ops.export_scene.gltf(filepath=asset_path(os.path.join(exportdir,name+'.glb')),export_format='GLB',export_animations=True,export_animation_mode='ACTIONS',export_skins=True,export_yup=True,export_apply=False,export_force_sampling=True)
+    bpy.ops.wm.save_as_mainfile(filepath=asset_path(os.path.join(outdir,name+'.blend')))

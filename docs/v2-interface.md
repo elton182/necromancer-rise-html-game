@@ -235,3 +235,9 @@ Verificação executada: build e capturas em Edge headless (WebGL) no mundo de J
 Pendências: a moldura do orbe vem de um modelo gerado por IA, sem retoque à mão (a cabeça de dragão da referência virou volutas); os ícones das habilidades ainda são glifos/emoji (a referência pede arte pintada, que exige um atlas novo); não há pontos de nível embaixo dos slots, poções ao lado dos orbes nem contadores de buff; o Relicário (Esc) e os diálogos internos mantêm o estilo anterior; a doca cobre o diálogo do mapa da região na parte de baixo (comportamento anterior de camadas).
 
 Os diálogos de viagem usam texto marfim e título e botão dourados claros sobre o painel ornamentado escuro, inclusive ao passar o mouse ou navegar pelo teclado.
+
+## Ferramentas de teste
+
+O botão **Testes** na navegação do jogo abre uma aba do Relicário e pausa o combate. Permite adicionar ou remover um nível, adicionar ou remover 1.000 ouro (sem saldo negativo) e restaurar vida e recurso. O nível fica entre 1 e o máximo vigente. Ganhar nível usa o caminho normal de XP, atributos e horda; remover zera o XP e é recusado se invalidar os pontos ou pré-requisitos da árvore. Redistribua os pontos pela aba Habilidades nesse caso. Personagens mortos e cenas de história não aceitam ajustes.
+
+As ações alteram o personagem atual em memória e entram no próximo salvamento, inclusive automático da campanha. O painel informa esse comportamento antes dos botões.

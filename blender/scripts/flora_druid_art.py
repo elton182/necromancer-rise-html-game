@@ -4,6 +4,11 @@ blender --background --threads 4 --python blender/scripts/flora_druid_art.py -- 
 blender --background --threads 4 --python blender/scripts/flora_druid_art.py -- sheets
 Sem argumentos: gera cena, prévias e sprites. Não altera o jogo nem o lobisomem.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import sys, math, random, json
 import bpy, bmesh
@@ -338,12 +343,12 @@ def main():
     args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
     for folder in ['models','previews','frames','spritesheets','logs']:(BASE/folder).mkdir(exist_ok=True)
     if 'sheets' in args:
-        bpy.ops.wm.open_mainfile(filepath=str(BASE/'models/flora_druid.blend'))
+        bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models/flora_druid.blend')))
         C.ARM=bpy.data.objects['Rig Flora'];sc=bpy.context.scene;cam=sc.camera;ground=bpy.data.objects['Chao somente apresentacao']
     else:
         C.reset_scene();materials();rig();body_and_boots();clothes();face_and_hair();hood_and_antlers();arms();staff()
         C.finish('Flora — druida da floresta');animate();sc,cam,ground=studio()
-        bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/flora_druid.blend'))
+        bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/flora_druid.blend')))
         render(sc,BASE/'previews/flora_druid.png')
         ground.hide_render=False;sc.render.film_transparent=False
         render(sc,BASE/'previews/flora_druid_beauty.png')

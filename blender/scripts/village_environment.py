@@ -1,6 +1,11 @@
 """Reusable low-poly Eldrin kit, full editable village, ground and transparent game sprites.
 blender -b -t 4 --python blender/scripts/village_environment.py
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, math, random, json
 from pathlib import Path
 from mathutils import Vector
@@ -213,7 +218,7 @@ bpy.ops.object.light_add(type='AREA',location=(-9,-8,18));sun=bpy.context.object
 bpy.ops.object.light_add(type='SUN',location=(0,0,12));fill=bpy.context.object;fill.name='Soft daylight';fill.data.energy=1.7;fill.data.angle=.25;fill.rotation_euler=(.4,-.5,-.4)
 bpy.ops.object.camera_add(location=(0,-30,31));camera=bpy.context.object;camera.name='Village elevated review camera';camera.data.type='ORTHO';camera.data.ortho_scale=42;camera.rotation_euler=(Vector((0,0,0))-camera.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera
 scene.render.resolution_x=1800;scene.render.resolution_y=1500;scene.render.resolution_percentage=100;scene.render.filepath=str(OUT/'village-preview.png')
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'blender'/'models'/'village_eldrin.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(ROOT/'blender'/'models'/'village_eldrin.blend')))
 bpy.ops.render.render(write_still=True)
 # True top-down ground tile preserves game x/y coordinates exactly.
 village.hide_render=True;camera.location=(0,0,45);camera.rotation_euler=(0,0,0);camera.data.ortho_scale=36;camera.data.shift_y=0

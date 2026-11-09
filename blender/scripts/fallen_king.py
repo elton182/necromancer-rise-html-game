@@ -1,4 +1,9 @@
 """Importa o Rei Caído e cria ações locais reproduzíveis no rig Mixamo."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, math, json
 from mathutils import Vector
@@ -6,7 +11,7 @@ from mathutils import Vector
 BASE = Path(__file__).resolve().parents[1]
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
-bpy.ops.import_scene.gltf(filepath=str(BASE/'exports/fallen_king_source.glb'))
+bpy.ops.import_scene.gltf(filepath=asset_path(str(BASE/'exports/fallen_king_source.glb')))
 rig = next(o for o in bpy.context.scene.objects if o.type == 'ARMATURE')
 rig.animation_data_create()
 def pose(name, xyz):
@@ -46,7 +51,7 @@ for name in ('idle','walk','windup','attack','cast','recover','death'):
     action.use_fake_user=True
 rig.animation_data.action=bpy.data.actions['idle']
 bpy.context.scene.frame_set(1)
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/boss_fallenKing.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing.blend')))
 report={'rig':rig.name,'bones':len(rig.data.bones),'actions':[a.name for a in bpy.data.actions],
         'status':'Ações geradas; deformação, render e integração ainda pendentes de validação visual.'}
 (BASE/'previews/fallen_king_validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

@@ -618,3 +618,79 @@ Galope da forma de lobo integrado à locomoção direcional, com impulsão das t
 # Mago jogável — 2026-11-08
 
 Sexta classe: fogo, gelo e arcano sobre o motor dos atiradores (Seta Arcana, Bola de Fogo, Rajada de Gelo, Teleporte, Meteoro; Combustão, Estilhaçar e Eco Arcano), catálogo arcano compartilhado e sons próprios. Modelo Tripo do usuário com os pesos do rig corrigidos por `blender/scripts/mage_hero.py` (cajado, barba, aba do chapéu, luvas e barra do manto). Testes `mage.test.mjs` e `mage-browser-check.cjs`; evidências em `review/v2/mage/`. [Guia](../docs/v2-mago.md).
+
+## Novo modelo T do Mago — 2026-11-08
+
+Malha T do usuário preservada em `blender/models/mage_hero_t_source.blend`. Rig novo de 29 ossos,
+com manto, barba e ponta do chapéu; cajado reaproveitado do anterior e preso à mão direita.
+O gerador `blender/scripts/mage_hero_t.py` reutiliza a lógica de movimento anterior, adapta as
+proporções e exporta oito clipes a 30 FPS para `mage_hero_t.glb`, agora registrado em `mageHero`.
+Blocking CONSTANT preservado, prévias PBR animadas e auditoria de pesos, ciclos, pés, solo e
+rigidez do cajado em `blender/previews/mage_hero_t/`. Build, testes da classe e conferência de
+navegador aprovados; capturas novas em `review/v2/mage-t/`. Arquivos antigos e regras de combate
+preservados. Limites da revisão e tabela de eventos no [guia do Mago](../docs/v2-mago.md#modelo-e-rig).
+
+## Revisão da Druida humana — 2026-11-08
+
+`flora_human_motion.py` reaproveita o rig e a locomoção da base T preservada, corrige pesos
+do capuz e solas e acrescenta dois ossos de capa (67 no total). Conjurações, golpe do cajado,
+esquiva e contato da morte com o chão revistos, com nove Actions a 30 FPS. Fonte editável
+`blender/models/flora_human_revised.blend`; GLB atual registrado em `druid`. Lobo e regras
+de combate preservados. Blocking, prancha, GIFs e auditoria por frame em
+`blender/previews/flora_human_review/`. Build, 12 testes da classe e navegador (magias,
+transformação e mistura de locomoção) aprovados; evidências em `review/v2/flora-human-review/`.
+[Pipeline e eventos](../docs/v2-druida.md#base-humana-atual--pose-t).
+
+## Revisão da Druida lobo — 2026-11-08
+
+`flora_wolf_motion.py` parte da base preservada `flora_tripo_wolf.blend` e gera
+`flora_wolf_revised.blend` / `.glb`, agora registrado em `druidWolf`. Rig com 68 ossos:
+cauda independente das coxas, dois segmentos com atraso e controle de mandíbula.
+Galope e arcos das garras reaproveitados; apoios medidos na malha, traseiras fixas no
+uivo, esquiva quadrúpede e morte lateral reconstruída. Dez Actions a 30 FPS, blocking
+CONSTANT, renders PBR, prancha, GIFs e auditoria em `blender/previews/flora_wolf_review/`.
+Build, 12 testes e cenário de navegador com garras alternadas, salto, uivo, quatro
+direções e qualidade baixa aprovados, sem erros de página ou requisições externas.
+Evidências em `review/v2/flora-wolf-review/`. Modelo humano e regras preservados.
+[Durações, eventos e limites](../docs/v2-druida.md#forma-de-lobo-atual).
+
+Garras com corpo inteiro (2026-11-08): variante `flora_wolf_dynamic` integrada a `druidWolf`,
+preservando `flora_wolf_revised`. Preparação pelo quadril, excursão de cerca de 55° do tórax,
+avanço/cruzamento do peso, calcanhar elevado e pivô da perna de impulso sobre os dedos.
+Apoios opostos fixos e cortes descendente/ascendente com recuperação própria. Gerador
+`flora_wolf_motion.py -- --dynamic`; mesmas durações, impacto e regras. Auditoria passou
+para giro, deslocamento do quadril, articulação da perna, contato e ausência de arraste
+horizontal do pivô. Build, 12 testes e navegador com as duas garras aprovados.
+Prévias em `blender/previews/flora_wolf_dynamic/`; evidências em `review/v2/flora-wolf-dynamic/`.
+
+Locomoção humana do Mago (2026-11-08): `mage_hero_gait.py` refaz caminhada e os dois passos
+laterais no modelo atual, com apoio contínuo, balanço do pé com tangentes suaves,
+rolamento de calcanhar/ponta, contraposição do quadril/ombros e braço livre mais baixo.
+Cajado transportado acima do piso, manto/barba/chapéu com atraso. Mantidos rig de 29 ossos,
+frames 1–25 a 30 FPS, strides, velocidade e ações de combate. Auditoria passou para
+apoios compensados pelo deslocamento, joelhos, loops, piso e pegada. Build e oito testes
+da classe aprovados; navegador cobriu frente, ré, laterais, mistura diagonal, conjuração
+andando e grupo com chão claro/qualidade baixa, sem erros de página ou requisições externas.
+Prévias em três vistas em `blender/previews/mage_gait/`; capturas em `review/v2/mage-gait/`.
+
+Árvores pelo arvores.json e barra montável (2026-11-08): `docs/habilidades/arvores.json`, editado em
+`tools/skill-tree-editor.html`, passa a definir nome, texto, pontos, nível, pré-requisitos, ramos e posição no
+painel das árvores do Guerreiro, da Druida e dos atiradores (`skill-tree-source.cjs` → `skill-tree-data.mjs`);
+só nós `implementado`/`revisar` entram. Revisões: Estocada avança 7 u (alcance 10,4 u), Onda de Aço dispara no
+terceiro corte sem ocupar slot, Leque → Tiro Seguidor (flechas que curvam) e Garrafa → Molotov, com ids preservados.
+Novas: Saraivada Seguidora, Impacto Celeste e Penas Voadoras (Arqueira), Rede de Caça e Armadilha de Urso (Mercenário).
+Barra montável (`skill-loadout.mjs`, `character.skillLoadout`) nos atiradores e na forma humana da Druida.
+Build, suíte de regras e verificações de navegador do Guerreiro e das habilidades novas aprovadas; evidências em
+`review/v2/marksman-new-skills/`. O Necromante segue em `build-simulator/model.js`, conferido contra o arquivo por teste.
+[Árvores](../docs/habilidades/README.md) · [Arqueira e Mercenário](../docs/v2-arqueira-mercenario.md).
+
+Ideias da Druida, do Mago e do Necromante (2026-11-08): desenhadas em `docs/habilidades/arvores.json` e implementadas.
+Druida: Turbilhão, Tornado e Furacão (vento) e, no lobo, Corte Sangrento e Garra de Gelo. Mago: Setas Perseguidoras, Esfera de
+Gelo, Familiar de Fogo e Golem de Gelo. Necromante: Cão Zumbi, Cérbero, Magos, Raio e Ruptura Necrótica, como nós exclusivos da v2
+no Grimório estendido (o modelo compartilhado não muda), e a área das explosões de Explosão Cadavérica e Carne Instável.
+Companheiros invocados em `companions.mjs` (tinta e escala por ator no renderizador). Build, 606 testes e verificação de
+navegador das três classes aprovados; evidências em `review/v2/class-ideas/`.
+
+Horda permanente do Necromante (2026-11-08): Cão Zumbi, Cérbero e Esqueletos Magos passam a grupos em `horde.mjs`, com vaga, ordens, reserva, regeneração, morte, reanimação e save. Slots ativam Caçada/Descarga Sombria. Atributos passam à escala da horda; custos e comandos documentados no Grimório e em `arvores.json`. Corrigida consulta de maestrias ausentes; arte e maestrias dedicadas continuam pendentes. Build, suíte de 615 testes e check de navegador das três classes aprovados; evidências em `review/v2/class-ideas/`. O check antigo `horde-browser-check.cjs` excedeu a espera antes da captura do salto da Abominação, após registrar grupos e salva do arqueiro; essa verificação adicional não foi concluída.
+
+Ferramentas de teste (2026-11-08): botão Testes e aba do Relicário com ajuste de nível e ouro, restauração de vida/recurso e proteção dos investimentos ao reduzir nível. Regras das seis classes, build, integridade da distribuição e cliques/layout desktop e celular verificados; evidências em `review/v2/test-tools/`.

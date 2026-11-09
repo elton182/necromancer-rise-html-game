@@ -1,15 +1,20 @@
 """Clipes de jogo da Flora (druida) e da forma de lobisomem, e export GLB para a v2.
 
-Aditivo: opera sobre o .blend aberto (models/flora_druid.blend ou models/flora_werewolf.blend),
+Aditivo: opera sobre o .blend aberto (../_to_delete/blender-models/models/flora_druid.blend ou ../_to_delete/blender-models/models/flora_werewolf.blend),
 cria ou substitui só os clipes listados aqui e preserva idle/walk/attack/death do estudo original.
 Executar na sessão do Blender via MCP:
     exec(compile(open(p).read(), p, 'exec'), {'__file__': p, '__name__': '__main__'})
-Também funciona em background: blender models/flora_druid.blend --python scripts/flora_game_motion.py
+Também funciona em background: blender ../_to_delete/blender-models/models/flora_druid.blend --python scripts/flora_game_motion.py
 
 As poses são rotações no espaço do armature (graus, eixos X/Y/Z do rig), aplicadas sobre a pose
 pai de cada osso. O modelo olha para -Y: rotação +X inclina o tronco para a frente e leva um braço
 pendente para trás; rotação +Y abre o braço do lado -X (armL) para fora.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, json, math, shutil, datetime
 from pathlib import Path
 from mathutils import Euler, Vector
@@ -188,7 +193,7 @@ def export(rig, target):
     mesh.select_set(True)
     bpy.context.view_layer.objects.active = rig
     path = ROOT / target['export']
-    bpy.ops.export_scene.gltf(filepath=str(path), use_selection=True, export_format='GLB', export_animations=True,
+    bpy.ops.export_scene.gltf(filepath=asset_path(str(path)), use_selection=True, export_format='GLB', export_animations=True,
                               export_animation_mode='ACTIONS', export_anim_slide_to_zero=True, export_force_sampling=True,
                               export_def_bones=False, export_skins=True)
     return path
@@ -209,7 +214,7 @@ def main():
     frame = scene.frame_current
     made = [build(rig, name, length, keys).name for name, (length, keys) in target['clips'].items()]
     scene.frame_set(frame)
-    bpy.ops.wm.save_as_mainfile(filepath=str(blend))
+    bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(blend)))
     path = export(rig, target)
     report = {'rig': rig.name, 'clips': made, 'actions': sorted(a.name for a in bpy.data.actions), 'export': str(path.relative_to(ROOT)), 'backup': str(backup.relative_to(ROOT))}
     print(json.dumps(report, ensure_ascii=False))

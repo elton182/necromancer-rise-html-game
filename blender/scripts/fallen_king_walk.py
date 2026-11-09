@@ -3,11 +3,16 @@
 Blender --background --python blender/scripts/fallen_king_walk.py -- preview
 Sem preview, renderiza 32 quadros para o GIF de revisão.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, math, sys, json
 from mathutils import Vector, Matrix
 BASE=Path(__file__).resolve().parents[1]
-bpy.ops.wm.open_mainfile(filepath=str(BASE/'models/boss_fallenKing_v2.blend'))
+bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing_v2.blend')))
 sc=bpy.context.scene
 rig=next(o for o in sc.objects if o.type=='ARMATURE')
 # The imported V2 sword is oversized. Scale its mesh around the grip origin,
@@ -72,7 +77,7 @@ for frame in range(1,34):
 sc.render.fps=24;sc.frame_start=1;sc.frame_end=32;sc.frame_set(1)
 assert max(errors)<.001,max(errors)
 (BASE/'previews/fallen_king_walk_validation.json').write_text(json.dumps({'max_ankle_target_error':max(errors),'frames':32,'fps':24,'scope':'Estudo de caminhada, sem integração ao jogo.'},indent=2))
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/boss_fallenKing_walk.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing_walk.blend')))
 sc.render.engine='CYCLES';sc.cycles.samples=16;sc.cycles.use_denoising=True
 sc.render.resolution_x=560;sc.render.resolution_y=560;sc.render.resolution_percentage=100
 sc.render.image_settings.file_format='PNG';sc.render.film_transparent=True

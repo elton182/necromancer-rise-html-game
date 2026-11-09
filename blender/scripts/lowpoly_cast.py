@@ -10,6 +10,11 @@ Execute na raiz do projeto:
 Cada personagem gera cena editável (models/), GLB (exports/), quadros (frames/lowpoly_<id>/)
 e metadados de render. Os contratos finais preservam célula, ppu e âncora dos sprites que substituem.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, math, sys, json
 from pathlib import Path
 from mathutils import Vector
@@ -401,7 +406,7 @@ def produce(ident, preview=False):
  bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT'); bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=.025); bpy.ops.object.mode_set(mode='OBJECT')
  for folder in ('models', 'exports'): (BLENDER / folder).mkdir(exist_ok=True)
  arm.select_set(True)
- bpy.ops.export_scene.gltf(filepath=str(BLENDER / 'exports' / f'lowpoly_{ident}.glb'), export_format='GLB', use_selection=True, export_animation_mode='ACTIONS', export_skins=True, export_yup=True)
+ bpy.ops.export_scene.gltf(filepath=asset_path(str(BLENDER / 'exports' / f'lowpoly_{ident}.glb')), export_format='GLB', use_selection=True, export_animation_mode='ACTIONS', export_skins=True, export_yup=True)
  cell = spec['master']; ppu = spec['ppu'] * cell / spec['cell']; anchor = spec['anchor'] * cell / spec['cell']
  sc.render.engine = 'CYCLES'; sc.cycles.samples = 6; sc.cycles.use_denoising = False; sc.render.film_transparent = True
  sc.view_settings.view_transform = 'Standard'; sc.render.image_settings.file_format = 'PNG'; sc.render.image_settings.color_mode = 'RGBA'
@@ -410,7 +415,7 @@ def produce(ident, preview=False):
  cam.location = target - forward * 12; cam.rotation_euler = (target - cam.location).to_track_quat('-Z', 'Y').to_euler()
  sc.render.resolution_x = sc.render.resolution_y = cell; sc.render.resolution_percentage = 100
  if spec['style'] == 'studio': studio(sc)
- bpy.ops.wm.save_as_mainfile(filepath=str(BLENDER / 'models' / f'lowpoly_{ident}.blend'))
+ bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BLENDER / 'models' / f'lowpoly_{ident}.blend')))
  if NO_RENDER: print('LOWPOLY_SAVED', ident, flush=True); return  # só modelo, ações e GLB
  if spec['style'] == 'toon': toon.toonify(sc, light=(-.5, -.65, .9), bands=(.65, .84, 1), thick=.5)
  sc.render.use_freestyle = False

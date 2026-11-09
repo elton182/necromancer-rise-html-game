@@ -2,6 +2,11 @@
 
 Uses the same rig, proportions, palette and sprite pipeline as mob.py.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import math
 import os
 import sys
@@ -20,7 +25,7 @@ KIND = sys.argv[sys.argv.index('--') + 1] if '--' in sys.argv else 'archer'
 assert KIND in ('archer', 'specter')
 
 if KIND == 'archer':
-    bpy.ops.wm.open_mainfile(filepath=os.path.join(HERE, 'models', 'mob_skeleton.blend'))
+    bpy.ops.wm.open_mainfile(filepath=asset_path(os.path.join(HERE, 'models', 'mob_skeleton.blend')))
     C.ARM = bpy.data.objects['Rig']; C.PB = C.ARM.pose.bones
     C.MATS = {m.name: m for m in bpy.data.materials}
     C.PARTS = []

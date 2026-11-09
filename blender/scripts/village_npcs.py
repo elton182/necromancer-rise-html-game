@@ -1,6 +1,11 @@
 """Build rigged village NPCs matching dialogue paintings; render idle/greeting in 8 directions.
 blender -b -t 4 --python blender/scripts/village_npcs.py [-- --preview]
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy, math, sys, json
 from pathlib import Path
 from mathutils import Vector
@@ -84,7 +89,7 @@ def build(ident):
  sc.frame_end=9;c.ARM.animation_data.action=bpy.data.actions['idle'];sc.frame_set(1)
  # The game applies the existing NPC-specific height scale.
  bpy.ops.object.select_all(action='DESELECT');c.ARM.select_set(True);bpy.data.objects['NPC_'+ident].select_set(True)
- bpy.ops.export_scene.gltf(filepath=str(BLENDER/'exports'/('villager_'+ident+'.glb')),export_format='GLB',use_selection=True,export_animation_mode='ACTIONS')
+ bpy.ops.export_scene.gltf(filepath=asset_path(str(BLENDER/'exports'/('villager_'+ident+'.glb'))),export_format='GLB',use_selection=True,export_animation_mode='ACTIONS')
  return sc,c.ARM
 
 def render(ident):
@@ -100,7 +105,7 @@ def render(ident):
  pitch=math.radians(35);fwd=Vector((0,math.cos(pitch),-math.sin(pitch)));target=Vector((0,math.sin(pitch),math.cos(pitch)))*(165-112)/56
  cam.location=target-fwd*12;cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
  arm.rotation_euler.z=0;sc.frame_set(1)
- bpy.ops.wm.save_as_mainfile(filepath=str(BLENDER/'models'/('villager_'+ident+'.blend')))
+ bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BLENDER/'models'/('villager_'+ident+'.blend'))))
  folder=BLENDER/'frames'/('frames_villager_'+ident);folder.mkdir(parents=True,exist_ok=True)
  meta={'cell':224,'ppu':56,'anchorX':112,'anchorY':165,'dirs':8,'anims':{'idle':{'n':8,'fps':5,'loop':True,'row':0},'attack':{'n':8,'fps':6,'loop':True,'row':8}}}
  for ai,name in enumerate(['idle','greet']):

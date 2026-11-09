@@ -1,0 +1,363 @@
+{
+  "fps": 30,
+  "bones": 68,
+  "weights": {
+    "unweighted": 0,
+    "max_influences": 4,
+    "normalization_error": 9.685754776000977e-08
+  },
+  "clips": {
+    "idle": {
+      "action": "AN_FloraWolf_idle.002",
+      "frames": [
+        1,
+        85
+      ],
+      "seconds": 2.8,
+      "body_min_z": -1.1920928955078125e-07,
+      "loop_matrix_error": 8.344650268554688e-07,
+      "paw_travel": {
+        "LeftHand": 2.176028768198227e-07,
+        "LeftFoot": 2.7486483373786085e-07,
+        "RightHand": 3.326164824597495e-07,
+        "RightFoot": 3.650024149988857e-08
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -1.1920928955078125e-07,
+          1.7881393432617188e-07
+        ],
+        "LeftFoot": [
+          -1.0896474123001099e-07,
+          1.2479722499847412e-07
+        ],
+        "RightHand": [
+          -5.960464477539063e-08,
+          3.2782554626464844e-07
+        ],
+        "RightFoot": [
+          -1.1822491785551392e-07,
+          -7.697155979258241e-08
+        ]
+      }
+    },
+    "walk": {
+      "action": "AN_FloraWolf_walk.002",
+      "frames": [
+        1,
+        22
+      ],
+      "seconds": 0.7,
+      "body_min_z": -2.682209014892578e-07,
+      "loop_matrix_error": 0.0,
+      "paw_travel": {
+        "LeftHand": 0.30982636607661446,
+        "LeftFoot": 0.3379349872375053,
+        "RightHand": 0.25453202043259615,
+        "RightFoot": 0.2967527139240109
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -2.682209014892578e-07,
+          0.08555123209953308
+        ],
+        "LeftFoot": [
+          -1.3690441846847534e-07,
+          0.10961680859327316
+        ],
+        "RightHand": [
+          1.7881393432617188e-07,
+          0.09800824522972107
+        ],
+        "RightFoot": [
+          -2.94243704956898e-08,
+          0.1099984273314476
+        ]
+      }
+    },
+    "claw_1": {
+      "action": "AN_FloraWolf_claw_1.002",
+      "frames": [
+        1,
+        14
+      ],
+      "seconds": 0.43333333333333335,
+      "body_min_z": -1.8398020529275527e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 1.4975481660844222e-07,
+        "LeftFoot": 1.043081283569336e-07,
+        "RightHand": 0.2615223973590431,
+        "RightFoot": 0.07225243181908315
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          5.960464477539063e-08,
+          2.980232238769531e-07
+        ],
+        "LeftFoot": [
+          0.0,
+          1.126900315284729e-07
+        ],
+        "RightHand": [
+          0.0,
+          0.20344287157058716
+        ],
+        "RightFoot": [
+          -1.8398020529275527e-07,
+          1.0534901662140328e-07
+        ]
+      },
+      "weight_shift": {
+        "hip_travel": 0.1526377337111435,
+        "torso_yaw_span_degrees": 54.81310887378819,
+        "drive_ankle_travel": 0.07225243181908315,
+        "drive_toe_xy_drift": 1.48311475197929e-07
+      }
+    },
+    "claw_2": {
+      "action": "AN_FloraWolf_claw_2.002",
+      "frames": [
+        1,
+        14
+      ],
+      "seconds": 0.43333333333333335,
+      "body_min_z": -2.1972192598695983e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 0.36233672285729956,
+        "LeftFoot": 0.07029027982777572,
+        "RightHand": 1.9655981597711026e-07,
+        "RightFoot": 9.094592642585711e-08
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          1.7881393432617188e-07,
+          0.27335992455482483
+        ],
+        "LeftFoot": [
+          -2.9802322387695312e-08,
+          0.008148388005793095
+        ],
+        "RightHand": [
+          -1.1920928955078125e-07,
+          5.960464477539063e-08
+        ],
+        "RightFoot": [
+          -2.1972192598695983e-07,
+          -1.223458667709565e-07
+        ]
+      },
+      "weight_shift": {
+        "hip_travel": 0.15263773981266593,
+        "torso_yaw_span_degrees": 54.81308675569873,
+        "drive_ankle_travel": 0.07029027982777572,
+        "drive_toe_xy_drift": 1.7572159193561607e-07
+      }
+    },
+    "howl": {
+      "action": "AN_FloraWolf_howl.002",
+      "frames": [
+        1,
+        22
+      ],
+      "seconds": 0.7,
+      "body_min_z": -2.06962695870061e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 0.5338034586355692,
+        "LeftFoot": 1.3838839248572819e-07,
+        "RightHand": 0.5704267971914109,
+        "RightFoot": 9.06402249678704e-08
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          0.0,
+          0.4893238842487335
+        ],
+        "LeftFoot": [
+          1.862645149230957e-09,
+          2.1141022443771362e-07
+        ],
+        "RightHand": [
+          0.0,
+          0.5509350299835205
+        ],
+        "RightFoot": [
+          -2.06962695870061e-07,
+          -1.0888226853467131e-07
+        ]
+      }
+    },
+    "leap": {
+      "action": "AN_FloraWolf_leap.002",
+      "frames": [
+        1,
+        19
+      ],
+      "seconds": 0.6,
+      "body_min_z": -5.960464477539062e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 0.2756262221249865,
+        "LeftFoot": 0.19986502453267382,
+        "RightHand": 0.2756269975898592,
+        "RightFoot": 0.1998649196880506
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -5.960464477539062e-07,
+          0.24848350882530212
+        ],
+        "LeftFoot": [
+          0.008148053660988808,
+          0.14912651479244232
+        ],
+        "RightHand": [
+          -1.7881393432617188e-07,
+          0.24848516285419464
+        ],
+        "RightFoot": [
+          -1.0000935191101235e-07,
+          0.14208382368087769
+        ]
+      }
+    },
+    "dodge": {
+      "action": "AN_FloraWolf_dodge.002",
+      "frames": [
+        1,
+        16
+      ],
+      "seconds": 0.5,
+      "body_min_z": -2.2458601733887917e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 0.03201566535467746,
+        "LeftFoot": 1.0975390570354636e-07,
+        "RightHand": 0.03201561217525108,
+        "RightFoot": 8.688795409866125e-08
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          1.4901161193847656e-07,
+          0.020000219345092773
+        ],
+        "LeftFoot": [
+          0.008148306980729103,
+          0.008148388005793095
+        ],
+        "RightHand": [
+          -5.960464477539063e-08,
+          0.019999951124191284
+        ],
+        "RightFoot": [
+          -2.2458601733887917e-07,
+          -1.127065729633614e-07
+        ]
+      }
+    },
+    "death": {
+      "action": "AN_FloraWolf_death.002",
+      "frames": [
+        1,
+        37
+      ],
+      "seconds": 1.2,
+      "body_min_z": -1.7881393432617188e-07,
+      "loop_matrix_error": null,
+      "paw_travel": {
+        "LeftHand": 0.3129964402849271,
+        "LeftFoot": 0.17018864763695235,
+        "RightHand": 0.515546954115834,
+        "RightFoot": 0.4820289085775116
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -1.7881393432617188e-07,
+          0.1287846863269806
+        ],
+        "LeftFoot": [
+          1.2665987014770508e-07,
+          0.008148536086082458
+        ],
+        "RightHand": [
+          2.384185791015625e-07,
+          0.5670489072799683
+        ],
+        "RightFoot": [
+          1.201936754569033e-07,
+          0.5808134078979492
+        ]
+      }
+    },
+    "strafe_left": {
+      "action": "AN_FloraWolf_strafe_left.002",
+      "frames": [
+        1,
+        25
+      ],
+      "seconds": 0.8,
+      "body_min_z": -5.904585123062134e-07,
+      "loop_matrix_error": 0.0,
+      "paw_travel": {
+        "LeftHand": 0.1857710017981582,
+        "LeftFoot": 0.20406680803696534,
+        "RightHand": 0.15499117825672684,
+        "RightFoot": 0.18717257650763766
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -4.470348358154297e-07,
+          0.08498352766036987
+        ],
+        "LeftFoot": [
+          -5.904585123062134e-07,
+          0.11202459037303925
+        ],
+        "RightHand": [
+          8.940696716308594e-08,
+          0.09775897860527039
+        ],
+        "RightFoot": [
+          1.0486473911441863e-07,
+          0.10995302349328995
+        ]
+      }
+    },
+    "strafe_right": {
+      "action": "AN_FloraWolf_strafe_right.002",
+      "frames": [
+        1,
+        25
+      ],
+      "seconds": 0.8,
+      "body_min_z": -7.562339305877686e-07,
+      "loop_matrix_error": 0.0,
+      "paw_travel": {
+        "LeftHand": 0.18577076617362945,
+        "LeftFoot": 0.2040666420284616,
+        "RightHand": 0.15127434962523092,
+        "RightFoot": 0.18717297954252154
+      },
+      "paw_height_ranges": {
+        "LeftHand": [
+          -5.066394805908203e-07,
+          0.08498358726501465
+        ],
+        "LeftFoot": [
+          -7.562339305877686e-07,
+          0.11202414333820343
+        ],
+        "RightHand": [
+          2.086162567138672e-07,
+          0.09775906801223755
+        ],
+        "RightFoot": [
+          1.433130023542617e-07,
+          0.10995317250490189
+        ]
+      }
+    }
+  }
+}

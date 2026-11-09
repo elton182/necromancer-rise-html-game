@@ -1,0 +1,1774 @@
+{
+  "version": 1,
+  "scope": "blender/models e blender/exports; reference e evidências preservados",
+  "files": [
+    {
+      "from": "blender/models/arandu_caravan_horse.blend",
+      "to": "blender/models/arandu_caravan_horse.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 129561,
+      "sha256": "42e8031778591b1153bffc95a0a11ae1b3bb7700bab0eb6b306a7b317aa2cce2"
+    },
+    {
+      "from": "blender/models/arandu_caravan_horse.blend1",
+      "to": "blender/backups/automatic_models/arandu_caravan_horse.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 122930,
+      "sha256": "f4f3c22b22c2324923ccab108bacdfd765b246fa43f1ee04f06d2ca8b9a8431b"
+    },
+    {
+      "from": "blender/models/arandu_caravan_kit.blend",
+      "to": "blender/models/arandu_caravan_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 296899,
+      "sha256": "c5f97d0f3918fbe82d6e531bd1f9d22443b8a9fb815898bf24b7de0f904c7092"
+    },
+    {
+      "from": "blender/models/arandu_caravan_kit.blend1",
+      "to": "blender/backups/automatic_models/arandu_caravan_kit.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 148352,
+      "sha256": "676082f13571423d4fc93dcc23b162cf6e10558006fbf9bc6f1817b012434725"
+    },
+    {
+      "from": "blender/models/arandu_cave_fall.blend",
+      "to": "blender/models/arandu_cave_fall.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 111077,
+      "sha256": "5a0f510190173cc41774891349981e8345ae355218f98d3c0b8669e76445c189"
+    },
+    {
+      "from": "blender/models/arandu_cave_fall.blend1",
+      "to": "blender/backups/automatic_models/arandu_cave_fall.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 110427,
+      "sha256": "f8cc3850b8d596ac7f5e531a1964f0f0519720073a80b7d6b500515cf7aa3a78"
+    },
+    {
+      "from": "blender/models/arandu_cave_hideout.blend",
+      "to": "blender/models/arandu_cave_hideout.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 151226,
+      "sha256": "85a88fd55185d564bfb1a13ba22a88106686125cf0afcb363c7e35c4ef12588d"
+    },
+    {
+      "from": "blender/models/arandu_necromancer_fall.blend",
+      "to": "blender/models/arandu_necromancer_fall.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 4622240,
+      "sha256": "06e4eabf83b567fc8c1e626a24583e26df8a94e6b096bed50e8366c216a27ed9"
+    },
+    {
+      "from": "blender/models/arandu_necromancer_fall.blend1",
+      "to": "blender/backups/automatic_models/arandu_necromancer_fall.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 4612752,
+      "sha256": "70012117a9e4b4480f1bca9ea1e9d66dd4f312f62bb17e38716f04db1c4b1542"
+    },
+    {
+      "from": "blender/models/archer_hero.blend",
+      "to": "blender/models/archer_hero.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 5522651,
+      "sha256": "6db555ec771a00a496484b8c167c7b87586dd2b33c18e64e684b94349134c0c2"
+    },
+    {
+      "from": "blender/models/archer_hero.blend1",
+      "to": "blender/backups/automatic_models/archer_hero.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 5440845,
+      "sha256": "b1212872ae2425b2ab2227c240d0d59f083249c05c122d767e0ab7370500d610"
+    },
+    {
+      "from": "blender/models/bone_shard.blend",
+      "to": "blender/models/bone_shard.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 98421,
+      "sha256": "00e85d714864fcf79495e5c8f35c3118a22ee0ca5b2ecbcca84763fd4baf6015"
+    },
+    {
+      "from": "blender/models/boss_fallenKing.blend",
+      "to": "_to_delete/blender-models/models/boss_fallenKing.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 3867815,
+      "sha256": "b3038bab422ddf67105f0ddd95757ce0c4f39674eb33b48b3e89eddf784d3ca9"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v2.blend",
+      "to": "_to_delete/blender-models/models/boss_fallenKing_v2.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 2711277,
+      "sha256": "6f6bc49342277f5d28eb1fc8325aec199573ffa6b9083559cfcec645cf0772c1"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v2.blend1",
+      "to": "blender/backups/automatic_models/boss_fallenKing_v2.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1433663,
+      "sha256": "ad7e5ee1a5851bc28d74e67dda61f13f8e690f66600a9365e37f355efa2a5634"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v3.blend",
+      "to": "_to_delete/blender-models/models/boss_fallenKing_v3.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 2916025,
+      "sha256": "72d15d492ff453be4b878dcbcc43303436a9c5d647a1f1a59250d5bebac64b16"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v3.blend1",
+      "to": "blender/backups/automatic_models/boss_fallenKing_v3.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2918455,
+      "sha256": "0fc1542076fdbd0effd5c05ea775138302385b64c5889facd65ed7675ad36609"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v3_teste.blend",
+      "to": "blender/models/sources/boss_fallenKing_v3_teste.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 2908851,
+      "sha256": "2e367ec3bdb2b205866b096ee1d050fbc445a67024afa500886066a87da21638"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v3_teste.blend1",
+      "to": "blender/backups/automatic_models/boss_fallenKing_v3_teste.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2934095,
+      "sha256": "22a9b40f78bc3bc39186c475a743b8fe959121d585d209c2f5b308ea66146438"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v4.blend",
+      "to": "blender/models/boss_fallenKing_v4.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3217924,
+      "sha256": "1f4d867998c796db623567d89df13bbe7b955be845d76232fceeb5b660cc0043"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_v4.blend1",
+      "to": "blender/backups/automatic_models/boss_fallenKing_v4.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 3217343,
+      "sha256": "56b48020d6ab8ee5f2bb50eded41ee2fb316f47a1ff5f5993ef5a6388571c537"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_walk.blend",
+      "to": "_to_delete/blender-models/models/boss_fallenKing_walk.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 2710708,
+      "sha256": "64e58cc4942204d6dd520386702c48f3c420fa0a34a936cabeaca9a4931e71a5"
+    },
+    {
+      "from": "blender/models/boss_fallenKing_walk.blend1",
+      "to": "blender/backups/automatic_models/boss_fallenKing_walk.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2709402,
+      "sha256": "e73d18518955f3030a665820a6130a80858001cea910f9ec6a59a7138d068bdb"
+    },
+    {
+      "from": "blender/models/boss_soulWarden.blend",
+      "to": "blender/models/legacy/boss_soulWarden.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 180792,
+      "sha256": "81f55b955f09d241817825206b0d6595ad82575d3ddccf727a79db86b4828f11"
+    },
+    {
+      "from": "blender/models/bran.blend",
+      "to": "blender/models/bran.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3634908,
+      "sha256": "7a35e77d1c517f6d18940adf50838ce57f15f57ec4d73dd663f06ef8e1de61f1"
+    },
+    {
+      "from": "blender/models/falcon.blend",
+      "to": "blender/models/falcon.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2233520,
+      "sha256": "38196494b97687616995e51f85671876a933eeea9165e6135a7806a99838539a"
+    },
+    {
+      "from": "blender/models/falcon.blend1",
+      "to": "blender/backups/automatic_models/falcon.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2233310,
+      "sha256": "39b0053f0e912d5981ffa7815927334414767c6631dacdbf07c2e89450dfc81b"
+    },
+    {
+      "from": "blender/models/flora_druid.blend",
+      "to": "_to_delete/blender-models/models/flora_druid.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 315542,
+      "sha256": "c6e02d3f4fa931fdd90bed69c3000d4ee0e5f6f86cff39234aa40348cc751c0b"
+    },
+    {
+      "from": "blender/models/flora_druid.blend1",
+      "to": "blender/backups/automatic_models/flora_druid.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 315567,
+      "sha256": "3c0c2cd3e2bea15a6d5fc976b07dca7d9cb03f8207093f6a768eb1ffb9d174a1"
+    },
+    {
+      "from": "blender/models/flora_human_blocking.blend",
+      "to": "blender/backups/blocking/flora_human_blocking.blend",
+      "category": "blocking",
+      "reason": "Blocking de autoria, recuperável e reproduzível pelo gerador.",
+      "bytes": 6852619,
+      "sha256": "12a8c7a9d1bbe0471f91ed966cebac5f55a4b87bf92bb13e81bc90b6408901c3"
+    },
+    {
+      "from": "blender/models/flora_human_revised.blend",
+      "to": "blender/models/flora_human_revised.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 14888046,
+      "sha256": "6d77782c25e3aaf120b7b88b43ce38f8d125795d5b93d9d34d0f562efaa933a3"
+    },
+    {
+      "from": "blender/models/flora_human_revised.blend1",
+      "to": "blender/backups/automatic_models/flora_human_revised.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 14585491,
+      "sha256": "d5986a5ae01b51e678cd919e8592e61e8a7558e94c929b55241cadef22c803bb"
+    },
+    {
+      "from": "blender/models/flora_tripo_druid.blend1",
+      "to": "blender/backups/automatic_models/flora_tripo_druid.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 14435448,
+      "sha256": "cb2cee67c6bb064495a534aa1d819ad41a6da226d8e57daf2fe8711261b292fb"
+    },
+    {
+      "from": "blender/models/flora_tripo_druid_t.blend",
+      "to": "blender/models/sources/flora_tripo_druid_t.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 11364558,
+      "sha256": "77f2b0afe4d0f362f45029963346147144a2a414ab7a86c607ca8e2e6db88c0a"
+    },
+    {
+      "from": "blender/models/flora_tripo_wolf.blend",
+      "to": "blender/models/sources/flora_tripo_wolf.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 17027840,
+      "sha256": "9434ccf57f9d28249165635e481d93e777e61dc82fb450a73e100c61f27b17a5"
+    },
+    {
+      "from": "blender/models/flora_tripo_wolf.blend1",
+      "to": "blender/backups/automatic_models/flora_tripo_wolf.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 9314575,
+      "sha256": "df94f23a32be926be84ebe5e0c85d4290ee004741ccea08afe5f400636931c37"
+    },
+    {
+      "from": "blender/models/flora_werewolf.blend",
+      "to": "_to_delete/blender-models/models/flora_werewolf.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 260629,
+      "sha256": "62fb8a7ad6c6a416e8ee3d4b0515462d6489888b7545943529844e8fcc36c28a"
+    },
+    {
+      "from": "blender/models/flora_werewolf.blend1",
+      "to": "blender/backups/automatic_models/flora_werewolf.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 236822,
+      "sha256": "39a60488ee9c3133e8656a6c98d738a04c783685d4b3be4cd2cc0437183f51d5"
+    },
+    {
+      "from": "blender/models/flora_wolf_blocking.blend",
+      "to": "blender/backups/blocking/flora_wolf_blocking.blend",
+      "category": "blocking",
+      "reason": "Blocking de autoria, recuperável e reproduzível pelo gerador.",
+      "bytes": 7404874,
+      "sha256": "9e63fa8f4bf32ce544dbe90f284137c738eeaca20fb90ce4a68e5611a569c201"
+    },
+    {
+      "from": "blender/models/flora_wolf_dynamic.blend",
+      "to": "blender/models/flora_wolf_dynamic.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 15101445,
+      "sha256": "d0f9d8fa66c6e0a3d0a1e4340842a345cc10343bb0a286b1ecfa898b954e31a1"
+    },
+    {
+      "from": "blender/models/flora_wolf_dynamic.blend1",
+      "to": "blender/backups/automatic_models/flora_wolf_dynamic.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 14807626,
+      "sha256": "c82ad518460b87e350d6f6c7e996680f397c0222177ff96e73eab39be940b718"
+    },
+    {
+      "from": "blender/models/flora_wolf_dynamic_blocking.blend",
+      "to": "blender/backups/blocking/flora_wolf_dynamic_blocking.blend",
+      "category": "blocking",
+      "reason": "Blocking de autoria, recuperável e reproduzível pelo gerador.",
+      "bytes": 7404874,
+      "sha256": "e2444b5dacdda9db88606744bafae23ecfa5f215d02909646da400fe1cd9be63"
+    },
+    {
+      "from": "blender/models/flora_wolf_revised.blend",
+      "to": "_to_delete/blender-models/models/flora_wolf_revised.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 15121477,
+      "sha256": "56f00f80479164e48e532ebc36081672ad364fd4b5e300e97896224a33f37d0c"
+    },
+    {
+      "from": "blender/models/flora_wolf_revised.blend1",
+      "to": "blender/backups/automatic_models/flora_wolf_revised.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 14807626,
+      "sha256": "9153c9d1665de98b61fb6e9af2dc294a9ee3ce87f16290389c325e920ecf897f"
+    },
+    {
+      "from": "blender/models/hud_orb_frame.blend",
+      "to": "blender/models/hud_orb_frame.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 4356509,
+      "sha256": "b16b0c88ac395f87a63cd289104cbc879e8a0ad8879d60dd849a410ad0e22ea3"
+    },
+    {
+      "from": "blender/models/hud_orb_frame.blend1",
+      "to": "blender/backups/automatic_models/hud_orb_frame.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 4354736,
+      "sha256": "31f6af692721c4107572f43ab03f67d2c83773b1e78c18bc6b957480f12e9ba4"
+    },
+    {
+      "from": "blender/models/imported_player.blend",
+      "to": "_to_delete/blender-models/models/imported_player.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 795052,
+      "sha256": "108e15aeb58b470ff3a8b00b8d63dccbcb5d7c404e741e174d41696c95e6ddfc"
+    },
+    {
+      "from": "blender/models/imported_player.blend1",
+      "to": "blender/backups/automatic_models/imported_player.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 795032,
+      "sha256": "85a2ea726ad7a6aaeb15ab997e8c95612b78228952a2bc0349d5261149369524"
+    },
+    {
+      "from": "blender/models/lowpoly_bram.blend",
+      "to": "_to_delete/blender-models/models/lowpoly_bram.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1435420,
+      "sha256": "38973f222cb1217ef48053e96f7a9f6459e11e4b1485639eec4a2d8a0275c296"
+    },
+    {
+      "from": "blender/models/lowpoly_earcher.blend",
+      "to": "blender/models/lowpoly_earcher.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1672840,
+      "sha256": "9cb560d44d5317d73cd04e5b0b52fd4ce54775b93ce7c58bed24b8febe113dc5"
+    },
+    {
+      "from": "blender/models/lowpoly_zombie.blend",
+      "to": "blender/models/lowpoly_zombie.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 203856,
+      "sha256": "5f99233ee42315298d5ff477f1e4397c7441a6e41f38a389c3cd3e49922bdefb"
+    },
+    {
+      "from": "blender/models/lowpoly_zombie.blend1",
+      "to": "blender/backups/automatic_models/lowpoly_zombie.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 203679,
+      "sha256": "a94396e76308add74b197ffea5e811f1c688e6c71ec843ff496e4a6db449ae0a"
+    },
+    {
+      "from": "blender/models/mage.blend",
+      "to": "_to_delete/blender-models/models/mage.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 37020828,
+      "sha256": "a36841880b3fa728d8e5be051ba1e5ed1f53b13229478ce41945d5181cfa9e00"
+    },
+    {
+      "from": "blender/models/mage.blend1",
+      "to": "blender/backups/automatic_models/mage.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 8934563,
+      "sha256": "fdee6af75a5c52480335a423f4029331d24cf3e65cbdbe894e129882ea14d0ba"
+    },
+    {
+      "from": "blender/models/mage_hero.blend",
+      "to": "blender/models/sources/mage_hero.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 3105868,
+      "sha256": "f35ebc16582ad4f1dd916d4909868c233cdff5f7c5c53537a7fd1e0bc9f110ee"
+    },
+    {
+      "from": "blender/models/mage_hero.blend1",
+      "to": "blender/backups/automatic_models/mage_hero.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 3113646,
+      "sha256": "e9e4001a745676b40c54b75af10a98616859b5ae171412f312478e5336ad8da1"
+    },
+    {
+      "from": "blender/models/mage_hero_t.blend",
+      "to": "blender/models/mage_hero_t.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 18234626,
+      "sha256": "ca97cd123aa594df8ccdfaa843be04face93e0f95a786a0c11fd03d32e2c8f3e"
+    },
+    {
+      "from": "blender/models/mage_hero_t.blend1",
+      "to": "blender/backups/automatic_models/mage_hero_t.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 18225281,
+      "sha256": "459e75d41aec1b0b556ffdf41d0f359344da29ca8bc79dc4a88e0c99018a3dfb"
+    },
+    {
+      "from": "blender/models/mage_hero_t_blocking.blend",
+      "to": "blender/backups/blocking/mage_hero_t_blocking.blend",
+      "category": "blocking",
+      "reason": "Blocking de autoria, recuperável e reproduzível pelo gerador.",
+      "bytes": 9543959,
+      "sha256": "885a6aa3619735da02a7a17ea0ed13c59255b8eb66523268f010849749cc1407"
+    },
+    {
+      "from": "blender/models/mage_hero_t_blocking.blend1",
+      "to": "blender/backups/automatic_models/mage_hero_t_blocking.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 7558464,
+      "sha256": "ebb0f3ff6995c28afc9b01375eb8fa1f49bbc7b03b4fcbada64b622f6a92495d"
+    },
+    {
+      "from": "blender/models/mage_hero_t_source.blend",
+      "to": "blender/models/sources/mage_hero_t_source.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 1515040,
+      "sha256": "7f2107918c5c16e7f16451e7e1ac1f14a11f103635391b1ed1eb3201debc6c67"
+    },
+    {
+      "from": "blender/models/mercenary.blend",
+      "to": "blender/models/mercenary.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 5059885,
+      "sha256": "61f1a7126459e0442f43239afd3f4f2898522a30b57d71830eb873719dbbdfdb"
+    },
+    {
+      "from": "blender/models/mercenary.blend1",
+      "to": "blender/backups/automatic_models/mercenary.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 4956310,
+      "sha256": "7f72195c7862f08f36ee626af2bb0c0eda01b4a35af35bab5679b6e02fbdf91b"
+    },
+    {
+      "from": "blender/models/mob_archer.blend",
+      "to": "blender/models/legacy/mob_archer.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 172387,
+      "sha256": "aca1ccc94db38c7ab40179b6ab815075ea795c4ca420a18ddd0c61b5777d7f1f"
+    },
+    {
+      "from": "blender/models/mob_cryptHound.blend",
+      "to": "blender/models/legacy/mob_cryptHound.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 157693,
+      "sha256": "17cdd89586fb6abe1a23c35c6a0b3b5b5f459859412561eebec1f56c17ba8f17"
+    },
+    {
+      "from": "blender/models/mob_skeleton.blend",
+      "to": "blender/models/legacy/mob_skeleton.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 163171,
+      "sha256": "666ef3f37567d0cdc22cd148b1779d67537bc922bd72090a01d0ca91a9c2f0ae"
+    },
+    {
+      "from": "blender/models/mob_specter.blend",
+      "to": "blender/models/mob_specter.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 133834,
+      "sha256": "46c899c0ebafb507e161d3a545a28deddc3413c28cb6424bb593ab903a64713c"
+    },
+    {
+      "from": "blender/models/mob_warAcolyte.blend",
+      "to": "blender/models/mob_warAcolyte.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 146420,
+      "sha256": "1421fbdbacceae3292f77716069b5a1c65eea33beba13fefaa926a0c09bc4c56"
+    },
+    {
+      "from": "blender/models/mob_warAcolyte.blend1",
+      "to": "blender/backups/automatic_models/mob_warAcolyte.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 145560,
+      "sha256": "b19fd7ed85ae3b2edcacfb75a4923da7bc1b16c3fc2ddc538bb7f3874421e228"
+    },
+    {
+      "from": "blender/models/mob_zombie.blend",
+      "to": "blender/models/legacy/mob_zombie.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 163357,
+      "sha256": "c511768c7b80895f53ec081d4a4eeb489c177df0498be0d9cd381e77105ef049"
+    },
+    {
+      "from": "blender/models/necromante.blend",
+      "to": "blender/models/legacy/necromante.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 187604,
+      "sha256": "7cbb551d87946e505c2620f1953d1140b340de5477939f6bb0d138dba487279f"
+    },
+    {
+      "from": "blender/models/necromante_art.blend",
+      "to": "blender/models/legacy/necromante_art.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 161865,
+      "sha256": "ade25d546a12d122f7ec3866d36e76b1efb0088ab3810c0551ca87be9321ccaf"
+    },
+    {
+      "from": "blender/models/necromante_art.blend1",
+      "to": "blender/backups/automatic_models/necromante_art.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 161893,
+      "sha256": "4669b1c3d71cfc56d05cf2f0ef042995049bf3e39246de330cfbd135245eac9d"
+    },
+    {
+      "from": "blender/models/npc_bram.blend",
+      "to": "_to_delete/blender-models/models/npc_bram.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1555608,
+      "sha256": "9197523a447ce5513fef1e44691bf77db3498e0b21516e16cc58922d2a1505ac"
+    },
+    {
+      "from": "blender/models/npc_lysa.blend",
+      "to": "_to_delete/blender-models/models/npc_lysa.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1520432,
+      "sha256": "f9edb371ad02cb0e4c09b0918496c9254c143b55ee256189169dc03c2fdf8448"
+    },
+    {
+      "from": "blender/models/npc_merchant.blend",
+      "to": "_to_delete/blender-models/models/npc_merchant.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1591680,
+      "sha256": "830da863a2a5fcd3b30423219afab7f64cd0d446d77b2ab8c9c6ba201ab27b13"
+    },
+    {
+      "from": "blender/models/npc_tilda.blend",
+      "to": "_to_delete/blender-models/models/npc_tilda.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1436280,
+      "sha256": "8f534d5331d0238065a01510c56f1d466d9bb4e2f95b25f97445c087fc1fec07"
+    },
+    {
+      "from": "blender/models/rigged_player.blend",
+      "to": "blender/models/sources/rigged_player.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 1831808,
+      "sha256": "54d63eab5dd4d061800232e4dd68489956ee251a12ae83ad88c7d5c6a3f5baea"
+    },
+    {
+      "from": "blender/models/rigged_player.blend1",
+      "to": "blender/backups/automatic_models/rigged_player.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1832303,
+      "sha256": "b6020882958b649c8926a2221e27dcf83657bef8755351d0e8822d6ef05f441d"
+    },
+    {
+      "from": "blender/models/siege_bone.blend",
+      "to": "blender/models/siege_bone.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 104493,
+      "sha256": "0e863406d3d1c914fd15bee422ce52a06e6bcac12b869425c75e574cc8bc32eb"
+    },
+    {
+      "from": "blender/models/siege_core.blend",
+      "to": "blender/models/siege_core.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 96547,
+      "sha256": "ec6c81c1ce935fea5821e48422d6d5f10f39c79f25a7156dceaa025f6318b17b"
+    },
+    {
+      "from": "blender/models/siege_crypt.blend",
+      "to": "blender/models/siege_crypt.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 101099,
+      "sha256": "6924764eeef108937679a3d353bb3543130b94d5fc3ed278e1d5bea22f0371f2"
+    },
+    {
+      "from": "blender/models/siege_frost.blend",
+      "to": "blender/models/siege_frost.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 96235,
+      "sha256": "84f1b525122c727d1a99cc6d96f046fc558220d0a1f5116507def6f8232c4238"
+    },
+    {
+      "from": "blender/models/siege_plague.blend",
+      "to": "blender/models/siege_plague.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 109102,
+      "sha256": "91f60d03deb2a7b44c87a96528f9afaa9bb0afbfcd990ee778448de7e5c46df1"
+    },
+    {
+      "from": "blender/models/stylized_bram.blend",
+      "to": "blender/models/stylized_bram.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1375296,
+      "sha256": "4a9e0954443e7e26033224d720cf9d58179a047ecae0a8d30534dd827044ed83"
+    },
+    {
+      "from": "blender/models/stylized_bram.blend1",
+      "to": "blender/backups/automatic_models/stylized_bram.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1342992,
+      "sha256": "275121bc1e237eec5735d002b6588116ae8a7b98b80d880f405f5e4dc64a79c8"
+    },
+    {
+      "from": "blender/models/stylized_lysa.blend",
+      "to": "blender/models/stylized_lysa.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1043876,
+      "sha256": "6c8f2023b8a60b9808d6ac32bc08b9b8d5b56c0a00ae4daf4a76982ac80f74b5"
+    },
+    {
+      "from": "blender/models/stylized_lysa.blend1",
+      "to": "blender/backups/automatic_models/stylized_lysa.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1035596,
+      "sha256": "fc196b5e540ffae993ecf900662495152748f1cfc006d2fbe26765d6b07f49f8"
+    },
+    {
+      "from": "blender/models/stylized_merchant.blend",
+      "to": "blender/models/stylized_merchant.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1097640,
+      "sha256": "8f2f388a2371fbfd246f72b4a995b4b7909f9e8b191725816c23c09a9852231a"
+    },
+    {
+      "from": "blender/models/stylized_merchant.blend1",
+      "to": "blender/backups/automatic_models/stylized_merchant.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1065332,
+      "sha256": "f837cff45aeafad3eba98b7ec666dc734d3158ffe8ca3d3aef2508fc0dce4e36"
+    },
+    {
+      "from": "blender/models/stylized_tilda.blend",
+      "to": "blender/models/stylized_tilda.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1051876,
+      "sha256": "3208282b6bd67cdf5594b56fa96ddd98cf50d69db9018e3681a6df5a33ffbec2"
+    },
+    {
+      "from": "blender/models/stylized_tilda.blend1",
+      "to": "blender/backups/automatic_models/stylized_tilda.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1043592,
+      "sha256": "0e67e9a2e147a325ad97c9276705335045d88332755b90480e8f535825d4268d"
+    },
+    {
+      "from": "blender/models/stylized_zephyr.blend",
+      "to": "_to_delete/blender-models/models/stylized_zephyr.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 909944,
+      "sha256": "05318ce930d22dd95d93ee843b9aa9937d3a62d146cb7c3fbe2e5f5941a3a417"
+    },
+    {
+      "from": "blender/models/stylized_zephyr.blend1",
+      "to": "blender/backups/automatic_models/stylized_zephyr.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 954336,
+      "sha256": "d5dad7c6f688bf0500f5ec83c3f0417d3571b13774a2b43ab50f468ee7af0e09"
+    },
+    {
+      "from": "blender/models/v2_abomination.blend",
+      "to": "blender/models/v2_abomination.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 203431,
+      "sha256": "752b5bfc08ca6cf0181e75f2056463b3c6656af5ba60805e69fde3ee9d684dde"
+    },
+    {
+      "from": "blender/models/v2_abomination.blend1",
+      "to": "blender/backups/automatic_models/v2_abomination.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1760034,
+      "sha256": "4acf96be1ccb484896dc502434c4054d97a428e32298ddbbe319ba212d6fb737"
+    },
+    {
+      "from": "blender/models/v2_bone.blend",
+      "to": "blender/models/v2_bone.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 97603,
+      "sha256": "39dc99900b37ab792eef1e82a92011e4fb02cfdf511cd86f6d538f50b9e3e687"
+    },
+    {
+      "from": "blender/models/v2_crypt_architecture.blend",
+      "to": "blender/models/v2_crypt_architecture.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 280128,
+      "sha256": "cabacf494793d13f77036466aaf93d233297dd0625db784d78ea321b2dfbfe06"
+    },
+    {
+      "from": "blender/models/v2_crypt_architecture.blend1",
+      "to": "blender/backups/automatic_models/v2_crypt_architecture.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 272705,
+      "sha256": "3b06449418457ccec14189d722cbf1deebe9831bb6e205c327a6e4530eb8ce46"
+    },
+    {
+      "from": "blender/models/v2_enemy_griffin.blend",
+      "to": "blender/models/v2_enemy_griffin.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1576968,
+      "sha256": "6e0aa9634e28c219da9bced4704e1f438be89f9537c889ef3a53a471324b10b6"
+    },
+    {
+      "from": "blender/models/v2_enemy_griffin.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_griffin.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1576720,
+      "sha256": "2c577372b255753ea6216b41df10b64e3072bf135f3f3e8d4377e778017f0153"
+    },
+    {
+      "from": "blender/models/v2_enemy_knight.blend",
+      "to": "blender/models/v2_enemy_knight.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 12141307,
+      "sha256": "ec786c42c0ea7c41d01ad3530435edd741cc5a6c411daedf175c31c95eb484f9"
+    },
+    {
+      "from": "blender/models/v2_enemy_knight.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_knight.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 12070427,
+      "sha256": "4538e4a6cd75f7900307860eeb4d5efa4291196bd04b817df06449f2b0fe2138"
+    },
+    {
+      "from": "blender/models/v2_enemy_mage.blend",
+      "to": "blender/models/v2_enemy_mage.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 10430915,
+      "sha256": "9136b03b25c20d18a70a7a853e089488a8345cfa2d0d56df766bad39258a5af0"
+    },
+    {
+      "from": "blender/models/v2_enemy_mage.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_mage.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2754297,
+      "sha256": "c9d5dec558d11afc7024a0806312bfdb46ec00242451ebdf028a48199aced894"
+    },
+    {
+      "from": "blender/models/v2_enemy_orc.blend",
+      "to": "blender/models/v2_enemy_orc.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2825505,
+      "sha256": "d076f8fa66c8a8106dbfa3446a1f172bc7c4d8f07f7f4c3694b405ff86afec77"
+    },
+    {
+      "from": "blender/models/v2_enemy_orc.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_orc.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2816544,
+      "sha256": "10087e4ae065d7aab48b6e15c365be6921db2d87abc438755add4392d1bc8788"
+    },
+    {
+      "from": "blender/models/v2_enemy_rogue.blend",
+      "to": "blender/models/v2_enemy_rogue.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2573910,
+      "sha256": "92aebc4bb4c0f6f279177c6641e1b8c595037f453b553f7ed43d7dce9e8c4f84"
+    },
+    {
+      "from": "blender/models/v2_enemy_rogue.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_rogue.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 2573744,
+      "sha256": "8df34f6aa12e0833004c12fc9ebff343fd75daf115315c5fc2bdcdd8ab29e721"
+    },
+    {
+      "from": "blender/models/v2_enemy_spider.blend",
+      "to": "blender/models/v2_enemy_spider.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1304491,
+      "sha256": "bdead2db664249e71207e481588cc485f1770fa472fdf115e5d0a531ab5f36c3"
+    },
+    {
+      "from": "blender/models/v2_enemy_thief.blend",
+      "to": "blender/models/v2_enemy_thief.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2545586,
+      "sha256": "b13d376042ad96e4b3bd9e753141b1186ad61def3d79cc124c0e95e4ce02414d"
+    },
+    {
+      "from": "blender/models/v2_enemy_thief.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_thief.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 9120185,
+      "sha256": "2299d0b0a7e1cf197c844483a8e69b75025ff9d09568bc72b04f912d5f9c719d"
+    },
+    {
+      "from": "blender/models/v2_enemy_wolf.blend",
+      "to": "blender/models/v2_enemy_wolf.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1709183,
+      "sha256": "4f096a4fc93d8e243484c1d56efc2a617e6b4119533c2618d36d1269ed4315c3"
+    },
+    {
+      "from": "blender/models/v2_enemy_wolf.blend1",
+      "to": "blender/backups/automatic_models/v2_enemy_wolf.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1702724,
+      "sha256": "be4acea73ae6a0f2752c62a960bfd2003175c92f6f3eda4a8bd0e8d8eb37a9f2"
+    },
+    {
+      "from": "blender/models/v2_flesh_shield.blend",
+      "to": "blender/models/v2_flesh_shield.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 118620,
+      "sha256": "ba43204cc7f274ca6a368cebc8d0bd2d94b816836a301b4929b904b6d35776b2"
+    },
+    {
+      "from": "blender/models/v2_flesh_shield.blend1",
+      "to": "blender/backups/automatic_models/v2_flesh_shield.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 116674,
+      "sha256": "d1fa8ce7f4fe9d81cabcfd50daa1439e3f16a6f9dd50553aa763b85a87a9649c"
+    },
+    {
+      "from": "blender/models/v2_fort_kit.blend",
+      "to": "blender/models/v2_fort_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 251748,
+      "sha256": "0215bbb97e7611d2d930395283f456aded1e4b0f82ecd3c9221e3165700d67ba"
+    },
+    {
+      "from": "blender/models/v2_harpy_feather.blend",
+      "to": "blender/models/v2_harpy_feather.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 95819,
+      "sha256": "6ad564e7d07fe8eb66a986f117fc547078f3248b179ec2d931028245e5672f03"
+    },
+    {
+      "from": "blender/models/v2_imported_enemies_review.blend",
+      "to": "blender/models/sources/v2_imported_enemies_review.blend",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 32350280,
+      "sha256": "f2717a15642d6e5646780cf8be10439d3e5b6f8016322c2f4eb3d9cf00f67af1"
+    },
+    {
+      "from": "blender/models/v2_lich.blend",
+      "to": "blender/models/v2_lich.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 4224849,
+      "sha256": "87cf791176a6fbea6aace911e410d3ab45407fb36d110b5c928ed1b8bcc88528"
+    },
+    {
+      "from": "blender/models/v2_lich.blend1",
+      "to": "blender/backups/automatic_models/v2_lich.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 4215693,
+      "sha256": "f403c691d64608b9933b7a905a0010fe6dc6830879fca71772f6e701e8a9dd88"
+    },
+    {
+      "from": "blender/models/v2_map_kit.blend",
+      "to": "blender/models/v2_map_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 298576,
+      "sha256": "5fc4664e551fd7bfd9a360828411b9e7d605f667ef4f94cd5821388f95153466"
+    },
+    {
+      "from": "blender/models/v2_map_kit.blend1",
+      "to": "blender/backups/automatic_models/v2_map_kit.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 298072,
+      "sha256": "c2fcaac95776a82144cf097bae99259536d5897399049fb6ce28e915c6d72319"
+    },
+    {
+      "from": "blender/models/v2_nature_kit.blend",
+      "to": "blender/models/v2_nature_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 127227,
+      "sha256": "09ec9a5cf941970b6648aecfba97df6924325be2bf2dd996a6b115e972908fc3"
+    },
+    {
+      "from": "blender/models/v2_nature_kit.blend1",
+      "to": "blender/backups/automatic_models/v2_nature_kit.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 127228,
+      "sha256": "8132c9955a1eb1d1908db3856add4760035664b033aaf52199df50b162f8b420"
+    },
+    {
+      "from": "blender/models/v2_necromancer.blend",
+      "to": "blender/models/v2_necromancer.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 4577823,
+      "sha256": "c62fd515ca97df5037e83b259b997e3c83e21fc3126056342b1c2410790fe57b"
+    },
+    {
+      "from": "blender/models/v2_necromancer.blend1",
+      "to": "blender/backups/automatic_models/v2_necromancer.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 4568332,
+      "sha256": "9bb74f35b9fe170ccd8b6a7a1d5ccde990a8e6f8d084a8ac0392335503f3c259"
+    },
+    {
+      "from": "blender/models/v2_ruined_village_kit.blend",
+      "to": "blender/models/v2_ruined_village_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 201331,
+      "sha256": "99cff5bcd4ec546895f3800dde4e32a00ca369b1332b0186e81a22d62e1b6029"
+    },
+    {
+      "from": "blender/models/v2_swamp_kit.blend",
+      "to": "blender/models/v2_swamp_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 109825,
+      "sha256": "77837c80d1a6d13a0e1af9f4f176b84fcadb89204ff333899e1a47d92d44529b"
+    },
+    {
+      "from": "blender/models/v2_swamp_kit.blend1",
+      "to": "blender/backups/automatic_models/v2_swamp_kit.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 108106,
+      "sha256": "817f78384cb332abc8435ce5c60d3cc330a4da5f90f6ed647e11f46a0a2a82b5"
+    },
+    {
+      "from": "blender/models/v2_village_kit.blend",
+      "to": "blender/models/v2_village_kit.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 200885,
+      "sha256": "b2f500236b950b349cc360ed7cffd592f413c68626f976464a4a9c1da662e699"
+    },
+    {
+      "from": "blender/models/v2_village_kit.blend1",
+      "to": "blender/backups/automatic_models/v2_village_kit.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 200859,
+      "sha256": "5cf1e8693bffeedd1a390c93b1cb00f2c5dd39b640a1cf1e0ac9f66c7f770964"
+    },
+    {
+      "from": "blender/models/village_eldrin.blend",
+      "to": "blender/models/legacy/village_eldrin.blend",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 9370644,
+      "sha256": "384d0a8cdf50ae7277de732e84de2e381c5ced98912673bf565692e3dca34b5f"
+    },
+    {
+      "from": "blender/models/village_eldrin.blend1",
+      "to": "blender/backups/automatic_models/village_eldrin.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 9346516,
+      "sha256": "0a4a8437020c96adee5f05fbe74999d4d00f7ff5d76bcd07915885817d197bf2"
+    },
+    {
+      "from": "blender/models/villager_bram.blend",
+      "to": "_to_delete/blender-models/models/villager_bram.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1211412,
+      "sha256": "482f3d4050d89c765f10b48e922a593875c23d5104ac11fcf0eb20ec296ff070"
+    },
+    {
+      "from": "blender/models/villager_bram.blend1",
+      "to": "blender/backups/automatic_models/villager_bram.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1211412,
+      "sha256": "4445ad4b97b6f1382f01277c035dc5c3c0359b59cdd5f096df197dc87ae3692b"
+    },
+    {
+      "from": "blender/models/villager_lysa.blend",
+      "to": "_to_delete/blender-models/models/villager_lysa.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1131140,
+      "sha256": "115d1fb029c1f7b1f985188f4596c5e695d90e1167d55a9610981b4e231ed5df"
+    },
+    {
+      "from": "blender/models/villager_lysa.blend1",
+      "to": "blender/backups/automatic_models/villager_lysa.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1131140,
+      "sha256": "39f80ac00a18483f61c0bec85d27a464802b680392692835c6e8843acca826d3"
+    },
+    {
+      "from": "blender/models/villager_merchant.blend",
+      "to": "_to_delete/blender-models/models/villager_merchant.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1132160,
+      "sha256": "b34d72faf3c7645226a23d45b1f07260ff235e58cf9683a6fd75b66f2d940206"
+    },
+    {
+      "from": "blender/models/villager_merchant.blend1",
+      "to": "blender/backups/automatic_models/villager_merchant.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1132160,
+      "sha256": "9d3113e80f8f225af3b1b7dd169f30a8213de025bb5b18aa41458418cd7b3e81"
+    },
+    {
+      "from": "blender/models/villager_tilda.blend",
+      "to": "_to_delete/blender-models/models/villager_tilda.blend",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1182004,
+      "sha256": "a34a12b235ee94ecf4470ccee2bcb911f6eb7d291e1203e742eccf50b0de9fce"
+    },
+    {
+      "from": "blender/models/villager_tilda.blend1",
+      "to": "blender/backups/automatic_models/villager_tilda.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1182004,
+      "sha256": "6b5508439d4e5a8816d71e09f5f7feeb91027392a2a6e4f6734b6e8cfdf5aca6"
+    },
+    {
+      "from": "blender/models/warrior.blend",
+      "to": "blender/models/warrior.blend",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1478419,
+      "sha256": "5a07d09ff92385a82915dd8bd79425a9fd965a64444f54502ab2c99603619de0"
+    },
+    {
+      "from": "blender/models/warrior.blend1",
+      "to": "blender/backups/automatic_models/warrior.blend1",
+      "category": "backup",
+      "reason": "Backup automático do Blender; não é fonte atual.",
+      "bytes": 1475775,
+      "sha256": "c0c919742fa47dc6f4fb4a70193ffdf75091b07aa8b3b9edf5f65ef13581af36"
+    },
+    {
+      "from": "blender/exports/arandu_caravan_horse.glb",
+      "to": "blender/exports/arandu_caravan_horse.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 175440,
+      "sha256": "75ff1fac092c414972b9179c3633ba9dcea4481c5e943397a5d7f0edaf0a7105"
+    },
+    {
+      "from": "blender/exports/arandu_caravan_kit.glb",
+      "to": "blender/exports/arandu_caravan_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1191692,
+      "sha256": "5c2872b6278196d58f3480cb1d4d7e478b112e1b476c75d30cc2f417b48ad823"
+    },
+    {
+      "from": "blender/exports/arandu_cave_fall.glb",
+      "to": "blender/exports/arandu_cave_fall.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 43924,
+      "sha256": "84c209d61cdc5916b47840260872f0ae6ed0ea53f16bb396620be91d917d48e1"
+    },
+    {
+      "from": "blender/exports/arandu_cave_hideout.glb",
+      "to": "blender/exports/arandu_cave_hideout.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 280108,
+      "sha256": "5333ce2d1c70271fd2b2d6fa3b18aec022ee050ff8575d11ae0075b6b2412a01"
+    },
+    {
+      "from": "blender/exports/arandu_necromancer_fall.glb",
+      "to": "blender/exports/arandu_necromancer_fall.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1815028,
+      "sha256": "777975539cd380781ac7d3855bf00bd864706022056bb45f8063debb2ab36e1b"
+    },
+    {
+      "from": "blender/exports/archer_hero.glb",
+      "to": "blender/exports/archer_hero.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2455548,
+      "sha256": "43bdced62497442430a25cc874fbd8d13f161c097e5ebe72d4cb123f65d08330"
+    },
+    {
+      "from": "blender/exports/bone_shard.glb",
+      "to": "blender/exports/bone_shard.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 17988,
+      "sha256": "7c7b9e6ba4d15c1d509653f2d665cc5c20289e6275e3452c362a888397ca5863"
+    },
+    {
+      "from": "blender/exports/boss_soulWarden.glb",
+      "to": "blender/exports/legacy/boss_soulWarden.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 410824,
+      "sha256": "0617db881238b914e224353b9099854bd40c0519b582112a53084876b36cc861"
+    },
+    {
+      "from": "blender/exports/bran.glb",
+      "to": "blender/exports/bran.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3524452,
+      "sha256": "c2dddaf5a88def053ddb42f5f8dd4a23cb617213a31de0b2c8ddf7a500370395"
+    },
+    {
+      "from": "blender/exports/falcon.glb",
+      "to": "blender/exports/falcon.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 879492,
+      "sha256": "e536b0ca1b6e71458e246fd63a21ea6852fe6e0b8f7a4b633caaa82507424fef"
+    },
+    {
+      "from": "blender/exports/fallen_king_model_v2.glb",
+      "to": "blender/exports/sources/fallen_king_model_v2.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 1147692,
+      "sha256": "e1d48d899beb6a77525fd6fbeb45ed0154251faa12d87fe608d5b144f8a240e0"
+    },
+    {
+      "from": "blender/exports/fallen_king_source.glb",
+      "to": "blender/exports/sources/fallen_king_source.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 4036268,
+      "sha256": "783b3a654a795ac0fcaf6120dac197290d56709ecedef8088bdf9e69f5802b06"
+    },
+    {
+      "from": "blender/exports/fallen_king_sword_v2.glb",
+      "to": "blender/exports/sources/fallen_king_sword_v2.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 1044016,
+      "sha256": "08b950ea7d1c21b26591d5c4277861b5b1ac091097b5f0b546f0f9e319a048a0"
+    },
+    {
+      "from": "blender/exports/flora_druid.glb",
+      "to": "_to_delete/blender-models/exports/flora_druid.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1189432,
+      "sha256": "3fdae708fbaf8057204c806fedb23ce34d53c620e7e06dc8351875472a4fa1e9"
+    },
+    {
+      "from": "blender/exports/flora_human_revised.glb",
+      "to": "blender/exports/flora_human_revised.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1902292,
+      "sha256": "d66b107ef23eedf01b0f3d3f0c607b9d0b6cdfbf6335cfe59a96917fb47a1810"
+    },
+    {
+      "from": "blender/exports/flora_tripo_druid.glb",
+      "to": "_to_delete/blender-models/exports/flora_tripo_druid.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1932192,
+      "sha256": "d171a3fab0f3715b24944736d17d54ba7fd398a5f7cca837e093130eabb11aa1"
+    },
+    {
+      "from": "blender/exports/flora_tripo_druid_t.glb",
+      "to": "_to_delete/blender-models/exports/flora_tripo_druid_t.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1923556,
+      "sha256": "4009f625100bdcaf634bcf802a1e82427be3715eeefe968f7515db9eab1be190"
+    },
+    {
+      "from": "blender/exports/flora_tripo_wolf.glb",
+      "to": "_to_delete/blender-models/exports/flora_tripo_wolf.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 2037356,
+      "sha256": "387b1c0dc91322d27a52938a53bae9b79d75ca622fffbc329b6ffb42fc940d52"
+    },
+    {
+      "from": "blender/exports/flora_werewolf.glb",
+      "to": "_to_delete/blender-models/exports/flora_werewolf.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 818876,
+      "sha256": "3f782bb15ed804a0299c984f516bdcd05aaf351a3a57c18a8bfcd898d35f8728"
+    },
+    {
+      "from": "blender/exports/flora_wolf_dynamic.glb",
+      "to": "blender/exports/flora_wolf_dynamic.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2008428,
+      "sha256": "cf675dbd71ffd94b5a68a8cdde154c1b8d50157fa33df3d1822f1b458b5b7bfc"
+    },
+    {
+      "from": "blender/exports/flora_wolf_revised.glb",
+      "to": "_to_delete/blender-models/exports/flora_wolf_revised.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 2011380,
+      "sha256": "42f2503087bdcb9dd1b2a101ab6721e4bf3e776de877d1ce0a89bb8db52d404e"
+    },
+    {
+      "from": "blender/exports/lab_fallen_king_v4.glb",
+      "to": "blender/exports/lab_fallen_king_v4.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2700676,
+      "sha256": "6045be8069de506d84a4a3c601348af7304f870ddbe6de0c9e268e577cb585a7"
+    },
+    {
+      "from": "blender/exports/lab_player_current.glb",
+      "to": "blender/exports/sources/lab_player_current.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 1999672,
+      "sha256": "6e092a500458c589467d3bd209d00348bc0a5e7c5fd7418de1e4f57287ee64bf"
+    },
+    {
+      "from": "blender/exports/lowpoly_bram.glb",
+      "to": "_to_delete/blender-models/exports/lowpoly_bram.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 340252,
+      "sha256": "bd57b97dccb186f7d9528c689a4e8455aaf8e2b27fe9a4c4e9d1b4732c9c7dca"
+    },
+    {
+      "from": "blender/exports/lowpoly_earcher.glb",
+      "to": "blender/exports/lowpoly_earcher.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 321784,
+      "sha256": "29d8e0712d33ad07740c732e52c4ee27b3fbfeddde90bf646913bdf263ce1009"
+    },
+    {
+      "from": "blender/exports/lowpoly_zombie.glb",
+      "to": "blender/exports/lowpoly_zombie.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 357676,
+      "sha256": "734de8980def0cfbbb1df37b92b1795af6d689b155cdfa030d368fe1ff889bf7"
+    },
+    {
+      "from": "blender/exports/mage_hero.glb",
+      "to": "_to_delete/blender-models/exports/mage_hero.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 1750672,
+      "sha256": "d6dfd766ff2c2840ea1282017de5fb79905192ba083fdc6d49bdf1331c95f36c"
+    },
+    {
+      "from": "blender/exports/mage_hero_t.glb",
+      "to": "blender/exports/mage_hero_t.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3440848,
+      "sha256": "8178ce85418e20e7d441d23b76ea17a1ec23a0dbe7608b7056e27d1c46567ff1"
+    },
+    {
+      "from": "blender/exports/mercenary.glb",
+      "to": "blender/exports/mercenary.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2356456,
+      "sha256": "88c2d06b619302e1081cbaaa6f09d41a21149fdc8fa539158e50f80ddf3bc838"
+    },
+    {
+      "from": "blender/exports/mob_archer.glb",
+      "to": "blender/exports/legacy/mob_archer.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 301276,
+      "sha256": "50bf1bebcd889a03cb891092acda3277c0249028e7aba6a77ec40e7d6b1f54f4"
+    },
+    {
+      "from": "blender/exports/mob_cryptHound.glb",
+      "to": "blender/exports/legacy/mob_cryptHound.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 294156,
+      "sha256": "30ac9cf614ba08ee1166104f2e0b4208f006af5419927e679af592ab17a0faeb"
+    },
+    {
+      "from": "blender/exports/mob_skeleton.glb",
+      "to": "blender/exports/legacy/mob_skeleton.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 263052,
+      "sha256": "9a49b075cb66860d1722b7d350e07165918860c4643f83d10bbf7622329da9f6"
+    },
+    {
+      "from": "blender/exports/mob_specter.glb",
+      "to": "blender/exports/mob_specter.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 171248,
+      "sha256": "2f2753020c70ab77511e4d9c389cc92fd260c5fabaea7050857bb267e758ef35"
+    },
+    {
+      "from": "blender/exports/mob_warAcolyte.glb",
+      "to": "blender/exports/mob_warAcolyte.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 233136,
+      "sha256": "2871d82b135a5c2a3e93610a1f0099a5720b64bbebda2fb1c1726116e3a979fa"
+    },
+    {
+      "from": "blender/exports/mob_zombie.glb",
+      "to": "blender/exports/legacy/mob_zombie.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 198376,
+      "sha256": "9a2c879ed58490688effad162ba55070e77c5220c48f29cde0bda10d8b181138"
+    },
+    {
+      "from": "blender/exports/necromancer_1.glb",
+      "to": "blender/exports/sources/necromancer_1.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 639744,
+      "sha256": "704abb56d99a42320df8c3ab19cb35731b5b6ee170d79c156013b13fb7cdbda1"
+    },
+    {
+      "from": "blender/exports/necromante.glb",
+      "to": "blender/exports/legacy/necromante.glb",
+      "category": "legacy",
+      "reason": "Fonte do pipeline Canvas 2D e seus renderizadores; mantida separada da v2.",
+      "bytes": 273448,
+      "sha256": "5cb1b2ae847f1da417b64074ce3789e0deeedf635bab6eae693339f25b4e26b6"
+    },
+    {
+      "from": "blender/exports/purple_hooded_mage.glb",
+      "to": "blender/exports/sources/purple_hooded_mage.glb",
+      "category": "source",
+      "reason": "Entrada de geração, rig editável de base ou laboratório ainda utilizado.",
+      "bytes": 2376596,
+      "sha256": "1fa60c8a0b2b9a51e01b6eaed4453d95dc2281f8109ce1e787714289681740fc"
+    },
+    {
+      "from": "blender/exports/siege_bone.glb",
+      "to": "blender/exports/siege_bone.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 38036,
+      "sha256": "57b349eec9d9e758cf86c92227ae02ececdddf41c0e295eff0ec7da52a15ee43"
+    },
+    {
+      "from": "blender/exports/siege_core.glb",
+      "to": "blender/exports/siege_core.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 21356,
+      "sha256": "2c0f39ac47a81ab113c2f9a2836e9197dc358592967cd7b101892dd42e1573c1"
+    },
+    {
+      "from": "blender/exports/siege_crypt.glb",
+      "to": "blender/exports/siege_crypt.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 27776,
+      "sha256": "9834759d95a76004fb44f2a656f52abef382a4f03684bb75979036e999faf192"
+    },
+    {
+      "from": "blender/exports/siege_frost.glb",
+      "to": "blender/exports/siege_frost.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 18440,
+      "sha256": "ca3c46da1d354d0984a03bc36342b4cb8fbf653b8e329cf3f2b2e42ba9bca2c0"
+    },
+    {
+      "from": "blender/exports/siege_plague.glb",
+      "to": "blender/exports/siege_plague.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 57644,
+      "sha256": "e5b86b203b3689b65da880d786ddfa84eaf6c23121be7e7b209de3574142e2e8"
+    },
+    {
+      "from": "blender/exports/stylized_bram.glb",
+      "to": "blender/exports/stylized_bram.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 432716,
+      "sha256": "df8adeb3a603cd693740b9b0435ffd219b212910fae5da41fdd9b95fbedd1448"
+    },
+    {
+      "from": "blender/exports/stylized_lysa.glb",
+      "to": "blender/exports/stylized_lysa.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 354476,
+      "sha256": "4ee0b48499ffe555ae2b7a2d493cdb8335249e0220689f17a4b417bfbbc924d8"
+    },
+    {
+      "from": "blender/exports/stylized_merchant.glb",
+      "to": "blender/exports/stylized_merchant.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 345208,
+      "sha256": "4a74ab6ae18bd55bc4547bebe4aaefc2297595044024e6fa0f86a6ad32e113c9"
+    },
+    {
+      "from": "blender/exports/stylized_tilda.glb",
+      "to": "blender/exports/stylized_tilda.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 366976,
+      "sha256": "ca8667e5992e82d18dbb44d0a5132fde0d926877bf705fb3e0bc39d53016eb3e"
+    },
+    {
+      "from": "blender/exports/stylized_zephyr.glb",
+      "to": "_to_delete/blender-models/exports/stylized_zephyr.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 168452,
+      "sha256": "b91eeda3868e55824e7388e8009aadd8df5c39156c151c55006b778b6db4a9d1"
+    },
+    {
+      "from": "blender/exports/v2_abomination.glb",
+      "to": "blender/exports/v2_abomination.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 357540,
+      "sha256": "e4cbeb589653efff4ebd9d386ac0c9b8731737fd5f05e40a57a3029dd5fddb13"
+    },
+    {
+      "from": "blender/exports/v2_bone.glb",
+      "to": "blender/exports/v2_bone.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 16676,
+      "sha256": "5af3f7ec43ede930e9d5fbf033585ab6f77a2472d00078661347e97a4bfefcc5"
+    },
+    {
+      "from": "blender/exports/v2_crypt_architecture.glb",
+      "to": "blender/exports/v2_crypt_architecture.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1256140,
+      "sha256": "fd703c4300909fdf71b170402ac0e4bc545ec1064ead6d7cf8b7b9867fe5a195"
+    },
+    {
+      "from": "blender/exports/v2_enemy_griffin.glb",
+      "to": "blender/exports/v2_enemy_griffin.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1596192,
+      "sha256": "3bbb56e8a12e060f0d4f4d56ecceb0637d1067ab8c0c07b2a88b9d2f4e6fc0c8"
+    },
+    {
+      "from": "blender/exports/v2_enemy_knight.glb",
+      "to": "blender/exports/v2_enemy_knight.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3419556,
+      "sha256": "2174307aeac5f097f81870ae0da071b7b24ac45500d719d39502dc93511961c8"
+    },
+    {
+      "from": "blender/exports/v2_enemy_mage.glb",
+      "to": "blender/exports/v2_enemy_mage.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2333952,
+      "sha256": "09ffc39f0a81e699bef60d5b01aaaa33104e727c3049700e1e4ee96d1c146b69"
+    },
+    {
+      "from": "blender/exports/v2_enemy_orc.glb",
+      "to": "blender/exports/v2_enemy_orc.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2536108,
+      "sha256": "f6be0b611e53f19d8de3015363eb3147dffaf0a072dea9d5f2ad7c2a1a619caa"
+    },
+    {
+      "from": "blender/exports/v2_enemy_rogue.glb",
+      "to": "blender/exports/v2_enemy_rogue.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2433784,
+      "sha256": "49ca0be5c2a1ffeff7f56d0db323a5abcfb26678e3786aae45a040e6ef0b1205"
+    },
+    {
+      "from": "blender/exports/v2_enemy_spider.glb",
+      "to": "blender/exports/v2_enemy_spider.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1115368,
+      "sha256": "e02611bfe7b8ca5844dda179d6e95c2869d41554195e753d911c464a168fcbff"
+    },
+    {
+      "from": "blender/exports/v2_enemy_thief.glb",
+      "to": "blender/exports/v2_enemy_thief.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 2163276,
+      "sha256": "a40091ae73c9d6f2010a344aad612747ccf52edcd58a40ab4f4ba2316111a67f"
+    },
+    {
+      "from": "blender/exports/v2_enemy_wolf.glb",
+      "to": "blender/exports/v2_enemy_wolf.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1326580,
+      "sha256": "9d99f86fee113fc804747e34519c28b6c795b546f14564481f76068fe6e4afb6"
+    },
+    {
+      "from": "blender/exports/v2_flesh_shield.glb",
+      "to": "blender/exports/v2_flesh_shield.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 89656,
+      "sha256": "58d995e882ae84d6ccda6a6814f33353086d9a93690d2fc8810b0fcfa0bf3e92"
+    },
+    {
+      "from": "blender/exports/v2_fort_kit.glb",
+      "to": "blender/exports/v2_fort_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 832292,
+      "sha256": "476a4cde6a118086433b1c4e7db8d5102ee632768e7f4201ebe2d583e6b196a8"
+    },
+    {
+      "from": "blender/exports/v2_harpy_feather.glb",
+      "to": "blender/exports/v2_harpy_feather.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 17356,
+      "sha256": "ae3f6260c9787ec1b7a3e29a0c0a2dd5bcd0b33e8b55f813738b2e8c100739df"
+    },
+    {
+      "from": "blender/exports/v2_lich.glb",
+      "to": "blender/exports/v2_lich.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 3553524,
+      "sha256": "4f353b9870ed800cb69cde2ff5975a23732baac75a2838c875d73d92eef13393"
+    },
+    {
+      "from": "blender/exports/v2_lich_scythe.glb",
+      "to": "blender/exports/v2_lich_scythe.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1183156,
+      "sha256": "1e5eaca0de5c8648cd178b68f49aba659796abf034d765b7a92c48847ff50dec"
+    },
+    {
+      "from": "blender/exports/v2_map_kit.glb",
+      "to": "blender/exports/v2_map_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1158148,
+      "sha256": "cbf1b40dfc63f461f0489fab3ec2753c126f74b1b8f4ee2de12d53f8b083526f"
+    },
+    {
+      "from": "blender/exports/v2_medieval_village.glb",
+      "to": "blender/exports/v2_medieval_village.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 6199364,
+      "sha256": "b0deebbbddef8795d03393a0bc32170f1e1ee306c07a4299a0aa04aca182ccf0"
+    },
+    {
+      "from": "blender/exports/v2_nature_kit.glb",
+      "to": "blender/exports/v2_nature_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 78588,
+      "sha256": "0cb092b6ba4a613496f34502b55b38c99a294c0c7ffc5dbcf173017d13f6a318"
+    },
+    {
+      "from": "blender/exports/v2_necromancer.glb",
+      "to": "blender/exports/v2_necromancer.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1764684,
+      "sha256": "8c28d1f08cfda509052e0c9328c9ae7751bcf2ac5fae774f19243115864cefab"
+    },
+    {
+      "from": "blender/exports/v2_ruined_village_kit.glb",
+      "to": "blender/exports/v2_ruined_village_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 689428,
+      "sha256": "3fa79ce67eb23f9e7deeacd8b7e638d376b1210733c51c5cbfc5c89ba69da850"
+    },
+    {
+      "from": "blender/exports/v2_swamp_kit.glb",
+      "to": "blender/exports/v2_swamp_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 82312,
+      "sha256": "c786c8d8894da7d5d2ad5e33bb3bab04d9d3575df975242c1b279965201acd7d"
+    },
+    {
+      "from": "blender/exports/v2_village_kit.glb",
+      "to": "blender/exports/v2_village_kit.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 689552,
+      "sha256": "8f414747c3667445a29bdabd364bba5cf0ba35f469edadbc6cc88bb8457452c9"
+    },
+    {
+      "from": "blender/exports/villager_bram.glb",
+      "to": "_to_delete/blender-models/exports/villager_bram.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 325212,
+      "sha256": "d3b5f39907ce0d350a81f4350aab56653a41420dfbbeee61f326946bf327b603"
+    },
+    {
+      "from": "blender/exports/villager_lysa.glb",
+      "to": "_to_delete/blender-models/exports/villager_lysa.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 302904,
+      "sha256": "8f04d33e3df509d29c9417dbfbc39d4bd1d95d7d1c7518fc349db00d9c415ad5"
+    },
+    {
+      "from": "blender/exports/villager_merchant.glb",
+      "to": "_to_delete/blender-models/exports/villager_merchant.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 303264,
+      "sha256": "3d7a5edf082638bee4bbc624be14259b920aa699a4ca3923674aca77911d5179"
+    },
+    {
+      "from": "blender/exports/villager_tilda.glb",
+      "to": "_to_delete/blender-models/exports/villager_tilda.glb",
+      "category": "retired",
+      "reason": "Versão substituída, estudo ou export sem consumo atual identificado.",
+      "bytes": 318240,
+      "sha256": "7b42d9054a1cf4b8740d2f54d75a241a84e03c573d9910f23a8e2825ad277e1b"
+    },
+    {
+      "from": "blender/exports/warrior.glb",
+      "to": "blender/exports/warrior.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 1079252,
+      "sha256": "b29bfa92daed79af79c1c39e92065f71c2b5a09ebb90a1e39662ab1595878c0f"
+    },
+    {
+      "from": "blender/exports/warrior_shield.glb",
+      "to": "blender/exports/warrior_shield.glb",
+      "category": "current",
+      "reason": "Modelo registrado na v2, cena editável correspondente ou fonte do HUD atual.",
+      "bytes": 267340,
+      "sha256": "21ca577defe8136ea79f26696c1f7fe621853a6349d1dfa6e2d1eb309df0d326"
+    }
+  ]
+}

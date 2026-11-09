@@ -9,7 +9,7 @@ for(const name of ['three.core','three.module','BufferGeometryUtils','GLTFLoader
  modules[key]='data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 }
 const assets={};
-const sources={necromante:'exports/lab_player_current.glb',mob_skeleton:'reference/skeleton.glb',mob_zombie:'exports/lowpoly_zombie.glb',fallen_king:'exports/lab_fallen_king_v4.glb'};
+const sources={necromante:'exports/sources/lab_player_current.glb',mob_skeleton:'reference/skeleton.glb',mob_zombie:'exports/lowpoly_zombie.glb',fallen_king:'exports/lab_fallen_king_v4.glb'};
 for(const [name,file] of Object.entries(sources)) assets[name]=fs.readFileSync(path.join(root,'../../blender',file)).toString('base64');
 let html=fs.readFileSync(path.join(root,'template.html'),'utf8');
 html=html.replace('<!--IMPORTS-->', '<script type="importmap">'+JSON.stringify({imports:modules})+'</script>');

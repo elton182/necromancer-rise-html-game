@@ -5,7 +5,9 @@ export default {
     "skeleton",
     "archer",
     "specter",
-    "abom"
+    "abom",
+    "caoZumbi",
+    "mages"
   ],
   "defs": {
     "zombie": {
@@ -68,6 +70,43 @@ export default {
       "unlockLv": 1,
       "spCost": 40,
       "fuse": true
+    },
+    "caoZumbi": {
+      "emoji": "🐕",
+      "name": "Cão Zumbi",
+      "hp": 70,
+      "dmg": 10,
+      "spd": 4.4,
+      "atkR": 1.4,
+      "atkRate": 0.9,
+      "col": 10338152,
+      "unlockLv": 12,
+      "spCost": 20,
+      "model": "cryptHound",
+      "tint": "#9dbf68",
+      "scale": 0.9,
+      "v2": true,
+      "hpKey": "Vida dos Cães Zumbis",
+      "dmgKey": "Dano dos Cães Zumbis"
+    },
+    "mages": {
+      "emoji": "🧙",
+      "name": "Esqueleto Mago",
+      "hp": 40,
+      "dmg": 12,
+      "spd": 3,
+      "atkR": 7.5,
+      "atkRate": 1.6,
+      "col": 11898111,
+      "unlockLv": 6,
+      "spCost": 30,
+      "model": "skeleton",
+      "tint": "#b58cff",
+      "scale": 1,
+      "ranged": true,
+      "v2": true,
+      "hpKey": "Vida dos Magos",
+      "dmgKey": "Dano dos Magos"
     }
   },
   "costs": {
@@ -75,7 +114,9 @@ export default {
     "skeleton": 30,
     "archer": 30,
     "specter": 45,
-    "abom": 25
+    "abom": 25,
+    "caoZumbi": 20,
+    "mages": 30
   },
   "tuning": {
     "boltMultiplier": 0.5,
@@ -154,6 +195,22 @@ export default {
       "passive": "abom_slam",
       "ability": "Salto com impacto",
       "cooldown": 8
+    },
+    "caoZumbi": {
+      "name": "Cães Zumbis",
+      "icon": "🐕",
+      "summon": true,
+      "passive": "caoZumbi",
+      "ability": "Caçada",
+      "cooldown": 6
+    },
+    "mages": {
+      "name": "Esqueletos Magos",
+      "icon": "🧙",
+      "summon": true,
+      "passive": "mages",
+      "ability": "Descarga Sombria",
+      "cooldown": 7
     }
   },
   "passives": {
@@ -197,6 +254,20 @@ export default {
       "cooldown": 10,
       "color": "#aac679",
       "desc": "Ruge contra quem está perto: 100% de dano a até 3 u e 35% de lentidão por 2 s (chefes só sofrem o dano)."
+    },
+    "caoZumbi": {
+      "name": "Mordida Feroz",
+      "icon": "🦷",
+      "cooldown": 6,
+      "color": "#9dbf68",
+      "desc": "Morde o alvo com 160% de dano. O Cérbero morde todos à frente (cone de 100°, até 1,9 u)."
+    },
+    "mages": {
+      "name": "Orbe Sombrio",
+      "icon": "✦",
+      "cooldown": 7,
+      "color": "#b58cff",
+      "desc": "Orbe pesado: 180% de dano no alvo e 60% em quem estiver a até 1,5 u dele."
     }
   },
   "revive": 12

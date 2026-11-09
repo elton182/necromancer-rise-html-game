@@ -4,6 +4,11 @@
 -- sheets: oito direções da cena salva. Sem argumentos: preview e sheets.
 Os assets necromante.blend/glb e o jogo distribuído permanecem independentes.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import math, sys, json, time
 import bpy
@@ -231,7 +236,7 @@ def main():
     args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
     for folder in ['models','previews','frames','spritesheets','logs']:(BASE/folder).mkdir(exist_ok=True)
     if 'sheets' in args or 'poses' in args or 'beauty' in args:
-        bpy.ops.wm.open_mainfile(filepath=str(BASE/'models'/f'{NAME}.blend'))
+        bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models'/f'{NAME}.blend')))
         C.ARM=bpy.data.objects[RIG];sc=bpy.context.scene;cam=sc.camera;ground=bpy.data.objects['Chao somente apresentacao']
         if 'poses' in args:poses(sc,cam,ground);return
         if 'beauty' in args:
@@ -243,7 +248,7 @@ def main():
         # Preservar a saturação violeta da referência, com as mesmas luzes suaves.
         sc.view_settings.view_transform='Standard';sc.view_settings.look='None';sc.view_settings.exposure=-.7
         sc['art_direction']='Necromante violeta: estudo facetado baseado na referencia do usuario, PBR Cycles.'
-        bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models'/f'{NAME}.blend'))
+        bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models'/f'{NAME}.blend')))
         render_image(sc,BASE/'previews'/f'{NAME}.png')
         ground.hide_render=False;sc.render.film_transparent=False;render_image(sc,BASE/'previews'/f'{NAME}_beauty.png')
         ground.hide_render=True;sc.render.film_transparent=True

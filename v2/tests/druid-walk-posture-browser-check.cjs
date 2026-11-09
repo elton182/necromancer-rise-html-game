@@ -2,7 +2,7 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
 (async()=>{
- const dir=path.resolve(__dirname,'../../review/v2/druid-walk-posture');fs.mkdirSync(dir,{recursive:true});
+ const dir=path.resolve(__dirname,process.env.NR_DRUID_REVIEW_DIR||'../../review/v2/druid-walk-posture');fs.mkdirSync(dir,{recursive:true});
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
   const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[];

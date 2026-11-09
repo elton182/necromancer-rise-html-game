@@ -2,7 +2,7 @@
 // árvore pela interface, Bola de Fogo, Rajada de Gelo, Teleporte, Meteoro, inventário arcano, sons,
 // chão claro e qualidade baixa. Requer Playwright e Edge com WebGL 2 (perfil isolado). Evidências em review/v2/mage/.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
-const dir=path.resolve(__dirname,'../../review/v2/mage');
+const dir=path.resolve(__dirname,process.env.NR_MAGE_REVIEW_DIR||'../../review/v2/mage');
 const shot=async(page,name)=>{for(let i=0;i<3;i++){try{await page.screenshot({path:path.join(dir,name)});return;}catch(e){if(i===2)throw e;await page.waitForTimeout(300);}}};
 (async()=>{fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true});try{
  const ctx=await browser.newContext({viewport:{width:1440,height:900}}),page=await ctx.newPage(),errors=[],remote=[],checks=[];
@@ -38,7 +38,9 @@ const shot=async(page,name)=>{for(let i=0;i<3;i++){try{await page.screenshot({pa
   await reset();const before=await damage();assert.ok(await page.evaluate(i=>NecromancerV2.slot(i),slot),name+' iniciou');
   await page.waitForFunction(until,null,{timeout:6000});await page.evaluate(()=>{NecromancerV2.world.paused=true;});
   await page.waitForTimeout(250);await shot(page,name+'.png');await page.evaluate(()=>{NecromancerV2.world.paused=false;});
-  await page.waitForFunction(()=>{const w=NecromancerV2.world;return !w.marksmanAction&&!w.marksmanShots.length&&!w.marksmanZones.length;},null,{timeout:8000});
+  // Meteoro: a bola de fogo no meio da queda (antes) e o chão em chamas (depois do impacto).
+  if(name==='meteor'){await page.waitForFunction(()=>NecromancerV2.world.marksmanZones.some(z=>z.kind==='fire'&&NecromancerV2.world.time>z.until-2.4),null,{timeout:6000});await page.evaluate(()=>{NecromancerV2.world.paused=true;});await page.waitForTimeout(250);await shot(page,'meteor-burning.png');await page.evaluate(()=>{NecromancerV2.world.paused=false;});}
+  await page.waitForFunction(()=>{const w=NecromancerV2.world;return !w.marksmanAction&&!w.marksmanShots.length&&!w.marksmanZones.length;},null,{timeout:10000});
   await page.waitForTimeout(150);return (await damage())-before;
  }
  assert.ok(await frozen('fireball',1,()=>NecromancerV2.world.effects.some(e=>e.fx==='groundBreak'))>0,'Bola de Fogo causa dano');
@@ -47,7 +49,7 @@ const shot=async(page,name)=>{for(let i=0;i<3;i++){try{await page.screenshot({pa
  await frozen('blink',4,()=>NecromancerV2.world.marksmanAction?.released);
  const end=await page.evaluate(()=>NecromancerV2.world.player);assert.ok(start.y-end.y>4,'Teleporte avança na direção da mira');
  await page.evaluate(()=>{const p=NecromancerV2.world.player;p.y+=6;});
- assert.ok(await frozen('meteor',5,()=>NecromancerV2.world.effects.some(e=>e.fx==='groundBreak'))>0,'Meteoro causa dano');
+ assert.ok(await frozen('meteor',5,()=>NecromancerV2.world.effects.some(e=>e.fx==='meteor'&&e.time>e.duration*.55))>0,'Meteoro causa dano');
  checks.push('Bola de Fogo','Rajada de Gelo','Teleporte','Meteoro');
  // Inventário arcano: cajado e grimório no boneco, modelo do Mago.
  await page.evaluate(()=>NecromancerV2.ui.show('equipment'));await page.waitForSelector('.inv-model[data-drawn="true"]',{timeout:20000});

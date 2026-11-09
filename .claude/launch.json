@@ -12,6 +12,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/combat-lab-server.js"],
       "port": 4173
+    },
+    {
+      "name": "skill-tree-editor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tools/skill-tree-editor-server.cjs"],
+      "port": 4178
     }
   ]
 }

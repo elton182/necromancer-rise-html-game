@@ -35,6 +35,11 @@ test('arco e paredes impedem acertos; estocada para antes do obstáculo',()=>{co
 test('estocada atinge com a ponta e escudo empurra com custo único',()=>{const w=field(),e=enemy(w,7);w.aim={x:7,y:0};const mp=w.player.mp;assert.ok(warriorAction(w,1));assert.equal(w.player.mp,mp-20);assert.equal(warriorAction(w,1),false);tickWarrior(w,.8);assert.ok(e.hp<1000);assert.ok(Math.abs(e.x-w.player.x-2.2)<1e-6);const v=field(),f=enemy(v,1);warriorAction(v,2);tickWarrior(v,.8);assert.ok(f.x>1);});
 test('passivas não acumulam em recálculos e não curam; saves antigos e classe persistem',()=>{const w=field();w.player.hp=w.player.maxHp/2;w.warriorRanks={strength:1,vitality:1,armor:1};w.level=3;applyAttributes(w);const a={hp:w.player.hp,max:w.player.maxHp,damage:w.player.damage,def:w.player.defense};applyAttributes(w);assert.deepEqual({hp:w.player.hp,max:w.player.maxHp,damage:w.player.damage,def:w.player.defense},a);assert.ok(w.player.hp<=w.player.maxHp/2+1);assert.equal(freshSave().character.classId,'necromancer');const value=freshSave();value.character.classId='warrior';value.character.level=3;value.character.warriorRanks={strength:1,vitality:1,armor:1};assert.deepEqual(normalizeSave(value).character.warriorRanks,normalizeWarrior(value.character.warriorRanks));});
 
+test('estocada avança até 7 u na direção da mira: alcance total de 10,4 u',()=>{
+ const w=field();w.aim={x:14,y:0};const reach=enemy(w,10.3),beyond=enemy(w,11.8); // ponta + largura da estocada (0,85 + raio do alvo)
+ assert.ok(warriorAction(w,1));advance(w,THRUST_TIMING.impact+.02);
+ assert.ok(Math.abs(w.player.x-7)<1e-6,'avançou 7 u');assert.ok(reach.hp<1000);assert.equal(beyond.hp,1000);
+});
 test('estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo',()=>{
  const w=field(),crossed=enemy(w,1,.7),tip=enemy(w,8,.8),outside=enemy(w,4,1.3),behind=enemy(w,-2);
  assert.ok(warriorAction(w,1));advance(w,THRUST_TIMING.impact-.01);

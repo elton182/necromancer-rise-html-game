@@ -1,0 +1,30 @@
+[
+  {
+    "path": "blender/models/sources/boss_fallenKing_v3_teste.blend",
+    "objects": 4
+  },
+  {
+    "path": "blender/models/sources/flora_tripo_druid_t.blend",
+    "objects": 3
+  },
+  {
+    "path": "blender/models/sources/flora_tripo_wolf.blend",
+    "objects": 2
+  },
+  {
+    "path": "blender/models/sources/mage_hero.blend",
+    "objects": 3
+  },
+  {
+    "path": "blender/models/sources/mage_hero_t_source.blend",
+    "objects": 3
+  },
+  {
+    "path": "blender/models/sources/rigged_player.blend",
+    "objects": 7
+  },
+  {
+    "path": "blender/models/sources/v2_imported_enemies_review.blend",
+    "objects": 20
+  }
+]

@@ -1,4 +1,9 @@
 """Exporta os rigs revisados da sessão MCP sem salvar sobre o arquivo aberto."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy,json
 BASE=Path(__file__).resolve().parents[1]
@@ -23,12 +28,12 @@ for arm in [o for o in review.objects if o.type=='ARMATURE' and o.get('enemy_cha
         bpy.ops.object.select_all(action='DESELECT')
         for obj in objects:obj.select_set(True)
         bpy.context.view_layer.objects.active=arm
-        bpy.ops.export_scene.gltf(filepath=str(BASE/'exports'/f'v2_enemy_{character}.glb'),export_format='GLB',use_selection=True,use_active_scene=True,export_animation_mode='NLA_TRACKS',export_skins=True,export_yup=True,export_force_sampling=True)
+        bpy.ops.export_scene.gltf(filepath=asset_path(str(BASE/'exports'/f'v2_enemy_{character}.glb')),export_format='GLB',use_selection=True,use_active_scene=True,export_animation_mode='NLA_TRACKS',export_skins=True,export_yup=True,export_force_sampling=True)
         # Save with idle as opening pose. NLA tracks retain all actions as dependencies.
         for track in tracks:track.mute=True
         arm.animation_data.action=actions['idle'];arm.animation_data.action_slot=actions['idle'].slots[0]
         temp.frame_set(1)
-        bpy.data.libraries.write(str(BASE/'models'/f'v2_enemy_{character}.blend'),{temp,*actions.values()},fake_user=True)
+        bpy.data.libraries.write(asset_path(str(BASE/'models'/f'v2_enemy_{character}.blend')),{temp,*actions.values()},fake_user=True)
         print('REFINED_EXPORT',character)
     finally:
         for track in tracks:arm.animation_data.nla_tracks.remove(track)
@@ -36,4 +41,4 @@ for arm in [o for o in review.objects if o.type=='ARMATURE' and o.get('enemy_cha
         if previous_slot:arm.animation_data.action_slot=previous_slot
         arm.location=previous_location;bpy.context.window.scene=review
         bpy.data.scenes.remove(temp)
-bpy.data.libraries.write(str(BASE/'models/v2_imported_enemies_review.blend'),{review},fake_user=True)
+bpy.data.libraries.write(asset_path(str(BASE/'models/v2_imported_enemies_review.blend')),{review},fake_user=True)

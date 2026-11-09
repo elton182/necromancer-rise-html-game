@@ -13,12 +13,12 @@ chão claro/escuro, qualidade alta/baixa e reinício.
 - Three.js 0.180.0, licença MIT em `vendor/LICENSE`. GLTFLoader importa modelos
   e AnimationMixer reproduz os clipes exportados. Referência:
   https://threejs.org/docs/pages/GLTFLoader.html
-- Modelos atuais: player de `blender/models/rigged_player.blend` (mago roxo
+- Modelos atuais: player de `blender/models/sources/rigged_player.blend` (mago roxo
   com cajado), `blender/reference/skeleton.glb` (espada e escudo),
   `blender/exports/lowpoly_zombie.glb` e boss de
   `blender/models/boss_fallenKing_v4.blend`.
 - `blender/scripts/export_3d_lab.py` exporta cópias animadas das cenas do
-  player e boss para `blender/exports/lab_player_current.glb` e
+  player e boss para `blender/exports/sources/lab_player_current.glb` e
   `lab_fallen_king_v4.glb`. Não salva as cenas originais. Executar com
   Blender em modo background antes de reempacotar quando essas cenas mudarem.
   Exclui a esfera auxiliar da cena do player e mantém corpo e cajado.

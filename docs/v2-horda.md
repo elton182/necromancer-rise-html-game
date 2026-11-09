@@ -11,8 +11,7 @@ continuam básicos; inimigos e Fallen King ainda usam regras de treinamento.
 ## Preparação e ações
 
 Seis slots aceitam Tiro de Osso, Dash e grupos aprendidos, sem duplicatas.
-A capacidade usa a função vigente `summonSlotCount`, limitada aos cinco tipos
-existentes. O perfil de teste equipa tiro e cinco grupos; troque um grupo por
+A capacidade usa a função vigente `summonSlotCount`, limitada a cinco grupos simultâneos. O perfil de teste equipa tiro e cinco grupos; troque um grupo por
 Dash para usá-lo. As teclas 1–6 ativam os slots; C exige Dash equipado.
 
 Preparação no menu é gratuita. Em combate, novos integrantes custam mana:
@@ -101,3 +100,9 @@ snapshot de grupos/reserva e desaparecem na troca de cena, inclusive menu.
 Validação: testes de horda, possessão, inimigos, saves e Grimório. O teste
 `node v2/tests/possession-browser-check.cjs` confere o comportamento dentro do
 HTML autocontido em Edge com Playwright; evidência em `review/v2/possession/`.
+
+## Cães Zumbis e Esqueletos Magos (08/11/2026)
+
+Os tipos exclusivos `caoZumbi` e `mages` usam o mesmo ciclo da horda: uma vaga de grupo, integrantes permanentes, ordens, regeneração, reserva, morte, reanimação manual (30 MP) e automática. Dois cães custam 20 MP cada ao equipar em combate; dois magos custam 30 MP cada. No preparo é grátis. A especialização Cérbero deixa um cão maior no grupo. O slot ativa Caçada (6 s) ou Descarga Sombria (7 s), sem mana adicional; não reinvoca os mortos. Veja os números e a arte provisória no [Grimório](v2-grimorio.md#nós-exclusivos-da-v2-vindos-do-arquivo-08112026). Não há maestrias dedicadas desses tipos.
+
+Atributos próprios seguem a escala por nível da horda e os bônus do Grimório, em vez dos antigos percentuais de Zephyr. Definições em `v2/tools/horde-source.cjs`, integração em `v2/scripts/horde.mjs`. A versão legada não muda. A verificação adicional está em `v2/tests/class-ideas.test.mjs` e `v2/tests/class-ideas-browser-check.cjs`.

@@ -92,7 +92,7 @@ async function run(browser,classId,label,name){
   const end=await page.evaluate(()=>NecromancerV2.world.player);assert.ok(end.y-start.y>3,'Recuo afasta da mira');
   await page.evaluate(()=>{const p=NecromancerV2.world.player;p.y-=4;});
   assert.ok(await frozen('rain',4,()=>NecromancerV2.world.marksmanZones[0]?.left<4)>0,'Chuva causa dano');
-  assert.ok(await frozen('fan',5,()=>NecromancerV2.world.marksmanShots.length===5&&NecromancerV2.world.marksmanShots[0].remaining<8.5)>0,'Leque causa dano');
+  assert.ok(await frozen('fan',5,()=>NecromancerV2.world.marksmanShots.length===5&&NecromancerV2.world.marksmanShots[0].remaining<8.5)>0,'Tiro Seguidor causa dano');
   // Falcão: selo pela interface não cabe no nível 1 (requer nível 2); liberado direto no mundo.
   await reset();await page.evaluate(()=>{const w=NecromancerV2.world;w.marksmanRanks.falcon=1;});
   await page.waitForFunction(()=>NecromancerV2.world.falcon&&NecromancerV2.world.falcon.state==='dive',null,{timeout:8000});
@@ -103,7 +103,7 @@ async function run(browser,classId,label,name){
   const marked=await page.evaluate(()=>{const w=NecromancerV2.world,e=w.actors.find(a=>a.team==='enemy'&&a.hp>0);w.aim={x:e.x,y:e.y};return e.id;});
   await page.keyboard.press('KeyF');await page.waitForFunction(id=>NecromancerV2.world.actors.find(a=>a.id===id)?.falconMark>NecromancerV2.world.time,marked,{timeout:5000});
   await page.waitForTimeout(150);await shot(page,classId+'-falcon-mark.png');
-  checks.push('Flecha Perfurante','Recuo','Chuva de Flechas','Leque','Falcão (automático, F e marca)');
+  checks.push('Flecha Perfurante','Recuo','Chuva de Flechas','Tiro Seguidor','Falcão (automático, F e marca)');
  }else{
   assert.ok(await frozen('volley',1,()=>NecromancerV2.world.marksmanAction?.fired>=2)>0,'Rajada causa dano');
   assert.ok(await frozen('bomb',2,()=>NecromancerV2.world.marksmanLobs[0]?.time>.3)>0,'Bomba causa dano');
@@ -115,8 +115,8 @@ async function run(browser,classId,label,name){
   await page.evaluate(()=>{NecromancerV2.world.paused=true;});await page.waitForTimeout(250);await shot(page,classId+'-mine.png');
   const before=await damage();await page.evaluate(()=>{const w=NecromancerV2.world,m=w.marksmanMines[0],e=w.actors.find(a=>a.team==='enemy');Object.assign(e,{x:m.x+1,y:m.y});w.paused=false;});
   await page.waitForFunction(()=>!NecromancerV2.world.marksmanMines.length,null,{timeout:5000});assert.ok(await damage()>before,'Mina explode');
-  assert.ok(await frozen('firebomb',5,()=>NecromancerV2.world.marksmanZones.some(z=>z.kind==='fire'&&z.next>NecromancerV2.world.time+.2))>0,'Garrafa causa dano');
-  checks.push('Rajada','Bomba','Mina','Garrafa incendiária');
+  assert.ok(await frozen('firebomb',5,()=>NecromancerV2.world.marksmanZones.some(z=>z.kind==='fire'&&z.next>NecromancerV2.world.time+.2))>0,'Molotov causa dano');
+  checks.push('Rajada','Bomba','Mina','Molotov');
  }
  // Chão claro e qualidade baixa, atirando.
  await page.evaluate(()=>{for(const [id,value] of [['ground','light'],['quality','low']]){const el=document.getElementById(id);el.value=value;el.dispatchEvent(new Event('change'));}});

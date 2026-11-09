@@ -10,6 +10,8 @@ import {initializeDruid,druidAction,tickDruid,druidPose} from './druid.mjs';
 import {isWolf,WOLF} from './druid-model.mjs';
 import {initializeMarksman,marksmanAction,tickMarksman,marksmanPose,marksmanMove} from './marksman.mjs';
 import {classInfo,isMarksman} from './class-registry.mjs';
+import {classLoadout} from './skill-loadout.mjs';
+import {initializeCompanions,tickCompanions} from './companions.mjs';
 import {RULES,initializeCombat,castBolt,beginDash,moveDash,updateProjectiles,tickRot,tickBoltCharge,dealDamage} from './combat.mjs';
 import {initializeHorde,tickHorde,POSSESSION} from './horde.mjs';
 import {applyAttributes} from './progression.mjs';
@@ -29,7 +31,7 @@ export function createWorld(options={}){
 export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearLevel=1,lootFilter='common',encounterWave=null}={}){
  if(!Number.isInteger(horde)||horde<0||horde>64)throw Error('Quantidade de aliados inválida.');
  Object.assign(w,{actors:[],effects:[],time:0,paused:false,hits:0,horde,armyMode,army:null,onAllyDeath:null,allyShots:[],command:null,castCooldown:0,arena:TRAINING_ARENA,equipment:character?.equipment||{},level:character?.level||1,gearLevel,lootFilter});
- w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.warriorCooldowns=[];w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};w.warriorStance=warriorStanceId(character?.warriorStance);w.warriorStanceReady=0;w.warriorTornadoVariant=warriorTornado(character?.warriorTornadoVariant,w.warriorRanks).id;w.warriorRally=null;w.warriorWaves=[];initializeDruid(w,character);initializeMarksman(w,character);clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];
+ w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.skillLoadout=classLoadout(w.classId,character?.skillLoadout);w.warriorCooldowns=[];w.warriorWaveReady=0;w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};w.warriorStance=warriorStanceId(character?.warriorStance);w.warriorStanceReady=0;w.warriorTornadoVariant=warriorTornado(character?.warriorTornadoVariant,w.warriorRanks).id;w.warriorRally=null;w.warriorWaves=[];initializeDruid(w,character);initializeMarksman(w,character);initializeCompanions(w);w.summonReady={};clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];
  w.siegeMenu=false;w.encounterWave=encounterWave;w.hostileShots=[];w.hostileZones=[];w.curses=null;w.lootConfig=null;w.lootLevelOf=null;
  function spawn(model,team,x,y,hp){const radius=model==='necromancer'?.45:model==='fallenKing'?.48:team==='ally'?.35:.3,pos=resolvePosition({x,y},radius,w.arena);const a={id:w.nextId++,model,team,...pos,radius,hp,maxHp:hp,angle:0,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,phase:w.actors.length*2.399};w.actors.push(a);return a;}
  w.player=spawn(classInfo(w.classId).model,'player',0,4,RULES.base.hp);w.player.radius=.45;w.aim={x:0,y:-5};initializeCombat(w);initializeSpells(w);initializeLich(w);
@@ -52,11 +54,11 @@ function tick(w,dt,input){
  // Movimento relativo à tela da câmera isométrica.
  let mx=x+y,my=y-x;const length=Math.hypot(mx,my);if(length){const magnitude=Math.min(1,Math.hypot(x,y));mx=mx/length*magnitude;my=my/length*magnitude;}
  const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&!w.druidAction?.lock&&marksmanMove(w)>0&&length&&p.hp>0&&!(p.rootTime>0)){const form=(isWolf(w)?WOLF.move:1)*marksmanMove(w);const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
- tickWarrior(w,dt);tickDruid(w,dt);tickMarksman(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
+ tickWarrior(w,dt);tickDruid(w,dt);tickMarksman(w,dt);tickCompanions(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
  if(w.armyMode==='groups')tickHorde(w,dt);
  tickHostiles(w,dt);tickSiegeCombat(w,dt);w.effects=w.effects.filter(f=>!f.webRoot);for(const a of w.actors)if(a.rootTime>0&&a.hp>0)w.effects.push({id:'web-root-'+a.id,webRoot:true,x:a.x,y:a.y,radius:a.radius+.5,color:'#e3e9ec',visual:true,ground:true,fixedRadius:true,time:0,duration:10});
  for(const a of w.actors){
-  if(a.groupType)continue;
+  if(a.groupType||a.companion)continue;
   a.slowTime=Math.max(0,(a.slowTime||0)-dt);a.timer=Math.max(0,a.timer-dt);a.animationTime+=dt;a.pose=a.labPose||null;
   if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.web=null;a.rootTime=0;a.jumpZ=0;if(a===w.boss){a.king=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
   if(a.dummy||a.team==='neutral'||a.siegeGuard)continue;

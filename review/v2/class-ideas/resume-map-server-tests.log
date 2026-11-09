@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: grava, lista e apaga mapas em arquivos legíveis
+ok 1 - grava, lista e apaga mapas em arquivos legíveis
+  ---
+  duration_ms: 134.6499
+  ...
+# Subtest: recusa ids, corpo e origem inválidos, sem escapar da pasta
+ok 2 - recusa ids, corpo e origem inválidos, sem escapar da pasta
+  ---
+  duration_ms: 57.9104
+  ...
+# Subtest: só entrega o que o editor usa
+ok 3 - só entrega o que o editor usa
+  ---
+  duration_ms: 56.2403
+  ...
+# Subtest: Testar entrega o jogo com os mapas do disco e entra no mapa
+ok 4 - Testar entrega o jogo com os mapas do disco e entra no mapa
+  ---
+  duration_ms: 63.6282
+  ...
+# Subtest: arquivo de campanha inválido interrompe o build, em vez de publicar menos
+ok 5 - arquivo de campanha inválido interrompe o build, em vez de publicar menos
+  ---
+  duration_ms: 6.485
+  ...
+# Subtest: Publicar compara o disco com o jogo e roda um build por vez
+ok 6 - Publicar compara o disco com o jogo e roda um build por vez
+  ---
+  duration_ms: 303.9438
+  ...
+# Subtest: Publicar com pastas de teste nunca roda o build real
+ok 7 - Publicar com pastas de teste nunca roda o build real
+  ---
+  duration_ms: 69.1529
+  ...
+# Subtest: disco: a biblioteca lê na hora e grava só o que mudou
+ok 8 - disco: a biblioteca lê na hora e grava só o que mudou
+  ---
+  duration_ms: 11.0252
+  ...
+# Subtest: disco: várias edições seguidas gravam a última; falha avisa e tenta de novo
+ok 9 - disco: várias edições seguidas gravam a última; falha avisa e tenta de novo
+  ---
+  duration_ms: 1.3488
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 872.2271

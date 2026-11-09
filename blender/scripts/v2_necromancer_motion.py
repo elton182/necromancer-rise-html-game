@@ -1,7 +1,7 @@
-"""Refaz os clipes do necromante (v2) a partir de models/rigged_player.blend, sem alterá-lo.
+"""Refaz os clipes do necromante (v2) a partir de models/sources/rigged_player.blend, sem alterá-lo.
 
 Uso na raiz do projeto (ou na sessão Blender via MCP com rigged_player.blend aberto):
-  blender --background blender/models/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py
+  blender --background blender/models/sources/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py
 Na sessão MCP defina `PLAYER_EXPORT = False` antes para só pré-visualizar; com True (padrão) grava models/v2_necromancer.blend e exports/v2_necromancer.glb.
 O rigged_player.blend e o lab_player_current.glb continuam sendo a fonte do pipeline de sprites legado e do laboratório 3D antigo.
 Clipes (registro `necromancer` em v2/assets/models.json): idle (2 s), walk (0,667 s, ciclo de 1,5 u), strafe_left e strafe_right (0,667 s, ciclo de 1,1 u), cast (0,375 s), death (0,8 s) e dodge (0,5 s, a duração da esquiva).

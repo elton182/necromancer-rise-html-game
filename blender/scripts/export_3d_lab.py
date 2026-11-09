@@ -1,6 +1,11 @@
 """Exporta cópias para o laboratório 3D, sem salvar/alterar as cenas originais.
 blender --background --threads 4 --python blender/scripts/export_3d_lab.py
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, json, sys
 BASE = Path(__file__).resolve().parents[1]
@@ -11,7 +16,7 @@ if only and only not in {source for source, _ in models}:
 for source, target in models:
     if only and source != only:
         continue
-    bpy.ops.wm.open_mainfile(filepath=str(BASE/'models'/f'{source}.blend'))
+    bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models'/f'{source}.blend')))
     sc = bpy.context.scene
     bpy.ops.object.select_all(action='DESELECT')
     for obj in sc.objects:
@@ -28,7 +33,7 @@ for source, target in models:
                 if action.slots:
                     obj.animation_data.action_slot = action.slots[0]
     sc.frame_set(1)
-    bpy.ops.export_scene.gltf(filepath=str(BASE/'exports'/f'{target}.glb'),
+    bpy.ops.export_scene.gltf(filepath=asset_path(str(BASE/'exports'/f'{target}.glb')),
         export_format='GLB', use_selection=True, export_animation_mode='ACTIONS',
         export_skins=True, export_yup=True, export_force_sampling=True)
     print('LAB_EXPORT', json.dumps({'source': source, 'target': target,

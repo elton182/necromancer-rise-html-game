@@ -81,6 +81,22 @@ check das magias confere o XP de abates reais.
 arquivos anteriores. O snapshot preserva perfil e maestrias, junto dos estados
 dos integrantes da E5. Veja o [contrato de saves](v2-saves.md).
 
+## Nós exclusivos da v2 vindos do arquivo (08/11/2026)
+
+O Grimório estendido (`v2/scripts/full-build.mjs`) acrescenta os nós jogáveis de [docs/habilidades/arvores.json](habilidades/README.md) que o modelo compartilhado não tem, sem alterar `build-simulator/model.js` nem a versão legada. Seguem as mesmas regras de nível, 2 pontos no pré-requisito, exclusividade e orçamento. O painel posiciona os selos pelo arquivo (até três por linha).
+
+| Nó | Escola | Nível / máx. | Requisito | Efeito |
+|---|---|---|---|---|
+| Cão Zumbi | Carne | 12 / 5 | Carne Reanimada; exclui a Abominação | Grupo permanente de 2 cães; preparo grátis, 20 MP por novo cão ao equipar em combate. +10% dano e +5% vida por ponto. Caçada no slot: salto na mira, 140% do dano, recarga 6 s, sem custo adicional. |
+| Cérbero | Carne | 22 / 1 | Cão Zumbi | Um cão permanente, escala 1,45, triplo da vida e 160% do dano base. Mordida Feroz automática em cone de 100° até 1,9 u, com 160% desse dano. Arte provisória: cão maior, modelo de três cabeças pendente. |
+| Magos | Ossos | 6 / 5 | Esqueletos | Grupo permanente de 2 magos; preparo grátis, 30 MP por novo mago ao equipar em combate. Orbes a cada 1,6 s até 7,5 u; +8% dano e +5% vida por ponto. Descarga no slot: 190% do dano com estilhaço de 60% até 1,5 u, recarga 7 s, sem custo adicional. |
+| Raio Necrótico | Ossos | 12 / 3 | Magos | O orbe vira um raio instantâneo de 8 u que atravessa a linha, com 137,5% do dano do ataque do mago (+10% por ponto). |
+| Ruptura Necrótica | Ossos | 22 / 1 | Raio Necrótico | Especialização: inimigos mortos pelos magos explodem em raio 2 com 60% do dano mágico. |
+
+Cães, Cérbero e magos são tipos permanentes em `horde.mjs`: ocupam vagas, recebem ordens, regeneram e são salvos com vida, morte, recuperação e reserva. Morte comum renasce em 12 s; reanimação manual custa 30 MP. Seus atributos agora seguem a escala por nível da horda, em vez de percentuais da vida/dano de Zephyr. As definições exclusivas ficam em `v2/tools/horde-source.cjs`; a versão legada permanece igual. Ainda não têm maestrias dedicadas. O Golem de Gelo permanece temporário em `companions.mjs`.
+
+**Área das explosões:** Explosão Cadavérica e Carne Instável ganharam no arquivo o efeito "Tamanho da área de explosão", +3% por ponto. Na v2 ele aumenta o raio da explosão dos zumbis (`horde.mjs`) e da Explosão Necrótica (`spells.mjs`). A versão legada não muda.
+
 ## Fontes, verificação e retomada
 
 - [Regras e integração](../v2/scripts/grimoire.mjs),

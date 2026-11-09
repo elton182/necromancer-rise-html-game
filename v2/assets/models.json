@@ -560,8 +560,8 @@
     "requiredAnimations": []
   },
   "druid": {
-    "path": "blender/exports/flora_tripo_druid_t.glb",
-    "source": "blender/models/flora_tripo_druid_t.blend",
+    "path": "blender/exports/flora_human_revised.glb",
+    "source": "blender/scripts/flora_human_motion.py",
     "height": 2.9,
     "requiredAnimations": [
       "idle",
@@ -581,8 +581,8 @@
     "strafeStride": 1.12
   },
   "druidWolf": {
-    "path": "blender/exports/flora_tripo_wolf.glb",
-    "source": "blender/models/flora_tripo_wolf.blend",
+    "path": "blender/exports/flora_wolf_dynamic.glb",
+    "source": "blender/scripts/flora_wolf_motion.py",
     "height": 2.55,
     "requiredAnimations": [
       "idle",
@@ -657,8 +657,8 @@
     ]
   },
   "mageHero": {
-    "path": "blender/exports/mage_hero.glb",
-    "source": "blender/scripts/mage_hero.py",
+    "path": "blender/exports/mage_hero_t.glb",
+    "source": "blender/scripts/mage_hero_t.py",
     "height": 2.25,
     "requiredAnimations": [
       "idle",

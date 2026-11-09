@@ -11,6 +11,11 @@ cajado e luva direita rígidos na mão direita, luva esquerda na mão esquerda, 
 na cabeça, manto abaixo do quadril entre quadril e coxas; o restante mantém o peso original.
 Clipes in-place a 30 fps: idle, walk, strafe_left, strafe_right, cast, cast_up, dodge, death.
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import math
 import sys
@@ -34,7 +39,7 @@ for a in [a for a in bpy.data.actions if a.get('mage_hero') and a.users == 0]:
     bpy.data.actions.remove(a)
 
 before = set(bpy.data.objects)
-bpy.ops.import_scene.gltf(filepath=str(ROOT / 'reference/mage/mage_source.glb'))
+bpy.ops.import_scene.gltf(filepath=asset_path(str(ROOT / 'reference/mage/mage_source.glb')))
 new = [o for o in bpy.data.objects if o not in before]
 rig = next(o for o in new if o.type == 'ARMATURE')
 mesh = max((o for o in new if o.type == 'MESH'), key=lambda o: len(o.data.vertices))
@@ -354,12 +359,12 @@ bpy.ops.object.select_all(action='DESELECT')
 for o in (origin, rig, mesh):
     o.select_set(True)
 bpy.context.view_layer.objects.active = rig
-bpy.ops.export_scene.gltf(filepath=str(ROOT / 'exports/mage_hero.glb'), use_selection=True, export_format='GLB',
+bpy.ops.export_scene.gltf(filepath=asset_path(str(ROOT / 'exports/mage_hero.glb')), use_selection=True, export_format='GLB',
                           export_animations=True, export_animation_mode='NLA_TRACKS', export_image_format='JPEG', export_image_quality=82)
 for tr in rig.animation_data.nla_tracks:
     tr.mute = True
 rig.animation_data.action = bpy.data.actions['idle']
 scene.frame_start, scene.frame_end = 1, 61
 scene.frame_set(1)
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT / 'models/mage_hero.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(ROOT / 'models/mage_hero.blend')))
 print('Mago:', len(CLIPS), 'clipes exportados para exports/mage_hero.glb')

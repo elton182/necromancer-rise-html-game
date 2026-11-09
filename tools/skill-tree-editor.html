@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Árvores de Habilidades</title>
+<style>
+:root{
+ --bg:#f3efe7;--panel:#fffdf8;--panel-2:#f6f1e7;--line:#d9d0bf;--text:#2a2420;--muted:#76695c;--accent:#7a4fc0;--accent-2:#efe6fb;
+ --node:#fffdf8;--node-text:#2a2420;--grid:#e4dccd;--danger:#c0453a;--warn:#c98a1a;--ok:#4f9a55;--shadow:0 2px 6px rgba(60,40,20,.12);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#14121a;--panel:#1d1a24;--panel-2:#25212e;--line:#3a3446;--text:#ece6f2;--muted:#a197b0;--accent:#b18cff;--accent-2:#2d2540;
+ --node:#221e2b;--node-text:#ece6f2;--grid:#221f2a;--danger:#ff7a6b;--warn:#f0b450;--ok:#7fd086;--shadow:0 2px 8px rgba(0,0,0,.45);
+}}
+:root[data-theme="dark"]{
+ --bg:#14121a;--panel:#1d1a24;--panel-2:#25212e;--line:#3a3446;--text:#ece6f2;--muted:#a197b0;--accent:#b18cff;--accent-2:#2d2540;
+ --node:#221e2b;--node-text:#ece6f2;--grid:#221f2a;--danger:#ff7a6b;--warn:#f0b450;--ok:#7fd086;--shadow:0 2px 8px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.4 system-ui,"Segoe UI",sans-serif;display:grid;grid-template-rows:auto auto 1fr;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;white-space:nowrap}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.danger{color:var(--danger)}
+button:disabled{opacity:.45;cursor:default}
+input,select,textarea{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:5px 7px;width:100%}
+textarea{resize:vertical;min-height:58px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+header{display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:15px;margin:0 8px 0 0;letter-spacing:.02em}
+header .spacer{flex:1}
+#status{color:var(--muted);font-size:12px}
+#status.dirty{color:var(--warn)}
+.tabs{display:flex;gap:4px;align-items:center;padding:6px 12px;background:var(--panel-2);border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs .tab{border-radius:16px;padding:4px 12px;display:flex;gap:6px;align-items:center}
+.tabs .tab .dot{width:9px;height:9px;border-radius:50%}
+.tabs .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tabs .sep{width:1px;height:20px;background:var(--line);margin:0 6px}
+.tabs .tree.on{background:var(--accent-2);border-color:var(--accent);color:var(--text)}
+main{display:grid;grid-template-columns:1fr 400px;min-height:0}
+#stage{position:relative;min-width:0;min-height:0;overflow:hidden}
+#canvas{width:100%;height:100%;display:block;touch-action:none;user-select:none;cursor:grab}
+#canvas.panning{cursor:grabbing}
+#overlay-tools{position:absolute;left:10px;bottom:10px;display:flex;gap:6px;flex-wrap:wrap}
+#overlay-tools input{width:200px}
+#legend{position:absolute;right:10px;bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--muted);max-width:320px}
+#legend b{color:var(--text)}
+aside{background:var(--panel);border-left:1px solid var(--line);overflow:auto;min-height:0}
+aside .pad{padding:12px 14px 40px}
+aside h2{font-size:16px;margin:0 0 2px}
+aside h3{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+label.f{display:block;margin-bottom:8px}
+label.f>span{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+label.f small{color:var(--muted);font-size:11px}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:1px 4px 1px 9px;font-size:12px}
+.chip button{border:0;background:none;padding:0 4px;color:var(--muted)}
+.chip.exc{border-color:var(--danger)}
+.eff{display:grid;grid-template-columns:1fr 80px 28px;gap:6px;margin-bottom:6px}
+.eff button{padding:0}
+.hint{color:var(--muted);font-size:12px}
+.err{color:var(--danger);font-size:12px}
+.list{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.list .item{display:grid;grid-template-columns:28px 1fr 1fr auto;gap:6px;align-items:center;padding:6px;border-bottom:1px solid var(--line)}
+.list .item:last-child{border-bottom:0}
+.list .item input[type=color]{padding:0;height:28px;width:28px;border:0;background:none}
+.list .item .ops{display:flex;gap:2px}
+.list .item .ops button{padding:2px 6px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.stat{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.stat b{display:block;font-size:18px}
+.stat span{font-size:11px;color:var(--muted)}
+#issues{position:absolute;left:10px;top:10px;width:min(460px,calc(100% - 20px));max-height:calc(100% - 70px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);display:none}
+#issues.open{display:block}
+#issues header{position:sticky;top:0;padding:8px 10px}
+#issues .issue{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;padding:7px 10px}
+#issues .issue:hover{background:var(--panel-2)}
+#issues .lvl{font-weight:600;margin-right:6px}
+.lvl.erro{color:var(--danger)}.lvl.aviso{color:var(--warn)}.lvl.info{color:var(--muted)}
+#welcome{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 92%,transparent);display:none;place-items:center;z-index:10;padding:16px}
+#welcome.open{display:grid}
+#welcome section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 24px;max-width:560px;box-shadow:var(--shadow)}
+#welcome h2{margin-top:0}
+#welcome code{background:var(--panel-2);padding:1px 5px;border-radius:4px}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20;max-width:90vw}
+#toast.show{opacity:.95}
+#banner{display:none;padding:6px 12px;background:var(--accent-2);border-bottom:1px solid var(--line);gap:8px;align-items:center}
+#banner.open{display:flex}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;font-size:11px;background:var(--panel-2)}
+/* SVG */
+.grid-dot{fill:var(--grid)}
+.hull rect{stroke-width:1.5}
+.hull text{font-size:15px;font-weight:700}
+.hull .motto{font-size:11px;font-weight:400;fill:var(--muted)}
+.hull .grip{cursor:move}
+.edge{fill:none;stroke:var(--muted);stroke-width:2}
+.edge.exc{stroke:var(--danger);stroke-dasharray:6 5}
+.edge.sel{stroke:var(--accent);stroke-width:3.5}
+.edge-hit{fill:none;stroke:transparent;stroke-width:14;cursor:pointer}
+.node{cursor:pointer}
+.node .card{fill:var(--node);stroke-width:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.18))}
+.node.sel .card{stroke:var(--accent)!important;stroke-width:3.5}
+.node.dim{opacity:.22}
+.node.removido{opacity:.45}
+.node .name{font-size:13.5px;font-weight:700;fill:var(--node-text)}
+.node .sub{font-size:11px;fill:var(--muted)}
+.node .ico{font-size:17px;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.node .handle{fill:var(--panel);stroke:var(--muted);stroke-width:1.5;cursor:crosshair;opacity:.0;transition:opacity .12s}
+.node:hover .handle,.node.sel .handle{opacity:1}
+.node .badge-err{fill:var(--danger)}
+.node .badge-warn{fill:var(--warn)}
+.temp{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:5 4;fill:none;pointer-events:none}
+@media (max-width:820px){
+ body{overflow:auto}
+ main{grid-template-columns:1fr;grid-template-rows:60vh auto}
+ aside{border-left:0;border-top:1px solid var(--line)}
+ #legend{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+ <h1>🌳 Árvores de Habilidades</h1>
+ <button id="b-new" title="Novo nó (N)">+ Nó</button>
+ <button id="b-undo" title="Desfazer (Ctrl+Z)">↶</button>
+ <button id="b-redo" title="Refazer (Ctrl+Y)">↷</button>
+ <button id="b-layout" title="Reposiciona os nós desta árvore por ramo e pré-requisito">Organizar</button>
+ <button id="b-fit" title="Enquadrar (F)">Enquadrar</button>
+ <button id="b-issues" title="Problemas de consistência">Validar</button>
+ <span class="spacer"></span>
+ <span id="status"></span>
+ <button id="b-open" title="Abrir um arquivo arvores.json">Abrir</button>
+ <button id="b-md" title="Baixar o guia em Markdown">Exportar MD</button>
+ <button id="b-save" class="primary" title="Salvar (Ctrl+S)">Salvar</button>
+ <button id="b-theme" title="Alternar tema">◐</button>
+</header>
+<div id="banner"><span id="banner-text"></span><button id="banner-yes">Restaurar</button><button id="banner-no">Descartar</button></div>
+<nav class="tabs" id="tabs"></nav>
+<main>
+ <div id="stage">
+  <svg id="canvas" aria-label="Árvore de habilidades">
+   <defs>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle class="grid-dot" cx="1" cy="1" r="1.2"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker>
+   </defs>
+   <rect id="bg" width="100%" height="100%" fill="url(#dots)"/>
+   <g id="viewport"></g>
+  </svg>
+  <div id="issues"></div>
+  <div id="overlay-tools"><input id="search" type="search" placeholder="Buscar nome, id, descrição…"></div>
+  <div id="legend"></div>
+ </div>
+ <aside><div class="pad" id="inspector"></div></aside>
+</main>
+<div id="welcome"><section>
+ <h2>Abrir as árvores de habilidades</h2>
+ <p>O editor grava direto no repositório quando é aberto pelo servidor local, na raiz do projeto:</p>
+ <p><code>node tools/skill-tree-editor-server.cjs</code> e acesse <code>http://localhost:4178/</code></p>
+ <p>Aberto como arquivo, escolha <code>docs/habilidades/arvores.json</code> (ou arraste o arquivo para esta janela). No Chrome e no Edge, <b>Salvar</b> grava no mesmo arquivo; nos outros navegadores, baixa uma cópia.</p>
+ <div class="actions"><button class="primary" id="w-open">Abrir arvores.json</button><button id="w-draft" hidden>Continuar rascunho local</button><button id="w-empty">Começar vazio</button></div>
+ <input type="file" id="file-input" accept=".json,application/json" hidden>
+</section></div>
+<div id="toast" role="status"></div>
+<script>
+'use strict';
+// ───────────── Modelo ─────────────
+const FORMAT='necromancer-skill-trees',DRAFT_KEY='skill-tree-editor-draft',THEME_KEY='skill-tree-editor-theme';
+const W=210,H=74,SNAP=10;
+const TYPES={'ativa':'◆','evocação':'☗','passiva':'●','aperfeiçoamento':'▲','sinergia':'⇄','variante':'◇','especialização':'★'};
+const STATUS={'ideia':'#9a8fb0','planejado':'#6fa8dc','em desenvolvimento':'#e0a040','implementado':'#6fbf73','revisar':'#e06c5a','removido':'#888888'};
+const TARGETS=['próprio','direção da mira','linha à frente','cone à frente','ponto mirado','área ao redor','inimigo na mira','primeiro inimigo da linha','aliado','horda'];
+const ELEMENTS=['físico','fogo','gelo','arcano','raio','natureza','sombra','sangue','veneno','sagrado'];
+const BLANK={icon:'',status:'ideia',description:'',maxRank:1,levelReq:1,requires:[],excludes:[],binding:'',target:'',element:'',cost:null,cooldown:null,castTime:null,duration:null,range:null,radius:null,damage:'',perRank:'',effects:[],telegraph:'',decision:'',animation:'',vfx:'',sfx:'',tags:[],codeRef:'',notes:''};
+const ID_RE=/^[A-Za-z][A-Za-z0-9_]*$/;
+
+const S={doc:null,classId:null,treeId:null,sel:null,views:{},autoId:new Set(),dirty:false,mode:'none',handle:null,mtime:0,search:'',undo:[],redo:[],lastKey:null,lastTime:0,drag:null,issues:[]};
+const $=s=>document.querySelector(s);
+const cls=()=>S.doc?.classes.find(c=>c.id===S.classId);
+const tree=()=>cls()?.trees.find(t=>t.id===S.treeId);
+const nodeById=(id,c=cls())=>c?.nodes.find(n=>n.id===id);
+const selNode=()=>S.sel?.kind==='node'?nodeById(S.sel.id):null;
+const branchOf=n=>cls()?.trees.find(t=>t.id===n.tree)?.branches.find(b=>b.id===n.branch);
+const colorOf=n=>branchOf(n)?.color||'#888888';
+const fmt=v=>v==null||v===''?'':String(v).replace('.',',');
+const num=v=>{if(v==null)return null;const t=String(v).trim().replace(',','.');if(t==='')return null;const n=Number(t);return Number.isFinite(n)?n:null;};
+function uid(base,taken){let id=base,i=2;while(taken.has(id))id=base+i++;return id;}
+function slug(text){const s=(text||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);if(!s.length)return 'habilidade';const id=s.map((w,i)=>i?w[0].toUpperCase()+w.slice(1).toLowerCase():w.toLowerCase()).join('');return /^[A-Za-z]/.test(id)?id:'n'+id;}
+
+// Completa campos ausentes (arquivos antigos ou editados à mão) sem perder os existentes.
+function normalize(doc){
+ doc.format=FORMAT;doc.version??=1;doc.classes??=[];
+ for(const c of doc.classes){
+  c.trees??=[];c.nodes??=[];c.name??=c.id;c.resource??='mana';c.color??='#888888';c.description??='';c.notes??='';
+  if(!c.trees.length)c.trees.push({id:'habilidades',name:'Habilidades',branches:[]});
+  for(const t of c.trees){t.branches??=[];for(const b of t.branches){b.color??='#888888';b.motto??='';}}
+  for(const n of c.nodes){
+   for(const [k,v] of Object.entries(BLANK))if(n[k]===undefined)n[k]=Array.isArray(v)?[]:v;
+   n.type??='ativa';n.tree??=c.trees[0].id;
+   const t=c.trees.find(t=>t.id===n.tree)||c.trees[0];
+   if(!n.branch&&t.branches[0])n.branch=t.branches[0].id;
+   n.x=Number(n.x)||0;n.y=Number(n.y)||0;
+   if(!Array.isArray(n.requires))n.requires=n.requires?[n.requires]:[];
+   if(!Array.isArray(n.excludes))n.excludes=n.excludes?[n.excludes]:[];
+  }
+ }
+ return doc;
+}
+function emptyDoc(){return normalize({format:FORMAT,version:1,updated:today(),notes:'',classes:[{id:'novaClasse',name:'Nova classe',resource:'mana',color:'#7a4fc0',description:'',notes:'',trees:[{id:'habilidades',name:'Habilidades',branches:[{id:'ramo',name:'Ramo',motto:'',color:'#7a4fc0'}]}],nodes:[]}]});}
+const today=()=>new Date().toISOString().slice(0,10);
+const serialize=doc=>JSON.stringify(doc,null,1)+'\n';
+
+// ───────────── Histórico ─────────────
+function snapshot(key){
+ const now=Date.now();
+ if(key&&key===S.lastKey&&now-S.lastTime<1500){S.lastTime=now;return;}
+ S.undo.push(JSON.stringify(S.doc));if(S.undo.length>300)S.undo.shift();
+ S.redo=[];S.lastKey=key;S.lastTime=now;
+}
+function mutate(key,fn,{inspector=false,tabs=false}={}){snapshot(key);fn();touched();renderCanvas();if(inspector)renderInspector();if(tabs)renderTabs();}
+function touched(){S.dirty=true;renderStatus();saveDraft();}
+function restore(text){
+ S.doc=JSON.parse(text);
+ if(!cls())S.classId=S.doc.classes[0]?.id;
+ if(!tree())S.treeId=cls()?.trees[0]?.id;
+ if(S.sel?.kind==='node'&&!selNode())S.sel=null;
+ S.lastKey=null;touched();renderAll();
+}
+function undo(){if(!S.undo.length)return;S.redo.push(JSON.stringify(S.doc));restore(S.undo.pop());}
+function redo(){if(!S.redo.length)return;S.undo.push(JSON.stringify(S.doc));restore(S.redo.pop());}
+
+// ───────────── Rascunho, abrir e salvar ─────────────
+let draftTimer=0;
+function saveDraft(){clearTimeout(draftTimer);draftTimer=setTimeout(()=>{try{localStorage.setItem(DRAFT_KEY,JSON.stringify({at:Date.now(),doc:S.doc}));}catch{}},400);}
+function readDraft(){try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');return d?.doc?.format===FORMAT?d:null;}catch{return null;}}
+function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch{}}
+function load(doc,{mode,handle=null,mtime=0}){
+ S.doc=normalize(doc);S.mode=mode;S.handle=handle;S.mtime=mtime;S.undo=[];S.redo=[];S.dirty=false;S.sel=null;
+ S.classId=S.doc.classes.some(c=>c.id===S.classId)?S.classId:S.doc.classes[0]?.id;
+ S.treeId=cls()?.trees.some(t=>t.id===S.treeId)?S.treeId:cls()?.trees[0]?.id;
+ $('#welcome').classList.remove('open');renderAll();requestAnimationFrame(()=>fit(true));
+}
+function offerDraft(){
+ const d=readDraft();if(!d||serialize(d.doc)===serialize(S.doc))return;
+ $('#banner-text').textContent='Há um rascunho local não salvo de '+new Date(d.at).toLocaleString('pt-BR')+'.';
+ $('#banner').classList.add('open');
+ $('#banner-yes').onclick=()=>{snapshot(null);S.doc=normalize(d.doc);touched();renderAll();$('#banner').classList.remove('open');};
+ $('#banner-no').onclick=()=>{clearDraft();$('#banner').classList.remove('open');};
+}
+async function boot(){
+ try{const t=localStorage.getItem(THEME_KEY);if(t)document.documentElement.dataset.theme=t;}catch{}
+ if(location.protocol.startsWith('http')){
+  try{const r=await fetch('api/skill-trees',{cache:'no-store'});if(r.ok){const j=await r.json();load(j.doc,{mode:'server',mtime:j.mtime});toast('Aberto de '+j.file);offerDraft();return;}}catch{}
+ }
+ const draft=readDraft();$('#w-draft').hidden=!draft;
+ $('#welcome').classList.add('open');renderAll();
+}
+async function openFile(){
+ if(window.showOpenFilePicker){
+  try{const [h]=await showOpenFilePicker({types:[{description:'Árvores (JSON)',accept:{'application/json':['.json']}}]});const f=await h.getFile();loadText(await f.text(),h);return;}
+  catch(e){if(e.name==='AbortError')return;}
+ }
+ $('#file-input').click();
+}
+function loadText(text,handle=null){
+ let doc;try{doc=JSON.parse(text);}catch(e){toast('JSON inválido: '+e.message);return;}
+ if(doc.format!==FORMAT||!Array.isArray(doc.classes)){toast('Este arquivo não é um arvores.json do editor.');return;}
+ if(S.dirty&&!confirm('Descartar as alterações não salvas e abrir o arquivo?'))return;
+ load(doc,{mode:'file',handle});toast('Arquivo aberto'+(handle?'':' (Salvar vai baixar uma cópia)'));offerDraft();
+}
+async function save(force=false){
+ if(!S.doc)return;
+ S.doc.updated=today();
+ const text=serialize(S.doc);
+ if(S.mode==='server'){
+  try{
+   const r=await fetch('api/skill-trees',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({doc:S.doc,markdown:markdown(S.doc),baseMtime:S.mtime,force})});
+   const j=await r.json();
+   if(r.status===409){if(confirm('O arquivo mudou no disco desde que foi aberto (Git ou outro editor). Sobrescrever com a versão do editor?'))return save(true);toast('Nada foi gravado. Recarregue para ver a versão do disco.');return;}
+   if(!r.ok)throw Error(j.error||r.status);
+   S.mtime=j.mtime;saved('Salvo em docs/habilidades/arvores.json e arvores.md');
+  }catch(e){toast('Falha ao salvar: '+e.message);}
+  return;
+ }
+ if(S.handle?.createWritable){try{await write(S.handle,text);saved('Salvo no arquivo aberto');return;}catch(e){if(e.name==='AbortError')return;}}
+ if(window.showSaveFilePicker){
+  try{S.handle=await showSaveFilePicker({suggestedName:'arvores.json',types:[{description:'Árvores (JSON)',accept:{'application/json':['.json']}}]});await write(S.handle,text);S.mode='file';saved('Salvo');return;}
+  catch(e){if(e.name==='AbortError')return;}
+ }
+ download(text,'arvores.json','application/json');saved('Cópia baixada: substitua docs/habilidades/arvores.json');
+}
+async function write(handle,text){const w=await handle.createWritable();await w.write(text);await w.close();}
+function saved(msg){S.dirty=false;clearDraft();renderStatus();toast(msg);}
+function download(text,name,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+
+// ───────────── Guia em Markdown ─────────────
+function markdown(doc){
+ const L=[];
+ L.push('# Árvores de habilidades','','> Gerado por `tools/skill-tree-editor.html` a partir de `docs/habilidades/arvores.json` (fonte da verdade). Não edite este arquivo à mão.','');
+ L.push('Atualizado em '+(doc.updated||today())+'.','');
+ for(const c of doc.classes){
+  L.push('## '+c.name,'');
+  if(c.description)L.push('_'+c.description+'_','');
+  L.push('Recurso: **'+c.resource+'** · '+c.nodes.length+' nós · '+c.nodes.reduce((a,n)=>a+(n.status==='removido'?0:Number(n.maxRank)||0),0)+' pontos para completar.','');
+  if(c.notes)L.push(c.notes,'');
+  for(const t of c.trees){
+   if(c.trees.length>1)L.push('### '+t.name,'');
+   for(const b of t.branches){
+    const ns=c.nodes.filter(n=>n.tree===t.id&&n.branch===b.id).sort((a,b)=>a.y-b.y||a.x-b.x);if(!ns.length)continue;
+    L.push((c.trees.length>1?'#### ':'### ')+b.name+(b.motto?' — '+b.motto:''),'');
+    for(const n of ns)L.push(...nodeMd(c,n),'');
+   }
+   const loose=c.nodes.filter(n=>n.tree===t.id&&!t.branches.some(b=>b.id===n.branch));
+   if(loose.length){L.push('#### Sem ramo','');for(const n of loose)L.push(...nodeMd(c,n),'');}
+  }
+ }
+ return L.join('\n').replace(/\n{3,}/g,'\n\n')+'\n';
+}
+function nodeMd(c,n){
+ const name=id=>c.nodes.find(x=>x.id===id)?.name||id;
+ const out=['- **'+n.name+'** (`'+n.id+'`) — '+n.type+' · '+n.status+' · nível '+n.levelReq+' · até '+n.maxRank+' ponto'+(n.maxRank==1?'':'s')];
+ if(n.description)out.push('  '+n.description.replace(/\n/g,' '));
+ const use=[n.binding&&'tecla: '+n.binding,n.target&&'alvo: '+n.target,n.element&&'elemento: '+n.element,n.cost!=null&&'custo: '+fmt(n.cost)+' '+c.resource,n.cooldown!=null&&'recarga: '+fmt(n.cooldown)+' s',n.castTime!=null&&'preparação: '+fmt(n.castTime)+' s',n.duration!=null&&'duração: '+fmt(n.duration)+' s',n.range!=null&&'alcance: '+fmt(n.range)+' u',n.radius!=null&&'raio: '+fmt(n.radius)+' u',n.damage&&'dano: '+n.damage].filter(Boolean);
+ if(use.length)out.push('  - Uso: '+use.join(' · '));
+ if(n.requires.length)out.push('  - Requer: '+n.requires.map(name).join(', '));
+ if(n.excludes.length)out.push('  - Exclui: '+n.excludes.map(name).join(', '));
+ if(n.perRank)out.push('  - Por ponto: '+n.perRank);
+ else if(n.effects.length)out.push('  - Por ponto: '+n.effects.map(e=>(e.value>0?'+':'')+fmt(e.value)+' '+e.label).join('; '));
+ if(n.telegraph)out.push('  - Leitura no combate: '+n.telegraph);
+ if(n.decision)out.push('  - Decisão: '+n.decision);
+ if(n.notes)out.push('  - Notas: '+n.notes.replace(/\n/g,' '));
+ return out;
+}
+
+// ───────────── Validação ─────────────
+function validate(doc){
+ const out=[],add=(level,c,n,msg)=>out.push({level,classId:c.id,nodeId:n?.id||null,treeId:n?.tree||null,msg});
+ const classIds=new Set();
+ for(const c of doc.classes){
+  if(classIds.has(c.id))add('erro',c,null,'Classe com id repetido: '+c.id);classIds.add(c.id);
+  const ids=new Map();for(const n of c.nodes)ids.set(n.id,(ids.get(n.id)||0)+1);
+  const by=new Map(c.nodes.map(n=>[n.id,n]));
+  for(const n of c.nodes){
+   const t=c.trees.find(t=>t.id===n.tree);
+   if(!ID_RE.test(n.id))add('erro',c,n,'Id inválido "'+n.id+'": use letras e números, começando por letra.');
+   if(ids.get(n.id)>1)add('erro',c,n,'Id repetido: '+n.id);
+   if(!t)add('erro',c,n,'Árvore inexistente: '+n.tree);
+   else if(!t.branches.some(b=>b.id===n.branch))add('erro',c,n,'Ramo inexistente na árvore '+t.name+': '+n.branch);
+   if(!n.name?.trim())add('erro',c,n,'Nó sem nome.');
+   if(!n.description?.trim())add('aviso',c,n,'Sem descrição.');
+   if(!(Number(n.maxRank)>=1))add('erro',c,n,'Máximo de pontos precisa ser 1 ou mais.');
+   for(const r of n.requires){
+    const p=by.get(r);
+    if(!p){add('erro',c,n,'Requer nó inexistente: '+r);continue;}
+    if(r===n.id)add('erro',c,n,'O nó requer a si mesmo.');
+    if((Number(p.levelReq)||1)>(Number(n.levelReq)||1))add('aviso',c,n,'Nível '+n.levelReq+' menor que o do pré-requisito '+p.name+' ('+p.levelReq+').');
+    if(p.tree!==n.tree)add('info',c,n,'Pré-requisito em outra árvore: '+p.name+'.');
+    if(p.status==='removido'&&n.status!=='removido')add('aviso',c,n,'Pré-requisito removido: '+p.name+'.');
+   }
+   for(const e of n.excludes){
+    const x=by.get(e);
+    if(!x){add('erro',c,n,'Exclui nó inexistente: '+e);continue;}
+    if(!x.excludes.includes(n.id))add('aviso',c,n,'Exclusão de mão única: '+x.name+' não exclui '+n.name+'.');
+    if(n.requires.includes(e))add('erro',c,n,'Requer e exclui o mesmo nó: '+x.name+'.');
+   }
+   if(['ativa','evocação'].includes(n.type)&&n.status!=='removido'){
+    if(n.cooldown==null)add('info',c,n,'Habilidade ativa sem recarga definida.');
+    if(!n.binding)add('info',c,n,'Habilidade ativa sem tecla/slot definido.');
+   }
+  }
+  // Ciclos de pré-requisito
+  const state=new Map();
+  const visit=(n,stack)=>{state.set(n.id,1);for(const r of n.requires){const p=by.get(r);if(!p)continue;if(state.get(r)===1){add('erro',c,n,'Ciclo de pré-requisitos: '+[...stack,n.id,r].join(' → '));continue;}if(!state.get(r))visit(p,[...stack,n.id]);}state.set(n.id,2);};
+  for(const n of c.nodes)if(!state.get(n.id))visit(n,[]);
+ }
+ return out;
+}
+
+// ───────────── Desenho ─────────────
+const NS='http://www.w3.org/2000/svg';
+function svg(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))if(v!=null)e.setAttribute(k,v);if(text!=null)e.textContent=text;return e;}
+function h(tag,attrs={},...kids){const e=document.createElement(tag);for(const [k,v] of Object.entries(attrs)){if(v==null||v===false)continue;if(k.startsWith('on'))e.addEventListener(k.slice(2),v);else if(k==='text')e.textContent=v;else if(k in e&&k!=='list'&&k!=='type')e[k]=v;else e.setAttribute(k,v===true?'':v);}for(const k of kids.flat())if(k!=null)e.append(k);return e;}
+const clip=(t,n)=>t.length>n?t.slice(0,n-1)+'…':t;
+function view(){const k=S.classId+'/'+S.treeId;return S.views[k]??={x:40,y:30,k:1};}
+function applyView(){const v=view();$('#viewport').setAttribute('transform','translate('+v.x+' '+v.y+') scale('+v.k+')');}
+function summary(n,c){
+ return [n.cooldown!=null&&('⟳ '+fmt(n.cooldown)+' s'),n.cost!=null&&n.cost!==0&&(fmt(n.cost)+' '+c.resource),n.range!=null&&(fmt(n.range)+' u'),n.radius!=null&&('r '+fmt(n.radius))].filter(Boolean).join(' · ');
+}
+function matches(n){
+ if(!S.search)return true;const q=S.search.toLowerCase();
+ return [n.id,n.name,n.description,n.type,n.status,n.tags.join(' '),n.notes].some(v=>(v||'').toLowerCase().includes(q));
+}
+function renderCanvas(){
+ const vp=$('#viewport');vp.replaceChildren();applyView();
+ const c=cls(),t=tree();if(!c||!t){renderLegend();return;}
+ S.issues=validate(S.doc);
+ const issuesBy=new Map();for(const i of S.issues)if(i.classId===c.id&&i.nodeId&&i.level!=='info')issuesBy.set(i.nodeId,i.level==='erro'||issuesBy.get(i.nodeId)==='erro'?'erro':'aviso');
+ const nodes=c.nodes.filter(n=>n.tree===t.id),by=new Map(c.nodes.map(n=>[n.id,n]));
+ const gH=svg('g'),gE=svg('g'),gN=svg('g');vp.append(gH,gE,gN);
+ // Ramos: moldura em volta dos nós; o título arrasta o ramo inteiro.
+ for(const b of t.branches){
+  const ns=nodes.filter(n=>n.branch===b.id);if(!ns.length)continue;
+  const x0=Math.min(...ns.map(n=>n.x))-18,y0=Math.min(...ns.map(n=>n.y))-52,x1=Math.max(...ns.map(n=>n.x))+W+18,y1=Math.max(...ns.map(n=>n.y))+H+18;
+  const g=svg('g',{class:'hull'});
+  g.append(svg('rect',{x:x0,y:y0,width:x1-x0,height:y1-y0,rx:14,fill:b.color,'fill-opacity':.07,stroke:b.color,'stroke-opacity':.45}));
+  const grip=svg('g',{class:'grip','data-branch':b.id});
+  grip.append(svg('rect',{x:x0,y:y0,width:x1-x0,height:40,fill:'transparent'}),svg('text',{x:x0+14,y:y0+20,fill:b.color},b.name),svg('text',{x:x0+14,y:y0+34,class:'motto'},clip(b.motto||'',Math.max(10,Math.floor((x1-x0)/6.2)))));
+  g.append(grip);gH.append(g);
+ }
+ // Pré-requisitos (pai → filho) e exclusões (tracejado).
+ const sel=S.sel;
+ for(const n of nodes)for(const r of n.requires){
+  const p=by.get(r);if(!p||p.tree!==t.id)continue;
+  const x1=p.x+W/2,y1=p.y+H,x2=n.x+W/2,y2=n.y-3,dy=Math.max(30,Math.abs(y2-y1)/2);
+  const d='M'+x1+' '+y1+' C'+x1+' '+(y1+dy)+' '+x2+' '+(y2-dy)+' '+x2+' '+y2;
+  const on=sel?.kind==='edge'&&sel.type==='req'&&sel.a===p.id&&sel.b===n.id;
+  gE.append(svg('path',{d,class:'edge'+(on?' sel':''),'marker-end':'url(#arrow)'}),svg('path',{d,class:'edge-hit','data-edge':'req','data-a':p.id,'data-b':n.id}));
+ }
+ const seen=new Set();
+ for(const n of nodes)for(const e of n.excludes){
+  const x=by.get(e),key=[n.id,e].sort().join('|');if(!x||x.tree!==t.id||seen.has(key))continue;seen.add(key);
+  const a=[n.x+W/2,n.y+H/2],b=[x.x+W/2,x.y+H/2],d='M'+a[0]+' '+a[1]+' L'+b[0]+' '+b[1];
+  const on=sel?.kind==='edge'&&sel.type==='exc'&&[sel.a,sel.b].sort().join('|')===key;
+  gE.append(svg('path',{d,class:'edge exc'+(on?' sel':'')}),svg('path',{d,class:'edge-hit','data-edge':'exc','data-a':n.id,'data-b':x.id}));
+  const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;gE.append(svg('circle',{cx:mx,cy:my,r:9,fill:'var(--panel)',stroke:'var(--danger)'}),svg('text',{x:mx,y:my+4,'text-anchor':'middle','font-size':12,fill:'var(--danger)','pointer-events':'none'},'✕'));
+ }
+ // Nós
+ for(const n of nodes){
+  const col=colorOf(n),g=svg('g',{class:'node'+(sel?.kind==='node'&&sel.id===n.id?' sel':'')+(matches(n)?'':' dim')+(n.status==='removido'?' removido':''),transform:'translate('+n.x+' '+n.y+')','data-node':n.id});
+  const dashed=['ideia','planejado'].includes(n.status);
+  g.append(svg('rect',{class:'card',width:W,height:H,rx:10,stroke:col,'stroke-dasharray':dashed?'6 4':null}));
+  g.append(svg('rect',{x:0,y:0,width:6,height:H,rx:3,fill:col}));
+  g.append(svg('circle',{cx:30,cy:H/2,r:19,fill:col}),svg('text',{class:'ico',x:30,y:H/2},n.icon||TYPES[n.type]||'•'));
+  g.append(svg('text',{class:'name',x:56,y:22},clip(n.name||'(sem nome)',21)));
+  g.append(svg('text',{class:'sub',x:56,y:40},clip((TYPES[n.type]||'')+' '+n.type+' · nv '+n.levelReq+' · '+n.maxRank+' pt',30)));
+  g.append(svg('text',{class:'sub',x:56,y:57},clip(summary(n,c)||n.id,30)));
+  g.append(svg('circle',{cx:W-12,cy:12,r:5,fill:STATUS[n.status]||'#888'},null));
+  g.lastChild.append(svg('title',{},n.status));
+  const issue=issuesBy.get(n.id);
+  if(issue){g.append(svg('circle',{cx:W-12,cy:H-12,r:7,class:issue==='erro'?'badge-err':'badge-warn'}),svg('text',{x:W-12,y:H-8,'text-anchor':'middle','font-size':11,'font-weight':700,fill:'#fff','pointer-events':'none'},'!'));}
+  if(n.requires.some(r=>by.get(r)&&by.get(r).tree!==t.id))g.append(svg('text',{class:'sub',x:W-28,y:16,'text-anchor':'end'},'↑ outra árvore'));
+  g.append(svg('circle',{class:'handle',cx:W/2,cy:H,r:7,'data-handle':n.id}));
+  gN.append(g);
+ }
+ if(S.drag?.type==='connect'){const d=S.drag;vp.append(svg('path',{class:'temp',d:'M'+d.x0+' '+d.y0+' L'+d.x1+' '+d.y1}));}
+ renderLegend();renderIssuesButton();
+}
+function renderLegend(){
+ const c=cls(),t=tree();if(!c||!t){$('#legend').replaceChildren();return;}
+ const ns=c.nodes.filter(n=>n.tree===t.id),count=s=>ns.filter(n=>n.status===s).length;
+ $('#legend').replaceChildren(h('div',{},h('b',{text:ns.length+' nós'}),' · '+ns.reduce((a,n)=>a+(n.status==='removido'?0:Number(n.maxRank)||0),0)+' pontos para completar'),
+  h('div',{},...Object.keys(STATUS).filter(count).map(s=>h('span',{style:'margin-right:8px;white-space:nowrap'},h('span',{style:'color:'+STATUS[s],text:'● '}),s+' '+count(s)))),
+  h('div',{class:'hint'},'Arraste o círculo inferior de um nó até outro para criar pré-requisito; com Shift, exclusão. Duplo clique no fundo cria um nó.'));
+}
+function renderIssuesButton(){
+ const e=S.issues.filter(i=>i.level==='erro').length,w=S.issues.filter(i=>i.level==='aviso').length;
+ $('#b-issues').textContent='Validar'+(e||w?' ('+(e?e+' erro'+(e>1?'s':''):'')+(e&&w?', ':'')+(w?w+' aviso'+(w>1?'s':''):'')+')':' ✓');
+ $('#b-issues').style.color=e?'var(--danger)':w?'var(--warn)':'';
+ if($('#issues').classList.contains('open'))renderIssues();
+}
+function renderIssues(){
+ const box=$('#issues'),list=S.issues;
+ box.replaceChildren(h('header',{},h('b',{text:list.length?list.length+' observações':'Nenhum problema encontrado'}),h('span',{class:'spacer'}),h('button',{text:'Fechar',onclick:()=>box.classList.remove('open')})));
+ const order={erro:0,aviso:1,info:2};
+ for(const i of [...list].sort((a,b)=>order[a.level]-order[b.level])){
+  const c=S.doc.classes.find(c=>c.id===i.classId),n=i.nodeId&&c?.nodes.find(n=>n.id===i.nodeId);
+  box.append(h('button',{class:'issue',onclick:()=>{if(n)focusNode(c.id,n.id);}},h('span',{class:'lvl '+i.level,text:i.level}),h('span',{text:(c?.name||'')+(n?' › '+n.name:'')+': '}),i.msg));
+ }
+}
+function focusNode(classId,id){
+ S.classId=classId;const n=nodeById(id);if(!n)return;S.treeId=n.tree;S.sel={kind:'node',id};
+ const r=$('#canvas').getBoundingClientRect(),v=view();v.x=r.width/2-(n.x+W/2)*v.k;v.y=r.height/2-(n.y+H/2)*v.k;
+ renderAll();
+}
+function renderTabs(){
+ const nav=$('#tabs');nav.replaceChildren();if(!S.doc)return;
+ for(const c of S.doc.classes)nav.append(h('button',{class:'tab'+(c.id===S.classId?' on':''),onclick:()=>{S.classId=c.id;if(!tree())S.treeId=c.trees[0]?.id;S.sel=null;showTree();}},h('span',{class:'dot',style:'background:'+c.color}),c.name));
+ nav.append(h('button',{class:'tab',title:'Nova classe',text:'+ Classe',onclick:addClass}));
+ const c=cls();if(!c)return;
+ nav.append(h('span',{class:'sep'}));
+ for(const t of c.trees)nav.append(h('button',{class:'tab tree'+(t.id===S.treeId?' on':''),onclick:()=>{S.treeId=t.id;S.sel=null;showTree();}},t.name+' ('+c.nodes.filter(n=>n.tree===t.id).length+')'));
+ nav.append(h('button',{class:'tab',title:'Nova árvore nesta classe',text:'+ Árvore',onclick:addTree}));
+}
+// Primeira visita a uma árvore: enquadra; depois mantém o zoom e a posição de cada uma.
+function showTree(){const first=!S.views[S.classId+'/'+S.treeId];renderAll();if(first)fit();}
+function renderStatus(){
+ const s=$('#status');
+ const where=S.mode==='server'?'docs/habilidades/arvores.json':S.mode==='file'?(S.handle?.name||'arquivo local'):'sem arquivo';
+ s.textContent=(S.dirty?'● não salvo · ':'')+where;s.classList.toggle('dirty',S.dirty);
+ $('#b-undo').disabled=!S.undo.length;$('#b-redo').disabled=!S.redo.length;
+}
+function renderAll(){renderTabs();renderCanvas();renderInspector();renderStatus();}
+
+// ───────────── Inspetor ─────────────
+function field(label,input,hint){return h('label',{class:'f'},h('span',{text:label}),input,hint?h('small',{text:hint}):null);}
+function datalist(id,values){return h('datalist',{id},...values.map(v=>h('option',{value:v})));}
+function bindText(n,key,attrs={}){
+ const tag=attrs.multiline?'textarea':'input';const {multiline,...rest}=attrs;
+ const e=h(tag,{...rest,value:n[key]??''});
+ e.addEventListener('input',()=>mutate('f:'+n.id+':'+key,()=>{n[key]=e.value;}));
+ return e;
+}
+function bindNum(n,key,attrs={}){
+ const e=h('input',{inputmode:'decimal',placeholder:'—',...attrs,value:fmt(n[key])});
+ e.addEventListener('input',()=>{const v=num(e.value);if(e.value.trim()!==''&&v==null){e.style.outlineColor='var(--danger)';return;}e.style.outlineColor='';mutate('f:'+n.id+':'+key,()=>{n[key]=v;});});
+ return e;
+}
+function bindSelect(n,key,options,onchange){
+ const e=h('select',{},...options.map(([v,l])=>h('option',{value:v,text:l,selected:n[key]===v})));
+ e.addEventListener('change',()=>mutate(null,()=>{n[key]=e.value;onchange?.();},{inspector:true}));
+ return e;
+}
+function renderInspector(){
+ const box=$('#inspector');box.replaceChildren();
+ if(!S.doc)return;
+ const n=selNode();
+ if(n)return nodeInspector(box,n);
+ if(S.sel?.kind==='edge')return edgeInspector(box);
+ classInspector(box);
+}
+function nodeInspector(box,n){
+ const c=cls();
+ box.append(h('h2',{text:n.name||'(sem nome)'}),h('div',{class:'hint',text:c.name+' › '+(c.trees.find(t=>t.id===n.tree)?.name||n.tree)+' › '+(branchOf(n)?.name||n.branch)}));
+ box.append(h('div',{class:'actions'},
+  h('button',{text:'+ Filho',title:'Novo nó que requer este',onclick:()=>addNode({parent:n})}),
+  h('button',{text:'Duplicar',title:'Ctrl+D',onclick:()=>duplicate(n)}),
+  h('button',{class:'danger',text:'Excluir',title:'Delete',onclick:()=>deleteNode(n)})));
+ // Identidade
+ box.append(h('h3',{text:'Identidade'}));
+ const name=bindText(n,'name'),idIn=h('input',{value:n.id}),idErr=h('div',{class:'err'});
+ // Nó criado nesta sessão: o id acompanha o nome até ser editado à mão.
+ name.addEventListener('input',()=>{box.querySelector('h2').textContent=name.value||'(sem nome)';
+  if(!S.autoId.has(n.id))return;
+  const old=n.id,id=uid(slug(name.value),new Set(c.nodes.filter(x=>x!==n).map(x=>x.id)));if(id===old)return;
+  n.id=id;for(const x of c.nodes){x.requires=x.requires.map(r=>r===old?id:r);x.excludes=x.excludes.map(r=>r===old?id:r);}
+  S.autoId.delete(old);S.autoId.add(id);S.sel={kind:'node',id};S.lastKey='f:'+id+':name';idIn.value=id;renderCanvas();});
+ box.append(field('Nome',name));
+ idIn.addEventListener('change',()=>{const v=idIn.value.trim();if(v===n.id)return;S.autoId.delete(n.id);const why=!ID_RE.test(v)?'Use letras e números, começando por letra (camelCase).':c.nodes.some(x=>x.id===v)?'Já existe um nó com esse id nesta classe.':'';idErr.textContent=why;if(why)return;renameNode(n,v);});
+ box.append(field('Id (usado no código e nos saves)',idIn,'Trocar o id atualiza as ligações deste arquivo, não o código do jogo.'),idErr);
+ box.append(h('div',{class:'row'},
+  field('Tipo',bindSelect(n,'type',Object.keys(TYPES).map(t=>[t,TYPES[t]+' '+t]))),
+  field('Status',bindSelect(n,'status',Object.keys(STATUS).map(s=>[s,s])))));
+ const trees=c.trees.map(t=>[t.id,t.name]),branches=(c.trees.find(t=>t.id===n.tree)?.branches||[]).map(b=>[b.id,b.name]);
+ if(!branches.some(([id])=>id===n.branch))branches.unshift([n.branch,'(inexistente) '+n.branch]);
+ box.append(h('div',{class:'row'},
+  field('Árvore',bindSelect(n,'tree',trees,()=>{const t=c.trees.find(t=>t.id===n.tree);if(!t.branches.some(b=>b.id===n.branch))n.branch=t.branches[0]?.id||'';S.treeId=n.tree;renderTabs();})),
+  field('Ramo',bindSelect(n,'branch',branches))));
+ const tags=h('input',{value:n.tags.join(', '),placeholder:'ex.: área, controle'});
+ tags.addEventListener('input',()=>mutate('f:'+n.id+':tags',()=>{n.tags=tags.value.split(',').map(s=>s.trim()).filter(Boolean);}));
+ box.append(h('div',{class:'row'},field('Ícone',bindText(n,'icon',{placeholder:'emoji ou símbolo',maxLength:4})),field('Etiquetas',tags)));
+ // Descrição
+ box.append(h('h3',{text:'Descrição'}));
+ box.append(field('Texto do jogo',bindText(n,'description',{multiline:true,rows:4})));
+ box.append(field('Ganho por ponto',bindText(n,'perRank',{multiline:true,rows:2,placeholder:'ex.: +10% de dano por ponto'})));
+ // Progressão
+ box.append(h('h3',{text:'Progressão'}));
+ box.append(h('div',{class:'row'},field('Máximo de pontos',bindNum(n,'maxRank')),field('Nível mínimo',bindNum(n,'levelReq'))));
+ box.append(linkEditor(n,'requires','Pré-requisitos (precisa de pelo menos 1 ponto)'));
+ box.append(linkEditor(n,'excludes','Exclusivo com (só um dos dois)'));
+ // Uso
+ box.append(h('h3',{text:'Uso e números'}));
+ box.append(h('div',{class:'row'},field('Tecla / slot',bindText(n,'binding',{placeholder:'ex.: R / 5'})),field('Alvo',bindText(n,'target',{list:'dl-target'}))));
+ box.append(h('div',{class:'row'},field('Elemento',bindText(n,'element',{list:'dl-element'})),field('Custo ('+c.resource+')',bindNum(n,'cost'))));
+ box.append(h('div',{class:'row3'},field('Recarga (s)',bindNum(n,'cooldown')),field('Preparação (s)',bindNum(n,'castTime')),field('Duração (s)',bindNum(n,'duration'))));
+ box.append(h('div',{class:'row'},field('Alcance (u)',bindNum(n,'range')),field('Raio (u)',bindNum(n,'radius'))));
+ box.append(field('Dano / cura',bindText(n,'damage',{placeholder:'ex.: 180% do dano, 45% × 5 ondas'})));
+ box.append(datalist('dl-target',TARGETS),datalist('dl-element',ELEMENTS));
+ // Efeitos
+ box.append(h('h3',{text:'Efeitos por ponto (valores somáveis)'}));
+ const effBox=h('div');box.append(effBox);
+ const drawEff=()=>{effBox.replaceChildren();
+  n.effects.forEach((ef,i)=>{
+   const l=h('input',{value:ef.label,placeholder:'Atributo'}),v=h('input',{value:fmt(ef.value),inputmode:'decimal',placeholder:'valor'});
+   l.addEventListener('input',()=>mutate('e:'+n.id+':'+i+':l',()=>{ef.label=l.value;}));
+   v.addEventListener('input',()=>{const x=num(v.value);if(x!=null||v.value.trim()==='')mutate('e:'+n.id+':'+i+':v',()=>{ef.value=x??0;});});
+   effBox.append(h('div',{class:'eff'},l,v,h('button',{text:'×',title:'Remover efeito',onclick:()=>{mutate(null,()=>n.effects.splice(i,1));drawEff();}})));
+  });
+  effBox.append(h('button',{text:'+ Efeito',onclick:()=>{mutate(null,()=>n.effects.push({label:'',value:0}));drawEff();effBox.querySelector('.eff:last-of-type input')?.focus();}}));
+ };drawEff();
+ // Leitura
+ box.append(h('h3',{text:'Leitura no combate'}));
+ box.append(field('Aviso visual / sinal',bindText(n,'telegraph',{multiline:true,rows:2,placeholder:'Como o jogador e os inimigos percebem o efeito (marca no chão, preparação, som)'})));
+ box.append(field('Decisão do jogador',bindText(n,'decision',{multiline:true,rows:2,placeholder:'Qual risco ou escolha a habilidade cria no combate'})));
+ // Produção
+ box.append(h('h3',{text:'Produção'}));
+ box.append(h('div',{class:'row'},field('Animação',bindText(n,'animation',{placeholder:'clipe GLB'})),field('Efeito visual',bindText(n,'vfx'))));
+ box.append(h('div',{class:'row'},field('Som',bindText(n,'sfx')),field('Código',bindText(n,'codeRef',{placeholder:'v2/scripts/…'}))));
+ box.append(field('Notas de design',bindText(n,'notes',{multiline:true,rows:3})));
+}
+function linkEditor(n,key,label){
+ const c=cls(),wrap=h('label',{class:'f'},h('span',{text:label}));
+ const chips=h('div',{class:'chips'});
+ for(const id of n[key]){const x=nodeById(id);chips.append(h('span',{class:'chip'+(key==='excludes'?' exc':'')},x?x.name:'⚠ '+id,h('button',{type:'button',text:'×',title:'Remover',onclick:e=>{e.preventDefault();unlink(n,key,id);}})));}
+ const sel=h('select',{},h('option',{value:'',text:'+ adicionar…'}));
+ for(const t of c.trees){const og=h('optgroup',{label:t.name});for(const x of c.nodes.filter(x=>x.tree===t.id&&x.id!==n.id&&!n[key].includes(x.id)))og.append(h('option',{value:x.id,text:x.name+' ('+x.id+')'}));if(og.children.length)sel.append(og);}
+ sel.addEventListener('change',()=>{if(sel.value)link(n,key,sel.value);});
+ wrap.append(chips,sel);return wrap;
+}
+function edgeInspector(box){
+ const {type,a,b}=S.sel,A=nodeById(a),B=nodeById(b);
+ if(!A||!B){S.sel=null;return renderInspector();}
+ box.append(h('h2',{text:type==='req'?'Pré-requisito':'Exclusão'}));
+ box.append(h('p',{text:type==='req'?B.name+' requer '+A.name+'.':A.name+' e '+B.name+' são exclusivos: o jogador só pode ter um.'}));
+ box.append(h('div',{class:'actions'},h('button',{class:'danger',text:'Remover ligação',onclick:deleteSelection}),h('button',{text:'Ir para '+A.name,onclick:()=>{S.sel={kind:'node',id:A.id};renderAll();}}),h('button',{text:'Ir para '+B.name,onclick:()=>{S.sel={kind:'node',id:B.id};renderAll();}})));
+}
+function classInspector(box){
+ const c=cls();if(!c){box.append(h('p',{class:'hint',text:'Nenhuma classe. Use + Classe.'}));return;}
+ const t=tree();
+ box.append(h('h2',{text:c.name}),h('div',{class:'hint',text:'Selecione um nó para editá-lo. Sem seleção, aqui ficam a classe, as árvores e os ramos.'}));
+ const ns=c.nodes.filter(n=>n.status!=='removido');
+ box.append(h('h3',{text:'Resumo'}),h('div',{class:'stats'},
+  h('div',{class:'stat'},h('b',{text:c.nodes.length}),h('span',{text:'nós'})),
+  h('div',{class:'stat'},h('b',{text:ns.filter(n=>['ativa','evocação'].includes(n.type)).length}),h('span',{text:'ativas e evocações'})),
+  h('div',{class:'stat'},h('b',{text:ns.reduce((a,n)=>a+(Number(n.maxRank)||0),0)}),h('span',{text:'pontos para completar'})),
+  h('div',{class:'stat'},h('b',{text:c.nodes.filter(n=>n.status==='implementado').length}),h('span',{text:'implementados'})),
+  h('div',{class:'stat'},h('b',{text:c.nodes.filter(n=>['ideia','planejado','em desenvolvimento'].includes(n.status)).length}),h('span',{text:'por fazer'})),
+  h('div',{class:'stat'},h('b',{text:Math.max(0,...ns.map(n=>Number(n.levelReq)||1))}),h('span',{text:'nível do último nó'}))));
+ box.append(h('h3',{text:'Classe'}));
+ const cname=h('input',{value:c.name});cname.addEventListener('input',()=>mutate('c:'+c.id+':name',()=>{c.name=cname.value;},{tabs:true}));
+ const cres=h('input',{value:c.resource,placeholder:'mana, vigor, foco…'});cres.addEventListener('input',()=>mutate('c:'+c.id+':res',()=>{c.resource=cres.value;}));
+ const ccol=h('input',{type:'color',value:c.color});ccol.addEventListener('input',()=>mutate('c:'+c.id+':col',()=>{c.color=ccol.value;},{tabs:true}));
+ const cid=h('input',{value:c.id}),cidErr=h('div',{class:'err'});
+ cid.addEventListener('change',()=>{const v=cid.value.trim();if(v===c.id)return;const why=!ID_RE.test(v)?'Id inválido.':S.doc.classes.some(x=>x.id===v)?'Id já usado.':'';cidErr.textContent=why;if(why)return;mutate(null,()=>{for(const k of Object.keys(S.views))if(k.startsWith(c.id+'/')){S.views[v+k.slice(c.id.length)]=S.views[k];}c.id=v;S.classId=v;},{tabs:true,inspector:true});});
+ box.append(h('div',{class:'row'},field('Nome',cname),field('Id',cid)),cidErr,h('div',{class:'row'},field('Recurso',cres),field('Cor',ccol)));
+ const cdesc=h('textarea',{value:c.description,rows:2});cdesc.addEventListener('input',()=>mutate('c:'+c.id+':desc',()=>{c.description=cdesc.value;}));
+ const cnotes=h('textarea',{value:c.notes,rows:3,placeholder:'Orçamento de pontos, identidade, regras gerais da árvore…'});cnotes.addEventListener('input',()=>mutate('c:'+c.id+':notes',()=>{c.notes=cnotes.value;}));
+ box.append(field('Descrição / frase',cdesc),field('Notas da classe',cnotes));
+ box.append(h('div',{class:'actions'},h('button',{class:'danger',text:'Excluir classe',onclick:()=>{if(!confirm('Excluir a classe '+c.name+' e seus '+c.nodes.length+' nós? (Ctrl+Z desfaz)'))return;mutate(null,()=>{S.doc.classes=S.doc.classes.filter(x=>x!==c);S.classId=S.doc.classes[0]?.id;S.treeId=cls()?.trees[0]?.id;},{tabs:true,inspector:true});}})));
+ // Árvores
+ box.append(h('h3',{text:'Árvores'}));
+ const tl=h('div',{class:'list'});
+ c.trees.forEach((tr,i)=>{
+  const nm=h('input',{value:tr.name});nm.addEventListener('input',()=>mutate('t:'+tr.id,()=>{tr.name=nm.value;},{tabs:true}));
+  const count=c.nodes.filter(n=>n.tree===tr.id).length;
+  tl.append(h('div',{class:'item'},h('span',{text:tr.id===S.treeId?'▸':''}),nm,h('span',{class:'hint',text:tr.id+' · '+count+' nós'}),h('div',{class:'ops'},
+   h('button',{text:'↑',title:'Mover para cima',disabled:i===0,onclick:()=>mutate(null,()=>{c.trees.splice(i-1,0,c.trees.splice(i,1)[0]);},{tabs:true,inspector:true})}),
+   h('button',{class:'danger',text:'×',title:count?'Mova ou exclua os nós antes':'Excluir árvore',disabled:!!count||c.trees.length<2,onclick:()=>mutate(null,()=>{c.trees.splice(i,1);if(S.treeId===tr.id)S.treeId=c.trees[0].id;},{tabs:true,inspector:true})}))));
+ });
+ box.append(tl,h('button',{text:'+ Árvore',onclick:addTree}));
+ // Ramos
+ if(!t)return;
+ box.append(h('h3',{text:'Ramos de '+t.name}));
+ const bl=h('div',{class:'list'});
+ t.branches.forEach((b,i)=>{
+  const col=h('input',{type:'color',value:b.color});col.addEventListener('input',()=>mutate('b:'+b.id+':c',()=>{b.color=col.value;}));
+  const nm=h('input',{value:b.name,placeholder:'Nome'});nm.addEventListener('input',()=>mutate('b:'+b.id+':n',()=>{b.name=nm.value;}));
+  const mo=h('input',{value:b.motto,placeholder:'Lema / foco do ramo'});mo.addEventListener('input',()=>mutate('b:'+b.id+':m',()=>{b.motto=mo.value;}));
+  const count=c.nodes.filter(n=>n.tree===t.id&&n.branch===b.id).length;
+  bl.append(h('div',{class:'item'},col,nm,mo,h('div',{class:'ops'},
+   h('button',{text:'↑',title:'Mover para cima (ordem do Organizar)',disabled:i===0,onclick:()=>mutate(null,()=>{t.branches.splice(i-1,0,t.branches.splice(i,1)[0]);},{inspector:true})}),
+   h('button',{class:'danger',text:'×',title:'Excluir ramo',disabled:t.branches.length<2&&count>0,onclick:()=>{
+    const other=t.branches.find(x=>x!==b);
+    if(count&&!confirm('Mover os '+count+' nós de '+b.name+' para '+other.name+' e excluir o ramo?'))return;
+    mutate(null,()=>{for(const n of c.nodes)if(n.tree===t.id&&n.branch===b.id)n.branch=other.id;t.branches.splice(i,1);},{inspector:true});}}))));
+ });
+ box.append(bl,h('div',{class:'hint',text:'Id dos ramos: '+t.branches.map(b=>b.id).join(', ')}));
+ box.append(h('div',{class:'actions'},h('button',{text:'+ Ramo',onclick:()=>{const name=prompt('Nome do ramo:','Novo ramo');if(!name)return;mutate(null,()=>t.branches.push({id:uid(slug(name),new Set(t.branches.map(b=>b.id))),name,motto:'',color:'#8a7ab0'}),{inspector:true});}})));
+ box.append(h('h3',{text:'Atalhos'}),h('div',{class:'hint'},
+  ...[['N','novo nó'],['Ctrl+D','duplicar'],['Delete','excluir seleção'],['Ctrl+Z / Ctrl+Y','desfazer / refazer'],['Ctrl+S','salvar'],['F','enquadrar'],['Esc','limpar seleção'],['Alt + arrastar','sem grade']].map(([k,v])=>h('div',{},h('kbd',{text:k}),' '+v))));
+}
+
+// ───────────── Operações ─────────────
+function addNode({parent=null,at=null}={}){
+ const c=cls(),t=tree();if(!c||!t)return;
+ if(!t.branches.length){toast('Crie um ramo antes de adicionar nós.');return;}
+ const r=$('#canvas').getBoundingClientRect(),v=view();
+ const p=at||(parent?{x:parent.x,y:parent.y+H+70}:{x:(r.width/2-v.x)/v.k-W/2,y:(r.height/2-v.y)/v.k-H/2});
+ const name='Nova habilidade',id=uid(slug(name),new Set(c.nodes.map(n=>n.id)));
+ const branch=parent?.branch||(at&&nearestBranch(c,t,p))||selNode()?.branch||t.branches[0].id;
+ const n={id,name,type:'ativa',tree:t.id,branch,...structuredClone(BLANK),requires:parent?[parent.id]:[],levelReq:parent?Math.max(1,Number(parent.levelReq)||1):1,x:snap(p.x),y:snap(p.y)};
+ mutate(null,()=>{c.nodes.push(n);S.sel={kind:'node',id};},{inspector:true,tabs:true});
+ S.autoId.add(id);
+ const nameIn=$('#inspector input');nameIn?.focus();nameIn?.select();
+}
+// Ramo cuja moldura contém o ponto ou, fora de todas, o de nó mais próximo.
+function nearestBranch(c,t,p){
+ let best=null,dist=Infinity;
+ for(const n of c.nodes.filter(n=>n.tree===t.id&&t.branches.some(b=>b.id===n.branch))){const d=Math.hypot(n.x+W/2-(p.x+W/2),n.y+H/2-(p.y+H/2));if(d<dist){dist=d;best=n.branch;}}
+ return best;
+}
+function duplicate(n){
+ const c=cls(),copy=structuredClone(n);copy.id=uid(n.id+'Copia',new Set(c.nodes.map(x=>x.id)));copy.name=n.name+' (cópia)';copy.x+=30;copy.y+=30;copy.excludes=[];
+ mutate(null,()=>{c.nodes.push(copy);S.sel={kind:'node',id:copy.id};},{inspector:true,tabs:true});
+}
+function deleteNode(n){
+ const c=cls(),deps=c.nodes.filter(x=>x.requires.includes(n.id));
+ if(deps.length&&!confirm(n.name+' é pré-requisito de '+deps.map(d=>d.name).join(', ')+'. Excluir mesmo assim? (Ctrl+Z desfaz)'))return;
+ mutate(null,()=>{c.nodes=c.nodes.filter(x=>x!==n);for(const x of c.nodes){x.requires=x.requires.filter(r=>r!==n.id);x.excludes=x.excludes.filter(r=>r!==n.id);}S.sel=null;},{inspector:true,tabs:true});
+}
+function renameNode(n,id){
+ const c=cls(),old=n.id;
+ mutate(null,()=>{n.id=id;for(const x of c.nodes){x.requires=x.requires.map(r=>r===old?id:r);x.excludes=x.excludes.map(r=>r===old?id:r);}S.sel={kind:'node',id};},{inspector:true});
+ toast('Id trocado: '+old+' → '+id);
+}
+function ancestors(id){const c=cls(),seen=new Set(),stack=[id];while(stack.length){const n=nodeById(stack.pop(),c);if(!n)continue;for(const r of n.requires)if(!seen.has(r)){seen.add(r);stack.push(r);}}return seen;}
+function link(n,key,id){
+ if(id===n.id)return;
+ if(key==='requires'&&ancestors(id).has(n.id)){toast('Isso criaria um ciclo de pré-requisitos.');renderInspector();return;}
+ const x=nodeById(id);
+ mutate(null,()=>{if(!n[key].includes(id))n[key].push(id);if(key==='excludes'&&x&&!x.excludes.includes(n.id))x.excludes.push(n.id);},{inspector:true});
+}
+function unlink(n,key,id){
+ const x=nodeById(id);
+ mutate(null,()=>{n[key]=n[key].filter(r=>r!==id);if(key==='excludes'&&x)x.excludes=x.excludes.filter(r=>r!==n.id);},{inspector:true});
+}
+function deleteSelection(){
+ const s=S.sel;if(!s)return;
+ if(s.kind==='node'){const n=selNode();if(n)deleteNode(n);return;}
+ const A=nodeById(s.a),B=nodeById(s.b);if(!A||!B)return;
+ mutate(null,()=>{if(s.type==='req')B.requires=B.requires.filter(r=>r!==A.id);else{A.excludes=A.excludes.filter(r=>r!==B.id);B.excludes=B.excludes.filter(r=>r!==A.id);}S.sel=null;},{inspector:true});
+}
+function addClass(){
+ const name=prompt('Nome da nova classe:','Nova classe');if(!name)return;
+ const id=uid(slug(name),new Set(S.doc.classes.map(c=>c.id)));
+ mutate(null,()=>{S.doc.classes.push({id,name,resource:'mana',color:'#7a4fc0',description:'',notes:'',trees:[{id:'habilidades',name:'Habilidades',branches:[{id:'principal',name:'Principal',motto:'',color:'#7a4fc0'},{id:'passives',name:'Passivas',motto:'',color:'#9a63c4'}]}],nodes:[]});S.classId=id;S.treeId='habilidades';S.sel=null;},{tabs:true,inspector:true});
+}
+function addTree(){
+ const c=cls();if(!c)return;const name=prompt('Nome da nova árvore de '+c.name+':','Nova árvore');if(!name)return;
+ const id=uid(slug(name),new Set(c.trees.map(t=>t.id)));
+ mutate(null,()=>{c.trees.push({id,name,branches:[{id:'principal',name:'Principal',motto:'',color:c.color}]});S.treeId=id;S.sel=null;},{tabs:true,inspector:true});
+}
+// Colunas por ramo (na ordem da lista) e linhas por profundidade de pré-requisito dentro da árvore.
+function autoLayout(){
+ const c=cls(),t=tree();if(!c||!t)return;
+ const nodes=c.nodes.filter(n=>n.tree===t.id),by=new Map(nodes.map(n=>[n.id,n])),depth=new Map();
+ const d=(n,seen=new Set())=>{if(depth.has(n.id))return depth.get(n.id);if(seen.has(n.id))return 0;seen.add(n.id);const ps=n.requires.map(r=>by.get(r)).filter(Boolean);const v=ps.length?1+Math.max(...ps.map(p=>d(p,seen))):0;depth.set(n.id,v);return v;};
+ nodes.forEach(n=>d(n));
+ snapshot(null);
+ let x0=0;
+ for(const b of [...t.branches,{id:null}]){
+  const ns=nodes.filter(n=>b.id?n.branch===b.id:!t.branches.some(x=>x.id===n.branch));if(!ns.length)continue;
+  const rows=new Map();for(const n of ns){const k=depth.get(n.id);if(!rows.has(k))rows.set(k,[]);rows.get(k).push(n);}
+  const wide=Math.max(...[...rows.values()].map(r=>r.length));
+  for(const [k,row] of rows){row.sort((a,b)=>a.x-b.x);const off=(wide-row.length)*(W+30)/2;row.forEach((n,i)=>{n.x=x0+off+i*(W+30);n.y=40+k*(H+80);});}
+  x0+=wide*(W+30)+70;
+ }
+ touched();renderCanvas();fit();
+}
+function fit(silent){
+ const c=cls(),t=tree();if(!c||!t)return;const ns=c.nodes.filter(n=>n.tree===t.id);
+ const r=$('#canvas').getBoundingClientRect(),v=view();
+ if(!ns.length){v.x=40;v.y=30;v.k=1;applyView();return;}
+ const x0=Math.min(...ns.map(n=>n.x))-30,y0=Math.min(...ns.map(n=>n.y))-70,x1=Math.max(...ns.map(n=>n.x))+W+30,y1=Math.max(...ns.map(n=>n.y))+H+30;
+ v.k=Math.max(.25,Math.min(1.2,Math.min(r.width/(x1-x0),r.height/(y1-y0))));
+ v.x=(r.width-(x1-x0)*v.k)/2-x0*v.k;v.y=(r.height-(y1-y0)*v.k)/2-y0*v.k;applyView();
+}
+const snap=v=>Math.round(v/SNAP)*SNAP;
+
+// ───────────── Interação no quadro ─────────────
+const canvas=$('#canvas');
+function world(e){const r=canvas.getBoundingClientRect(),v=view();return {x:(e.clientX-r.left-v.x)/v.k,y:(e.clientY-r.top-v.y)/v.k};}
+canvas.addEventListener('pointerdown',e=>{
+ if(!S.doc||e.button>1)return;
+ const handle=e.target.closest('[data-handle]'),nodeEl=e.target.closest('[data-node]'),edge=e.target.closest('[data-edge]'),grip=e.target.closest('[data-branch]');
+ canvas.setPointerCapture(e.pointerId);
+ const p=world(e);
+ if(handle&&e.button===0){const n=nodeById(handle.dataset.handle);S.drag={type:'connect',from:n.id,x0:n.x+W/2,y0:n.y+H,x1:p.x,y1:p.y};return;}
+ if(nodeEl&&e.button===0){
+  const n=nodeById(nodeEl.dataset.node);
+  if(S.sel?.kind!=='node'||S.sel.id!==n.id){S.sel={kind:'node',id:n.id};renderInspector();}
+  S.drag={type:'node',ids:[n.id],start:p,orig:[[n.x,n.y]],moved:false};renderCanvas();return;
+ }
+ if(edge&&e.button===0){S.sel={kind:'edge',type:edge.dataset.edge,a:edge.dataset.a,b:edge.dataset.b};renderCanvas();renderInspector();return;}
+ if(grip&&e.button===0){const ns=cls().nodes.filter(n=>n.tree===S.treeId&&n.branch===grip.dataset.branch);S.drag={type:'node',ids:ns.map(n=>n.id),start:p,orig:ns.map(n=>[n.x,n.y]),moved:false};return;}
+ const v=view();S.drag={type:'pan',sx:e.clientX,sy:e.clientY,vx:v.x,vy:v.y,moved:false};canvas.classList.add('panning');
+});
+canvas.addEventListener('pointermove',e=>{
+ const d=S.drag;if(!d)return;
+ if(d.type==='pan'){const v=view();v.x=d.vx+e.clientX-d.sx;v.y=d.vy+e.clientY-d.sy;if(Math.abs(e.clientX-d.sx)+Math.abs(e.clientY-d.sy)>3)d.moved=true;applyView();return;}
+ const p=world(e);
+ if(d.type==='connect'){d.x1=p.x;d.y1=p.y;renderCanvas();return;}
+ if(d.type==='node'){
+  const dx=p.x-d.start.x,dy=p.y-d.start.y;if(!d.moved&&Math.hypot(dx,dy)<3)return;
+  if(!d.moved){snapshot(null);d.moved=true;}
+  d.ids.forEach((id,i)=>{const n=nodeById(id);const nx=d.orig[i][0]+dx,ny=d.orig[i][1]+dy;n.x=e.altKey?Math.round(nx):snap(nx);n.y=e.altKey?Math.round(ny):snap(ny);});
+  renderCanvas();
+ }
+});
+function endDrag(e){
+ const d=S.drag;if(!d)return;S.drag=null;canvas.classList.remove('panning');
+ if(d.type==='pan'&&!d.moved&&S.sel){S.sel=null;renderCanvas();renderInspector();}
+ if(d.type==='node'&&d.moved)touched();
+ if(d.type==='connect'){
+  const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-node]');
+  const from=nodeById(d.from);
+  if(target&&target.dataset.node!==d.from){const to=nodeById(target.dataset.node);link(to,e.shiftKey?'excludes':'requires',from.id);S.sel={kind:'node',id:to.id};renderInspector();}
+  renderCanvas();
+ }
+}
+canvas.addEventListener('pointerup',endDrag);
+canvas.addEventListener('pointercancel',endDrag);
+canvas.addEventListener('wheel',e=>{
+ e.preventDefault();const v=view(),r=canvas.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+ const k=Math.max(.2,Math.min(2.5,v.k*Math.exp(-e.deltaY*.0015)));
+ v.x=mx-(mx-v.x)*k/v.k;v.y=my-(my-v.y)*k/v.k;v.k=k;applyView();
+},{passive:false});
+canvas.addEventListener('dblclick',e=>{
+ if(!S.doc)return;
+ // Com a captura do ponteiro o alvo do evento é o quadro: o elemento real vem da posição.
+ const hit=document.elementFromPoint(e.clientX,e.clientY);
+ if(hit?.closest('[data-node]')){$('#inspector input')?.focus();return;}
+ if(hit?.closest('[data-edge],[data-branch]'))return;
+ const p=world(e);addNode({at:{x:p.x-W/2,y:p.y-H/2}});
+});
+
+// ───────────── Teclado e botões ─────────────
+const typing=()=>{const a=document.activeElement;return a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT'||a.isContentEditable);};
+document.addEventListener('keydown',e=>{
+ const mod=e.ctrlKey||e.metaKey,k=e.key.toLowerCase();
+ if(mod&&k==='s'){e.preventDefault();save();return;}
+ if(typing())return;
+ if(mod&&k==='z'&&!e.shiftKey){e.preventDefault();undo();}
+ else if(mod&&(k==='y'||k==='z'&&e.shiftKey)){e.preventDefault();redo();}
+ else if(mod&&k==='d'){e.preventDefault();const n=selNode();if(n)duplicate(n);}
+ else if(!mod&&(e.key==='Delete'||e.key==='Backspace')){e.preventDefault();deleteSelection();}
+ else if(e.key==='Escape'){S.sel=null;renderCanvas();renderInspector();$('#issues').classList.remove('open');}
+ else if(!mod&&k==='n'){e.preventDefault();addNode();}
+ else if(!mod&&k==='f'){fit();}
+});
+$('#b-new').onclick=()=>addNode();
+$('#b-undo').onclick=undo;$('#b-redo').onclick=redo;
+$('#b-layout').onclick=autoLayout;$('#b-fit').onclick=()=>fit();
+$('#b-issues').onclick=()=>{const b=$('#issues');b.classList.toggle('open');if(b.classList.contains('open'))renderIssues();};
+$('#b-save').onclick=()=>save();
+$('#b-open').onclick=openFile;$('#w-open').onclick=openFile;
+$('#w-empty').onclick=()=>load(emptyDoc(),{mode:'file'});
+$('#w-draft').onclick=()=>{const d=readDraft();if(d){load(d.doc,{mode:'file'});S.dirty=true;renderStatus();}};
+$('#b-md').onclick=()=>{if(S.doc)download(markdown(S.doc),'arvores.md','text/markdown');};
+$('#b-theme').onclick=()=>{const dark=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()==='#14121a';const t=dark?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem(THEME_KEY,t);}catch{}};
+$('#file-input').onchange=async e=>{const f=e.target.files[0];if(f)loadText(await f.text());e.target.value='';};
+$('#search').addEventListener('input',e=>{S.search=e.target.value.trim();renderCanvas();});
+window.addEventListener('dragover',e=>e.preventDefault());
+window.addEventListener('drop',async e=>{e.preventDefault();const item=[...e.dataTransfer.items].find(i=>i.kind==='file');if(!item)return;const h=item.getAsFileSystemHandle?await item.getAsFileSystemHandle().catch(()=>null):null;const f=item.getAsFile();loadText(await f.text(),h?.kind==='file'?h:null);});
+window.addEventListener('beforeunload',e=>{if(S.dirty){e.preventDefault();e.returnValue='';}});
+let toastTimer=0;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+boot();
+</script>
+</body>
+</html>

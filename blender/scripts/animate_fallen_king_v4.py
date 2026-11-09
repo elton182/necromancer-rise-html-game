@@ -1,6 +1,6 @@
 """Fallen King v4: ações recriadas a partir de poses-chave.
 
-Abre models/boss_fallenKing_v3_teste.blend (modelo e espada ajustados), recria
+Abre models/sources/boss_fallenKing_v3_teste.blend (modelo e espada ajustados), recria
 idle, walk, windup, attack, recover, cast, death e o golpe saltado com as duas
 mãos (slam_windup, slam, slam_recover) e salva em models/boss_fallenKing_v4.blend.
 As cenas anteriores não são alteradas.
@@ -12,11 +12,16 @@ por IK. Cada quadro é travado no chão e gravado para preservar o contato.
 
 blender --background --python blender/scripts/animate_fallen_king_v4.py
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, math, json
 from mathutils import Vector, Matrix, Quaternion
 BASE=Path(__file__).resolve().parents[1]
-bpy.ops.wm.open_mainfile(filepath=str(BASE/'models/boss_fallenKing_v3_teste.blend'))
+bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing_v3_teste.blend')))
 sc=bpy.context.scene
 rig=next(o for o in sc.objects if o.type=='ARMATURE')
 sword=next(o for o in sc.objects if o.type=='MESH' and o.parent_type=='BONE' and o.parent_bone=='mixamorig:RightHand')
@@ -307,5 +312,5 @@ sc.render.fps=24;sc.frame_start=1;sc.frame_end=48;sc.frame_set(1)
 report['source']='models/boss_fallenKing_v3_teste.blend'
 report['status']='Ações recriadas e conferidas no Blender; render de sprites e integração ao jogo pendentes.'
 (BASE/'previews/fallen_king_v4_validation.json').write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/boss_fallenKing_v4.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing_v4.blend')))
 print(json.dumps(report,indent=2,ensure_ascii=False))

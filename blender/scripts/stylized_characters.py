@@ -1,6 +1,11 @@
 """Five chunky, matte low-poly characters, matching the in-game reference.
 blender -b -t 4 --python blender/scripts/stylized_characters.py [-- --preview]
 """
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy,math,sys,json
 from pathlib import Path
 from mathutils import Vector
@@ -56,7 +61,7 @@ def render(ident):
  shading=sc.display.shading;shading.light='STUDIO';shading.studiolight_rotate_z=.4;shading.color_type='MATERIAL';shading.show_shadows=True;shading.show_cavity=False;shading.show_specular_highlight=False;shading.show_object_outline=False
  arm.rotation_euler.z=math.radians(45) if not hero else 0;sc.frame_set(1)
  bpy.ops.object.select_all(action='DESELECT');arm.select_set(True);body.select_set(True)
- bpy.ops.export_scene.gltf(filepath=str(BLENDER/'exports'/('stylized_'+ident+'.glb')),export_format='GLB',use_selection=True,export_animation_mode='ACTIONS')
+ bpy.ops.export_scene.gltf(filepath=asset_path(str(BLENDER/'exports'/('stylized_'+ident+'.glb'))),export_format='GLB',use_selection=True,export_animation_mode='ACTIONS')
  import toon
  toon.toonify(sc,light=(-.5,-.65,.9),bands=(.64,.83,1.0),thick=1,line=(.12,.12,.08));sc.render.use_freestyle=False
  cell=320 if hero else 256;anchor=207 if hero else 184;ppu=56
@@ -65,7 +70,7 @@ def render(ident):
  pitch=math.radians(32);forward=Vector((0,math.cos(pitch),-math.sin(pitch)));target=Vector((0,math.sin(pitch),math.cos(pitch)))*(anchor-cell/2)/ppu
  cam.location=target-forward*12;cam.rotation_euler=(target-cam.location).to_track_quat('-Z','Y').to_euler()
  arm.rotation_euler.z=math.radians(45) if not hero else 0;sc.frame_set(1)
- bpy.ops.wm.save_as_mainfile(filepath=str(BLENDER/'models'/('stylized_'+ident+'.blend')))
+ bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BLENDER/'models'/('stylized_'+ident+'.blend'))))
  folder=BLENDER/'frames'/('frames_stylized_'+ident);folder.mkdir(parents=True,exist_ok=True)
  anims=[('idle','idle',8,5,True),('walk','walk',10,12,True),('cast','cast',8,16,False),('death','death',10,12,False)] if hero else [('idle','idle',8,5,True),('greet','attack',8,6,True)]
  meta={'cell':cell,'ppu':ppu,'anchorX':cell//2,'anchorY':anchor,'dirs':8,'anims':{}}

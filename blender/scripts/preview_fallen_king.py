@@ -1,9 +1,14 @@
 """Prévias do modelo importado, sem alterar a cena fonte."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import bpy, math
 from mathutils import Vector
 BASE=Path(__file__).resolve().parents[1]
-bpy.ops.wm.open_mainfile(filepath=str(BASE/'models/boss_fallenKing.blend'))
+bpy.ops.wm.open_mainfile(filepath=asset_path(str(BASE/'models/boss_fallenKing.blend')))
 sc=bpy.context.scene
 rig=next(o for o in sc.objects if o.type=='ARMATURE')
 sc.render.engine='CYCLES';sc.cycles.samples=16

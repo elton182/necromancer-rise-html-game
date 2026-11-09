@@ -392,6 +392,49 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
   o.lx=e.x;o.lz=e.y;
  };
 
+ // Meteoro do Mago: bola de fogo que desce do céu, vinda de trás de quem lançou, até o ponto marcado. Núcleo claro,
+ // brilho, rastro de chamas e a sombra crescendo no chão. Só desenho: a posição sai do tempo do evento e o dano
+ // continua na simulação (marksman.mjs), no fim da queda.
+ let meteorGeo=null;
+ INIT.meteor=(o,e)=>{
+  meteorGeo=meteorGeo||new THREE.SphereGeometry(.42,16,12);
+  o.core=new THREE.Mesh(meteorGeo,new THREE.MeshBasicMaterial({color:new THREE.Color('#ffe2a0'),fog:false}));o.core.renderOrder=12;scene.add(o.core);o.objs.push(o.core);
+  o.glow=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.color||'#ff6a2a'),transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending}));o.glow.renderOrder=13;scene.add(o.glow);o.objs.push(o.glow);
+  o.shadow=decal(o,textures.disc,'#1a0904',{y:.055,opacity:0});o.shadow.position.set(e.x,.055,e.y);
+  const d=Math.hypot(e.dx||0,e.dy||0)||1;o.sx=e.x-(e.dx||0)/d*4.5;o.sz=e.y-(e.dy||1)/d*4.5;o.last=null;
+ };
+ RUN.meteor=(o,e,step)=>{
+  const u=clamp01(e.time/e.duration),k=Math.pow(u,1.6),x=lerp(o.sx,e.x,k),z=lerp(o.sz,e.y,k),h=lerp(11,.45,k);
+  o.core.position.set(x,h,z);o.core.scale.setScalar(1+.25*u);
+  o.glow.position.set(x,h,z);o.glow.scale.setScalar(3.4*(.92+.08*Math.sin(time*31)));
+  o.shadow.scale.setScalar((e.radius||2.8)*(.25+.75*u));o.shadow.material.opacity=.5*u;
+  if(step>0&&o.last){const n=Math.max(2,Math.round(step*140*density));for(let i=0;i<n;i++){const t=Math.random(),px=lerp(o.last.x,x,t),ph=lerp(o.last.h,h,t),pz=lerp(o.last.z,z,t);
+   particles.emit({x:px+rand(-.15,.15),h:ph+rand(-.15,.15),z:pz+rand(-.15,.15),vx:rand(-.5,.5),vh:rand(.2,1.2),vz:rand(-.5,.5),life:rand(.3,.6),s0:rand(.45,.8),s1:.12,c0:[1,.82,.4],c1:[.85,.18,.04],a0:1,grav:-.6,drag:1.2,shape:1+Math.random()});
+   if(Math.random()<.3)particles.emit({x:px,h:ph,z:pz,vx:rand(-.3,.3),vh:rand(.3,.8),vz:rand(-.3,.3),life:rand(.8,1.3),s0:.6,s1:1.6,c0:[.22,.18,.15],c1:[.32,.29,.27],a0:.3,grav:-.2,drag:.6});}}
+  o.last={x,h,z};
+ };
+
+ // Esfera de Gelo do Mago: um pequeno planeta gelado com dois anéis inclinados, como Saturno, flutuando à altura do
+ // peito. O planeta gira, os anéis acompanham a rotação da simulação (e.spin) e cristais de geada se soltam da borda.
+ let planetGeo=null;
+ INIT.iceOrb=(o,e)=>{
+  planetGeo=planetGeo||new THREE.SphereGeometry(1,24,16);const r=e.radius||1.1;
+  o.planet=new THREE.Mesh(planetGeo,new THREE.MeshStandardMaterial({color:new THREE.Color('#9fd9f2'),emissive:new THREE.Color('#1f6f9c'),emissiveIntensity:.45,roughness:.45,metalness:.05,flatShading:true}));
+  o.planet.scale.setScalar(r*.62);o.planet.renderOrder=11;scene.add(o.planet);o.objs.push(o.planet);
+  o.rings=[[1.05,1.4,.7,'#e8f9ff'],[1.5,1.7,.45,'#9fe0ff']].map(([a,b,op,c])=>{const m=new THREE.Mesh(new THREE.RingGeometry(r*a,r*b,64),new THREE.MeshBasicMaterial({color:new THREE.Color(c),transparent:true,opacity:op,side:THREE.DoubleSide,depthWrite:false,fog:false}));m.userData.ownGeometry=true;m.renderOrder=12;scene.add(m);o.objs.push(m);return m;});
+  o.halo=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.color||'#9fe0ff'),transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.28}));o.halo.renderOrder=10;scene.add(o.halo);o.objs.push(o.halo);
+  o.shadow=decal(o,textures.disc,'#0d2230',{y:.055,opacity:.35});o.acc=0;
+ };
+ RUN.iceOrb=(o,e,step)=>{
+  const r=e.radius||1.1,h=1.35+.12*Math.sin(time*2.4);
+  o.planet.position.set(e.x,h,e.y);o.planet.rotation.set(.35,time*1.6,.2);
+  // Inclinação escolhida comparando ângulos na câmera do jogo: elipse aberta cruzando o planeta, como Saturno.
+  o.rings.forEach(m=>{m.position.set(e.x,h,e.y);m.rotation.set(-Math.PI/2-.6,.3,0);});
+  o.halo.position.set(e.x,h,e.y);o.halo.scale.setScalar(r*2.6*(.94+.06*Math.sin(time*7)));
+  o.shadow.position.set(e.x,.055,e.y);o.shadow.scale.setScalar(r*1.3);
+  o.acc+=step*60*density;while(o.acc>=1){o.acc--;const a=rand(0,TAU),rr=r*rand(1.05,1.6);particles.emit({x:e.x+Math.cos(a)*rr,h:h+rand(-.12,.12)+Math.sin(a)*rr*.35,z:e.y+Math.sin(a)*rr,vx:-Math.sin(a)*1.2,vh:rand(-.2,.2),vz:Math.cos(a)*1.2,life:rand(.35,.7),s0:rand(.1,.2),s1:.02,c0:[.95,1,1],c1:[.55,.85,1],a0:.9,drag:1.4});}
+ };
+
  // Arremesso em arco (bomba e garrafa do Mercenário): a posição sai do tempo do evento, sem estado na simulação.
  let lobGeo=null;
  INIT.lob=(o,e)=>{lobGeo=lobGeo||new THREE.SphereGeometry(.2,12,8);const m=new THREE.Mesh(lobGeo,new THREE.MeshBasicMaterial({color:new THREE.Color(e.color||'#2a2420')}));m.renderOrder=11;scene.add(m);o.objs.push(m);o.m=m;};

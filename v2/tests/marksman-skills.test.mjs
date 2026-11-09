@@ -43,7 +43,7 @@ test('passivas: vida, recurso, dano, armadura e movimento; ficha lista as açõe
  assert.ok(Math.abs(r.move-base.move*1.15)<1e-9);assert.equal(r.hpRegen,base.hpRegen+2);
  const m=marksmanAttributes('mercenary',10,{},{armor:5,stamina:5,caliber:5});assert.equal(m.defense,20);
  const w=field('archer',{pierce:1});const skills=snapshotFor(w).skills;
- assert.deepEqual(skills.map(s=>[s.id,s.equipped]),[['arrow',true],['pierce',true],['leap',false],['rain',false],['fan',false]]);
+ assert.deepEqual(skills.map(s=>[s.id,s.equipped]),[['arrow',true],['pierce',true],['leap',false],['rain',false],['fan',false],['saraivadaSeguidora',false],['impactoCeleste',false],['penasVoadoras',false]]);
 });
 
 test('ações bloqueadas sem selo não gastam recurso nem iniciam recarga',()=>{

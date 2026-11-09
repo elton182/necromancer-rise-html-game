@@ -1,4 +1,9 @@
 """Teste de GLB importado: -- rigged para o mago animado; preview para poses."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 from pathlib import Path
 import sys, math, json
 import bpy
@@ -9,7 +14,7 @@ RIGGED = 'rigged' in sys.argv
 NAME = 'rigged_player' if RIGGED else 'imported_player'
 SOURCE = 'purple_hooded_mage.glb' if RIGGED else 'necromancer_1.glb'
 bpy.ops.wm.read_factory_settings(use_empty=True)
-bpy.ops.import_scene.gltf(filepath=str(BASE / 'exports'/SOURCE))
+bpy.ops.import_scene.gltf(filepath=asset_path(str(BASE / 'exports'/SOURCE)))
 bpy.context.view_layer.update()
 meshes = [o for o in bpy.context.scene.objects if o.type == 'MESH' and not o.hide_render and o.visible_get()]
 depsgraph = bpy.context.evaluated_depsgraph_get()
@@ -191,7 +196,7 @@ if RIGGED:
     staff.rotation_quaternion=arm.pose.bones['mixamorig:RightHand'].matrix.to_3x3().inverted().to_quaternion()
     upright=staff.constraints.new('COPY_ROTATION');upright.name='Cajado vertical'
     upright.target=root;upright.owner_space='WORLD';upright.target_space='WORLD'
-    bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models'/f'{NAME}.blend'))
+    bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models'/f'{NAME}.blend')))
     if 'poses' in sys.argv:sys.exit(0)
     for ai,(name,n,fps,loop) in enumerate(specs):
         if 'walk-only' in sys.argv and name!='walk':continue
@@ -215,7 +220,7 @@ if RIGGED:
                 for body in meshes:body.is_holdout=False
     (BASE/f'spritesheets/{NAME}_sheet.json').write_text(json.dumps(meta,indent=2))
     sys.exit(0)
-bpy.ops.wm.save_as_mainfile(filepath=str(BASE/'models/imported_player.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=asset_path(str(BASE/'models/imported_player.blend')))
 for di in (range(1) if 'preview' in sys.argv else range(8)):
     root.rotation_euler.z = math.radians(90-di*45)
     sc.render.filepath = str(out/f'{di}.png')

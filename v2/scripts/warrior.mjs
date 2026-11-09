@@ -1,9 +1,11 @@
 import {dealDamage} from './combat.mjs';
 import {lineClear,moveCircle} from './terrain.mjs';
 import {fx} from './vfx-events.mjs';
-import {warriorActionLearned,warriorTornado,activeStance,warriorStanceId,STANCE_COOLDOWN,STANCES} from './warrior-model.mjs';
+import {warriorActionLearned,warriorTornado,activeStance,warriorStanceId,STANCE_COOLDOWN,STANCES,WARRIOR_ACTION_COUNT,STEEL_WAVE_ACTION} from './warrior-model.mjs';
 export const COMBO_WINDOW=.45;
 export const THRUST_TIMING={animation:11/30,advanceStart:6/30,impact:11/30,recovery:.12};
+// Estocada: avança até 7 u na direção da mira e perfura 3,4 u além do ponto final (alcance total 10,4 u).
+export const THRUST_ADVANCE=7;
 export const RICOCHET={range:6,falloff:.8};
 export const WAR_CRY={radius:6,slow:.3,slowTime:4,rally:6};
 export const STEEL_WAVE={length:7,speed:18,radius:.9,step:.9};
@@ -15,14 +17,15 @@ export const WARRIOR_ACTIONS=[
  {name:'Corte tornado',cost:5,cooldown:3,duration:Infinity,range:2.7,arc:Math.PI*2,impacts:[.15],multipliers:[.65],clips:['slash_2']},
  {name:'Arremesso de escudo',cost:20,cooldown:7,duration:.4,range:8,impacts:[.18],multipliers:[1.2],clips:['shield_bash']},
  {name:'Brado de Guerra',cost:0,cooldown:18,duration:.5,impacts:[.2],multipliers:[0],clips:['shield_bash']},
- {name:'Onda de Aço',cost:25,cooldown:8,duration:.4,range:STEEL_WAVE.length,impacts:[8/30],multipliers:[1.8],clips:['slash_3']},
+ // Onda de Aço: não ocupa slot; o terceiro corte a lança, sem custo, com recarga própria.
+ {name:'Onda de Aço',cost:0,cooldown:8,duration:.4,range:STEEL_WAVE.length,impacts:[8/30],multipliers:[1.8],clips:['slash_3']},
 ];
 // Ações que resolvem o efeito no impacto por conta própria, sem o laço de golpe corpo a corpo.
 const LAUNCHED=new Set([5,6,7]);
 const warriorPower=w=>w.player.damage*(activeStance(w)?.damage??1);
 export function warriorAction(w,index=0,aim=w.aim){
  const a=WARRIOR_ACTIONS[index],p=w.player;
- if(index===3||!warriorActionLearned(index,w.warriorRanks)||[2,5].includes(index)&&(!w.equipment?.shield||w.warriorShieldFlight))return false;
+ if(index===3||index>=WARRIOR_ACTION_COUNT||!warriorActionLearned(index,w.warriorRanks)||[2,5].includes(index)&&(!w.equipment?.shield||w.warriorShieldFlight))return false;
  if(!a||w.paused||p.hp<=0||p.dead||w.dash.remaining>0)return false;
  const dx=aim.x-p.x,dy=aim.y-p.y,d=Math.hypot(dx,dy);
  if(!Number.isFinite(d)||d<1e-9||index===1&&p.rootTime>0)return false;
@@ -40,7 +43,7 @@ export function warriorAction(w,index=0,aim=w.aim){
  if(index===1)w.warriorMomentum=null;if([2,5].includes(index))w.warriorRiposte=null;
  p.mp-=a.cost;(w.warriorCooldowns??=[])[index]=w.time+(index===0?duration:a.cooldown*(1-(w.modifiers?.gearCooldown||0)/100));
  w.castCooldown=duration;p.angle=Math.atan2(dx,dy);p.animation=a.clips[index===0?stage:0];p.animationTime=0;p.actionId++;p.timer=duration;
- w.warriorAction={index,stage,duration,damageFactor:1+bonus,time:0,next:0,queued:null,origin:{x:p.x,y:p.y},dx:dx/d,dy:dy/d,travel:index===1?Math.min(5,Math.max(0,d-2.2)):0,tornado:index===4?warriorTornado(w.warriorTornadoVariant,w.warriorRanks):null};
+ w.warriorAction={index,stage,duration,damageFactor:1+bonus,time:0,next:0,queued:null,origin:{x:p.x,y:p.y},dx:dx/d,dy:dy/d,travel:index===1?Math.min(THRUST_ADVANCE,Math.max(0,d-2.2)):0,tornado:index===4?warriorTornado(w.warriorTornadoVariant,w.warriorRanks):null};
  return true;
 }
 // Troca instantânea: não passa pelo caminho das ações e não interrompe o golpe em andamento.
@@ -89,6 +92,8 @@ export function tickWarrior(w,dt){
   }
   if(s.index===1)w.effects.push({id:w.nextId++,kind:'thrust',fx:'thrust',x:s.origin.x,y:s.origin.y,dx:s.dx,dy:s.dy,length:Math.hypot(p.x-s.origin.x,p.y-s.origin.y)+a.range,radius:a.radius,time:0,duration:.25,color:'#ffd9a0',visual:true});
   else w.effects.push({id:w.nextId++,kind:'slash',fx:'slash',x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:range,arc:a.arc,time:0,duration:.22,color:s.index===2?'#a8d4ec':'#ffd9a0',visual:true});
+  // Onda de Aço: o terceiro corte a lança na direção do golpe, se o selo foi aprendido e a recarga acabou.
+  if(s.index===0&&s.stage===2&&(w.warriorRanks?.steelWave||0)>0&&!(w.warriorWaveReady>w.time+1e-9)){launchWave(w,s);w.warriorWaveReady=w.time+WARRIOR_ACTIONS[STEEL_WAVE_ACTION].cooldown*(1-(w.modifiers?.gearCooldown||0)/100);}
  }
  if(s.time+1e-9>=s.duration){
   const excess=Math.max(0,s.time-s.duration);w.warriorAction=null;p.timer=0;w.castCooldown=0;

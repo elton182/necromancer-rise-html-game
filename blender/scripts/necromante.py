@@ -1,3 +1,8 @@
+
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
 # Necromante — modelo low-poly + esqueleto + animações (idle, walk, cast, death) -> .glb
 # Uso:  blender -b -P necromante.py   (ou python necromante.py com o módulo bpy)
 import bpy, bmesh, math, os, sys
@@ -271,7 +276,7 @@ arm.animation_data.action=bpy.data.actions['idle']; sc.frame_start=1; sc.frame_e
 # ───────── export ─────────
 if os.environ.get('NO_EXPORT')!='1':
     bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.export_scene.gltf(filepath=os.path.join(EXPORT_DIR,'necromante.glb'), export_format='GLB', export_animations=True,
+    bpy.ops.export_scene.gltf(filepath=asset_path(os.path.join(EXPORT_DIR,'necromante.glb')), export_format='GLB', export_animations=True,
         export_animation_mode='ACTIONS', export_skins=True, export_yup=True, export_apply=False, export_force_sampling=True)
-    bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT,'necromante.blend'))
+    bpy.ops.wm.save_as_mainfile(filepath=asset_path(os.path.join(OUT,'necromante.blend')))
 print('OK', len(body.data.vertices), 'verts', len(body.data.polygons), 'faces', [a.name for a in bpy.data.actions])

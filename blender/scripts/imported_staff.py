@@ -1,10 +1,15 @@
 """Extrai o cajado original por componente soldado e o monta na mão direita."""
+import sys as _asset_sys
+from pathlib import Path as _AssetPath
+_asset_sys.path.insert(0, str(_AssetPath(__file__).resolve().parent))
+from asset_paths import asset_path
+
 import bpy,bmesh
 from mathutils import Vector,Matrix
 
 def attach(base,arm):
     before=set(bpy.data.objects)
-    bpy.ops.import_scene.gltf(filepath=str(base/'exports/necromancer_1.glb'))
+    bpy.ops.import_scene.gltf(filepath=asset_path(str(base/'exports/necromancer_1.glb')))
     objects=[o for o in bpy.data.objects if o not in before]
     source=next(o for o in objects if o.type=='MESH' and o.visible_get())
     bm=bmesh.new();bm.from_mesh(source.data)

@@ -1,0 +1,135 @@
+{
+  "fps": 30,
+  "bones": 67,
+  "weights": {
+    "FloraHumanBody": {
+      "unweighted": 0,
+      "max_influences": 4,
+      "normalization_error": 9.685754776000977e-08
+    },
+    "FloraHumanStaff": {
+      "unweighted": 0,
+      "max_influences": 1,
+      "normalization_error": 0.0
+    }
+  },
+  "clips": {
+    "idle": {
+      "action": "AN_FloraHuman_idle",
+      "frames": [
+        1,
+        97
+      ],
+      "seconds": 3.2,
+      "loop_error": 0.0,
+      "body_min_z": -1.290783160357023e-07,
+      "staff_min_z": 0.0021488070487976074,
+      "ankle_travel": 0.0,
+      "staff_rigidity_error": 2.862419592186592e-07
+    },
+    "walk": {
+      "action": "AN_FloraHuman_walk",
+      "frames": [
+        1,
+        27
+      ],
+      "seconds": 0.8666666666666667,
+      "loop_error": 8.940696716308594e-06,
+      "body_min_z": -3.912526153726503e-06,
+      "staff_min_z": 0.021234512329101562,
+      "ankle_travel": 0.3342952284270128,
+      "staff_rigidity_error": 2.653076323086747e-07
+    },
+    "cast": {
+      "action": "AN_FloraHuman_cast",
+      "frames": [
+        1,
+        15
+      ],
+      "seconds": 0.4666666666666667,
+      "loop_error": null,
+      "body_min_z": -4.31229273090139e-05,
+      "staff_min_z": 0.002000093460083008,
+      "ankle_travel": 0.0002645309480883587,
+      "staff_rigidity_error": 1.9082797281243946e-07
+    },
+    "cast_up": {
+      "action": "AN_FloraHuman_cast_up",
+      "frames": [
+        1,
+        22
+      ],
+      "seconds": 0.7,
+      "loop_error": null,
+      "body_min_z": -3.4878346468758537e-06,
+      "staff_min_z": 0.001999974250793457,
+      "ankle_travel": 9.270905513089773e-05,
+      "staff_rigidity_error": 2.7677678497145637e-07
+    },
+    "slam": {
+      "action": "AN_FloraHuman_slam",
+      "frames": [
+        1,
+        19
+      ],
+      "seconds": 0.6,
+      "loop_error": null,
+      "body_min_z": -7.733184247626923e-06,
+      "staff_min_z": 1.7881393432617188e-07,
+      "ankle_travel": 0.00022396257125334806,
+      "staff_rigidity_error": 3.0538293021796936e-07
+    },
+    "dodge": {
+      "action": "AN_FloraHuman_dodge",
+      "frames": [
+        1,
+        16
+      ],
+      "seconds": 0.5,
+      "loop_error": null,
+      "body_min_z": -5.183392204344273e-06,
+      "staff_min_z": 0.00200045108795166,
+      "ankle_travel": 0.0006582238350580894,
+      "staff_rigidity_error": 2.735489569706592e-07
+    },
+    "death": {
+      "action": "AN_FloraHuman_death",
+      "frames": [
+        1,
+        37
+      ],
+      "seconds": 1.2,
+      "loop_error": null,
+      "body_min_z": -5.21540641784668e-08,
+      "staff_min_z": 0.006283581256866455,
+      "ankle_travel": 0.41571214905468173,
+      "staff_rigidity_error": 2.5288109106536417e-07
+    },
+    "strafe_left": {
+      "action": "AN_FloraHuman_strafe_left",
+      "frames": [
+        1,
+        25
+      ],
+      "seconds": 0.8,
+      "loop_error": 0.0,
+      "body_min_z": -3.364402800798416e-06,
+      "staff_min_z": 0.02490389347076416,
+      "ankle_travel": 0.19000555893063498,
+      "staff_rigidity_error": 2.457562461863554e-07
+    },
+    "strafe_right": {
+      "action": "AN_FloraHuman_strafe_right",
+      "frames": [
+        1,
+        25
+      ],
+      "seconds": 0.8,
+      "loop_error": 0.0,
+      "body_min_z": -2.987915650010109e-06,
+      "staff_min_z": 0.02490401268005371,
+      "ankle_travel": 0.190004794288087,
+      "staff_rigidity_error": 2.585254843964796e-07
+    }
+  }
+}

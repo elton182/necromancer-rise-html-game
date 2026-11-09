@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "classId": "archer",
+      "checks": [
+        "painel de talentos",
+        "barra montável",
+        "Saraivada Seguidora",
+        "Impacto Celeste",
+        "Penas Voadoras",
+        "Tiro Seguidor",
+        "chão claro e qualidade baixa"
+      ],
+      "errors": [],
+      "remote": []
+    },
+    {
+      "classId": "mercenary",
+      "checks": [
+        "painel de talentos",
+        "barra montável",
+        "Rede de Caça",
+        "Armadilha de Urso",
+        "chão claro e qualidade baixa"
+      ],
+      "errors": [],
+      "remote": []
+    }
+  ]
+}

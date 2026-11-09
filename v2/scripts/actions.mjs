@@ -1,6 +1,7 @@
 import R from './horde-rules.mjs';
 export const SPELL_NODES={raio:'bolt',dash:'dash',lich:'lichform',chuva:'rain',explosao:'nova',maos:'wall',barreira:'shield',maldicao:'curse'};
-export const SPELL_NAMES={raio:'Tiro de Osso',dash:'Dash',chuva:'Chuva de Ossos',explosao:'Explosão Necrótica',maos:'Muralha de Corpos',barreira:'Escudo de Carne',maldicao:'Maldição da Fraqueza',lich:'Forma da Morte'};
-export const ACTIONS=['empty','raio','dash',...R.types,'chuva','explosao','maos','barreira','maldicao','lich'];
+export const SPELL_NAMES={raio:'Tiro de Osso',dash:'Dash',chuva:'Chuva de Ossos',explosao:'Explosão Necrótica',maos:'Muralha de Corpos',barreira:'Escudo de Carne',maldicao:'Maldição da Fraqueza',lich:'Forma da Morte',caoZumbi:'Cão Zumbi',mages:'Magos'};
+// Cão Zumbi e Magos são tipos da horda exclusivos da v2 (R.types, de v2/tools/horde-source.cjs).
+export const ACTIONS=['empty','raio','dash',...R.types.filter(t=>!R.defs[t].v2),'chuva','explosao','maos','barreira','maldicao','lich',...R.types.filter(t=>R.defs[t].v2)];
 export function available(army,id){const p=army.profile,g=p.grants||[];return ACTIONS.includes(id)&&(id==='empty'||id==='raio'||id==='dash'||p.campaign&&(g.includes(id)||id==='zombie'&&g.includes('summon'))||!!army.profile.ranks[SPELL_NODES[id]||id]);}
 export function actionName(id){return (id==='specter'?'Possessão':null)||SPELL_NAMES[id]||R.defs[id]?.name||(id==='empty'?'Vazio':id);}

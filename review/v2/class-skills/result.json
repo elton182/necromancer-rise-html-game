@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "necromancer",
+    "warrior",
+    "druid",
+    "mage",
+    "archer",
+    "mercenary",
+    "necromancer"
+  ],
+  "errors": []
+}

@@ -5,14 +5,17 @@ import {PASSIVES,warriorRanks,warriorBudget,warriorSpent,canLearn,warriorTornado
 import {DRUID_NODES,druidRanks,druidBudget,druidSpent,canLearnDruid} from './druid-model.mjs';
 import {MARKSMAN_NODES,marksmanRanks,marksmanBudget,marksmanSpent,canLearnMarksman} from './marksman-model.mjs';
 import {applyAttributes,levelOf,xpNext} from './progression.mjs';
+import {treeBranches,requirementsMet,excludedBy} from './skill-tree.mjs';
+// Ramos e posições vêm de docs/habilidades/arvores.json (skill-tree-data.mjs): x em % da coluna, y em px.
+// Aqui só se escolhe o ícone de cada ramo.
+const CREST={sword:'slash',shield:'shieldDefense',passives:'vitality',veteran:'star',storm:'spark',nature:'roots',wild:'wolf',bow:'shot',hunt:'leap',crossbow:'quarrel',powder:'bomb',fire:'fireball',frost:'frost',arcane:'bolt'};
+const branchesOf=classId=>treeBranches(classId).map(b=>({...b,crest:CREST[b.id]||b.nodes[0][0]}));
+export const BRANCHES=branchesOf('warrior'),DRUID_BRANCHES=branchesOf('druid'),ARCHER_BRANCHES=branchesOf('archer'),MAGE_BRANCHES=branchesOf('mage'),MERCENARY_BRANCHES=branchesOf('mercenary');
+const KIND={'ativa':'Habilidade','evocação':'Evocação','passiva':'Aperfeiçoamento','aperfeiçoamento':'Aperfeiçoamento','sinergia':'Sinergia','variante':'Variante','especialização':'Especialização'};
+const kindOf=nodes=>id=>KIND[nodes[id]?.type]||'Habilidade';
+// Altura do quadro: cabe a linha mais baixa de qualquer ramo da classe.
+const graphHeight=branches=>Math.max(372,...branches.flatMap(b=>b.nodes.map(([,,y])=>Y(y)+TILE+20)));
 import {ensureArtDefs} from './item-icons.mjs';
-// Posições: x em % da coluna, y em px. Ids preservados; os testes contam selos e ligações.
-export const BRANCHES=[
- {id:'sword',name:'Espada',motto:'Precisão e impacto',color:'#d2553a',crest:'slash',nodes:[['slash',24,18],['thrust',76,18],['momentum',24,122],['tornado',76,122],['steelWave',24,226],['tornadoCyclone',76,226],['tornadoWhirl',76,330]]},
- {id:'shield',name:'Escudo',motto:'Guarda e retaliação',color:'#4f86c6',crest:'shieldDefense',nodes:[['bash',24,18],['shieldDefense',76,18],['shieldThrow',24,122],['riposte',76,122],['ricochet',24,226]]},
- {id:'passives',name:'Passivas',motto:'O corpo como fortaleza',color:'#79a446',crest:'vitality',nodes:[['strength',24,18],['vitality',76,18],['armor',24,122],['regeneration',76,122],['equipmentMastery',50,226]]},
- {id:'veteran',name:'Veterano',motto:'A experiência do campo',color:'#9a63c4',crest:'star',nodes:[['stance',24,18],['warCry',76,18]]},
-];
 const PATHS={slash:'M9 30 28 5l-3 13-13 15M6 25l11 8M7 36l5-7',thrust:'M4 32 31 5M22 6h10v10M9 24l7 7M5 36l5-7',tornado:'M6 13c3-9 24-9 25 1 1 8-22 4-23 12-1 8 17 11 23 3M5 20c7-5 19 1 25-3M28 28l4 1-2 5',bash:'M8 6 27 6 31 15 28 29 18 36 7 27 4 14ZM3 18h13M11 13l5 5-5 5',shieldDefense:'M18 4 31 10 28 27 18 36 8 27 5 10ZM11 19l5 5 9-12',shieldThrow:'M16 6 28 11 25 26 16 33 7 26 4 11ZM27 5c9 5 11 18 3 25M29 25l1 5 5-2',riposte:'M7 8h13l3 8-3 11-7 6-7-7-2-11ZM22 23 33 6M26 6h8v8',strength:'M8 32 27 6l-2 12-13 17M6 27l12 8M22 27l6 6M27 23l6 7',vitality:'M18 33C-3 20 1 7 10 7c4 0 6 2 8 5 2-3 4-5 8-5 9 0 13 13-8 26ZM6 19h7l3-6 4 13 3-7h7',armor:'M10 6 18 10 26 6 33 14 28 21 25 18 29 34H7l4-16-3 3-5-7ZM18 11v21',regeneration:'M18 5C15 12 6 19 7 26c1 13 21 13 22 0 1-7-8-14-11-21ZM18 19v12M12 25h12',equipmentMastery:'M7 5l7 9-4 5-7-6c-2 9 7 13 12 8l13 13 6-6-13-13c5-6 0-14-8-12l6 7-5 4Z',momentum:'M5 28h9l-3 7 19-22H19l5-10ZM3 12h9M2 19h6',ricochet:'M4 30 15 9l8 15 11-16M9 6l6 3 3-6M29 8h5v5',steelWave:'M5 10c9 2 9 18 0 20M14 8c9 3 9 21 0 24M23 11c5 3 5 15 0 18M25 20h10M31 16l4 4-4 4',tornadoCyclone:'M3 12c6-9 26-9 32 0M7 20c5-6 19-6 24 0M12 28c3-3 11-3 14 0M19 28v8',tornadoWhirl:'M26 7c-7-5-19-1-19 9 0 8 9 12 15 8 4-3 3-10-2-11-4-1-7 3-5 6M30 5l4 2-2 4M31 30H19M34 35H24',stance:'M19 4v32M6 11h9l-3 13H3ZM32 11h-9l3 13h9ZM6 11l6-5M32 11l-6-5',warCry:'M5 15v10l9 2 13 8V5L14 13ZM14 13v14M31 13c3 4 3 10 0 14M9 27l2 8h4l-2-8'};
 Object.assign(PATHS,{spark:'M22 3 9 22h9l-4 15 15-21h-9l4-13Z',chain:'M5 6l6 8-4 4 9 5-3 9M20 32l6-6 4 4 5-6M27 5l-2 7 5 2',storm:'M9 20a6 6 0 0 1 2-11 8 8 0 0 1 15 1 5 5 0 0 1 2 10ZM20 20l-4 8h6l-4 9',roots:'M19 4v14M19 18c-6 0-9 5-12 12M19 18c6 0 9 5 12 12M19 18v18M12 26l-4 2M26 26l4 2M3 18h32',thornbind:'M6 34 32 6M10 24l-4-3M14 20l-1-5M20 14l4-3M24 18l5 1M17 26l4 3M12 30l-3 4',rejuvenate:'M8 32C8 16 18 6 32 6c0 14-10 24-24 26ZM8 32 24 16M26 26v10M21 31h10',wolf:'M7 6l6 9h12l6-9 1 14-6 9-7 6-7-6-6-9ZM14 21h2M22 21h2M17 29h4',leap:'M4 32c4-16 20-22 30-14M34 18l-2 7M34 18l-7-1M3 36h12',wildHeart:'M19 33C-2 20 2 7 11 7c4 0 6 2 8 5 2-3 4-5 8-5 9 0 13 13-8 26ZM13 15l3 10M19 14v11M25 15l-3 10',howl:'M24 5a12 12 0 1 0 10 17 10 10 0 0 1-10-17ZM4 26h8M3 31h11M5 36h7',wisdom:'M3 10c6-3 11-3 16 2 5-5 10-5 16-2v22c-6-3-11-3-16 2-5-5-10-5-16-2ZM19 12v22',sap:'M18 5C15 12 6 19 7 26c1 13 21 13 22 0 1-7-8-14-11-21ZM13 27c3 0 7-2 8-7',attunement:'M15 19a4 4 0 1 0 8 0 8 8 0 1 0-16 0 12 12 0 1 0 24 0',leaf:'M6 34C6 16 18 5 33 5c0 16-12 28-27 29ZM6 34 25 14M14 27l-6-2M19 22l-1-7'});
 // Arqueira e Mercenário.
@@ -20,6 +23,10 @@ Object.assign(PATHS,{bow:'M10 4c12 4 18 15 18 30M10 4v30M10 34h18M4 19h26M25 15l
 PATHS.star='M19 4l4.2 8.6 9.3 1.3-6.8 6.5 1.6 9.3L19 25.3l-8.3 4.4 1.6-9.3-6.8-6.5 9.3-1.3Z';
 PATHS.lock='M12 18v-5a7 7 0 0 1 14 0v5M9 18h20v16H9ZM19 24v5';
 PATHS.check='M8 20l7 7 15-15';
+// Druida, Mago e Necromante: habilidades novas (docs/habilidades/arvores.json).
+Object.assign(PATHS,{turbilhao:'M30 12c-6-6-20-5-22 4-2 8 9 11 14 6 3-3 1-8-3-7M6 30h14M10 35h18',tornado:'M5 7h28M8 14h22M11 21h16M14 28h10M17 34h4',furacao:'M19 4a15 15 0 1 1-15 15M19 10a9 9 0 1 1-9 9M19 16a3 3 0 1 1-3 3',corteSangrento:'M8 6l8 14M15 4l7 15M22 5l6 14M12 26c0 4 3 6 5 6s5-2 5-6c0-3-5-8-5-8s-5 5-5 8Z',garraDeGelo:'M8 6l8 14M15 4l7 15M22 5l6 14M19 22v14M13 25l12 8M25 25l-12 8',setasPerseguidoras:'M4 32c8-4 14-12 16-22M10 34c8-2 15-8 18-16M17 35c7-1 12-4 16-10M16 6l4 4 3-5',esferaDeGelo:'M19 7a12 12 0 1 1 0 24 12 12 0 1 1 0-24ZM19 3v6M19 29v6M5 19h6M27 19h6M10 10l4 4M24 24l4 4',familiarDeFogo:'M19 35c-7 0-11-5-10-11 1-5 5-7 6-12 3 3 3 6 2 9 3-2 5-6 4-11 6 4 9 10 8 15-1 6-4 10-10 10Z',golemDeGelo:'M12 8h14v8H12ZM9 16h20v12H9ZM11 28v7M27 28v7M5 17v9M33 17v9M15 12h2M21 12h2',caoZumbi:'M6 22l5-8h9l4-5 3 4 5 1-2 5-5 2v9M11 22v9M17 22v9M25 24l3 7',cerberus:'M4 18l4-6 4 2 4-6 4 6 4-6 4 6 4-2 4 6-4 4H8ZM10 22v10M19 22v10M28 22v10',mages:'M19 4l-8 14h16ZM13 18h12v14H13ZM17 23h4M6 34h26',raioNecrotico:'M5 33 20 18M20 18l4-10 3 7 6-3-5 9M5 33l3-8M5 33l8-3',rupturaNecrotica:'M19 19m-4 0a4 4 0 1 0 8 0 4 4 0 1 0-8 0M19 4v7M19 27v7M4 19h7M27 19h7M8 8l5 5M25 25l5 5M30 8l-5 5M8 30l5-5'});
+// Arqueira e Mercenário: habilidades novas (docs/habilidades/arvores.json).
+Object.assign(PATHS,{saraivadaSeguidora:'M4 30c8-2 14-8 18-16M4 22c8 0 14-3 18-8M4 14c8 2 14 1 18 0M28 4a5 5 0 1 0 .1 0',impactoCeleste:'M19 3v13M13 10l6 6 6-6M4 30h30M9 24l4 6M29 24l-4 6M19 21v9M12 35h14',penasVoadoras:'M8 32C10 18 20 8 32 5c-2 12-11 22-24 27ZM8 32 24 14M14 26h6M18 21h6',redeDeCaca:'M5 8h28v24H5ZM5 16h28M5 24h28M12 8v24M19 8v24M26 8v24',armadilhaDeUrso:'M4 21h30M7 21l3-8 3 8 3-8 3 8 3-8 3 8 3-8 3 8M7 21l3 8 3-8 3 8 3-8 3 8 3-8 3 8 3-8'});
 PATHS.swords='M5 5l20 20M25 25l4-1 1 4-4 1ZM33 5 13 25M13 25l-4-1-1 4 4 1M7 31l4-4M31 31l-4-4';
 // Os traçados não ocupam o centro da área 38×40 em que foram desenhados: cada ícone é medido uma vez
 // num <svg> fora da tela e recebe um viewBox quadrado centrado no desenho.
@@ -33,39 +40,17 @@ function fitBox(id){
 export const icon=id=>'<svg viewBox="'+fitBox(id)+'" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="'+(PATHS[id]||PATHS.star)+'"/></svg>';
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const num=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:0});
-const TILE=56,GRAPH=372,Y=v=>Math.round(v*.9);
+const TILE=56,Y=v=>Math.round(v*.9);
 // Cada classe com árvore própria fornece nós, ramos, orçamento e textos; a apresentação é a mesma.
-export const DRUID_BRANCHES=[
- {id:'storm',name:'Tempestade',motto:'O céu responde',color:'#6fa8dc',crest:'spark',nodes:[['spark',24,18],['chain',76,18],['storm',76,122]]},
- {id:'nature',name:'Natureza',motto:'Raízes que prendem',color:'#79a446',crest:'roots',nodes:[['roots',24,18],['thornbind',24,122],['rejuvenate',76,122]]},
- {id:'wild',name:'Selvagem',motto:'A fera sob a pele',color:'#b07a45',crest:'wolf',nodes:[['wolf',50,18],['leap',24,122],['wildHeart',76,122],['howl',50,226]]},
- {id:'passives',name:'Passivas',motto:'A paciência da floresta',color:'#9a63c4',crest:'vitality',nodes:[['vitality',24,18],['wisdom',76,18],['sap',24,122],['attunement',76,122]]},
-];
-const WARRIOR_TREE={nodes:PASSIVES,branches:BRANCHES,first:'slash',field:'warriorRanks',ranks:warriorRanks,budget:warriorBudget,spent:warriorSpent,canLearn,banner:'swords',title:'Guerreiro',subtitle:'Treinamento do Guerreiro',intro:'Força, disciplina e técnica de combate. Escolha um selo para conhecer a habilidade e investir seus pontos.',affinity:true,
- kind:id=>['tornadoCyclone','tornadoWhirl'].includes(id)?'Variante':['momentum','riposte','ricochet'].includes(id)?'Sinergia':PASSIVES[id].max===1||['thrust','bash'].includes(id)?'Habilidade':'Aperfeiçoamento',
- learnedNote:id=>['steelWave','warCry'].includes(id)?'Aprendida. Clique em um slot da barra para equipar.':'Treinamento completo.'};
+const WARRIOR_TREE={nodes:PASSIVES,branches:BRANCHES,first:'slash',field:'warriorRanks',ranks:warriorRanks,budget:warriorBudget,spent:warriorSpent,canLearn,banner:'swords',title:'Guerreiro',subtitle:'Treinamento do Guerreiro',intro:'Força, disciplina e técnica de combate. Escolha um selo para conhecer a habilidade e investir seus pontos.',
+ kind:kindOf(PASSIVES),
+ learnedNote:id=>id==='warCry'?'Aprendida. Clique em um slot da barra para equipar.':id==='steelWave'?'Aprendida. Dispara sozinha no terceiro corte do Slash.':'Treinamento completo.'};
 const DRUID_TREE={nodes:DRUID_NODES,branches:DRUID_BRANCHES,first:'spark',field:'druidRanks',ranks:druidRanks,budget:druidBudget,spent:druidSpent,canLearn:canLearnDruid,banner:'leaf',title:'Druida',subtitle:'Caminhos da Druida',intro:'Raios do céu, raízes da terra e a fera que dorme na pele. Escolha um selo para conhecer a habilidade e investir seus pontos.',
- kind:id=>id==='thornbind'||id==='wildHeart'?'Sinergia':['chain','roots','wolf'].includes(id)||DRUID_NODES[id].max===1?'Habilidade':'Aperfeiçoamento',
- learnedNote:id=>id==='wolf'?'Aprendida. Pressione F para mudar de forma.':'Caminho completo.'};
-export const ARCHER_BRANCHES=[
- {id:'bow',name:'Arco',motto:'Cada flecha conta',color:'#8fbf5a',crest:'shot',nodes:[['shot',24,18],['pierce',76,18],['fan',24,122],['rain',76,122]]},
- {id:'hunt',name:'Caça',motto:'Nunca onde esperam',color:'#c49a52',crest:'leap',nodes:[['leap',24,18],['falcon',76,18],['ambush',24,122]]},
- {id:'passives',name:'Passivas',motto:'Olho firme, passo leve',color:'#9a63c4',crest:'vitality',nodes:[['precision',24,18],['vitality',76,18],['focus',24,122],['swift',76,122],['regeneration',50,226]]},
-];
-export const MAGE_BRANCHES=[
- {id:'fire',name:'Fogo',motto:'Rápido e sem perdão',color:'#e0603a',crest:'fireball',nodes:[['fireball',50,18],['combustion',24,122],['meteor',76,122]]},
- {id:'frost',name:'Gelo',motto:'Devagar, para sempre',color:'#6fb8e0',crest:'frost',nodes:[['frost',50,18],['shatter',50,122]]},
- {id:'arcane',name:'Arcano',motto:'O caminho mais curto',color:'#9a72e0',crest:'bolt',nodes:[['bolt',24,18],['blink',76,18],['echo',76,122]]},
- {id:'passives',name:'Passivas',motto:'Estudo e paciência',color:'#9a63c4',crest:'vitality',nodes:[['intellect',24,18],['vitality',76,18],['wisdom',24,122],['meditation',76,122],['regeneration',50,226]]},
-];
-export const MERCENARY_BRANCHES=[
- {id:'crossbow',name:'Besta',motto:'Peso e alcance',color:'#c98a4a',crest:'quarrel',nodes:[['quarrel',24,18],['volley',76,18],['breach',24,122]]},
- {id:'powder',name:'Pólvora',motto:'Pavio curto, problema longo',color:'#d9622b',crest:'bomb',nodes:[['bomb',50,18],['shrapnel',24,122],['mine',76,122],['firebomb',50,226]]},
- {id:'passives',name:'Passivas',motto:'Contrato cumprido, couro inteiro',color:'#9a63c4',crest:'vitality',nodes:[['caliber',24,18],['vitality',76,18],['armor',24,122],['stamina',76,122],['regeneration',50,226]]},
-];
+ kind:kindOf(DRUID_NODES),
+ learnedNote:id=>id==='wolf'?'Aprendida. Pressione F para mudar de forma.':DRUID_NODES[id]?.type==='ativa'&&DRUID_NODES[id]?.branch!=='wild'?'Aprendida. Clique em um slot da barra para equipar.':'Caminho completo.'};
 const marksmanTree=(classId,T)=>{const N=MARKSMAN_NODES[classId];return {nodes:N,first:Object.keys(N)[0],field:'marksmanRanks',ranks:(v,l)=>marksmanRanks(classId,v,l),budget:marksmanBudget,spent:r=>marksmanSpent(classId,r),canLearn:(r,id,l)=>canLearnMarksman(classId,r,id,l),...T,
- kind:id=>['ambush','breach','shrapnel','combustion','shatter','echo'].includes(id)?'Sinergia':N[id].branch==='passives'?'Aperfeiçoamento':N[id].max===1||['pierce','leap','volley','bomb','falcon','fireball','frost','blink'].includes(id)?'Habilidade':'Aperfeiçoamento',
- learnedNote:id=>id==='falcon'?'Aprendido. O falcão já voa com você; pressione F para mandá-lo a um alvo.':'Aprendida. Ela já está no seu slot da barra.'};};
+ kind:kindOf(N),
+ learnedNote:id=>id==='falcon'?'Aprendido. O falcão já voa com você; pressione F para mandá-lo a um alvo.':N[id]?.type==='ativa'?'Aprendida. Clique em um slot da barra para equipar.':'Aperfeiçoamento completo.'};};
 const ARCHER_TREE=marksmanTree('archer',{branches:ARCHER_BRANCHES,banner:'bow',title:'Arqueira',subtitle:'Caminhos da Arqueira',intro:'Distância, ritmo e o chão certo para pisar. Escolha um selo para conhecer a habilidade e investir seus pontos.'});
 const MERCENARY_TREE=marksmanTree('mercenary',{branches:MERCENARY_BRANCHES,banner:'crossbow',title:'Mercenário',subtitle:'Ofício do Mercenário',intro:'Virotes que atravessam fileiras e pólvora para quem insistir em chegar perto. Escolha um selo para conhecer a habilidade e investir seus pontos.'});
 const MAGE_TREE=marksmanTree('mage',{branches:MAGE_BRANCHES,banner:'mageStaff',title:'Mago',subtitle:'Escolas do Mago',intro:'Fogo para os grupos, gelo para quem chega perto e o arcano para sair do caminho. Escolha um selo para conhecer o feitiço e investir seus pontos.'});
@@ -73,26 +58,26 @@ export function createMarksmanTalents(s,{changed}){const trees={archer:createTal
 export function createWarriorTalents(s,{tornadoVariant,changed}){return createTalentTree(s,WARRIOR_TREE,{tornadoVariant,changed});}
 export function createDruidTalents(s,{changed}){return createTalentTree(s,DRUID_TREE,{changed});}
 function createTalentTree(s,T,{tornadoVariant,changed}){
- const PASSIVES=T.nodes,BRANCHES=T.branches,kind=T.kind,warriorRanks=T.ranks,warriorBudget=T.budget,warriorSpent=T.spent,canLearn=T.canLearn;
+ const PASSIVES=T.nodes,BRANCHES=T.branches,kind=T.kind,warriorRanks=T.ranks,warriorBudget=T.budget,warriorSpent=T.spent,canLearn=T.canLearn,GRAPH=graphHeight(BRANCHES);
+ const names=ids=>ids.map(id=>PASSIVES[id]?.name||id).join(' e ');
  let selected=T.first,root=null;
  const w=()=>s.world;
  function invest(){const level=levelOf(w()),r=warriorRanks(w()[T.field],level);if(!canLearn(r,selected,level))return;r[selected]++;w()[T.field]={...r};s.save.character[T.field]={...r};applyAttributes(w());w().progressChanged=true;render(root);changed?.();root.querySelector('.invest')?.focus({preventScroll:true});}
  function graph(branch,r,level){
   let svg='',nodes='';
-  for(const [id,x,yr] of branch.nodes){const y=Y(yr),n=PASSIVES[id],parent=branch.nodes.find(([key])=>key===n.requires);
-   if(parent){const [,px,pr]=parent,py=Y(pr),from=py+TILE+12,mid=Math.round((from+y)/2),state=r[id]?' learned':r[n.requires]&&level>=(n.level||1)?' available':'';svg+='<path class="warrior-link'+state+'" d="M '+px+' '+from+' V '+mid+' H '+x+' V '+(y-2)+'"/>';}}
-  if(branch.id==='passives'&&T.affinity)svg+='<path class="warrior-affinity" d="M 24 84 V 108 M 76 84 V 108 M 24 178 V 191 H 76 V 178 M 50 191 V 202"/>';
-  for(const [id,x,yr] of branch.nodes){const y=Y(yr),n=PASSIVES[id],rank=r[id],locked=level<(n.level||1)||!!n.requires&&!r[n.requires],open=canLearn(r,id,level);
+  for(const [id,x,yr] of branch.nodes){const y=Y(yr),n=PASSIVES[id];
+   for(const req of n.requires){const parent=branch.nodes.find(([key])=>key===req);if(!parent)continue;const [,px,pr]=parent,py=Y(pr),from=py+TILE+12,mid=Math.round((from+y)/2),state=r[id]?' learned':r[req]&&level>=(n.level||1)?' available':'';svg+='<path class="warrior-link'+state+'" d="M '+px+' '+from+' V '+mid+' H '+x+' V '+(y-2)+'"/>';}}
+  for(const [id,x,yr] of branch.nodes){const y=Y(yr),n=PASSIVES[id],rank=r[id],locked=level<(n.level||1)||!requirementsMet(n,r)||!!excludedBy(n,r),open=canLearn(r,id,level);
    const cls='warrior-node wt-node'+(rank?' learned':'')+(rank>=n.max?' maxed':'')+(locked?' locked':'')+(open?' available':'')+(n.max===1?' final':'')+(id===selected?' selected':'');
-   const title=n.name+' · '+rank+'/'+n.max+(locked?' · requer nível '+(n.level||1)+(n.requires?' e '+PASSIVES[n.requires].name:''):'');
+   const title=n.name+' · '+rank+'/'+n.max+(locked?' · requer nível '+(n.level||1)+(n.requires.length?' e '+names(n.requires):'')+(excludedBy(n,r)?' · exclusivo com '+names([excludedBy(n,r)]):''):'');
    nodes+='<button type="button" class="'+cls+'" style="left:'+x+'%;top:'+y+'px" data-warrior-node="'+id+'" aria-pressed="'+(id===selected)+'" aria-label="'+esc(n.name+', '+rank+' de '+n.max+' pontos')+'" title="'+esc(title)+'"><span class="wt-tile">'+icon(id)+(locked?'<i class="wt-lock">'+icon('lock')+'</i>':'')+'</span><em>'+rank+'/'+n.max+'</em></button>';}
   return '<div class="wt-graph" style="height:'+GRAPH+'px"><svg viewBox="0 0 100 '+GRAPH+'" preserveAspectRatio="none" aria-hidden="true">'+svg+'</svg>'+nodes+'</div>';
  }
  function detail(r,level,left,branch){
-  const n=PASSIVES[selected],rank=r[selected],maxed=rank>=n.max,levelOk=level>=(n.level||1),reqOk=!n.requires||r[n.requires]>0;
-  const reason=maxed?T.learnedNote(selected):!levelOk?'Disponível a partir do nível '+n.level+'.':!reqOk?'Invista primeiro em '+PASSIVES[n.requires].name+'.':left<=0?'Suba de nível para receber mais pontos.':'Pronto para receber um ponto.';
+  const n=PASSIVES[selected],rank=r[selected],maxed=rank>=n.max,levelOk=level>=(n.level||1),reqOk=requirementsMet(n,r),blocker=excludedBy(n,r);
+  const reason=maxed?T.learnedNote(selected):!levelOk?'Disponível a partir do nível '+n.level+'.':!reqOk?'Invista primeiro em '+names(n.requires.filter(id=>!(r[id]>0)))+'.':blocker?'Exclusivo com '+names([blocker])+': só um dos dois.':left<=0?'Suba de nível para receber mais pontos.':'Pronto para receber um ponto.';
   const effects=n.description.split(/(?<=\.)\s+/).filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join('');
-  const req='<li class="'+(levelOk?'ok':'no')+'">'+icon(levelOk?'check':'lock')+'Nível '+(n.level||1)+'</li>'+(n.requires?'<li class="'+(reqOk?'ok':'no')+'">'+icon(reqOk?'check':'lock')+'1 ponto em '+esc(PASSIVES[n.requires].name)+'</li>':'');
+  const req='<li class="'+(levelOk?'ok':'no')+'">'+icon(levelOk?'check':'lock')+'Nível '+(n.level||1)+'</li>'+n.requires.map(id=>{const ok=r[id]>0;return '<li class="'+(ok?'ok':'no')+'">'+icon(ok?'check':'lock')+'1 ponto em '+esc(PASSIVES[id]?.name||id)+'</li>';}).join('')+n.excludes.map(id=>'<li class="'+(r[id]>0?'no':'ok')+'">'+icon(r[id]>0?'lock':'check')+'Sem pontos em '+esc(PASSIVES[id]?.name||id)+'</li>').join('');
   return '<div class="wt-detail-head"><div class="wt-detail-icon">'+icon(selected)+'<em>'+rank+'/'+n.max+'</em></div><div><h3>'+esc(n.name)+'</h3><p>'+branch.name+' • '+kind(selected)+'</p></div></div>'
    +'<h4>Efeito <small>'+rank+' / '+n.max+' pontos investidos</small></h4><ul class="wt-effects">'+effects+'</ul>'
    +'<h4>Pré-requisito</h4><ul class="wt-req">'+req+'</ul>'
