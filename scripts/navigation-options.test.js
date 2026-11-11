@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const html=fs.readFileSync(require('node:path').join(__dirname,'../necromancer-canvas.html'),'utf8');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../v1/necromancer-canvas.html'),'utf8');
 function source(name){const start=html.indexOf(`function ${name}(`);assert.ok(start>=0);return html.slice(start,html.indexOf('\n}',start)+2);}
 function fixture(){
  const c=vm.createContext({console});vm.runInContext(`

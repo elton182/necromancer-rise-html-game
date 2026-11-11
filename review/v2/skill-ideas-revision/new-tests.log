@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: Corte Espacial: cada corte dispara 230%, sem recarga, 14 u e sem atravessar parede
+ok 1 - Corte Espacial: cada corte dispara 230%, sem recarga, 14 u e sem atravessar parede
+  ---
+  duration_ms: 8.2877
+  ...
+# Subtest: giro acumula Ciclone e Furacão; ranks alteram área, ritmo, dano e gasto
+ok 2 - giro acumula Ciclone e Furacão; ranks alteram área, ritmo, dano e gasto
+  ---
+  duration_ms: 2.2493
+  ...
+# Subtest: Impacto e Cadência: até cinco avanços extras, presas únicas, parede e esquiva interrompem
+ok 3 - Impacto e Cadência: até cinco avanços extras, presas únicas, parede e esquiva interrompem
+  ---
+  duration_ms: 3.9583
+  ...
+# Subtest: Rastro não soma manchas sobrepostas e some ao morrer
+ok 4 - Rastro não soma manchas sobrepostas e some ao morrer
+  ---
+  duration_ms: 1.1553
+  ...
+# Subtest: Espinhos usa dano na vida, ignora absorção e não reflete golpes esquivados
+ok 5 - Espinhos usa dano na vida, ignora absorção e não reflete golpes esquivados
+  ---
+  duration_ms: 0.596
+  ...
+# Subtest: Escudo Arcano desvia de 10% a 50%, após mitigação, com excedente na vida e sem custo oculto
+ok 6 - Escudo Arcano desvia de 10% a 50%, após mitigação, com excedente na vida e sem custo oculto
+  ---
+  duration_ms: 12.6405
+  ...
+# Subtest: Big Bang explode no contato uma vez; fogo da Arqueira queima sem acumular
+ok 7 - Big Bang explode no contato uma vez; fogo da Arqueira queima sem acumular
+  ---
+  duration_ms: 3.6113
+  ...
+# Subtest: Penas Voadoras é periódica, sem slot/custo; pausa e mergulho adiam o disparo
+ok 8 - Penas Voadoras é periódica, sem slot/custo; pausa e mergulho adiam o disparo
+  ---
+  duration_ms: 2.1923
+  ...
+# Subtest: lobos permanentes: limite quatro, mordida automática e sem cura/ressurreição gratuitos
+ok 9 - lobos permanentes: limite quatro, mordida automática e sem cura/ressurreição gratuitos
+  ---
+  duration_ms: 34.8383
+  ...
+# Subtest: alcateia salva ferimentos e mortos, restaura nos mapas e aceita saves antigos
+ok 10 - alcateia salva ferimentos e mortos, restaura nos mapas e aceita saves antigos
+  ---
+  duration_ms: 14.431
+  ...
+# Subtest: Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e dura oito segundos
+ok 11 - Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e dura oito segundos
+  ---
+  duration_ms: 7.4441
+  ...
+# Subtest: novos nós e precondições entram no build, sem alterar ids persistidos
+ok 12 - novos nós e precondições entram no build, sem alterar ids persistidos
+  ---
+  duration_ms: 0.1792
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 304.5551

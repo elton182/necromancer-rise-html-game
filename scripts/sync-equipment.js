@@ -2,7 +2,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 require('./sync-skill-trees.js');
-const root=path.resolve(__dirname,'..'),target=path.join(root,'necromancer-canvas.html');
+const root=path.resolve(__dirname,'..'),target=path.join(root,'v1/necromancer-canvas.html');
 let html=fs.readFileSync(target,'utf8').replace(/\r\n/g,'\n');
 function patch(before,after){if(html.includes(after))return;if(html.includes(before))html=html.replace(before,after);else throw Error('Equipment bridge missing: '+before.slice(0,90));}
 patch('gold:player.gold,inventory:player.inventory,ts:Date.now(),','gold:player.gold,inventory:player.inventory,ts:Date.now(),\n    equipmentVersion:EquipmentModel.VERSION,gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress,');

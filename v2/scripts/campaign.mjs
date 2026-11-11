@@ -13,6 +13,7 @@ import {syncSkills} from './grimoire.mjs';
 import {boltCost} from './combat.mjs';
 import {grantExperience} from './rewards.mjs';
 import {collectAll} from './gear.mjs';
+import {snapshotDruidPack} from './druid.mjs';
 import {resolvePosition} from './terrain.mjs';
 import {V2_KING} from './fallen-king.mjs';
 import {forestArena} from './forest-map.mjs';
@@ -25,6 +26,7 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 export const emptyArena=id=>({id,bounds:{minX:-20,maxX:20,minY:-20,maxY:20},solids:[]});
 export function clean(s,arena,pos={x:0,y:4}){
  const w=s.world;if(w.armyMode==='groups')s.save.horde=snapshotHorde(w);collectAll(s);
+ if(w.classId==='druid')s.save.character.druidPack=snapshotDruidPack(w);
  resetWorld(w,{horde:0,armyMode:'groups',army:s.save.horde,character:s.save.character,gearLevel:1,lootFilter:s.save.settings.lootFilter});w.actors=w.actors.filter(a=>a.team!=='enemy');w.boss.hp=0;w.arena=arena;w.sceneryRevision=(w.sceneryRevision||0)+1;w.adventure=null;w.portal=null;w.landmarks=[];Object.assign(w.player,pos);for(const a of w.actors.filter(a=>a.team==='ally')){Object.assign(a,{hp:a.maxHp,dead:false,sacrificed:false,exploded:false,deathHandled:false,deadTimer:0,returning:false});a.x=pos.x+(w.random()-.5)*2;a.y=pos.y+(w.random()-.5)*2;Object.assign(a,resolvePosition(a,a.radius,arena));}syncSkills(w);
 }
 function grant(s,id){const c=s.save.campaign;if(!c.grants.includes(id))c.grants.push(id);for(const army of [s.save.horde,s.world.army])if(army){army.profile={...army.profile,campaign:true,grants:[...c.grants]};army.loadout=army.loadout.map(id=>available(army,id)?id:'empty');}}

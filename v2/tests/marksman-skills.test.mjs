@@ -28,8 +28,8 @@ test('árvores: orçamento por nível, pré-requisitos, nível mínimo e save pe
   const low=marksmanRanks(id,full(id),2);assert.equal(marksmanSpent(id,low),marksmanBudget(2));
  }
  assert.equal(canLearnMarksman('archer',marksmanRanks('archer',{},6),'rain',6),false,'Chuva requer Perfurante');
- assert.ok(canLearnMarksman('archer',marksmanRanks('archer',{pierce:1},6),'rain',6));
- assert.equal(canLearnMarksman('archer',marksmanRanks('archer',{pierce:1},5),'rain',5),false,'nível 6');
+ assert.ok(canLearnMarksman('archer',marksmanRanks('archer',{shot:1,pierce:1},12),'rain',12));
+ assert.equal(canLearnMarksman('archer',marksmanRanks('archer',{shot:1,pierce:1},5),'rain',5),false,'nível 12');
  assert.equal(canLearnMarksman('mercenary',marksmanRanks('mercenary',{},6),'mine',6),false,'Mina requer Bomba');
  const raw=freshSave();raw.character.classId='mercenary';raw.character.level=6;raw.character.marksmanRanks={bomb:1,mine:1,firebomb:1,volley:1,caliber:9};
  const saved=normalizeSave(raw).character.marksmanRanks;
@@ -42,8 +42,8 @@ test('passivas: vida, recurso, dano, armadura e movimento; ficha lista as açõe
  assert.equal(r.hp,Math.round(base.hp*1.5));assert.equal(r.mp,Math.round(base.mp*1.5));assert.ok(Math.abs(r.damage-base.damage*1.4)<1e-9);
  assert.ok(Math.abs(r.move-base.move*1.15)<1e-9);assert.equal(r.hpRegen,base.hpRegen+2);
  const m=marksmanAttributes('mercenary',10,{},{armor:5,stamina:5,caliber:5});assert.equal(m.defense,20);
- const w=field('archer',{pierce:1});const skills=snapshotFor(w).skills;
- assert.deepEqual(skills.map(s=>[s.id,s.equipped]),[['arrow',true],['pierce',true],['leap',false],['rain',false],['fan',false],['saraivadaSeguidora',false],['impactoCeleste',false],['penasVoadoras',false]]);
+ const w=field('archer',{shot:1,pierce:1});const skills=snapshotFor(w).skills;
+ assert.deepEqual(skills.map(s=>[s.id,s.equipped]),[['arrow',true],['pierce',true],['leap',false],['rain',false],['fan',false],['saraivadaSeguidora',false],['impactoCeleste',false],['fechadefogo',false],['flechaExplosiva',false],['disparoPreciso',false],['rasanteRelampago',false],['saraivadaMultipla',false],['chuvaDeFlechasExplosivas',false]]);
 });
 
 test('ações bloqueadas sem selo não gastam recurso nem iniciam recarga',()=>{
@@ -53,12 +53,12 @@ test('ações bloqueadas sem selo não gastam recurso nem iniciam recarga',()=>{
 });
 
 test('Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes',()=>{
- const w=field('archer',{pierce:3}),list=[3,5,7,9,11].map(x=>target(w,x)),{d,dmg}=act(w,1);
+ const w=field('archer',{shot:1,pierce:3}),list=[3,5,7,9,11].map(x=>target(w,x)),{d,dmg}=act(w,1);
  assert.ok(marksmanAction(w,1));assert.ok(w.effects.some(e=>e.fx==='dangerLine'),'aviso da linha');
  assert.equal(w.player.mp,w.player.maxMp-d.cost);
  advance(w,1/60,Math.floor(d.release*60)-1);assert.equal(w.marksmanShots.length,0,'ainda carregando');
  advance(w,1/60,80);
- assert.deepEqual(list.map(lost),list.map(()=>dmg));assert.equal(dmg,Math.floor(w.player.damage*2*1.3));
+ assert.deepEqual(list.map(lost),list.map(()=>dmg));assert.equal(dmg,Math.floor(w.player.damage*2*1.32));
 });
 
 test('Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada',()=>{
@@ -76,7 +76,7 @@ test('Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava pe
 });
 
 test('Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio',()=>{
- const w=field('archer',{pierce:1,rain:1}),inside=target(w,8,1),outside=target(w,8,4.5),{d,dmg}=act(w,4);
+ const w=field('archer',{shot:1,pierce:1,rain:1}),inside=target(w,8,1),outside=target(w,8,4.5),{d,dmg}=act(w,4);
  assert.ok(marksmanAction(w,4));advance(w,1/60,Math.ceil((d.release+d.delay)*60)-2);
  assert.equal(lost(inside),0,'antes do fim do aviso não há dano');
  assert.ok(w.effects.some(e=>e.marksmanRing),'área marcada no chão');
@@ -173,7 +173,7 @@ test('atirar andando: fator de movimento por ação; Recuo e Mina travam e usam 
  const w=field('mercenary',{bomb:1,mine:1});w.player.moveSpeed=6;
  assert.ok(marksmanAction(w,4));const x=w.player.x,y=w.player.y;
  step(w,.1,{x:1,y:0});assert.deepEqual([w.player.x,w.player.y],[x,y],'parado ao assentar a mina');assert.equal(w.player.pose.upper,false);
- const a=field('archer',{pierce:1});a.player.moveSpeed=6;assert.ok(marksmanAction(a,1));const ax=a.player.x,ay=a.player.y;step(a,.1,{x:0,y:1});
+ const a=field('archer',{shot:1,pierce:1});a.player.moveSpeed=6;assert.ok(marksmanAction(a,1));const ax=a.player.x,ay=a.player.y;step(a,.1,{x:0,y:1});
  assert.ok(Math.abs(Math.hypot(a.player.x-ax,a.player.y-ay)-.6*.5)<1e-6,'Perfurante: metade da velocidade');
 });
 

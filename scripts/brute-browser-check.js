@@ -6,7 +6,7 @@ const {pathToFileURL}=require('node:url');
  try{
   const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href,{waitUntil:'load'});
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href,{waitUntil:'load'});
   const result=await page.evaluate(()=>{
    window.setTimeout=()=>0;
    TITLE.active=false;TITLE.paused=false;COMIC.active=false;CAMP.on=false;CAMP.map=false;P.deadT=0;

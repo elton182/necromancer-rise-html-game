@@ -5,7 +5,7 @@ let ready=false,clock=0,last=performance.now();
 const settings=()=>({skill:$('skill').value,enemy:$('enemy').value,crowd:Number($('crowd').value),light:$('background').value==='light',u:Number($('zoom').value),low:$('quality').value==='baixa'});
 async function loadSprites(){
   if(location.protocol==='file:')throw Error('Inicie com node tools/combat-lab-server.js e abra http://127.0.0.1:4173/tools/combat-lab.html');
-  const response=await fetch('../necromancer-canvas.html');if(!response.ok)throw Error('Não foi possível carregar o HTML do jogo.');
+  const response=await fetch('../v1/necromancer-canvas.html');if(!response.ok)throw Error('Não foi possível carregar o HTML do jogo.');
   const html=await response.text(),wanted=new Set(['necro','zombie','archer','specter','soldier','earcher','brute','mage','cryptHound','warAcolyte']);
   const jobs=[];
   for(const match of html.matchAll(/SPR\.load\('([^']+)',(\{[^\n]+?\}),\s*'([^']+)'\);/g)){

@@ -8,7 +8,7 @@ const review=name=>path.resolve(__dirname,'../review',name);
   fs.mkdirSync(path.resolve(__dirname,'../review'),{recursive:true});
   const page=await browser.newPage({viewport:{width:1280,height:800},deviceScaleFactor:2}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href,{waitUntil:'load'});
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href,{waitUntil:'load'});
   await page.waitForFunction(()=>['zombie','earcher','smith'].every(k=>SPR.ready(k))&&window.CharacterVisuals);
   // Record which atlas clip every drawn frame belongs to.
   await page.evaluate(()=>{

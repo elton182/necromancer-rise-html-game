@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "clip": {
+    "duration": 4.0333333015441895,
+    "time": 0.2845999999999985,
+    "fingerTracks": [
+      "mixamorigRightHandIndex1.quaternion",
+      "mixamorigRightHandIndex2.quaternion",
+      "mixamorigRightHandIndex3.quaternion",
+      "mixamorigRightHandMiddle1.quaternion",
+      "mixamorigRightHandMiddle2.quaternion",
+      "mixamorigRightHandMiddle3.quaternion",
+      "mixamorigRightHandPinky1.quaternion",
+      "mixamorigRightHandPinky2.quaternion",
+      "mixamorigRightHandPinky3.quaternion",
+      "mixamorigRightHandRing1.quaternion",
+      "mixamorigRightHandRing2.quaternion",
+      "mixamorigRightHandRing3.quaternion",
+      "mixamorigRightHandThumb1.quaternion",
+      "mixamorigRightHandThumb2.quaternion",
+      "mixamorigRightHandThumb3.quaternion"
+    ],
+    "castFingerTracks": 15
+  },
+  "checks": [
+    "idle de quatro segundos",
+    "retorno da caminhada",
+    "retorno da conjuração",
+    "repetição do ciclo",
+    "grupo em chão claro/escuro e qualidade baixa"
+  ],
+  "errors": [],
+  "remote": []
+}

@@ -384,7 +384,7 @@ Contratos:
 
 O Bram ativo não vem mais deste lote: veja a seção seguinte. Rodar `pack_lowpoly_cast.py`
 com `bram` grava `smith` e substitui o Bram 2.5D; use `--only=zombie,earcher`. Detalhes e pendências:
-[`../docs/character-regeneration-review.md`](../docs/character-regeneration-review.md).
+[`../docs/character-regeneration-review.md`](README.md).
 
 ## Bram 2.5D a partir do atlas do usuário
 
@@ -399,7 +399,7 @@ node scripts/cast-animations-browser-check.js
 ```
 
 A tabela de vistas, o contrato (célula 144, 38 px/u, âncora (72, 124)) e o alinhamento estão em
-[`../docs/character-regeneration-review.md`](../docs/character-regeneration-review.md#11-bram-a-partir-do-atlas-25d-do-usuário).
+[`../docs/character-regeneration-review.md`](README.md#11-bram-a-partir-do-atlas-25d-do-usuário).
 `pack_village_npcs.py`, `pack_reference_characters.py --only=bram` e `pack_lowpoly_cast.py --only=bram`
 também gravam `smith` e desfazem este Bram.
 
@@ -563,11 +563,13 @@ A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a
 
 ## Mago jogável (v2)
 
-**Atual:** `scripts/mage_hero_t.py` equipa a nova malha T de `models/sources/mage_hero_t_source.blend` com rig de 29 ossos e o cajado recuperado do anterior. Gera `models/mage_hero_t.blend` / `exports/mage_hero_t.glb`, com oito clipes a 30 FPS (`idle`, `walk`, `strafe_left`, `strafe_right`, `cast`, `cast_up`, `dodge`, `death`). Uso: `blender --background --python blender/scripts/mage_hero_t.py`; acrescente `-- --blocking` para poses CONSTANT em arquivo separado. Prévias em `previews/mage_hero_t/`, produzidas por `mage_hero_t_review.py` e `pack_mage_hero_t_preview.py`; auditoria por `validate_mage_hero_t.py`. [Pipeline, eventos e integração](../docs/v2-mago.md#modelo-e-rig).
+**Atual:** `scripts/mage_hero_t.py` equipa a nova malha T de `models/sources/mage_hero_t_source.blend` com rig de 44 ossos (15 falanges na mão direita) e o cajado recuperado do anterior. Gera `models/mage_hero_t.blend` / `exports/mage_hero_t.glb`, com oito clipes a 30 FPS (`idle`, `walk`, `strafe_left`, `strafe_right`, `cast`, `cast_up`, `dodge`, `death`). Uso: `blender --background --python blender/scripts/mage_hero_t.py`; acrescente `-- --blocking` para poses CONSTANT em arquivo separado. Prévias em `previews/mage_hero_t/`, produzidas por `mage_hero_t_review.py` e `pack_mage_hero_t_preview.py`; auditoria por `validate_mage_hero_t.py`. [Pipeline, eventos e integração](../docs/v2-mago.md#modelo-e-rig).
 
 **Anterior, preservado:** `scripts/mage_hero.py` corrige os pesos do rig Tripo de `reference/mage/mage_source.glb` e gera `models/sources/mage_hero.blend` / `../_to_delete/blender-models/exports/mage_hero.glb`. Suas funções de movimento e a geometria do cajado são reutilizadas pelo novo gerador; os arquivos antigos permanecem intactos.
 
 A locomoção atual do Mago usa `scripts/mage_hero_gait.py`: apoio contínuo, rolamento de calcanhar/ponta, contraposição do quadril e ombros, braço livre mais baixo e balanço próprio para caminhada e passos laterais. Os três ciclos mantêm 25 frames a 30 FPS e os mesmos strides. Prévias em três vistas: execute `mage_hero_t_review.py` com `-- --gait` e depois `python blender/scripts/pack_mage_gait_preview.py`; saída em `previews/mage_gait/`. `validate_mage_hero_t.py -- --gait` inclui a auditoria de apoios e joelhos. A base anterior fica em `backups/mage_gait/`.
+
+O repouso atual tem 121 frames (4 s), braço livre relaxado, apoio assimétrico e respiração com movimentos secundários atrasados. `scripts/mage_hero_fingers.py` mantém a mão original e suas UVs, com três falanges por dedo, pesos próprios e oposição do polegar; `pose_grip` define a flexão gravada nos oito clipes. `scripts/mage_hero_grip.py` reconstrói a haste contínua, preservando a cabeça esculpida. Execute `mage_hero_t_review.py -- --idle` sobre `models/mage_hero_t.blend` e depois `python blender/scripts/pack_mage_idle_preview.py` para gerar `previews/mage_idle/idle.gif` e `poses.png`; `-- --grip` renderiza detalhes em quatro vistas nos oito clipes e `-- --fingers` compara mão aberta/pegada em `previews/mage_finger_rig/`. `validate_mage_hero_t.py -- --idle` confere falanges, pesos, preservação da malha/UVs e fechamento da haste. A base anterior está em `backups/mage_idle/`.
 
 ## Moldura dos orbes do HUD (v2)
 
@@ -593,3 +595,7 @@ Os modelos e geradores anteriores da Flora foram preservados como estudo.
 Flora humana atual: `models/flora_human_revised.blend` e `exports/flora_human_revised.glb`, gerados por `scripts/flora_human_motion.py` a partir de `models/sources/flora_tripo_druid_t.blend` (preservado). Revisão de capuz, capa, apoios, conjurações, contato do cajado, esquiva e morte; nove clipes a 30 FPS. `-- --blocking` grava poses CONSTANT em cena separada. `scripts/flora_human_review.py` audita todos os frames e renderiza prévias PBR em Eevee; `scripts/pack_flora_human_review.py` monta as pranchas e GIFs em `previews/flora_human_review/`. [Pipeline e eventos](../docs/v2-druida.md#base-humana-atual--pose-t).
 
 **Lobo atual:** `models/flora_wolf_dynamic.blend` / `exports/flora_wolf_dynamic.glb`, gerados por `scripts/flora_wolf_motion.py -- --dynamic` a partir de `models/sources/flora_tripo_wolf.blend` (preservado). Dez clipes a 30 FPS e rig com 68 ossos. As garras incluem torção de quadril/tórax, deslocamento do peso e pivô da perna de impulso; cauda, mandíbula, uivo, esquiva e morte mantêm a revisão anterior. `-- --dynamic --blocking` grava poses CONSTANT em `backups/blocking/flora_wolf_dynamic_blocking.blend`. `scripts/flora_wolf_review.py -- --dynamic` audita e renderiza prévias PBR em Eevee; `scripts/pack_flora_wolf_review.py --dynamic` monta PNG/GIF em `previews/flora_wolf_dynamic/`, incluindo `attacks.gif`. Sem `--dynamic`, o gerador reproduz a versão `flora_wolf_revised`, também preservada. [Pipeline, durações e eventos](../docs/v2-druida.md#forma-de-lobo-atual).
+
+### Planta Carnívora da Druida
+
+Modelo atual: `models/carnivorous_plant.blend`, exportado para `exports/carnivorous_plant.glb` e registrado como `carnivorousPlant` na v2. Gerador reproduzível: `blender --background --threads 4 --python blender/scripts/carnivorous_plant.py`, da raiz do projeto. Malha de 920 triângulos e quatro materiais sólidos, sem textura externa, rig com boca articulada e clipes `idle`, `attack`, `death` a 30 FPS. Relatório em `previews/carnivorous_plant/validation.json`; conferência no jogo em `review/v2/skill-ideas-revision/` na raiz do projeto. Uma planta por jogador; a malha leve é a mesma em qualidade baixa.

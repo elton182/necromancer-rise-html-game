@@ -1,11 +1,11 @@
 # V2 — cenas e contrato de saves (E2)
 
 Implementado em `../v2/scripts/save-model.mjs`, `session.mjs` e `app.mjs`.
-O [plano](../v2/plano-migracao.md) acompanha o restante da migração.
+O [mapa de fontes](../v2/README.md) descreve a distribuição oficial.
 
 ## Formato e chave
 
-A distribuição atual usa `necromancer_v2`. A distribuição 3D usa uma chave
+A v1 legada usa `necromancer_v2`. A v2 oficial usa uma chave
 diferente: **`necromancer_rise_3d_save`**. A v2 não grava nem remove a chave antiga.
 
 O formato da v2 tem versão própria, independente do nome da pasta:
@@ -170,7 +170,9 @@ Campos ausentes recebem padrões; entidades e lutas não são retomadas. A impor
 antiga mantém a campanha em `legacy.data`, sem conversão automática. Veja o
 [guia da campanha](v2-campanha.md) para fluxo, compatibilidade e validação.
 
-Campanha integrada: `campaign.world` é opcional (`null` nos saves do Ato I por fases). Guarda `stage` (`wake`, `village`, `rescue`, `return`, `complete`), `checkpoint` (derivado: `crypt` ou `village`), `guardsCleared`, `smith` (`locked`, `active`, `found`, `done`), `lumber` (`locked`, `active`, `done`), `piles` (três marcadores 0/1) e `cleared` (grupos de quest derrotados). Valores inválidos voltam ao padrão. Com `stage` `complete` e quests ausentes, as duas quests ficam ativas. Posições, inimigos e conversas não são salvos: ao carregar, Zephyr volta ao último abrigo. Normalização em `v2/scripts/campaign-world-model.mjs`.
+Campanha integrada: `campaign.world` é opcional (`null` nos saves do Ato I por fases). Guarda `stage` (`wake`, `village`, `rescue`, `return`, `complete`), `checkpoint` (derivado: `crypt` ou `village`), `guardsCleared`, `questFlow: 1`, `smith` (`locked`, `available`, `active`, `found`, `done`), `lumber` (`locked`, `available`, `active`, `done`), `piles` (três marcadores 0/1) e `cleared` (grupos de quest derrotados). Valores inválidos voltam ao padrão. Com `stage` `complete` e quests ausentes, o ferreiro fica disponível e a madeira bloqueada até a conclusão da forja. `available` é uma oferta; somente `active` inicia o acompanhamento. Posições, inimigos e conversas não são salvos: ao carregar, Zephyr volta ao último abrigo. Normalização em `v2/scripts/campaign-world-model.mjs` e `quest-model.mjs`.
+
+Saves sem `questFlow: 1` migram as antigas missões automáticas sem progresso para ofertas. Guardas derrotados, pilhas marcadas, Bruno encontrado e conclusões preservam o avanço correspondente. No novo fluxo, uma missão aceita continua ativa mesmo sem objetivos cumpridos. A migração não paga prêmios. O diário deriva desses estados, sem uma segunda lista persistida de quests.
 
 Equipamentos na versão 3: os itens v1 e v2 são normalizados pelo modelo compartilhado. Na passagem de v2 para v3, o afixo `defense` é convertido em `defensePercent` com o mesmo valor; os demais dados válidos são preservados. A defesa inerente de vestimenta, capuz e botas é calculada pelo tipo e nível, sem campo adicional no save.
 
@@ -226,6 +228,25 @@ Arqueira e Mercenário (`classId: "archer"` / `"mercenary"`) persistem a árvore
 
 ## Áreas ligadas (Várzea de Itaúna)
 
-`campaign.world.nilo` guarda a etapa de [O rastro de João](v2-itauna.md#o-rastro-de-joão): `road`, `cave`, `fort`, `return` ou `done`. Fica ausente enquanto a missão não foi aceita (equivale a `locked`), só vale com `stage` `complete` e valores desconhecidos são descartados; saves anteriores continuam sem o campo.
+`campaign.world.nilo` guarda a etapa de [O rastro de João](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026): `road`, `cave`, `rescued`, `fort`, `return`, `done`, `itavera`, `invitation` ou `complete`. Fica ausente enquanto a missão não foi aceita (equivale a `locked`), só vale com `stage` `complete` e valores desconhecidos são descartados; saves anteriores continuam sem o campo. `rescued` registra o resgate concluído, antes de aceitar com João na vila a missão da carta; saves já em `fort` continuam nessa missão.
 
 `campaign.world.area` e `campaign.world.entry` guardam a última passagem usada fora do mundo de Jacarandá. Saves anteriores não têm os campos e continuam no mundo; uma área desconhecida é ignorada ao normalizar. `campaign.world.cleared` também aceita os grupos permanentes da área. Ao morrer, o jogador retoma nessa entrada; **Retomar no abrigo** apaga os dois campos. Veja [v2-itauna.md](v2-itauna.md).
+
+## Companheiros permanentes da Druida (09/11/2026)
+
+`character.druidPack` é uma lista de até quatro proporções de vida entre 0 e 1. Zero representa um lobo morto; lista vazia representa evocação ainda não realizada. O limite é um lobo com `lobo` aprendido, mais um por ponto em `alcateia`. Valores não finitos viram zero e proporções fora dos limites são limitadas; saves anteriores recebem `[]`, sem alterar a versão do formato.
+
+Desde 10/11/2026, `character.druidRanks` reconhece também `calamidade`, `florestaTropical`, `escudoDeFolhas` e `liderDaMatilha`, e `character.skillLoadout` aceita esses quatro ids na barra humana. Saves anteriores recebem zero pontos nos nós novos, mantendo a barra existente. A Calamidade, as cinco plantas temporárias, a resistência do Escudo e a presa comandada não são persistidas. O líder é recalculado entre os lobos vivos, preservando os ferimentos de `druidPack`; não há novo campo nem migração de formato.
+
+O snapshot lê os atores vivos/mortos e preserva ferimentos. Mudar de mapa recria somente os lobos ainda vivos, perto da Druida, com a mesma proporção de vida. Lobos mortos precisam de nova conjuração. Morte da Druida limpa a lista. Posições, presas, recarga da mordida, planta e escudo arcano não são persistidos.
+
+`warriorTornadoVariant` continua aceito por compatibilidade; os ranks agora escolhem automaticamente a evolução cumulativa. Barras com `penasVoadoras` são normalizadas substituindo a antiga ação por uma opção válida; o nó passivo mantém seu id e seus pontos. Os demais ids revisados foram preservados. Nós que não atendem a níveis/pré-requisitos atuais devolvem seus pontos ao orçamento, conforme a normalização das árvores já existente.
+
+
+### Ato I: carta e epílogo de Itavera (10/11/2026)
+
+Em `campaign.world`, `nilo` acrescenta `itavera`, `invitation` e `complete` aos valores históricos. `done` continua sendo o retorno a João já premiado; ele oferece a viagem à praça de Itavera. `complete` registra o convite aceito e a conclusão do ato, sem iniciar o Ato II.
+
+Campos opcionais booleanos `niloLetter` e `niloEvidence` registram a bolsa e as provas coletadas no forte. Ausentes são falsos na etapa `fort`; em `return`, `done` e nas etapas do epílogo, a normalização os considera verdadeiros, permitindo continuar saves anteriores sem repetir coletas nem prêmios. Nas etapas anteriores ao forte são descartados. Carta e provas podem ser guardadas em qualquer ordem.
+
+`area: 'itavera'` e `entry: 'caravan'` restauram a praça, com padrão de entrada seguro. A área é descartada se a etapa de João ainda não permite o epílogo. A entrega a Helena e a aceitação do convite são ações distintas e persistentes; recarga não as repete. Ao aceitar, `horde.profile.act1` e o perfil ativo recebem o marcador de conclusão já usado pelo fluxo antigo. Nenhuma entidade, diálogo em andamento ou animação de viagem é persistida. Chave e versão permanecem iguais.

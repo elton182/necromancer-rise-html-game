@@ -18,7 +18,7 @@ const {pathToFileURL}=require('node:url');const path=require('node:path');
       village:VillageEnvironment.loaded,roles:Object.keys(CharacterVisuals.active()).length});
    }).observe(document.documentElement,{attributes:true,subtree:true,attributeFilter:['class','value']}),{once:true});
   });
-  await page.goto(pathToFileURL(path.resolve(process.env.NR_GAME_HTML||path.resolve(__dirname,'../necromancer-canvas.html'))).href);
+  await page.goto(pathToFileURL(path.resolve(process.env.NR_GAME_HTML||path.resolve(__dirname,'../v1/necromancer-canvas.html'))).href);
   const bar=page.getByRole('progressbar',{name:'Carregamento do jogo'});
   await bar.waitFor({state:'visible'});
   const pending=await page.evaluate(()=>({ready:GameVisualBoot.ready,value:document.querySelector('#visual-boot-progress').value,total:GameVisualBoot.total}));

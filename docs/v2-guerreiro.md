@@ -1,6 +1,6 @@
 # Guerreiro / Soldado — primeira versão jogável
 
-Implementado na v2. Novo Jogo oferece Necromante, Guerreiro e [Druida](v2-druida.md), com classe e progresso por personagem. Saves anteriores sem classe continuam Necromantes.
+Implementado na v2. Novo Jogo oferece seis classes, incluindo o Guerreiro, com classe e progresso por personagem. Saves anteriores sem classe continuam Necromantes.
 
 ## Ações
 
@@ -11,18 +11,18 @@ Cada clique executa um único corte. O próximo clique avança a sequência se o
 | Clique / 1 | Três cortes | Sem custo; durações de 0,60 / 0,533 / 0,40 s por corte. Impacto em 0,367 / 0,267 / 0,267 s após iniciar cada corte; 55%, 65% e 90% do dano físico; alcance 2,6; arco 144°. |
 | Botão direito / 2 | Estocada avançada | Requer um ponto em Estocada. 20 vigor, recarga 5 s. Avança até 7 unidades entre 0,20 e 0,367 s, buscando terminar a 2,2 unidades da mira (até 08/11/2026 eram 5). Impacto no frame 12 (0,367 s), 220% de dano. Cápsula com raio 0,85 cobre todo o avanço até 3,4 unidades à frente da posição final, incluindo o raio do alvo: alcance total de 10,4 u. Não atravessa sólidos nem concede invulnerabilidade. A pose final é mantida por 0,12 s de recuperação; total de 0,487 s. |
 | 3 / Q | Golpe de escudo | Requer um ponto em Golpe de escudo. 15 vigor, recarga 7 s. Impacto em 0,3 s, 130% de dano; alcance 1,8 e arco 117°. Empurra 0,8 unidade respeitando colisões. Recuperação total 0,8 s. |
-| R / 5 (manter) | Corte tornado | Requer nível 6 e um ponto em Estocada. Custa 5 vigor ao iniciar e 12/s durante o giro. Acerta em 360°, raio 2,7, por 65% do dano a cada 0,3 s (primeiro impacto após 0,15 s). Movimento a 55% da velocidade; termina ao soltar, pausar, esquivar, morrer ou esgotar vigor. Recarga de 3 s ao encerrar. |
+| R / 5 (manter) | Corte Vendaval | Requer nível 6 e um ponto no próprio nó. Custa 5 vigor ao iniciar e 12/s durante o giro. Acerta em 360°, raio 2,7, por 65% do dano a cada 0,3 s (primeiro impacto após 0,15 s). Movimento a 55% da velocidade; termina ao soltar, pausar, esquivar, morrer ou esgotar vigor. Recarga de 3 s ao encerrar. |
 | T / 6 | Arremesso de escudo | Requer nível 6 e um ponto em Golpe de escudo. Custa 20 vigor, recarga 7 s. Lança após 0,18 s; viaja a 14 u/s por 0,55 s e retorna ao jogador, ou volta antes ao atingir sólido. Cada alvo recebe 120% de dano uma vez na ida e outra na volta. Sem bloqueio ou golpe de escudo durante o voo. |
 | C / E / 4 | Esquiva | Reutiliza a [esquiva existente](v2-combate.md#esquiva-básica), com um rolamento de combate próprio (`dodge`). |
 | Slot escolhido | Brado de Guerra | Requer nível 14 e um ponto no nó. Sem custo, recarga 18 s, efeito em 0,2 s, ação total de 0,5 s. Reduz em 30% a velocidade de movimento dos inimigos em raio de 6 (com o raio do alvo) por 4 s e dobra a recuperação de vigor por 6 s. Paredes bloqueiam o efeito. Reutiliza o clipe `shield_bash`. |
-| Automática (terceiro corte) | Onda de Aço | Requer nível 10, um ponto em Slash e um ponto no nó. Não ocupa slot desde 08/11/2026: o terceiro corte do Slash a lança, sem custo, com recarga própria de 8 s (a redução de recarga dos itens vale). Lança no impacto do terceiro corte uma onda de 18 u/s por até 7 u, com largura lateral de 0,9 somada ao raio do alvo. Causa 180% de dano uma vez por alvo, atravessa inimigos e para na primeira parede. Reutiliza o clipe `slash_3`. |
+| Automática (terceiro corte) | Onda de Aço | Requer nível 10, um ponto em Ímpeto e um ponto no nó. Não ocupa slot desde 08/11/2026: o terceiro corte do Slash a lança, sem custo, com recarga própria de 8 s (a redução de recarga dos itens vale). Lança no impacto do terceiro corte uma onda de 18 u/s por até 7 u, com largura lateral de 0,9 somada ao raio do alvo. Causa 180% de dano uma vez por alvo, atravessa inimigos e para na primeira parede. Reutiliza o clipe `slash_3`. |
 | F / Select do controle | Postura de Batalha | Requer nível 10 e um ponto no nó. Fica fora dos seis slots; veja a seção abaixo. |
 
 Alcances incluem o raio do alvo. Paredes bloqueiam os impactos. O avanço físico usa colisão contínua; inimigos fora do arco não são atingidos. Cada impacto passa pelo caminho de dano, morte e recompensa existente, uma única vez. O Guerreiro começa sem horda e não pode reanimar ou equipar ações do Necromante.
 
 ## Árvore, atributos e equipamentos
 
-O treinamento tem quatro ramos: **Espada**, **Escudo**, **Passivas** e **Veterano**. Três pontos por nível, incluindo o nível 1. O orçamento é recalculado pelo nível: personagens existentes recebem automaticamente os pontos adicionais, preservando os investimentos. Só os Cortes e a Esquiva funcionam sem investimento. O primeiro ponto em Estocada ou Golpe de escudo libera a habilidade; até lá, o slot mostra "Libere na árvore", e o comando não gasta vigor nem inicia recarga. Os nós de Cortes, Estocada e Golpe de escudo melhoram o dano em 6%, 10% e 10% por ponto (limites 5, 3 e 3), incluindo o primeiro. Tornado e Arremesso são desbloqueios de um ponto. Personagens que já gastaram todos os pontos em outros nós só liberam essas habilidades com os pontos do próximo nível. Investimentos em `character.warriorRanks` respeitam nível, pré-requisito e orçamento ao carregar; os três IDs antigos foram preservados.
+O treinamento tem quatro ramos: **Espada**, **Escudo**, **Passivas** e **Veterano**. Três pontos por nível, incluindo o nível 1. O orçamento é recalculado pelo nível: personagens existentes recebem automaticamente os pontos adicionais, preservando os investimentos. Só os Cortes e a Esquiva funcionam sem investimento. O primeiro ponto em Estocada ou Golpe de escudo libera a habilidade; até lá, o slot mostra "Libere na árvore", e o comando não gasta vigor nem inicia recarga. Os nós de Cortes, Estocada e Golpe de escudo melhoram o dano em 6%, 10% e 10% por ponto (limites 5, 3 e 3), incluindo o primeiro. Corte Vendaval tem cinco pontos: o primeiro libera e os seguintes somam +10% de dano. Arremesso tem cinco pontos: o primeiro libera e os seguintes acrescentam +10% do dano base, tanto na ida quanto na volta e nos ricochetes. Personagens que já gastaram todos os pontos em outros nós só liberam essas habilidades com os pontos do próximo nível. Investimentos em `character.warriorRanks` respeitam nível, pré-requisito e orçamento ao carregar; os três IDs antigos foram preservados.
 
 Passivas, com até cinco pontos cada:
 
@@ -33,7 +33,7 @@ Passivas, com até cinco pontos cada:
 - Guarda treinada: +3 pontos percentuais de bloqueio por ponto.
 - Domínio dos equipamentos: +8% ao dano-base da espada equipada e à armadura dos itens por ponto.
 
-Sinergias de até três pontos, disponíveis no nível 4:
+Sinergias de até três pontos: Ímpeto no nível 4 e Retaliação no nível 6:
 
 - **Ímpeto** (requer Slash): acertar o terceiro corte fortalece a próxima Estocada em 10% por ponto, por até 4 s.
 - **Retaliação** (requer Guarda treinada): bloquear fortalece em 10% por ponto o próximo Golpe ou Arremesso de escudo, por até 4 s.
@@ -48,7 +48,7 @@ Primeiro arsenal: espada de uma mão, escudo, armadura, elmo, botas e dois anéi
 
 Saves antigos do Guerreiro recebem espada e escudo iniciais uma única vez (`warriorEquipmentVersion: 1`). Cajado e grimório antigos permanecem guardáveis, mas não são equipáveis pela classe. Peças antigas comuns de armadura e anéis continuam utilizáveis; seus afixos mágicos/de horda ficam inativos. Trocar de personagem mantém catálogos e inventários separados.
 
-Desde 08/11/2026 a árvore vem de [docs/habilidades/arvores.json](habilidades/README.md) (nomes, textos, pontos, níveis, pré-requisitos e posição no painel), com os pais antes dos filhos na distribuição de pontos. Nós adicionados depois da primeira versão: **Ricochete** (Escudo, nível 8, requer Arremesso, até 3 pontos), **Onda de Aço** (Espada, nível 10, requer Slash), **Ciclone** e **Turbilhão** (Espada, nível 12, requerem Tornado), **Postura de Batalha** (Veterano, nível 10) e **Brado de Guerra** (Veterano, nível 14). Com eles a árvore soma 19 nós e 57 pontos e fica completa no nível 19. No nível 60 ainda sobram 123 pontos sem uso.
+A árvore vem de [arvores.json](habilidades/README.md): nomes, textos, ranks, níveis, ligações e posição no painel. Ricochete exige nível 12 e aceita cinco pontos; Onda de Aço exige Ímpeto e aceita três. Os ids existentes foram preservados. Ao carregar, investimentos incompatíveis com níveis ou pré-requisitos revisados retornam ao orçamento de pontos.
 
 ### Barra de habilidades
 
@@ -60,17 +60,28 @@ Ao atingir um inimigo na ida, o Arremesso salta para o inimigo vivo mais próxim
 
 O limite por inimigo continua em dois acertos: um na ida ou na cadeia e um na volta, que causa o dano cheio do Arremesso. Enquanto o escudo estiver no ar não há bloqueio nem Golpe de escudo, então mais saltos significam mais tempo exposto. O limite de segurança do voo passou a contar só o retorno, de até 2 s, para uma cadeia longa não fazer o escudo sumir no ar. O salto é mostrado por faísca no impacto e um rastro curto até o próximo alvo.
 
-### Variantes do Tornado
+### Evolução do giro (09/11/2026)
 
-Com o Tornado aprendido, cada nó libera uma variante. Só uma fica ativa, e o Tornado base continua disponível.
+Corte Vendaval → Ciclone → Furacão é uma evolução cumulativa. A árvore mostra o estágio atual, sem seletor de variantes. O campo antigo `warriorTornadoVariant` continua legível no save, mas os pontos determinam o estágio usado.
 
-| Variante | Raio | Acerto a cada | Volta | Vigor | Movimento |
-|---|---|---|---|---|---|
-| Base | 2,7 | 0,3 s | 0,6 s | 12/s | 55% |
-| Ciclone | 3,7 | 0,3 s | 0,6 s | 12/s | 40% |
-| Turbilhão | 2,7 | 0,2 s | 0,4 s | 16/s | 55% |
+- Corte Vendaval: raio 2,7, intervalo 0,3 s, 12 vigor/s e movimento a 55%. Do segundo ao quinto ponto, +10% de dano por ponto.
+- Ciclone (nível 12, requer Vendaval): raio 3,7 e movimento a 40%. Depois do primeiro ponto, +0,25 u de raio e +8% de dano por ponto.
+- Furacão (nível 18, requer Ciclone): mantém a área do Ciclone, passa a golpear a cada 0,2 s e consome 16 vigor/s. Depois do primeiro ponto: −0,01 s entre golpes, +8% de dano e +1 vigor/s por ponto. No máximo: raio 4,7 e intervalo 0,16 s.
+- Tornado (`tornado2`, nível 22): durante o giro, lança um pequeno tornado a cada 0,8 s, até 6 u. Atravessa inimigos uma vez por alvo, para em paredes e causa 35% do dano físico (+10% por ponto depois do primeiro). Não cria outros tornados.
 
-A árvore não devolve pontos, então a escolha não depende do investimento: ela é feita no painel de detalhes dos nós do Tornado e salva em `character.warriorTornadoVariant`. A troca é recusada com um inimigo desperto a menos de 14 u e, no restante, vale ao iniciar o próximo giro. O dano por acerto, o custo inicial de 5 vigor e a recarga de 3 s não mudam.
+O custo inicial de 5 vigor e a recarga de 3 s ao terminar permanecem. Soltar a tecla, esquivar, pausar, morrer ou ficar sem vigor encerra o giro; projéteis já lançados terminam seu percurso, exceto na morte ou troca de cena.
+
+### Aperfeiçoamentos aprovados (09/11/2026)
+
+| Nó | Regra |
+|---|---|
+| Impacto | Uma onda por etapa da Estocada que acerte: raio 2,5 no primeiro alvo atingido, 90% do dano físico, +15 pontos percentuais por ponto depois do primeiro. |
+| Cadência | Após acertar, até cinco avanços extras para presas diferentes a até 6 u. Cada etapa conserva 60% do dano da anterior, inclusive Impacto. Sem custo adicional. Respeita paredes e esquiva; termina sem presa válida. |
+| Rastro | A Estocada e Cadência deixam fogo por 3 s: raio 0,7 e 15% do dano a cada 0,5 s, +15% desse dano por ponto depois do primeiro. Trechos sobrepostos não somam dano no mesmo alvo. Não ocupa slot adicional. |
+| Corte Espacial | Todo corte dispara uma onda de 14 u com 230% do dano físico, sem custo nem recarga própria; atravessa inimigos e para em paredes. Substitui o disparo da Onda de Aço, sem somar os dois. Valores mantidos por decisão do usuário. |
+| Armadura de Espinhos | Reflete ao atacante 8% por ponto da vida realmente perdida, até 40%. Dano bloqueado ou absorvido não reflete; não produz ciclos de reflexão. |
+
+Onda de Aço ganha +10% de dano por ponto depois do primeiro, sem alterar sua recarga enquanto Corte Espacial não é aprendido. Essas alterações são de mecânica e balanceamento, não apenas visuais. Números iniciais sem campanha completa jogada.
 
 ### Postura de Batalha
 
@@ -169,7 +180,7 @@ O jogador mantém o ID de modelo `warrior`. O inimigo do índice zero mantém su
 
 A aba Habilidades usa a linguagem visual do Grimório do Necromante: três ramos com selos selecionáveis, contadores de investimento, estados aprendidos/disponíveis/bloqueados e painel de detalhes com botão de investimento. Espada usa dourado, Escudo azul acinzentado e Passivas verde oliva. Guarda treinada aparece no ramo de Escudo para manter visível sua ligação a Retaliação, preservando seu ID e efeito passivo.
 
-As linhas contínuas mostram os pré-requisitos reais: Slash → Ímpeto, Slash → Onda de Aço, Estocada → Tornado, Tornado → Ciclone, Tornado → Turbilhão, Golpe de escudo → Arremesso, Arremesso → Ricochete e Guarda treinada → Retaliação. Traços pontilhados apenas agrupam as passivas independentes e não impõem requisitos. Em telas estreitas, seletores alternam o ramo exibido, com os detalhes abaixo do grafo. A revisão muda a apresentação, sem alterar custos, níveis, pontos ou saves. Capturas em `review/v2/warrior/skill-tree.png` e `skill-tree-mobile.png`.
+As linhas contínuas mostram os pré-requisitos reais: Slash → Ímpeto, Ímpeto → Onda de Aço → Corte Espacial, Estocada → Impacto → Cadência → Rastro, Corte Vendaval → Ciclone → Furacão → Tornado, Golpe de escudo → Arremesso, Arremesso → Ricochete e Guarda treinada → Retaliação. Traços pontilhados apenas agrupam as passivas independentes e não impõem requisitos. Em telas estreitas, seletores alternam o ramo exibido, com os detalhes abaixo do grafo. A revisão muda a apresentação, sem alterar custos, níveis, pontos ou saves. Capturas em `review/v2/warrior/skill-tree.png` e `skill-tree-mobile.png`.
 
 ### Ciclo Tornado em ajuste no Blender
 
@@ -180,3 +191,15 @@ A fonte `blender/models/warrior.blend` possui agora a ação adicional `tornado`
 A aba Habilidades mostra somente a árvore da classe ativa. Ao trocar de um Necromante para um Guerreiro, o Grimório anterior fica oculto e a árvore do Guerreiro permanece disponível; pontos e habilidades continuam separados por personagem.
 
 Clique em um slot da barra para escolher sua habilidade. A escolha segue as regras da seção Barra de habilidades e fica salva por personagem. Os atalhos e botões do mouse seguem o slot; recargas, custos e desbloqueios seguem a habilidade. Para o Tornado, mantenha pressionado o atalho do slot escolhido e solte para encerrar. Saves anteriores mantêm a ordem original.
+
+## Progressão por pontos corrigida (09/11/2026)
+
+Arremesso de Escudo, Cadência, Corte Espacial e Brado de Guerra agora aceitam cinco pontos. O primeiro mantém os efeitos e números descritos acima. Cada ponto seguinte soma 10% do dano base do Arremesso (incluindo volta e ricochetes), das ondas do Corte Espacial ou dos avanços adicionais da Cadência, conforme o nó. A escala é linear, até +40%; Cadência mantém o limite de cinco avanços, sem multiplicar o bônus novamente a cada salto.
+
+Corte Espacial continua sem custo/recarga própria, alcance 14 e base de 230% no primeiro ponto; no quinto, causa 322%. Brado recebe +0,5 s de lentidão e de recuperação dobrada por ponto depois do primeiro: 4–6 s e 6–8 s. Postura de Batalha permanece um desbloqueio de alternância de um ponto.
+
+Os pontos já investidos permanecem; não há aumento automático de ranks nem cobrança adicional ao carregar. Os novos investimentos usam o orçamento normal. Evidências desta correção em [review/v2/skill-rank-scaling](../review/v2/skill-rank-scaling/).
+
+## Sinergias de escola (09/11/2026)
+
+Além da progressão própria, cada ponto investido em uma habilidade do ramo fortalece em **2% do dano base** as outras habilidades de dano desse mesmo ramo. Os bônus são somados aos próprios, sem realimentação, sem contar passivas gerais ou bônus de equipamento. Dano contínuo e invocações recebem a escola correspondente; vida, custos, recargas e controle preservam suas regras. A árvore mostra o bônus recebido e suas fontes, ou a contribuição dos nós de suporte. A [regra completa de progressão e sinergias](habilidades/sinergias.md) descreve variantes e exceções. Essa mudança é de balanceamento e passa a beneficiar os ranks já investidos nos saves.

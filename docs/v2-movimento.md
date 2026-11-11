@@ -2,7 +2,7 @@
 
 Implementado em `v2/scripts/terrain.mjs`, `training-model.mjs`, `renderer.mjs`,
 `input.mjs`, `gamepad.mjs` e `app.mjs`, relativos à raiz do projeto.
-O [plano de migração](../v2/plano-migracao.md) registra a sequência das etapas.
+O [guia técnico](../v2/README.md) descreve as fontes e a distribuição oficial.
 
 Atualização E4: Tiro de Osso substituiu a magia de área, Dash está disponível e
 movimento normal usa 4 u/s básicos. Veja [combate da E4](v2-combate.md) para as

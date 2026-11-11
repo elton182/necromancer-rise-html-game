@@ -60,7 +60,7 @@ if 'rigged' in sys.argv:
     block="// RIGGED_PLAYER_TEST_BEGIN\nif(new URLSearchParams(location.search).get('playerModel')!=='necromancer_1'){\n}\n// RIGGED_PLAYER_TEST_END"
     weapon_load="SPR.load('playerStaff',"+json.dumps(meta)+",'"+base64.b64encode(weapon_dest.read_bytes()).decode()+"');\n"
     block=block.replace("\n}\n// RIGGED_PLAYER_TEST_END","\n"+weapon_load+"}\n"+(BASE.parent/'scripts/rigged-player-test.js').read_text(encoding='utf-8')+"\n// RIGGED_PLAYER_TEST_END")
-    path=BASE.parent/'necromancer-canvas.html';html=path.read_text(encoding='utf-8')
+    path=BASE.parent/'v1/necromancer-canvas.html';html=path.read_text(encoding='utf-8')
     end=html.find('\n</html>')
     assert end>=0
     html=html[:end+len('\n</html>')]+'\n'
@@ -89,7 +89,7 @@ atlaspath = BASE/'spritesheets/imported_player_sheet.webp'
 atlas.save(atlaspath,lossless=True)
 board.save(BASE/'previews/imported_player_review.png')
 block = "// IMPORTED_PLAYER_TEST_BEGIN\nif(new URLSearchParams(location.search).get('playerModel')==='necromancer_1'){\nSPR.load('necro',"+json.dumps(meta)+",'"+base64.b64encode(atlaspath.read_bytes()).decode()+"');\n}\n// IMPORTED_PLAYER_TEST_END"
-htmlpath = BASE.parent/'necromancer-canvas.html'
+htmlpath = BASE.parent/'v1/necromancer-canvas.html'
 html = htmlpath.read_text(encoding='utf-8')
 if '// IMPORTED_PLAYER_TEST_BEGIN' in html:
     html,n = re.subn(r'// IMPORTED_PLAYER_TEST_BEGIN.*?// IMPORTED_PLAYER_TEST_END',lambda m:block,html,flags=re.S)

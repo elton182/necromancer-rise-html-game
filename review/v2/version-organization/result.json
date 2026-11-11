@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "version": "v2",
+      "protocol": "http",
+      "url": "http://127.0.0.1:55077/v2/necromancer-3d.html",
+      "errors": [],
+      "failed": [],
+      "remote": [],
+      "missing": []
+    },
+    {
+      "version": "v1",
+      "protocol": "http",
+      "url": "http://127.0.0.1:55077/v1/necromancer-canvas.html",
+      "errors": [],
+      "failed": [],
+      "remote": [],
+      "missing": []
+    },
+    {
+      "version": "v2",
+      "protocol": "file",
+      "url": "file:///C:/projects/games/necromancer-rise-html-game/v2/necromancer-3d.html",
+      "errors": [],
+      "failed": [],
+      "remote": [],
+      "missing": []
+    },
+    {
+      "version": "v1",
+      "protocol": "file",
+      "url": "file:///C:/projects/games/necromancer-rise-html-game/v1/necromancer-canvas.html",
+      "errors": [],
+      "failed": [],
+      "remote": [],
+      "missing": []
+    }
+  ]
+}

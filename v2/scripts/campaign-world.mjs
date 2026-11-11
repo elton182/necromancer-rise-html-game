@@ -1,3 +1,4 @@
+import {questMarkerFor} from './quest-model.mjs';
 import {villageServices} from './village-services.mjs';
 import {clean} from './campaign.mjs';
 import {builtinMap,toArena} from './map-model.mjs';
@@ -5,7 +6,7 @@ import {withIntactVillage} from './campaign-world-map.mjs';
 import {WORLD_POINTS,WORLD_ENCOUNTERS,WORLD_PILES,WORLD_EXITS,WORLD_ARRIVALS,normalizeWorld,inWorldVillage,worldObjective} from './campaign-world-model.mjs';
 import {AREAS,areaEntry,areaObjectives,gateOpen,gateSolid,clearNotice,ITAUNA_NAMES,LEADER_NAMES,ITAUNA_QUEST_GROUPS} from './itauna-model.mjs';
 import {editedCampaignMap} from './campaign-maps.mjs';
-import {tuneGroups,AREA_LEVELS} from './area-tuning.mjs';
+import {tuneGroups,AREA_LEVELS,addRouteEncounters} from './area-tuning.mjs';
 import {makeGroups,tickGroups} from './map-spawns.mjs';
 import {grantExperience} from './rewards.mjs';
 import {collectAll} from './gear.mjs';
@@ -19,7 +20,7 @@ export const isWorld=s=>s.world.adventure?.kind==='campaign-world';
 // O que é missão vem sempre do jogo, não do mapa: a edição muda onde e como o grupo aparece, não o que a história espera dele.
 // Nível da área, densidade e renascimento vêm de area-tuning.mjs. Grupo vencido nesta saída volta só depois do tempo de renascimento.
 const remember=(g,run)=>run.has(g.id)?{state:'clear',timer:g.respawn||0}:{};
-const worldGroups=(spawns,p,run,mapLevel)=>makeGroups(tuneGroups(spawns.map(s=>({...s,quest:QUEST_IDS.has(s.id)})),{area:'world',mapLevel})).map(g=>({...g,state:groupState(p,g),...remember(g,run)}));
+const worldGroups=(spawns,p,run,mapLevel)=>makeGroups(tuneGroups(addRouteEncounters(spawns,'world').map(s=>({...s,quest:QUEST_IDS.has(s.id)})),{area:'world',mapLevel})).map(g=>({...g,state:groupState(p,g),...remember(g,run)}));
 // Loot do nível do grupo que gerou o inimigo (área + bônus do grupo); sem grupo, vale o nível da área em `w.gearLevel`.
 const groupLootLevel=e=>e?.gearWave;
 const QUEST_IDS=new Set(WORLD_ENCOUNTERS.filter(e=>e.quest).map(e=>e.id));
@@ -43,7 +44,7 @@ function launchArea(s,area,entry,memory){
  for(const g of arena.gates)if(!g.open)arena.solids=[...arena.solids,gateSolid(g)];
  clean(s,arena,{x:start.x,y:start.y});
  const w=s.world;s.scene='training';w.paused=false;w.gearLevel=AREA_LEVELS[area]||1;w.lootLevelOf=groupLootLevel;w.aim={x:start.x+5,y:start.y};
- const groups=makeGroups(tuneGroups(map.spawns.map(g=>({...g,quest:AREA_QUESTS.has(g.id)})),{area,mapLevel:map.level})).map(g=>({...g,state:g.quest&&progress.cleared.includes(g.id)?'clear':'dormant',...remember(g,run)}));
+ const groups=makeGroups(tuneGroups(addRouteEncounters(map.spawns,area).map(g=>({...g,quest:AREA_QUESTS.has(g.id)})),{area,mapLevel:map.level})).map(g=>({...g,state:g.quest&&progress.cleared.includes(g.id)?'clear':'dormant',...remember(g,run)}));
  w.adventure={kind:'campaign-world',area,name:def.name,done:false,queue:[],zones:[],groups,level:AREA_LEVELS[area],inVillage:false,dialogue:null,mapOpen:false,clearedRun:run,exitLock:true};
  syncWorldPeople(s);w.notice=def.name+' · '+areaObjectives(area,progress)[0].title;return true;
 }
@@ -98,7 +99,7 @@ function tickArea(s,dt){
   if(g.quest&&!p.cleared.includes(g.id)){p.cleared.push(g.id);w.progressChanged=true;}
   const text=clearNotice(g.id);if(text)w.notice=text;
  }});
- tickGates(s);
+ tickGates(s);syncAreaPeople(s);
 }
 function syncWorldPeople(s){
  const w=s.world,p=s.save.campaign.world,r=w.adventure;
@@ -108,20 +109,21 @@ function syncWorldPeople(s){
  cast.push({key:'mayor',...(home?WORLD_POINTS.mayor:WORLD_POINTS.prison),name:home?'Joaquim, o prefeito':'Joaquim, prefeito prisioneiro',model:'npcBram',visualScale:1});
  // Bruno espera na mina até ser encontrado; depois fica na forja da vila.
  const forge=['found','done'].includes(p.smith);
- cast.push({key:'smith',...(forge?WORLD_POINTS.forge:WORLD_POINTS.mine),name:forge?'Bruno, o ferreiro':'Bruno, ferreiro escondido',model:'npcBran',visualScale:1});
+ cast.push({key:'smith',...(forge?WORLD_POINTS.forge:WORLD_POINTS.mine),name:forge?'Bruno, o ferreiro':'Bruno, ferreiro escondido',model:'npcBran',visualScale:1,showName:forge,serviceTitle:'Ferraria'});
  // Pilhas de madeira: pontos de interação sem modelo próprio (o cenário já mostra as toras).
  cast.push(...villageServices(true));
- WORLD_PILES.forEach((pile,i)=>{if(!p.piles[i])cast.push({...pile});});
+ WORLD_PILES.forEach((pile,i)=>{if(p.lumber==='active'&&!p.piles[i])cast.push({...pile});});
  cast.push(...niloCast('world',p));
- const signature=[home,forge,p.piles.join(''),p.nilo||''].join('|');if(r.people===signature)return;r.people=signature;
- placePeople(w,cast);
+ const signature=[home,forge,p.smith,p.lumber,p.piles.join(''),p.nilo||'',p.guardsCleared,p.cleared.join(',')].join('|');if(r.people===signature)return;r.people=signature;
+ placePeople(s,cast);
 }
 // Pessoas e marcadores das áreas ligadas: hoje, só os de O rastro de João.
 function syncAreaPeople(s){
- const w=s.world,p=s.save.campaign.world,r=w.adventure,cast=niloCast(r.area,p),signature=r.area+'|'+(p.nilo||'');
- if(r.people===signature)return;r.people=signature;placePeople(w,cast);
+ const w=s.world,p=s.save.campaign.world,r=w.adventure,cast=niloCast(r.area,p),signature=[r.area,p.nilo,p.niloLetter,p.niloEvidence,p.cleared.join(',')].join('|');
+ if(r.people===signature)return;r.people=signature;placePeople(s,cast);
 }
-function placePeople(w,cast){
+function placePeople(s,cast){
+ const w=s.world,p=s.save.campaign.world;cast=cast.map(l=>({...l,questMarker:questMarkerFor(l.key,p)}));
  w.actors=w.actors.filter(a=>!a.worldNpc);w.landmarks=cast;
  for(const l of cast.filter(l=>l.model))w.actors.push({...l,id:w.nextId++,worldNpc:true,team:'neutral',radius:.35,hp:1,maxHp:1,angle:Math.PI,animation:'idle',animationTime:0,walkDistance:0,actionId:0,timer:0,abilityLabel:l.name,labelTime:999});
 }
@@ -166,6 +168,8 @@ export function worldDialogue(s){
  if(p.stage==='wake'||p.stage==='village')return {title:'Joaquim · prisioneiro',text:'A criança… Lili ficou na vila. Veja se ela está bem. Ainda há guardas por aqui.'};
  if(p.stage==='rescue')return p.guardsCleared?{title:'Joaquim · prefeito de Jacarandá',text:'Achei que ninguém viria. Obrigado por me soltar. Conheço um atalho seguro; vou encontrar Lili na praça. Venha falar comigo quando voltar.',action:'Libertar Joaquim',kind:'rescue'}:{title:'Joaquim · prisioneiro',text:'Os guardas ainda vigiam o posto. Derrote os três antes de me libertar.'};
  if(p.stage==='return')return {title:'Joaquim · de volta a Jacarandá',text:'Lili me contou tudo. A vila está em ruínas, mas ainda podemos reconstruí-la. Precisamos de duas coisas: Bruno, nosso ferreiro, fugiu para a Mina de Valfundo, ao norte do posto; e a madeira cortada ficou na Serraria do Vale, a sudoeste. Aceite o pouco que guardei.',action:'Concluir resgate · 90 ouro e 120 XP',kind:'complete'};
+ if(p.stage==='complete'&&p.smith==='available')return {title:'Joaquim · o ferreiro de Jacarandá',text:'Bruno se refugiou na Mina de Valfundo, ao norte do posto. Um bando tomou a entrada e ele não consegue voltar. Sem o ferreiro, ficaremos sem ferramentas e sem defesa. Você pode abrir o caminho e trazê-lo de volta?',action:'Aceitar missão · O ferreiro de Jacarandá',kind:'smith-accept'};
+ if(p.stage==='complete'&&p.lumber==='available')return {title:'Joaquim · madeira para Jacarandá',text:'A forja voltou a funcionar. Agora precisamos cobrir as casas antes da chuva. Há três pilhas de madeira na Serraria do Vale, a sudoeste, mas os caminhos estão tomados. Marque as pilhas depois de afastar os guardas; eu mandarei os lenhadores buscá-las.',action:'Aceitar missão · Madeira para Jacarandá',kind:'lumber-accept'};
  if(p.lumber==='active'&&p.piles.every(Boolean))return {title:'Joaquim · prefeito de Jacarandá',text:'Três pilhas marcadas! Os lenhadores vão buscá-las com as carroças. Com essa madeira cobrimos as casas antes das chuvas.',action:'Entregar a madeira · 110 ouro e 160 XP',kind:'lumber'};
  const tasks=[p.smith==='active'?'encontre Bruno na Mina de Valfundo, ao norte do posto':p.smith==='found'?'fale com Bruno na forja':null,p.lumber==='active'?'marque as pilhas de madeira na Serraria do Vale, a sudoeste':null].filter(Boolean);
  if(tasks.length)return {title:'Joaquim · prefeito de Jacarandá',text:'Jacarandá ainda precisa de você: '+tasks.join('; ')+'. Os caminhos saem da praça para o norte e para o oeste.'};
@@ -173,7 +177,7 @@ export function worldDialogue(s){
 }
 function smithDialogue(p,atForge){
  if(atForge){
-  if(p.smith==='found')return {title:'Bruno · forja de Jacarandá',text:'A forja está fria, mas o fole ainda funciona. Me dê um momento e reacendo o fogo. Com ferro bom, sua horda vai durar mais.',action:'Reacender a forja · 100 ouro e 150 XP',kind:'smith'};
+  if(p.smith==='found')return {title:'Bruno · forja de Jacarandá',text:'A forja está fria, mas o fole ainda funciona. Me dê um momento e reacendo o fogo. Com a forja acesa, posso cuidar das suas armas e reforçar suas defesas.',action:'Reacender a forja · 100 ouro e 150 XP',kind:'smith'};
   return {title:'Bruno, o ferreiro',text:'O fogo está aceso. Traga o que encontrar nos arredores e vamos ver o que presta.',action:'Abrir a forja · equipamentos',kind:'forge'};
  }
  if(p.smith!=='active')return {title:'Bruno · escondido na mina',text:'Quem está aí? Se Joaquim estiver vivo, diga a ele que estou aqui. Não saio enquanto esse bando rondar a mina.'};
@@ -198,11 +202,13 @@ export function worldDialogueAction(s){
  const action=worldDialogue(s).kind;
  if(action==='accept')p.stage='rescue';
  else if(action==='rescue')p.stage='return';
- else if(action==='complete'){p.stage='complete';p.smith='active';p.lumber='active';s.save.character.gold+=90;grantExperience(s,120);}
+ else if(action==='complete'){p.stage='complete';p.smith='available';p.lumber='locked';s.save.character.gold+=90;grantExperience(s,120);}
+ else if(action==='smith-accept'&&p.smith==='available')p.smith='active';
+ else if(action==='lumber-accept'&&p.lumber==='available')p.lumber='active';
  else if(action==='smith-found')p.smith='found';
- else if(action==='smith'){p.smith='done';s.save.character.gold+=100;grantExperience(s,150);}
+ else if(action==='smith'){p.smith='done';if(p.lumber==='locked')p.lumber='available';s.save.character.gold+=100;grantExperience(s,150);}
  else if(action==='pile')p.piles[WORLD_PILES.findIndex(x=>x.key===r.dialogue)]=1;
  else if(action==='lumber'){p.lumber='done';s.save.character.gold+=110;grantExperience(s,160);}
  else if(!(isNiloAction(action)&&niloAction(s,action)))return false;
- closeWorldOverlay(s);syncWorldPeople(s);w.notice=r.area?areaObjectives(r.area,p)[0].text:worldObjective(p).text;w.progressChanged=true;return true;
+ closeWorldOverlay(s);if(w.areaTravel)w.paused=true;syncWorldPeople(s);w.notice=r.area?areaObjectives(r.area,p)[0].text:worldObjective(p).text;w.progressChanged=true;return true;
 }

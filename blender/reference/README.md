@@ -11,7 +11,7 @@ esqueleto e lobo são ativados automaticamente nas classes existentes, com
 carregamento sob demanda. Não são novos tipos de combate.
 
 
-O ponto de entrada é `index.html` → `necromancer-canvas.html`. Este jogo usa Canvas 2D com câmera elevada e sprites renderizados de modelos Blender, não Godot. As estruturas `scene`, `mesh` e `position` no HTML são adaptadores da lógica original. Trocar o renderizador por uma engine 3D alteraria o escopo e os sistemas existentes; por isso a integração conserva os sprites em oito direções e fornece também os modelos 3D reais.
+O ponto de entrada é `index.html` → `v1/necromancer-canvas.html`. Este jogo usa Canvas 2D com câmera elevada e sprites renderizados de modelos Blender, não Godot. As estruturas `scene`, `mesh` e `position` no HTML são adaptadores da lógica original. Trocar o renderizador por uma engine 3D alteraria o escopo e os sistemas existentes; por isso a integração conserva os sprites em oito direções e fornece também os modelos 3D reais.
 
 ## Arquivos entregues
 

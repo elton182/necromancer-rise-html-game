@@ -6,7 +6,7 @@ A **Arena clássica** abre pelo **Guardião das Ondas**, na praça de Jacarandá
 
 | Regra | Fonte |
 | --- | --- |
-| Quantidade de inimigos, ritmo e fim da wave | `startWave`, `endWave` e o bloco "Modo Infinito" de `necromancer-canvas.html` |
+| Quantidade de inimigos, ritmo e fim da wave | `startWave`, `endWave` e o bloco "Modo Infinito" de `v1/necromancer-canvas.html` |
 | Escala por wave, progresso, desbloqueio e preço | `scripts/equipment-model.js` (`waveStats`, `progress`, `complete`), via `shared-equipment.mjs` |
 | Composição por tipo | `composition()` de `enemies.mjs`, a mesma da campanha |
 | Seleção de wave | `gearSelectWave` / `gearRenderWaves` de `scripts/equipment.js` |

@@ -1,0 +1,181 @@
+{
+  "biomes": {
+    "grave": {
+      "biome": "grave",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 62.257641185650996
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 376,
+      "solids": 361,
+      "enemies": 85,
+      "render": {
+        "calls": 115,
+        "triangles": 315378
+      }
+    },
+    "forest": {
+      "biome": "forest",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 63.297457559708214
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 229,
+      "solids": 502,
+      "enemies": 85,
+      "render": {
+        "calls": 140,
+        "triangles": 375830
+      }
+    },
+    "desert": {
+      "biome": "desert",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 42.810958144291746
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 250,
+      "solids": 149,
+      "enemies": 85,
+      "render": {
+        "calls": 157,
+        "triangles": 351912
+      }
+    },
+    "snow": {
+      "biome": "snow",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 57.85077451834896
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 150,
+      "solids": 362,
+      "enemies": 85,
+      "render": {
+        "calls": 143,
+        "triangles": 587518
+      }
+    },
+    "village": {
+      "biome": "village",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 58.89059089240618
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 120,
+      "solids": 176,
+      "enemies": 85,
+      "render": {
+        "calls": 204,
+        "triangles": 599553
+      }
+    },
+    "swamp": {
+      "biome": "swamp",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 108,
+        "y": 53
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 377,
+      "solids": 311,
+      "enemies": 85,
+      "render": {
+        "calls": 180,
+        "triangles": 638887
+      }
+    },
+    "river": {
+      "biome": "river",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 62.257641185650996
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 248,
+      "solids": 392,
+      "enemies": 85,
+      "render": {
+        "calls": 181,
+        "triangles": 594751
+      }
+    },
+    "mountain": {
+      "biome": "mountain",
+      "entry": {
+        "x": 8,
+        "y": 40
+      },
+      "mid": {
+        "x": 72.5,
+        "y": 62.257641185650996
+      },
+      "boss": {
+        "x": 144,
+        "y": 40
+      },
+      "kit": 271,
+      "solids": 506,
+      "enemies": 85,
+      "render": {
+        "calls": 160,
+        "triangles": 440963
+      }
+    }
+  },
+  "errors": []
+}

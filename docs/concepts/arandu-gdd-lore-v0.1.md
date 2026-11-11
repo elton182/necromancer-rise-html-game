@@ -29,6 +29,8 @@ O jogo combina **dark fantasy, aventura e esperança**. O mundo é cruel, mas n�
 
 **Direção de nomenclatura:** misturar nomes de sonoridade indígena, referências à língua portuguesa e criações próprias, com cuidado para não atribuir etimologias falsas a nomes inventados.
 
+**Nomes de pessoas:** usar nomes brasileiros, como João, Marta, Tomás, Joaquim, Bruno, Eduardo e Mariana, inclusive para nobres e líderes de facção. O nome do personagem criado pelo jogador continua livre. Referências históricas a Zephyr não definem o nome do protagonista da campanha.
+
 **Referências sobre o termo:**
 - UFSC: https://nepi.ufsc.br/apresentacao/
 - UNILA: https://campusarandu.unila.edu.br/arandu-um-nome-ancestral-que-conecta-povos-e-saberes/
@@ -64,8 +66,8 @@ Antiga **Solméria**. Monarquia religiosa que reivindica legitimidade sagrada. I
 Antiga **Dornvale**. Região agrícola e mineradora, entre rotas comerciais de Itavera e os domínios de Ferrabrás. É palco de uma guerra de sucessão. Seus campos, pontes, vilas e fortalezas sofrem tanto com soldados quanto com monstros que aproveitam o caos.
 
 **Personagens propostos:**
-- **Lorde Edric:** herdeiro com legitimidade tradicional; prioriza ordem e estabilidade, mas confisca suprimentos para a guerra.
-- **Lady Maera:** pretendente rebelde; promete reformas, mas depende de mercenários e financiadores com interesses próprios.
+- **Lorde Eduardo:** herdeiro com legitimidade tradicional; prioriza ordem e estabilidade, mas confisca suprimentos para a guerra.
+- **Dama Mariana:** pretendente rebelde; promete reformas, mas depende de mercenários e financiadores com interesses próprios.
 
 ### 4.5 Outros lugares
 
@@ -99,7 +101,7 @@ As classes dividem a campanha e o mundo, mas possuem estilos de combate e perspe
 
 | Classe | Identidade | Estilo de combate |
 |---|---|---|
-| **Necromante — Zephyr** | Vida, morte e almas | Invocações, feitiços, controle e transformação em ceifador/lich |
+| **Necromante** | Vida, morte e almas | Invocações, feitiços, controle e transformação em ceifador/lich |
 | **Mago** | Estudo e domínio arcano | Elementos, feitiços em área e controle |
 | **Arqueira** | Sobrevivência e precisão | Mobilidade, projéteis, armadilhas |
 | **Mercenário** | Liberdade e pragmatismo | Besta, bombas, engenhocas |
@@ -107,7 +109,7 @@ As classes dividem a campanha e o mundo, mas possuem estilos de combate e perspe
 | **Paladino** | Fé e proteção | Combate marcial, defesa e poderes sagrados |
 | **Druida** | Equilíbrio natural | Forças da natureza, criaturas e transformações |
 
-**Zephyr:** permanece como personagem já desenvolvido, com zumbis, esqueletos, habilidades de alma e possível transformação em ceifador. Seu arco demonstra que manipular a morte não obriga alguém a ser maligno.
+**Necromante:** preserva a base já desenvolvida, com zumbis, esqueletos, habilidades de alma e possível transformação em ceifador. Seu arco demonstra que manipular a morte não obriga alguém a ser maligno. O nome é escolhido pelo jogador.
 
 **Possibilidade futura:** reações diferentes de cidades e facções às classes (por exemplo, desconfiança de necromantes em Alvorada). Não é requisito inicial.
 
@@ -121,11 +123,39 @@ O jogador inicia como aventureiro relativamente desconhecido. Protege caravanas,
 
 **Promessa de gameplay:** exploração, combate, contratos, primeiro chefe, primeiros NPCs memoráveis.
 
+#### Eixo narrativo em desenvolvimento — João e a carta
+
+**Base definida:** João viaja à paisana na carruagem da caravana e leva uma carta. Os ataques dos bandidos são motivados por ele e pelo documento que transporta. A viagem discreta e a perseguição fazem parte do mesmo conflito que move o Ato I.
+
+**Direção escolhida — a denúncia dos desvios:** João é um funcionário da coroa, de família nobre, encarregado de verificar o desaparecimento de suprimentos. Descobriu desvios de armas, alimentos e dinheiro para grupos que lucram com a disputa entre Eduardo e Mariana. Seu cargo, sua casa e o reino a que serve ainda serão definidos. Ele viaja sem ostentar sua posição.
+
+**A carta:** contém o depoimento assinado de alguém envolvido no esquema. João a transporta para Helena, representante do Conselho das Guildas responsável pela segurança das rotas comerciais de Itavera. A identidade de quem depõe, os envolvidos citados e o texto exato ainda serão definidos.
+
+**Destinatária definida — Helena:** os desvios prejudicam caravanas e abastecimento, dando a ela interesse e meios para investigar. João confia nela e suspeita que a denúncia possa ser interceptada dentro do próprio reino. A independência de Itavera oferece um caminho para preservar as provas e buscar apoio. Itavera é o destino da carta no Ato I; o convite de João conduz depois ao Vale de Itajuba, onde a operação poderá ser investigada de perto no Ato II. A encenação da entrega ainda será detalhada.
+
+**Motivo da perseguição:** os bandidos foram contratados para recuperar a carta e capturar João vivo, permitindo descobrir quem mais conhece a denúncia. A identidade do contratante e a origem do vazamento sobre a viagem continuam em aberto.
+
+**Ligação temática entre atos:** o Ato I enfrenta a operação local e seus executores; o Ato II leva o protagonista à região que sofre as consequências dos desvios e da guerra. A denúncia não define automaticamente Eduardo ou Mariana como culpado único nem elimina a complexidade dos dois lados.
+
+**Fechamento definido do Ato I:** depois de acompanhar as ações do protagonista, João reconhece seu potencial e o convida a seguir para a cidade do Ato II. O convite é a ligação narrativa entre os atos. A cidade e o motivo concreto do trabalho oferecido ainda serão definidos, em coerência com o Vale de Itajuba e sua guerra de sucessão.
+
+**Percurso aprovado e implementado:** A carta fica costurada no forro da bolsa, e João esconde a bolsa na carroça de mantimentos antes da captura. Os bandidos saqueiam a carroça sem encontrar a carta e enviam a carga ao forte. João escapa perto do vau, entra na gruta e é apanhado pelas aranhas. O protagonista o resgata, descobre sua posição e missão, toma o forte e recupera a bolsa e as provas da perseguição. A derrota do capitão interrompe a operação local e a incursão que ele preparava contra Jacarandá; os mandantes continuam livres.
+
+De volta à vila, João confere a denúncia, reconhece que omitiu o perigo e assume ajuda aos feridos e reparos. A caravana retoma a viagem original. Em Itavera, Helena recebe a carta e as provas; depois, João reconhece o potencial do protagonista e oferece trabalho remunerado para investigar no Vale de Itajuba. Aceitar conclui o Ato I; a viagem do Ato II permanece indisponível.
+
+**Documentos distintos:** as ordens do esconderijo identificam o alvo; o livro de contas aponta o caminho de João e da carga; o contrato e as ordens no forte documentam a perseguição; a carta contém a denúncia assinada.
+
+**Ainda em aberto:** a casa e o reino de João; a identidade de quem assina o depoimento; os nomes citados na denúncia; quem encomendou os ataques e como descobriu a viagem; a cidade e a missão detalhada do Ato II. O cargo exibido de João é emissário da coroa.
+
+**Implementação em 10/11/2026:** o percurso reaproveita as áreas de Jacarandá e Itaúna e acrescenta uma praça de recepção em Itavera, com modelos GLB existentes. O conteúdo atual, saves e verificações estão em [O rastro de João e a carta](../v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026). A praça representa o encontro final, não uma cidade inteira. O ritmo de encontros e os níveis foram revistos em 11/11/2026; os prêmios exclusivos das missões permanecem preservados. Veja o guia atual da campanha para as regras.
+
 ### Ato II — A Guerra das Cinzas (*Confrontar*)
 
 **Base:** Vale de Itajuba.
 
-Uma guerra de sucessão entre Edric e Maera devasta a região. O jogador chega em uma missão de escolta de medicamentos e alimentos, mas encontra pontes destruídas, fazendas queimadas e refugiados. Ambos os lados apresentam motivos compreensíveis e práticas condenáveis.
+Uma guerra de sucessão entre Eduardo e Mariana devasta a região. O jogador chega em uma missão de escolta de medicamentos e alimentos, mas encontra pontes destruídas, fazendas queimadas e refugiados. Ambos os lados apresentam motivos compreensíveis e práticas condenáveis.
+
+**Ligação com o Ato I:** João convida o protagonista a ir para a cidade deste ato após reconhecer seu potencial. A cidade ainda não tem nome definido; a relação do convite com a missão de escolta será detalhada.
 
 O jogador protege civis, enfrenta soldados e monstros, recupera passagens e pode influenciar a resolução do conflito. Um acordo difícil é uma possibilidade, não uma solução garantida.
 
@@ -169,9 +199,9 @@ O jogador participa do confronto final e ajuda a encerrar a ameaça central. A v
 
 ## 8. Personagens e ameaças relevantes
 
-- **Zephyr:** necromante jogável já existente.
+- **Necromante:** classe jogável já existente; nome escolhido pelo jogador.
 - **Rei Caído:** governante transformado em morto-vivo; possível chefe importante ligado à Fortaleza de Pedra Negra. Sua conexão com a ameaça ancestral ainda precisa ser definida.
-- **Lorde Edric e Lady Maera:** líderes da guerra regional.
+- **Lorde Eduardo e Dama Mariana:** líderes da guerra regional.
 - **Conselho das Guildas de Itavera:** aliados comerciais com interesses conflitantes.
 - **A entidade adormecida:** antagonista central a partir do Ato IV; nome, origem, forma e limites de poder em aberto.
 
@@ -226,7 +256,7 @@ O objetivo não é obrigatoriamente criar um simulador de construção, mas faze
 ## 11. Prioridades práticas de desenvolvimento
 
 ### Curto prazo
-- Consolidar o loop de combate do Zephyr.
+- Consolidar o loop de combate do Necromante.
 - Refinar invocações, espíritos, projéteis ósseos e build de magia.
 - Criar uma vertical slice do Ato I com exploração, caminho opcional, miniboss e recompensa.
 - Validar câmera, navegação de minions e ritmo dos encontros.

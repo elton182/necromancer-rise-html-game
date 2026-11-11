@@ -1,3 +1,4 @@
+import {schoolSynergy} from './skill-synergy.mjs';
 // Druida (Flora): árvore, atributos, barra e formas. Regras puras, sem DOM nem Three.js.
 // Guia: docs/v2-druida.md. Valores iniciais, ainda sem balanceamento de campanha completa.
 import {treeNodes,normalizeRanks,spentRanks,fitRanks,canLearnNode} from './skill-tree.mjs';
@@ -17,9 +18,18 @@ export function druidAttributes(a,ranks){const r=normalizeDruid(ranks);return {.
 // a de lobo continua fixa.
 // Humana: 0 Faísca, 1 Corrente, 2 Raízes, 3 Esquiva, 4 Tempestade, 5 Rejuvenescer, 6 Turbilhão, 7 Tornado.
 // Lobo: 0 Garras, 1 Salto, 2 Uivo, 3 Esquiva, 4 Corte Sangrento, 5 Garra de Gelo.
-export const HUMAN_NODES={1:'chain',2:'roots',4:'storm',5:'rejuvenate',6:'turbilhao',7:'tornado'};
+export const HUMAN_NODES={1:'chain',2:'roots',4:'storm',5:'rejuvenate',6:'turbilhao',7:'tornado',8:'lobo',9:'calamidade',10:'florestaTropical',11:'escudoDeFolhas',12:'liderDaMatilha'};
 // Ids das ações humanas, na ordem de HUMAN_ACTIONS (druid.mjs): a barra montável guarda estes ids.
-export const DRUID_HUMAN_IDS=['spark','chain','roots','dodge','storm','rejuvenate','turbilhao','tornado'];
+export const DRUID_HUMAN_IDS=['spark','chain','roots','dodge','storm','rejuvenate','turbilhao','tornado','lobo','calamidade','florestaTropical','escudoDeFolhas','liderDaMatilha'];
+// Só a proporção de vida dos lobos é persistida; posições, alvo e animação são transitórios.
+export const normalizeDruidPack=value=>Array.isArray(value)?value.slice(0,4).map(v=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):0):[];
+export const DRUID_SUMMONS={wolfHp:.65,wolfDamage:.45,wolfPerRank:.1,bite:1.8,biteInterval:6,bitePerRank:.2,plantHp:.6,plantDamage:.45,plantLife:8};
+export const DRUID_ADVANCED={calamity:{radius:4,time:8,drift:.8,pull:1.2,interval:.5,multiplier:.3,boltInterval:1,boltTargets:2,boltMultiplier:.65},forest:{count:5,radius:4.5,life:10},leaves:{share:.35,time:8},leader:{damage:1.3,scale:1.1,claw:1.6,markTime:6,pick:3.5,range:12}};
+// Primeiro ponto mantém a habilidade atual; os seguintes somam 10% do dano base.
+export const druidRankFactor=(ranks,id)=>1+.1*Math.max(0,(ranks?.[id]||0)-1);
+export const druidTornadoFactor=(ranks,id='tornado')=>1+schoolSynergy('druid',ranks,id)+.1*(Math.max(0,(ranks?.tornado||0)-1)+Math.max(0,(ranks?.furacao||0)-1));
+export const druidHowlBonus=ranks=>.25+.05*Math.max(0,(ranks?.howl||0)-1);
+export const druidHealShare=ranks=>.3+.05*Math.max(0,(ranks?.rejuvenate||0)-1);
 export const WOLF_NODES={1:'leap',2:'howl',4:'corteSangrento',5:'garraDeGelo'};
 export const druidActionLearned=(form,index,ranks)=>{const node=(form==='wolf'?WOLF_NODES:HUMAN_NODES)[index];return !node||(ranks?.[node]||0)>0;};
 export const WOLF={drain:4,hitRestore:3,taken:.8,move:1.35,toggleCooldown:2,exhaustedCooldown:4,shift:.35,damagePerRank:.08};

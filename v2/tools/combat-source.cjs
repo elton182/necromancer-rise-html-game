@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 function readCombatRules(repo=path.resolve(__dirname,'../..')){
- const html=fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8');
+ const html=fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8');
  const value=(source,regex,name)=>{const m=source.match(regex);if(!m)throw Error('Regra atual mudou; revisar adaptador E4: '+name);return Number(m[1]);};
  const part=(start,end)=>{const a=html.indexOf(start),b=html.indexOf(end,a+start.length);if(a<0||b<0)throw Error('Função de combate ausente: '+start);return html.slice(a,b);};
  const bolt=part('function castRaio(','// ── Chuva de Ossos'),dash=part('function castDash(','function mobSkillTarget(');

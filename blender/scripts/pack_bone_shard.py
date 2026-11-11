@@ -31,7 +31,7 @@ def pack():
     return meta
 
 if __name__=='__main__':
-    game=HERE.parent/'necromancer-canvas.html'
+    game=HERE.parent/'v1/necromancer-canvas.html'
     meta=json.loads((HERE/'spritesheets'/'bone_shard_sheet.json').read_text()) if '--embed-only' in sys.argv else pack()
     payload=base64.b64encode((HERE/'spritesheets'/'bone_shard_sheet.webp').read_bytes()).decode()
     html=game.read_text(encoding='utf-8')

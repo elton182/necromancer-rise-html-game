@@ -1,0 +1,10 @@
+{
+  "bag": {
+    "free": true,
+    "reachable": true
+  },
+  "contract": {
+    "free": true,
+    "reachable": true
+  }
+}

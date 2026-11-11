@@ -10,7 +10,7 @@ const rigged=process.argv.includes('--rigged');
   const page=await browser.newPage({viewport:{width:1280,height:800}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
-  const url=pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href;
+  const url=pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href;
   await page.goto(url);await page.waitForFunction(()=>SPR.ready('necro'),null,{polling:50});
   await page.waitForFunction(()=>window.GameVisualBoot?.ready,null,{polling:50});
   assert.equal(await page.evaluate(()=>SPR.sheets.necro.meta.source),'purple_hooded_mage.glb');

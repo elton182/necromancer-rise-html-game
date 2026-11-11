@@ -7,7 +7,7 @@ const {pathToFileURL}=require('node:url');
   const page=await browser.newPage({viewport:{width:1280,height:800}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{window.requestAnimationFrame=()=>0;});
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href,{waitUntil:'load'});
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href,{waitUntil:'load'});
   await page.waitForFunction(()=>SPR.ready('warAcolyte'));
   const result=await page.evaluate(()=>{
    TITLE.active=false;TITLE.paused=false;COMIC.active=false;CAMP.on=false;CAMP.map=false;P.deadT=0;gameState='field';sceneMode='field';STG.on=false;

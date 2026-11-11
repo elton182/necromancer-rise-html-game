@@ -4,7 +4,7 @@ Primeira área além do mundo de Jacarandá, feita para testar mapas longos como
 
 ## Como chegar
 
-A estrada sai da rota do cemitério, em (90, 74), e segue para leste até o arco em (167, 96), na borda do mundo. Um anel verde-água no chão marca a passagem: pisar nele escurece a tela e leva ao outro mapa. O mapa de Jacarandá (M) mostra a estrada. Não há exigência de etapa da campanha. Nível dos inimigos: várzea 20 a 22, gruta 30 a 32, forte 40 a 42; cada grupo tem o dobro de integrantes e o triplo de ondas, e os grupos que não são de missão renascem em 90 s (ver [campanha](v2-campanha.md)).
+A estrada sai da rota do cemitério, em (90, 74), e segue para leste até o arco em (167, 96), na borda do mundo. Um anel verde-água no chão marca a passagem: pisar nele escurece a tela e leva ao outro mapa. O mapa de Jacarandá (M) mostra a estrada. Não há exigência de etapa da campanha. Nível dos inimigos: várzea 7 a 9, gruta 9 a 11, forte 11 a 13. Os grupos têm uma leva pequena, com um único reforço em poucos pontos, sem reaparecimento contínuo por tempo (ver [campanha](v2-campanha.md)).
 
 ## Passagens
 
@@ -50,7 +50,7 @@ Só lobos e aranhas. O lobo é o tipo 4 (Cão de Cripta): muda só o nome, nesta
 
 - Campos de `save.campaign.world`, com padrão ausente nos saves anteriores: `area` (última área) e `entry` (última chegada). Ver [saves](v2-saves.md).
 - `cleared` aceita também os grupos permanentes da área: os seis do forte, `cave-queen` e `islet-guard`.
-- Os demais grupos ficam derrotados enquanto o jogador troca de mapa e renascem 90 s depois de vencidos, com o jogador longe; ao voltar à vila, todos rearmam.
+- Os demais grupos ficam derrotados enquanto o jogador explora e troca de mapa; não renascem pelo relógio. Ao voltar à vila, os pontos comuns rearmam para a próxima saída.
 - **Teleporte à vila:** botão no painel; desligado com inimigo em combate a menos de 16 u.
 - **Morte:** retoma na entrada do mapa em que o jogador estava. **Retomar no abrigo**, no Relicário, volta a Jacarandá e esquece a área.
 
@@ -79,33 +79,55 @@ Medido no Edge, com WebGL em Intel Iris Xe, a 1440 × 900 e sem combate intenso 
 - Várzea: 93 a 144 chamadas de desenho e 239 mil a 457 mil triângulos, conforme o lugar.
 - Forte: 71 a 105 chamadas e 252 mil a 447 mil triângulos. Gruta: 26 a 37 chamadas e 79 mil a 104 mil triângulos.
 
-## O rastro de João
+## O rastro de João e a carta (10/11/2026)
 
-Missão que liga Jacarandá, a várzea, a gruta e o forte, fechando o gancho do prólogo (João levado durante o ataque a Jacarandá). Fontes: [`nilo-model.mjs`](../v2/scripts/nilo-model.mjs) (etapas, pontos, grupos e prêmios) e [`nilo-quest.mjs`](../v2/scripts/nilo-quest.mjs) (quem aparece em cada lugar, falas e ações); a integração fica em `campaign-world.mjs`, e os objetivos em `campaign-world-model.mjs` e `itauna-model.mjs`.
+A missão agora liga o sequestro do prólogo à denúncia dos desvios que alimentam a guerra no Vale de Itajuba. João é emissário da coroa, de família nobre, e viaja à paisana. Sua casa e seu reino não são identificados. A carta contém um depoimento assinado destinado a **Helena**, representante do Conselho das Guildas responsável pela segurança das rotas de Itavera. Os bandidos querem o documento intacto e João vivo para descobrir quem mais conhece a denúncia.
 
-| Etapa | Onde | O que fazer | Prêmio |
-| --- | --- | --- | --- |
-| `locked` | Jacarandá, praça (56, 62) | Marta aparece depois do prólogo. Só oferece a busca com a forja acesa e a madeira entregue; antes disso, o objetivo diz o que falta | — |
-| `road` | Várzea, acampamento | Vencer o bando do centro (`camp-inner`) e examinar o livro de contas em (78, −30). O livro diz que João tentou fugir no vau e foi levado à gruta | — |
-| `cave` | Gruta, câmara da Mãe-Tecelã | Derrotar a Mãe-Tecelã (`cave-queen`) e cortar o casulo em (−44, −66). João volta sozinho para a vila e fala do contrato | 150 ouro, 350 XP |
-| `fort` | Forte, diante da torre | Tomar o pátio externo, derrotar o capitão (`fort-captain`) e examinar a mesa em (0, −34). O contrato leva metade de um selo com parte de uma torre; o nome foi raspado | 200 ouro, 500 XP |
-| `return` | Jacarandá, praça (52, 64) | Entregar o contrato a João | 250 ouro, 700 XP |
+Fontes: [etapas e pontos](../v2/scripts/nilo-model.mjs), [diálogos e ações](../v2/scripts/nilo-quest.mjs), [integração](../v2/scripts/campaign-world.mjs) e [praça de Itavera](../v2/scripts/itavera-map.mjs).
 
-- O bando do acampamento continua renascendo como os demais grupos da várzea: o livro exige vencê-lo **na saída atual**. Mãe-Tecelã e capitão são permanentes; quem já os derrotou antes da missão só precisa interagir.
-- Quem chega à gruta antes de ler o livro também pode libertar João; o livro deixa de aparecer depois disso.
-- Fora da etapa certa, as falas só orientam. Cada prêmio é pago uma vez, porque a ação só vale a partir da etapa esperada.
-- Na área, o objetivo da missão vem antes dos de exploração e guia a bússola; no mundo, ele passa à frente quando a missão está em curso ou pronta para começar. Os pontos aparecem como marcadores dourados e estão nos **Mapas da campanha**; o editor não deixa remover `camp-inner`.
-- Marta usa o modelo `npcLysa` e João o `npcBram`, como no prólogo; Joaquim usa o mesmo modelo de João.
-- A identidade de João e o dono do selo continuam em aberto: o encerramento só diz que ele reconhece a torre.
-- Save: `campaign.world.nilo`, ausente enquanto `locked` (ver [saves](v2-saves.md)).
+| Etapa salva | Percurso e condição | Prêmio exclusivo |
+| --- | --- | --- |
+| `locked` | Durante a ajuda emergencial à vila, Marta confirma a pista com Tomás e viajantes. A busca abre depois da forja e da madeira | — |
+| `road` | Vencer o bando central do acampamento e ler o livro: a carga roubada foi ao forte; João escapou junto ao vau e entrou na gruta | — |
+| `cave` | Vencer a Mãe-Tecelã e libertar João. Ele explica que as aranhas o capturaram durante a fuga e revela a carta escondida no forro da bolsa, colocada na carroça antes do sequestro | 150 ouro, 350 XP |
+| `rescued` | Resgate concluído. Voltar a Jacarandá e falar com João, marcado com **!**, para aceitar A carta da Pedra Negra. A missão da carta só entra no HUD e no diário após a aceitação | — |
+| `fort` | Vencer o capitão, recuperar a bolsa no depósito leste e guardar o contrato e as ordens na mesa diante da torre. As duas interações podem ocorrer em qualquer ordem | Contrato: 200 ouro, 500 XP; bolsa sem prêmio extra |
+| `return` | Entregar a bolsa e as provas a João na praça de Jacarandá. Ele confere a carta, admite o risco omitido e assume ajuda à vila | 250 ouro, 700 XP |
+| `done` | Retorno local já premiado. Falar com João permite viajar com a caravana para Itavera | — |
+| `itavera` | Entregar a denúncia e as provas a Helena na praça das guildas | — |
+| `invitation` | João reconhece as ações do protagonista e oferece trabalho remunerado no Vale de Itajuba | — |
+| `complete` | Convite aceito e Ato I concluído. Ativa o marcador `act1` da horda, como a conclusão do fluxo antigo. Ato II ainda indisponível | Sem novo pagamento |
 
-Teste: `node --test v2/tests/nilo-quest.test.mjs` cobre o save, pontos livres e alcançáveis, a condição da oferta, o percurso completo com prêmios únicos e o atalho pela gruta. Os encontros são encerrados com dano injetado: não comprova dificuldade. A missão leva de Jacarandá (inimigos de nível 10) direto às áreas de nível 20 a 42; essa curva não foi revista para ela.
+A bolsa fica em (44, −28), no depósito do forte, e as provas em (0, −34). Marcadores estão no editor; a verificação protege o acesso a ambos. O bando do acampamento precisa ser vencido na saída atual; capitão e Mãe-Tecelã permanecem derrotados. É possível resgatar João sem ler primeiro o livro.
+
+A carta é diferente das ordens de captura e do contrato dos bandidos. A derrota do capitão encerra a operação local e impede a incursão que ele preparava contra Jacarandá; obter um documento não elimina os mandantes da perseguição. O contrato conserva o selo parcial de uma torre, sem identificar o financiador nem atribuir toda a culpa a Eduardo ou Mariana.
+
+### Itavera
+
+A viagem por conversa usa a mesma passagem escura das áreas. A cidade está representada por uma **praça de recepção**, não por uma cidade inteira: casas intactas do kit GLB da vila, muralhas do kit do forte, comércio e cenário urbano além dos limites. Não há encontros de combate. A planta aparece no editor em **Itavera · praça das guildas**; Helena, João, Marta, chegada e retorno são pontos protegidos.
+
+Helena fica em (0, −12), João em (−5, −6) e Marta em (6, 9). Os três reutilizam modelos GLB existentes. A entrega a Helena vem antes do convite. Fechar uma conversa não aceita sua ação; o convite pode ficar pendente. O anel ao sul e o teleporte permitem voltar a Jacarandá; João permite retornar a Itavera, inclusive depois do final. Ninguém é enviado para uma área inexistente do Ato II.
+
+### Saves e verificação
+
+`campaign.world.nilo` preserva os valores antigos e acrescenta `rescued`, `itavera`, `invitation` e `complete`. A etapa `rescued` separa o resgate concluído da aceitação da missão da carta; saves já em `fort` preservam a missão ativa. `niloLetter` e `niloEvidence` guardam a coleta parcial no forte. Saves antigos em `return` ou `done` recebem ambas as coletas como concluídas, sem refazer o forte ou pagar recompensas novamente. Saves em `done` continuam pelo epílogo. A área `itavera` só é restaurada a partir das etapas do epílogo. Não houve mudança de chave nem versão do save.
+
+Executados: build autocontido, testes de campanha, mapas, jornadas e saves, e percurso no Edge com armazenamento isolado. O percurso cobre reparos, acampamento, resgate, as duas coletas do forte com recarga entre elas, entrega a Helena, nova recarga, convite, retorno e revisita, sem erros de página ou requisições externas. Conferidos 390 px e bordas em zoom máximo, horda, fundos claro/escuro e qualidade baixa. [Evidências e limites](../review/v2/act-one-letter/validation-notes.md). O teste de regras é `node --test v2/tests/nilo-quest.test.mjs`; o percurso de navegador é `node v2/tests/act-one-letter-browser-check.cjs`. Encerramentos de encontros usam dano injetado e não comprovam dificuldade. A revisão de ritmo de 11/11 ajusta níveis, grupos e ondas; os prêmios exclusivos das missões foram preservados.
 
 ## Limites do protótipo
 
-- Fora de O rastro de João, a área só tem objetivos de exploração e o saque normal dos inimigos. Forte e gruta não abrem quests de Joaquim.
-- O equilíbrio não foi testado em partida real: níveis e composição são valores iniciais.
+- Fora de O rastro de João e seu epílogo em Itavera, a área só tem objetivos de exploração e o saque normal dos inimigos. Forte e gruta não abrem quests de Joaquim.
+- A revisão tem amostras de combate no motor real; ainda falta avaliação por partida completa com as seis classes.
 - A fachada do forte na várzea é cenário; o pátio de dentro é maior que a muralha vista de fora.
 - O mapa da área (M) fica parcialmente sob a barra inferior em 1440 × 900.
 - Em 390 px, o painel de objetivos corta o botão do mapa quando os dois objetivos estão ativos; M continua funcionando no teclado.
 - Lobos contrastam pouco com o piso da gruta; as barras de vida ajudam na leitura.
+
+
+## Ritmo dos encontros (11/11/2026)
+
+As patrulhas novas encurtam os intervalos entre combates nas rotas da várzea e nas passagens da gruta. A campanha não dobra mais o tamanho dos grupos nem triplica suas ondas. Só `camp-gate`, `fork-spiders`, `lake-wolves` e `fort-west` têm uma segunda leva, após 9 s. Capitão e Mãe-Tecelã aparecem uma só vez em seus encontros.
+
+O capitão fica com três integrantes no grupo; líderes comuns podem ter até quatro, e os demais pontos até três. Ao explorar, um grupo vencido continua vencido. O retorno a Jacarandá rearma os pontos comuns para a próxima saída, preservando os encontros permanentes e o progresso das missões. Os mesmos limites valem no Testar dos mapas da campanha; mapas pessoais mantêm suas configurações.
+
+Veja [regras da campanha](v2-campanha.md#revisão-de-ritmo-e-bruno-11112026) e [evidências](../review/v2/campaign-pacing/validation-notes.md).

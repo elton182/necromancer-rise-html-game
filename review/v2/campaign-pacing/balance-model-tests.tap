@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: late waves preserve hounds and reserve support slots using the shared composition
+ok 1 - late waves preserve hounds and reserve support slots using the shared composition
+  ---
+  duration_ms: 6.2839
+  ...
+# Subtest: source adapter captures live overrides, campaign layouts and captain
+ok 2 - source adapter captures live overrides, campaign layouts and captain
+  ---
+  duration_ms: 0.1366
+  ...
+# Subtest: XP crosses multiple levels and caps exactly at 60
+ok 3 - XP crosses multiple levels and caps exactly at 60
+  ---
+  duration_ms: 0.6079
+  ...
+# Subtest: all generated builds obey prerequisites and point budget at all levels
+ok 4 - all generated builds obey prerequisites and point budget at all levels
+  ---
+  duration_ms: 9.07
+  ...
+# Subtest: level one has no free minions; the first invested zombie point enables the group
+ok 5 - level one has no free minions; the first invested zombie point enables the group
+  ---
+  duration_ms: 0.3796
+  ...
+# Subtest: simulation applies flat weapon bases before percentage damage just like the game preview
+ok 6 - simulation applies flat weapon bases before percentage damage just like the game preview
+  ---
+  duration_ms: 4.0609
+  ...
+# Subtest: item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+ok 7 - item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+  ---
+  duration_ms: 0.2516
+  ...
+# Subtest: finals and unlearned skills ignore item bonuses
+ok 8 - finals and unlearned skills ignore item bonuses
+  ---
+  duration_ms: 0.1587
+  ...
+# Subtest: rarities have exact unique affix count and boss drops exclude common
+ok 9 - rarities have exact unique affix count and boss drops exclude common
+  ---
+  duration_ms: 78.0639
+  ...
+# Subtest: legacy endless preserves original factors; current adapter uses the shared live wave model
+ok 10 - legacy endless preserves original factors; current adapter uses the shared live wave model
+  ---
+  duration_ms: 0.3338
+  ...
+# Subtest: completion rewards are unique when requested; defeats never reward
+ok 11 - completion rewards are unique when requested; defeats never reward
+  ---
+  duration_ms: 0.1694
+  ...
+# Subtest: hand-computable kill uses actual hit damage and awards no overkill XP twice
+ok 12 - hand-computable kill uses actual hit damage and awards no overkill XP twice
+  ---
+  duration_ms: 1.5116
+  ...
+# Subtest: mana depletion constrains sustained combat and cooldown constrains bursts
+ok 13 - mana depletion constrains sustained combat and cooldown constrains bursts
+  ---
+  duration_ms: 0.6823
+  ...
+# Subtest: minion deaths and revival reduce damage contribution
+ok 14 - minion deaths and revival reduce damage contribution
+  ---
+  duration_ms: 0.6424
+  ...
+# Subtest: merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+ok 15 - merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+  ---
+  duration_ms: 0.528
+  ...
+# Subtest: campaign completion XP is actually credited after final encounter
+ok 16 - campaign completion XP is actually credited after final encounter
+  ---
+  duration_ms: 25.5326
+  ...
+# Subtest: failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+ok 17 - failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+  ---
+  duration_ms: 5.3237
+  ...
+# Subtest: reports are reproducible, finite, escape CSV and interpolate percentiles
+ok 18 - reports are reproducible, finite, escape CSV and interpolate percentiles
+  ---
+  duration_ms: 31.0071
+  ...
+# Subtest: configuration rejects invalid scenarios and dangerous numeric bounds
+ok 19 - configuration rejects invalid scenarios and dangerous numeric bounds
+  ---
+  duration_ms: 0.7199
+  ...
+# Subtest: summary detects stagnant levels, difficulty jumps and more efficient farming
+ok 20 - summary detects stagnant levels, difficulty jumps and more efficient farming
+  ---
+  duration_ms: 0.5378
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 630.0123

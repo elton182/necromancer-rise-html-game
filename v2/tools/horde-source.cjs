@@ -15,7 +15,7 @@ const V2_TYPES={
   ability:{name:'Orbe Sombrio',icon:'✦',cooldown:7,color:'#b58cff',desc:'Orbe pesado: 180% de dano no alvo e 60% em quem estiver a até 1,5 u dele.'}},
 };
 function readHorde(repo=path.resolve(__dirname,'../..')){
- const html=fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8'),abilities=fs.readFileSync(path.join(repo,'scripts/minion-abilities.js'),'utf8');
+ const html=fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8'),abilities=fs.readFileSync(path.join(repo,'scripts/minion-abilities.js'),'utf8');
  const defs=literal(html,'MINION_DEFS');for(const m of html.matchAll(/MINION_DEFS\.(\w+)\.(hp|dmg|spd)\s*=\s*([\d.]+)\s*;/g))if(defs[m[1]])defs[m[1]][m[2]]=Number(m[3]);
  const abom=html.match(/Object\.defineProperty\(MINION_DEFS,'abom',\{enumerable:false,value:({[^\n]+})\}\);/);if(!abom)throw Error('Abominação ausente');defs.abom=vm.runInNewContext('('+abom[1]+')',{}, {timeout:1000});
  const costs=literal(html,'SW_COST');costs.abom=[0,25];const commands=literal(html,'ACTION_SKILLS');for(const name of ['skeleton','specter']){const m=tree.match(new RegExp('ACTION_SKILLS\\.'+name+'=({[^\\n]+});'));if(!m)throw Error('Comando ausente: '+name);commands[name]=vm.runInNewContext('('+m[1]+')',{}, {timeout:1000});}

@@ -1,0 +1,710 @@
+TAP version 13
+# Subtest: Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+ok 1 - Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+  ---
+  duration_ms: 9.2846
+  ...
+# Subtest: Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+ok 2 - Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+  ---
+  duration_ms: 14.7604
+  ...
+# Subtest: lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+ok 3 - lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+  ---
+  duration_ms: 3.1012
+  ...
+# Subtest: Setas Perseguidoras curvam até um alvo fora do leque
+ok 4 - Setas Perseguidoras curvam até um alvo fora do leque
+  ---
+  duration_ms: 8.0037
+  ...
+# Subtest: Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+ok 5 - Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+  ---
+  duration_ms: 24.321
+  ...
+# Subtest: Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+ok 6 - Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+  ---
+  duration_ms: 16.7665
+  ...
+# Subtest: Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+ok 7 - Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+  ---
+  duration_ms: 19.0604
+  ...
+# Subtest: Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+ok 8 - Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+  ---
+  duration_ms: 0.4917
+  ...
+# Subtest: Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+ok 9 - Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+  ---
+  duration_ms: 35.7
+  ...
+# Subtest: Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+ok 10 - Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+  ---
+  duration_ms: 7.298
+  ...
+# Subtest: cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+ok 11 - cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+  ---
+  duration_ms: 21.4448
+  ...
+# Subtest: Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+ok 12 - Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+  ---
+  duration_ms: 12.4485
+  ...
+# Subtest: Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+ok 13 - Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+  ---
+  duration_ms: 4.1418
+  ...
+# Subtest: Druida é uma classe válida, com árvore própria persistida e saves antigos intactos
+ok 14 - Druida é uma classe válida, com árvore própria persistida e saves antigos intactos
+  ---
+  duration_ms: 14.1476
+  ...
+# Subtest: orçamento, nível e pré-requisitos da árvore
+ok 15 - orçamento, nível e pré-requisitos da árvore
+  ---
+  duration_ms: 0.6407
+  ...
+# Subtest: atributos mágicos sem horda; passivas e itens do catálogo do Necromante
+ok 16 - atributos mágicos sem horda; passivas e itens do catálogo do Necromante
+  ---
+  duration_ms: 3.3791
+  ...
+# Subtest: mundo da Druida: modelo próprio e nenhum aliado da horda
+ok 17 - mundo da Druida: modelo próprio e nenhum aliado da horda
+  ---
+  duration_ms: 4.3266
+  ...
+# Subtest: Faísca atinge só o primeiro inimigo na linha, sem custo, e respeita a recarga
+ok 18 - Faísca atinge só o primeiro inimigo na linha, sem custo, e respeita a recarga
+  ---
+  duration_ms: 6.5464
+  ...
+# Subtest: Corrente salta para inimigos próximos, um salto extra por ponto, com perda por salto
+ok 19 - Corrente salta para inimigos próximos, um salto extra por ponto, com perda por salto
+  ---
+  duration_ms: 1.9873
+  ...
+# Subtest: Raízes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+ok 20 - Raízes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+  ---
+  duration_ms: 1.7557
+  ...
+# Subtest: Tempestade derruba raios só dentro da área, enquanto ela dura
+ok 21 - Tempestade derruba raios só dentro da área, enquanto ela dura
+  ---
+  duration_ms: 1.5286
+  ...
+# Subtest: Rejuvenescer cura 30% da vida ao longo de 5 s
+ok 22 - Rejuvenescer cura 30% da vida ao longo de 5 s
+  ---
+  duration_ms: 1.0537
+  ...
+# Subtest: Forma de Lobo: troca de modelo, garras devolvem mana, consumo contínuo e volta ao esgotar
+ok 23 - Forma de Lobo: troca de modelo, garras devolvem mana, consumo contínuo e volta ao esgotar
+  ---
+  duration_ms: 1.6975
+  ...
+# Subtest: Salto Feroz avança com colisão e atinge a área de pouso
+ok 24 - Salto Feroz avança com colisão e atinge a área de pouso
+  ---
+  duration_ms: 2.1785
+  ...
+# Subtest: sessão: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta à forma humana
+ok 25 - sessão: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta à forma humana
+  ---
+  duration_ms: 7.1947
+  ...
+# Subtest: árvore: as oito ações novas exigem o selo e estão no fim da tabela
+ok 26 - árvore: as oito ações novas exigem o selo e estão no fim da tabela
+  ---
+  duration_ms: 11.3946
+  ...
+# Subtest: Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+ok 27 - Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+  ---
+  duration_ms: 13.7551
+  ...
+# Subtest: Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+ok 28 - Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+  ---
+  duration_ms: 10.6344
+  ...
+# Subtest: Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+ok 29 - Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+  ---
+  duration_ms: 2.0996
+  ...
+# Subtest: Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+ok 30 - Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+  ---
+  duration_ms: 3.8465
+  ...
+# Subtest: Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+ok 31 - Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+  ---
+  duration_ms: 4.692
+  ...
+# Subtest: Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+ok 32 - Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+  ---
+  duration_ms: 9.5165
+  ...
+# Subtest: Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+not ok 33 - Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+  ---
+  duration_ms: 11.9537
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\mage-new-skills.test.mjs:105:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(marksmanAction(w,I('clone')))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/mage-new-skills.test.mjs:107:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+not ok 34 - tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+  ---
+  duration_ms: 2.3821
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\mage-new-skills.test.mjs:121:1'
+  failureType: 'testCodeFailure'
+  error: 'escudoArcano: null'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/mage-new-skills.test.mjs:124:116)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Mago: classe registrada, catálogo arcano, sem horda, modelo próprio e dano mágico
+ok 35 - Mago: classe registrada, catálogo arcano, sem horda, modelo próprio e dano mágico
+  ---
+  duration_ms: 82.5954
+  ...
+# Subtest: árvore do Mago: orçamento, pré-requisitos e passivas
+ok 36 - árvore do Mago: orçamento, pré-requisitos e passivas
+  ---
+  duration_ms: 7.269
+  ...
+# Subtest: Seta Arcana: projétil com dano mágico, anda enquanto conjura
+ok 37 - Seta Arcana: projétil com dano mágico, anda enquanto conjura
+  ---
+  duration_ms: 12.1169
+  ...
+# Subtest: Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combustão deixa o chão em chamas
+ok 38 - Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combustão deixa o chão em chamas
+  ---
+  duration_ms: 7.5448
+  ...
+# Subtest: Rajada de Gelo: cone de 70°, dano e lentidão; Estilhaçar aumenta fogo e arcano nos lentos
+ok 39 - Rajada de Gelo: cone de 70°, dano e lentidão; Estilhaçar aumenta fogo e arcano nos lentos
+  ---
+  duration_ms: 2.6006
+  ...
+# Subtest: Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+ok 40 - Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+  ---
+  duration_ms: 2.3386
+  ...
+# Subtest: Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em chamas por 3 s
+ok 41 - Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em chamas por 3 s
+  ---
+  duration_ms: 2.0972
+  ...
+# Subtest: esquiva cancela; troca de cena limpa projéteis e chamas
+ok 42 - esquiva cancela; troca de cena limpa projéteis e chamas
+  ---
+  duration_ms: 1.4574
+  ...
+# Subtest: pontos extras do Mago (09/11/2026): o primeiro ponto mantém o número antigo, os seguintes somam
+ok 43 - pontos extras do Mago (09/11/2026): o primeiro ponto mantém o número antigo, os seguintes somam
+  ---
+  duration_ms: 7.5406
+  ...
+# Subtest: ações novas entram no fim da lista e cada uma depende do seu selo
+not ok 44 - ações novas entram no fim da lista e cada uma depende do seu selo
+  ---
+  duration_ms: 5.1582
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\marksman-new-skills.test.mjs:23:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected ... Lines skipped
+    
+      [
+        'arrow',
+    ...
+        'impactoCeleste',
+        'penasVoadoras',
+    +   'fechadefogo',
+    +   'flechaExplosiva'
+      ]
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'arrow'
+    1: 'pierce'
+    2: 'leap'
+    3: 'dodge'
+    4: 'rain'
+    5: 'fan'
+    6: 'saraivadaSeguidora'
+    7: 'impactoCeleste'
+    8: 'penasVoadoras'
+  actual:
+    0: 'arrow'
+    1: 'pierce'
+    2: 'leap'
+    3: 'dodge'
+    4: 'rain'
+    5: 'fan'
+    6: 'saraivadaSeguidora'
+    7: 'impactoCeleste'
+    8: 'penasVoadoras'
+    9: 'fechadefogo'
+    10: 'flechaExplosiva'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/marksman-new-skills.test.mjs:24:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    node:internal/test_runner/harness:255:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+ok 45 - Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+  ---
+  duration_ms: 16.5592
+  ...
+# Subtest: Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+ok 46 - Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+  ---
+  duration_ms: 8.3647
+  ...
+# Subtest: Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+not ok 47 - Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+  ---
+  duration_ms: 2.2216
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\marksman-new-skills.test.mjs:54:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    189 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 189
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/marksman-new-skills.test.mjs:63:84)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+not ok 48 - Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+  ---
+  duration_ms: 13.8874
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\marksman-new-skills.test.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(marksmanAction(w,index('archer','penasVoadoras')))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/marksman-new-skills.test.mjs:71:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+ok 49 - Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+  ---
+  duration_ms: 3.1082
+  ...
+# Subtest: Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+ok 50 - Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+  ---
+  duration_ms: 3.3254
+  ...
+# Subtest: árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+ok 51 - árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+  ---
+  duration_ms: 8.6758
+  ...
+# Subtest: passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+not ok 52 - passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+  ---
+  duration_ms: 5.8913
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\marksman-skills.test.mjs:40:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected ... Lines skipped
+    
+      [
+        [
+    ...
+        [
+          'penasVoadoras',
+    +     false
+    +   ],
+    +   [
+    +     'fechadefogo',
+    +     false
+    +   ],
+    +   [
+    +     'flechaExplosiva',
+          false
+        ]
+      ]
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      0: 'arrow'
+      1: true
+    1:
+      0: 'pierce'
+      1: true
+    2:
+      0: 'leap'
+      1: false
+    3:
+      0: 'rain'
+      1: false
+    4:
+      0: 'fan'
+      1: false
+    5:
+      0: 'saraivadaSeguidora'
+      1: false
+    6:
+      0: 'impactoCeleste'
+      1: false
+    7:
+      0: 'penasVoadoras'
+      1: false
+  actual:
+    0:
+      0: 'arrow'
+      1: true
+    1:
+      0: 'pierce'
+      1: true
+    2:
+      0: 'leap'
+      1: false
+    3:
+      0: 'rain'
+      1: false
+    4:
+      0: 'fan'
+      1: false
+    5:
+      0: 'saraivadaSeguidora'
+      1: false
+    6:
+      0: 'impactoCeleste'
+      1: false
+    7:
+      0: 'penasVoadoras'
+      1: false
+    8:
+      0: 'fechadefogo'
+      1: false
+    9:
+      0: 'flechaExplosiva'
+      1: false
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/marksman-skills.test.mjs:46:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+ok 53 - ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+  ---
+  duration_ms: 0.7895
+  ...
+# Subtest: Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+ok 54 - Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+  ---
+  duration_ms: 5.4231
+  ...
+# Subtest: Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+ok 55 - Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+  ---
+  duration_ms: 4.0046
+  ...
+# Subtest: Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+ok 56 - Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+  ---
+  duration_ms: 2.7575
+  ...
+# Subtest: Leque: cinco flechas em cone acertam alvos espalhados à frente
+ok 57 - Leque: cinco flechas em cone acertam alvos espalhados à frente
+  ---
+  duration_ms: 1.8078
+  ...
+# Subtest: Rajada: três virotes em sequência, cada um atravessa um inimigo
+ok 58 - Rajada: três virotes em sequência, cada um atravessa um inimigo
+  ---
+  duration_ms: 1.3552
+  ...
+# Subtest: Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+ok 59 - Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+  ---
+  duration_ms: 2.3153
+  ...
+# Subtest: Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+ok 60 - Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+  ---
+  duration_ms: 1.8068
+  ...
+# Subtest: Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+ok 61 - Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+  ---
+  duration_ms: 1.9302
+  ...
+# Subtest: esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+ok 62 - esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+  ---
+  duration_ms: 1.1245
+  ...
+# Subtest: Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+ok 63 - Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+  ---
+  duration_ms: 1.6233
+  ...
+# Subtest: Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+ok 64 - Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+  ---
+  duration_ms: 2.3951
+  ...
+# Subtest: Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+ok 65 - Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+  ---
+  duration_ms: 3.2028
+  ...
+# Subtest: atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+ok 66 - atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+  ---
+  duration_ms: 4.233
+  ...
+# Subtest: tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+ok 67 - tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+  ---
+  duration_ms: 1.7527
+  ...
+# Subtest: barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+ok 68 - barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+  ---
+  duration_ms: 2.723
+  ...
+# Subtest: atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+ok 69 - atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+  ---
+  duration_ms: 12.7338
+  ...
+# Subtest: saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+ok 70 - saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+  ---
+  duration_ms: 2.6301
+  ...
+# Subtest: Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+ok 71 - Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+  ---
+  duration_ms: 3.0131
+  ...
+# Subtest: módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+ok 72 - módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+  ---
+  duration_ms: 7.8237
+  ...
+# Subtest: só nós jogáveis entram no jogo; ideias e planos ficam fora
+ok 73 - só nós jogáveis entram no jogo; ideias e planos ficam fora
+  ---
+  duration_ms: 0.4473
+  ...
+# Subtest: cada ação que depende de selo tem o nó correspondente na árvore da classe
+ok 74 - cada ação que depende de selo tem o nó correspondente na árvore da classe
+  ---
+  duration_ms: 0.3675
+  ...
+# Subtest: painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+ok 75 - painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+  ---
+  duration_ms: 0.7407
+  ...
+# Subtest: Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+ok 76 - Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+  ---
+  duration_ms: 1.8023
+  ...
+# Subtest: ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois acertos por inimigo
+ok 77 - ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois acertos por inimigo
+  ---
+  duration_ms: 10.6953
+  ...
+# Subtest: ricochete sem ponto ou sem outro alvo funciona como o arremesso atual
+ok 78 - ricochete sem ponto ou sem outro alvo funciona como o arremesso atual
+  ---
+  duration_ms: 3.7665
+  ...
+# Subtest: ricochete não salta através de paredes e mantém o escudo fora da mão durante a cadeia
+ok 79 - ricochete não salta através de paredes e mantém o escudo fora da mão durante a cadeia
+  ---
+  duration_ms: 3.6251
+  ...
+# Subtest: cadeia longa volta ao jogador sem sumir no ar
+ok 80 - cadeia longa volta ao jogador sem sumir no ar
+  ---
+  duration_ms: 2.3912
+  ...
+# Subtest: Ciclone e Turbilhão mudam alcance, ritmo, gasto e movimento; só a escolhida vale
+not ok 81 - Ciclone e Turbilhão mudam alcance, ritmo, gasto e movimento; só a escolhida vale
+  ---
+  duration_ms: 1.5593
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\warrior-skills.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'whirl'
+    - 'base'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'base'
+  actual: 'whirl'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/warrior-skills.test.mjs:52:71)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: variante só troca fora de combate, exige o nó e persiste; variante sem nó volta à base
+ok 82 - variante só troca fora de combate, exige o nó e persiste; variante sem nó volta à base
+  ---
+  duration_ms: 8.255
+  ...
+# Subtest: postura ofensiva e defensiva alteram dano, dano recebido e bloqueio; só uma fica ativa
+ok 83 - postura ofensiva e defensiva alteram dano, dano recebido e bloqueio; só uma fica ativa
+  ---
+  duration_ms: 3.0976
+  ...
+# Subtest: ofensiva devolve vigor por acerto de corte; defensiva recupera mais e cura ao bloquear
+ok 84 - ofensiva devolve vigor por acerto de corte; defensiva recupera mais e cura ao bloquear
+  ---
+  duration_ms: 0.8872
+  ...
+# Subtest: troca de postura é instantânea, tem recarga, não interrompe golpes e persiste
+ok 85 - troca de postura é instantânea, tem recarga, não interrompe golpes e persiste
+  ---
+  duration_ms: 5.6417
+  ...
+# Subtest: Brado desacelera inimigos no raio, dobra o vigor por 6 s e respeita paredes
+ok 86 - Brado desacelera inimigos no raio, dobra o vigor por 6 s e respeita paredes
+  ---
+  duration_ms: 0.8003
+  ...
+# Subtest: Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atravessa inimigos, alcança 7 u e para em paredes
+ok 87 - Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atravessa inimigos, alcança 7 u e para em paredes
+  ---
+  duration_ms: 5.7353
+  ...
+# Subtest: barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço de saves antigos
+ok 88 - barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço de saves antigos
+  ---
+  duration_ms: 5.4393
+  ...
+# Subtest: nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos
+not ok 89 - nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos
+  ---
+  duration_ms: 10.9556
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\warrior-skills.test.mjs:119:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(canLearn({bash:1,shieldThrow:1},'ricochet',8))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/warrior-skills.test.mjs:120:75)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: tornado continua encerrando com a variante escolhida
+ok 90 - tornado continua encerrando com a variante escolhida
+  ---
+  duration_ms: 0.5666
+  ...
+1..90
+# tests 90
+# suites 0
+# pass 82
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 539.1152

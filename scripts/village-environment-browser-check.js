@@ -5,7 +5,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
  try{
   const page=await browser.newPage({viewport:{width:1500,height:1120}}),errors=[],failed=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failed.push(r.url()));
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
   await page.waitForFunction(()=>window.VillageEnvironment?.loaded);
   await page.evaluate(()=>VillageEnvironment.promise);
   const state=await page.evaluate(()=>{

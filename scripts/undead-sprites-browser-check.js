@@ -8,7 +8,7 @@ const {pathToFileURL}=require('node:url');
   try {
     const page=await browser.newPage();
     const errors=[]; page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+    await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
     await page.waitForFunction(()=>SPR.sheets.archer?.ok&&SPR.sheets.specter?.ok);
     const results=await page.evaluate(()=>{
       SPR.on=true;

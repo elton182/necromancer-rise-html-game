@@ -1,7 +1,7 @@
 // Resumo de uma jornada salva para a tela "Suas jornadas": classe, atributos, XP, local e tempo de jogo.
 // Regras puras sobre um save normalizado; sem DOM, armazenamento ou Three.js.
 import {snapshotFor,xpNext,MAX_LEVEL} from './progression.mjs';
-import {AREAS,isArea} from './itauna-model.mjs';
+import {AREAS,isArea,areaObjectives} from './itauna-model.mjs';
 import {worldObjective} from './campaign-world-model.mjs';
 import {prologueObjective,caveTitle} from './prologue-model.mjs';
 import {freshSave,normalizeSave} from './save-model.mjs';
@@ -27,7 +27,7 @@ export function journeyLocation(save){
  const c=save.campaign||{},p=c.prologue,w=c.world;
  if(p&&p.stage!=='done')return {name:p.stage==='cave'?caveTitle(p):PROLOGUE_PLACES[p.stage]||'Estrada de Jacarandá',detail:'Prólogo · '+prologueObjective(p)[0]};
  if(w){
-  if(isArea(w.area))return {name:AREAS[w.area].name,detail:w.area==='itauna'?'Arredores de Jacarandá':'Várzea de Itaúna'};
+  if(isArea(w.area))return {name:AREAS[w.area].name,detail:w.area==='itavera'?areaObjectives(w.area,w)[0].title:w.area==='itauna'?'Arredores de Jacarandá':'Várzea de Itaúna'};
   return {name:w.checkpoint==='crypt'?'Cripta Esquecida':'Vila de Jacarandá',detail:worldObjective(w).title};
  }
  if(c.village)return {name:'Vila de Eldrin',detail:'Campanha · Ato I'};

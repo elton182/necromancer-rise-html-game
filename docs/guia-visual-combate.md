@@ -1,6 +1,6 @@
-# Guia visual de combate — BASE-01
+# Guia visual de combate
 
-Referência inicial aplicada ao Tiro de Osso em 24/10/2026.
+Convenções comuns de silhueta, cor e leitura do combate. Na v2 oficial, volumes são GLBs animados; avisos, rastros e partículas ficam em `v2/scripts/vfx.mjs` e `renderer.mjs`. A escala em pixels, os sprites e o laboratório Canvas das seções abaixo pertencem à v1 legada; não são a escala do renderizador 3D. Veja também [efeitos da v2](v2-efeitos-visuais.md).
 
 ## Escala e contraste
 

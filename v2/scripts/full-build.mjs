@@ -13,7 +13,9 @@ const ADDED=Object.fromEntries([...Base.nodes,...DEATH_NODES].map(n=>[n.id,Objec
 const withFile=n=>{const extra=ADDED[n.id]||{},ex=(FILE[n.id]?.excludes||[]).find(x=>!KNOWN.has(x));return Object.keys(extra).length||ex&&!n.exclusive?{...n,effects:{...n.effects,...extra},exclusive:n.exclusive||ex||null}:n;};
 const possessionText={lance:['Lança Sepulcral','Segure o clique para montar ossos em V; solte para disparar em linha reta. A carga aumenta dano, alcance e largura. Exclui Tempestade Óssea.'],procession:['Cortejo dos Mortos','Especialização: permite mais 2 corpos possuídos e reduz a recarga da Possessão em 25%. Exclui Ceifadores Vitais.'],specter:['Possessão','O Espectro possui um cadáver próximo da mira por 60 s. Custa 45 MP; até 2 corpos, ampliados pela árvore. Aumenta o dano dos possuídos.'],ethereal:['Essência Etérea','Aumenta a vida e o dano dos corpos possuídos.'],step:['Passo Espectral','Reduz a recarga da Possessão.']};
 const nodes=[...Base.nodes.map(n=>withFile(possessionText[n.id]?{...n,name:possessionText[n.id][0],description:possessionText[n.id][1]}:n)),...DEATH_NODES.map(withFile),...EXTRA_NODES],schools=[...Base.schools,...DEATH_SCHOOLS],byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
-const {budget,spent}=Base;
+// Orçamento da v2: 3 pontos por nível, incluindo o nível 1, como Guerreiro, Druida, Arqueira, Mercenário e Mago.
+// O modelo compartilhado (versão legada) continua com 3 × (nível − 1).
+const {spent}=Base,budget=level=>3*Math.max(1,Math.floor(level));
 function reason(n,r,level){
  if(level<n.level)return `Requer nível ${n.level}.`;
  if(n.requires&&(r[n.requires]||0)<2)return `Requer 2 pontos em ${byId[n.requires].name}.`;
@@ -41,4 +43,4 @@ function fileEffects(ranks){const out={};const add=(id,list)=>{for(const [key,va
 const merge=(...maps)=>{const out={};for(const m of maps)for(const [k,v] of Object.entries(m))out[k]=(out[k]||0)+v;return out;};
 const effects=ranks=>merge(Base.effects(ranks),deathEffects(ranks),fileEffects(ranks));
 const effective=ranks=>merge(Base.effective(ranks),deathEffects(ranks),fileEffects(ranks));
-export default {...Base,nodes,schools,byId,reason,validate,invest,prune,refund,setLevel,effects,effective};
+export default {...Base,nodes,schools,byId,budget,reason,validate,invest,prune,refund,setLevel,effects,effective};

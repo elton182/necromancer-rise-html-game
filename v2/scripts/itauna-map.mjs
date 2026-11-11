@@ -1,6 +1,7 @@
 // Plantas da Várzea de Itaúna, do Forte da Pedra Negra e da Gruta das Tecelãs. Dados puros e determinísticos, consumidos por `map-model.mjs`.
 // A várzea desenha a viagem: estrada a leste até a ponte, encosta do forte a nordeste; vau, morro e gruta a sudeste; lagos ao sul e a noroeste.
 // As frentes de portão e gruta ficam voltadas para o sul/leste, o lado que a câmera vê.
+import {addRouteEncounters} from './area-tuning.mjs';
 import {closeGrid,carvedGrid,gridFor} from './map-terrain.mjs';
 import {ITAUNA_POINTS,CAVE_POINTS} from './itauna-model.mjs';
 
@@ -32,6 +33,7 @@ const LAGOON=[[-122,26],[-128,0],[-120,-30],[-104,-54],[-92,-58],[-60,-66]];
 const OLD_TOWER=[[-150,18],[-156,50],[-146,84],[-132,104]];
 const FISHING=[[-56,58],[-52,72]];
 const ROADS=[MAIN,SOUTH,EAST,LAGOON,OLD_TOWER,FISHING];
+export const ITAUNA_ROUTES={main:MAIN,south:SOUTH,east:EAST,lagoon:LAGOON,tower:OLD_TOWER};
 const RAMP=[[110,-36],[108,-50],[106,-62],[105,-70]],RAMP_TOP=5.2;
 const LAKE={x:-14,y:118,rx:58,ry:36,depth:2.6},MIRROR={x:-118,y:-92,rx:34,ry:24,depth:1.9},ISLET={x:-24,y:113,r:10};
 const FORT_BOX={x0:72,x1:138,y0:-138,y1:-74},PLATEAU={x:105,y:-108,rx:58,ry:40},BUTTE={x:118,y:62,rx:40,ry:30};
@@ -170,7 +172,7 @@ export function itaunaMap(){
   group('ford-archers',26,50,[9,9,1],4,{radius:20}),group('delta-hounds',34,76,[4,4,4],4,{radius:16}),group('pines-a',90,104,[4,4,4],5),group('pines-b',164,50,[4,4,4,4],5),group('east-road',128,-10,[6,9],4),
   group('mouth-web',148,102,[8,8,8],5,{leader:'magic',spread:3}),group('islet-guard',-24,106,[3,1,1],6,{leader:'rare',quest:true,radius:12}),group('south-hills',118,150,[7,7,10],5),group('lake-east',58,108,[8,8],4)
  ];
- return {id:'itauna',name:'Várzea de Itaúna',biome:'forest',size:{w:360,h:360},start:{x:-168,y:22},level:4,spawns,objects,terrain:closeGrid(g,rivers),style:{tint:'#e6efd8',fog:.12,grass:1.2,flowers:1.1,water:'#3b7a86'}};
+ return {id:'itauna',name:'Várzea de Itaúna',biome:'forest',size:{w:360,h:360},start:{x:-168,y:22},level:4,spawns:addRouteEncounters(spawns,'itauna'),objects,terrain:closeGrid(g,rivers),style:{tint:'#e6efd8',fog:.12,grass:1.2,flowers:1.1,water:'#3b7a86'}};
 }
 
 // --- Forte da Pedra Negra ---
@@ -264,5 +266,5 @@ export function caveMap(){
   group('fork-spiders',40,8,[8,8,8],5,{radius:16,spread:3}),group('nursery-a',58,-32,[8,8,8,8],6,{radius:18,spread:4}),group('nursery-b',66,-44,[8,8,8],6,{leader:'magic',radius:16,spread:3}),
   group('lake-wolves',-24,-6,[4,4,8],6,{radius:16}),group('link-spiders',-66,-8,[8,8],6,{radius:14}),group('south-link',18,-62,[8,8,4],6,{radius:14}),group('cave-queen',-40,-56,[8,8,8,8,4,4],7,{leader:'rare',quest:true,radius:18,spread:5})
  ];
- return {id:'itauna-cave',name:'Gruta das Tecelãs',biome:'cave',size,start:{x:60,y:66},level:5,spawns,objects:objects.objects,terrain:closeGrid({...grid,x0,y0,h,s},[]),style:{ground:'stone',tint:'#ffffff',sky:'#0c0e11',sun:2.6,ambient:2,fog:.1,water:'#1f4f5c'}};
+ return {id:'itauna-cave',name:'Gruta das Tecelãs',biome:'cave',size,start:{x:60,y:66},level:5,spawns:addRouteEncounters(spawns,'itauna-cave'),objects:objects.objects,terrain:closeGrid({...grid,x0,y0,h,s},[]),style:{ground:'stone',tint:'#ffffff',sky:'#0c0e11',sun:2.6,ambient:2,fog:.1,water:'#1f4f5c'}};
 }

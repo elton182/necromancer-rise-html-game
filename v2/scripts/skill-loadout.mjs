@@ -10,7 +10,7 @@ export const LOADOUT_SLOTS=6;
 // Ações equipáveis da classe, na ordem da tabela; as seis primeiras formam a barra padrão.
 export function loadoutIds(classId){
  if(classId==='druid')return DRUID_HUMAN_IDS;
- if(isMarksman(classId))return marksmanActions(classId).map(a=>a.id);
+ if(isMarksman(classId))return marksmanActions(classId).filter(a=>!a.passive).map(a=>a.id);
  return null;
 }
 const fixedOf=ids=>[ids[0],'dodge'];

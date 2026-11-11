@@ -1,0 +1,35 @@
+TAP version 13
+# Subtest: caverna publicada: sem enxurradas de elites nem retorno contínuo; só dois reforços
+ok 1 - caverna publicada: sem enxurradas de elites nem retorno contínuo; só dois reforços
+  ---
+  duration_ms: 29.2611
+  ...
+# Subtest: caminho de Jacarandá tem ação distribuída, sem concentrar a população no fim
+ok 2 - caminho de Jacarandá tem ação distribuída, sem concentrar a população no fim
+  ---
+  duration_ms: 20.4395
+  ...
+# Subtest: rotas de Jacarandá e Itaúna mantêm pausas curtas entre grupos pequenos
+ok 3 - rotas de Jacarandá e Itaúna mantêm pausas curtas entre grupos pequenos
+  ---
+  duration_ms: 1879.0077
+  ...
+# Subtest: patrulhas novas são alcançáveis nas plantas publicadas e não duplicam IDs
+ok 4 - patrulhas novas são alcançáveis nas plantas publicadas e não duplicam IDs
+  ---
+  duration_ms: 3144.4298
+  ...
+# Subtest: ponto com reforço encerra após a segunda leva, mesmo depois de longa espera
+ok 5 - ponto com reforço encerra após a segunda leva, mesmo depois de longa espera
+  ---
+  duration_ms: 25.421
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5739.8302

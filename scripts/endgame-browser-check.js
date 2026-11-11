@@ -4,7 +4,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
  const browser=await chromium.launch({channel:'chrome',headless:true});
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.stack));
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);await page.waitForFunction(()=>typeof hasSave!=='undefined');
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);await page.waitForFunction(()=>typeof hasSave!=='undefined');
   await page.evaluate(()=>{
    TITLE.active=false;TITLE.paused=false;COMIC.active=false;CAMP.on=false;CAMP.map=false;CAMP.inStage=false;P.deadT=0;
    document.body.classList.remove('titling');tlShow(false,false);player.level=18;player.skillRanks={zombie:1};player.skillTutorialState='done';

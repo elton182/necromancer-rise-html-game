@@ -47,13 +47,13 @@ async function main() {
   const save=validateSave(JSON.parse(raw));
   args.waves||=[save.waveProgress?.selected||1];
   const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-  const sourcePaths=['necromancer-canvas.html','scripts/save-combat-driver.js','scripts/simulate-save.js'];
+  const sourcePaths=['v1/necromancer-canvas.html','scripts/save-combat-driver.js','scripts/simulate-save.js'];
   const sources=Object.fromEntries(sourcePaths.map(p=>[p,hash(path.resolve(__dirname,'..',p))]));
   // Keep relative asset paths intact while freezing the HTML for this run.
-  const gameSource=fs.readFileSync(args.game?path.resolve(args.game):path.resolve(__dirname,'../necromancer-canvas.html'));
-  sources['necromancer-canvas.html']=crypto.createHash('sha256').update(gameSource).digest('hex');
+  const gameSource=fs.readFileSync(args.game?path.resolve(args.game):path.resolve(__dirname,'../v1/necromancer-canvas.html'));
+  sources['v1/necromancer-canvas.html']=crypto.createHash('sha256').update(gameSource).digest('hex');
   const gameSnapshot=path.resolve(__dirname,'../.save-simulation-'+crypto.randomUUID()+'.html');
-  function checkSources(){for(const [p,h]of Object.entries(sources))if(p!=='necromancer-canvas.html'&&hash(path.resolve(__dirname,'..',p))!==h)throw Error('Fonte mudou durante a simulação; repita para manter a comparação válida: '+p);}
+  function checkSources(){for(const [p,h]of Object.entries(sources))if(p!=='v1/necromancer-canvas.html'&&hash(path.resolve(__dirname,'..',p))!==h)throw Error('Fonte mudou durante a simulação; repita para manter a comparação válida: '+p);}
   const {chromium}=require('playwright');
   const browser=await chromium.launch({channel:'msedge',headless:true});
   const results=[];
@@ -78,7 +78,7 @@ async function main() {
   checkSources();
   const report={version:1,saveSha256:crypto.createHash('sha256').update(raw).digest('hex'),
     sources,
-    liveGameChangedDuringRun:hash(path.resolve(__dirname,'../necromancer-canvas.html'))!==sources['necromancer-canvas.html'],
+    liveGameChangedDuringRun:hash(path.resolve(__dirname,'../v1/necromancer-canvas.html'))!==sources['v1/necromancer-canvas.html'],
     settings:{...args,save:path.basename(args.save)},summary:summarize(results),results};
   const out=path.resolve(args.out);fs.mkdirSync(out,{recursive:true});
   fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');

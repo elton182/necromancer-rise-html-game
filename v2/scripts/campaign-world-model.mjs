@@ -1,6 +1,7 @@
+import {normalizeVillageQuests} from './quest-model.mjs';
 // Mundo contínuo de Jacarandá. Coordenadas compartilhadas pelo mapa, HUD e encontros.
 import {isArea,ITAUNA_QUEST_GROUPS} from './itauna-model.mjs';
-import {normalizeNilo,niloReady,NILO_POINTS} from './nilo-model.mjs';
+import {normalizeNilo,niloReady,NILO_POINTS,NILO_RECOVERED,NILO_CITY} from './nilo-model.mjs';
 export const WORLD_SIZE=360;
 // Passagens para outras áreas. A estrada fica fora de WORLD_ROUTES: aquela lista alimenta o sorteio da mata, e mudá-la trocaria os ids que as edições do mapa usam.
 export const WORLD_ROAD_ITAUNA=[[90,74],[112,84],[140,92],[176,96]];
@@ -16,7 +17,7 @@ export const WORLD_POINTS={
  prison:{x:80,y:-36,name:'Posto em ruínas'},
  mayor:{x:64,y:64,name:'Joaquim, o prefeito'},
  mine:{x:30,y:-146,name:'Mina de Valfundo'},
- forge:{x:52,y:80,name:'Forja de Jacarandá'},
+ forge:{x:52,y:71,name:'Forja de Jacarandá'},
  mill:{x:-104,y:126,name:'Serraria do Vale'},
  graveyard:{x:142,y:30,name:'Cemitério antigo'}
 };
@@ -58,18 +59,17 @@ export const WORLD_ENCOUNTERS=[
  {id:'wild-ne',x:132,y:-100,count:2,type:10,mix:[10,6],wave:3}
 ];
 export const WORLD_STAGES=['wake','village','rescue','return','complete'];
-const QUEST_STATES={smith:['locked','active','found','done'],lumber:['locked','active','done']};
 const QUEST_GROUPS=[...WORLD_ENCOUNTERS.filter(e=>e.quest&&e.id!=='prison-guards').map(e=>e.id),...ITAUNA_QUEST_GROUPS];
 export function normalizeWorld(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
  const stage=WORLD_STAGES.includes(raw.stage)?raw.stage:'wake',done=stage==='complete';
- // Saves concluídos antes das novas quests recebem os dois pedidos de Joaquim já ativos.
- const quest=id=>!done?'locked':QUEST_STATES[id].includes(raw[id])&&raw[id]!=='locked'?raw[id]:'active';
+ const quests=normalizeVillageQuests(raw,done);
  const piles=WORLD_PILES.map((p,i)=>Array.isArray(raw.piles)&&raw.piles[i]===1?1:0);
  // `area`/`entry`: última passagem usada fora do mundo de Jacarandá; ausentes nos saves anteriores, que continuam no mundo.
  // `nilo`: etapa de O rastro de João; ausente equivale a `locked`, como nos saves anteriores.
  const nilo=done?normalizeNilo(raw.nilo):'locked';
- return {...(raw.passengerMissing===true?{passengerMissing:true}:{}),...(nilo!=='locked'?{nilo}:{}),...(isArea(raw.area)?{area:raw.area,entry:typeof raw.entry==='string'?raw.entry.slice(0,16):''}:{}),stage,checkpoint:stage==='wake'?'crypt':'village',guardsCleared:!!raw.guardsCleared||['return','complete'].includes(stage),smith:quest('smith'),lumber:quest('lumber'),piles,
+ const recovered=NILO_RECOVERED.includes(nilo),fort=nilo==='fort';
+ return {...quests,...(raw.passengerMissing===true?{passengerMissing:true}:{}),...(nilo!=='locked'?{nilo}:{}),...((recovered||fort&&raw.niloLetter===true)?{niloLetter:true}:{}),...((recovered||fort&&raw.niloEvidence===true)?{niloEvidence:true}:{}),...(isArea(raw.area)&&(raw.area!=='itavera'||NILO_CITY.includes(nilo))?{area:raw.area,entry:typeof raw.entry==='string'?raw.entry.slice(0,16):''}:{}),stage,checkpoint:stage==='wake'?'crypt':'village',guardsCleared:!!raw.guardsCleared||['return','complete'].includes(stage),piles,
   cleared:Array.isArray(raw.cleared)?[...new Set(raw.cleared.filter(id=>QUEST_GROUPS.includes(id)))]:[]};
 }
 export const inWorldVillage=p=>p.x>=34&&p.x<=86&&p.y>=36&&p.y<=98;
@@ -94,10 +94,14 @@ export function worldObjectives(progress){
  }[stage]];
  const out=[],nilo=niloWorldObjective(progress);if(nilo?.lead)out.push(nilo);
  if(progress.smith==='active')out.push({title:'O ferreiro de Jacarandá',text:progress.cleared?.includes('mine-guards')?'A mina está livre. Fale com Bruno na entrada da Mina de Valfundo.':'Bruno se escondeu na Mina de Valfundo, ao norte do posto. Derrote o bando que tomou a mina.',target:WORLD_POINTS.mine});
- if(progress.smith==='found')out.push({title:'O ferreiro de Jacarandá',text:'Bruno voltou à vila. Fale com ele junto à forja.',target:WORLD_POINTS.forge});
+ if(progress.smith==='found')out.push({title:'O ferreiro de Jacarandá',text:'Bruno voltou à vila. Fale com ele na frente da ferraria, na rua a oeste da praça.',target:WORLD_POINTS.forge});
  if(progress.lumber==='active'){const left=pilesLeft(progress),n=WORLD_PILES.length-left.length;out.push(left.length?{title:'Madeira para Jacarandá',text:`Marque as pilhas da Serraria do Vale, a sudoeste (${n}/${WORLD_PILES.length}). Cada pilha tem guardas.`,target:left[0]}:{title:'Madeira para Jacarandá',text:'As três pilhas estão marcadas. Volte à praça e avise Joaquim.',target:WORLD_POINTS.mayor});}
  if(nilo&&!nilo.lead)out.push(nilo);
- if(!out.length)out.push(progress.nilo==='done'?{title:'Jacarandá se reergue',text:'João está a salvo e o contrato da Pedra Negra ficou com ele. O selo continua um mistério; explore os arredores.',target:WORLD_POINTS.village}:{title:'Jacarandá se reergue',text:'Bruno reabriu a forja e a madeira está a caminho. Explore os arredores; novas histórias virão.',target:WORLD_POINTS.village});
+ if(!out.length&&progress.questFlow===1&&progress.nilo!=='complete'){
+  const target=progress.smith==='available'||progress.lumber==='available'?WORLD_POINTS.mayor:progress.nilo==='rescued'||['done','itavera','invitation'].includes(progress.nilo)?NILO_POINTS.nilo:niloReady(progress)?NILO_POINTS.marta:WORLD_POINTS.village;
+  return [{title:'Missões em Jacarandá',text:'Procure os NPCs com ! para conhecer e aceitar o próximo pedido. As missões aceitas aparecem aqui e no inventário.',target}];
+ }
+ if(!out.length)out.push(progress.nilo==='complete'?{title:'Ato I · Além das Muralhas concluído',text:'Helena recebeu a denúncia e você aceitou o convite de João. A viagem do Ato II ainda não está disponível; explore as regiões do Ato I.',target:WORLD_POINTS.village}:{title:'Jacarandá se reergue',text:'Bruno reabriu a forja e a madeira está a caminho. Explore os arredores; novas histórias virão.',target:WORLD_POINTS.village});
  return out;
 }
 export const worldObjective=progress=>worldObjectives(progress)[0];
@@ -106,12 +110,13 @@ const ROAD=WORLD_EXITS[0];
 function niloWorldObjective(p){
  const stage=p.nilo||'locked';
  if(stage==='locked'){
-  if(niloReady(p))return {lead:true,title:'O rastro de João',text:'Jacarandá voltou a respirar. Marta tem notícias de João: fale com ela na praça.',target:NILO_POINTS.marta};
-  return p.passengerMissing?{title:'O passageiro desaparecido',text:'João foi levado pelos bandidos. A lista da caverna prova que era o alvo. Ajude Joaquim a reacender a forja e trazer a madeira; depois, Marta vai atrás do rastro.',target:WORLD_POINTS.village}:null;
+  if(p.questFlow!==1&&niloReady(p))return {lead:true,questId:'joao-rescue',title:'O rastro de João',text:'Jacarandá voltou a respirar. Marta tem notícias de João: fale com ela na praça.',target:NILO_POINTS.marta};
+  return p.questFlow!==1&&p.passengerMissing?{title:'O passageiro desaparecido',text:'João foi levado pelos bandidos. A lista da caverna prova que era o alvo. Ajude Joaquim a reacender a forja e trazer a madeira; depois, Marta vai atrás do rastro.',target:WORLD_POINTS.village}:null;
  }
- if(stage==='road')return {lead:true,title:'O rastro de João',text:'Siga a estrada leste, depois do cemitério, até a Várzea de Itaúna. O acampamento dos saqueadores fica além da ponte do Rio Turvo.',target:ROAD};
- if(stage==='cave')return {lead:true,title:'O rastro de João',text:'O livro dos saqueadores diz que João foi levado à Gruta das Tecelãs, na Várzea de Itaúna. Volte pela estrada leste.',target:ROAD};
- if(stage==='fort')return {lead:true,title:'O contrato da Pedra Negra',text:'João está a salvo na praça. O contrato que diz quem o quer vivo está no Forte da Pedra Negra, na Várzea de Itaúna.',target:ROAD};
- if(stage==='return')return {lead:true,title:'O contrato da Pedra Negra',text:'Você tem o contrato. Leve-o a João, na praça de Jacarandá.',target:NILO_POINTS.nilo};
+ if(stage==='road')return {lead:true,questId:'joao-rescue',title:'O rastro de João',text:'Siga a estrada leste, depois do cemitério, até a Várzea de Itaúna. O acampamento dos saqueadores fica além da ponte do Rio Turvo.',target:ROAD};
+ if(stage==='cave')return {lead:true,questId:'joao-rescue',title:'O rastro de João',text:'João escapou perto do vau e seus rastros entram na Gruta das Tecelãs. Siga pela estrada leste.',target:ROAD};
+ if(stage==='fort')return {lead:true,questId:'joao-letter',title:'A carta e a Pedra Negra',text:'Recupere a bolsa de João e as ordens do capitão no Forte da Pedra Negra, na Várzea de Itaúna.',target:ROAD};
+ if(stage==='return')return {lead:true,questId:'joao-letter',title:'A denúncia recuperada',text:'Leve a bolsa com a carta e as provas a João, na praça de Jacarandá.',target:NILO_POINTS.nilo};
+ if(p.questFlow!==1&&['done','itavera','invitation'].includes(stage))return {lead:true,title:'A caminho de Itavera',text:'Fale com João para viajar com a caravana. A denúncia deve chegar a Helena, do Conselho das Guildas.',target:NILO_POINTS.nilo};
  return null;
 }

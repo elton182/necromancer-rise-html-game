@@ -1,76 +1,49 @@
-# Documentação
+# Documentação do jogo oficial
 
-A **v2 (3D)** é o jogo principal: seus guias são os `v2-*.md` da seção *Implementação e ferramentas*, e o plano e estado estão em [../v2/README.md](../v2/README.md). As páginas de `mecanicas/` descrevem a versão legada (Canvas 2D) e as regras compartilhadas; onde divergirem da v2, vale o guia `v2-*.md`.
+Os guias abaixo descrevem a **v2 em 3D**. Consulte a implementação indicada em cada guia para valores e contratos. Trechos identificados como protótipo, limitação ou proposta não são funcionalidades concluídas.
 
-## Como o jogo funciona (versão legada e regras compartilhadas)
+## Mecânicas, classes e ferramentas
 
-Guias de referência das mecânicas, em [`mecanicas/`](mecanicas/README.md):
+| Guia | Sistema |
+| --- | --- |
+| [habilidades/sinergias](habilidades/sinergias.md) | Progressão e sinergias de habilidades nas seis classes |
+| [v2-acabamento-visual](v2-acabamento-visual.md) | Acabamento visual do cenário |
+| [v2-arena](v2-arena.md) | Arena Infinita |
+| [v2-arqueira-mercenario](v2-arqueira-mercenario.md) | Arqueira e Mercenário — classes jogáveis |
+| [v2-campanha](v2-campanha.md) | campanha, vila e missões |
+| [v2-cenario-medieval](v2-cenario-medieval.md) | Cenário medieval experimental |
+| [v2-cerco](v2-cerco.md) | Cerco ao Ritual — defesa do Obelisco de Almas |
+| [v2-combate](v2-combate.md) | dano, Tiro de Osso e Dash |
+| [v2-conquista](v2-conquista.md) | Conquista de Valdoria |
+| [v2-druida](v2-druida.md) | Druida (Flora) — primeira versão jogável |
+| [v2-efeitos-visuais](v2-efeitos-visuais.md) | efeitos visuais de combate |
+| [v2-expedicoes](v2-expedicoes.md) | Expedições |
+| [v2-grimorio](v2-grimorio.md) | Grimório e maestrias |
+| [v2-guerreiro](v2-guerreiro.md) | Guerreiro / Soldado — primeira versão jogável |
+| [v2-horda](v2-horda.md) | horda em grupos |
+| [v2-inimigos](v2-inimigos.md) | inimigos e Rei Caído |
+| [v2-interface](v2-interface.md) | Interface e HUD da v2 |
+| [v2-itauna](v2-itauna.md) | Várzea de Itaúna (protótipo de área ligada) |
+| [v2-laboratorio](v2-laboratorio.md) | Laboratório |
+| [v2-magias](v2-magias.md) | Magias equipáveis |
+| [v2-mago](v2-mago.md) | Mago — classe jogável |
+| [v2-mapas](v2-mapas.md) | Editor de mapas |
+| [v2-morte-lich](v2-morte-lich.md) | Árvore da Morte e Forma de Lich |
+| [v2-movimento](v2-movimento.md) | movimento, câmera e animações |
+| [v2-progressao](v2-progressao.md) | progressão, equipamentos e loot |
+| [v2-prologo-arandu](v2-prologo-arandu.md) | ARANDU — abertura da campanha |
+| [v2-saves](v2-saves.md) | cenas e contrato de saves |
 
-- [Personagem e progressão](mecanicas/personagem-e-progressao.md)
-- [Habilidades e slots](mecanicas/habilidades.md)
-- [Grimório dos Mortos](mecanicas/grimorio.md)
-- [Horda](mecanicas/horda.md)
-- [Inimigos e chefes](mecanicas/inimigos-e-chefes.md)
-- [Equipamentos e loot](mecanicas/equipamentos-e-loot.md)
-- [Modos de jogo e mundo](mecanicas/modos-de-jogo.md)
-- [Conquista de Valdoria](mecanicas/conquista-valdoria.md)
-- [Interface, controles e saves](mecanicas/interface-e-saves.md)
+## Referências compartilhadas
 
-## Implementação e ferramentas
+- [Árvores de habilidades: catálogo, editor e fonte de dados](habilidades/README.md). `arvores.md` é gerado; status de ideia ou planejamento não implica implementação.
+- [Convenções visuais de combate](guia-visual-combate.md).
+- [Pipeline Blender e modelos](../blender/README.md).
+- [Mapa técnico e build da v2](../v2/README.md).
+- [Simulador do Grimório](../build-simulator/README.md) e [simulador de balanceamento](../balance-simulator/README.md).
 
-| Documento | Conteúdo |
-|---|---|
-| [habilidades/README.md](habilidades/README.md) | Fonte da verdade das árvores de habilidades de todas as classes (`arvores.json`), editor visual e guia gerado |
-| [arvores-habilidades-implementacao.md](arvores-habilidades-implementacao.md) | Integração das árvores ao jogo, migração de saves e verificação |
-| [guia-visual-combate.md](guia-visual-combate.md) | Escala, contraste e regras visuais dos efeitos; arena de comparação |
-| [v2-saves.md](v2-saves.md) | Cenas, contrato de save da v2, importação preservada e limites da integração |
-| [v2-movimento.md](v2-movimento.md) | Colisões, navegação, câmera/mira, poses e controle da v2 |
-| [v2-combate.md](v2-combate.md) | E4: dano comum, Tiro de Osso, Dash, fontes compartilhadas e limites da integração |
-| [v2-grimorio.md](v2-grimorio.md) | E6: investimento/devolução, maestrias, XP por abates, persistência e limites |
-| [v2-horda.md](v2-horda.md) | E5: cinco tipos, grupos, seis slots, comandos, recuperação e persistência |
-| [v2-progressao.md](v2-progressao.md) | E7: nível, XP, atributos, recompensa por abate, drops, equipamentos, consumíveis e saves |
-| [v2-prologo-arandu.md](v2-prologo-arandu.md) | Abertura ARANDU: caravana, emboscada, caverna, mensageiro, defesa de Jacarandá e saves |
-| [v2-campanha.md](v2-campanha.md) | E9: Ato I, salas, ondas, trilhas, vila, missões e prêmios únicos |
-| [v2-arena.md](v2-arena.md) | E10a: Arena Infinita (clássica), Pedra do Infinito, waves, recorde, mercador e limites |
-| [v2-expedicoes.md](v2-expedicoes.md) | E10b: Expedições por bioma, encontros dormentes, boss (Rei Caído provisório) e portais |
-| [v2-conquista.md](v2-conquista.md) | E10c: Conquista de Valdoria — rotas, influência, maldições, poças, Osso Carcomido e limites |
-| [v2-interface.md](v2-interface.md) | HUD e Relicário da v2: fontes, abas, decisões e limites |
-| [v2-inimigos.md](v2-inimigos.md) | E8: seis arquétipos, escala, elites, projéteis, composição e Rei Caído completo |
-| [v2-morte-lich.md](v2-morte-lich.md) | Árvore Morte e Forma de Lich: design, assets, regras e integração (Grimório, slot, HUD de almas, Lich e foice no renderizador); balanceamento pendente |
-| [v2-mapas.md](v2-mapas.md) | Editor de mapas in-game: criar, jogar, exportar/importar e usar um mapa como base de outros |
-| [v2-itauna.md](v2-itauna.md) | Protótipo de regiões encadeadas: Várzea de Itaúna, Forte da Pedra Negra, Gruta das Tecelãs, passagens e save |
-| [v2-acabamento-visual.md](v2-acabamento-visual.md) | Acabamento do cenário: kits do Blender, chão pintado, luz, vento e oclusão (fatia na vila), onde falta aplicar e plano para o editor de mapas |
-| [v2-laboratorio.md](v2-laboratorio.md) | Laboratório in-game: visualizador de animações, boneco de madeira com medidor de DPS e testes cronometrados |
-| [v2-efeitos-visuais.md](v2-efeitos-visuais.md) | Revisão de efeitos: runas de invocação, Tiro de Osso, golpes de inimigos e Rei Caído em duas fases |
-| [v2-magias.md](v2-magias.md) | E6b: cinco magias equipáveis, validação atômica, recargas, encerramento e limites |
-| [refactoring-baseline.md](refactoring-baseline.md) | Linha de base da refatoração: testes, fontes do HTML, dependências externas e problemas registrados |
-| [character-regeneration-inventory.md](character-regeneration-inventory.md) | Inventário dos personagens para a regeneração low-poly: fontes, atlas, animações, contratos e pipelines |
-| [character-regeneration-review.md](character-regeneration-review.md) | Revisão do Lote 1 (zumbi, arqueiro inimigo, Bram): metadados de impacto, testes, antes/depois e pendências |
-| [../build-simulator/README.md](../build-simulator/README.md) | Simulador de builds (Grimório) |
-| [../balance-simulator/README.md](../balance-simulator/README.md) | Simulador matemático de equipamentos e waves |
+## Legado, conceitos e evidências
 
-## Planejamento e histórico
-
-Documentos de decisão e planos. Podem citar números ou regras que já mudaram;
-o estado atual está nos guias de mecânicas.
-
-| Documento | Conteúdo | Situação |
-|---|---|---|
-| [arandu-analise-e-plano-transicao.md](arandu-analise-e-plano-transicao.md) | Comparação entre o GDD do ARANDU e a v2; reaproveitamento, lacunas e marcos de transição | Proposta documental; sem implementação |
-| [concepts/arandu-gdd-lore-v0.1.md](concepts/arandu-gdd-lore-v0.1.md) | Visão criativa, mundo e narrativa do ARANDU fornecidos pelo usuário | Conceito v0.1; referência para a transição |
-| [../v2/plano-migracao.md](../v2/plano-migracao.md) | Migração completa para modelos 3D: etapas, critérios, fontes e ponto de retomada | E9 concluída no fluxo funcional: Ato I, vila e missões; próxima etapa E10 |
-| [plano-endgame-valdoria.md](plano-endgame-valdoria.md) | Conquista territorial, influência, maldições e pântano de decomposição | Primeira região jogável; expansão e alquimia planejadas |
-| [roadmap-combate-visual.md](roadmap-combate-visual.md) | Roadmap de animações de skills e novos inimigos | Ativo: primeiro pacote concluído, próximo é SK-02 (Dash) |
-| [plano-equipamentos-waves.md](plano-equipamentos-waves.md) | Plano de equipamentos, loot e waves | Primeira versão jogável implementada |
-| [zephyr-habilidades-ato-1-revisao.md](zephyr-habilidades-ato-1-revisao.md) | Revisão das habilidades do Ato I | Histórico: a campanha não concede mais skills |
-| [diagnostico-interface-e-zumbis.md](diagnostico-interface-e-zumbis.md) | Diagnóstico de interface e IA dos zumbis | Correções registradas no próprio documento |
-| [concepts/skill-trees-proposal-v1.md](concepts/skill-trees-proposal-v1.md) | Proposta visual inicial das árvores | Histórico: o grafo final está no Grimório |
-
-Imagens de conceito e evidências visuais ficam em [`concepts/`](concepts/).
-
-- [Cerco ao Ritual — defesa de torres e progressão de endgame](v2-cerco.md)
-
-- [Guerreiro / Soldado — classe jogável da v2](v2-guerreiro.md)
-- [Druida (Flora) — classe jogável da v2: raios, raízes e forma de lobo](v2-druida.md)
-- [Mago — classe jogável da v2: fogo, gelo, arcano e rig corrigido](v2-mago.md)
-- [Arqueira e Mercenário — classes jogáveis da v2: árvores, falcão, bombas, minas e registro de classes](v2-arqueira-mercenario.md)
+- [v1 e suas regras](../v1/README.md): referência exclusiva do jogo Canvas; não prevalece sobre os guias da v2.
+- [GDD e lore ARANDU](concepts/arandu-gdd-lore-v0.1.md): referência criativa fornecida pelo usuário, não lista de funcionalidades entregues.
+- Evidências e relatos históricos ficam em `../review/`; não são guias atuais. Planos e diagnósticos superados foram retirados da documentação ativa; seu histórico continua no Git.

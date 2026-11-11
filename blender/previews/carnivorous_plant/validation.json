@@ -1,0 +1,13 @@
+{
+  "triangles": 920,
+  "materials": 4,
+  "animations": [
+    "idle",
+    "attack",
+    "death"
+  ],
+  "fps": 30,
+  "validation": "PASS",
+  "texture": "solid colors",
+  "lod": "single lightweight summon"
+}

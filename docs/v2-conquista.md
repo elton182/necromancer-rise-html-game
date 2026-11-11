@@ -1,10 +1,8 @@
 # V2 — Conquista de Valdoria (E10c)
 
-A **Conquista** é o terceiro modo da E10: o território **Pântano da Febre Negra**, com mapa de 17 rotas, influência,
-maldições, tenentes e fortaleza. Abre-se na **Vila de Eldrin** pela aba **Valdoria** do Relicário (também pelo botão
-**Conquistar Valdoria · Pântano** da aba [Waves](v2-arena.md)). O modelo de regras é o do jogo antigo, sem alterações
-(`scripts/endgame-model.js`, gerado como `shared-endgame.mjs`); as regras vigentes estão no
-[guia do jogo atual](mecanicas/conquista-valdoria.md). Este documento registra o que a v2 implementa e **o que não**.
+A **Conquista de Valdoria** usa o território **Pântano da Febre Negra**, com 17 rotas, influência, maldições, tenentes e fortaleza. Na praça de Jacarandá ou na Vila de Eldrin, aproxime-se da **Cartógrafa de Valdoria** e pressione **G**. O serviço abre seu painel próprio; não é uma aba do Relicário.
+
+O modelo compartilhado é `scripts/endgame-model.js`, gerado na v2 como `shared-endgame.mjs`. A [referência legada](../v1/docs/mecanicas/conquista-valdoria.md) explica a base compartilhada; as adaptações e os bônus exclusivos da v2 são descritos neste guia.
 
 ## O que existe
 
@@ -12,7 +10,7 @@ maldições, tenentes e fortaleza. Abre-se na **Vila de Eldrin** pela aba **Vald
 | --- | --- |
 | Progresso (`character.conquest`: semente, influência, tenentes, conquista, fragmento, dificuldade, ofertas, rotas) | `save-model.mjs`; normalizado por `Endgame.normalize` |
 | Corrida de rota (mapa, encontros, boss, portais, conclusão) | `expedition.mjs` (`launchConquest`, `finishConquest`, `portalAction`) |
-| Mapas por bioma (pântano, rio, montanha, além dos cinco da Expedição) | `expedition-map.mjs`, `expedition-scene.mjs` |
+| Mapas por bioma (pântano, rio, montanha, além dos cinco da Expedição) | `expedition-map.mjs`, `expedition-biomes.mjs`, `expedition-scene.mjs` ([cenário por bioma](v2-expedicoes.md#cenário-por-bioma)) |
 | Maldições, poças, Podridão, loot regional | `progression.mjs`, `horde.mjs`, `combat.mjs`, `enemies.mjs`, `rewards.mjs` |
 | Aba Valdoria e mapa de rotas (Canvas 2D) | `conquest-panel.mjs`, `conquest.css` |
 

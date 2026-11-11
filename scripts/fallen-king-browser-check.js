@@ -3,7 +3,7 @@
 // sprites dos dois atlas, limpeza na morte e modo ?bosses=classic.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path');
 const {pathToFileURL}=require('node:url');
-const GAME=pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href;
+const GAME=pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href;
 function boot(){
  TITLE.active=false;TITLE.paused=false;COMIC.active=false;CAMP.on=false;CAMP.map=false;P.deadT=0;gameState='hub';
  document.body.classList.remove('titling');tlShow(false,false);

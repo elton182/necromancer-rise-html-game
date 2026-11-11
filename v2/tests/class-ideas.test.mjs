@@ -86,7 +86,7 @@ test('Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espir
 });
 
 test('Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo',()=>{
- const w=mage({fireball:1,combustion:1,familiarDeFogo:1}),e=target(w,6,0),d=mDef('familiarDeFogo');
+ const w=mage({fireball:1,combustion:1,imbuirFogo:1,familiarDeFogo:1}),e=target(w,6,0),d=mDef('familiarDeFogo');
  assert.ok(marksmanAction(w,mIndex('familiarDeFogo')));mAdvance(w,Math.ceil(d.release*60)+1);
  assert.ok(w.marksmanFamiliar);mAdvance(w,60*3);assert.ok(lost(e)>0,'bolas de fogo');
  assert.ok(w.effects.some(f=>f.id==='mfamiliar'),'espírito visível');

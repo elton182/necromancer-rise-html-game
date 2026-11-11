@@ -1,6 +1,6 @@
 // Rebuild the embedded skill-tree model, rules and style without introducing runtime dependencies.
 const fs=require('node:fs'),path=require('node:path');
-const root=path.resolve(__dirname,'..'),target=path.join(root,'necromancer-canvas.html');
+const root=path.resolve(__dirname,'..'),target=path.join(root,'v1/necromancer-canvas.html');
 let html=fs.readFileSync(target,'utf8');
 const replace=(before,after)=>{if(html.includes(before))html=html.replace(before,after);else if(!html.includes(after))throw Error('Source patch no longer matches: '+before.slice(0,90));};
 // Minimal bridges in the original engine; combat fixtures retain their isolated legacy defaults.

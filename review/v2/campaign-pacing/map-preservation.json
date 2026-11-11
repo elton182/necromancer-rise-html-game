@@ -1,0 +1,18 @@
+[
+  {
+    "file": "v2/assets/maps/campaign-cave.json",
+    "geometryPreserved": true
+  },
+  {
+    "file": "v2/assets/maps/campaign-world.json",
+    "geometryPreserved": true
+  },
+  {
+    "file": "v2/assets/maps/campaign-itauna.json",
+    "geometryPreserved": true
+  },
+  {
+    "file": "v2/assets/maps/campaign-itaunaCave.json",
+    "geometryPreserved": true
+  }
+]

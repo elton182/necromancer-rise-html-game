@@ -38,3 +38,19 @@ body:has(#campaign-panel[data-view="prologue-intro"]:not([hidden])) #hud,body:ha
 #campaign-panel[data-view="travel-dialogue"]{background:linear-gradient(135deg,#fff0d4,#e5cfaa);border-color:#866647;box-shadow:0 6px 24px #0006,inset 0 0 0 3px #fff5}
 body:has(#campaign-panel[data-view="travel-dialogue"]:not([hidden])):after{content:none}
 body:has(#campaign-panel[data-view="travel-dialogue"][data-speaker="driver"]:not([hidden])):after{content:"A CAMINHO DE ITAVERA"}
+
+/* Cenas da história: faixas de cinema no respiro do combate, nas conversas e nas cinemáticas; HUD recolhido. */
+#story-bars:before,#story-bars:after{content:'';position:fixed;left:0;right:0;height:clamp(34px,8.5vh,84px);background:#050607;z-index:26;pointer-events:none;transition:transform .6s cubic-bezier(.22,.7,.2,1)}
+#story-bars:before{top:0;transform:translateY(-101%)}
+#story-bars:after{bottom:0;transform:translateY(101%)}
+body:is([data-story-scene="beat"],[data-story-scene="dialogue"],[data-story-scene="cinematic"],[data-story-scene="leaving"]) #story-bars:before,body:is([data-story-scene="beat"],[data-story-scene="dialogue"],[data-story-scene="cinematic"],[data-story-scene="leaving"]) #story-bars:after{transform:none}
+body[data-story-scene] :is(#hud,#game-nav,#minimap-panel,#objective-bar,#terrain-chip,#horde-status,#summon-slots,#top-left){transition:opacity .45s ease}
+body:is([data-story-scene="beat"],[data-story-scene="dialogue"],[data-story-scene="cinematic"],[data-story-scene="leaving"]) :is(#hud,#game-nav,#minimap-panel,#objective-bar,#terrain-chip,#horde-status,#summon-slots,#top-left){opacity:0;pointer-events:none}
+/* A cinemática da queda já tem a própria faixa inferior com a legenda. */
+body:has(#campaign-panel[data-view="prologue-cinematic"]:not([hidden])) #story-bars:after{transform:translateY(101%)}
+#story-fade{position:fixed;inset:0;z-index:44;display:grid;place-items:center;padding:16px;background:#060808;color:#e8d6b2;font:normal clamp(20px,3vw,32px) Georgia,serif;letter-spacing:.12em;text-align:center;opacity:0;pointer-events:none;transition:opacity .7s ease}
+#story-fade.on{opacity:1;pointer-events:auto;transition:opacity .5s ease-in}
+#story-fade.titled:before{content:'';position:absolute;left:50%;top:calc(50% + 1.4em);width:min(220px,40vw);height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,#a98a5c,transparent)}
+@media(prefers-reduced-motion:reduce){#story-bars:before,#story-bars:after,#story-fade,#story-fade.on{transition:none}}
+/* No respiro, o objetivo some junto com o HUD; volta com o painel de conversa. */
+body[data-story-scene="beat"] #campaign-panel[data-view="prologue"]{opacity:0;transition:opacity .35s ease}

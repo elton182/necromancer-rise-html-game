@@ -1,7 +1,7 @@
 // Mapas da campanha editáveis: cada um é uma variação viva da planta embutida, guardada na biblioteca com id fixo (`campaign-<mapa>`).
 // Sem edição, a campanha usa a planta original. Edições gravadas em v2/assets/maps/ entram no jogo pelo build.
 import {builtinMap,normalizeMap,resolveMap,reachable,canReach,toArena,centered} from './map-model.mjs';
-import {PROLOGUE_POINTS,CAVE_ROOMS,PAPERS_GUARD_RADIUS} from './prologue-map-data.mjs';
+import {PROLOGUE_POINTS,CAVE_ROOMS,PAPERS_GUARD_RADIUS,MESSENGER_GUARD_RADIUS} from './prologue-map-data.mjs';
 import {WORLD_POINTS,WORLD_PILES,WORLD_ENCOUNTERS} from './campaign-world-model.mjs';
 import {ITAUNA_POINTS,FORT_POINTS,CAVE_POINTS} from './itauna-model.mjs';
 import {NILO_POINTS,NILO_GROUPS} from './nilo-model.mjs';
@@ -12,13 +12,14 @@ const QUEST_SPAWNS=WORLD_ENCOUNTERS.filter(e=>e.quest).map(e=>e.id);
 // `triggers`: se a cena respeita gatilho, ondas e retorno dos grupos.
 // `fixedStart`: cena roteirizada com posição inicial própria. `noTerrain`: cinemática sobre o plano, sem relevo.
 export const CAMPAIGN_SLOTS={
+ itavera:{ref:'builtin:itavera',name:'Itavera · praça das guildas',note:'Encerramento do Ato I: recepção de Helena e convite de João. Sem combate.',noSpawns:true,points:[NILO_POINTS.helena,NILO_POINTS.cityJoao,NILO_POINTS.cityMarta,{x:0,y:24,name:'Chegada da caravana'},{x:0,y:30,name:'Retorno a Jacarandá'}]},
  world:{ref:'builtin:campaign-world',name:'Mundo de Jacarandá',note:'Cripta, bosque, vila, posto, mina, serraria e cemitério.',triggers:true,required:QUEST_SPAWNS,points:[...Object.values(WORLD_POINTS),...WORLD_PILES.map(p=>({x:p.x,y:p.y,name:p.name})),NILO_POINTS.marta,NILO_POINTS.nilo]},
  travel:{ref:'builtin:arandu-travel',name:'Estrada de Itavera',note:'Cinemática da caravana: só cenário e estilo; sem relevo nem inimigos.',noTerrain:true,noSpawns:true,fixedStart:true,points:[]},
  caravan:{ref:'builtin:arandu-caravan',name:'Desembarque da caravana',note:'Emboscada, despedida e queda. A queda é mostrada sem relevo.',triggers:true,points:[{x:0,y:12,name:'Local da queda'}]},
  cave:{ref:'builtin:arandu-cave',name:'Caverna dos bandidos',note:'Salas, túneis, ordens e saída. Para ler as ordens, só é preciso derrotar os grupos a até '+PAPERS_GUARD_RADIUS+' u delas; os outros são opcionais.',triggers:true,points:[{...PROLOGUE_POINTS.papers,name:'Ordens'},{...PROLOGUE_POINTS.exit,name:'Saída'},...[2,4,6].map(i=>({x:CAVE_ROOMS[i].x+8,y:CAVE_ROOMS[i].y+3,name:'Carga lateral'}))]},
- trail:{ref:'builtin:arandu-trail',name:'Caminho de Jacarandá',note:'Encontro com o mensageiro ferido.',triggers:true,points:[{...PROLOGUE_POINTS.messenger,name:'Tomás'}]},
+ trail:{ref:'builtin:arandu-trail',name:'Caminho de Jacarandá',note:'Trilha da caverna até Tomás: lobos na clareira, vigias na carroça tombada e os perseguidores. Para ajudar Tomás, só é preciso derrotar os grupos a até '+MESSENGER_GUARD_RADIUS+' u dele.',triggers:true,points:[{...PROLOGUE_POINTS.messenger,name:'Tomás'},{...PROLOGUE_POINTS.satchel,name:'Bolsa caída'}]},
  itauna:{ref:'builtin:itauna',name:'Várzea de Itaúna',note:'Área além da estrada leste de Jacarandá: rio, lagos, acampamento, encosta do forte e morro da gruta.',triggers:true,required:['islet-guard',NILO_GROUPS.camp],points:[...Object.values(ITAUNA_POINTS),NILO_POINTS.ledger]},
- itaunaFort:{ref:'builtin:itauna-fort',name:'Forte da Pedra Negra',note:'A grade interna sobe quando os três grupos do pátio externo caem. Mantenha o vão em (0, 6).',triggers:true,required:['fort-gate','fort-west','fort-east','fort-inner-w','fort-inner-e','fort-captain'],points:[...Object.values(FORT_POINTS),NILO_POINTS.contract]},
+ itaunaFort:{ref:'builtin:itauna-fort',name:'Forte da Pedra Negra',note:'A grade interna sobe quando os três grupos do pátio externo caem. Mantenha o vão em (0, 6).',triggers:true,required:['fort-gate','fort-west','fort-east','fort-inner-w','fort-inner-e','fort-captain'],points:[...Object.values(FORT_POINTS),NILO_POINTS.contract,NILO_POINTS.bag]},
  itaunaCave:{ref:'builtin:itauna-cave',name:'Gruta das Tecelãs',note:'Galerias de lobos e aranhas, lago subterrâneo e câmara da Mãe-Tecelã.',triggers:true,required:['cave-queen'],points:[...Object.values(CAVE_POINTS),NILO_POINTS.cocoon]}
 };
 export const campaignMapId=slot=>'campaign-'+slot;

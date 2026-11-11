@@ -9,6 +9,7 @@
   "scripts": {
     "start": "npm run editor",
     "editor": "node v2/tools/map-editor-server.cjs",
+    "skills": "node tools/skill-tree-editor-server.cjs",
     "lab": "node tools/combat-lab-server.js",
     "build": "node v2/tools/build.cjs",
     "sync:legacy": "node scripts/sync-equipment.js && node scripts/sync-skill-vfx.js",

@@ -1,0 +1,101 @@
+TAP version 13
+# Subtest: Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+not ok 1 - Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+  ---
+  duration_ms: 2.0969
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\skill-synergies.test.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    4991 !== 4992
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 4992
+  actual: 4991
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/skill-synergies.test.mjs:25:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    node:internal/test_runner/harness:255:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+ok 2 - sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+  ---
+  duration_ms: 0.2306
+  ...
+# Subtest: variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+ok 3 - variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+  ---
+  duration_ms: 0.1623
+  ...
+# Subtest: cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+not ok 4 - cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+  ---
+  duration_ms: 0.9985
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\skill-synergies.test.mjs:42:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    mercenary
+    
+    0.06 !== 0.1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0.1
+  actual: 0.06
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/skill-synergies.test.mjs:44:10)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Meteoro aplica sinergia ao impacto e ao chão em chamas
+ok 5 - Meteoro aplica sinergia ao impacto e ao chão em chamas
+  ---
+  duration_ms: 11.1278
+  ...
+# Subtest: Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+ok 6 - Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+  ---
+  duration_ms: 6.614
+  ...
+# Subtest: Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+ok 7 - Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+  ---
+  duration_ms: 2.7318
+  ...
+# Subtest: Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+ok 8 - Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+  ---
+  duration_ms: 5.3564
+  ...
+# Subtest: sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+ok 9 - sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+  ---
+  duration_ms: 2.6149
+  ...
+# Subtest: ficha do Mago usa o mesmo dano e sinergia que o combate
+ok 10 - ficha do Mago usa o mesmo dano e sinergia que o combate
+  ---
+  duration_ms: 1.1082
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 8
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 195.9828

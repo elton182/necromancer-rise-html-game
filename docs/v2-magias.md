@@ -3,7 +3,7 @@
 Segunda parte da E6. Chuva de Ossos, Explosão Necrótica, Muralha de Corpos,
 Escudo de Carne e Maldição da Fraqueza agora podem ser equipadas nos seis slots
 da arena, junto do Tiro de Osso, do Dash e das evocações da [horda](v2-horda.md).
-As regras vigentes de cada magia estão em [habilidades](mecanicas/habilidades.md);
+As regras vigentes de cada magia estão em [habilidades](../v1/docs/mecanicas/habilidades.md);
 este guia registra como a v2 as integra e o que ainda falta.
 
 ## Como experimentar

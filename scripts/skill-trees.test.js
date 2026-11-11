@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),{test}=require('node:test');
 const BuildModel=require('../build-simulator/model.js');
-const html=fs.readFileSync(require('node:path').join(__dirname,'../necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
+const html=fs.readFileSync(require('node:path').join(__dirname,'../v1/necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
 const source=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).join('\n');
 const integration=fs.readFileSync(require('node:path').join(__dirname,'skill-trees.js'),'utf8');
 function fn(name){const start=source.indexOf('function '+name+'('),end=source.indexOf('\n}',start);assert.ok(start>=0,name);return source.slice(start,end+2);}

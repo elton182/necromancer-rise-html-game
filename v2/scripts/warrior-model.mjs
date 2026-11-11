@@ -1,3 +1,4 @@
+import {schoolSynergy} from './skill-synergy.mjs';
 // Nós da árvore: nome, texto, pontos, nível e pré-requisitos vêm de docs/habilidades/arvores.json (skill-tree.mjs).
 import {treeNodes,normalizeRanks,spentRanks,fitRanks,canLearnNode} from './skill-tree.mjs';
 export const PASSIVES=treeNodes('warrior');
@@ -32,6 +33,12 @@ export const TORNADO_VARIANTS={
  cyclone:{id:'cyclone',name:'Ciclone',node:'tornadoCyclone',range:3.7,interval:.3,drain:12,turn:.6,move:.4},
  whirl:{id:'whirl',name:'Turbilhão',node:'tornadoWhirl',range:2.7,interval:.2,drain:16,turn:.4,move:.55},
 };
-export function warriorTornado(id,ranks){const variant=Object.hasOwn(TORNADO_VARIANTS,id||'')?TORNADO_VARIANTS[id]:null;return variant&&(!variant.node||(ranks?.[variant.node]||0)>0)?variant:TORNADO_VARIANTS.base;}
+// Os ids antigos continuam válidos no save; os ranks agora determinam a evolução cumulativa.
+export function warriorTornado(id,ranks={}){
+ const cyclone=Math.max(0,ranks.tornadoCyclone||0),whirl=Math.max(0,ranks.tornadoWhirl||0);
+ return {id:whirl?'whirl':cyclone?'cyclone':'base',name:whirl?'Furacão':cyclone?'Ciclone':'Corte Vendaval',
+  range:cyclone?3.7+.25*(cyclone-1):2.7,interval:whirl?.2-.01*(whirl-1):.3,drain:whirl?16+(whirl-1):12,
+  turn:whirl?.4:.6,move:cyclone?.4:.55,damage:1+schoolSynergy('warrior',ranks,'tornado')+.1*Math.max(0,(ranks.tornado||0)-1)+.08*Math.max(0,cyclone-1)+.08*Math.max(0,whirl-1)};
+}
 // A variante só troca fora de combate: nenhum inimigo desperto a menos de 14 u.
 export const warriorInCombat=w=>w.actors.some(a=>a.team==='enemy'&&a.hp>0&&!a.dead&&!(a.home&&!a.alert)&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<14);

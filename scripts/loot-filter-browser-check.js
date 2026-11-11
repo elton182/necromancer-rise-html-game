@@ -5,7 +5,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),path
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
   await page.waitForFunction(()=>typeof hasSave!=='undefined');
   await page.evaluate(()=>tOptions());
   const select=page.getByRole('combobox',{name:'Raridade mínima do loot'});

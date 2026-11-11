@@ -1,52 +1,10 @@
-# Necromancer’s Rise — v2
+# v2 — jogo oficial
 
-**ARANDU — nova abertura:** Novo Jogo cria um personagem nomeado, com seleção de Necromante, Guerreiro, Druida, Arqueira, Mercenário ou Mago e saves separados. A campanha nova começa na caravana e segue por emboscada, caverna, mensageiro e defesa de Jacarandá. [Fluxo, fontes, saves e limitações](../docs/v2-prologo-arandu.md). Os resumos E9/E10 abaixo preservam o histórico da base e dos modos existentes.
+A v2 usa Three.js local e modelos GLB animados do Blender. A entrada [../index.html](../index.html) e [index.html](index.html) abrem [necromancer-3d.html](necromancer-3d.html), distribuição autocontida para Edge ou Chrome com WebGL 2.
 
+O estado do jogo, os modos disponíveis e os comandos estão no [README principal](../README.md). Consulte o [índice dos guias atuais](../docs/README.md) para regras, controles e limites por sistema. A v1 está em [../v1/](../v1/README.md).
 
-**A v2 é o jogo principal do projeto.** A versão Canvas 2D (`../necromancer-canvas.html`) é legada: novidades vão para cá e o build lê as regras compartilhadas dela (`node v2/tools/build.cjs`, na raiz). Convenções de trabalho em [../AGENTS.md](../AGENTS.md).
-
-Estado: **E10 concluída no fluxo funcional — Arena clássica (E10a), Expedições (E10b) e Conquista de Valdoria (E10c)**, com Rei Caído provisório como boss, sobre o Ato I, a vila e as missões da E9.
-Próximo passo: acabamento (E11), HQs e tela de mapa da campanha. Cenário básico; acabamento visual em E11.
-O [plano de migração](plano-migracao.md) registra critérios e ponto de retomada.
-
-## Abrir
-
-Abra [index.html](index.html) no Edge ou Chrome com WebGL 2 habilitado.
-A distribuição [necromancer-3d.html](necromancer-3d.html) também pode ser aberta
-diretamente ou copiada sozinha para outra pasta. Não precisa de servidor,
-instalação, internet ou biblioteca externa durante a execução.
-
-WASD/setas movem, o mouse mira, clique/1 lança Tiro de Osso e C usa o Dash,
-a roda ajusta o zoom e Esc pausa/retoma. Perda de foco pausa a simulação.
-O painel permite reiniciar, alternar o chão, sombras e quantidade de aliados.
-
-A V2 tem combate, horda, Grimório, magias, progressão e equipamentos compartilhados
-com as fontes atuais. A campanha do Ato I e a Vila de Eldrin estão disponíveis.
-A Arena Infinita (clássica) abre pela Pedra do Infinito na vila: veja [Arena Infinita](../docs/v2-arena.md).
-As [Expedições](../docs/v2-expedicoes.md) abrem pela mesma aba (boss provisório). A [Conquista de Valdoria](../docs/v2-conquista.md) abre pela aba Valdoria. O treino permanece separado e não substitui esses modos.
-
-Em **Personagem e saves**, salve/exporte a v2 ou importe o JSON do jogo anterior
-com prévia e confirmação. O arquivo antigo é preservado inteiro; nível, XP, ouro,
-equipamentos e consumíveis são aplicados. Campanha antiga, árvore e maestrias
-permanecem arquivadas. A chave antiga não é sobrescrita. Consulte
-o [contrato de saves e cenas](../docs/v2-saves.md) para formato e limitações.
-
-Portal (Necromantic Threshold), início de onda (Warning Signal) e subida de nível (Crowned in Bone)
-usam WAVs em `assets/audio/`; a cripta usa `crypt-of-stone.mp3` (Crypt of Stone), em loop.
-A Vila de Eldrin usa Autumn Keep (`assets/audio/autumn-keep.mp3`), em loop.
-O catálogo `assets/music.json` distingue efeitos (`kind: "sfx"`) de músicas. Todos são embutidos
-no HTML; efeitos são pré-decodificados no primeiro gesto e mantêm fallback procedural em caso de falha.
-Os demais efeitos e trilhas são gerados em tempo real: 17 efeitos e 10 trilhas (título, mapa, vila, cripta,
-floresta, trilha, chefe, campo, história e menu). A tela inicial toca “The Shadow’s Oath”
-(`assets/audio/the-shadows-oath.mp3`, em loop, embutida em base64 no HTML); se o arquivo não
-decodificar, volta à trilha procedural `title`. O navegador só libera o áudio após o primeiro clique
-ou tecla. Volume, música e mudo ficam em **Opções** na tela inicial e são guardados à parte do save,
-na chave `necromancer_v2_audio`. A trilha abaixa durante a pausa e a aba em segundo plano silencia.
-
-A arena agora tem paredes e pilares com colisão, navegação de atores e
-visualização opcional dos colisores. A mira acompanha o mouse mesmo quando
-a câmera se move. Controle padrão: stick esquerdo move, direito mira, A/RT
-lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
+Novo Jogo inicia ARANDU e oferece seis classes com personagens nomeados e saves separados. A base antiga do Ato I, treino e Vila de Eldrin continua em fluxos próprios. Na praça de Jacarandá, **G** abre os serviços dos NPCs: Arena/Expedições, Conquista e Cerco. O chefe das Expedições ainda é o Rei Caído provisório.
 
 ## Fontes e responsabilidades
 
@@ -71,10 +29,13 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/game.css` | Apresentação da interface |
 | `scripts/map-model.mjs`, `map-editor.mjs`, `map-preview.mjs`, `map-panel.mjs`, `map-play.mjs`, `maps.css` | Editor de mapas: formato, catálogo e estilo, herança de mapa base, biblioteca, editor 2D com pré-visualização 3D, aba Mapas e lançamento do mapa ([guia](../docs/v2-mapas.md)) |
 | `scripts/map-terrain.mjs`, `terrain-scene.mjs` | Relevo, água, rios e superfícies: regras de deslocamento, colisão e dano; desenho da água e assentamento do cenário |
-| `scripts/area-tuning.mjs` | Nível por área e densidade dos encontros da campanha integrada (dobro de integrantes, triplo de ondas, renascimento) |
+| `scripts/area-tuning.mjs` | Ritmo da campanha: níveis graduais, grupos pequenos, patrulhas nas rotas e reforços limitados, sem respawn por relógio |
 | `scripts/world-relief.mjs`, `tools/world-relief.cjs` | Relevo e regiões do mundo de Jacarandá; a ferramenta mescla o relevo na edição publicada |
+| `scripts/expedition-biomes.mjs` | Cenário das Expedições e da Conquista por bioma, no formato dos mapas do editor: relevo, água, lugares, estilo de luz. Veja [v2-expedicoes.md](../docs/v2-expedicoes.md#cenário-por-bioma) |
 | `scripts/itauna-model.mjs`, `itauna-map.mjs`, `area-scene.mjs` | Várzea de Itaúna: passagens entre mapas, plantas da várzea, do forte e da gruta, grade e anéis. Veja [v2-itauna.md](../docs/v2-itauna.md) |
-| `scripts/nilo-model.mjs`, `nilo-quest.mjs` | O rastro de João: missão de Marta que liga Jacarandá, várzea, gruta e forte; etapas, pontos, falas e prêmios. Veja [v2-itauna.md](../docs/v2-itauna.md#o-rastro-de-joão) |
+| `scripts/nilo-model.mjs`, `nilo-quest.mjs` | O rastro de João e a carta: resgate, bolsa e provas no forte, entrega a Helena e convite final em Itavera; etapas, falas, prêmios e compatibilidade de saves. Veja [v2-itauna.md](../docs/v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026) |
+| `scripts/quest-model.mjs`, `quest-journal.mjs` | Ofertas dos NPCs (!), entregas (?), etapas aceitas no HUD e diário do inventário com missões em aberto e concluídas; histórico derivado dos estados da campanha |
+| `scripts/itavera-map.mjs` | Praça de recepção das guildas em Itavera, com kits GLB existentes; encerramento do Ato I e retorno a Jacarandá |
 | `scripts/map-spawns.mjs` | Grupos de inimigos dos mapas: composição, gatilho, ondas e retorno |
 | `scripts/map-handles.mjs` | Seleção por raio e alças de edição no 3D, sem desenho |
 | `scripts/scene-sectors.mjs` | Divide famílias grandes de instâncias por região, para a câmera descartar o que está fora da tela |
@@ -96,6 +57,7 @@ lança magia e Start pausa. Veja [movimento da v2](../docs/v2-movimento.md).
 | `scripts/marksman-equipment.mjs` | Catálogo da Arqueira e do Mercenário: Arco ou Besta da classe mais as peças marciais, arma inicial |
 | `scripts/marksman-model.mjs`, `scripts/marksman.mjs` | Arqueira, Mercenário e Mago ([guia do Mago](../docs/v2-mago.md)): atributos, catálogo restrito, tiros com projétil (alguns teleguiados), Recuo, Chuva de Flechas, bombas, redes, minas, armadilhas, fogo e o falcão da Arqueira com Impacto Celeste e Penas Voadoras ([guia](../docs/v2-arqueira-mercenario.md)) |
 | `scripts/skill-tree.mjs`, `scripts/skill-tree-data.mjs` (gerado), `tools/skill-tree-source.cjs` | Árvores do Guerreiro, da Druida e dos atiradores lidas de [docs/habilidades/arvores.json](../docs/habilidades/README.md): nós jogáveis, ramos e posição no painel; regras comuns de investimento |
+| `scripts/skill-synergy.mjs` | Sinergias por pontos investidos entre habilidades do mesmo ramo, usadas pelo combate e painel; [regras](../docs/habilidades/sinergias.md) |
 | `scripts/skill-loadout.mjs` | Barra montável dos atiradores e da forma humana da Druida (`character.skillLoadout`) |
 | `scripts/companions.mjs`, `scripts/horde.mjs` | Golem de Gelo temporário fora da horda; Cães Zumbis, Cérbero e Esqueletos Magos permanentes na horda, com reanimação e save. Arte provisória com tinta e escala sobre modelos existentes ([Grimório](../docs/v2-grimorio.md#nós-exclusivos-da-v2-vindos-do-arquivo-08112026)) |
 | `scripts/druid-model.mjs`, `scripts/druid.mjs` | Druida: árvore, atributos e formas; magias de raio e plantas, garras e Salto do lobo ([guia](../docs/v2-druida.md)) |
@@ -141,188 +103,35 @@ Fontes canônicas compartilhadas nesta etapa:
   canônicos e são compartilhados com a simulação da V2.
 
 O laboratório e o HTML antigo continuam com suas próprias fontes. A v2 não
-executa seus sincronizadores nem altera a entrada principal do projeto.
+executa seus sincronizadores. A entrada principal da raiz abre a distribuição da v2.
 
 ## Empacotar e verificar
 
-Comandos a partir da raiz do repositório:
+Execute na raiz do repositório:
 
 ```powershell
-npm install
 npm run build
 npm run test:v2
-npm run check:browser
 npm run check:legacy
+npm run check:browser
 ```
 
-`npm run test:v2` usa `tools/run-tests.cjs`, que funciona igual no Node 20 e no 22;
-para um sistema só, rode `node --test v2/tests/<sistema>.test.mjs`.
+O build gera `necromancer-3d.html`, os módulos extraídos e `assets/build-manifest.json`. Não edite os gerados. Módulos novos entram na tabela `modules` de `tools/build.cjs`; GLBs entram em `assets/models.json`. Modelos devem conter os clipes exigidos e não depender de imagens ou buffers externos.
 
-O teste de navegador requer Edge instalado e o Playwright, instalado por
-`npm install` como dependência de desenvolvimento; ele não é dependência do produto.
-O check antigo valida a versão anterior, não substitui os testes da v2.
+As regras compartilhadas ainda são extraídas de `../v1/necromancer-canvas.html`, `../scripts/` e `../build-simulator/`. Os adaptadores `tools/*-source.cjs` registram essa integração. O Three.js vem de `../tools/3d-lab/vendor/`.
 
-O empacotamento falha se um modelo não tiver os clipes exigidos ou depender de
-imagens/buffers externos. O navegador mostra mensagens para indisponibilidade
-de WebGL e erro de carregamento. Recursos visuais são compartilhados entre
-clones e liberados quando a arena é encerrada; reinícios removem os clones e
-efeitos antigos sem descartar as geometrias compartilhadas.
+Para um sistema isolado: `node --test v2/tests/<sistema>.test.mjs`. Os checks `v2/tests/*-browser-check.cjs` exigem Playwright e o navegador indicado no arquivo; usam armazenamento isolado e gravam evidências em `../review/v2/`. `npm run check:browser` usa Edge.
 
-## Validação da E1
+Para conferir a entrada oficial e a v1 por HTTP e arquivo local: `node v2/tests/version-entry-browser-check.cjs`. As evidências ficam em `review/v2/version-organization/`.
 
-Executados em 28/10/2026: sete testes da simulação, teste no Edge headless e
-`game_check.js` com 76 cenários aprovados. Capturas inspecionadas em 1440×900,
-fundo claro/escuro, grupo e 64 aliados na qualidade baixa.
+## Limites e referências
 
-Evidências em [review/v2/e1](../review/v2/e1/):
+O balanceamento ainda exige partidas completas. Testes controlados, poses e simulações não comprovam toda a campanha, desempenho em outras máquinas ou controle físico. Consulte os limites de cada guia antes de declarar uma entrega validada.
 
-- [Resultado do navegador](../review/v2/e1/browser-result.json)
-- [Testes da simulação](../review/v2/e1/model-tests.log)
-- [Regressão do jogo atual](../review/v2/e1/game-check.log)
-- [Fundo escuro](../review/v2/e1/dark.png)
-- [Horda e qualidade baixa](../review/v2/e1/light-horde-low.png)
-- [Diagnóstico de WebGL](../review/v2/e1/webgl-failure.png)
+- [Abertura e campanha ARANDU](../docs/v2-prologo-arandu.md)
+- [Classes e árvores de habilidades](../docs/habilidades/README.md)
+- [Saves e importação da v1](../docs/v2-saves.md)
+- [Editor de mapas](../docs/v2-mapas.md)
+- [Modelos e animações](../blender/README.md)
 
-## Validação da E2
-
-Executados em 28/10/2026: 18 testes da simulação/sessão/saves, teste no Edge
-headless e regressão do jogo atual com 76 cenários aprovados. A verificação dessa
-etapa foi registrada em [review/v2/e2](../review/v2/e2/), preservando a E1.
-Inclui prévia/cancelamento, importação/exportação integral de um save fictício,
-backup, reload, chave antiga intacta, JSON inválido, quota e acesso bloqueado.
-Também verifica menu, morte, reinício e descarte de efeitos pendentes.
-
-- [Resultado do navegador](../review/v2/e2/browser-result.json)
-- [Testes de regras e saves](../review/v2/e2/model-tests.log)
-- [Regressão do jogo atual](../review/v2/e2/game-check.log)
-- [Menu](../review/v2/e2/menu.png)
-- [Prévia da importação](../review/v2/e2/import-preview.png)
-
-## Validação da E3
-
-Executados em 28/10/2026: 27 testes de regras/colisão/saves, checks de movimento
-e regressão no Edge headless e `game_check.js` com 76 cenários aprovados.
-Capturas inspecionadas em zoom próximo e nos fundos claro/escuro com grupo/horda.
-O check geral agora grava na E3; evidências anteriores permanecem disponíveis.
-
-- [Movimento e controle](../review/v2/e3/movement-result.json)
-- [Regressão de saves e cenas](../review/v2/e3/browser-result.json)
-- [Testes de regras](../review/v2/e3/model-tests.log)
-- [Regressão do jogo atual](../review/v2/e3/game-check.log)
-- [Zoom próximo e colisores](../review/v2/e3/movement-close.png)
-- [Horda com obstáculos na qualidade baixa](../review/v2/e3/terrain-horde-low.png)
-
-O controle foi simulado via Gamepad API; falta conferência com hardware físico.
-Separação entre integrantes da horda e geometria de cada mapa continuam em E5/E9.
-
-Limites históricos da E3: os sistemas posteriores estão descritos abaixo.
-A validação automatizada continua sem equivaler a benchmark em outras máquinas.
-
-## Atualizar modelos revisados
-
-O HTML contém cópias dos GLBs. Depois de exportar os modelos, execute
-`node v2/tools/build.cjs` na raiz e recarregue a página. Para o player, exporte
-a cena atual sem regenerá-la:
-`blender --background blender/models/sources/rigged_player.blend --python blender/scripts/v2_necromancer_motion.py`
-(refaz idle, walk, strafe, cast, death e dodge, grava `blender/models/v2_necromancer.blend` e
-`blender/exports/v2_necromancer.glb`; o `rigged_player.blend` não é alterado). O material e a repintura vêm de
-`blender/scripts/v2_necromancer_look.py`, aplicado pelo script de movimento antes da exportação ou sozinho sobre
-`v2_necromancer.blend`; depois regenere a queda do prólogo com `arandu_necromancer_fall.py`.
-O laboratório antigo usa `node tools/3d-lab/build.cjs`.
-
-Player, esqueleto, arqueiro, zumbi e Abominação têm conferências em
-[review/v2/model-revision](../review/v2/model-revision/). Clipes adicionais, como
-reação a dano e ataques secundários, dependem de acionamento no motor. As fontes
-atuais constam em `assets/models.json`; consulte também o
-[plano dos modelos de inimigos](../docs/plano-modelos-inimigos-v2.md).
-
-## Combate — E4
-
-Tiro de Osso, Dash, mana e dano comum usam as regras atuais. A defesa, barreiras,
-proteção do Dash, morte e crédito de abate passam pelo mesmo caminho. Parâmetros
-são extraídos das fontes; equipamentos compartilham o modelo canônico. Veja
-[combate da V2](../docs/v2-combate.md). Verificação: `node --test v2/tests/combat.test.mjs`
-e `node v2/tests/combat-browser-check.cjs`. Evidências em [review/v2/e4](../review/v2/e4/).
-
-## Horda — E5
-
-Cinco tipos, grupos, seis slots, comandos, recuperação e persistência. Use
-**Preparar e comandar a horda** para equipar grupos ou a build de teste de nível 24.
-O perfil de teste substitui o nível em memória; salvar depois grava esse perfil.
-`Shift + botão direito` ordena e **V** reanima. A região define o alcance dos grupos.
-Veja [horda](../docs/v2-horda.md), `node --test v2/tests/horde.test.mjs` e
-`node v2/tests/horde-browser-check.cjs`. Evidências em [review/v2/e5](../review/v2/e5/).
-
-## Grimório e maestrias — E6a
-
-O Grimório permite investir/devolver pontos e distribuir maestrias. Os cálculos
-compartilham BuildModel, equipamentos e maestrias. Abates somam XP às habilidades
-equipadas antes do XP do personagem; o crédito acontece uma vez. A edição exige
-preparação no menu, mapa ou vila. Veja [Grimório](../docs/v2-grimorio.md).
-Verificação: `node --test v2/tests/grimoire.test.mjs` e
-`node v2/tests/grimoire-browser-check.cjs`. Evidências históricas em
-[review/v2/e6a](../review/v2/e6a/) e [review/v2/e6b](../review/v2/e6b/).
-
-## Magias — E6b
-
-Use **Usar build de teste de magias** no menu para equipar Chuva de Ossos,
-Explosão Necrótica, Muralha de Corpos, Escudo de Carne, Maldição da Fraqueza e Dash.
-Troque Dash por Zumbis para testar o sacrifício do Escudo. A mira usa o chão real.
-Lançamentos inválidos não cobram mana; morte, menu e reinício limpam os efeitos.
-Parâmetros vêm de `tools/spell-source.cjs`; veja [magias](../docs/v2-magias.md).
-Verificação: `node --test v2/tests/spells.test.mjs` e
-`node v2/tests/spells-browser-check.cjs`. Evidências em [review/v2/e6b](../review/v2/e6b/).
-
-## Progressão, equipamentos e loot — E7
-
-Abates pagam XP, ouro, orbes e equipamentos uma vez por inimigo. Nível, árvore e
-itens determinam atributos do personagem e da horda. **I** abre mochila de 60,
-comparação, filtro, mercador e venda no menu/vila. **F1–F5** usam consumíveis.
-O campo **Nível dos itens do treino** vale para o laboratório; campanha e missões
-usam a fase/dificuldade. Veja [progressão](../docs/v2-progressao.md).
-Verificação: `node --test v2/tests/progression.test.mjs v2/tests/gear.test.mjs`,
-`node v2/tests/progression-browser-check.cjs` e `node v2/tests/gear-browser-check.cjs`.
-Evidências em [review/v2/e7](../review/v2/e7/).
-
-## Inimigos — E8
-
-**Encontro de treino** escolhe composição e escala (1–60). Cão no quarto encontro;
-acólito e elites a partir do sexto. Os seis tipos canônicos têm seus especiais.
-O Rei usa corte, salto, fase 2 e invocação. Projéteis respeitam sólidos e Muralha.
-Regras e limites em [inimigos](../docs/v2-inimigos.md). Verificação:
-`node --test v2/tests/enemies.test.mjs` e `node v2/tests/enemies-browser-check.cjs`.
-Evidências em [review/v2/e8](../review/v2/e8/).
-
-## Campanha e Vila de Eldrin — E9
-
-Na tela inicial, use **Campanha · Ato I**. Complete as quatro fases para liberar a
-vila; aproxime-se de moradores e mercador e pressione **G**. **Continuar** restaura
-mapa/vila com o campo limpo. Regras, adaptações e limites em
-[campanha da V2](../docs/v2-campanha.md). O cenário é funcional, com paredes baixas
-e NPCs existentes; casas, decoração e quadrinhos completos ficam para E11.
-
-Verificação: `node --test v2/tests/campaign.test.mjs` e
-`node v2/tests/campaign-browser-check.cjs` (Playwright/Edge). Evidências em
-[review/v2/e9](../review/v2/e9/). O percurso controlado verifica prêmios e
-transições; não equivale a validar a dificuldade de uma partida completa.
-
-## Interface e HUD
-
-Tela inicial com arte (Continuar, Nova campanha, Modo livre, Opções, Créditos, Sair), HUD e menu "Relicário" (Esc) portados do jogo atual: frascos, seis slots, minimapa,
-barra do chefe e cinco abas (Personagem, Habilidades, Horda, Equipamentos, Sistema).
-Fonte do estilo: `tools/ui-source.cjs` (gera `scripts/shared-hud.css`); a camada ornamentada da v2 (bronze, molduras SVG, orbes em garras, minimapa circular) fica em `scripts/hud-ornate.css`; lógica em
-`scripts/game-ui.mjs`. Detalhes e limites em [interface da V2](../docs/v2-interface.md).
-
-Verificação: `node v2/tests/ui-browser-check.cjs` e `node v2/tests/title-browser-check.cjs` (Playwright/Edge); evidências em
-[review/v2/ui](../review/v2/ui/). Os demais checks de navegador acionam os controles
-movidos para dentro do Relicário por `tests/legacy-controls.cjs`.
-
-O **Cerco ao Ritual** abre pelo painel da Vila de Eldrin após o Ato I: oito ondas, quatro torres, runas e vinte graus de endgame. Veja [o guia do cerco](../docs/v2-cerco.md).
-
-## Druida (Flora)
-
-Novo personagem oferece também a Druida: Faísca, Corrente de Raios, Raízes, Tempestade e Rejuvenescer na forma humana; F transforma em lobisomem, com Garras, Salto Feroz e Uivo. Consulte [regras e limites](../docs/v2-druida.md). Verificação: `node --test v2/tests/druid.test.mjs` e `node v2/tests/druid-browser-check.cjs`.
-
-## Guerreiro / Soldado
-
-Novo Jogo também oferece Guerreiro, com três cortes, estocada, golpe de escudo e passivas. Consulte [regras e limites](../docs/v2-guerreiro.md).
+O antigo plano de migração foi preservado como [registro histórico](../review/v2/migracao/plano-migracao.md), pois continha anotações locais. Não é a especificação da versão oficial.

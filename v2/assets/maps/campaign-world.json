@@ -29,7 +29,17 @@
   {"id":"wild-nw","x":-142,"y":-22,"count":2,"type":4,"mix":[4,4],"level":2,"leader":null,"trigger":"near","radius":18,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":2.2,"quest":false},
   {"id":"wild-w","x":-140,"y":46,"count":2,"type":7,"mix":[7,7],"level":3,"leader":null,"trigger":"near","radius":18,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":2.2,"quest":false},
   {"id":"wild-se","x":120,"y":126,"count":3,"type":8,"mix":[8,8,0],"level":3,"leader":null,"trigger":"near","radius":18,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":2.2,"quest":false},
-  {"id":"wild-ne","x":132,"y":-100,"count":2,"type":10,"mix":[10,6],"level":3,"leader":null,"trigger":"near","radius":18,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":2.2,"quest":false}
+  {"id":"wild-ne","x":132,"y":-100,"count":2,"type":10,"mix":[10,6],"level":3,"leader":null,"trigger":"near","radius":18,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":2.2,"quest":false},
+  {"id":"route-crypt-bend","x":-28,"y":-46,"count":2,"type":4,"mix":[4,4],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-village-north","x":58,"y":22,"count":2,"type":6,"mix":[6,6],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-mine-bend","x":60,"y":-30,"count":2,"type":4,"mix":[4,4],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-mine-ridge","x":46,"y":-78,"count":2,"type":6,"mix":[6,9],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-mill-east","x":15,"y":86,"count":2,"type":8,"mix":[8,8],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-mill-bend","x":-35,"y":104,"count":2,"type":6,"mix":[6,6],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-itauna-west","x":102,"y":82,"count":2,"type":4,"mix":[4,4],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-itauna-middle","x":128,"y":88,"count":2,"type":6,"mix":[6,9],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-itauna-east","x":154,"y":94,"count":2,"type":6,"mix":[6,6],"level":1,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":6,"respawn":0,"idle":true,"spread":1.6,"quest":false},
+  {"id":"route-graveyard","x":112,"y":52,"count":2,"type":0,"mix":[0,0],"level":2,"leader":null,"trigger":"near","radius":14,"delay":0,"waves":1,"interval":9,"respawn":0,"idle":true,"spread":1.6,"quest":false}
  ],
  "level":1,
  "enemyHp":1,

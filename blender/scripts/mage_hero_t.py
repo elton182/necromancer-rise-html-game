@@ -21,10 +21,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import common
 from mage_hero_gait import MageGait
+from mage_hero_grip import repair_shaft
+from mage_hero_fingers import add_finger_bones, weight_fingers, pose_grip
 
 BLOCKING = '--blocking' in sys.argv
 FPS = 30
-CLIPS = [('idle', 61), ('walk', 25), ('strafe_left', 25), ('strafe_right', 25),
+CLIPS = [('idle', 121), ('walk', 25), ('strafe_left', 25), ('strafe_right', 25),
          ('cast', 16), ('cast_up', 22), ('dodge', 16), ('death', 31)]
 STRIDE, STRAFE_STRIDE = .56, .44
 scene = bpy.context.scene
@@ -83,6 +85,7 @@ for side, s in [('Left', 1), ('Right', -1)]:
     bone(side+'Foot', (s*.105, .025, .07), (s*.105, -.07, .035), side+'Leg')
     bone(side+'ToeBase', (s*.105, -.07, .035), (s*.105, -.12, .03), side+'Foot')
     bone(side+'Robe', (s*.07, .035, .42), (s*.13, .035, .17), 'Hips')
+add_finger_bones(bone)
 rig = common.build_rig()
 rig.name = 'ARM_MageT'
 rig['mage_t_generated'] = True
@@ -137,6 +140,7 @@ for v in mesh.data.vertices:
         for ge in list(v.groups):mesh.vertex_groups[ge.group].remove([v.index])
         groups[side+'Foot'].add([v.index],1-amount,'REPLACE')
         groups[side+'ToeBase'].add([v.index],amount,'REPLACE')
+weight_fingers(mesh,groups)
 mod = mesh.modifiers.new('MageT skin', 'ARMATURE')
 mod.object = rig
 mesh.parent = rig
@@ -166,12 +170,14 @@ for v in bm.verts:
 bmesh.ops.delete(bm, geom=discard, context='VERTS')
 bm.to_mesh(staff.data)
 bm.free()
+repair_shaft(staff,axis)
 staff.vertex_groups.clear()
 # Endireita o eixo antigo e posiciona a haste no centro da pegada.
-grip = Vector((-.427, .016, .625))
+# Compensa no bind a meia-volta da pegada, mantendo a haste no lugar.
+grip = Vector((-.433, .020, .607))
 oldgrip = axis(.489)
 q = Vector((kx,ky,1)).rotation_difference(Vector((0,0,1)))
-bind_staff = Quaternion(Vector((1,0,0)), -math.pi/2)
+bind_staff = Quaternion(Vector((1,0,0)), math.pi/2)
 for v in staff.data.vertices:
     v.co = bind_staff @ (q @ (v.co-oldgrip)) * .90 + grip
 g = staff.vertex_groups.new(name='mixamorig:RightHand')
@@ -192,8 +198,31 @@ FOOT = {s:rest(s+'Foot') for s in ('Left','Right')}
 SH = {s:rest(s+'Arm') for s in ('Left','Right')}
 # Destinos de combate; o bind continua em T.
 HAND = {'Right':Vector((-.19,-.12,.49)), 'Left':Vector((.23,-.07,.47))}
-H0 = Quaternion(Vector((1,1,1)).normalized(), math.tau/3) @ bones['RightHand'].bone.matrix_local.to_quaternion()
+# Palma vertical com polegar para cima, em todos os clipes que usam staff_q.
+H0 = Quaternion(Vector((0,1,0)), math.pi) @ Quaternion(Vector((1,1,1)).normalized(), math.tau/3) @ bones['RightHand'].bone.matrix_local.to_quaternion()
 exec(compile(functions,'mage_hero_motion_reuse','exec'),globals())
+base_arm=arm
+
+def arm(side,target,pole,hand_q=None):
+    base_arm(side,target,pole,hand_q)
+    if side!='Right' or hand_q is None:
+        return
+    # Pronação acompanha a palma no antebraço; evita torcer só a junção do punho.
+    fore=bones['RightForeArm']
+    hand=bones['RightHand']
+    hand_matrix=hand.matrix.copy()
+    axis=(fore.tail-fore.head).normalized()
+    current=fore.matrix.to_quaternion() @ Vector((0,0,1))
+    desired=hand_q @ Vector((0,0,1))
+    current=(current-axis*current.dot(axis)).normalized()
+    desired=(desired-axis*desired.dot(axis)).normalized()
+    angle=math.atan2(axis.dot(current.cross(desired)),current.dot(desired))
+    fore.matrix=Matrix.LocRotScale(fore.head.copy(),Quaternion(axis,angle) @ fore.matrix.to_quaternion(),Vector((1,1,1)))
+    bpy.context.view_layer.update()
+    hand.matrix=hand_matrix
+    bpy.context.view_layer.update()
+    pose_grip(rig)
+
 old_pose = pose
 def pose(name,t):
     p=old_pose(name,t)
@@ -210,19 +239,56 @@ def pose(name,t):
     return p
 old_apply = apply
 human_gait=MageGait(rig,mesh,staff,rot_world,arm,leg,staff_q,STRIDE,STRAFE_STRIDE)
+def apply_idle(t):
+    """Repouso assimétrico: apoio fixo, braço solto e respiração de quatro segundos."""
+    phase=t*math.tau
+    breath=math.sin(phase)
+    lag=math.sin(phase-.4)
+    for b in rig.pose.bones:
+        b.rotation_quaternion=(1,0,0,0)
+        b.location=(0,0,0)
+    rot_world('Hips',(.008,-.025+.006*lag,-.035))
+    rot_world('Spine',(.022,.014,-.012+.008*breath))
+    rot_world('Spine1',(.018+.009*breath,.010,.022))
+    rot_world('Spine2',(.014+.010*breath,.006,.025+.006*lag))
+    rot_world('Neck',(-.018,0,-.012))
+    rot_world('Head',(-.023-.009*lag,-.014,-.020-.008*lag))
+    rot_world('LeftShoulder',(.006*lag,-.018,.010))
+    rot_world('RightShoulder',(-.006*lag,.012,-.010))
+    bpy.context.view_layer.update()
+    hips=bones['Hips']
+    matrix=hips.matrix.copy()
+    matrix.translation+=Vector((-.012+.003*lag,.002*lag,-.035+.0025*breath))
+    hips.matrix=matrix
+    bpy.context.view_layer.update()
+    for side in ('Left','Right'):
+        target=FOOT[side]+Vector((.01 if side=='Left' else -.01,-.02 if side=='Left' else .03,0))
+        leg(side,target,target+Vector((0,-.25,.3)))
+    # Cotovelo livre aponta para baixo, em vez de abrir como o de conjuração.
+    left=Vector((.182+.002*lag,-.016+.003*lag,.430+.003*breath))
+    right=Vector((-.205,-.110+.002*lag,.515+.002*breath))
+    arm('Left',left,bones['LeftArm'].head+Vector((.025,.085,-.22)))
+    arm('Right',right,right+Vector((-.16,.12,-.07)),staff_q(.12+.008*lag,-.025))
+    rot_world('LeftHandFingers',(0,.16,0))
+    rot_world('LeftRobe',(.005*math.sin(phase-.65),.003*lag,0))
+    rot_world('RightRobe',(.004*math.sin(phase-.8),-.003*lag,0))
+
 def apply(name,t):
     if name in ('walk','strafe_left','strafe_right'):
         human_gait.apply(name,t)
         return
-    old_apply(name,t)
+    if name=='idle':
+        apply_idle(t)
+    else:
+        old_apply(name,t)
     # Pés imóveis durante conjurações; transferência no quadril, sem passos deslizando.
     if name in ('cast','cast_up'):
         for side in ('Left','Right'):
             target=FOOT[side]+Vector((.01 if side=='Left' else -.01,-.02 if side=='Left' else .03,0))
             leg(side,target,target+Vector((0,-.25,.3)))
     energy = math.sin(t*math.tau)
-    rot_world('HeadBeard',(.025*math.sin(t*math.tau-.4),0,0))
-    rot_world('HeadHatTip',(.025*math.sin(t*math.tau-.7),0,.018*energy))
+    rot_world('HeadBeard',((.010 if name=='idle' else .025)*math.sin(t*math.tau-.4),0,0))
+    rot_world('HeadHatTip',((.012 if name=='idle' else .025)*math.sin(t*math.tau-.7),0,(.008 if name=='idle' else .018)*energy))
     # Fecha a mão direita em torno da haste; polegar permanece na palma.
     rot_world('RightHandFingers',(0,-1.45,0))
     if name=='death':
@@ -267,7 +333,7 @@ for name,end in CLIPS:
     actions[name]=a
     rig.animation_data.action=None
 rig.animation_data.action=actions['idle']
-scene.frame_start,scene.frame_end=1,61
+scene.frame_start,scene.frame_end=1,dict(CLIPS)['idle']
 scene.frame_set(1)
 for im in bpy.data.images:
     if im.source=='FILE' and im.has_data:

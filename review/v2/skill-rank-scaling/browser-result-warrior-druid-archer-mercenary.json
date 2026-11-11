@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "checks": [
+    "warrior: árvore completa",
+    "Corte Espacial no ataque básico",
+    "Estocada, Impacto, Cadência e Rastro",
+    "Ciclone e Furacão cumulativos, tornados menores",
+    "druid: árvore completa",
+    "Alcateia de quatro lobos e Mordida Pesada automática",
+    "Planta Carnívora: GLB animado próprio, ataque, chão claro/escuro e quatro lobos",
+    "archer: árvore completa",
+    "Flecha de Fogo aplica queimadura",
+    "Flecha Explosiva",
+    "Penas periódicas fora da barra e flechas equipáveis",
+    "mercenary: árvore completa",
+    "Mina revisada e Estilhaços"
+  ],
+  "errors": [],
+  "remote": []
+}

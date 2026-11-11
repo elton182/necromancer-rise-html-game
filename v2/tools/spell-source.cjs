@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 function readSpellRules(repo=path.resolve(__dirname,'../..')){
- const html=fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8');
+ const html=fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8');
  const part=(start,end)=>{const a=html.indexOf('function '+start+'('),b=html.indexOf('function '+end+'(',a+1);if(a<0||b<0)throw Error('Fonte de magia mudou: '+start);return html.slice(a,b);};
  const val=(s,re,key)=>{const m=s.match(re);if(!m)throw Error('Revisar regra de magia: '+key);return Number(m[1]);};
  const rain=part('castChuva','castExplosao'),nova=part('castExplosao','castSpell'),wall=part('castHands','handsSpeed'),shield=part('castBarrier','minionStrike'),curse=tree.slice(tree.indexOf('function skillCastCurse('),tree.indexOf('function skillWallAbsorb('));

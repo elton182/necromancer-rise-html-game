@@ -10,12 +10,12 @@ from pathlib import Path
 from PIL import Image, ImageFilter, ImageChops, ImageDraw
 import json, re, base64, sys, io, shutil
 HERE = Path(__file__).resolve().parent; BLENDER = HERE.parent; ROOT = BLENDER.parent
-HTML = ROOT / 'necromancer-canvas.html'; BACKUP = BLENDER / 'backups' / 'necromancer-canvas.before-lowpoly-lote1.html'
+HTML = ROOT / 'v1/necromancer-canvas.html'; BACKUP = BLENDER / 'backups' / 'necromancer-canvas.before-lowpoly-lote1.html'
 KEYS = {'zombie': 'zombie', 'earcher': 'earcher', 'bram': 'smith'}
 DRAW_SCALE = {'zombie': 1.05, 'earcher': 1.05 * .85 * 1.3, 'bram': 1.05 * 1.05}
 # drawSprite reads attack/walk rows for any actor; Bram never walks or fights, so they alias his own clips.
 ALIASES = {'bram': {'attack': 'talk', 'walk': 'idle'}}
-# Real engine timings (necromancer-canvas.html / scripts). Damage is applied when `swing` starts.
+# Real engine timings (v1/necromancer-canvas.html / scripts). Damage is applied when `swing` starts.
 COMBAT = {
  'zombie': [
   {'animation': 'attack_primary', 'row': 'attack', 'duration': .5, 'impact_time': 0, 'recovery_time': .5, 'damage_event': 'primary_hit',

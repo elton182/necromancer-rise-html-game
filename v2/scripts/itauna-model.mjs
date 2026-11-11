@@ -19,6 +19,8 @@ export const FORT_POINTS={keep:{x:0,y:-30,name:'Torre de menagem'},gate:{x:0,y:6
 export const CAVE_POINTS={exit:{x:66,y:75,name:'Saída da gruta'},queen:{x:-40,y:-58,name:'Câmara da Mãe-Tecelã'},den:{x:8,y:52,name:'Covil dos lobos'},lake:{x:-2,y:-40,name:'Lago subterrâneo'},nursery:{x:62,y:-36,name:'Berçário'}};
 // `exits`: pisar no anel leva a `to` (null é o mundo de Jacarandá) e chega em `entry`. As chegadas ficam fora dos anéis, para ninguém voltar sem querer.
 export const AREAS={
+ itavera:{slot:'itavera',ref:'builtin:itavera',name:'Itavera · praça das guildas',music:'village',
+  entries:{caravan:{x:0,y:24}},exits:[{id:'itavera-home',x:0,y:30,r:2.5,to:null,entry:'village',name:'Caravana para Jacarandá'}]},
  itauna:{slot:'itauna',ref:'builtin:itauna',name:'Várzea de Itaúna',music:'forest',
   entries:{west:{x:-168,y:22},fort:{x:105,y:-68},cave:{x:152,y:96}},
   exits:[{id:'itauna-road',...ITAUNA_POINTS.entrance,r:3.4,to:null,entry:'itauna',name:'Estrada de Jacarandá'},{id:'itauna-fort',...ITAUNA_POINTS.fortGate,r:3.4,to:'itauna-fort',entry:'gate',name:'Forte da Pedra Negra'},{id:'itauna-cave',...ITAUNA_POINTS.caveMouth,r:2.8,to:'itauna-cave',entry:'mouth',name:'Gruta das Tecelãs'}]},
@@ -51,29 +53,36 @@ export function areaRegion(id,p){
 }
 // Objetivos da área em que o jogador está: os alvos usam as coordenadas do próprio mapa.
 export function areaObjectives(id,progress){
+ if(id==='itavera'){
+  if(progress?.nilo==='itavera')return [{title:'A denúncia chega a Itavera',text:'Fale com Helena, do Conselho das Guildas, e entregue a carta e as provas da Pedra Negra.',target:NILO_POINTS.helena}];
+  if(progress?.nilo==='invitation')return [{title:'Uma conversa com João',text:'Helena recebeu a denúncia. João tem uma proposta: procure o ! sobre ele.',target:NILO_POINTS.cityJoao}];
+  return [{title:'Ato I · Além das Muralhas concluído',text:'A escolta foi cumprida e o convite está aceito. A viagem do Ato II ainda não está disponível; volte a Jacarandá ou explore a praça.',target:AREAS.itavera.exits[0]}];
+ }
  const nilo=niloAreaObjective(id,progress),base=placeObjectives(id,progress);
  return nilo?[nilo,...base]:base;
 }
 // O rastro de João na área: vem antes dos objetivos de exploração e guia a bússola.
 function niloAreaObjective(id,progress){
  const stage=progress?.nilo,done=g=>progress?.cleared?.includes(g);
+ if(stage==='rescued')return {title:'Volte a Jacarandá',text:'João voltou à praça. Converse com ele, marcado com !, para conhecer o próximo pedido.',target:id==='itauna'?ITAUNA_POINTS.entrance:id==='itauna-cave'?CAVE_POINTS.exit:FORT_POINTS.gate};
  if(!['road','cave','fort','return'].includes(stage))return null;
  if(id==='itauna'){
-  if(stage==='road')return {title:'O rastro de João',text:'Atravesse a ponte e tome o acampamento dos saqueadores, a nordeste. Derrote o bando do centro e examine o livro de contas (G).',target:NILO_POINTS.ledger};
-  if(stage==='cave')return {title:'O rastro de João',text:'João foi levado à Gruta das Tecelãs. Cruze o vau ou siga a estrada leste até a boca da gruta, a sudeste.',target:ITAUNA_POINTS.caveMouth};
-  if(stage==='fort')return {title:'O contrato da Pedra Negra',text:'Suba a encosta até o portão do Forte da Pedra Negra, a nordeste. O contrato está com o capitão.',target:ITAUNA_POINTS.fortGate};
-  return {title:'O contrato da Pedra Negra',text:'Você tem o contrato. Volte a Jacarandá pela estrada oeste e leve-o a João.',target:ITAUNA_POINTS.entrance};
+  if(stage==='road')return {questId:'joao-rescue',title:'O rastro de João',text:'Atravesse a ponte e tome o acampamento dos saqueadores, a nordeste. Derrote o bando do centro e examine o livro de contas (G).',target:NILO_POINTS.ledger};
+  if(stage==='cave')return {questId:'joao-rescue',title:'O rastro de João',text:'João escapou dos captores e entrou na Gruta das Tecelãs. Cruze o vau ou siga a estrada leste até a boca da gruta.',target:ITAUNA_POINTS.caveMouth};
+  if(stage==='fort')return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:'Suba ao forte. Recupere a bolsa no depósito do pátio interno e as provas na mesa do capitão.',target:ITAUNA_POINTS.fortGate};
+  return {title:'A denúncia recuperada',text:'Você tem a bolsa e as provas. Volte a Jacarandá pela estrada oeste e entregue tudo a João.',target:ITAUNA_POINTS.entrance};
  }
  if(id==='itauna-cave'){
-  if(stage==='road'||stage==='cave')return done('cave-queen')?{title:'João nas teias',text:'A Mãe-Tecelã caiu. Corte o casulo no fundo da câmara e liberte João (G).',target:NILO_POINTS.cocoon}:{title:'João nas teias',text:'Um prisioneiro foi deixado na câmara da Mãe-Tecelã, a noroeste. Derrote-a para cortar o casulo.',target:NILO_POINTS.cocoon};
-  return {title:'O contrato da Pedra Negra',text:stage==='fort'?'João está livre. Saia da gruta e siga ao Forte da Pedra Negra.':'Volte a Jacarandá e leve o contrato a João.',target:CAVE_POINTS.exit};
+  if(stage==='road'||stage==='cave')return done('cave-queen')?{questId:'joao-rescue',title:'João nas teias',text:'A Mãe-Tecelã caiu. Corte o casulo no fundo da câmara e liberte João (G).',target:NILO_POINTS.cocoon}:{questId:'joao-rescue',title:'João nas teias',text:'João fugiu para as galerias e foi apanhado pelas aranhas. Derrote a Mãe-Tecelã, a noroeste, para libertá-lo.',target:NILO_POINTS.cocoon};
+  return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:stage==='fort'?'João está livre. Saia da gruta e siga ao forte para recuperar a bolsa e as provas.':'Volte a Jacarandá e leve a bolsa e as provas a João.',target:CAVE_POINTS.exit};
  }
  if(id==='itauna-fort'){
   if(stage==='fort'){
-   if(!gateOpen(FORT_GATE,progress?.cleared))return {title:'O contrato da Pedra Negra',text:'O contrato está na mesa do capitão, diante da torre. Tome o pátio externo para a grade interna subir.',target:FORT_POINTS.inner};
-   return done('fort-captain')?{title:'O contrato da Pedra Negra',text:'O capitão caiu. Examine a mesa diante da torre de menagem (G).',target:NILO_POINTS.contract}:{title:'O contrato da Pedra Negra',text:'Derrote o Capitão da Pedra Negra; o contrato está na mesa atrás dele.',target:NILO_POINTS.contract};
+   if(!gateOpen(FORT_GATE,progress?.cleared))return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:'Tome o pátio externo para abrir a grade. A carga e as provas estão no pátio interno.',target:FORT_POINTS.inner};
+   if(!done('fort-captain'))return {questId:'joao-letter',title:'Detenha a operação da Pedra Negra',text:'Derrote o capitão para impedir a nova incursão a Jacarandá e recuperar a carga.',target:FORT_POINTS.keep};
+   return !progress.niloLetter?{questId:'joao-letter',title:'A bolsa de João',text:'Recupere a bolsa com a carta no depósito a leste do pátio interno (G).',target:NILO_POINTS.bag}:{questId:'joao-letter',title:'As provas da perseguição',text:'A carta está segura. Examine a mesa diante da torre para guardar o contrato e as ordens (G).',target:NILO_POINTS.contract};
   }
-  return {title:'O rastro de João',text:stage==='return'?'Volte a Jacarandá e leve o contrato a João.':stage==='cave'?'João não está no forte: o livro diz que foi levado à Gruta das Tecelãs, a sudeste da várzea.':'João não está no forte. O livro dos saqueadores, no acampamento, pode dizer para onde o levaram.',target:FORT_POINTS.gate};
+  return {questId:'joao-rescue',title:'O rastro de João',text:stage==='return'?'Volte a Jacarandá e leve a bolsa e as provas a João.':stage==='cave'?'João fugiu para a Gruta das Tecelãs.':'O livro dos saqueadores, no acampamento, pode dizer para onde João foi.',target:FORT_POINTS.gate};
  }
  return null;
 }

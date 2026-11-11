@@ -55,7 +55,8 @@ function cracksTexture(){
  for(let i=0;i<9;i++)branch(rnd()*20-10,rnd()*20-10,i/9*TAU+rnd()*.5,S/2*(.5+rnd()*.35),6,2);
  return texture(c);
 }
-function makeTextures(){return {scorch:scorchTexture(),cracks:cracksTexture(),
+function leafTexture(){const c=makeCanvas(64),g=c.getContext('2d');g.fillStyle='#fff';g.strokeStyle='#26371b';g.lineWidth=3;g.beginPath();g.moveTo(8,56);g.quadraticCurveTo(0,8,56,8);g.quadraticCurveTo(64,56,8,56);g.fill();g.stroke();g.beginPath();g.moveTo(8,56);g.lineTo(50,14);g.stroke();return texture(c);}
+function makeTextures(){return {leaf:leafTexture(),scorch:scorchTexture(),cracks:cracksTexture(),
  runeA:runeRing(11,{glyphs:14,star:5}),runeB:runeRing(23,{glyphs:9,star:6,inner:.46,ticks:24,band:[.64,.86]}),runeD:runeRing(37,{glyphs:18,star:0,ticks:60}),
  column:columnTexture(),
  shock:radial([[0,0],[.5,0],[.8,.25],[.93,.85],[.97,1],[.99,.8],[1,0]]),disc:radial([[0,.1],[.7,.28],[.93,.42],[1,0]]),heat:radial([[0,.3],[.5,.4],[.9,.65],[1,0]]),
@@ -376,6 +377,46 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
     if(!a.landed){a.landed=true;for(let k=0,n=Math.round(4*density);k<n;k++)particles.emit({x:a.x,h:.2,z:a.z,vx:rand(-1,1),vh:rand(.8,2),vz:rand(-1,1),life:rand(.25,.45),s0:.2,s1:.04,c0:[.8,.72,.5],c1:[.5,.45,.35],drag:3,a0:.7});}}
   }
  };
+ // Barreira mágica ligada à posição do Mago; a divisão de dano fica em combat.mjs.
+ INIT.arcaneShield=(o,e)=>{
+  const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,12),new THREE.MeshBasicMaterial({color:e.color,transparent:true,opacity:.13,depthWrite:false,side:THREE.DoubleSide}));
+  m.userData.ownGeometry=true;scene.add(m);o.objs.push(m);o.mesh=m;
+ };
+ RUN.arcaneShield=(o,e)=>{o.mesh.position.set(e.x,1,e.y);o.mesh.scale.set(e.radius,e.radius*1.15,e.radius);o.mesh.material.opacity=.12+.025*Math.sin(time*4);};
+ // Folhas são partículas que acompanham o corpo; menos folhas representam a resistência restante.
+ INIT.leafShield=(o,e)=>{o.leaves=[];for(let i=0;i<18;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.leaf,color:i%4?'#9fce66':'#ae8553',transparent:true,depthWrite:false}));scene.add(m);o.objs.push(m);o.leaves.push(m);}};
+ RUN.leafShield=(o,e)=>{const count=Math.max(3,Math.ceil(18*clamp01(e.strength??1)));for(let i=0;i<o.leaves.length;i++){const m=o.leaves[i],a=time*1.5+i*2.4,r=e.radius*(.75+.15*Math.sin(i*3));m.visible=i<count;m.position.set(e.x+Math.cos(a)*r,.35+(i%5)*.32,e.y+Math.sin(a)*r);m.scale.set(.35,.48,1);m.material.rotation=a;m.material.opacity=.75+.2*(e.strength??1);}};
+ // Funil de faixas de vento: camadas transparentes e partículas, sem geometria de colisão.
+ INIT.stormVortex=(o,e)=>{o.bands=[];for(let i=0;i<6;i++){const m=decal(o,textures.arc,i%2?'#bfe4ff':'#7d9aa4',{opacity:.28});o.bands.push(m);}o.cloud=decal(o,textures.disc,'#263841',{opacity:.5});};
+ RUN.stormVortex=(o,e)=>{for(let i=0;i<o.bands.length;i++){const m=o.bands[i],q=i/(o.bands.length-1),r=e.radius*(.25+.7*q)*(1+.05*Math.sin(time*5+i));m.position.set(e.x+Math.sin(time*2+i)*.12,.15+q*4.8,e.y+Math.cos(time*2+i)*.12);m.scale.setScalar(r);m.rotation.z=time*(i%2?1:-1);m.material.opacity=.22+.1*Math.sin(time*6+i);}o.cloud.position.set(e.x,5,e.y);o.cloud.scale.setScalar(e.radius*1.05);};
+ // Big Bang: concentração, núcleo em voo e expansão arcana; nenhuma destas camadas aplica dano.
+ const arcaneSprite=(o,map,color)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map,color,transparent:true,depthWrite:false,depthTest:true}));m.renderOrder=8;scene.add(m);o.objs.push(m);return m;};
+ INIT.bigBangCharge=(o,e)=>{o.ring=shockRing(o,e);o.core=arcaneSprite(o,textures.glow,'#f4eaff');o.acc=0;};
+ RUN.bigBangCharge=(o,e,step)=>{
+  const t=life(e),r=1.5*(1-t)+.2;o.ring.position.set(e.x,.09,e.y);o.ring.scale.setScalar(r);o.ring.material.opacity=.65;
+  o.core.position.set(e.x+e.dx*.55,1.15,e.y+e.dy*.55);o.core.scale.setScalar(.3+t*1.8);
+  o.acc+=step*65*density;while(o.acc>=1){o.acc--;const a=rand(0,TAU),d=rand(.8,1.5);particles.emit({x:e.x+Math.cos(a)*d,h:1.15,z:e.y+Math.sin(a)*d,vx:-Math.cos(a)*3,vz:-Math.sin(a)*3,life:.24,s0:.15,s1:.03,c0:[.7,.45,1],c1:WHITE,a0:.9});}
+ };
+ INIT.bigBangOrb=(o,e)=>{
+  o.halo=arcaneSprite(o,textures.glow,e.color);o.core=arcaneSprite(o,textures.disc,'#261044');o.hot=arcaneSprite(o,textures.glow,'#f5eaff');o.acc=0;
+ };
+ RUN.bigBangOrb=(o,e,step)=>{
+  const beat=1+.06*Math.sin(time*18);
+  for(const [m,s]of [[o.halo,3.4],[o.core,.9],[o.hot,.65]]){m.position.set(e.x,1.15,e.y);m.scale.setScalar(s*beat);}
+  o.acc+=step*90*density;while(o.acc>=1){o.acc--;const a=rand(0,TAU),r=rand(.35,.65);particles.emit({x:e.x+Math.cos(a)*r,h:1.15+Math.sin(a)*.4,z:e.y+Math.sin(a)*r,vx:-e.dx*rand(1,3),vz:-e.dy*rand(1,3),life:rand(.25,.5),s0:.18,s1:.02,c0:[.85,.65,1],c1:[.3,.1,.65],a0:.9});}
+ };
+ INIT.bigBangBlast=(o,e)=>{
+  o.ring=shockRing(o,e);o.shadow=decal(o,textures.heat,'#29133f',{y:.075});o.light=decal(o,textures.glow,'#c89bff',{y:.08});
+  o.core=arcaneSprite(o,textures.glow,'#f6edff');shake=Math.max(shake,.42);
+  // Explosão radial limitada ao raio de dano; a quantidade de faíscas cai na qualidade baixa.
+  for(let i=0,n=Math.round(72*density);i<n;i++){const a=i/n*TAU,d=rand(.1,.5),v=rand(3,6);particles.emit({x:e.x+Math.cos(a)*d,h:.8,z:e.y+Math.sin(a)*d,vx:Math.cos(a)*v,vz:Math.sin(a)*v,vh:rand(.3,2.4),life:rand(.35,.6),s0:rand(.15,.32),s1:.02,c0:WHITE,c1:[.55,.25,1],a0:1,drag:1.8});}
+ };
+ RUN.bigBangBlast=(o,e)=>{
+  const t=life(e),r=e.radius,front=easeOut(clamp01(t*2.5));
+  o.ring.position.set(e.x,.09,e.y);o.ring.scale.setScalar(r*front);o.ring.material.opacity=Math.pow(1-t,1.5);
+  for(const [m,k]of [[o.shadow,.9],[o.light,.85]]){m.position.set(e.x,m.position.y,e.y);m.scale.setScalar(r*front*k);m.material.opacity=(1-t)*(m===o.shadow?.65:.8);}
+  o.core.position.set(e.x,1.15,e.y);o.core.scale.setScalar(r*(.4+front*.85));o.core.material.opacity=Math.pow(1-t,4);
+ };
  // Projétil hostil: orbe luminoso e rastro de faíscas.
  INIT.projectile=(o,e)=>{
   // Tiro do jogador (e.ally): cor da classe e rastro em linha, para não confundir com as flechas hostis.
@@ -398,19 +439,21 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  let meteorGeo=null;
  INIT.meteor=(o,e)=>{
   meteorGeo=meteorGeo||new THREE.SphereGeometry(.42,16,12);
-  o.core=new THREE.Mesh(meteorGeo,new THREE.MeshBasicMaterial({color:new THREE.Color('#ffe2a0'),fog:false}));o.core.renderOrder=12;scene.add(o.core);o.objs.push(o.core);
+  // snow: bola de neve da Avalanche (núcleo branco, rastro de neve sem fumaça); size: quedas menores da Chuva de Fogo.
+  o.size=e.size||1;
+  o.core=new THREE.Mesh(meteorGeo,new THREE.MeshBasicMaterial({color:new THREE.Color(e.snow?'#f6fbff':'#ffe2a0'),fog:false}));o.core.renderOrder=12;scene.add(o.core);o.objs.push(o.core);
   o.glow=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.glow,color:new THREE.Color(e.color||'#ff6a2a'),transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending}));o.glow.renderOrder=13;scene.add(o.glow);o.objs.push(o.glow);
   o.shadow=decal(o,textures.disc,'#1a0904',{y:.055,opacity:0});o.shadow.position.set(e.x,.055,e.y);
   const d=Math.hypot(e.dx||0,e.dy||0)||1;o.sx=e.x-(e.dx||0)/d*4.5;o.sz=e.y-(e.dy||1)/d*4.5;o.last=null;
  };
  RUN.meteor=(o,e,step)=>{
   const u=clamp01(e.time/e.duration),k=Math.pow(u,1.6),x=lerp(o.sx,e.x,k),z=lerp(o.sz,e.y,k),h=lerp(11,.45,k);
-  o.core.position.set(x,h,z);o.core.scale.setScalar(1+.25*u);
-  o.glow.position.set(x,h,z);o.glow.scale.setScalar(3.4*(.92+.08*Math.sin(time*31)));
+  o.core.position.set(x,h,z);o.core.scale.setScalar((1+.25*u)*o.size);
+  o.glow.position.set(x,h,z);o.glow.scale.setScalar(3.4*o.size*(.92+.08*Math.sin(time*31)));
   o.shadow.scale.setScalar((e.radius||2.8)*(.25+.75*u));o.shadow.material.opacity=.5*u;
   if(step>0&&o.last){const n=Math.max(2,Math.round(step*140*density));for(let i=0;i<n;i++){const t=Math.random(),px=lerp(o.last.x,x,t),ph=lerp(o.last.h,h,t),pz=lerp(o.last.z,z,t);
-   particles.emit({x:px+rand(-.15,.15),h:ph+rand(-.15,.15),z:pz+rand(-.15,.15),vx:rand(-.5,.5),vh:rand(.2,1.2),vz:rand(-.5,.5),life:rand(.3,.6),s0:rand(.45,.8),s1:.12,c0:[1,.82,.4],c1:[.85,.18,.04],a0:1,grav:-.6,drag:1.2,shape:1+Math.random()});
-   if(Math.random()<.3)particles.emit({x:px,h:ph,z:pz,vx:rand(-.3,.3),vh:rand(.3,.8),vz:rand(-.3,.3),life:rand(.8,1.3),s0:.6,s1:1.6,c0:[.22,.18,.15],c1:[.32,.29,.27],a0:.3,grav:-.2,drag:.6});}}
+   particles.emit({x:px+rand(-.15,.15),h:ph+rand(-.15,.15),z:pz+rand(-.15,.15),vx:rand(-.5,.5),vh:rand(.2,1.2),vz:rand(-.5,.5),life:rand(.3,.6),s0:rand(.45,.8)*o.size,s1:.12,c0:e.snow?[1,1,1]:[1,.82,.4],c1:e.snow?[.62,.82,1]:[.85,.18,.04],a0:1,grav:e.snow?.8:-.6,drag:1.2,shape:1+Math.random()});
+   if(!e.snow&&Math.random()<.3)particles.emit({x:px,h:ph,z:pz,vx:rand(-.3,.3),vh:rand(.3,.8),vz:rand(-.3,.3),life:rand(.8,1.3),s0:.6,s1:1.6,c0:[.22,.18,.15],c1:[.32,.29,.27],a0:.3,grav:-.2,drag:.6});}}
   o.last={x,h,z};
  };
 
@@ -502,7 +545,10 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
    if(w.time<lastTime-.5)clear();lastTime=w.time;
    time+=step;particles.uniforms(pixelsPerUnit(),time);
    const seen=new Set();
-   for(const e of w.effects){
+   const action=w.marksmanAction;
+   const charge=action?.id==='bigBang'&&!action.released&&w.player.hp>0&&!w.player.dead&&!w.dash?.remaining;
+   const visible=charge?[...w.effects,{id:'big-bang-charge',fx:'bigBangCharge',x:w.player.x,y:w.player.y,dx:action.dx,dy:action.dy,color:'#bd91ff',progress:clamp01(action.time/.5)}]:w.effects;
+   for(const e of visible){
     if(!e.fx||!INIT[e.fx])continue;const key=e.fx+':'+e.id;seen.add(key);
     let o=entries.get(key);if(!o){o={objs:[]};entries.set(key,o);INIT[e.fx](o,e);}
     RUN[e.fx]?.(o,e,step);

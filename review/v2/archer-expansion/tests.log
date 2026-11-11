@@ -1,0 +1,405 @@
+TAP version 13
+# Subtest: Marca: todo dano ganha 20% uma vez, troca de presa, expiração e limpeza
+ok 1 - Marca: todo dano ganha 20% uma vez, troca de presa, expiração e limpeza
+  ---
+  duration_ms: 8.9402
+  ...
+# Subtest: Marca: falcão prioriza a presa visível, paredes impedem comando sem gastar
+ok 2 - Marca: falcão prioriza a presa visível, paredes impedem comando sem gastar
+  ---
+  duration_ms: 2.2861
+  ...
+# Subtest: Disparo Preciso: preparação, alcance longo, colisão e cancelamento
+ok 3 - Disparo Preciso: preparação, alcance longo, colisão e cancelamento
+  ---
+  duration_ms: 10.7448
+  ...
+# Subtest: Saraivada Múltipla: 25 flechas, cinco em cada presa, sem concentrar num chefe
+ok 4 - Saraivada Múltipla: 25 flechas, cinco em cada presa, sem concentrar num chefe
+  ---
+  duration_ms: 31.5794
+  ...
+# Subtest: Saraivada Múltipla: alvos mortos não concentram sequências nos já escolhidos
+ok 5 - Saraivada Múltipla: alvos mortos não concentram sequências nos já escolhidos
+  ---
+  duration_ms: 7.3235
+  ...
+# Subtest: Rasantes: seis impactos, prioridade da marca, ocupação e passos de tempo grandes
+ok 6 - Rasantes: seis impactos, prioridade da marca, ocupação e passos de tempo grandes
+  ---
+  duration_ms: 6.3482
+  ...
+# Subtest: Rasantes distribuem impactos e morte remove a sequência
+ok 7 - Rasantes distribuem impactos e morte remove a sequência
+  ---
+  duration_ms: 3.3439
+  ...
+# Subtest: Rasantes não acertam presas além de paredes; morte encerra Marca imediatamente
+ok 8 - Rasantes não acertam presas além de paredes; morte encerra Marca imediatamente
+  ---
+  duration_ms: 3.4673
+  ...
+# Subtest: Chuva cresce por ponto; variante deixa um único campo e compartilha recarga
+ok 9 - Chuva cresce por ponto; variante deixa um único campo e compartilha recarga
+  ---
+  duration_ms: 10.875
+  ...
+# Subtest: Emboscada em Dupla chama só um Impacto; Impacto Feroz libera 18 penas
+ok 10 - Emboscada em Dupla chama só um Impacto; Impacto Feroz libera 18 penas
+  ---
+  duration_ms: 14.1795
+  ...
+# Subtest: novos nós são normalizados e preservados com seus pré-requisitos
+ok 11 - novos nós são normalizados e preservados com seus pré-requisitos
+  ---
+  duration_ms: 0.4237
+  ...
+# Subtest: regras geradas correspondem às fontes atuais; atributos usam modelo compartilhado
+ok 12 - regras geradas correspondem às fontes atuais; atributos usam modelo compartilhado
+  ---
+  duration_ms: 115.9639
+  ...
+# Subtest: tiro custa mana e recarga uma vez; pausa, morte, mira inválida e mana insuficiente não cobram
+ok 13 - tiro custa mana e recarga uma vez; pausa, morte, mira inválida e mana insuficiente não cobram
+  ---
+  duration_ms: 2.8655
+  ...
+# Subtest: colisão contínua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+ok 14 - colisão contínua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+  ---
+  duration_ms: 1.4607
+  ...
+# Subtest: trajetória máxima não ultrapassa nove unidades; sólidos não bloqueiam tiro, como na fonte atual
+ok 15 - trajetória máxima não ultrapassa nove unidades; sólidos não bloqueiam tiro, como na fonte atual
+  ---
+  duration_ms: 1.0126
+  ...
+# Subtest: perfuração e estilhaços compartilham acertos e não multiplicam dano num mesmo alvo
+ok 16 - perfuração e estilhaços compartilham acertos e não multiplicam dano num mesmo alvo
+  ---
+  duration_ms: 1.0286
+  ...
+# Subtest: regeneração e cooldown respeitam tempo, sem avançar na pausa
+ok 17 - regeneração e cooldown respeitam tempo, sem avançar na pausa
+  ---
+  duration_ms: 4.2411
+  ...
+# Subtest: Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+ok 18 - Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+  ---
+  duration_ms: 1.8752
+  ...
+# Subtest: Dash para no primeiro sólido e não desliza ou atravessa paredes e limites
+ok 19 - Dash para no primeiro sólido e não desliza ou atravessa paredes e limites
+  ---
+  duration_ms: 2.5652
+  ...
+# Subtest: proteção do Dash termina ao acabar o deslocamento e não consome barreira
+ok 20 - proteção do Dash termina ao acabar o deslocamento e não consome barreira
+  ---
+  duration_ms: 1.0268
+  ...
+# Subtest: defesa compartilhada, barreira, bloqueio ósseo e morte seguem um único caminho
+ok 21 - defesa compartilhada, barreira, bloqueio ósseo e morte seguem um único caminho
+  ---
+  duration_ms: 0.9221
+  ...
+# Subtest: dano da linha de frente arredonda uma vez; inimigos usam piso e mortes têm crédito único
+ok 22 - dano da linha de frente arredonda uma vez; inimigos usam piso e mortes têm crédito único
+  ---
+  duration_ms: 0.4937
+  ...
+# Subtest: pisos de recarga são aplicados antes de maestria, e Véu não empilha defesa permanentemente
+ok 23 - pisos de recarga são aplicados antes de maestria, e Véu não empilha defesa permanentemente
+  ---
+  duration_ms: 0.5151
+  ...
+# Subtest: morte e transição removem projéteis, recargas e proteções sem persistir combate
+ok 24 - morte e transição removem projéteis, recargas e proteções sem persistir combate
+  ---
+  duration_ms: 7.0221
+  ...
+# Subtest: área hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+ok 25 - área hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+  ---
+  duration_ms: 4.8096
+  ...
+# Subtest: custo do Tiro de Osso sobe de 5 MP no nível 1 até o custo das regras no nível máximo
+ok 26 - custo do Tiro de Osso sobe de 5 MP no nível 1 até o custo das regras no nível máximo
+  ---
+  duration_ms: 0.2699
+  ...
+# Subtest: corpo de inimigo some após o tempo de decomposição; aliados e jogador permanecem
+ok 27 - corpo de inimigo some após o tempo de decomposição; aliados e jogador permanecem
+  ---
+  duration_ms: 3.9336
+  ...
+# Subtest: árvore: as oito ações novas exigem o selo e estão no fim da tabela
+ok 28 - árvore: as oito ações novas exigem o selo e estão no fim da tabela
+  ---
+  duration_ms: 18.8312
+  ...
+# Subtest: Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+ok 29 - Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+  ---
+  duration_ms: 19.9122
+  ...
+# Subtest: Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+ok 30 - Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+  ---
+  duration_ms: 12.8845
+  ...
+# Subtest: Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+ok 31 - Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+  ---
+  duration_ms: 1.7833
+  ...
+# Subtest: Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+ok 32 - Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+  ---
+  duration_ms: 4.9843
+  ...
+# Subtest: Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+ok 33 - Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+  ---
+  duration_ms: 4.3921
+  ...
+# Subtest: Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+ok 34 - Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+  ---
+  duration_ms: 9.2899
+  ...
+# Subtest: Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+ok 35 - Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+  ---
+  duration_ms: 7.8246
+  ...
+# Subtest: tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+ok 36 - tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+  ---
+  duration_ms: 2.2952
+  ...
+# Subtest: ações novas entram no fim da lista e cada uma depende do seu selo
+ok 37 - ações novas entram no fim da lista e cada uma depende do seu selo
+  ---
+  duration_ms: 8.7019
+  ...
+# Subtest: Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+ok 38 - Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+  ---
+  duration_ms: 12.0016
+  ...
+# Subtest: Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+ok 39 - Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+  ---
+  duration_ms: 10.0907
+  ...
+# Subtest: Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+ok 40 - Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+  ---
+  duration_ms: 3.6322
+  ...
+# Subtest: Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+ok 41 - Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+  ---
+  duration_ms: 4.1784
+  ...
+# Subtest: Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+ok 42 - Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+  ---
+  duration_ms: 3.3804
+  ...
+# Subtest: Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+ok 43 - Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+  ---
+  duration_ms: 4.8787
+  ...
+# Subtest: árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+ok 44 - árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+  ---
+  duration_ms: 8.0541
+  ...
+# Subtest: passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+ok 45 - passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+  ---
+  duration_ms: 3.3734
+  ...
+# Subtest: ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+ok 46 - ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+  ---
+  duration_ms: 0.9241
+  ...
+# Subtest: Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+ok 47 - Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+  ---
+  duration_ms: 5.8688
+  ...
+# Subtest: Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+ok 48 - Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+  ---
+  duration_ms: 4.6062
+  ...
+# Subtest: Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+ok 49 - Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+  ---
+  duration_ms: 4.9911
+  ...
+# Subtest: Leque: cinco flechas em cone acertam alvos espalhados à frente
+ok 50 - Leque: cinco flechas em cone acertam alvos espalhados à frente
+  ---
+  duration_ms: 1.9655
+  ...
+# Subtest: Rajada: três virotes em sequência, cada um atravessa um inimigo
+ok 51 - Rajada: três virotes em sequência, cada um atravessa um inimigo
+  ---
+  duration_ms: 1.836
+  ...
+# Subtest: Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+ok 52 - Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+  ---
+  duration_ms: 1.6838
+  ...
+# Subtest: Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+ok 53 - Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+  ---
+  duration_ms: 2.1742
+  ...
+# Subtest: Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+ok 54 - Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+  ---
+  duration_ms: 1.8556
+  ...
+# Subtest: esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+ok 55 - esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+  ---
+  duration_ms: 1.8236
+  ...
+# Subtest: Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+ok 56 - Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+  ---
+  duration_ms: 1.9521
+  ...
+# Subtest: Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+ok 57 - Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+  ---
+  duration_ms: 1.9512
+  ...
+# Subtest: Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+ok 58 - Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+  ---
+  duration_ms: 3.7129
+  ...
+# Subtest: atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+ok 59 - atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+  ---
+  duration_ms: 5.8057
+  ...
+# Subtest: tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+ok 60 - tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+  ---
+  duration_ms: 2.1369
+  ...
+# Subtest: barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+ok 61 - barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+  ---
+  duration_ms: 2.3371
+  ...
+# Subtest: atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+ok 62 - atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+  ---
+  duration_ms: 13.0538
+  ...
+# Subtest: saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+ok 63 - saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+  ---
+  duration_ms: 2.7294
+  ...
+# Subtest: Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+ok 64 - Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+  ---
+  duration_ms: 6.0216
+  ...
+# Subtest: Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+ok 65 - Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+  ---
+  duration_ms: 2.2295
+  ...
+# Subtest: sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+ok 66 - sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+  ---
+  duration_ms: 0.434
+  ...
+# Subtest: variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+ok 67 - variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+  ---
+  duration_ms: 0.3159
+  ...
+# Subtest: cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+ok 68 - cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+  ---
+  duration_ms: 1.6389
+  ...
+# Subtest: Meteoro aplica sinergia ao impacto e ao chão em chamas
+ok 69 - Meteoro aplica sinergia ao impacto e ao chão em chamas
+  ---
+  duration_ms: 14.1218
+  ...
+# Subtest: Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+ok 70 - Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+  ---
+  duration_ms: 9.8279
+  ...
+# Subtest: Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+ok 71 - Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+  ---
+  duration_ms: 4.4801
+  ...
+# Subtest: Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+ok 72 - Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+  ---
+  duration_ms: 7.1298
+  ...
+# Subtest: sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+ok 73 - sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+  ---
+  duration_ms: 2.7236
+  ...
+# Subtest: ficha do Mago usa o mesmo dano e sinergia que o combate
+ok 74 - ficha do Mago usa o mesmo dano e sinergia que o combate
+  ---
+  duration_ms: 1.1902
+  ...
+# Subtest: módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+ok 75 - módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+  ---
+  duration_ms: 8.5099
+  ...
+# Subtest: só nós jogáveis entram no jogo; ideias e planos ficam fora
+ok 76 - só nós jogáveis entram no jogo; ideias e planos ficam fora
+  ---
+  duration_ms: 0.4452
+  ...
+# Subtest: cada ação que depende de selo tem o nó correspondente na árvore da classe
+ok 77 - cada ação que depende de selo tem o nó correspondente na árvore da classe
+  ---
+  duration_ms: 0.3424
+  ...
+# Subtest: painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+ok 78 - painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+  ---
+  duration_ms: 1.38
+  ...
+# Subtest: Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+ok 79 - Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+  ---
+  duration_ms: 1.3717
+  ...
+1..79
+# tests 79
+# suites 0
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 516.6766

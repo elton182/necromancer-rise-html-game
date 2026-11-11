@@ -2,7 +2,8 @@
 import * as THREE from 'three';
 export const VILLAGE_LOOK={exposure:1.2,env:.45,sun:3.4,sunColor:0xffd9a6,hemisphere:1.3};
 export const SCENE_LOOK={village:VILLAGE_LOOK,'custom-forest':VILLAGE_LOOK};
-export const sceneLookKey=arena=>arena?.custom&&arena.biome==='forest'?'custom-forest':arena?.theme;
+// Mapas de Expedição em qualquer bioma usam a mesma receita dos mapas de floresta; o estilo do bioma ajusta céu, sol e névoa por cima.
+export const sceneLookKey=arena=>arena?.intactTown?'village':arena?.custom&&(arena.biome==='forest'||arena.expeditionMap)?'custom-forest':arena?.theme;
 export function createSceneEnvironment(renderer){
  const pmrem=new THREE.PMREMGenerator(renderer),sky=new THREE.Scene(),geometry=new THREE.SphereGeometry(10,32,16),colors=[],top=new THREE.Color(0x9fb4d0),horizon=new THREE.Color(0xd9c8a8),below=new THREE.Color(0x3b382e),c=new THREE.Color();
  for(let i=0;i<geometry.attributes.position.count;i++){const y=geometry.attributes.position.getY(i)/10;c.copy(horizon).lerp(y>0?top:below,Math.min(1,Math.abs(y)*(y>0?1:1.6)));colors.push(c.r,c.g,c.b);}

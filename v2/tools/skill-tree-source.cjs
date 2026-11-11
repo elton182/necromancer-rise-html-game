@@ -44,7 +44,7 @@ function readSkillTrees(repo){
    if(!(Number(n.maxRank)>=1))throw Error(FILE+': '+c.id+'/'+n.id+' sem máximo de pontos.');
   }
   const nodes={};
-  for(const n of topological(playable))nodes[n.id]={name:n.name,description:n.description,icon:n.icon||'',effects:Object.fromEntries((n.effects||[]).filter(e=>e.label).map(e=>[e.label,Number(e.value)||0])),type:n.type,tree:n.tree,branch:n.branch,max:Number(n.maxRank),level:Number(n.levelReq)||1,requires:[...n.requires],excludes:n.excludes.filter(e=>ids.has(e))};
+  for(const n of topological(playable))nodes[n.id]={name:n.name,description:n.description,perRank:n.perRank||'',icon:n.icon||'',effects:Object.fromEntries((n.effects||[]).filter(e=>e.label).map(e=>[e.label,Number(e.value)||0])),type:n.type,tree:n.tree,branch:n.branch,max:Number(n.maxRank),level:Number(n.levelReq)||1,requires:[...n.requires],excludes:n.excludes.filter(e=>ids.has(e))};
   const trees=c.trees.map(t=>({id:t.id,name:t.name,branches:t.branches.map(b=>{const list=playable.filter(n=>n.tree===t.id&&n.branch===b.id);return {id:b.id,name:b.name,motto:b.motto||'',color:b.color,nodes:list.length?panelLayout(list):[]};}).filter(b=>b.nodes.length)}));
   out[c.id]={name:c.name,resource:c.resource,trees,nodes};
  }

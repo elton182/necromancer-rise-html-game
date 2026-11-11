@@ -41,7 +41,7 @@ const base=process.env.COMBAT_LAB_URL||'http://127.0.0.1:4173';
       }return true;
     });assert.equal(directions,true);
     // Exercise the actual standalone game: visuals must not change its combat contract.
-    await page.goto(base+'/necromancer-canvas.html');
+    await page.goto(base+'/v1/necromancer-canvas.html');
     await page.waitForFunction(()=>typeof BoneBoltVFX==='object'&&typeof hasSave!=='undefined');
     const combat=await page.evaluate(()=>{
       TITLE.active=false;TITLE.paused=true;COMIC.active=false;CAMP.on=false;CAMP.map=false;STG.on=false;gameState='field';

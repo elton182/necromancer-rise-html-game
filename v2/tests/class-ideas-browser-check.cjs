@@ -61,7 +61,7 @@ async function druid(browser){
 }
 
 async function mage(browser){
- const checks=[],h=await hero(browser,'mage','Aurelio',{bolt:1,setasPerseguidoras:1,frost:1,esferaDeGelo:1,fireball:1,combustion:1,familiarDeFogo:1,golemDeGelo:1},'marksmanRanks',checks),{page,shot}=h;
+ const checks=[],h=await hero(browser,'mage','Aurelio',{bolt:1,setasPerseguidoras:1,frost:1,esferaDeGelo:1,fireball:1,combustion:1,imbuirFogo:1,familiarDeFogo:1,golemDeGelo:1},'marksmanRanks',checks),{page,shot}=h;
  try{
   const cast=async(id,name,until)=>{await stage(page);const before=await damage(page);assert.ok(await page.evaluate(id=>{NecromancerV2.equip(5,id);return NecromancerV2.slot(5);},id),id);await freeze(page,shot,name,until);return before;};
   let before=await cast('setasPerseguidoras','setas',()=>NecromancerV2.world.marksmanShots.length>=4&&NecromancerV2.world.marksmanShots[0].remaining<9);

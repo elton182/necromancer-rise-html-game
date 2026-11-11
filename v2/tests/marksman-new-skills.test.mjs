@@ -21,7 +21,7 @@ const def=(classId,id)=>MARKSMAN_ACTIONS[classId][index(classId,id)];
 function quietFalcon(w){advance(w,1/60);assert.ok(w.falcon,'falcão presente');w.falcon.next=Infinity;}
 
 test('ações novas entram no fim da lista e cada uma depende do seu selo',()=>{
- assert.deepEqual(MARKSMAN_ACTIONS.archer.map(a=>a.id),['arrow','pierce','leap','dodge','rain','fan','saraivadaSeguidora','impactoCeleste','penasVoadoras']);
+ assert.deepEqual(MARKSMAN_ACTIONS.archer.map(a=>a.id),['arrow','pierce','leap','dodge','rain','fan','saraivadaSeguidora','impactoCeleste','penasVoadoras','fechadefogo','flechaExplosiva','disparoPreciso','rasanteRelampago','saraivadaMultipla','chuvaDeFlechasExplosivas']);
  assert.deepEqual(MARKSMAN_ACTIONS.mercenary.map(a=>a.id),['quarrel','volley','bomb','dodge','mine','firebomb','redeDeCaca','armadilhaDeUrso']);
  assert.equal(def('archer','fan').name,'Tiro Seguidor');assert.equal(def('mercenary','firebomb').name,'Molotov');
  const w=field('archer',{shot:1});assert.equal(marksmanAction(w,index('archer','saraivadaSeguidora')),false,'sem o selo');
@@ -53,7 +53,7 @@ test('Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o pe
 
 test('Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão',()=>{
  const w=field('archer',{falcon:1,impactoCeleste:1});quietFalcon(w);w.aim={x:10,y:0};
- const center=target(w,10,0),out=target(w,10,3.6),d=def('archer','impactoCeleste');
+ const center=target(w,10,0),out=target(w,10,5.6),d=def('archer','impactoCeleste');
  assert.ok(marksmanAction(w,index('archer','impactoCeleste')));
  advance(w,1/60,Math.ceil(d.release*60)+1);
  assert.equal(w.falcon.state,'strike');assert.ok(w.effects.some(f=>String(f.id).startsWith('mstrike-')),'anel de aviso');
@@ -68,7 +68,7 @@ test('Impacto Celeste marca a área, o falcão desce e o dano vem depois do atra
 test('Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão',()=>{
  const w=field('archer',{falcon:1,penasVoadoras:1});quietFalcon(w);
  const near=[target(w,3,3),target(w,-4,1),target(w,0,-5)],far=target(w,-13,0),d=def('archer','penasVoadoras');
- assert.ok(marksmanAction(w,index('archer','penasVoadoras')));advance(w,1/60,Math.ceil(d.release*60)+1);
+ assert.equal(marksmanAction(w,index('archer','penasVoadoras')),false);const mp=w.player.mp;advance(w,1/60);assert.equal(w.player.mp,mp);
  assert.equal(w.marksmanShots.length,d.count);
  advance(w,1/60,60);
  const dmg=actionDamage(d,w.player.damage,w.marksmanRanks);

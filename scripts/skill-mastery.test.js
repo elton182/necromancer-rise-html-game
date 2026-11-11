@@ -7,7 +7,7 @@ test('specializations mirror exactly six bar slots and reject duplicates or unkn
  assert.equal(M.specializations([],[]).length,6);
 });
 test('standalone release embeds current mastery sources and persists the progression fields',()=>{
- const fs=require('node:fs'),path=require('node:path'),html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
+ const fs=require('node:fs'),path=require('node:path'),html=fs.readFileSync(path.join(__dirname,'../v1/necromancer-canvas.html'),'utf8').replace(/\r\n/g,'\n');
  for(const file of ['skill-mastery-model.js','skill-mastery.js','skill-mastery.css'])assert.ok(html.includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n').trim()),'Missing embedded source: '+file);
  assert.ok(html.includes('skillMastery:player.skillMastery'));assert.ok(html.includes('skillMastery:d.skillMastery'));
 });

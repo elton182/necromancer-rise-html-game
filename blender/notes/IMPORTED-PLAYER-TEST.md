@@ -3,7 +3,7 @@
 > Caminhos relativos à pasta `blender/`.
 
 Abra `../tools/teste-player.html` para experimentar `exports/necromancer_1.glb` no player.
-A abertura normal de `necromancer-canvas.html` usa o mago com rig e cajado. O teste estático
+A abertura normal de `v1/necromancer-canvas.html` usa o mago com rig e cajado. O teste estático
 é ativado somente por `?playerModel=necromancer_1`; não grava a escolha no save.
 O atlas está embutido no HTML e funciona offline.
 

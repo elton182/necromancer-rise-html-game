@@ -4,9 +4,7 @@ O cenário da v2 nasceu provisório: primitivas do Three.js (caixas, cones, icos
 sem tone mapping. Este guia registra a **fatia vertical** feita na Vila de Eldrin para fixar o padrão profissional,
 o que ela mudou, onde o padrão ainda não chegou e como levá-lo ao editor de mapas.
 
-Estado: **implementado só na Vila de Eldrin** (parte do acabamento E11). Os demais mapas, o campo de treino, as
-Expedições e os mapas do editor continuam com o visual anterior. Nenhuma regra de jogo mudou: colisão, rotas,
-interações, dano e progressão são os mesmos.
+Este guia documenta o acabamento da Vila de Eldrin. Outras áreas evoluíram por fluxos próprios: consulte [Expedições](v2-expedicoes.md), [Conquista](v2-conquista.md), [prólogo](v2-prologo-arandu.md) e [editor de mapas](v2-mapas.md). O registro abaixo não é um inventário global do visual atual. O acabamento descrito aqui preserva as regras de colisão, dano e progressão.
 
 ## O que mudou na vila
 

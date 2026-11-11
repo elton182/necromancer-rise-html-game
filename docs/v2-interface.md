@@ -1,6 +1,6 @@
 # Interface e HUD da v2
 
-Portagem do HUD e do menu "Relicário" do jogo atual (`necromancer-canvas.html`) para a
+HUD e menu "Relicário" da v2, com base compartilhada com a v1 legada (`v1/necromancer-canvas.html`) para a
 v2. Não altera dano, custo, alcance, recarga ou progressão: a interface lê o estado
 existente e usa as mesmas ações de sessão.
 
@@ -8,12 +8,13 @@ existente e usa as mesmas ações de sessão.
 
 | Arquivo (em `v2/`) | Papel |
 | --- | --- |
-| `tools/ui-source.cjs` | Extrai o CSS do Relicário de `necromancer-canvas.html` |
+| `tools/ui-source.cjs` | Extrai o CSS do Relicário de `v1/necromancer-canvas.html` |
 | `scripts/shared-hud.css` | **Gerado** pelo build a partir da fonte acima; não editar |
 | `scripts/ui.css` | Adaptações próprias da v2 (posições, abas, seletor de habilidade, ajuda) |
 | `scripts/hud-ornate.css` | Camada visual do HUD ornamentado (bronze, molduras SVG, orbes em garras, minimapa circular); última folha do build |
 | `tools/ui-layout.html` | Marcação do HUD, do Relicário e dos diálogos; entra no HTML pelo build |
 | `scripts/game-ui.mjs` | Liga HUD e menu ao estado: recursos, slots, minimapa, chefe, abas |
+| `scripts/quest-model.mjs`, `scripts/quest-journal.mjs` | Ofertas, histórico derivado da campanha e diário de missões abertas/concluídas |
 | `scripts/title.mjs` | Tela inicial: botões sobre a arte, cartão do save, opções, créditos, sair |
 | `scripts/grimoire-panel.mjs` | Aba Habilidades: árvores Minions/Profana e Maestrias |
 | `scripts/shared-skills.css` | **Gerado** pelo build a partir de `scripts/skill-trees.css` e `skill-mastery.css`; não editar |
@@ -22,7 +23,7 @@ existente e usa as mesmas ações de sessão.
 | `scripts/character-panel.mjs`, `scripts/character.css` | Aba Personagem: modelo 3D, origem dos atributos, resumo, XP e detalhes |
 | `scripts/talents-panel.mjs`, `scripts/talents.css` | Árvore de talentos do Guerreiro na aba Habilidades |
 | `scripts/character-stats.mjs` | Ícones, rótulos e descrições dos atributos por classe e o índice Poder de Combate (comum às duas abas) |
-| `scripts/shared-title.css`, `shared-equipment.css`, `shared-menu.css`, `shared-portrait.mjs` | **Gerados** pelo build a partir do jogo anterior (`necromancer-canvas.html`, `scripts/equipment.css`, `scripts/menu.css`); não editar |
+| `scripts/shared-title.css`, `shared-equipment.css`, `shared-menu.css`, `shared-portrait.mjs` | **Gerados** pelo build a partir do jogo anterior (`v1/necromancer-canvas.html`, `scripts/equipment.css`, `scripts/menu.css`); não editar |
 | `tests/ui-browser-check.cjs`, `tests/title-browser-check.cjs` | Verificações Edge/Playwright; evidências em `review/v2/ui/` |
 
 Se o bloco do Relicário mudar no HTML canônico, o build falha com mensagem explícita
@@ -34,12 +35,20 @@ para revisar o adaptador.
   habilidade com tecla, recarga, mana insuficiente e vivos/total do grupo, estado da
   horda, local/objetivo, barra do chefe (fases I/II) e minimapa.
 - **Relicário (Esc):** sem barra de título; o topo é o resumo de Zephyr com o botão ✕.
-  Abre em Equipamentos, a primeira aba, seguida de Personagem, Habilidades (Grimório),
+  Abre em Equipamentos, a primeira aba, seguida de Missões, Personagem, Habilidades (Grimório),
   Horda e Sistema (Laboratório, Mapas, Waves e Valdoria aparecem conforme a cena).
   Abrir qualquer aba pausa a simulação; fechar retoma, exceto onde a cena exige pausa
   (menu, morte).
 - **Atalhos:** `I` abre Equipamentos, Grimório pelo botão do HUD, `H` abre/fecha a ajuda.
   Clique em um slot abre o seletor de habilidade (pausa enquanto aberto).
+
+## Missões em Jacarandá
+
+NPCs com **!** dourado acima da cabeça oferecem uma missão; **?** verde indica uma etapa pronta para concluir por conversa. Aproximar-se e pressionar **G** abre o diálogo. A missão só entra no HUD depois de aceitar o pedido; fechar a conversa mantém a oferta. O HUD mostra a etapa atual como **Etapa N de M**, acompanhando o avanço salvo. Antes de aceitar, orienta procurar os NPCs com !.
+
+O inventário oferece o botão **Missões · em aberto e concluídas**, acima dos equipamentos. Ele abre a mesma aba **Missões** do Relicário. O diário separa **Em aberto** e **Concluídas**, mostra o NPC responsável e lista as etapas com a atual destacada. Entradas concluídas começam recolhidas e podem ser abertas. Listas vazias têm uma mensagem própria. Aceitação, etapas e conclusões sobrevivem ao recarregamento pelo estado existente da campanha.
+
+O fluxo começa com Joaquim oferecendo Bruno; depois da forja, ele oferece a madeira. Marta oferece o resgate de João, e João oferece a missão da carta ao retornar à vila. A viagem a Itavera e o convite final também dependem de ações nas conversas. Veja [regras da campanha](v2-campanha.md#quests) e [evidências em desktop e 390 px](../review/v2/quest-journal/validation-notes.md).
 - **Controle:** navegação por foco nos diálogos e confirmação pelo botão principal;
   Start fecha o diálogo ativo.
 - **Controles de configuração e teste** (fundo, qualidade, horda, modo da horda,
@@ -147,7 +156,7 @@ jogo; a visibilidade real desses controles é conferida só no check de UI.
 
 - As abas **Waves** e **Valdoria** do menu anterior pertencem à E10 (Arena e Conquista) e ainda não existem.
 - Opções não inclui volume, música nem calibração de controle (sem áudio na v2 até a E11); “Apagar save” não foi portado.
-- O título extrai a arte e o estilo de `necromancer-canvas.html`; a distribuição cresce ~0,3 MB.
+- O título extrai a arte e o estilo de `v1/necromancer-canvas.html`; a distribuição cresce ~0,3 MB.
 - Não foram portados os tutoriais de primeiros pontos/equipar do Grimório anterior.
 - “Voltar à história” do menu anterior equivale ao botão Voltar ao mapa/vila, já existente.
 - Navegação por controle foi testada com eventos simulados; hardware físico não foi

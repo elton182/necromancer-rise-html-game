@@ -1,6 +1,7 @@
 import {prologueMapData} from './prologue-map-data.mjs';
 import {campaignWorldMap} from './campaign-world-map.mjs';
 import {itaunaMap,fortMap,caveMap} from './itauna-map.mjs';
+import {itaveraMap} from './itavera-map.mjs';
 // Mapas personalizados: dados puros (sem DOM nem Three.js). Um mapa é um documento JSON com objetos posicionados,
 // ponto de início e pontos de inimigos. Pode ter um mapa base (`base`): herda dele os objetos, o bioma, o tamanho,
 // o início e os inimigos, e só guarda o que mudou (objetos novos, objetos da base ocultos e campos substituídos).
@@ -140,7 +141,7 @@ export function normalizeStyle(raw){
  const range=(v,a,b)=>v==null||v===''||!Number.isFinite(+v)?null:clamp(+v,a,b),out={sky:color(raw.sky),sun:range(raw.sun,0,6),sunColor:color(raw.sunColor),ambient:range(raw.ambient,0,4),fog:range(raw.fog,0,1),tint:color(raw.tint),ground:raw.ground in GROUND_STYLES?raw.ground:null,water:color(raw.water),grass:range(raw.grass,0,2),flowers:range(raw.flowers,0,2)};
  return Object.values(out).some(v=>v!==null)?out:null;
 }
-export const BUILTIN_BASES={'builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin','builtin:itauna':'Várzea de Itaúna','builtin:itauna-fort':'Forte da Pedra Negra','builtin:itauna-cave':'Gruta das Tecelãs'};
+export const BUILTIN_BASES={'builtin:itavera':'Itavera · praça das guildas','builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin','builtin:itauna':'Várzea de Itaúna','builtin:itauna-fort':'Forte da Pedra Negra','builtin:itauna-cave':'Gruta das Tecelãs'};
 export const isBuiltin=ref=>typeof ref==='string'&&ref.startsWith('builtin:');
 export const mapRef=id=>'map:'+id;
 
@@ -221,6 +222,7 @@ function buildBuiltin(ref){
  if(stage)return normalizeMap({...prologueMapData(stage),id:ref}).map;
  if(ref==='builtin:campaign-world')return normalizeMap({...campaignWorldMap(),id:ref}).map;
  if(ref==='builtin:itauna')return normalizeMap({...itaunaMap(),id:ref}).map;
+ if(ref==='builtin:itavera')return normalizeMap({...itaveraMap(),id:ref}).map;
  if(ref==='builtin:itauna-fort')return normalizeMap({...fortMap(),id:ref}).map;
  if(ref==='builtin:itauna-cave')return normalizeMap({...caveMap(),id:ref}).map;
  if(ref==='builtin:training')return {...normalizeMap({id:ref,name:BUILTIN_BASES[ref],biome:'grave',size:{w:30,h:30},start:{x:0,y:10},spawns:[{x:0,y:-8,count:4,type:0}]}).map,objects:fromSolids('training',TRAINING_ARENA.solids)};
@@ -310,7 +312,7 @@ export function toArena(map,{cover=true,stableTone=false}={}){
   scatter(decor.patches,Math.min(cap(60),Math.round(area*.0035)),(x,y)=>({x,y,r:+rnd(1.2,3.2).toFixed(2),tone:tone()}),2);
   if(map.biome==='forest')scatter(decor.flowers,Math.round(Math.min(cap(160),Math.round(area*.012))*flowerDensity),(x,y)=>({x,y,tone:tone()}),1);
  }
- return {enemyHp:map.enemyHp??1,enemyXp:map.enemyXp??1,cave:map.biome==='cave',prologue:map.biome==='cave'||solids.some(s=>s.look==='caravan')||decor.misc.some(m=>m.look==='road_block'),caravans:solids.filter(s=>s.look==='caravan').map(s=>({x:s.x,y:s.y,sx:s.width/2.8,sy:s.height/2,sz:s.depth/5.2})),roadBlocks:decor.misc.filter(m=>m.look==='road_block'),id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor,kitProps,rotatedParts,terrain,style:map.style||null};
+ return {intactTown:map.id==='builtin:itavera'||map.campaign==='itavera'||map.base==='builtin:itavera',enemyHp:map.enemyHp??1,enemyXp:map.enemyXp??1,cave:map.biome==='cave',prologue:map.biome==='cave'||solids.some(s=>s.look==='caravan')||decor.misc.some(m=>m.look==='road_block'),caravans:solids.filter(s=>s.look==='caravan').map(s=>({x:s.x,y:s.y,sx:s.width/2.8,sy:s.height/2,sz:s.depth/5.2})),roadBlocks:decor.misc.filter(m=>m.look==='road_block'),id:'custom-'+map.id,theme:'expedition',custom:true,name:map.name,palette:PALETTES[map.biome],biome:map.biome,bounds,solids,decor,kitProps,rotatedParts,terrain,style:map.style||null};
 }
 
 // --- Verificação ---

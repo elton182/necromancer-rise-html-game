@@ -8,4 +8,13 @@
 #campaign-panel[data-view="world-map"] h2,#campaign-panel[data-view="world-dialogue"] h2{margin:0;color:#efd293}
 #campaign-panel[data-view="world-map"] canvas{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain}
 #campaign-panel[data-view="world-dialogue"]{width:min(600px,calc(100vw - 36px))}
+.world-label.has-quest::before{content:attr(data-quest-marker);display:block;box-sizing:border-box;width:30px;height:34px;margin:0 auto 5px;border:2px solid #e9bd57;border-radius:50% 50% 42% 42%;background:#30200cf2;color:#ffe18b;font:bold 27px/29px Georgia;text-align:center;text-shadow:0 1px 3px #000;box-shadow:0 2px 8px #0009}
+.world-label[data-quest-marker="?"]::before{color:#c5f4cd;border-color:#90c89c;background:#142c1cf2}
+.world-label.quest-only{padding:0;border:0;background:none;box-shadow:none}
+#inventory-quests{margin:0 0 12px}
+#quest-journal>p{max-width:70ch;color:#c6bca5}
+.quest-journal-group{margin:18px 0}.quest-journal-group>h3{color:#efd293}
+.quest-card{margin:10px 0;padding:12px 15px;border:1px solid #8b734647;border-radius:5px;background:#17140de6}
+.quest-card summary{cursor:pointer;color:#f0d69b;font-weight:bold}.quest-card small{display:block;margin:8px 0;color:#bfb6a1}
+.quest-card p{color:#e8dec7}.quest-card ol{padding-left:25px;line-height:1.7}.quest-card li{color:#a9a28f}.quest-card li.current{color:#ffe09b}.quest-card li.done{color:#a8c7a3}
 @media(max-width:760px){#campaign-panel[data-view="world"]{width:180px;max-height:30vh}#campaign-panel[data-view="world-map"],#campaign-panel[data-view="world-dialogue"]{padding:14px;font-size:14px;max-height:80dvh}}

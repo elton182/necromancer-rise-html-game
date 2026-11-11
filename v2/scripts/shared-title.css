@@ -1,4 +1,4 @@
-/* Gerado da tela inicial em necromancer-canvas.html; não editar. */
+/* Gerado da tela inicial em v1/necromancer-canvas.html; não editar. */
 #tl{position:fixed;inset:0;z-index:60;display:none;flex-direction:column;align-items:center;justify-content:center;
   background:radial-gradient(ellipse at 50% 42%,rgba(5,0,10,.30) 0%,rgba(5,0,10,.80) 62%,#05000a 100%);color:#ddd;user-select:none;overflow:hidden;}
 #tl.on{display:flex}

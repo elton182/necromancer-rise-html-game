@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "checks": [
+    "novos nós no painel",
+    "marca pelo comando F",
+    "Disparo Preciso prepara e causa dano",
+    "Saraivada Múltipla em cinco alvos",
+    "rasantes percorrem a área e atingem grupo",
+    "Chuva Explosiva em chão claro/escuro e qualidade baixa",
+    "Emboscada em Dupla e Impacto Feroz"
+  ],
+  "errors": [],
+  "remote": []
+}

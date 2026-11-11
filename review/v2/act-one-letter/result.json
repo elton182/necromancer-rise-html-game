@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "bolsa apresentada na caravana",
+    "forja e madeira liberam a pista de Marta",
+    "livro e resgate explicam fuga, cargo e carta",
+    "bolsa e provas separadas, com recarga entre objetivos",
+    "entrega a Helena persiste sem repetição",
+    "convite conclui o Ato I sem repetir prêmios nem abrir Ato II",
+    "retorno a Jacarandá e revisita após conclusão"
+  ],
+  "errors": [],
+  "remote": [],
+  "limitations": [
+    "encerramentos controlados com dano injetado; não mede dificuldade",
+    "Itavera implementada como praça de recepção; Ato II ainda indisponível"
+  ]
+}

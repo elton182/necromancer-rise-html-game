@@ -1,3 +1,4 @@
+import {schoolSynergy} from '../scripts/skill-synergy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {freshSave,normalizeSave,createSaveStore} from '../scripts/save-model.mjs';
@@ -51,7 +52,7 @@ test('Faísca atinge só o primeiro inimigo na linha, sem custo, e respeita a re
  const w=field(),near=target(w,4),far=target(w,7),mp=w.player.mp;
  assert.ok(druidAction(w,0,{x:10,y:0}));assert.equal(druidAction(w,0,{x:10,y:0}),false,'uma ação por vez');
  finish(w);assert.ok(near.hp<10000);assert.equal(far.hp,10000);assert.equal(w.player.mp,mp);
- const expected=Math.floor(w.player.spellDamage*HUMAN_ACTIONS[0].multiplier*(1+5*.06));assert.equal(10000-near.hp,expected);
+ const expected=Math.floor(w.player.spellDamage*HUMAN_ACTIONS[0].multiplier*(1+5*.06+schoolSynergy('druid',w.druidRanks,'spark')));assert.equal(10000-near.hp,expected);
  const side=field(),off=target(side,5,2);druidAction(side,0,{x:10,y:0});finish(side);assert.equal(off.hp,10000,'fora da linha');
 });
 test('Corrente salta para inimigos próximos, um salto extra por ponto, com perda por salto',()=>{

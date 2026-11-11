@@ -1,6 +1,6 @@
 # Druida (Flora) — primeira versão jogável
 
-Implementado na v2. Novo personagem oferece agora Necromante, Guerreiro e Druida, cada um com saves e progresso próprios. Saves anteriores sem classe continuam Necromantes.
+Implementado na v2. Novo Jogo oferece seis classes, incluindo a Druida, com saves e progresso por personagem. Saves anteriores sem classe continuam Necromantes.
 
 A Druida luta a distância com raios e plantas e, quando os inimigos chegam perto, vira lobisomem. A decisão central do combate é **quando trocar de forma**: a forma humana tem controle e dano em área, mas é frágil; a forma de lobo aguenta mais e anda mais rápido, mas consome mana a cada segundo e só se sustenta acertando as garras.
 
@@ -44,7 +44,7 @@ Morte e troca de cena devolvem a forma humana. A troca de forma usa o mecanismo 
 
 ### Vento e golpes do lobo (08/11/2026)
 
-Desde 08/11/2026 todas as habilidades da Druida recarregam em 4 s (antes: Corrente 6, Raízes 7, Tempestade 14, Rejuvenescer 15, Tornado 12, Salto 6, Uivo 16, Corte 6 e Garra 8 s); Faísca e Garras mantêm o ritmo do ataque básico. A redução de recarga dos itens continua valendo. Com 4 s, a Tempestade (4 s de duração) e o Rejuvenescer (5 s) podem ser renovados antes de acabar: a nuvem nova se soma, e a cura nova substitui a anterior.
+Desde 08/11/2026 as magias e golpes existentes da Druida recarregam em 4 s (antes: Corrente 6, Raízes 7, Tempestade 14, Rejuvenescer 15, Tornado 12, Salto 6, Uivo 16, Corte 6 e Garra 8 s); Faísca e Garras mantêm o ritmo do ataque básico. A redução de recarga dos itens continua valendo. Com 4 s, a Tempestade (4 s de duração) e o Rejuvenescer (5 s) podem ser renovados antes de acabar: a nuvem nova se soma, e a cura nova substitui a anterior.
 
 Desenhados em [docs/habilidades/arvores.json](habilidades/README.md) a partir das ideias da árvore. Números iniciais, sem balanceamento de campanha.
 
@@ -53,7 +53,7 @@ Desenhados em [docs/habilidades/arvores.json](habilidades/README.md) a partir da
 | Turbilhão | Humana, barra montável | 12 mana / 4 s | Avança 9 u em linha reta a 10 u/s, solta em 0,2 s. Atravessa inimigos: 60% do dano em cada um (uma vez) e empurrão de 0,6 u para o lado; para em paredes. +8% de dano por ponto (até 5). Arcos de vento (`windarc`) e um anel no chão mostram a posição real. |
 | Tornado | Humana, barra montável | 30 mana / 4 s | No ponto mirado (até 10 u), por 4 s: anda 1,2 u/s na direção da mira, puxa para o centro quem está a até 1,8 u (1,6 u/s; chefes e presos pelas Raízes não) e fere 25% a cada 0,4 s. Para em paredes. |
 | Furacão | Aperfeiçoamento do Tornado | — | O Tornado passa a ter raio 2,7 e 6 s; ao terminar, explode com 120% do dano em raio 2,7 e empurra 1,5 u para fora (chefes só recebem o dano). |
-| Corte Sangrento | Lobo, R / 5 (fixo) | 12 mana / 4 s | Garra em arco de 144° até 2,6 u, 90% do dano. Os atingidos sangram: 15% do dano a cada 0,5 s por 4 s; um novo corte renova, sem somar. Anel vermelho sob quem sangra. |
+| Corte Sangrento | Lobo, R / 5 (fixo) | 12 mana / 4 s | Garra em semicírculo de 180° até 4,6 u, 90% do dano. Os atingidos sangram: 15% do dano a cada 0,5 s por 4 s; um novo corte renova, sem somar. Anel vermelho sob quem sangra. |
 | Garra de Gelo | Lobo, T / 6 (fixo) | 15 mana / 4 s | Garra em cone de 81° até 3 u, 130% do dano e 50% de lentidão por 2,5 s (chefes só recebem o dano). Anel azul-claro sob quem foi gelado. |
 
 Na árvore: Turbilhão (Tempestade, nível 2, até 5 pontos), Tornado (nível 6, requer Turbilhão), Furacão (nível 12, requer Tornado), Corte Sangrento (Selvagem, nível 6, requer Salto Feroz) e Garra de Gelo (nível 8, requer Salto Feroz). Testes em `v2/tests/class-ideas.test.mjs`; navegador em `v2/tests/class-ideas-browser-check.cjs` (evidências em `review/v2/class-ideas/`).
@@ -330,3 +330,49 @@ Validação desta revisão do lobo: build e 23 testes aprovados; teste de navega
 Validação da base em pose T: build e 23 testes aprovados, conferência de navegador com seleção, ações, transformação e deslocamentos aprovada sem erros de página ou requisições remotas. Prévia frontal Cycles em review/v2/druid-t-pose/front-idle.png; caminhada e lançamento inspecionados em sequência no Blender.
 Na base T, o eixo do cajado atravessa a palma direita. Polegar e dedos têm poses de pegada próprias. Em repouso a ponta fica junto ao piso. Na caminhada o antebraço eleva a haste e o braço livre recua no contato do pé esquerdo. Prévia do ciclo no Blender em review/v2/flora-pegada/caminhada.gif.
 Na caminhada e nos passos laterais da forma humana, o gerador orienta os joelhos para a frente durante o apoio e o balanço. A prévia de perfil e as medidas ao longo do ciclo ficam em review/v2/flora-joelho/.
+
+## Natureza: lobos e Planta Carnívora (09/11/2026)
+
+- **Lobo:** ação equipável na forma humana, 30 MP, recarga 8 s (reduzida pelos itens), liberação em 0,35 s. Evoca um lobo com 65% da vida máxima e 45% do dano mágico da Druida, atacando a cada 1 s. Do segundo ao quinto ponto: +10% de vida e dano por ponto. Sem duração limite. Modelo animado `cryptHound` com tinta natural.
+- **Mordida Pesada:** passiva automática. A cada 6 s, o próximo ataque de cada lobo causa 180% do dano da mordida; o segundo e terceiro pontos acrescentam 20 pontos percentuais cada, até 220%. A mordida tem preparação visível e verifica novamente distância e parede no impacto.
+- **Alcateia:** +1 lobo por ponto, até quatro. Conjurar Lobo preenche vagas novas ou repõe mortos; não cura nem substitui os vivos. Com todas as vagas vivas, conjurar é recusado sem gastar mana. Os lobos continuam ativos durante a transformação da Druida.
+- **Planta Carnívora:** aperfeiçoamento de Raízes, sem tecla/custo adicional. Nasce no ponto mirado por 8 s, com 60% da vida máxima da Druida e 45% do dano mágico por ataque, a cada 1,4 s, até 4,5 u. É fixa, pode ser destruída e não ataca através de paredes. No máximo uma; novas Raízes a substituem. Usa GLB próprio em `blender/exports/carnivorous_plant.glb`, com `idle`, `attack` e `death`.
+
+Lobos feridos e mortos são preservados ao salvar e trocar de mapa (`character.druidPack`, proporções de vida); não renascem automaticamente. A morte da Druida desfaz a alcateia. Plantas, sangramentos e demais efeitos temporários são limpos na morte ou troca de cena. O Corte Sangrento revisado usa alcance 4,6 u e semicírculo de 180°, preservando dano e renovação sem empilhar.
+
+Verificação de regras: `node --test v2/tests/skill-ideas-revision.test.mjs`. Conferência no navegador: `node v2/tests/skill-ideas-revision-browser-check.cjs` (Playwright, Edge/WebGL 2, perfil isolado). Evidências em [review/v2/skill-ideas-revision](../review/v2/skill-ideas-revision/). Números iniciais, sem campanha completa jogada.
+
+## Progressão por pontos corrigida (09/11/2026)
+
+Tempestade, Salto Feroz, Tornado, Furacão, Garra de Gelo, Corte Sangrento e Planta Carnívora agora aceitam cinco pontos. O primeiro conserva os números descritos nas tabelas; cada ponto depois dele soma +10% do dano base, até +40%. Corte Sangrento aumenta impacto e sangramento; a Planta aumenta dano e vida, mantendo o limite de uma planta e a duração de 8 s.
+
+Os ranks extras de Tornado e Furacão somam bônus, sem multiplicá-los entre si: até +80% do dano base nos pulsos e na explosão com ambos no máximo. O primeiro ponto em Furacão mantém a transformação atual (área, duração e explosão).
+
+Rejuvenescer e Uivo também aceitam cinco pontos: a cura total cresce de 30% para 50% da vida máxima (+5 pontos percentuais após o primeiro); o bônus de dano do Uivo cresce de +25% para +45% pelo mesmo critério. Custos, recargas e durações são preservados. Pontos antigos continuam válidos sem conceder ranks gratuitamente. Evidências em [review/v2/skill-rank-scaling](../review/v2/skill-rank-scaling/).
+
+## Sinergias de escola (09/11/2026)
+
+Além da progressão própria, cada ponto investido em uma habilidade do ramo fortalece em **2% do dano base** as outras habilidades de dano desse mesmo ramo. Os bônus são somados aos próprios, sem realimentação, sem contar passivas gerais ou bônus de equipamento. Dano contínuo e invocações recebem a escola correspondente; vida, custos, recargas e controle preservam suas regras. A árvore mostra o bônus recebido e suas fontes, ou a contribuição dos nós de suporte. A [regra completa de progressão e sinergias](habilidades/sinergias.md) descreve variantes e exceções. Essa mudança é de balanceamento e passa a beneficiar os ranks já investidos nos saves.
+
+## Calamidade, Floresta, Escudo e Líder (10/11/2026)
+
+Quatro novas ações da **barra montável humana**, acrescentadas ao final da tabela sem alterar os índices anteriores. Todas exigem um ponto no próprio nó. F continua alternando a transformação. Os efeitos já lançados continuam ao transformar; a morte e a troca de cena removem os efeitos temporários. A Esquiva cancela a preparação antes da liberação, mantendo o custo e a recarga. A redução de recarga dos equipamentos continua limitada a 50%.
+
+| Habilidade | Nível e pré-requisitos | Mana / recarga | Regra |
+|---|---|---|---|
+| Calamidade | 18; Tempestade e Furacão | 55 / 24 s | Prepara 0,55 s e cria um furacão de raio 4 até 10 u. Dura 8 s e avança a 0,8 u/s na direção escolhida. Vento causa 30% do dano mágico a cada 0,5 s; raios causam 65% a até duas presas a cada 1 s. Recebe sinergia de Tempestade. |
+| Floresta Tropical | 16; Planta Carnívora | 45 / 20 s | Prepara 0,45 s e evoca cinco plantas por 10 s numa região de raio 4,5 até 10 u. Cada planta usa vida, dano e pontos da Planta Carnívora. |
+| Escudo de Folhas | 6; Rejuvenescer | 25 / 18 s | Prepara 0,3 s e protege por até 8 s, absorvendo dano equivalente a 35% da vida máxima no instante da conjuração. |
+| Líder da Matilha | 12; Alcateia | 20 / 12 s | Aprender o nó fortalece um lobo vivo. A ação prepara 0,25 s e comanda a matilha contra uma presa por 6 s. |
+
+**Calamidade:** o funil visual, a nuvem e o círculo acompanham a posição real. Os pulsos atingem apenas inimigos dentro da área com linha de visão a partir dela. Paredes interrompem o deslocamento; alvos atrás delas não recebem dano. Inimigos comuns são puxados a até 1,2 u/s; chefes e presas imobilizadas pelas Raízes não são puxados. O furacão termina sem a explosão final do Furacão básico. Uma mira obstruída não gasta mana nem inicia recarga.
+
+**Floresta Tropical:** as cinco posições ficam fora dos sólidos, separadas entre si e visíveis a partir do centro. Sem espaço para cinco posições válidas, a conjuração é recusada sem custo nem recarga. Uma nova Floresta remove as cinco plantas anteriores, incluindo corpos; a planta produzida pelas Raízes tem limite separado e continua disponível. Assim, podem coexistir cinco plantas da Floresta e uma das Raízes. Todas podem ser destruídas, atacam até 4,5 u a cada 1,4 s, têm preparação de 0,4 s e verificam paredes antes do impacto. Usam o mesmo GLB animado da Planta Carnívora. O contorno verde acompanha a região enquanto houver plantas vivas.
+
+**Escudo de Folhas:** a absorção acontece no caminho central de dano, depois da defesa e das proteções anteriores. Somente o dano restante consome sua resistência; o excedente reduz a vida. Golpes evitados pela Esquiva não consomem o Escudo. Nova conjuração substitui a resistência, sem somar escudos. Não altera a barreira de outros sistemas nem cura. A quantidade de folhas orbitando o corpo diminui com a resistência, e o slot mostra a absorção restante. Continua durante Rejuvenescer e transformação; termina quando a resistência chega a zero, o tempo acaba, a Druida morre ou sai da cena.
+
+**Líder da Matilha:** o lobo vivo com menor índice da alcateia assume a liderança, fica visualmente maior e recebe um anel dourado e +30% de dano. Vida e colisão são preservadas. Se morrer, o próximo vivo assume sem ser curado. O comando escolhe uma presa visível a até 3,5 u da mira e 12 u da Druida. Sem presa ou lobo vivo, é recusado sem custo nem recarga. Os lobos priorizam a presa marcada, percorrem as rotas normais e mantêm suas recargas; o primeiro ataque do líder em cada comando usa Garras do Líder de 160% do dano dele, sem consumir a Mordida Pesada disponível. O golpe verifica novamente distância e paredes ao acertar. A marca não aumenta dano de outras fontes e termina ao expirar, a presa morrer ou a cena ser limpa.
+
+Os pontos e os quatro ids de ação são persistidos pelos contratos existentes. Resistência do Escudo, plantas da Floresta, Calamidade e presa comandada são transitórios. A liderança é recalculada a partir dos lobos vivos ao carregar; somente as proporções de vida da alcateia continuam no save.
+
+Verificações desta entrega: `node --test v2/tests/druid-expansion.test.mjs` e regressões dos sistemas afetados; `node v2/tests/druid-expansion-browser-check.cjs` para Edge/WebGL 2 com armazenamento isolado. Evidências em [review/v2/druid-expansion](../review/v2/druid-expansion/). Valores iniciais, sem balanceamento de campanha completa.

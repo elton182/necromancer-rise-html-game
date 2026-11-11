@@ -17,7 +17,7 @@ for name,a in meta['anims'].items():
     if not box or box[0]<=1 or box[1]<=1 or box[2]>=223 or box[3]>=223:raise ValueError(f'Clipped or empty {name} {di} {fi}: {box}')
     sheet.paste(im,(fi*224,row*224))
 sheet.save(HERE/'spritesheets'/'warAcolyte_sheet.webp',quality=86,method=6)
-game=HERE.parent/'necromancer-canvas.html';html=game.read_text(encoding='utf-8')
+game=HERE.parent/'v1/necromancer-canvas.html';html=game.read_text(encoding='utf-8')
 html=re.sub(r"\nSPR\.load\('warAcolyte',[^\n]+",'',html)
 payload=base64.b64encode((HERE/'spritesheets'/'warAcolyte_sheet.webp').read_bytes()).decode()
 marker='\nfunction drawSprite(key,ref,o){';assert html.count(marker)==1

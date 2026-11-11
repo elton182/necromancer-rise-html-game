@@ -1,0 +1,255 @@
+TAP version 13
+# Subtest: campanha integrada anterior nasce no sarcófago; cenário e pontos de inimigos são os do editor
+ok 1 - campanha integrada anterior nasce no sarcófago; cenário e pontos de inimigos são os do editor
+  ---
+  duration_ms: 858.9521
+  ...
+# Subtest: rotas contínuas e NPCs são alcançáveis sem cruzar colisores
+ok 2 - rotas contínuas e NPCs são alcançáveis sem cruzar colisores
+  ---
+  duration_ms: 141.4764
+  ...
+# Subtest: encontros são locais; pausa não cria inimigos; Tiro de Osso usa combate e recompensa comuns
+ok 3 - encontros são locais; pausa não cria inimigos; Tiro de Osso usa combate e recompensa comuns
+  ---
+  duration_ms: 157.7525
+  ...
+# Subtest: pedido, guardas, libertação e retorno: ordem obrigatória e prêmio único
+ok 4 - pedido, guardas, libertação e retorno: ordem obrigatória e prêmio único
+  ---
+  duration_ms: 130.3422
+  ...
+# Subtest: retorno à vila limpa ameaças e rearma só encontros repetíveis
+ok 5 - retorno à vila limpa ameaças e rearma só encontros repetíveis
+  ---
+  duration_ms: 125.5454
+  ...
+# Subtest: morte retoma no último abrigo; recarga mantém a missão, sem serializar combate
+ok 6 - morte retoma no último abrigo; recarga mantém a missão, sem serializar combate
+  ---
+  duration_ms: 506.2861
+  ...
+# Subtest: mapa e conversa pausam, fecham sem perder missão e recusam ação à distância
+ok 7 - mapa e conversa pausam, fecham sem perder missão e recusam ação à distância
+  ---
+  duration_ms: 124.9097
+  ...
+# Subtest: todos os pontos de quest, pilhas e encontros ficam em espaço livre e alcançável
+ok 8 - todos os pontos de quest, pilhas e encontros ficam em espaço livre e alcançável
+  ---
+  duration_ms: 127.2262
+  ...
+# Subtest: grupos misturam tipos, escalam por região e trazem líder de elite
+ok 9 - grupos misturam tipos, escalam por região e trazem líder de elite
+  ---
+  duration_ms: 126.4456
+  ...
+# Subtest: Joaquim oferece o resgate; Bruno exige a mina livre, volta à forja e paga uma vez
+ok 10 - Joaquim oferece o resgate; Bruno exige a mina livre, volta à forja e paga uma vez
+  ---
+  duration_ms: 128.3221
+  ...
+# Subtest: madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas
+ok 11 - madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas
+  ---
+  duration_ms: 256.7423
+  ...
+# Subtest: saves concluídos antes das novas quests recebem os pedidos de Joaquim
+ok 12 - saves concluídos antes das novas quests recebem os pedidos de Joaquim
+  ---
+  duration_ms: 0.2927
+  ...
+# Subtest: etapa salva: ausente equivale a locked e só vale depois do mundo concluído
+ok 13 - etapa salva: ausente equivale a locked e só vale depois do mundo concluído
+  ---
+  duration_ms: 1.4531
+  ...
+# Subtest: pontos da missão ficam livres, alcançáveis e marcados no editor
+ok 14 - pontos da missão ficam livres, alcançáveis e marcados no editor
+  ---
+  duration_ms: 1477.7678
+  ...
+# Subtest: Marta só oferece a busca com Jacarandá de pé
+ok 15 - Marta só oferece a busca com Jacarandá de pé
+  ---
+  duration_ms: 1.0244
+  ...
+# Subtest: percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios únicos
+ok 16 - percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios únicos
+  ---
+  duration_ms: 1058.0784
+  ...
+# Subtest: quem chega à gruta antes de ler o livro também liberta João
+ok 17 - quem chega à gruta antes de ler o livro também liberta João
+  ---
+  duration_ms: 901.4837
+  ...
+# Subtest: bolsa e provas podem ser recuperadas em qualquer ordem, sem avanço prematuro
+ok 18 - bolsa e provas podem ser recuperadas em qualquer ordem, sem avanço prematuro
+  ---
+  duration_ms: 296.9178
+  ...
+# Subtest: saves antigos retomam o epílogo sem repetir resgate nem prêmios
+ok 19 - saves antigos retomam o epílogo sem repetir resgate nem prêmios
+  ---
+  duration_ms: 888.8636
+  ...
+# Subtest: ações da missão exigem a área, as condições e o encontro corretos
+ok 20 - ações da missão exigem a área, as condições e o encontro corretos
+  ---
+  duration_ms: 458.2422
+  ...
+# Subtest: caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+ok 21 - caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+  ---
+  duration_ms: 69.4819
+  ...
+# Subtest: vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+ok 22 - vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+  ---
+  duration_ms: 24.1302
+  ...
+# Subtest: caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+ok 23 - caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+  ---
+  duration_ms: 16.2886
+  ...
+# Subtest: nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+ok 24 - nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+  ---
+  duration_ms: 626.8575
+  ...
+# Subtest: defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+ok 25 - defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+  ---
+  duration_ms: 324.901
+  ...
+# Subtest: morte e reload retomam trecho; pista e vitória da caverna persistem
+ok 26 - morte e reload retomam trecho; pista e vitória da caverna persistem
+  ---
+  duration_ms: 24.2319
+  ...
+# Subtest: caverna e estrada possuem percurso e nascimentos livres
+ok 27 - caverna e estrada possuem percurso e nascimentos livres
+  ---
+  duration_ms: 68.2114
+  ...
+# Subtest: viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+ok 28 - viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+  ---
+  duration_ms: 7.5791
+  ...
+# Subtest: introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+ok 29 - introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+  ---
+  duration_ms: 12.7187
+  ...
+# Subtest: caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+ok 30 - caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+  ---
+  duration_ms: 17.9546
+  ...
+# Subtest: Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+ok 31 - Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+  ---
+  duration_ms: 442.0938
+  ...
+# Subtest: queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+ok 32 - queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+  ---
+  duration_ms: 23.1818
+  ...
+# Subtest: fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+ok 33 - fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+  ---
+  duration_ms: 11.5877
+  ...
+# Subtest: Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+ok 34 - Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+  ---
+  duration_ms: 62.6435
+  ...
+# Subtest: chegada: pedidos só entram no HUD e diário depois de aceitar; fechar não aceita
+ok 35 - chegada: pedidos só entram no HUD e diário depois de aceitar; fechar não aceita
+  ---
+  duration_ms: 672.6816
+  ...
+# Subtest: etapas e ofertas em sequência: Bruno, madeira, pista de Marta; pagamento único
+ok 36 - etapas e ofertas em sequência: Bruno, madeira, pista de Marta; pagamento único
+  ---
+  duration_ms: 127.6481
+  ...
+# Subtest: migração conserva coletas e missões em curso; pedidos automáticos sem progresso viram ofertas
+ok 37 - migração conserva coletas e missões em curso; pedidos automáticos sem progresso viram ofertas
+  ---
+  duration_ms: 0.7283
+  ...
+# Subtest: diário deriva o histórico regional e não registra a próxima missão antes da aceitação
+ok 38 - diário deriva o histórico regional e não registra a próxima missão antes da aceitação
+  ---
+  duration_ms: 125.9443
+  ...
+# Subtest: save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+ok 39 - save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+  ---
+  duration_ms: 6.508
+  ...
+# Subtest: saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+ok 40 - saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+  ---
+  duration_ms: 1.5173
+  ...
+# Subtest: rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+ok 41 - rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+  ---
+  duration_ms: 3.1346
+  ...
+# Subtest: armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+ok 42 - armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+  ---
+  duration_ms: 2.7099
+  ...
+# Subtest: save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+ok 43 - save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+  ---
+  duration_ms: 1.655
+  ...
+# Subtest: quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+ok 44 - quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+  ---
+  duration_ms: 5.6491
+  ...
+# Subtest: falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+ok 45 - falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+  ---
+  duration_ms: 1.6527
+  ...
+# Subtest: somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+ok 46 - somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+  ---
+  duration_ms: 11.2551
+  ...
+# Subtest: menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+ok 47 - menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+  ---
+  duration_ms: 3.1515
+  ...
+# Subtest: morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+ok 48 - morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+  ---
+  duration_ms: 3.5315
+  ...
+# Subtest: aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+ok 49 - aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+  ---
+  duration_ms: 2.0182
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5978.2051

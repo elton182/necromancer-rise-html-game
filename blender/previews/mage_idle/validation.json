@@ -1,0 +1,145 @@
+{
+  "fps": 30,
+  "bones": 44,
+  "clips": {
+    "idle": {
+      "action": "AN_MageT_idle",
+      "start": 1,
+      "end": 121,
+      "seconds": 4.0,
+      "loop": true,
+      "loop_matrix_error": 3.3974647521972656e-06,
+      "body_min_z": -2.901850848502363e-07,
+      "foot_displacement": 2.0348119511406682e-07,
+      "staff_rigidity_error": 1.9796684765199457e-07
+    },
+    "walk": {
+      "action": "AN_MageT_walk",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 1.1920928955078125e-06,
+      "body_min_z": -3.203749656677246e-07,
+      "foot_displacement": 0.32326893339260127,
+      "staff_rigidity_error": 1.9500035536739827e-07,
+      "gait": {
+        "support_xy_drift": 6.02714670185944e-07,
+        "minimum_knee_flex_degrees": 35.56162079152517,
+        "free_hand_travel": 0.15164895265576264
+      }
+    },
+    "strafe_left": {
+      "action": "AN_MageT_strafe_left",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 9.5367431640625e-07,
+      "body_min_z": -4.998728400096297e-07,
+      "foot_displacement": 0.253198721338702,
+      "staff_rigidity_error": 1.6535631656621537e-07,
+      "gait": {
+        "support_xy_drift": 2.6457430280096387e-07,
+        "minimum_knee_flex_degrees": 7.749855472420293,
+        "free_hand_travel": 0.049836576081308495
+      }
+    },
+    "strafe_right": {
+      "action": "AN_MageT_strafe_right",
+      "start": 1,
+      "end": 25,
+      "seconds": 0.8,
+      "loop": true,
+      "loop_matrix_error": 1.0728836059570312e-06,
+      "body_min_z": -5.544279702007771e-07,
+      "foot_displacement": 0.2531987868642352,
+      "staff_rigidity_error": 1.212437492633227e-07,
+      "gait": {
+        "support_xy_drift": 2.7154402234236377e-07,
+        "minimum_knee_flex_degrees": 7.750415547932234,
+        "free_hand_travel": 0.049836621925848486
+      }
+    },
+    "cast": {
+      "action": "AN_MageT_cast",
+      "start": 1,
+      "end": 16,
+      "seconds": 0.5,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -2.912442766955792e-07,
+      "foot_displacement": 9.687545615394297e-08,
+      "staff_rigidity_error": 1.64757254626572e-07
+    },
+    "cast_up": {
+      "action": "AN_MageT_cast_up",
+      "start": 1,
+      "end": 22,
+      "seconds": 0.7,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -3.0901372838343377e-07,
+      "foot_displacement": 9.835048602852289e-08,
+      "staff_rigidity_error": 2.2389738499763183e-07
+    },
+    "dodge": {
+      "action": "AN_MageT_dodge",
+      "start": 1,
+      "end": 16,
+      "seconds": 0.5,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -4.7159360860860033e-07,
+      "foot_displacement": 0.09219541551058885,
+      "staff_rigidity_error": 1.8683175796316138e-07
+    },
+    "death": {
+      "action": "AN_MageT_death",
+      "start": 1,
+      "end": 31,
+      "seconds": 1.0,
+      "loop": false,
+      "loop_matrix_error": null,
+      "body_min_z": -1.0132789611816406e-06,
+      "foot_displacement": 0.15790320523796064,
+      "staff_rigidity_error": 1.3381261419997967e-07
+    }
+  },
+  "weights": {
+    "MageTBody": {
+      "vertices": 11581,
+      "unweighted": 0,
+      "max_influences": 2,
+      "normalization_error": 9.47713851928711e-06
+    },
+    "MageTStaff": {
+      "vertices": 1749,
+      "unweighted": 0,
+      "max_influences": 1,
+      "normalization_error": 0.0
+    }
+  },
+  "fingers": {
+    "original_bind_error": 0.0,
+    "original_uv_error": 0.0,
+    "weighted_vertices_per_bone": {
+      "mixamorig:RightHandIndex1": 30,
+      "mixamorig:RightHandIndex2": 16,
+      "mixamorig:RightHandIndex3": 15,
+      "mixamorig:RightHandMiddle1": 38,
+      "mixamorig:RightHandMiddle2": 16,
+      "mixamorig:RightHandMiddle3": 17,
+      "mixamorig:RightHandRing1": 54,
+      "mixamorig:RightHandRing2": 19,
+      "mixamorig:RightHandRing3": 14,
+      "mixamorig:RightHandPinky1": 49,
+      "mixamorig:RightHandPinky2": 23,
+      "mixamorig:RightHandPinky3": 12,
+      "mixamorig:RightHandThumb1": 47,
+      "mixamorig:RightHandThumb2": 31,
+      "mixamorig:RightHandThumb3": 3
+    }
+  },
+  "shaft_boundary_edges": 0
+}

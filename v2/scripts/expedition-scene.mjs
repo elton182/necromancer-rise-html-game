@@ -11,6 +11,17 @@ import {buildWater} from './terrain-scene.mjs';
 import {buildPrologueScenery} from './prologue-scene.mjs';
 const GROUND_COLORS={grass:null,dirt:'#6f5a3e',sand:'#c2a873',snow:'#e4eaee',stone:'#83847f',ash:'#3f3c3a',moss:'#3f5430'};
 const BIOME_GROUND={desert:'sand',snow:'snow',grave:'stone',cave:'stone',mountain:'stone',river:'grass'};
+// Folhagem por bioma nas Expedições: geada nos pinheiros da tundra, verde gasto no cemitério e nas montanhas, mato seco no deserto.
+const FOLIAGE={snow:{kit_needle:[0xe4eef0,.55],kit_leaf:[0xe4eef0,.5],kit_grass:[0xd8e0d0,.5]},grave:{kit_needle:[0x34463e,.55],kit_leaf:[0x56604a,.5],kit_grass:[0x77806a,.35]},
+ desert:{kit_leaf:[0xb8a860,.4],kit_grass:[0xc8b070,.55]},mountain:{kit_needle:[0x5a7468,.25],kit_grass:[0x9a9a6a,.35]},village:{kit_leaf:[0xc8a050,.12]}};
+// A cor de cada instância carrega o verde; o tom do bioma é misturado nela.
+const instanceTone=new THREE.Color();
+function foliage(mesh,biome){
+ const tone=FOLIAGE[biome]?.[mesh.material.name];if(!tone)return;const target=new THREE.Color(tone[0]);
+ if(!mesh.instanceColor){mesh.material.color.lerp(target,tone[1]);return;}
+ for(let i=0;i<mesh.count;i++){mesh.getColorAt(i,instanceTone);mesh.setColorAt(i,instanceTone.lerp(target,tone[1]));}mesh.instanceColor.needsUpdate=true;
+}
+export {FOLIAGE};
 const groupProps=list=>{const out={};for(const p of list)(out[p.model+'/'+p.part]??=[]).push(p);return out;};
 const box=()=>new THREE.BoxGeometry(1,1,1).translate(0,.5,0);
 const post=new THREE.CylinderGeometry(1,1,1,8).translate(0,.5,0);
@@ -41,8 +52,9 @@ export function buildExpedition(source,models){
   return out;
  }
  // Primeiro acabamento regional: pântano. Mantém os dados e o fallback procedural.
- const useNature=(arena.biome==='swamp'||arena.custom&&arena.biome==='forest')&&models?.natureKit;
- const forestGround=arena.custom&&arena.biome==='forest';
+ // Expedições (expedition-biomes.mjs) usam o kit em todos os biomas, com a folhagem tingida pelo bioma.
+ const useNature=(arena.biome==='swamp'||arena.custom&&(arena.biome==='forest'||arena.expeditionMap))&&models?.natureKit;
+ const forestGround=arena.custom&&(arena.biome==='forest'||arena.expeditionMap);
  // Biomas verdes usam o chão pintado de Jacarandá (grama e terra batida); o pântano escurece a grama e ganha poças.
  const groundStyle=arena.style?.ground||(arena.terrain?BIOME_GROUND[arena.biome]:null),painted=['forest','village','swamp'].includes(arena.biome)||!!arena.terrain||!!arena.style?.ground;
  const base=useNature?{...arena,solids:arena.solids.filter(s=>!['pine','oak','rock'].includes(s.look)),decor:{...arena.decor,trees:[],bushes:[],grass:[],flowers:[]}}:arena;
@@ -62,6 +74,7 @@ export function buildExpedition(source,models){
    // Isolar a paleta regional dos materiais do kit usados na vila.
    mesh.material=mesh.material.clone();
    if(arena.biome==='swamp'&&['kit_leaf','kit_needle','kit_grass','kit_petal'].includes(mesh.material.name))mesh.material.color.multiply(new THREE.Color(0xa6ad72));
+   else if(arena.expeditionMap)foliage(mesh,arena.biome);
    if(forestGround){const [sway,swayFrom]=NATURE_SWAY[mesh.material.name]||[0,0];patchScenery(mesh.material,{sway,swayFrom});}
    out.push(mesh);
   }
@@ -84,13 +97,14 @@ export function buildExpedition(source,models){
  // Casas: caixa e telhado de quatro águas, dentro do raio de colisão.
  const swampRuins=arena.biome==='swamp'&&models?.swampKit;
  if(swampRuins)for(let v=0;v<3;v++)for(const mesh of kitFamily(models.swampKit,'tomb_'+v,misc('tomb').filter((m,i)=>i%3===v).map((m,i)=>({x:m.x,z:m.y,ry:i,sx:m.size,sy:m.size,sz:m.size}))))add(mesh);
- const houses=look('house'),damaged=arena.custom&&models?.ruinedVillageKit;
+ const houses=look('house'),intact=arena.intactTown&&models?.villageKit,damaged=!arena.intactTown&&arena.custom&&models?.ruinedVillageKit;
+ if(intact)add(buildHouses(models.villageKit,houses.map(h=>({...h,width:h.r*1.35,depth:h.r*1.25})),()=>({wall:new THREE.Color(0xeee2c6),roof:new THREE.Color(0x8b4436)})).meshes);
  if(damaged){
   const kit=models.ruinedVillageKit,layout=houses.map(h=>({...h,width:h.r*1.35,depth:h.r*1.25}));
   for(const mesh of buildHouses(kit,layout,h=>({wall:new THREE.Color([0xd4c6a4,0xc7b995,0xdacdaf][Math.floor(h.tone*3)%3]),roof:new THREE.Color([0x78533f,0x62694e,0x875140][Math.floor(h.tone*3)%3])})).meshes){mesh.material=mesh.material.clone();if(mesh.material.name==='kit_glow'){mesh.material.emissive.set(0);mesh.material.color.set(0x292923);}if(forestGround)patchScenery(mesh.material);add(mesh);}
   add(kitFamily(kit,'boarding',layout.map(h=>({x:h.x,z:h.y+h.depth/2+.09,y:.9,sx:.8,sy:.8,sz:1}))));
  }
- const plainHouses=damaged?[]:houses;
+ const plainHouses=damaged||intact?[]:houses;
  add(family(box(),material({color:0xffffff}),plainHouses,h=>{dummy.position.set(h.x,0,h.y);dummy.scale.set(3.2,h.height*.8,3.2);},{shadow:true,color:h=>mix(0x9a8466,0xb89a70,h.tone)}));
  add(family(new THREE.ConeGeometry(Math.SQRT1_2,1,4).rotateY(Math.PI/4).translate(0,.5,0),material({color:0xffffff}),plainHouses,h=>{dummy.position.set(h.x,h.height*.8,h.y);dummy.scale.set(4.2,1.4,4.2);},{shadow:true,color:h=>mix(0x7a3a2c,0x9a4c36,h.tone)}));
  if(models?.cryptArchitecture)add(kitFamily(models.cryptArchitecture,'crypt_column',look('column').map(c=>({x:c.x,z:c.y,sx:c.r/.86,sy:c.height/6,sz:c.r/.86}))));

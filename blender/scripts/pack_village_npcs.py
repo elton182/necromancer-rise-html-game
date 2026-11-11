@@ -7,7 +7,7 @@ IDS={'bram':'smith','lysa':'elder','tilda':'tilda','merchant':'merch'}
 only=next((arg.split('=',1)[1] for arg in sys.argv[1:] if arg.startswith('--only=')),None)
 if only and only not in IDS:raise SystemExit('Unknown villager: '+only)
 board=Image.new('RGB',(224*4,260*2),'#39352f');draw=ImageDraw.Draw(board)
-game=HERE.parent/'necromancer-canvas.html';html=game.read_text()
+game=HERE.parent/'v1/necromancer-canvas.html';html=game.read_text()
 packed=[]
 for i,(ident,key) in enumerate(IDS.items()):
  if only and ident!=only:continue

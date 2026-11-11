@@ -141,9 +141,9 @@ test('edição da campanha: fica salva, entra no jogo e não quebra a história'
   assert.ok(flat.spawns.some(s=>s.id==='mine-guards'),'grupo de missão removido volta da planta');assert.ok(isRequiredSpawn('world','mine-guards'));
   const s=createSession();startCampaign(s,{opening:false,legacy:false});const w=s.world;
   assert.equal(w.adventure.kind,'campaign-world');assert.ok(w.arena.terrain,'o mundo recebe o relevo');assert.equal(w.arena.style.sky,'#0b1120');assert.ok(w.arena.kitProps.some(p=>p.part==='tent'));
-  const g=w.adventure.groups.find(x=>x.id==='forest-a');assert.equal(g.count,8,'composição do editor, dobrada pela densidade da campanha');assert.deepEqual(g.mix,Array(8).fill(4));assert.equal(g.radius,30);
+  const g=w.adventure.groups.find(x=>x.id==='forest-a');assert.equal(g.count,3,'campanha limita a quantidade sem multiplicar a composição do editor');assert.deepEqual(g.mix,Array(3).fill(4));assert.equal(g.radius,16);
   const quest=w.adventure.groups.find(x=>x.id==='mine-guards');assert.equal(quest.quest,true,'o que é missão vem do jogo');
-  w.player.x=g.x+25;w.player.y=g.y;tickWorld(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a').length,8,'composição e raio editados valem em jogo, com a densidade da campanha');
+  w.player.x=g.x+12;w.player.y=g.y;tickWorld(s,.1);assert.equal(w.actors.filter(a=>a.worldGroup==='forest-a').length,3,'composição editada continua valendo dentro dos limites da campanha');
   doc.size={w:100,h:100};const problems=checkCampaignMap(doc,reloaded.lookup);assert.ok(problems.some(p=>p.level==='erro'&&/Fora do mapa/.test(p.text)),'reduzir o mapa avisa dos lugares da história');
   assert.ok(reloaded.remove(doc.id).ok);assert.equal(editedCampaignMap('world'),null,'restaurar volta ao original');
   const cave=campaignDocument('cave');cave.terrain=blankTerrain({w:144,h:360});library.save(cave);useCampaignMaps(createLibrary(storage));

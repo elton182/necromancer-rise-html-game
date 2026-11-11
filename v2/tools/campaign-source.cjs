@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 function expression(source,start,context={}){const at=source.indexOf(start);if(at<0)throw Error('Fonte E9 ausente: '+start);const from=at+start.length;for(let end=source.indexOf(';',from);end>=0;end=source.indexOf(';',end+1)){const text=source.slice(from,end);try{new vm.Script('('+text+')');}catch{continue;}return vm.runInNewContext('('+text+')',context,{timeout:1000});}throw Error('Expressão E9 inválida: '+start);}
 function readCampaign(repo=path.resolve(__dirname,'../..')){
- const html=fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8'),read=(start,ctx)=>expression(html,start,ctx);
+ const html=fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8'),read=(start,ctx)=>expression(html,start,ctx);
  const stageBody=html.match(/function stageMul\(\)\{([^\n]+)\}/)?.[1],waveCountExpression=html.match(/let count = ([^;]+);/)?.[1];if(!stageBody||!waveCountExpression)throw Error('Escala E9 mudou; revisar adaptador');
  const rooms=read('DNG.rooms=',{R:(id,x0,x1,y0,y1,waves)=>({id,x0,x1,y0,y1,waves})});
  const context={R_:(...r)=>({r}),NECRO_STYLE:{},sc_:(bg,r,o)=>({...r,bg,...o})};for(const m of html.matchAll(/s:([A-Z][A-Z_]+)/g))context[m[1]]={};const storySource=html.slice(html.indexOf('Object.assign(STORY,{')+'Object.assign(STORY,'.length);let stories;

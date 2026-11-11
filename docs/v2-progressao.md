@@ -3,14 +3,14 @@
 Fontes da v2: `v2/scripts/progression.mjs`, `rewards.mjs`, `drops.mjs`,
 `gear.mjs`, `consumables.mjs`, `gear-panel.mjs` e a normalização em
 `save-model.mjs`. Os caminhos deste guia são relativos à raiz do projeto.
-Regras vigentes do jogo atual: [personagem](mecanicas/personagem-e-progressao.md)
-e [equipamentos e loot](mecanicas/equipamentos-e-loot.md).
+Regras vigentes do jogo atual: [personagem](../v1/docs/mecanicas/personagem-e-progressao.md)
+e [equipamentos e loot](../v1/docs/mecanicas/equipamentos-e-loot.md).
 
 ## Fontes das regras
 
 | Regra | Origem | Como chega à v2 |
 | --- | --- | --- |
-| Curva de XP, nível 60, cura por nível, ouro, orbes, preços e pilhas | `scripts/skill-trees.js`, `scripts/equipment.js` e `SHOP_ITEMS` em `necromancer-canvas.html` | `v2/tools/progression-source.cjs` gera `v2/scripts/progression-rules.mjs`; falha claramente se a fonte mudar |
+| Curva de XP, nível 60, cura por nível, ouro, orbes, preços e pilhas | `scripts/skill-trees.js`, `scripts/equipment.js` e `SHOP_ITEMS` em `v1/necromancer-canvas.html` | `v2/tools/progression-source.cjs` gera `v2/scripts/progression-rules.mjs`; falha claramente se a fonte mudar |
 | Geração de itens, raridades, afixos, validação, bônus, preços e estimativas | `scripts/equipment-model.js` | `shared-equipment.mjs`, gerado por `node v2/tools/build.cjs`; a v2 não mantém fórmulas paralelas |
 | Pontos e efeitos da árvore | `build-simulator/model.js` | `shared-build.mjs` (E6) |
 
@@ -43,6 +43,21 @@ o XP é ajustado ao nível final) e sobem juntos. Com grupos reais, o nível efe
 
 Um **perfil de teste** (builds de teste da horda e das magias, nível 24) substitui
 o nível em memória e zera o XP. Salvar depois disso grava o nível de teste.
+
+## Redistribuição de habilidades
+
+Todas as seis classes têm o botão **Redistribuir** na aba **Habilidades** do
+Relicário. A operação devolve todos os pontos investidos na árvore da classe
+por **20 ouro por ponto**, com o custo total e o ouro disponível exibidos antes
+do clique. Sem pontos ou sem ouro suficiente, o botão fica desativado.
+
+A redistribuição funciona no menu, na vila, no mapa e no treino pausado pelo
+Relicário. O Necromante mantém também as restrições de recuperação da horda
+descritas no [Grimório](v2-grimorio.md). Nas demais classes, efeitos e invocações
+ativos são encerrados; a Druida volta à forma humana. Os atributos são
+recalculados sem cura, as recargas são preservadas e habilidades que perderam
+seus pontos ficam bloqueadas na barra até serem aprendidas novamente.
+Nível, XP, equipamentos e progresso da campanha são preservados.
 
 ## Recompensa por abate
 

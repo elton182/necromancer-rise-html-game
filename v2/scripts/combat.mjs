@@ -1,3 +1,4 @@
+import {schoolSynergy} from './skill-synergy.mjs';
 import RULES from './combat-rules.mjs';
 import {defenseReduction,spellDamage,moveSpeed} from './shared-equipment.mjs';
 import {moveCircle,resolvePosition} from './terrain.mjs';
@@ -19,6 +20,7 @@ function kill(w,a,source){
  if(a.dead)return;a.dead=true;a.hp=0;a.animation='death';a.animationTime=0;a.pose=null;a.timer=0;a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);
  if(a===w.boss){a.king=null;a.kingRoar=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);w.hostileZones=(w.hostileZones||[]).filter(z=>z.source!==a.id);for(const add of w.actors)if(add.kingOwner===a.id&&add.hp>0){add.hp=0;add.dead=true;add.animation='death';add.animationTime=0;add.kingOwner=null;}}
  w.combatEvents.push({kind:'death',id:w.nextId++,target:a.id,team:a.team,source:source?.id??null});
+ if(a===w.player){w.warriorFireTrails=[];w.warriorWaves=[];w.marksmanShield=null;w.druidLeafShield=null;w.druidHunt=null;w.druidPack=[];w.actors=w.actors.filter(e=>!e.companion);for(const e of w.actors){e.hunterMark=0;e.hunterMarkBonus=0;e.falconMark=0;}w.marksmanDoubleAmbush=false;}
  if(a.groupType)w.onAllyDeath?.(a);
  if(a.team==='enemy')w.onEnemyDeath?.(a,source);
  if(a.team==='enemy')w.onLichKill?.(a);
@@ -53,13 +55,26 @@ export function dealDamage(w,target,amount,source=null,tag=null){
   if(target.barrier>0){result.absorbed=Math.min(target.barrier,damage);target.barrier-=result.absorbed;damage-=result.absorbed;}
   if(damage<=0)return result;
   if(target.boneShield){target.boneShield=false;result.blocked=true;return result;}
+  // Resistência própria, consumida depois das defesas; não altera a barreira dos outros sistemas.
+  const leaves=w.classId==='druid'&&w.druidLeafShield?.until>w.time?w.druidLeafShield:null;
+  if(leaves){const absorbed=Math.min(damage,Math.max(0,leaves.remaining));leaves.remaining-=absorbed;damage-=absorbed;result.absorbed+=absorbed;
+   if(leaves.remaining<=1e-9){w.druidLeafShield=null;fx(w,'summonBurst',{x:target.x,y:target.y,radius:1,color:'#8fd16a',duration:.4});}
+  }
+  // Escudo Arcano: parte do dano já mitigado consome mana (1 MP por dano); o excedente continua na vida.
+  if(w.classId==='mage'&&w.marksmanShield?.until>w.time&&(w.marksmanRanks?.escudoArcano||0)>0){
+   const share=Math.min(.5,(w.marksmanRanks.escudoArcano||0)*.1),paid=Math.min(Math.max(0,target.mp||0),damage*share);
+   target.mp-=paid;damage-=paid;result.absorbed+=paid;
+  }
  }else if(target.team==='ally'&&['skeleton','zombie','abom'].includes(target.model))damage=Math.max(1,Math.round(damage*RULES.frontlineDamageTaken));
- else if(target.team==='enemy')damage=Math.floor(damage*(w.curses?.damage??1)*rootedBonus(w,target));
+ else if(target.team==='enemy')damage=Math.floor(damage*(w.curses?.damage??1)*rootedBonus(w,target)*(w.player?.hp>0&&target.hunterMark>w.time?1+(target.hunterMarkBonus||0):1));
  result.applied=Math.min(target.hp,damage);target.hp=Math.max(0,target.hp-damage);
  if(result.applied>0&&(target.team==='enemy'||target.labDummy)){const numbers=w.damageNumbers||(w.damageNumbers=[]);numbers.push({id:w.nextId++,x:target.x,y:target.y,amount:result.applied,time:w.time,offset:((numbers.length%5)-2)*.24});if(numbers.length>200)numbers.shift();}
  if(result.applied>0&&source?.team==='enemy'&&(target===w.player||target.team==='ally'))hitFx(w,target,source);
  if(target.labDummy&&result.applied>0)w.onDummyHit?.(target,result.applied,source,tag);
- if(target.hp<=0){kill(w,target,source);result.killed=true;}return result;
+ if(target.hp<=0){kill(w,target,source);result.killed=true;}
+ // Reflexão usa somente vida realmente perdida; a etiqueta impede realimentação entre reflexões.
+ if(target===w.player&&w.classId==='warrior'&&result.applied>0&&source?.team==='enemy'&&source.hp>0&&tag!=='Armadura de Espinhos'&&(w.warriorRanks?.armaduraDeEspinhos||0)>0){dealDamage(w,source,result.applied*w.warriorRanks.armaduraDeEspinhos*.08*(1+schoolSynergy('warrior',w.warriorRanks,'armaduraDeEspinhos')),target,'Armadura de Espinhos');fx(w,'impact',{x:source.x,y:source.y,h:.8,color:'#a8d4ec',radius:.5,duration:.25});}
+ return result;
 }
 export const LANCE={chargeTime:1.6,minRange:6,maxRange:16,minWidth:.55,maxWidth:1.9,maxDamage:2.5};
 export function canChargeBolt(w){return !!w.modifiers.lance&&!w.paused&&w.player.hp>0&&(!w.lich||w.lich.form==='none')&&w.castCooldown<=1e-9&&w.player.mp>=boltCost(w)&&Number.isFinite(w.aim.x)&&Number.isFinite(w.aim.y);}

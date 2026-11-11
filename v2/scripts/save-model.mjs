@@ -1,6 +1,6 @@
 import WarriorGear from './warrior-equipment.mjs';
 import {warriorRanks,warriorLoadout,warriorStanceId,warriorTornado} from './warrior-model.mjs';
-import {druidRanks} from './druid-model.mjs';
+import {druidRanks,normalizeDruidPack} from './druid-model.mjs';
 import {marksmanRanks} from './marksman-model.mjs';
 import {CLASS_IDS,isMartial,isMarksman} from './class-registry.mjs';
 import {classLoadout} from './skill-loadout.mjs';
@@ -57,6 +57,7 @@ export function normalizeSave(raw){
  if(profileLevel>result.character.level)result.character.level=profileLevel;
  else if(profileLevel<result.character.level)result.horde=normalizeHorde({...result.horde,profile:{...result.horde.profile,level:result.character.level}});
  result.character.classId=p.classId||'necromancer';if(!CLASS_IDS.includes(result.character.classId))throw Error('Classe inválida.');result.character.druidRanks=druidRanks(p.druidRanks,result.character.level);result.character.marksmanRanks=marksmanRanks(result.character.classId,p.marksmanRanks,result.character.level);result.character.warriorLoadout=warriorLoadout(p.warriorLoadout);{const bar=classLoadout(result.character.classId,p.skillLoadout);if(bar)result.character.skillLoadout=bar;else delete result.character.skillLoadout;}result.character.warriorRanks=warriorRanks(p.warriorRanks,result.character.level);result.character.warriorStance=warriorStanceId(p.warriorStance);result.character.warriorTornadoVariant=warriorTornado(p.warriorTornadoVariant,result.character.warriorRanks).id;
+ result.character.druidPack=result.character.classId==='druid'?normalizeDruidPack(p.druidPack).slice(0,result.character.druidRanks.lobo>0?1+(result.character.druidRanks.alcateia||0):0):[];
  if(result.character.classId==='warrior'&&p.warriorEquipmentVersion!==1){
   for(const type of ['sword','shield']){const id='starter-'+type+'-'+(p.slotId||'imported');if(!result.character.equipment[type]&&!result.character.gearBag.some(i=>i.id===id))result.character.equipment[type]=WarriorGear.generate(1,null,()=>.2,type,false,id);}
   result.character.warriorEquipmentVersion=1;

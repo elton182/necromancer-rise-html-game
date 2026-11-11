@@ -1,0 +1,3656 @@
+TAP version 13
+# Subtest: Marca: todo dano ganha 20% uma vez, troca de presa, expiração e limpeza
+ok 1 - Marca: todo dano ganha 20% uma vez, troca de presa, expiração e limpeza
+  ---
+  duration_ms: 16.5847
+  ...
+# Subtest: Marca: falcão prioriza a presa visível, paredes impedem comando sem gastar
+ok 2 - Marca: falcão prioriza a presa visível, paredes impedem comando sem gastar
+  ---
+  duration_ms: 5.933
+  ...
+# Subtest: Disparo Preciso: preparação, alcance longo, colisão e cancelamento
+ok 3 - Disparo Preciso: preparação, alcance longo, colisão e cancelamento
+  ---
+  duration_ms: 16.3199
+  ...
+# Subtest: Saraivada Múltipla: 25 flechas, cinco em cada presa, sem concentrar num chefe
+ok 4 - Saraivada Múltipla: 25 flechas, cinco em cada presa, sem concentrar num chefe
+  ---
+  duration_ms: 46.6989
+  ...
+# Subtest: Saraivada Múltipla: alvos mortos não concentram sequências nos já escolhidos
+ok 5 - Saraivada Múltipla: alvos mortos não concentram sequências nos já escolhidos
+  ---
+  duration_ms: 5.2415
+  ...
+# Subtest: Rasantes: seis impactos, prioridade da marca, ocupação e passos de tempo grandes
+ok 6 - Rasantes: seis impactos, prioridade da marca, ocupação e passos de tempo grandes
+  ---
+  duration_ms: 8.064
+  ...
+# Subtest: Rasantes distribuem impactos e morte remove a sequência
+ok 7 - Rasantes distribuem impactos e morte remove a sequência
+  ---
+  duration_ms: 3.9052
+  ...
+# Subtest: Rasantes não acertam presas além de paredes; morte encerra Marca imediatamente
+ok 8 - Rasantes não acertam presas além de paredes; morte encerra Marca imediatamente
+  ---
+  duration_ms: 2.7201
+  ...
+# Subtest: Chuva cresce por ponto; variante deixa um único campo e compartilha recarga
+ok 9 - Chuva cresce por ponto; variante deixa um único campo e compartilha recarga
+  ---
+  duration_ms: 10.5865
+  ...
+# Subtest: Emboscada em Dupla chama só um Impacto; Impacto Feroz libera 18 penas
+ok 10 - Emboscada em Dupla chama só um Impacto; Impacto Feroz libera 18 penas
+  ---
+  duration_ms: 15.6179
+  ...
+# Subtest: novos nós são normalizados e preservados com seus pré-requisitos
+ok 11 - novos nós são normalizados e preservados com seus pré-requisitos
+  ---
+  duration_ms: 0.5574
+  ...
+# Subtest: regras: recompensa, tamanho da wave e cadência de nascimento
+ok 12 - regras: recompensa, tamanho da wave e cadência de nascimento
+  ---
+  duration_ms: 3.6957
+  ...
+# Subtest: seleção só aceita waves liberadas e conclusão libera a seguinte uma vez
+ok 13 - seleção só aceita waves liberadas e conclusão libera a seguinte uma vez
+  ---
+  duration_ms: 2.212
+  ...
+# Subtest: Pedra do Infinito: ponto na vila; sem vila liberada a arena não abre
+ok 14 - Pedra do Infinito: ponto na vila; sem vila liberada a arena não abre
+  ---
+  duration_ms: 43.9384
+  ...
+# Subtest: arena: waves sucessivas pagam uma vez, sobem o recorde e escalam por wave
+ok 15 - arena: waves sucessivas pagam uma vez, sobem o recorde e escalam por wave
+  ---
+  duration_ms: 24.751
+  ...
+# Subtest: arena começa na wave escolhida e uma repetição não reduz o recorde
+ok 16 - arena começa na wave escolhida e uma repetição não reduz o recorde
+  ---
+  duration_ms: 28.9012
+  ...
+# Subtest: sair pelo portal ou morrer encerra a corrida, limpa o campo e mantém o recorde
+ok 17 - sair pelo portal ou morrer encerra a corrida, limpa o campo e mantém o recorde
+  ---
+  duration_ms: 41.3863
+  ...
+# Subtest: recorde persiste no save e na importação do arquivo antigo (inclusive camp.eb)
+ok 18 - recorde persiste no save e na importação do arquivo antigo (inclusive camp.eb)
+  ---
+  duration_ms: 23.1335
+  ...
+# Subtest: mercador da vila vende peças do nível da maior wave liberada; o menu mantém a configuração
+ok 19 - mercador da vila vende peças do nível da maior wave liberada; o menu mantém a configuração
+  ---
+  duration_ms: 31.8047
+  ...
+# Subtest: campanha comum não é afetada: fase não usa waves da arena
+ok 20 - campanha comum não é afetada: fase não usa waves da arena
+  ---
+  duration_ms: 31.4177
+  ...
+# Subtest: todos os efeitos do jogo anterior existem e tocam sem erro
+ok 21 - todos os efeitos do jogo anterior existem e tocam sem erro
+  ---
+  duration_ms: 11.4695
+  ...
+# Subtest: o mesmo efeito não dispara de novo em menos de 45 ms
+ok 22 - o mesmo efeito não dispara de novo em menos de 45 ms
+  ---
+  duration_ms: 1.0382
+  ...
+# Subtest: o áudio só nasce no primeiro gesto e retoma o contexto suspenso
+ok 23 - o áudio só nasce no primeiro gesto e retoma o contexto suspenso
+  ---
+  duration_ms: 0.3994
+  ...
+# Subtest: sem Web Audio o jogo segue em silêncio, sem lançar erro
+ok 24 - sem Web Audio o jogo segue em silêncio, sem lançar erro
+  ---
+  duration_ms: 0.6025
+  ...
+# Subtest: mudo bloqueia os efeitos e a preferência volta na próxima abertura
+ok 25 - mudo bloqueia os efeitos e a preferência volta na próxima abertura
+  ---
+  duration_ms: 1.0854
+  ...
+# Subtest: preferência corrompida ou armazenamento indisponível cai nos valores padrão
+ok 26 - preferência corrompida ou armazenamento indisponível cai nos valores padrão
+  ---
+  duration_ms: 3.1593
+  ...
+# Subtest: cada trilha agenda notas, troca com fade e silencia quando mudo
+ok 27 - cada trilha agenda notas, troca com fade e silencia quando mudo
+  ---
+  duration_ms: 104.6563
+  ...
+# Subtest: trilha escolhida antes do primeiro gesto começa quando o áudio é liberado
+ok 28 - trilha escolhida antes do primeiro gesto começa quando o áudio é liberado
+  ---
+  duration_ms: 5.6767
+  ...
+# Subtest: efeito em arquivo usa cache, toca uma vez sem loop e respeita mudo
+ok 29 - efeito em arquivo usa cache, toca uma vez sem loop e respeita mudo
+  ---
+  duration_ms: 32.5801
+  ...
+# Subtest: efeito inválido usa procedural e descarte impede reprodução pendente
+ok 30 - efeito inválido usa procedural e descarte impede reprodução pendente
+  ---
+  duration_ms: 22.2222
+  ...
+# Subtest: base64Bytes devolve os bytes originais do arquivo embutido
+ok 31 - base64Bytes devolve os bytes originais do arquivo embutido
+  ---
+  duration_ms: 1.2465
+  ...
+# Subtest: trilha em arquivo toca em loop no lugar da procedural e não agenda notas
+ok 32 - trilha em arquivo toca em loop no lugar da procedural e não agenda notas
+  ---
+  duration_ms: 14.232
+  ...
+# Subtest: a trilha em arquivo é decodificada uma vez e para ao trocar de tema
+ok 33 - a trilha em arquivo é decodificada uma vez e para ao trocar de tema
+  ---
+  duration_ms: 13.2702
+  ...
+# Subtest: trocar de tema antes de a decodificação terminar não inicia a trilha antiga
+ok 34 - trocar de tema antes de a decodificação terminar não inicia a trilha antiga
+  ---
+  duration_ms: 11.844
+  ...
+# Subtest: arquivo que não decodifica cai na trilha procedural do tema
+ok 35 - arquivo que não decodifica cai na trilha procedural do tema
+  ---
+  duration_ms: 6.496
+  ...
+# Subtest: descartar o áudio fecha o contexto e interrompe o agendamento
+ok 36 - descartar o áudio fecha o contexto e interrompe o agendamento
+  ---
+  duration_ms: 5.8543
+  ...
+# Subtest: o primeiro quadro só cria a referência e não soa
+ok 37 - o primeiro quadro só cria a referência e não soa
+  ---
+  duration_ms: 90.6614
+  ...
+# Subtest: Tiro de Osso e Dash soam ao disparar; o impacto soa ao acertar
+ok 38 - Tiro de Osso e Dash soam ao disparar; o impacto soa ao acertar
+  ---
+  duration_ms: 64.2718
+  ...
+# Subtest: um quadro longo não perde o tiro nem o acerto
+ok 39 - um quadro longo não perde o tiro nem o acerto
+  ---
+  duration_ms: 34.9115
+  ...
+# Subtest: cada magia toca o som do jogo anterior ao ser conjurada
+ok 40 - cada magia toca o som do jogo anterior ao ser conjurada
+  ---
+  duration_ms: 76.6951
+  ...
+# Subtest: morte de inimigo, do chefe e dano ao jogador têm sons próprios
+ok 41 - morte de inimigo, do chefe e dano ao jogador têm sons próprios
+  ---
+  duration_ms: 15.1349
+  ...
+# Subtest: aliado que cai e renasce toca morte e reanimação
+ok 42 - aliado que cai e renasce toca morte e reanimação
+  ---
+  duration_ms: 14.9505
+  ...
+# Subtest: subir de nível toca levelUp uma única vez
+ok 43 - subir de nível toca levelUp uma única vez
+  ---
+  duration_ms: 9.7156
+  ...
+# Subtest: pausa e carga de save não geram sons e atualizam a referência
+ok 44 - pausa e carga de save não geram sons e atualizam a referência
+  ---
+  duration_ms: 52.084
+  ...
+# Subtest: trocas de cena tocam portal; morte toca gameOver; menu fica em silêncio
+ok 45 - trocas de cena tocam portal; morte toca gameOver; menu fica em silêncio
+  ---
+  duration_ms: 8.9627
+  ...
+# Subtest: marcos da campanha tocam aviso de onda e conclusão
+ok 46 - marcos da campanha tocam aviso de onda e conclusão
+  ---
+  duration_ms: 23.2151
+  ...
+# Subtest: trilha acompanha cena, estágio, chefe e história
+ok 47 - trilha acompanha cena, estágio, chefe e história
+  ---
+  duration_ms: 74.3177
+  ...
+# Subtest: mapas de som de coleta e consumíveis só usam efeitos que existem
+ok 48 - mapas de som de coleta e consumíveis só usam efeitos que existem
+  ---
+  duration_ms: 0.4319
+  ...
+# Subtest: golpe da Forma da Morte soa só o vento da foice, sem o ruído de impacto
+ok 49 - golpe da Forma da Morte soa só o vento da foice, sem o ruído de impacto
+  ---
+  duration_ms: 69.6955
+  ...
+# Subtest: grito prepara e aplica bonus temporario sem alterar atributos base
+ok 50 - grito prepara e aplica bonus temporario sem alterar atributos base
+  ---
+  duration_ms: 123.9003
+  ...
+# Subtest: morte cancela preparacao e encerra o bonus concedido
+ok 51 - morte cancela preparacao e encerra o bonus concedido
+  ---
+  duration_ms: 28.4895
+  ...
+# Subtest: vida maior e flechas do ladino carregam sinal de rastro
+ok 52 - vida maior e flechas do ladino carregam sinal de rastro
+  ---
+  duration_ms: 1.4077
+  ...
+# Subtest: Bruno: limite, custo, persistência e bônus sem acumulação
+ok 53 - Bruno: limite, custo, persistência e bônus sem acumulação
+  ---
+  duration_ms: 51.909
+  ...
+# Subtest: Bruno: rolagem altera só um afixo, não repete atributos e persiste
+ok 54 - Bruno: rolagem altera só um afixo, não repete atributos e persiste
+  ---
+  duration_ms: 9.5222
+  ...
+# Subtest: Bruno recusa combate, ouro insuficiente e índice inválido sem mutar
+ok 55 - Bruno recusa combate, ouro insuficiente e índice inválido sem mutar
+  ---
+  duration_ms: 7.7128
+  ...
+# Subtest: Bruno melhora todos os slots e atualiza equipado preservando vida proporcional
+ok 56 - Bruno melhora todos os slots e atualiza equipado preservando vida proporcional
+  ---
+  duration_ms: 71.8207
+  ...
+# Subtest: atlas posiciona as quatro fases dentro do mapa e marca o estado de cada uma
+ok 57 - atlas posiciona as quatro fases dentro do mapa e marca o estado de cada uma
+  ---
+  duration_ms: 4.4595
+  ...
+# Subtest: sem fases abertas além da primeira, a próxima é a fase 1; tudo concluído não marca próxima
+ok 58 - sem fases abertas além da primeira, a próxima é a fase 1; tudo concluído não marca próxima
+  ---
+  duration_ms: 0.8117
+  ...
+# Subtest: clique no marco ou no rótulo escolhe a fase; fora deles não escolhe nada
+ok 59 - clique no marco ou no rótulo escolhe a fase; fora deles não escolhe nada
+  ---
+  duration_ms: 0.4528
+  ...
+# Subtest: campanha integrada anterior nasce no sarcófago; cenário e pontos de inimigos são os do editor
+ok 60 - campanha integrada anterior nasce no sarcófago; cenário e pontos de inimigos são os do editor
+  ---
+  duration_ms: 2903.7782
+  ...
+# Subtest: rotas contínuas e NPCs são alcançáveis sem cruzar colisores
+ok 61 - rotas contínuas e NPCs são alcançáveis sem cruzar colisores
+  ---
+  duration_ms: 505.2697
+  ...
+# Subtest: encontros são locais; pausa não cria inimigos; Tiro de Osso usa combate e recompensa comuns
+ok 62 - encontros são locais; pausa não cria inimigos; Tiro de Osso usa combate e recompensa comuns
+  ---
+  duration_ms: 644.066
+  ...
+# Subtest: pedido, guardas, libertação e retorno: ordem obrigatória e prêmio único
+ok 63 - pedido, guardas, libertação e retorno: ordem obrigatória e prêmio único
+  ---
+  duration_ms: 479.3013
+  ...
+# Subtest: retorno à vila limpa ameaças e rearma só encontros repetíveis
+ok 64 - retorno à vila limpa ameaças e rearma só encontros repetíveis
+  ---
+  duration_ms: 408.048
+  ...
+# Subtest: morte retoma no último abrigo; recarga mantém a missão, sem serializar combate
+ok 65 - morte retoma no último abrigo; recarga mantém a missão, sem serializar combate
+  ---
+  duration_ms: 1624.6274
+  ...
+# Subtest: mapa e conversa pausam, fecham sem perder missão e recusam ação à distância
+ok 66 - mapa e conversa pausam, fecham sem perder missão e recusam ação à distância
+  ---
+  duration_ms: 477.2756
+  ...
+# Subtest: todos os pontos de quest, pilhas e encontros ficam em espaço livre e alcançável
+ok 67 - todos os pontos de quest, pilhas e encontros ficam em espaço livre e alcançável
+  ---
+  duration_ms: 400.361
+  ...
+# Subtest: grupos misturam tipos, escalam por região e trazem líder de elite
+ok 68 - grupos misturam tipos, escalam por região e trazem líder de elite
+  ---
+  duration_ms: 347.5549
+  ...
+# Subtest: Joaquim abre as duas quests; Bruno exige a mina livre, volta à forja e paga uma vez
+ok 69 - Joaquim abre as duas quests; Bruno exige a mina livre, volta à forja e paga uma vez
+  ---
+  duration_ms: 404.7075
+  ...
+# Subtest: madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas
+ok 70 - madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas
+  ---
+  duration_ms: 1068.3478
+  ...
+# Subtest: saves concluídos antes das novas quests recebem os pedidos de Joaquim
+ok 71 - saves concluídos antes das novas quests recebem os pedidos de Joaquim
+  ---
+  duration_ms: 0.6276
+  ...
+# Subtest: fontes preservam fases, recompensas e histórias da campanha
+ok 72 - fontes preservam fases, recompensas e histórias da campanha
+  ---
+  duration_ms: 2.7859
+  ...
+# Subtest: normalização e conclusão: desbloqueio sequencial e prêmio único
+ok 73 - normalização e conclusão: desbloqueio sequencial e prêmio único
+  ---
+  duration_ms: 1.6657
+  ...
+# Subtest: portas e união dos corredores impedem atravessar paredes
+ok 74 - portas e união dos corredores impedem atravessar paredes
+  ---
+  duration_ms: 49.6668
+  ...
+# Subtest: personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+ok 75 - personagem novo percorre Ato I, revisita sem prêmio e volta à vila
+  ---
+  duration_ms: 188.7798
+  ...
+# Subtest: morte e recarga não completam fase nem restauram combate
+ok 76 - morte e recarga não completam fase nem restauram combate
+  ---
+  duration_ms: 12.6395
+  ...
+# Subtest: ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+ok 77 - ofertas e missões da vila: conclusão paga uma vez e retorno limpa o campo
+  ---
+  duration_ms: 124.9807
+  ...
+# Subtest: save mantém histórias e prêmios mas não restaura entidades ou zonas
+ok 78 - save mantém histórias e prêmios mas não restaura entidades ou zonas
+  ---
+  duration_ms: 33.6201
+  ...
+# Subtest: grupos revivem entre fases sem duplicar integrantes
+ok 79 - grupos revivem entre fases sem duplicar integrantes
+  ---
+  duration_ms: 19.2869
+  ...
+# Subtest: missão em arena só conclui depois das ondas e do chefe
+ok 80 - missão em arena só conclui depois das ondas e do chefe
+  ---
+  duration_ms: 60.1272
+  ...
+# Subtest: floresta usa wave de combate para vida e fase para nível dos itens
+ok 81 - floresta usa wave de combate para vida e fase para nível dos itens
+  ---
+  duration_ms: 9.8053
+  ...
+# Subtest: chefe da campanha e reforços preservam atributos e níveis do encontro
+ok 82 - chefe da campanha e reforços preservam atributos e níveis do encontro
+  ---
+  duration_ms: 9.8768
+  ...
+# Subtest: floresta e missões liberam Ladrão, Grifo e Aranha por onda; a cripta de tutorial não
+ok 83 - floresta e missões liberam Ladrão, Grifo e Aranha por onda; a cripta de tutorial não
+  ---
+  duration_ms: 75.0096
+  ...
+# Subtest: preserva save anterior sem slot e personagens ao alternar
+ok 84 - preserva save anterior sem slot e personagens ao alternar
+  ---
+  duration_ms: 50.3879
+  ...
+# Subtest: quota e catálogo inválido impedem troca sem perder ativo
+ok 85 - quota e catálogo inválido impedem troca sem perder ativo
+  ---
+  duration_ms: 6.8891
+  ...
+# Subtest: nome vazio ou muito longo não cria personagem
+ok 86 - nome vazio ou muito longo não cria personagem
+  ---
+  duration_ms: 0.2964
+  ...
+# Subtest: exclui ativo e arquivado sem ressuscitar ao trocar, preservando legado
+ok 87 - exclui ativo e arquivado sem ressuscitar ao trocar, preservando legado
+  ---
+  duration_ms: 10.9113
+  ...
+# Subtest: falha de gravação preserva personagens na exclusão
+ok 88 - falha de gravação preserva personagens na exclusão
+  ---
+  duration_ms: 3.3956
+  ...
+# Subtest: Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+ok 89 - Turbilhão atravessa a fila uma vez por inimigo, empurra para o lado e para no alcance
+  ---
+  duration_ms: 26.9585
+  ...
+# Subtest: Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+ok 90 - Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão cresce, dura 6 s e explode
+  ---
+  duration_ms: 38.0839
+  ...
+# Subtest: lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+ok 91 - lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)
+  ---
+  duration_ms: 6.9853
+  ...
+# Subtest: Setas Perseguidoras curvam até um alvo fora do leque
+ok 92 - Setas Perseguidoras curvam até um alvo fora do leque
+  ---
+  duration_ms: 32.7285
+  ...
+# Subtest: Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+ok 93 - Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espiral que desaceleram
+  ---
+  duration_ms: 56.9773
+  ...
+# Subtest: Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+ok 94 - Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo
+  ---
+  duration_ms: 94.9928
+  ...
+# Subtest: Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+ok 95 - Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s
+  ---
+  duration_ms: 117.619
+  ...
+# Subtest: Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+ok 96 - Grimório: os nós novos vêm do arquivo, exigem 2 pontos no pai e o Cão Zumbi exclui a Abominação
+  ---
+  duration_ms: 4.6954
+  ...
+# Subtest: Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+ok 97 - Cão Zumbi é um grupo da horda: dois cães permanentes, atributos do Grimório, morte, reanimação e save
+  ---
+  duration_ms: 114.4497
+  ...
+# Subtest: Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+ok 98 - Cérbero: o grupo vira um só cão, maior, com o triplo da vida e mordida em cone
+  ---
+  duration_ms: 47.6784
+  ...
+# Subtest: cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+ok 99 - cães e magos preservam morte na reserva e no save, recebem ordens e não ganham maestria inexistente
+  ---
+  duration_ms: 97.7046
+  ...
+# Subtest: Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+ok 100 - Magos: orbe roxo à distância; Raio Necrótico atravessa a linha; Ruptura explode quem cai
+  ---
+  duration_ms: 36.5484
+  ...
+# Subtest: Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+ok 101 - Explosão Cadavérica e Carne Instável aumentam a área da Explosão Necrótica
+  ---
+  duration_ms: 51.097
+  ...
+# Subtest: o modelo compartilhado do Rei não é alterado pelos ajustes da v2
+ok 102 - o modelo compartilhado do Rei não é alterado pelos ajustes da v2
+  ---
+  duration_ms: 7.3407
+  ...
+# Subtest: Queda do Rei: raio maior que o canônico e chão em chamas que acaba sozinho
+ok 103 - Queda do Rei: raio maior que o canônico e chão em chamas que acaba sozinho
+  ---
+  duration_ms: 68.2218
+  ...
+# Subtest: Corte Real: alcance e abertura maiores, com travamento de direção preservado
+ok 104 - Corte Real: alcance e abertura maiores, com travamento de direção preservado
+  ---
+  duration_ms: 9.8248
+  ...
+# Subtest: Fase II: transição ocupa o chefe, não ataca durante o rugido e depois volta mais rápido
+ok 105 - Fase II: transição ocupa o chefe, não ataca durante o rugido e depois volta mais rápido
+  ---
+  duration_ms: 18.9135
+  ...
+# Subtest: Fase II: golpes ocorrem mais depressa e o Corte se encadeia em par
+ok 106 - Fase II: golpes ocorrem mais depressa e o Corte se encadeia em par
+  ---
+  duration_ms: 25.3489
+  ...
+# Subtest: Chamado da Coroa: avisos de runas acompanham a preparação e a chegada gera efeito
+ok 107 - Chamado da Coroa: avisos de runas acompanham a preparação e a chegada gera efeito
+  ---
+  duration_ms: 12.5128
+  ...
+# Subtest: Salto: aviso rúnico preenche até o impacto e a morte do Rei limpa avisos, fogo e transição
+ok 108 - Salto: aviso rúnico preenche até o impacto e a morte do Rei limpa avisos, fogo e transição
+  ---
+  duration_ms: 5.1412
+  ...
+# Subtest: golpes de inimigos geram faíscas só quando causam dano
+ok 109 - golpes de inimigos geram faíscas só quando causam dano
+  ---
+  duration_ms: 1.4454
+  ...
+# Subtest: ataques corpo a corpo e à distância mostram rastro, disparo e área
+ok 110 - ataques corpo a corpo e à distância mostram rastro, disparo e área
+  ---
+  duration_ms: 11.0876
+  ...
+# Subtest: Tiro de Osso mostra o lançamento no jogador e o impacto no alvo
+ok 111 - Tiro de Osso mostra o lançamento no jogador e o impacto no alvo
+  ---
+  duration_ms: 7.0716
+  ...
+# Subtest: invocar, equipar e levantar integrantes mostra círculos de runas na cor do grupo
+ok 112 - invocar, equipar e levantar integrantes mostra círculos de runas na cor do grupo
+  ---
+  duration_ms: 16.1541
+  ...
+# Subtest: efeitos pontuais têm teto, expiram sozinhos e não contam os avisos contínuos
+ok 113 - efeitos pontuais têm teto, expiram sozinhos e não contam os avisos contínuos
+  ---
+  duration_ms: 3.7075
+  ...
+# Subtest: avisos hostis: um desenho por golpe, linha única e marcas da horda preservadas
+ok 114 - avisos hostis: um desenho por golpe, linha única e marcas da horda preservadas
+  ---
+  duration_ms: 4.8956
+  ...
+# Subtest: poça hostil: enche durante o aviso, fica estável com dano e não vira fogo
+ok 115 - poça hostil: enche durante o aviso, fica estável com dano e não vira fogo
+  ---
+  duration_ms: 2.1029
+  ...
+# Subtest: Giro da Coroa: horda amontoada recebe aviso em círculo e só leva dano no giro
+ok 116 - Giro da Coroa: horda amontoada recebe aviso em círculo e só leva dano no giro
+  ---
+  duration_ms: 10.9314
+  ...
+# Subtest: Rastro de Brasas: linha travada em Zephyr, desviar evita o dano e o fogo fica no chão
+ok 117 - Rastro de Brasas: linha travada em Zephyr, desviar evita o dano e o fogo fica no chão
+  ---
+  duration_ms: 6.9914
+  ...
+# Subtest: Queda do Rei procura Zephyr mesmo com a horda colada no chefe
+ok 118 - Queda do Rei procura Zephyr mesmo com a horda colada no chefe
+  ---
+  duration_ms: 3.2248
+  ...
+# Subtest: morte do Rei no meio de um golpe da v2 limpa o golpe e os avisos
+ok 119 - morte do Rei no meio de um golpe da v2 limpa o golpe e os avisos
+  ---
+  duration_ms: 5.2606
+  ...
+# Subtest: regras geradas correspondem às fontes atuais; atributos usam modelo compartilhado
+ok 120 - regras geradas correspondem às fontes atuais; atributos usam modelo compartilhado
+  ---
+  duration_ms: 482.4556
+  ...
+# Subtest: tiro custa mana e recarga uma vez; pausa, morte, mira inválida e mana insuficiente não cobram
+ok 121 - tiro custa mana e recarga uma vez; pausa, morte, mira inválida e mana insuficiente não cobram
+  ---
+  duration_ms: 5.7893
+  ...
+# Subtest: colisão contínua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+ok 122 - colisão contínua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+  ---
+  duration_ms: 2.7763
+  ...
+# Subtest: trajetória máxima não ultrapassa nove unidades; sólidos não bloqueiam tiro, como na fonte atual
+ok 123 - trajetória máxima não ultrapassa nove unidades; sólidos não bloqueiam tiro, como na fonte atual
+  ---
+  duration_ms: 2.5483
+  ...
+# Subtest: perfuração e estilhaços compartilham acertos e não multiplicam dano num mesmo alvo
+ok 124 - perfuração e estilhaços compartilham acertos e não multiplicam dano num mesmo alvo
+  ---
+  duration_ms: 2.6398
+  ...
+# Subtest: regeneração e cooldown respeitam tempo, sem avançar na pausa
+ok 125 - regeneração e cooldown respeitam tempo, sem avançar na pausa
+  ---
+  duration_ms: 10.9206
+  ...
+# Subtest: Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+ok 126 - Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+  ---
+  duration_ms: 4.4554
+  ...
+# Subtest: Dash para no primeiro sólido e não desliza ou atravessa paredes e limites
+ok 127 - Dash para no primeiro sólido e não desliza ou atravessa paredes e limites
+  ---
+  duration_ms: 7.6483
+  ...
+# Subtest: proteção do Dash termina ao acabar o deslocamento e não consome barreira
+ok 128 - proteção do Dash termina ao acabar o deslocamento e não consome barreira
+  ---
+  duration_ms: 2.1653
+  ...
+# Subtest: defesa compartilhada, barreira, bloqueio ósseo e morte seguem um único caminho
+ok 129 - defesa compartilhada, barreira, bloqueio ósseo e morte seguem um único caminho
+  ---
+  duration_ms: 2.3027
+  ...
+# Subtest: dano da linha de frente arredonda uma vez; inimigos usam piso e mortes têm crédito único
+ok 130 - dano da linha de frente arredonda uma vez; inimigos usam piso e mortes têm crédito único
+  ---
+  duration_ms: 1.4221
+  ...
+# Subtest: pisos de recarga são aplicados antes de maestria, e Véu não empilha defesa permanentemente
+ok 131 - pisos de recarga são aplicados antes de maestria, e Véu não empilha defesa permanentemente
+  ---
+  duration_ms: 1.7839
+  ...
+# Subtest: morte e transição removem projéteis, recargas e proteções sem persistir combate
+ok 132 - morte e transição removem projéteis, recargas e proteções sem persistir combate
+  ---
+  duration_ms: 21.786
+  ...
+# Subtest: área hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+ok 133 - área hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+  ---
+  duration_ms: 14.0529
+  ...
+# Subtest: custo do Tiro de Osso sobe de 5 MP no nível 1 até o custo das regras no nível máximo
+ok 134 - custo do Tiro de Osso sobe de 5 MP no nível 1 até o custo das regras no nível máximo
+  ---
+  duration_ms: 0.696
+  ...
+# Subtest: corpo de inimigo some após o tempo de decomposição; aliados e jogador permanecem
+ok 135 - corpo de inimigo some após o tempo de decomposição; aliados e jogador permanecem
+  ---
+  duration_ms: 33.68
+  ...
+# Subtest: save: semente por personagem, padrão determinístico, validação e importação do arquivo antigo
+ok 136 - save: semente por personagem, padrão determinístico, validação e importação do arquivo antigo
+  ---
+  duration_ms: 89.1964
+  ...
+# Subtest: acesso: só pela vila; fortaleza bloqueada devolve mensagem e não consome tentativa
+ok 137 - acesso: só pela vila; fortaleza bloqueada devolve mensagem e não consome tentativa
+  ---
+  duration_ms: 62.8997
+  ...
+# Subtest: rota: bioma da rota, no máximo 8 grupos, escala regional, infectados e poças da expedição
+ok 138 - rota: bioma da rota, no máximo 8 grupos, escala regional, infectados e poças da expedição
+  ---
+  duration_ms: 2494.6456
+  ...
+# Subtest: maldições: multiplicam atributos, dano e horda só na tentativa e somem ao voltar
+ok 139 - maldições: multiplicam atributos, dano e horda só na tentativa e somem ao voltar
+  ---
+  duration_ms: 2172.1372
+  ...
+# Subtest: conclusão: influência, rota e recompensa uma vez; recorde da Arena intacto; portal final volta ao mapa
+ok 140 - conclusão: influência, rota e recompensa uma vez; recorde da Arena intacto; portal final volta ao mapa
+  ---
+  duration_ms: 1455.438
+  ...
+# Subtest: fortaleza: exige influência, tenentes e rota; vencer concede o fragmento uma vez e libera a dificuldade seguinte
+ok 141 - fortaleza: exige influência, tenentes e rota; vencer concede o fragmento uma vez e libera a dificuldade seguinte
+  ---
+  duration_ms: 2090.3839
+  ...
+# Subtest: poças: avisam sem dano e depois ferem a cada segundo; infectado deixa poça ao morrer
+ok 142 - poças: avisam sem dano e depois ferem a cada segundo; infectado deixa poça ao morrer
+  ---
+  duration_ms: 848.7919
+  ...
+# Subtest: loot regional: nível e raridade do chefe; cajado Osso Carcomido preservado no save
+ok 143 - loot regional: nível e raridade do chefe; cajado Osso Carcomido preservado no save
+  ---
+  duration_ms: 585.9105
+  ...
+# Subtest: Osso Carcomido: Podridão com 5 cargas, 12% do dano por carga a cada segundo, renova e expira
+ok 144 - Osso Carcomido: Podridão com 5 cargas, 12% do dano por carga a cada segundo, renova e expira
+  ---
+  duration_ms: 19.1321
+  ...
+# Subtest: save/recarga: nada da tentativa é gravado e o progresso regional persiste
+ok 145 - save/recarga: nada da tentativa é gravado e o progresso regional persiste
+  ---
+  duration_ms: 1195.2329
+  ...
+# Subtest: piloto do Brejo: bifurcação, patrulha e preservação dos encontros
+ok 146 - piloto do Brejo: bifurcação, patrulha e preservação dos encontros
+  ---
+  duration_ms: 630.7846
+  ...
+# Subtest: XP de Valdoria: dificuldade e intensidade bonificam abate sem inflar ouro ou maestria
+ok 147 - XP de Valdoria: dificuldade e intensidade bonificam abate sem inflar ouro ou maestria
+  ---
+  duration_ms: 455.7
+  ...
+# Subtest: cripta mantém as paredes originais e acrescenta colisores só dentro das salas
+ok 148 - cripta mantém as paredes originais e acrescenta colisores só dentro das salas
+  ---
+  duration_ms: 16.4149
+  ...
+# Subtest: sala A (treino) continua livre e os pontos de nascimento das ondas ficam em chão livre
+ok 149 - sala A (treino) continua livre e os pontos de nascimento das ondas ficam em chão livre
+  ---
+  duration_ms: 6.6548
+  ...
+# Subtest: cada sala é atravessável a pé de uma entrada à outra, contornando pilares
+ok 150 - cada sala é atravessável a pé de uma entrada à outra, contornando pilares
+  ---
+  duration_ms: 214.7192
+  ...
+# Subtest: fase 1 usa a cripta; portas viram grades com colisão e abrem ao limpar a sala
+ok 151 - fase 1 usa a cripta; portas viram grades com colisão e abrem ao limpar a sala
+  ---
+  duration_ms: 38.8736
+  ...
+# Subtest: distribuição cabe no GitHub e preserva todos os GLBs sem perdas
+ok 152 - distribuição cabe no GitHub e preserva todos os GLBs sem perdas
+  ---
+  duration_ms: 2141.8757
+  ...
+# Subtest: quatro ações entram ao final da barra e exigem seus nós
+ok 153 - quatro ações entram ao final da barra e exigem seus nós
+  ---
+  duration_ms: 15.0489
+  ...
+# Subtest: Calamidade prepara, avança e aplica vento e raios em pulsos completos com diferentes passos
+ok 154 - Calamidade prepara, avança e aplica vento e raios em pulsos completos com diferentes passos
+  ---
+  duration_ms: 43.9935
+  ...
+# Subtest: Calamidade não atravessa parede para causar dano e morte limpa antes dos pulsos
+ok 155 - Calamidade não atravessa parede para causar dano e morte limpa antes dos pulsos
+  ---
+  duration_ms: 34.4625
+  ...
+# Subtest: Floresta: cinco plantas animadas, limite separado das Raízes, substituição e expiração
+ok 156 - Floresta: cinco plantas animadas, limite separado das Raízes, substituição e expiração
+  ---
+  duration_ms: 30.0564
+  ...
+# Subtest: Floresta bloqueada não gasta mana; plantas causam dano e podem ser destruídas
+ok 157 - Floresta bloqueada não gasta mana; plantas causam dano e podem ser destruídas
+  ---
+  duration_ms: 12.0992
+  ...
+# Subtest: Escudo absorve dano depois das defesas; excedente atinge vida e não acumula
+ok 158 - Escudo absorve dano depois das defesas; excedente atinge vida e não acumula
+  ---
+  duration_ms: 5.2464
+  ...
+# Subtest: Escudo respeita barreira, esquiva, transformação, expiração e cura
+ok 159 - Escudo respeita barreira, esquiva, transformação, expiração e cura
+  ---
+  duration_ms: 21.0909
+  ...
+# Subtest: Escudo consome somente o dano mitigado pela defesa; ficha mostra as novas regras
+ok 160 - Escudo consome somente o dano mitigado pela defesa; ficha mostra as novas regras
+  ---
+  duration_ms: 6.1581
+  ...
+# Subtest: Líder: um lobo maior com dano extra, sucessão preserva ferimentos e não ressuscita
+ok 161 - Líder: um lobo maior com dano extra, sucessão preserva ferimentos e não ressuscita
+  ---
+  duration_ms: 12.6473
+  ...
+# Subtest: Comando da matilha exige lobos e presa; concentra ataques e usa uma garra por caçada
+ok 162 - Comando da matilha exige lobos e presa; concentra ataques e usa uma garra por caçada
+  ---
+  duration_ms: 53.012
+  ...
+# Subtest: Comando não atravessa paredes; esquiva cancela a preparação das novas ações
+ok 163 - Comando não atravessa paredes; esquiva cancela a preparação das novas ações
+  ---
+  duration_ms: 220.6573
+  ...
+# Subtest: save mantém pontos e barra, mas escudo, floresta, alvo e líder são transitórios
+ok 164 - save mantém pontos e barra, mas escudo, floresta, alvo e líder são transitórios
+  ---
+  duration_ms: 40.8168
+  ...
+# Subtest: Druida é uma classe válida, com árvore própria persistida e saves antigos intactos
+ok 165 - Druida é uma classe válida, com árvore própria persistida e saves antigos intactos
+  ---
+  duration_ms: 25.0453
+  ...
+# Subtest: orçamento, nível e pré-requisitos da árvore
+ok 166 - orçamento, nível e pré-requisitos da árvore
+  ---
+  duration_ms: 1.0742
+  ...
+# Subtest: atributos mágicos sem horda; passivas e itens do catálogo do Necromante
+ok 167 - atributos mágicos sem horda; passivas e itens do catálogo do Necromante
+  ---
+  duration_ms: 6.6317
+  ...
+# Subtest: mundo da Druida: modelo próprio e nenhum aliado da horda
+ok 168 - mundo da Druida: modelo próprio e nenhum aliado da horda
+  ---
+  duration_ms: 8.6318
+  ...
+# Subtest: Faísca atinge só o primeiro inimigo na linha, sem custo, e respeita a recarga
+ok 169 - Faísca atinge só o primeiro inimigo na linha, sem custo, e respeita a recarga
+  ---
+  duration_ms: 24.491
+  ...
+# Subtest: Corrente salta para inimigos próximos, um salto extra por ponto, com perda por salto
+ok 170 - Corrente salta para inimigos próximos, um salto extra por ponto, com perda por salto
+  ---
+  duration_ms: 6.4986
+  ...
+# Subtest: Raízes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+ok 171 - Raízes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+  ---
+  duration_ms: 3.9007
+  ...
+# Subtest: Tempestade derruba raios só dentro da área, enquanto ela dura
+ok 172 - Tempestade derruba raios só dentro da área, enquanto ela dura
+  ---
+  duration_ms: 45.4206
+  ...
+# Subtest: Rejuvenescer cura 30% da vida ao longo de 5 s
+ok 173 - Rejuvenescer cura 30% da vida ao longo de 5 s
+  ---
+  duration_ms: 5.4283
+  ...
+# Subtest: Forma de Lobo: troca de modelo, garras devolvem mana, consumo contínuo e volta ao esgotar
+ok 174 - Forma de Lobo: troca de modelo, garras devolvem mana, consumo contínuo e volta ao esgotar
+  ---
+  duration_ms: 4.7209
+  ...
+# Subtest: Salto Feroz avança com colisão e atinge a área de pouso
+ok 175 - Salto Feroz avança com colisão e atinge a área de pouso
+  ---
+  duration_ms: 7.2493
+  ...
+# Subtest: sessão: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta à forma humana
+ok 176 - sessão: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta à forma humana
+  ---
+  duration_ms: 53.9049
+  ...
+# Subtest: catálogo preserva índices, IDs modulares e recompensas válidas
+ok 177 - catálogo preserva índices, IDs modulares e recompensas válidas
+  ---
+  duration_ms: 360.9996
+  ...
+# Subtest: Rei compartilhado preserva fases e morte cancela o avanço
+ok 178 - Rei compartilhado preserva fases e morte cancela o avanço
+  ---
+  duration_ms: 7.4526
+  ...
+# Subtest: integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+ok 179 - integração: corte atinge uma vez, morte remove avisos e reforços sem loot
+  ---
+  duration_ms: 64.4091
+  ...
+# Subtest: composição apresenta cão isolado e, no lugar do acólito desativado, o Ladino Arqueiro, sem mudar índices
+ok 180 - composição apresenta cão isolado e, no lugar do acólito desativado, o Ladino Arqueiro, sem mudar índices
+  ---
+  duration_ms: 3.6142
+  ...
+# Subtest: escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+ok 181 - escala e raridade aplicadas uma vez; acólitos vivos reforçam sem empilhar
+  ---
+  duration_ms: 2.6983
+  ...
+# Subtest: especial integrado: Guerreiro
+ok 182 - especial integrado: Guerreiro
+  ---
+  duration_ms: 28.2701
+  ...
+# Subtest: especial integrado: Arqueiro
+ok 183 - especial integrado: Arqueiro
+  ---
+  duration_ms: 54.2359
+  ...
+# Subtest: especial integrado: Bruto
+ok 184 - especial integrado: Bruto
+  ---
+  duration_ms: 15.553
+  ...
+# Subtest: especial integrado: Mago Vivo
+ok 185 - especial integrado: Mago Vivo
+  ---
+  duration_ms: 7.2346
+  ...
+# Subtest: especial integrado: Cão de Cripta
+ok 186 - especial integrado: Cão de Cripta
+  ---
+  duration_ms: 53.5943
+  ...
+# Subtest: especial integrado: Acólito de Guerra
+ok 187 - especial integrado: Acólito de Guerra
+  ---
+  duration_ms: 10.1016
+  ...
+# Subtest: projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+ok 188 - projétil varre alvo e muro; Muralha absorve antes do alvo e é destruída
+  ---
+  duration_ms: 2.4066
+  ...
+# Subtest: morte durante salto/investida impede impactos e limpa altura
+ok 189 - morte durante salto/investida impede impactos e limpa altura
+  ---
+  duration_ms: 7.2993
+  ...
+# Subtest: Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+ok 190 - Rei: salto trava destino, invoca até limite, morte desfaz reforços sem crédito
+  ---
+  duration_ms: 76.4759
+  ...
+# Subtest: encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+ok 191 - encontro persistido, save antigo com padrão e troca de cena limpa os efeitos hostis
+  ---
+  duration_ms: 47.7523
+  ...
+# Subtest: elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+ok 192 - elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+  ---
+  duration_ms: 7.5641
+  ...
+# Subtest: flecha já lançada sobrevive à morte da fonte, como no motor atual
+ok 193 - flecha já lançada sobrevive à morte da fonte, como no motor atual
+  ---
+  duration_ms: 1.7801
+  ...
+# Subtest: aura é arredondada antes do multiplicador do especial, como o getter canônico
+ok 194 - aura é arredondada antes do multiplicador do especial, como o getter canônico
+  ---
+  duration_ms: 4.7581
+  ...
+# Subtest: papéis cobrem todos os tipos e preservam os índices
+ok 195 - papéis cobrem todos os tipos e preservam os índices
+  ---
+  duration_ms: 5.0098
+  ...
+# Subtest: frente: poucos atacam ao mesmo tempo e o resto espera na roda
+ok 196 - frente: poucos atacam ao mesmo tempo e o resto espera na roda
+  ---
+  duration_ms: 266.1711
+  ...
+# Subtest: frente: a vaga de quem morre é ocupada por quem esperava
+ok 197 - frente: a vaga de quem morre é ocupada por quem esperava
+  ---
+  duration_ms: 172.9785
+  ...
+# Subtest: ladinos usam arco curto e chegam ao combate sem orbitar
+ok 198 - ladinos usam arco curto e chegam ao combate sem orbitar
+  ---
+  duration_ms: 131.4488
+  ...
+# Subtest: ladino já colado no alvo não perde tempo contornando
+ok 199 - ladino já colado no alvo não perde tempo contornando
+  ---
+  duration_ms: 2.7505
+  ...
+# Subtest: atiradores se espalham em leque, mantêm distância e atiram
+ok 200 - atiradores se espalham em leque, mantêm distância e atiram
+  ---
+  duration_ms: 275.8989
+  ...
+# Subtest: atirador pressionado recua e continua atirando
+ok 201 - atirador pressionado recua e continua atirando
+  ---
+  duration_ms: 17.3609
+  ...
+# Subtest: pausa congela a tática e o estado não vai para o save
+ok 202 - pausa congela a tática e o estado não vai para o save
+  ---
+  duration_ms: 5.0375
+  ...
+# Subtest: plan: atirador pronto em posição fica parado; sem alvo no alcance avança
+ok 203 - plan: atirador pronto em posição fica parado; sem alvo no alcance avança
+  ---
+  duration_ms: 0.8086
+  ...
+# Subtest: mapas por bioma: trilha seca e livre, encontros e chefe alcançáveis a pé, estilo e relevo próprios
+ok 204 - mapas por bioma: trilha seca e livre, encontros e chefe alcançáveis a pé, estilo e relevo próprios
+  ---
+  duration_ms: 4240.91
+  ...
+# Subtest: mapas por bioma: determinísticos, diferentes entre waves e só com peças do catálogo do editor
+ok 205 - mapas por bioma: determinísticos, diferentes entre waves e só com peças do catálogo do editor
+  ---
+  duration_ms: 6020.5844
+  ...
+# Subtest: mapa: determinístico, limites 156×80, 12 grupos, trilha livre e sem sólidos sobre os encontros
+ok 206 - mapa: determinístico, limites 156×80, 12 grupos, trilha livre e sem sólidos sobre os encontros
+  ---
+  duration_ms: 5043.3789
+  ...
+# Subtest: lançar: só depois da vila; 84 encontros dormentes e boss longe; nada vivo nasce alerta
+ok 207 - lançar: só depois da vila; 84 encontros dormentes e boss longe; nada vivo nasce alerta
+  ---
+  duration_ms: 735.7023
+  ...
+# Subtest: sono: acorda por proximidade, aliado, dano e perde o alerta a mais de 30 u
+ok 208 - sono: acorda por proximidade, aliado, dano e perde o alerta a mais de 30 u
+  ---
+  duration_ms: 1633.0193
+  ...
+# Subtest: dormente voltando ao ponto de origem após perder o alerta
+ok 209 - dormente voltando ao ponto de origem após perder o alerta
+  ---
+  duration_ms: 679.245
+  ...
+# Subtest: boss derrotado: a wave conta uma vez; portal final avança com a horda como estava
+ok 210 - boss derrotado: a wave conta uma vez; portal final avança com a horda como estava
+  ---
+  duration_ms: 740.8718
+  ...
+# Subtest: mochila cheia bloqueia o avanço; peças abaixo do filtro não bloqueiam
+ok 211 - mochila cheia bloqueia o avanço; peças abaixo do filtro não bloqueiam
+  ---
+  duration_ms: 577.7109
+  ...
+# Subtest: sair pelo portal inicial ou morrer encerra a corrida e limpa o campo; recorde permanece
+ok 212 - sair pelo portal inicial ou morrer encerra a corrida e limpa o campo; recorde permanece
+  ---
+  duration_ms: 1024.0173
+  ...
+# Subtest: na wave 1000 o portal final devolve à vila em vez de avançar
+ok 213 - na wave 1000 o portal final devolve à vila em vez de avançar
+  ---
+  duration_ms: 363.7795
+  ...
+# Subtest: boss de expedição garante peça rara ou épica e o dormente não aparece como encontro ativo
+ok 214 - boss de expedição garante peça rara ou épica e o dormente não aparece como encontro ativo
+  ---
+  duration_ms: 9205.2163
+  ...
+# Subtest: Expedição apresenta os novos inimigos conforme a onda
+ok 215 - Expedição apresenta os novos inimigos conforme a onda
+  ---
+  duration_ms: 1647.4462
+  ...
+# Subtest: mapa da floresta é determinístico e mantém dados visuais separados dos colisores
+ok 216 - mapa da floresta é determinístico e mantém dados visuais separados dos colisores
+  ---
+  duration_ms: 75.2531
+  ...
+# Subtest: colisores respeitam limites, afastamento entre obstáculos e áreas livres
+ok 217 - colisores respeitam limites, afastamento entre obstáculos e áreas livres
+  ---
+  duration_ms: 56.8416
+  ...
+# Subtest: toda a clareira alcançável: jogador chega ao campo das ondas e aos cantos
+ok 218 - toda a clareira alcançável: jogador chega ao campo das ondas e aos cantos
+  ---
+  duration_ms: 204.8751
+  ...
+# Subtest: árvore bloqueia o movimento pelo raio do colisor
+ok 219 - árvore bloqueia o movimento pelo raio do colisor
+  ---
+  duration_ms: 6.6912
+  ...
+# Subtest: fase 2 usa a floresta com jogador e inimigos em chão livre
+ok 220 - fase 2 usa a floresta com jogador e inimigos em chão livre
+  ---
+  duration_ms: 112.0433
+  ...
+# Subtest: equipar e desequipar movem a peça sem duplicar e respeitam tipo, anéis e mochila cheia
+ok 221 - equipar e desequipar movem a peça sem duplicar e respeitam tipo, anéis e mochila cheia
+  ---
+  duration_ms: 122.8812
+  ...
+# Subtest: atributos seguem as fórmulas documentadas com itens e preservam proporção sem curar
+ok 222 - atributos seguem as fórmulas documentadas com itens e preservam proporção sem curar
+  ---
+  duration_ms: 16.3401
+  ...
+# Subtest: defesa de itens entra no caminho comum de dano e recargas respeitam o piso do tiro
+ok 223 - defesa de itens entra no caminho comum de dano e recargas respeitam o piso do tiro
+  ---
+  duration_ms: 57.9591
+  ...
+# Subtest: itens de horda alteram atributos dos aliados sem curar e deixam a vida proporcional
+ok 224 - itens de horda alteram atributos dos aliados sem curar e deixam a vida proporcional
+  ---
+  duration_ms: 23.6385
+  ...
+# Subtest: pontos de habilidade dos itens reforçam apenas nós investidos e não liberam pré-requisitos
+ok 225 - pontos de habilidade dos itens reforçam apenas nós investidos e não liberam pré-requisitos
+  ---
+  duration_ms: 46.1056
+  ...
+# Subtest: drops: chefe sempre deixa peça mágica ou melhor; comum segue a chance e o nível configurado
+ok 226 - drops: chefe sempre deixa peça mágica ou melhor; comum segue a chance e o nível configurado
+  ---
+  duration_ms: 8.1231
+  ...
+# Subtest: recuperação de nível eleva parte dos drops quando o equipamento está atrasado
+ok 227 - recuperação de nível eleva parte dos drops quando o equipamento está atrasado
+  ---
+  duration_ms: 10.0525
+  ...
+# Subtest: coleta: filtro oculta e preserva no chão, mochila cheia recusa com aviso único e nada duplica
+ok 228 - coleta: filtro oculta e preserva no chão, mochila cheia recusa com aviso único e nada duplica
+  ---
+  duration_ms: 6.6185
+  ...
+# Subtest: sair do encontro coleta o permitido; morrer e carregar não levam peças do chão
+ok 229 - sair do encontro coleta o permitido; morrer e carregar não levam peças do chão
+  ---
+  duration_ms: 51.7388
+  ...
+# Subtest: mercador e venda só no menu; preço, ouro e capacidade são validados e atômicos
+ok 230 - mercador e venda só no menu; preço, ouro e capacidade são validados e atômicos
+  ---
+  duration_ms: 8.5606
+  ...
+# Subtest: morte bloqueia alterações da mochila
+ok 231 - morte bloqueia alterações da mochila
+  ---
+  duration_ms: 27.6128
+  ...
+# Subtest: save preserva equipamento e mochila, descarta inválidos e duplicados e recarregar não duplica
+ok 232 - save preserva equipamento e mochila, descarta inválidos e duplicados e recarregar não duplica
+  ---
+  duration_ms: 16.8068
+  ...
+# Subtest: importação do save antigo aplica equipamentos válidos e mantém o arquivo intacto
+ok 233 - importação do save antigo aplica equipamentos válidos e mantém o arquivo intacto
+  ---
+  duration_ms: 6.8411
+  ...
+# Subtest: inventário de consumíveis normaliza entradas e recusa formatos inválidos
+ok 234 - inventário de consumíveis normaliza entradas e recusa formatos inválidos
+  ---
+  duration_ms: 1.4863
+  ...
+# Subtest: compra de consumíveis: só no menu, com ouro e respeitando a pilha
+ok 235 - compra de consumíveis: só no menu, com ouro e respeitando a pilha
+  ---
+  duration_ms: 3.9091
+  ...
+# Subtest: poções, escudo e bomba seguem as regras atuais e só funcionam em combate ativo
+ok 236 - poções, escudo e bomba seguem as regras atuais e só funcionam em combate ativo
+  ---
+  duration_ms: 8.4376
+  ...
+# Subtest: bomba de almas abate pelo caminho comum: XP e ouro uma vez
+ok 237 - bomba de almas abate pelo caminho comum: XP e ouro uma vez
+  ---
+  duration_ms: 5.3618
+  ...
+# Subtest: consumíveis persistem sem duplicar e o save antigo os importa; o arquivo permanece intacto
+ok 238 - consumíveis persistem sem duplicar e o save antigo os importa; o arquivo permanece intacto
+  ---
+  duration_ms: 7.7334
+  ...
+# Subtest: Grimório aplica pré-requisitos, pontos diretos e limites sem mutação em falha
+ok 239 - Grimório aplica pré-requisitos, pontos diretos e limites sem mutação em falha
+  ---
+  duration_ms: 89.5044
+  ...
+# Subtest: devolução custa por ponto inclusive dependentes; falha por ouro preserva build e grupos
+ok 240 - devolução custa por ponto inclusive dependentes; falha por ouro preserva build e grupos
+  ---
+  duration_ms: 23.8711
+  ...
+# Subtest: combate, morte e indisponibilidade bloqueiam edição e redistribuição
+ok 241 - combate, morte e indisponibilidade bloqueiam edição e redistribuição
+  ---
+  duration_ms: 42.5447
+  ...
+# Subtest: no treino a edição só vale com o Relicário aberto e preserva a vida dos integrantes
+ok 242 - no treino a edição só vale com o Relicário aberto e preserva a vida dos integrantes
+  ---
+  duration_ms: 12.6697
+  ...
+# Subtest: recálculo preserva proporção da saúde e recuperação, sem multiplicadores cumulativos
+ok 243 - recálculo preserva proporção da saúde e recuperação, sem multiplicadores cumulativos
+  ---
+  duration_ms: 59.3096
+  ...
+# Subtest: maestria só recebe XP e aplica bônus quando equipada; progressão persiste ao sair da barra
+ok 244 - maestria só recebe XP e aplica bônus quando equipada; progressão persiste ao sair da barra
+  ---
+  duration_ms: 14.3854
+  ...
+# Subtest: bônus de tiro e Dash combinam árvore e maestria uma vez; save e menu preservam resultado
+ok 245 - bônus de tiro e Dash combinam árvore e maestria uma vez; save e menu preservam resultado
+  ---
+  duration_ms: 23.7701
+  ...
+# Subtest: maestria dos aliados aumenta atributos sem curar proporcionalmente e reset não consome pontos do Grimório
+ok 246 - maestria dos aliados aumenta atributos sem curar proporcionalmente e reset não consome pontos do Grimório
+  ---
+  duration_ms: 72.1262
+  ...
+# Subtest: campos de maestria são opcionais nos saves anteriores e normalizados pelo modelo canônico
+ok 247 - campos de maestria são opcionais nos saves anteriores e normalizados pelo modelo canônico
+  ---
+  duration_ms: 4.3214
+  ...
+# Subtest: abate concede uma vez o XP lido das fontes às ações equipadas, inclusive por aliado
+ok 248 - abate concede uma vez o XP lido das fontes às ações equipadas, inclusive por aliado
+  ---
+  duration_ms: 16.6969
+  ...
+# Subtest: XP de abate sem novo nível não recalcula horda; subida de nível avisa e aplica pontos
+ok 249 - XP de abate sem novo nível não recalcula horda; subida de nível avisa e aplica pontos
+  ---
+  duration_ms: 48.5338
+  ...
+# Subtest: modo de carga e XP inválido não concedem maestria
+ok 250 - modo de carga e XP inválido não concedem maestria
+  ---
+  duration_ms: 10.2089
+  ...
+# Subtest: redistribuição total devolve todos os pontos por 20 ouro cada e falha sem ouro sem alterar a build
+ok 251 - redistribuição total devolve todos os pontos por 20 ouro cada e falha sem ouro sem alterar a build
+  ---
+  duration_ms: 8.581
+  ...
+# Subtest: harpia arma, avisa três trajetos e só então lança as penas em leque
+ok 252 - harpia arma, avisa três trajetos e só então lança as penas em leque
+  ---
+  duration_ms: 118.7668
+  ...
+# Subtest: as penas voam retas: sair da linha durante a preparação evita todas
+ok 253 - as penas voam retas: sair da linha durante a preparação evita todas
+  ---
+  duration_ms: 86.0365
+  ...
+# Subtest: morte durante a preparação cancela as penas e os avisos
+ok 254 - morte durante a preparação cancela as penas e os avisos
+  ---
+  duration_ms: 10.4135
+  ...
+# Subtest: pausa congela a preparação
+ok 255 - pausa congela a preparação
+  ---
+  duration_ms: 5.0961
+  ...
+# Subtest: recarga entre rajadas e distância média mantida
+ok 256 - recarga entre rajadas e distância média mantida
+  ---
+  duration_ms: 196.3624
+  ...
+# Subtest: longe demais ou colada, a harpia não lança: aproxima ou usa a garra
+ok 257 - longe demais ou colada, a harpia não lança: aproxima ou usa a garra
+  ---
+  duration_ms: 5.0664
+  ...
+# Subtest: Ladino Arqueiro e Orc são tipos novos com modelo próprio e preservam os índices anteriores
+ok 258 - Ladino Arqueiro e Orc são tipos novos com modelo próprio e preservam os índices anteriores
+  ---
+  duration_ms: 28.5806
+  ...
+# Subtest: Ladino Arqueiro atira à distância com as regras do Arqueiro e usa o clipe de ataque
+ok 259 - Ladino Arqueiro atira à distância com as regras do Arqueiro e usa o clipe de ataque
+  ---
+  duration_ms: 75.6811
+  ...
+# Subtest: Orc: golpe de maça avisa a área, causa dano uma vez e pode ser evitado
+ok 260 - Orc: golpe de maça avisa a área, causa dano uma vez e pode ser evitado
+  ---
+  duration_ms: 33.911
+  ...
+# Subtest: Bruto e Acólito de Guerra estão desativados: índices preservados, mas nenhum modo os gera
+ok 261 - Bruto e Acólito de Guerra estão desativados: índices preservados, mas nenhum modo os gera
+  ---
+  duration_ms: 9.6516
+  ...
+# Subtest: definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+ok 262 - definições incluem overrides atuais e fórmula compartilhada produz atributos dos cinco tipos
+  ---
+  duration_ms: 954.7421
+  ...
+# Subtest: perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+ok 263 - perfil inicial não concede grupos; bloqueios, custos e troca de slots não curam ou reinvocam
+  ---
+  duration_ms: 14.7455
+  ...
+# Subtest: equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+ok 264 - equipar no menu é grátis; reservar e restaurar mantém saúde e morte comuns
+  ---
+  duration_ms: 41.7691
+  ...
+# Subtest: morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+ok 265 - morte comum retorna com 50%, reanimação custa 30 MP e usa 60%; pausa congela recuperação
+  ---
+  duration_ms: 498.2129
+  ...
+# Subtest: detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+ok 266 - detonação elimina um zumbi, bloqueia troca/reanimação e não permite contornar recuperação
+  ---
+  duration_ms: 317.9386
+  ...
+# Subtest: sacrifício espera 20 segundos e não é elegível para reanimação
+ok 267 - sacrifício espera 20 segundos e não é elegível para reanimação
+  ---
+  duration_ms: 575.7741
+  ...
+# Subtest: persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+ok 268 - persistência mantém integrantes, recargas e arquivo antigo; menu não reinicia tempo de morto
+  ---
+  duration_ms: 482.1181
+  ...
+# Subtest: região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+ok 269 - região restringe alvos e retorno usa histerese; ordem é limitada ao alcance
+  ---
+  duration_ms: 442.7204
+  ...
+# Subtest: automáticas por tipo usam recarga própria e chefes não recebem lentidão
+ok 270 - automáticas por tipo usam recarga própria e chefes não recebem lentidão
+  ---
+  duration_ms: 66.4669
+  ...
+# Subtest: salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+ok 271 - salto da Abominação tem deslocamento e impacto ao aterrissar; passo espectral tem recarga
+  ---
+  duration_ms: 16.7395
+  ...
+# Subtest: separação respeita terreno; esquiva não concede invulnerabilidade
+ok 272 - separação respeita terreno; esquiva não concede invulnerabilidade
+  ---
+  duration_ms: 28.507
+  ...
+# Subtest: horda malformada e build inválida são recusadas sem alterar estado
+ok 273 - horda malformada e build inválida são recusadas sem alterar estado
+  ---
+  duration_ms: 1.0668
+  ...
+# Subtest: Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+ok 274 - Pacto cura apenas morte comum, sem curar detonação ou ressuscitar o jogador
+  ---
+  duration_ms: 3.9499
+  ...
+# Subtest: botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+ok 275 - botão do painel pode reanimar na pausa, mas atalho de campo não avança o jogo pausado
+  ---
+  duration_ms: 34.2688
+  ...
+# Subtest: voo baixo oscila, permanece vulnerável e desce ao morrer
+ok 276 - voo baixo oscila, permanece vulnerável e desce ao morrer
+  ---
+  duration_ms: 20.4671
+  ...
+# Subtest: extensão da v2 preserva os seis índices e introduz novos tipos progressivamente
+ok 277 - extensão da v2 preserva os seis índices e introduz novos tipos progressivamente
+  ---
+  duration_ms: 3.8433
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 6
+ok 278 - ataque preparado: dano único, evasão e morte cancelam — 6
+  ---
+  duration_ms: 31.9106
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 7
+ok 279 - ataque preparado: dano único, evasão e morte cancelam — 7
+  ---
+  duration_ms: 12.6538
+  ...
+# Subtest: ataque preparado: dano único, evasão e morte cancelam — 8
+ok 280 - ataque preparado: dano único, evasão e morte cancelam — 8
+  ---
+  duration_ms: 11.6996
+  ...
+# Subtest: tipos novos entram por nível em campanha e Expedições sem tocar o tutorial nem os especiais
+ok 281 - tipos novos entram por nível em campanha e Expedições sem tocar o tutorial nem os especiais
+  ---
+  duration_ms: 0.6853
+  ...
+# Subtest: plantas são determinísticas e cabem nos limites do editor
+ok 282 - plantas são determinísticas e cabem nos limites do editor
+  ---
+  duration_ms: 6397.2854
+  ...
+# Subtest: todo caminho da história é alcançável a pé e as chegadas ficam fora dos anéis
+ok 283 - todo caminho da história é alcançável a pé e as chegadas ficam fora dos anéis
+  ---
+  duration_ms: 1557.7903
+  ...
+# Subtest: rio e lagos têm travessias legíveis: ponte seca, vau lento, fundo bloqueado
+ok 284 - rio e lagos têm travessias legíveis: ponte seca, vau lento, fundo bloqueado
+  ---
+  duration_ms: 354.4773
+  ...
+# Subtest: save: saves anteriores continuam no mundo; área inválida é ignorada e a passagem é lembrada
+ok 285 - save: saves anteriores continuam no mundo; área inválida é ignorada e a passagem é lembrada
+  ---
+  duration_ms: 0.9217
+  ...
+# Subtest: estrada de Jacarandá: pisar no anel pede a viagem, chega na várzea e volta pelo mesmo caminho
+ok 286 - estrada de Jacarandá: pisar no anel pede a viagem, chega na várzea e volta pelo mesmo caminho
+  ---
+  duration_ms: 2437.3782
+  ...
+# Subtest: coordenadas da vila não valem em outra área: nada de abrigo nem serviços na várzea
+ok 287 - coordenadas da vila não valem em outra área: nada de abrigo nem serviços na várzea
+  ---
+  duration_ms: 857.0993
+  ...
+# Subtest: grupos vencidos seguem derrotados ao trocar de mapa e rearmam ao voltar à vila
+ok 288 - grupos vencidos seguem derrotados ao trocar de mapa e rearmam ao voltar à vila
+  ---
+  duration_ms: 2262.8892
+  ...
+# Subtest: gruta usa lobos nomeados e líder único; a Mãe-Tecelã não volta depois de derrotada
+ok 289 - gruta usa lobos nomeados e líder único; a Mãe-Tecelã não volta depois de derrotada
+  ---
+  duration_ms: 874.9724
+  ...
+# Subtest: grade do forte fecha o pátio interno até os três grupos caírem e continua aberta na volta
+ok 290 - grade do forte fecha o pátio interno até os três grupos caírem e continua aberta na volta
+  ---
+  duration_ms: 813.477
+  ...
+# Subtest: morte retoma na entrada do mapa; voltar ao abrigo pelo menu esquece a passagem
+ok 291 - morte retoma na entrada do mapa; voltar ao abrigo pelo menu esquece a passagem
+  ---
+  duration_ms: 578.6181
+  ...
+# Subtest: plantas entram no editor da campanha, com a história conferida; a edição publicada do mundo mantém a estrada livre
+ok 292 - plantas entram no editor da campanha, com a história conferida; a edição publicada do mundo mantém a estrada livre
+  ---
+  duration_ms: 1420.8311
+  ...
+# Subtest: Testar do editor percorre as passagens e a grade, sem tocar no save da campanha
+ok 293 - Testar do editor percorre as passagens e a grade, sem tocar no save da campanha
+  ---
+  duration_ms: 1128.5339
+  ...
+# Subtest: teleporte à vila: leva à praça de qualquer área, mas não no meio de uma luta nem antes de conhecer a vila
+ok 294 - teleporte à vila: leva à praça de qualquer área, mas não no meio de uma luta nem antes de conhecer a vila
+  ---
+  duration_ms: 940.3417
+  ...
+# Subtest: níveis por área, seis vezes mais inimigos por grupo e renascimento só fora das missões
+ok 295 - níveis por área, seis vezes mais inimigos por grupo e renascimento só fora das missões
+  ---
+  duration_ms: 1228.3544
+  ...
+# Subtest: loot do mundo da campanha segue o nível do grupo do inimigo, não o nível 1
+ok 296 - loot do mundo da campanha segue o nível do grupo do inimigo, não o nível 1
+  ---
+  duration_ms: 784.4159
+  ...
+# Subtest: relevo de Jacarandá: regiões variadas sem bloquear a história, também na edição publicada
+ok 297 - relevo de Jacarandá: regiões variadas sem bloquear a história, também na edição publicada
+  ---
+  duration_ms: 1274.7472
+  ...
+# Subtest: o tempo de jogo aparece em horas e minutos e saves antigos começam em zero
+ok 298 - o tempo de jogo aparece em horas e minutos e saves antigos começam em zero
+  ---
+  duration_ms: 13.945
+  ...
+# Subtest: o local acompanha prólogo, áreas de Itaúna, Jacarandá, Ato I e modo livre
+ok 299 - o local acompanha prólogo, áreas de Itaúna, Jacarandá, Ato I e modo livre
+  ---
+  duration_ms: 14.0527
+  ...
+# Subtest: o resumo usa os atributos da classe e a barra de XP do nível atual
+ok 300 - o resumo usa os atributos da classe e a barra de XP do nível atual
+  ---
+  duration_ms: 183.0976
+  ...
+# Subtest: a horda do palco segue o loadout e só usa tipos com modelo
+ok 301 - a horda do palco segue o loadout e só usa tipos com modelo
+  ---
+  duration_ms: 6.8023
+  ...
+# Subtest: medidor soma golpes por origem e calcula DPS médio, janela recente e pico
+ok 302 - medidor soma golpes por origem e calcula DPS médio, janela recente e pico
+  ---
+  duration_ms: 6.5109
+  ...
+# Subtest: um golpe isolado não vira DPS gigante e a medição congela depois de 3 s sem golpes
+ok 303 - um golpe isolado não vira DPS gigante e a medição congela depois de 3 s sem golpes
+  ---
+  duration_ms: 0.4968
+  ...
+# Subtest: ignora dano inválido e zerar mantém a mesma referência
+ok 304 - ignora dano inválido e zerar mantém a mesma referência
+  ---
+  duration_ms: 2.1387
+  ...
+# Subtest: teste cronometrado começa no primeiro golpe, termina na duração e ignora golpes tardios
+ok 305 - teste cronometrado começa no primeiro golpe, termina na duração e ignora golpes tardios
+  ---
+  duration_ms: 0.7497
+  ...
+# Subtest: catálogo só oferece modelos carregados, agrupados, e o progresso do clipe respeita o laço
+ok 306 - catálogo só oferece modelos carregados, agrupados, e o progresso do clipe respeita o laço
+  ---
+  duration_ms: 0.8885
+  ...
+# Subtest: Laboratório abre pela vila e pelo menu, nunca dentro de um encontro, e tem só bonecos e o personagem
+ok 307 - Laboratório abre pela vila e pelo menu, nunca dentro de um encontro, e tem só bonecos e o personagem
+  ---
+  duration_ms: 179.9023
+  ...
+# Subtest: o boneco nunca morre, não dá recompensa e conta Tiro de Osso e a horda por origem
+ok 308 - o boneco nunca morre, não dá recompensa e conta Tiro de Osso e a horda por origem
+  ---
+  duration_ms: 381.3471
+  ...
+# Subtest: teste cronometrado: arma, mede a janela, guarda o resultado uma vez e enche mana e recargas ao iniciar
+ok 309 - teste cronometrado: arma, mede a janela, guarda o resultado uma vez e enche mana e recargas ao iniciar
+  ---
+  duration_ms: 40.3858
+  ...
+# Subtest: opções: mana infinita, sem recargas, número e posição dos bonecos
+ok 310 - opções: mana infinita, sem recargas, número e posição dos bonecos
+  ---
+  duration_ms: 41.5762
+  ...
+# Subtest: visualizador mostra um clipe por vez: pose, laço, arrastar, sequência e remoção
+ok 311 - visualizador mostra um clipe por vez: pose, laço, arrastar, sequência e remoção
+  ---
+  duration_ms: 45.5698
+  ...
+# Subtest: sair do laboratório limpa o estado e o save não recebe nada do laboratório
+ok 312 - sair do laboratório limpa o estado e o save não recebe nada do laboratório
+  ---
+  duration_ms: 24.2215
+  ...
+# Subtest: carga aumenta força, alcance, largura e ossos; cobra somente ao soltar e limita carga
+ok 313 - carga aumenta força, alcance, largura e ossos; cobra somente ao soltar e limita carga
+  ---
+  duration_ms: 16.5365
+  ...
+# Subtest: formação em V avança paralela em linha reta e acerta cada alvo uma vez
+ok 314 - formação em V avança paralela em linha reta e acerta cada alvo uma vez
+  ---
+  duration_ms: 3.3812
+  ...
+# Subtest: carga não dispara ao pausar, morrer ou perder a habilidade; fracasso não cobra
+ok 315 - carga não dispara ao pausar, morrer ou perder a habilidade; fracasso não cobra
+  ---
+  duration_ms: 7.1503
+  ...
+# Subtest: carga integrada avança por tempo de jogo e não depende de FPS
+ok 316 - carga integrada avança por tempo de jogo e não depende de FPS
+  ---
+  duration_ms: 17.8196
+  ...
+# Subtest: Grimório estendido aceita a árvore Morte, mantém as árvores antigas e rejeita ids desconhecidos
+ok 317 - Grimório estendido aceita a árvore Morte, mantém as árvores antigas e rejeita ids desconhecidos
+  ---
+  duration_ms: 7.1917
+  ...
+# Subtest: investir e devolver pontos da Morte usa orçamento, nível, exclusividade e 20 de ouro por ponto
+ok 318 - investir e devolver pontos da Morte usa orçamento, nível, exclusividade e 20 de ouro por ponto
+  ---
+  duration_ms: 46.2051
+  ...
+# Subtest: a Forma da Morte só equipa depois de aprendida; o nome e o slot aparecem como evocação normal
+ok 319 - a Forma da Morte só equipa depois de aprendida; o nome e o slot aparecem como evocação normal
+  ---
+  duration_ms: 44.1825
+  ...
+# Subtest: o slot entra na forma e passa a ativar a barra da foice; Libertar Forma devolve a barra normal
+ok 320 - o slot entra na forma e passa a ativar a barra da foice; Libertar Forma devolve a barra normal
+  ---
+  duration_ms: 59.2977
+  ...
+# Subtest: pontos da árvore Morte sobrevivem a salvar/carregar e a pose do Lich chega ao ator
+ok 321 - pontos da árvore Morte sobrevivem a salvar/carregar e a pose do Lich chega ao ator
+  ---
+  duration_ms: 53.7128
+  ...
+# Subtest: morte do jogador na forma limpa tudo; ao reviver o modelo volta a ser o de Zephyr
+ok 322 - morte do jogador na forma limpa tudo; ao reviver o modelo volta a ser o de Zephyr
+  ---
+  duration_ms: 15.6675
+  ...
+# Subtest: na campanha (perfil com habilidades concedidas) a Forma da Morte também equipa depois de aprendida
+ok 323 - na campanha (perfil com habilidades concedidas) a Forma da Morte também equipa depois de aprendida
+  ---
+  duration_ms: 6.7068
+  ...
+# Subtest: Colheita desbloqueada substitui o clique e continua combo gratuitamente
+ok 324 - Colheita desbloqueada substitui o clique e continua combo gratuitamente
+  ---
+  duration_ms: 37.3937
+  ...
+# Subtest: árvore Morte: nós no padrão do Grimório, IDs próprios e especializações exclusivas
+ok 325 - árvore Morte: nós no padrão do Grimório, IDs próprios e especializações exclusivas
+  ---
+  duration_ms: 5.4988
+  ...
+# Subtest: entrar exige o nó, mana, recarga e vida; paga a mana uma vez e suspende a regeneração
+ok 326 - entrar exige o nó, mana, recarga e vida; paga a mana uma vez e suspende a regeneração
+  ---
+  duration_ms: 31.0084
+  ...
+# Subtest: transformação: invulnerável e imóvel por 0,9 s; depois vulnerável; Avatar encurta
+ok 327 - transformação: invulnerável e imóvel por 0,9 s; depois vulnerável; Avatar encurta
+  ---
+  duration_ms: 5.9305
+  ...
+# Subtest: na forma: Tiro de Osso e magias ficam bloqueados; Dash vale, exceto transformando
+ok 328 - na forma: Tiro de Osso e magias ficam bloqueados; Dash vale, exceto transformando
+  ---
+  duration_ms: 5.0487
+  ...
+# Subtest: almas drenam 1,5/s; zerar sai da forma, devolve a mana anterior e abre a recarga de 20 s
+ok 329 - almas drenam 1,5/s; zerar sai da forma, devolve a mana anterior e abre a recarga de 20 s
+  ---
+  duration_ms: 23.3677
+  ...
+# Subtest: espíritos: só na forma, valor por tipo, marca Ceifado e Colheita de Almas; expiram em 8 s
+ok 330 - espíritos: só na forma, valor por tipo, marca Ceifado e Colheita de Almas; expiram em 8 s
+  ---
+  duration_ms: 6.2964
+  ...
+# Subtest: absorção: dentro do raio soma almas até o máximo, cura com Lamento e puxa espíritos próximos
+ok 331 - absorção: dentro do raio soma almas até o máximo, cura com Lamento e puxa espíritos próximos
+  ---
+  duration_ms: 2.6789
+  ...
+# Subtest: Ceifada: arco frontal de 120° e 3,4 u, grátis, uma vez por golpe, recarga; sólidos bloqueiam
+ok 332 - Ceifada: arco frontal de 120° e 3,4 u, grátis, uma vez por golpe, recarga; sólidos bloqueiam
+  ---
+  duration_ms: 6.3539
+  ...
+# Subtest: passo grande de tempo aplica o mesmo número de golpes que passos pequenos
+ok 333 - passo grande de tempo aplica o mesmo número de golpes que passos pequenos
+  ---
+  duration_ms: 7.4961
+  ...
+# Subtest: Colheita Tripla: gratuita, janela de 0,6 s entre golpes, finalizador em área e onda marcam Ceifado
+ok 334 - Colheita Tripla: gratuita, janela de 0,6 s entre golpes, finalizador em área e onda marcam Ceifado
+  ---
+  duration_ms: 3.6697
+  ...
+# Subtest: Colheita: janela expirada permite reiniciar o combo; Executor aumenta dano em alvo fraco e a marca
+ok 335 - Colheita: janela expirada permite reiniciar o combo; Executor aumenta dano em alvo fraco e a marca
+  ---
+  duration_ms: 4.2205
+  ...
+# Subtest: Foice Giratória: 15 almas, vai e volta acertando cada alvo uma vez por perna, bloqueia outras habilidades e pousa em catch
+ok 336 - Foice Giratória: 15 almas, vai e volta acertando cada alvo uma vez por perna, bloqueia outras habilidades e pousa em catch
+  ---
+  duration_ms: 5.4572
+  ...
+# Subtest: Foice Giratória não existe sem o nó; Libertar Forma funciona a qualquer momento
+ok 337 - Foice Giratória não existe sem o nó; Libertar Forma funciona a qualquer momento
+  ---
+  duration_ms: 1.4068
+  ...
+# Subtest: Gancho do Túmulo: linha frontal, puxão ampliado por Ceifado e chefes imóveis com lentidão
+ok 338 - Gancho do Túmulo: linha frontal, puxão ampliado por Ceifado e chefes imóveis com lentidão
+  ---
+  duration_ms: 5.7391
+  ...
+# Subtest: sinergia: Giratória prolonga marca e Ciclone consome uma vez por alvo
+ok 339 - sinergia: Giratória prolonga marca e Ciclone consome uma vez por alvo
+  ---
+  duration_ms: 7.3058
+  ...
+# Subtest: Ciclone da Morte: órbita de 360° por 1,4 s, até duas passagens por alvo, lentidão de 40% e ordem de sentido
+ok 340 - Ciclone da Morte: órbita de 360° por 1,4 s, até duas passagens por alvo, lentidão de 40% e ordem de sentido
+  ---
+  duration_ms: 6.1295
+  ...
+# Subtest: recarga por habilidade, custo insuficiente e mira inválida não cobram almas
+ok 341 - recarga por habilidade, custo insuficiente e mira inválida não cobram almas
+  ---
+  duration_ms: 2.2511
+  ...
+# Subtest: morte do jogador, troca de cena e pausa limpam a forma sem deixar foice, espíritos nem marcas
+ok 342 - morte do jogador, troca de cena e pausa limpam a forma sem deixar foice, espíritos nem marcas
+  ---
+  duration_ms: 3.3836
+  ...
+# Subtest: dano recebido na forma: Avatar reduz em 25% e o dano já passa pelo caminho comum de defesa
+ok 343 - dano recebido na forma: Avatar reduz em 25% e o dano já passa pelo caminho comum de defesa
+  ---
+  duration_ms: 26.203
+  ...
+# Subtest: simulação integrada: step() avança a forma, espíritos e golpes sem outro caminho de dano
+ok 344 - simulação integrada: step() avança a forma, espíritos e golpes sem outro caminho de dano
+  ---
+  duration_ms: 11.9857
+  ...
+# Subtest: bônus base da forma: dano e defesa +25%, sem alterar atributos permanentes
+ok 345 - bônus base da forma: dano e defesa +25%, sem alterar atributos permanentes
+  ---
+  duration_ms: 1.6759
+  ...
+# Subtest: Colheita herda maestrias da Ceifada e ritmo acelera preparação junto do contato
+ok 346 - Colheita herda maestrias da Ceifada e ritmo acelera preparação junto do contato
+  ---
+  duration_ms: 2.5754
+  ...
+# Subtest: o progresso dos modelos ocupa o miolo da barra e nunca sai de 0–1
+ok 347 - o progresso dos modelos ocupa o miolo da barra e nunca sai de 0–1
+  ---
+  duration_ms: 3.8412
+  ...
+# Subtest: a tela atualiza barra, rótulo e dica, e conclui uma única vez
+ok 348 - a tela atualiza barra, rótulo e dica, e conclui uma única vez
+  ---
+  duration_ms: 2.2714
+  ...
+# Subtest: sem a marcação, o carregamento é inofensivo
+ok 349 - sem a marcação, o carregamento é inofensivo
+  ---
+  duration_ms: 0.7032
+  ...
+# Subtest: direção do passo em relação à mira escolhe o clipe
+ok 350 - direção do passo em relação à mira escolhe o clipe
+  ---
+  duration_ms: 3.9098
+  ...
+# Subtest: a mira gira junto a referência do passo
+ok 351 - a mira gira junto a referência do passo
+  ---
+  duration_ms: 2.2385
+  ...
+# Subtest: diagonais dividem o peso e somam 1
+ok 352 - diagonais dividem o peso e somam 1
+  ---
+  duration_ms: 0.6665
+  ...
+# Subtest: de ré o lado inverte o clipe, porque o ciclo toca ao contrário
+ok 353 - de ré o lado inverte o clipe, porque o ciclo toca ao contrário
+  ---
+  duration_ms: 0.4017
+  ...
+# Subtest: histerese evita alternar o sentido perto da perpendicular
+ok 354 - histerese evita alternar o sentido perto da perpendicular
+  ---
+  duration_ms: 0.7008
+  ...
+# Subtest: parado mantém o sentido e o peso de andar
+ok 355 - parado mantém o sentido e o peso de andar
+  ---
+  duration_ms: 0.3123
+  ...
+# Subtest: a mistura converge, conserva a soma e congela sem tempo
+ok 356 - a mistura converge, conserva a soma e congela sem tempo
+  ---
+  duration_ms: 2.6698
+  ...
+# Subtest: a fase avança pela passada de cada clipe e recua de ré
+ok 357 - a fase avança pela passada de cada clipe e recua de ré
+  ---
+  duration_ms: 0.5309
+  ...
+# Subtest: fora da esquiva o corpo segue o ângulo da regra sem atraso
+ok 358 - fora da esquiva o corpo segue o ângulo da regra sem atraso
+  ---
+  duration_ms: 0.7677
+  ...
+# Subtest: a esquiva vira o corpo aos poucos, pelo caminho curto, e chega ao ângulo da regra
+ok 359 - a esquiva vira o corpo aos poucos, pelo caminho curto, e chega ao ângulo da regra
+  ---
+  duration_ms: 3.4577
+  ...
+# Subtest: o fim da esquiva também suaviza, e a pausa congela o giro
+ok 360 - o fim da esquiva também suaviza, e a pausa congela o giro
+  ---
+  duration_ms: 0.8197
+  ...
+# Subtest: filtro de loot sobrevive à entrada em fase, Arena, Expedição e à volta à vila
+ok 361 - filtro de loot sobrevive à entrada em fase, Arena, Expedição e à volta à vila
+  ---
+  duration_ms: 712.7572
+  ...
+# Subtest: peça abaixo do filtro fica oculta e não é coletada em modo de aventura
+ok 362 - peça abaixo do filtro fica oculta e não é coletada em modo de aventura
+  ---
+  duration_ms: 570.0007
+  ...
+# Subtest: árvore: as oito ações novas exigem o selo e estão no fim da tabela
+ok 363 - árvore: as oito ações novas exigem o selo e estão no fim da tabela
+  ---
+  duration_ms: 94.7572
+  ...
+# Subtest: Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+ok 364 - Muralha de Fogo: segmento atravessado na mira, aviso antes das chamas, dano e queimadura
+  ---
+  duration_ms: 47.5326
+  ...
+# Subtest: Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+ok 365 - Imbuir Fogo e Gelo: a Seta Arcana ganha dano e efeito; um encerra o outro
+  ---
+  duration_ms: 22.53
+  ...
+# Subtest: Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+ok 366 - Nova de Gelo: onda em volta do Mago, lentidão e recarga dividida com a Rajada
+  ---
+  duration_ms: 3.5638
+  ...
+# Subtest: Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+ok 367 - Chuva de Fogo: cinco quedas espalhadas, cada uma com dano em raio e chão em chamas; divide a recarga do Meteoro
+  ---
+  duration_ms: 8.0989
+  ...
+# Subtest: Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+ok 368 - Avalanche: 10 bolas em 3 s (+1 por ponto), lentidão que conta para o Estilhaçar
+  ---
+  duration_ms: 10.1857
+  ...
+# Subtest: Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+ok 369 - Raio Arcano: canalizado, atravessa a fila, gasta mana por segundo e recarrega ao soltar
+  ---
+  duration_ms: 44.1044
+  ...
+# Subtest: Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+ok 370 - Clone Arcano: parado no ponto mirado, repete o feitiço com 50% do dano e some em 12 s
+  ---
+  duration_ms: 38.0969
+  ...
+# Subtest: tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+ok 371 - tabela de dano do painel: todas as ações do Mago têm número (ou nota, no Clone)
+  ---
+  duration_ms: 5.6198
+  ...
+# Subtest: Mago: classe registrada, catálogo arcano, sem horda, modelo próprio e dano mágico
+ok 372 - Mago: classe registrada, catálogo arcano, sem horda, modelo próprio e dano mágico
+  ---
+  duration_ms: 156.1657
+  ...
+# Subtest: árvore do Mago: orçamento, pré-requisitos e passivas
+ok 373 - árvore do Mago: orçamento, pré-requisitos e passivas
+  ---
+  duration_ms: 18.2527
+  ...
+# Subtest: Seta Arcana: projétil com dano mágico, anda enquanto conjura
+ok 374 - Seta Arcana: projétil com dano mágico, anda enquanto conjura
+  ---
+  duration_ms: 44.2617
+  ...
+# Subtest: Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combustão deixa o chão em chamas
+ok 375 - Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combustão deixa o chão em chamas
+  ---
+  duration_ms: 17.6385
+  ...
+# Subtest: Rajada de Gelo: cone de 70°, dano e lentidão; Estilhaçar aumenta fogo e arcano nos lentos
+not ok 376 - Rajada de Gelo: cone de 70°, dano e lentidão; Estilhaçar aumenta fogo e arcano nos lentos
+  ---
+  duration_ms: 9.0706
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\mage.test.mjs:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    69 !== 81
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 81
+  actual: 69
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/mage.test.mjs:78:48)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+ok 377 - Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+  ---
+  duration_ms: 8.169
+  ...
+# Subtest: Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em chamas por 3 s
+ok 378 - Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em chamas por 3 s
+  ---
+  duration_ms: 5.8354
+  ...
+# Subtest: esquiva cancela; troca de cena limpa projéteis e chamas
+ok 379 - esquiva cancela; troca de cena limpa projéteis e chamas
+  ---
+  duration_ms: 3.6785
+  ...
+# Subtest: pontos extras do Mago (09/11/2026): o primeiro ponto mantém o número antigo, os seguintes somam
+ok 380 - pontos extras do Mago (09/11/2026): o primeiro ponto mantém o número antigo, os seguintes somam
+  ---
+  duration_ms: 47.8717
+  ...
+# Subtest: grava, lista e apaga mapas em arquivos legíveis
+not ok 381 - grava, lista e apaga mapas em arquivos legíveis
+  ---
+  duration_ms: 328.5904
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:21:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:23:27)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: recusa ids, corpo e origem inválidos, sem escapar da pasta
+not ok 382 - recusa ids, corpo e origem inválidos, sem escapar da pasta
+  ---
+  duration_ms: 95.5951
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:34:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:36:74)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: só entrega o que o editor usa
+not ok 383 - só entrega o que o editor usa
+  ---
+  duration_ms: 12.5918
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:49:148)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Testar entrega o jogo com os mapas do disco e entra no mapa
+not ok 384 - Testar entrega o jogo com os mapas do disco e entra no mapa
+  ---
+  duration_ms: 13.3412
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:55:2)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: arquivo de campanha inválido interrompe o build, em vez de publicar menos
+ok 385 - arquivo de campanha inválido interrompe o build, em vez de publicar menos
+  ---
+  duration_ms: 61.8099
+  ...
+# Subtest: Publicar compara o disco com o jogo e roda um build por vez
+not ok 386 - Publicar compara o disco com o jogo e roda um build por vez
+  ---
+  duration_ms: 16.0061
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:68:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async status (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:71:25)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:73:23)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: Publicar com pastas de teste nunca roda o build real
+not ok 387 - Publicar com pastas de teste nunca roda o build real
+  ---
+  duration_ms: 64.6041
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\map-editor-server.test.mjs:91:1'
+  failureType: 'testCodeFailure'
+  error: 'fetch failed'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    node:internal/deps/undici/undici:14976:13
+    process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    async TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/map-editor-server.test.mjs:93:23)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: disco: a biblioteca lê na hora e grava só o que mudou
+ok 388 - disco: a biblioteca lê na hora e grava só o que mudou
+  ---
+  duration_ms: 7.8271
+  ...
+# Subtest: disco: várias edições seguidas gravam a última; falha avisa e tenta de novo
+ok 389 - disco: várias edições seguidas gravam a última; falha avisa e tenta de novo
+  ---
+  duration_ms: 2.3321
+  ...
+# Subtest: o raio seleciona a peça certa, inclusive pelo alto, e marca o que é herdado
+ok 390 - o raio seleciona a peça certa, inclusive pelo alto, e marca o que é herdado
+  ---
+  duration_ms: 6.2357
+  ...
+# Subtest: marcadores vencem peças, e peças vencem manchas planas de chão
+ok 391 - marcadores vencem peças, e peças vencem manchas planas de chão
+  ---
+  duration_ms: 0.8001
+  ...
+# Subtest: o relevo sobe as caixas de seleção; o que flutua fica na água
+ok 392 - o relevo sobe as caixas de seleção; o que flutua fica na água
+  ---
+  duration_ms: 0.8055
+  ...
+# Subtest: alças de lado movem um lado e deixam o oposto parado
+ok 393 - alças de lado movem um lado e deixam o oposto parado
+  ---
+  duration_ms: 1.4143
+  ...
+# Subtest: alças de raio, altura, escala e giro
+ok 394 - alças de raio, altura, escala e giro
+  ---
+  duration_ms: 22.9958
+  ...
+# Subtest: peça girada: alças no referencial dela, com o lado oposto parado
+ok 395 - peça girada: alças no referencial dela, com o lado oposto parado
+  ---
+  duration_ms: 1.936
+  ...
+# Subtest: arena para o editor: sem cobertura, com tom estável e terreno reaproveitado
+ok 396 - arena para o editor: sem cobertura, com tom estável e terreno reaproveitado
+  ---
+  duration_ms: 3.4297
+  ...
+# Subtest: trilha de cantos retos: retângulo que estica e gira, sem colisão
+ok 397 - trilha de cantos retos: retângulo que estica e gira, sem colisão
+  ---
+  duration_ms: 4.97
+  ...
+# Subtest: mapas ARANDU compartilham geometria e inimigos com a campanha e permitem variações
+ok 398 - mapas ARANDU compartilham geometria e inimigos com a campanha e permitem variações
+  ---
+  duration_ms: 135.9066
+  ...
+# Subtest: normaliza valores inválidos sem lançar erro
+ok 399 - normaliza valores inválidos sem lançar erro
+  ---
+  duration_ms: 1.2524
+  ...
+# Subtest: limita a quantidade de objetos e gera ids únicos
+ok 400 - limita a quantidade de objetos e gera ids únicos
+  ---
+  duration_ms: 10.851
+  ...
+# Subtest: arena: colisores, enfeites e limites centrados
+ok 401 - arena: colisores, enfeites e limites centrados
+  ---
+  duration_ms: 1.3405
+  ...
+# Subtest: cobertura do chão é determinística e respeita colisores
+ok 402 - cobertura do chão é determinística e respeita colisores
+  ---
+  duration_ms: 2.8392
+  ...
+# Subtest: mapa base: herda, oculta objetos e substitui campos
+ok 403 - mapa base: herda, oculta objetos e substitui campos
+  ---
+  duration_ms: 1.3038
+  ...
+# Subtest: base em cadeia, ausente e circular
+ok 404 - base em cadeia, ausente e circular
+  ---
+  duration_ms: 1.4401
+  ...
+# Subtest: mapas embutidos servem de base
+ok 405 - mapas embutidos servem de base
+  ---
+  duration_ms: 17.2569
+  ...
+# Subtest: desvincular copia a base para o próprio mapa
+ok 406 - desvincular copia a base para o próprio mapa
+  ---
+  duration_ms: 1.0858
+  ...
+# Subtest: gera avisos úteis
+ok 407 - gera avisos úteis
+  ---
+  duration_ms: 57.3906
+  ...
+# Subtest: modelos iniciais geram mapas válidos e jogáveis
+ok 408 - modelos iniciais geram mapas válidos e jogáveis
+  ---
+  duration_ms: 2439.1424
+  ...
+# Subtest: biblioteca: salvar, listar, duplicar e excluir
+ok 409 - biblioteca: salvar, listar, duplicar e excluir
+  ---
+  duration_ms: 2.1853
+  ...
+# Subtest: biblioteca: variação cria herança viva e protege contra exclusão e ciclo
+ok 410 - biblioteca: variação cria herança viva e protege contra exclusão e ciclo
+  ---
+  duration_ms: 1.3184
+  ...
+# Subtest: exportar e importar levam a cadeia de bases e evitam colisão de ids
+ok 411 - exportar e importar levam a cadeia de bases e evitam colisão de ids
+  ---
+  duration_ms: 2.1739
+  ...
+# Subtest: importação rejeita lixo e armazenamento com falha não lança
+ok 412 - importação rejeita lixo e armazenamento com falha não lança
+  ---
+  duration_ms: 1.1787
+  ...
+# Subtest: limites da biblioteca
+ok 413 - limites da biblioteca
+  ---
+  duration_ms: 25.6576
+  ...
+# Subtest: grades compactas voltam iguais e mapas antigos seguem sem relevo
+ok 414 - grades compactas voltam iguais e mapas antigos seguem sem relevo
+  ---
+  duration_ms: 9.4023
+  ...
+# Subtest: rio raso atrasa e pode ser atravessado; correnteza ajuda ou atrapalha
+ok 415 - rio raso atrasa e pode ser atravessado; correnteza ajuda ou atrapalha
+  ---
+  duration_ms: 63.2385
+  ...
+# Subtest: rio fundo barra quem anda, deixa tiros passarem e a ponte abre a travessia
+ok 416 - rio fundo barra quem anda, deixa tiros passarem e a ponte abre a travessia
+  ---
+  duration_ms: 166.5944
+  ...
+# Subtest: platô tem borda intransitável, ladeira custa, e quem está no alto bate mais forte
+ok 417 - platô tem borda intransitável, ladeira custa, e quem está no alto bate mais forte
+  ---
+  duration_ms: 27.3644
+  ...
+# Subtest: superfícies pintadas e redimensionar preservam a posição
+ok 418 - superfícies pintadas e redimensionar preservam a posição
+  ---
+  duration_ms: 73.7092
+  ...
+# Subtest: catálogo: toda peça vira colisor ou decoração, em qualquer tamanho
+ok 419 - catálogo: toda peça vira colisor ou decoração, em qualquer tamanho
+  ---
+  duration_ms: 118.2929
+  ...
+# Subtest: estilo por mapa: predefinições válidas, herança e cobertura do chão
+ok 420 - estilo por mapa: predefinições válidas, herança e cobertura do chão
+  ---
+  duration_ms: 3.3393
+  ...
+# Subtest: spawn: gatilho, ondas, retorno, composição e líder
+ok 421 - spawn: gatilho, ondas, retorno, composição e líder
+  ---
+  duration_ms: 26.3481
+  ...
+# Subtest: mapa personalizado usa gatilhos: quem espera não nasce na entrada
+ok 422 - mapa personalizado usa gatilhos: quem espera não nasce na entrada
+  ---
+  duration_ms: 83.5882
+  ...
+# Subtest: edição da campanha: vale a mais recente entre a do navegador e a publicada
+ok 423 - edição da campanha: vale a mais recente entre a do navegador e a publicada
+  ---
+  duration_ms: 1527.1568
+  ...
+# Subtest: edição da campanha: fica salva, entra no jogo e não quebra a história
+ok 424 - edição da campanha: fica salva, entra no jogo e não quebra a história
+  ---
+  duration_ms: 1055.5623
+  ...
+# Subtest: prólogo: edição vale nas cenas de combate; viagem e queda seguem sobre o plano
+ok 425 - prólogo: edição vale nas cenas de combate; viagem e queda seguem sobre o plano
+  ---
+  duration_ms: 279.8993
+  ...
+# Subtest: navegação sobe o custo em água e mantém resolvePosition fora do fundo
+ok 426 - navegação sobe o custo em água e mantém resolvePosition fora do fundo
+  ---
+  duration_ms: 13.2691
+  ...
+# Subtest: água desenhada fica seca no trecho aplainado da vila, e a da colisão também
+ok 427 - água desenhada fica seca no trecho aplainado da vila, e a da colisão também
+  ---
+  duration_ms: 309.7721
+  ...
+# Subtest: cada classe tem a arma própria: Arco para a Arqueira, Besta para o Mercenário
+ok 428 - cada classe tem a arma própria: Arco para a Arqueira, Besta para o Mercenário
+  ---
+  duration_ms: 11.7184
+  ...
+# Subtest: a arma soma dano-base e afixos ao dano físico; aprimoramento conta
+ok 429 - a arma soma dano-base e afixos ao dano físico; aprimoramento conta
+  ---
+  duration_ms: 2.6427
+  ...
+# Subtest: arma inicial no Novo Jogo e entrega única para saves anteriores da classe
+ok 430 - arma inicial no Novo Jogo e entrega única para saves anteriores da classe
+  ---
+  duration_ms: 28.5285
+  ...
+# Subtest: mochila: equipar, guardar, vender, comprar e forjar o arco
+ok 431 - mochila: equipar, guardar, vender, comprar e forjar o arco
+  ---
+  duration_ms: 19.1277
+  ...
+# Subtest: sons próprios: corda, besta, arremesso, explosão, mina, fogo e falcão; sem o som do Tiro de Osso
+ok 432 - sons próprios: corda, besta, arremesso, explosão, mina, fogo e falcão; sem o som do Tiro de Osso
+  ---
+  duration_ms: 347.0743
+  ...
+# Subtest: ações novas entram no fim da lista e cada uma depende do seu selo
+ok 433 - ações novas entram no fim da lista e cada uma depende do seu selo
+  ---
+  duration_ms: 16.1832
+  ...
+# Subtest: Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+ok 434 - Tiro Seguidor: as flechas curvam até um alvo fora do cone e ignoram quem está atrás
+  ---
+  duration_ms: 76.3671
+  ...
+# Subtest: Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+ok 435 - Saraivada Seguidora trava no inimigo perto da mira e as cinco flechas o perseguem
+  ---
+  duration_ms: 32.7954
+  ...
+# Subtest: Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+ok 436 - Impacto Celeste marca a área, o falcão desce e o dano vem depois do atraso, com empurrão
+  ---
+  duration_ms: 6.8773
+  ...
+# Subtest: Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+ok 437 - Penas Voadoras: uma pena por inimigo perto da Arqueira, saindo do falcão
+  ---
+  duration_ms: 8.7702
+  ...
+# Subtest: Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+ok 438 - Rede de Caça deixa lentos por 3 s (+0,5 s por ponto) e só fere os chefes
+  ---
+  duration_ms: 4.8572
+  ...
+# Subtest: Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+ok 439 - Armadilha de Urso arma depois de um instante, prende quem pisa e no máximo duas ficam no chão
+  ---
+  duration_ms: 6.858
+  ...
+# Subtest: árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+ok 440 - árvores: orçamento por nível, pré-requisitos, nível mínimo e save persistido por classe
+  ---
+  duration_ms: 32.7825
+  ...
+# Subtest: passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+ok 441 - passivas: vida, recurso, dano, armadura e movimento; ficha lista as ações aprendidas
+  ---
+  duration_ms: 8.0344
+  ...
+# Subtest: ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+ok 442 - ações bloqueadas sem selo não gastam recurso nem iniciam recarga
+  ---
+  duration_ms: 2.1418
+  ...
+# Subtest: Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+ok 443 - Flecha Perfurante: carrega, atravessa a fila inteira com dano cheio e mostra a linha antes
+  ---
+  duration_ms: 16.873
+  ...
+# Subtest: Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+ok 444 - Recuo: salta 5 u para trás respeitando paredes, desacelera quem estava perto e arma a Emboscada
+  ---
+  duration_ms: 13.3747
+  ...
+# Subtest: Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+ok 445 - Chuva de Flechas: área no ponto mirado, cinco ondas depois do aviso, só dentro do raio
+  ---
+  duration_ms: 8.7131
+  ...
+# Subtest: Leque: cinco flechas em cone acertam alvos espalhados à frente
+ok 446 - Leque: cinco flechas em cone acertam alvos espalhados à frente
+  ---
+  duration_ms: 6.489
+  ...
+# Subtest: Rajada: três virotes em sequência, cada um atravessa um inimigo
+ok 447 - Rajada: três virotes em sequência, cada um atravessa um inimigo
+  ---
+  duration_ms: 3.8581
+  ...
+# Subtest: Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+ok 448 - Bomba: arco até o ponto mirado, marca de queda durante o voo, explosão em área e empurrão
+  ---
+  duration_ms: 4.9007
+  ...
+# Subtest: Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+ok 449 - Mina: arma em 1 s, explode quando alguém chega perto, no máximo duas e expira
+  ---
+  duration_ms: 4.8051
+  ...
+# Subtest: Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+ok 450 - Garrafa incendiária: chão em chamas por 4 s com dano em intervalos
+  ---
+  duration_ms: 5.7388
+  ...
+# Subtest: esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+ok 451 - esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas
+  ---
+  duration_ms: 5.0022
+  ...
+# Subtest: Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+ok 452 - Falcão: aparece com o selo, mergulha sozinho no inimigo mais próximo e volta à órbita
+  ---
+  duration_ms: 5.543
+  ...
+# Subtest: Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+ok 453 - Falcão: F manda ao alvo da mira, marca por 4 s e as flechas causam +15% no marcado
+  ---
+  duration_ms: 5.4614
+  ...
+# Subtest: Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+ok 454 - Falcão: F pela sessão; morte e troca de cena removem o falcão; volta ao continuar
+  ---
+  duration_ms: 56.3917
+  ...
+# Subtest: atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+ok 455 - atirar andando: fator de movimento por ação; Recuo e Mina travam e usam o corpo inteiro
+  ---
+  duration_ms: 72.2177
+  ...
+# Subtest: tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+ok 456 - tolerância do tiro: inimigo a até `hit` da linha é atingido, como no Tiro de Osso; além disso, não
+  ---
+  duration_ms: 9.8761
+  ...
+# Subtest: registro: seis classes, ids preservados e Arqueira/Mercenário marciais e atiradores
+ok 457 - registro: seis classes, ids preservados e Arqueira/Mercenário marciais e atiradores
+  ---
+  duration_ms: 4.508
+  ...
+# Subtest: Novo Jogo cria Arqueira e Mercenário sem horda; saves antigos continuam Necromantes
+ok 458 - Novo Jogo cria Arqueira e Mercenário sem horda; saves antigos continuam Necromantes
+  ---
+  duration_ms: 162.3774
+  ...
+# Subtest: mundo da classe: modelo próprio, sem aliados e atributos marciais por nível
+ok 459 - mundo da classe: modelo próprio, sem aliados e atributos marciais por nível
+  ---
+  duration_ms: 12.7594
+  ...
+# Subtest: Disparo da Arqueira: solta no instante da regra, voa e acerta uma vez o primeiro inimigo da linha
+ok 460 - Disparo da Arqueira: solta no instante da regra, voa e acerta uma vez o primeiro inimigo da linha
+  ---
+  duration_ms: 16.3299
+  ...
+# Subtest: Virote pesado do Mercenário atravessa até dois inimigos extras, perdendo força, e empurra
+ok 461 - Virote pesado do Mercenário atravessa até dois inimigos extras, perdendo força, e empurra
+  ---
+  duration_ms: 45.5261
+  ...
+# Subtest: paredes param o projétil; esquiva cancela antes da soltura; troca de cena limpa tiros
+ok 462 - paredes param o projétil; esquiva cancela antes da soltura; troca de cena limpa tiros
+  ---
+  duration_ms: 17.2177
+  ...
+# Subtest: recarga, movimento durante o tiro e barra: 1 atira, 4 esquiva, as demais pedem a árvore
+ok 463 - recarga, movimento durante o tiro e barra: 1 atira, 4 esquiva, as demais pedem a árvore
+  ---
+  duration_ms: 34.072
+  ...
+# Subtest: equipamento: catálogo marcial sem espada e escudo; afixos marciais valem
+ok 464 - equipamento: catálogo marcial sem espada e escudo; afixos marciais valem
+  ---
+  duration_ms: 4.1945
+  ...
+# Subtest: journeySummary mostra a classe salva e o modelo certo
+ok 465 - journeySummary mostra a classe salva e o modelo certo
+  ---
+  duration_ms: 3.5308
+  ...
+# Subtest: etapa salva: ausente equivale a locked e só vale depois do mundo concluído
+ok 466 - etapa salva: ausente equivale a locked e só vale depois do mundo concluído
+  ---
+  duration_ms: 4.9501
+  ...
+# Subtest: pontos da missão ficam livres, alcançáveis e marcados no editor
+ok 467 - pontos da missão ficam livres, alcançáveis e marcados no editor
+  ---
+  duration_ms: 6095.3871
+  ...
+# Subtest: Marta só oferece a busca com Jacarandá de pé
+ok 468 - Marta só oferece a busca com Jacarandá de pé
+  ---
+  duration_ms: 2.6544
+  ...
+# Subtest: percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios únicos
+ok 469 - percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios únicos
+  ---
+  duration_ms: 2567.1169
+  ...
+# Subtest: quem chega à gruta antes de ler o livro também liberta João
+ok 470 - quem chega à gruta antes de ler o livro também liberta João
+  ---
+  duration_ms: 1757.4412
+  ...
+# Subtest: bolsa e provas podem ser recuperadas em qualquer ordem, sem avanço prematuro
+ok 471 - bolsa e provas podem ser recuperadas em qualquer ordem, sem avanço prematuro
+  ---
+  duration_ms: 724.8025
+  ...
+# Subtest: saves antigos retomam o epílogo sem repetir resgate nem prêmios
+ok 472 - saves antigos retomam o epílogo sem repetir resgate nem prêmios
+  ---
+  duration_ms: 1640.8521
+  ...
+# Subtest: ações da missão exigem a área, as condições e o encontro corretos
+ok 473 - ações da missão exigem a área, as condições e o encontro corretos
+  ---
+  duration_ms: 796.0819
+  ...
+# Subtest: mapa do posto: determinístico, colisores só nas bordas e centro livre para o chefe
+ok 474 - mapa do posto: determinístico, colisores só nas bordas e centro livre para o chefe
+  ---
+  duration_ms: 36.5147
+  ...
+# Subtest: posto: chegada, chefe e cantos alcançáveis a pé
+ok 475 - posto: chegada, chefe e cantos alcançáveis a pé
+  ---
+  duration_ms: 67.9225
+  ...
+# Subtest: fase 4 usa o posto e o Capitão aparece em chão livre
+ok 476 - fase 4 usa o posto e o Capitão aparece em chão livre
+  ---
+  duration_ms: 73.2417
+  ...
+# Subtest: chão pintado cobre o mundo da campanha e a floresta com sobreposição limitada
+ok 477 - chão pintado cobre o mundo da campanha e a floresta com sobreposição limitada
+  ---
+  duration_ms: 2888.1396
+  ...
+# Subtest: sem cadáver ou com chefe não gasta mana nem recarga
+ok 478 - sem cadáver ou com chefe não gasta mana nem recarga
+  ---
+  duration_ms: 64.0658
+  ...
+# Subtest: possui o corpo uma vez, preserva modelo, consome mana e não grava o lacaio
+ok 479 - possui o corpo uma vez, preserva modelo, consome mana e não grava o lacaio
+  ---
+  duration_ms: 60.4286
+  ...
+# Subtest: pausa congela duração; prazo e morte encerram sem renascimento ou recompensa
+ok 480 - pausa congela duração; prazo e morte encerram sem renascimento ou recompensa
+  ---
+  duration_ms: 195.3362
+  ...
+# Subtest: respeita limite, alcance e janela de cadáver; possuído ataca inimigos
+ok 481 - respeita limite, alcance e janela de cadáver; possuído ataca inimigos
+  ---
+  duration_ms: 23.6199
+  ...
+# Subtest: regras de progressão vêm das fontes atuais
+ok 482 - regras de progressão vêm das fontes atuais
+  ---
+  duration_ms: 321.0541
+  ...
+# Subtest: curva de XP, limite do nível 60 e quantidades inválidas
+ok 483 - curva de XP, limite do nível 60 e quantidades inválidas
+  ---
+  duration_ms: 1.1937
+  ...
+# Subtest: ouro por abate: mínimo, arredondamento e chefe
+ok 484 - ouro por abate: mínimo, arredondamento e chefe
+  ---
+  duration_ms: 0.3915
+  ...
+# Subtest: atributos sem equipamento seguem a tabela documentada
+ok 485 - atributos sem equipamento seguem a tabela documentada
+  ---
+  duration_ms: 5.57
+  ...
+# Subtest: um encontro novo começa cheio e com os atributos do nível salvo
+ok 486 - um encontro novo começa cheio e com os atributos do nível salvo
+  ---
+  duration_ms: 61.0518
+  ...
+# Subtest: recálculo preserva a proporção sem curar e a regeneração de vida respeita o passo
+ok 487 - recálculo preserva a proporção sem curar e a regeneração de vida respeita o passo
+  ---
+  duration_ms: 172.4491
+  ...
+# Subtest: abate paga XP, ouro e maestria uma vez, independentemente de quem causou a morte
+ok 488 - abate paga XP, ouro e maestria uma vez, independentemente de quem causou a morte
+  ---
+  duration_ms: 36.6874
+  ...
+# Subtest: sem XP válido não há recompensa nem ouro
+ok 489 - sem XP válido não há recompensa nem ouro
+  ---
+  duration_ms: 29.3644
+  ...
+# Subtest: orbes: chance e tipo seguem os sorteios e a vida útil; ouro dura mais
+ok 490 - orbes: chance e tipo seguem os sorteios e a vida útil; ouro dura mais
+  ---
+  duration_ms: 97.6758
+  ...
+# Subtest: coleta por proximidade soma ouro uma vez e orbes respeitam o máximo
+ok 491 - coleta por proximidade soma ouro uma vez e orbes respeitam o máximo
+  ---
+  duration_ms: 9.8779
+  ...
+# Subtest: pausa e menu não consomem a vida útil; reiniciar e morrer limpam o chão
+ok 492 - pausa e menu não consomem a vida útil; reiniciar e morrer limpam o chão
+  ---
+  duration_ms: 9.4422
+  ...
+# Subtest: subir de nível aplica pontos, atributos e cura fixa sem passar do máximo
+ok 493 - subir de nível aplica pontos, atributos e cura fixa sem passar do máximo
+  ---
+  duration_ms: 8.8309
+  ...
+# Subtest: XP de maestria usa o nível anterior ao do personagem e não é perdido no nível máximo
+ok 494 - XP de maestria usa o nível anterior ao do personagem e não é perdido no nível máximo
+  ---
+  duration_ms: 4.2768
+  ...
+# Subtest: aliado e inimigo reutilizam o mesmo caminho: nenhum crédito duplicado por aliado morto
+ok 495 - aliado e inimigo reutilizam o mesmo caminho: nenhum crédito duplicado por aliado morto
+  ---
+  duration_ms: 6.1261
+  ...
+# Subtest: snapshot e recarga preservam nível, XP e ouro sem restaurar o chão
+ok 496 - snapshot e recarga preservam nível, XP e ouro sem restaurar o chão
+  ---
+  duration_ms: 80.4199
+  ...
+# Subtest: normalização: nível do personagem e do perfil convergem e o XP cabe no nível
+ok 497 - normalização: nível do personagem e do perfil convergem e o XP cabe no nível
+  ---
+  duration_ms: 4.2002
+  ...
+# Subtest: perfil de teste substitui o nível em memória e zera o XP; sem equipamento não há bônus ocultos
+ok 498 - perfil de teste substitui o nível em memória e zera o XP; sem equipamento não há bônus ocultos
+  ---
+  duration_ms: 4.9122
+  ...
+# Subtest: caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+ok 499 - caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+  ---
+  duration_ms: 325.3145
+  ...
+# Subtest: vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+ok 500 - vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+  ---
+  duration_ms: 97.9044
+  ...
+# Subtest: caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+ok 501 - caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+  ---
+  duration_ms: 70.9961
+  ...
+# Subtest: nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+ok 502 - nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+  ---
+  duration_ms: 2507.1118
+  ...
+# Subtest: defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+ok 503 - defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+  ---
+  duration_ms: 1299.741
+  ...
+# Subtest: morte e reload retomam trecho; pista e vitória da caverna persistem
+ok 504 - morte e reload retomam trecho; pista e vitória da caverna persistem
+  ---
+  duration_ms: 112.6966
+  ...
+# Subtest: caverna e estrada possuem percurso e nascimentos livres
+ok 505 - caverna e estrada possuem percurso e nascimentos livres
+  ---
+  duration_ms: 296.2546
+  ...
+# Subtest: viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+ok 506 - viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+  ---
+  duration_ms: 24.6773
+  ...
+# Subtest: introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+ok 507 - introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+  ---
+  duration_ms: 37.9266
+  ...
+# Subtest: caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+ok 508 - caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+  ---
+  duration_ms: 53.5465
+  ...
+# Subtest: Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+ok 509 - Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+  ---
+  duration_ms: 1203.2621
+  ...
+# Subtest: queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+ok 510 - queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+  ---
+  duration_ms: 65.5431
+  ...
+# Subtest: fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+ok 511 - fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+  ---
+  duration_ms: 28.6874
+  ...
+# Subtest: Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+ok 512 - Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+  ---
+  duration_ms: 175.7415
+  ...
+# Subtest: save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+ok 513 - save antigo inteiro é preservado durante importação, normalização e exportação repetidas
+  ---
+  duration_ms: 59.9106
+  ...
+# Subtest: saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+ok 514 - saves com campos opcionais ausentes recebem defaults; extensões e IDs futuros permanecem
+  ---
+  duration_ms: 4.6759
+  ...
+# Subtest: rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+ok 515 - rejeita JSON, formatos, versões, tipos e números inválidos sem gravar
+  ---
+  duration_ms: 13.3439
+  ...
+# Subtest: armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+ok 516 - armazenamento próprio não altera chave antiga; importação mantém backup do save v2 anterior
+  ---
+  duration_ms: 8.0153
+  ...
+# Subtest: save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+ok 517 - save corrompido não é substituído por salvar; importação explícita faz cópia do conteúdo bruto
+  ---
+  duration_ms: 8.3633
+  ...
+# Subtest: quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+ok 518 - quota e falha de backup preservam o save anterior; armazenamento indisponível é tratado
+  ---
+  duration_ms: 35.8786
+  ...
+# Subtest: falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+ok 519 - falha na gravação principal após copiar backup mantém os dois conteúdos recuperáveis
+  ---
+  duration_ms: 30.5595
+  ...
+# Subtest: somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+ok 520 - somente opções e personagem persistem: arena, saúde, recargas e efeitos são transitórios
+  ---
+  duration_ms: 27.7174
+  ...
+# Subtest: menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+ok 521 - menu não simula ou conjura; transições limpam efeitos, identificadores e recargas
+  ---
+  duration_ms: 58.491
+  ...
+# Subtest: morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+ok 522 - morte interrompe simulação e limpa ataques; pausa é retomável apenas no treino
+  ---
+  duration_ms: 12.1252
+  ...
+# Subtest: aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+ok 523 - aplicação inválida é atômica e opções/importações não alteram o arquivo preservado
+  ---
+  duration_ms: 6.5607
+  ...
+# (node:13944) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/projects/games/necromancer-rise-html-game/tools/3d-lab/vendor/three.module.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\projects\\games\\necromancer-rise-html-game\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: vila e floresta personalizada compartilham luz; sair restaura tone mapping
+ok 524 - vila e floresta personalizada compartilham luz; sair restaura tone mapping
+  ---
+  duration_ms: 8.8008
+  ...
+# Subtest: famílias do kit isolam cor, transparência e descarte de material
+ok 525 - famílias do kit isolam cor, transparência e descarte de material
+  ---
+  duration_ms: 98.0994
+  ...
+# (node:52800) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/projects/games/necromancer-rise-html-game/tools/3d-lab/vendor/three.module.js is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to C:\\projects\\games\\necromancer-rise-html-game\\package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: dividir não some, duplica nem muda nenhuma instância
+ok 526 - dividir não some, duplica nem muda nenhuma instância
+  ---
+  duration_ms: 137.9735
+  ...
+# Subtest: a câmera descarta os setores fora da tela
+ok 527 - a câmera descarta os setores fora da tela
+  ---
+  duration_ms: 110.9232
+  ...
+# Subtest: família pequena, camada plana e peça comum ficam inteiras
+ok 528 - família pequena, camada plana e peça comum ficam inteiras
+  ---
+  duration_ms: 5.1487
+  ...
+# Subtest: acesso exige fim do Ato I, vila, grau e modificador válidos; saves antigos ganham padrões
+ok 529 - acesso exige fim do Ato I, vila, grau e modificador válidos; saves antigos ganham padrões
+  ---
+  duration_ms: 33.9938
+  ...
+# Subtest: construção é atômica e limitada a pedestais; melhorias até grau 3, sem ouro nem duplicação
+ok 530 - construção é atômica e limitada a pedestais; melhorias até grau 3, sem ouro nem duplicação
+  ---
+  duration_ms: 9.3474
+  ...
+# Subtest: rotas e chefe são anunciados pelo plano; modificadores escalam vida e velocidade
+ok 531 - rotas e chefe são anunciados pelo plano; modificadores escalam vida e velocidade
+  ---
+  duration_ms: 1.5126
+  ...
+# Subtest: dano das torres usa morte e recompensa comuns uma vez; resistência não dá imunidade
+ok 532 - dano das torres usa morte e recompensa comuns uma vez; resistência não dá imunidade
+  ---
+  duration_ms: 14.4323
+  ...
+# Subtest: gelo desacelera, peste atinge grupo e cripta reanima somente guardiões caídos
+ok 533 - gelo desacelera, peste atinge grupo e cripta reanima somente guardiões caídos
+  ---
+  duration_ms: 7.811
+  ...
+# Subtest: invasores seguem pontos e vazamentos ferem obelisco uma vez sem essência ou XP
+ok 534 - invasores seguem pontos e vazamentos ferem obelisco uma vez sem essência ou XP
+  ---
+  duration_ms: 6.8692
+  ...
+# Subtest: pausa bloqueia simulação e derrota congela o combate; retorno limpa estruturas
+ok 535 - pausa bloqueia simulação e derrota congela o combate; retorno limpa estruturas
+  ---
+  duration_ms: 128.8887
+  ...
+# Subtest: oito ondas vencidas encerram uma vez, pagam e liberam grau; runas persistem sem salvar partida
+ok 536 - oito ondas vencidas encerram uma vez, pagam e liberam grau; runas persistem sem salvar partida
+  ---
+  duration_ms: 466.2354
+  ...
+# Subtest: melhorar a Cripta reforça guardiões vivos sem curar; runa é aplicada no início da partida
+ok 537 - melhorar a Cripta reforça guardiões vivos sem curar; runa é aplicada no início da partida
+  ---
+  duration_ms: 4.4098
+  ...
+# Subtest: runa gélida reforça controle com limite e sem imunidade da rota resistente
+ok 538 - runa gélida reforça controle com limite e sem imunidade da rota resistente
+  ---
+  duration_ms: 4.0271
+  ...
+# Subtest: Corte Espacial: cada corte dispara 230%, sem recarga, 14 u e sem atravessar parede
+ok 539 - Corte Espacial: cada corte dispara 230%, sem recarga, 14 u e sem atravessar parede
+  ---
+  duration_ms: 26.4362
+  ...
+# Subtest: giro acumula Ciclone e Furacão; ranks alteram área, ritmo, dano e gasto
+ok 540 - giro acumula Ciclone e Furacão; ranks alteram área, ritmo, dano e gasto
+  ---
+  duration_ms: 5.1442
+  ...
+# Subtest: Impacto e Cadência: até cinco avanços extras, presas únicas, parede e esquiva interrompem
+ok 541 - Impacto e Cadência: até cinco avanços extras, presas únicas, parede e esquiva interrompem
+  ---
+  duration_ms: 36.8762
+  ...
+# Subtest: Rastro não soma manchas sobrepostas e some ao morrer
+ok 542 - Rastro não soma manchas sobrepostas e some ao morrer
+  ---
+  duration_ms: 3.9382
+  ...
+# Subtest: Espinhos usa dano na vida, ignora absorção e não reflete golpes esquivados
+ok 543 - Espinhos usa dano na vida, ignora absorção e não reflete golpes esquivados
+  ---
+  duration_ms: 2.07
+  ...
+# Subtest: Escudo Arcano desvia de 10% a 50%, após mitigação, com excedente na vida e sem custo oculto
+ok 544 - Escudo Arcano desvia de 10% a 50%, após mitigação, com excedente na vida e sem custo oculto
+  ---
+  duration_ms: 91.6551
+  ...
+# Subtest: Big Bang explode no contato uma vez; fogo da Arqueira queima sem acumular
+ok 545 - Big Bang explode no contato uma vez; fogo da Arqueira queima sem acumular
+  ---
+  duration_ms: 39.0212
+  ...
+# Subtest: Penas Voadoras é periódica, sem slot/custo; pausa e mergulho adiam o disparo
+ok 546 - Penas Voadoras é periódica, sem slot/custo; pausa e mergulho adiam o disparo
+  ---
+  duration_ms: 6.9987
+  ...
+# Subtest: lobos permanentes: limite quatro, mordida automática e sem cura/ressurreição gratuitos
+ok 547 - lobos permanentes: limite quatro, mordida automática e sem cura/ressurreição gratuitos
+  ---
+  duration_ms: 422.8608
+  ...
+# Subtest: alcateia salva ferimentos e mortos, restaura nos mapas e aceita saves antigos
+ok 548 - alcateia salva ferimentos e mortos, restaura nos mapas e aceita saves antigos
+  ---
+  duration_ms: 37.7766
+  ...
+# Subtest: Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e dura oito segundos
+ok 549 - Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e dura oito segundos
+  ---
+  duration_ms: 70.9613
+  ...
+# Subtest: novos nós e precondições entram no build, sem alterar ids persistidos
+ok 550 - novos nós e precondições entram no build, sem alterar ids persistidos
+  ---
+  duration_ms: 0.7469
+  ...
+# Subtest: atiradores: cada habilidade ofensiva revista ganha dano do primeiro ao quinto rank
+ok 551 - atiradores: cada habilidade ofensiva revista ganha dano do primeiro ao quinto rank
+  ---
+  duration_ms: 5.1734
+  ...
+# Subtest: Druida: Tempestade, Tornado e explosão do Furacão escalam no runtime sem multiplicação entre ranks
+ok 552 - Druida: Tempestade, Tornado e explosão do Furacão escalam no runtime sem multiplicação entre ranks
+  ---
+  duration_ms: 7.3443
+  ...
+# Subtest: Druida: golpes da forma de lobo e sangramento recebem o próprio rank além da transformação
+ok 553 - Druida: golpes da forma de lobo e sangramento recebem o próprio rank além da transformação
+  ---
+  duration_ms: 9.6888
+  ...
+# Subtest: Planta, cura, Uivo e Brado recebem progressão adequada à função
+ok 554 - Planta, cura, Uivo e Brado recebem progressão adequada à função
+  ---
+  duration_ms: 6.6187
+  ...
+# Subtest: Guerreiro: Arremesso, Corte Espacial e Cadência escalam, mantendo 230% no primeiro ponto
+ok 555 - Guerreiro: Arremesso, Corte Espacial e Cadência escalam, mantendo 230% no primeiro ponto
+  ---
+  duration_ms: 23.7333
+  ...
+# Subtest: barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+ok 556 - barra padrão: as seis primeiras ações; ataque básico e Esquiva sempre presentes
+  ---
+  duration_ms: 40.1901
+  ...
+# Subtest: atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+ok 557 - atirador: equipar exige o selo, o slot ativa a ação escolhida e o save guarda a barra
+  ---
+  duration_ms: 103.4875
+  ...
+# Subtest: saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+ok 558 - saves antigos e de outras classes: barra padrão para atiradores, nenhuma para o Guerreiro
+  ---
+  duration_ms: 9.1877
+  ...
+# Subtest: Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+ok 559 - Druida: a forma humana usa a barra montável; na forma de lobo a barra é fixa
+  ---
+  duration_ms: 10.9482
+  ...
+# Subtest: warrior: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+ok 560 - warrior: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+  ---
+  duration_ms: 67.8616
+  ...
+# Subtest: warrior: falhas por ouro, combate ou morte preservam o estado
+ok 561 - warrior: falhas por ouro, combate ou morte preservam o estado
+  ---
+  duration_ms: 14.9602
+  ...
+# Subtest: warrior: disponível no treino pausado e independente da horda
+ok 562 - warrior: disponível no treino pausado e independente da horda
+  ---
+  duration_ms: 4.3723
+  ...
+# Subtest: druid: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+ok 563 - druid: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+  ---
+  duration_ms: 79.602
+  ...
+# Subtest: druid: falhas por ouro, combate ou morte preservam o estado
+ok 564 - druid: falhas por ouro, combate ou morte preservam o estado
+  ---
+  duration_ms: 18.0086
+  ...
+# Subtest: druid: disponível no treino pausado e independente da horda
+ok 565 - druid: disponível no treino pausado e independente da horda
+  ---
+  duration_ms: 12.69
+  ...
+# Subtest: mage: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+ok 566 - mage: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+  ---
+  duration_ms: 56.7309
+  ...
+# Subtest: mage: falhas por ouro, combate ou morte preservam o estado
+ok 567 - mage: falhas por ouro, combate ou morte preservam o estado
+  ---
+  duration_ms: 58.1118
+  ...
+# Subtest: mage: disponível no treino pausado e independente da horda
+ok 568 - mage: disponível no treino pausado e independente da horda
+  ---
+  duration_ms: 5.6912
+  ...
+# Subtest: archer: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+ok 569 - archer: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+  ---
+  duration_ms: 10.9174
+  ...
+# Subtest: archer: falhas por ouro, combate ou morte preservam o estado
+ok 570 - archer: falhas por ouro, combate ou morte preservam o estado
+  ---
+  duration_ms: 8.5226
+  ...
+# Subtest: archer: disponível no treino pausado e independente da horda
+ok 571 - archer: disponível no treino pausado e independente da horda
+  ---
+  duration_ms: 4.2293
+  ...
+# Subtest: mercenary: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+ok 572 - mercenary: devolve a árvore, cobra por ponto e persiste sem alterar progressão ou equipamento
+  ---
+  duration_ms: 8.64
+  ...
+# Subtest: mercenary: falhas por ouro, combate ou morte preservam o estado
+ok 573 - mercenary: falhas por ouro, combate ou morte preservam o estado
+  ---
+  duration_ms: 9.9779
+  ...
+# Subtest: mercenary: disponível no treino pausado e independente da horda
+ok 574 - mercenary: disponível no treino pausado e independente da horda
+  ---
+  duration_ms: 3.2235
+  ...
+# Subtest: Druida encerra forma e invocações; Mago encerra escudo e projéteis; Guerreiro encerra canalização
+ok 575 - Druida encerra forma e invocações; Mago encerra escudo e projéteis; Guerreiro encerra canalização
+  ---
+  duration_ms: 11.2387
+  ...
+# Subtest: Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+ok 576 - Fogo: pontos nas outras magias somam 2% ao dano base; os próprios não realimentam
+  ---
+  duration_ms: 4.3679
+  ...
+# Subtest: sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+ok 577 - sinergias não atravessam elementos, classes ou passivas globais; pontos inválidos não criam bônus
+  ---
+  duration_ms: 0.6629
+  ...
+# Subtest: variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+ok 578 - variantes herdam os pontos da origem sem duplicar doações; Echo não conta duas vezes no Teleporte
+  ---
+  duration_ms: 0.4913
+  ...
+# Subtest: cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+ok 579 - cinco classes têm sinergias entre ações e fontes legíveis; Necromante mantém o modelo explícito
+  ---
+  duration_ms: 55.3364
+  ...
+# Subtest: Meteoro aplica sinergia ao impacto e ao chão em chamas
+ok 580 - Meteoro aplica sinergia ao impacto e ao chão em chamas
+  ---
+  duration_ms: 99.1906
+  ...
+# Subtest: Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+ok 581 - Combustão e Familiar recebem investimento de Fogo sem fortalecer a Seta Arcana
+  ---
+  duration_ms: 17.0812
+  ...
+# Subtest: Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+ok 582 - Gelo fortalece dano do Golem sem inflar sua vida; Arcano fortalece o dano copiado pelo Clone
+  ---
+  duration_ms: 40.1285
+  ...
+# Subtest: Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+ok 583 - Natureza fortalece ataques dos lobos e da planta sem cura ou duplicação de vida
+  ---
+  duration_ms: 22.5498
+  ...
+# Subtest: sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+ok 584 - sinergias de Escudo entram no arremesso/reflexão, não alteram bloqueio ou custo
+  ---
+  duration_ms: 7.6314
+  ...
+# Subtest: ficha do Mago usa o mesmo dano e sinergia que o combate
+ok 585 - ficha do Mago usa o mesmo dano e sinergia que o combate
+  ---
+  duration_ms: 33.5521
+  ...
+# Subtest: módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+ok 586 - módulo gerado está em dia com o arvores.json (rode node v2/tools/build.cjs depois de editar)
+  ---
+  duration_ms: 24.1694
+  ...
+# Subtest: só nós jogáveis entram no jogo; ideias e planos ficam fora
+ok 587 - só nós jogáveis entram no jogo; ideias e planos ficam fora
+  ---
+  duration_ms: 0.9617
+  ...
+# Subtest: cada ação que depende de selo tem o nó correspondente na árvore da classe
+ok 588 - cada ação que depende de selo tem o nó correspondente na árvore da classe
+  ---
+  duration_ms: 1.7088
+  ...
+# Subtest: painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+ok 589 - painel: no máximo três selos por linha de cada ramo e pais acima dos filhos
+  ---
+  duration_ms: 4.5266
+  ...
+# Subtest: Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+ok 590 - Necromante: nome, pontos, nível e pré-requisito do arquivo batem com o Grimório do código
+  ---
+  duration_ms: 2.3168
+  ...
+# Subtest: Orc: pancada no chão trava o ponto, avisa a área e só causa dano no impacto
+ok 591 - Orc: pancada no chão trava o ponto, avisa a área e só causa dano no impacto
+  ---
+  duration_ms: 45.2651
+  ...
+# Subtest: Orc: sair da área durante a preparação evita a pancada; morte e pausa cancelam
+ok 592 - Orc: sair da área durante a preparação evita a pancada; morte e pausa cancelam
+  ---
+  duration_ms: 28.6871
+  ...
+# Subtest: Orc: pancada em área atinge também a horda e tem recarga
+ok 593 - Orc: pancada em área atinge também a horda e tem recarga
+  ---
+  duration_ms: 14.5215
+  ...
+# Subtest: Saraivada: trava a área, avisa e só causa dano quando as flechas caem — tipo 1
+ok 594 - Saraivada: trava a área, avisa e só causa dano quando as flechas caem — tipo 1
+  ---
+  duration_ms: 15.9491
+  ...
+# Subtest: Saraivada: trava a área, avisa e só causa dano quando as flechas caem — tipo 9
+ok 595 - Saraivada: trava a área, avisa e só causa dano quando as flechas caem — tipo 9
+  ---
+  duration_ms: 25.6275
+  ...
+# Subtest: Saraivada: sair da área evita o dano; a queda continua após a morte do arqueiro, a preparação não
+ok 596 - Saraivada: sair da área evita o dano; a queda continua após a morte do arqueiro, a preparação não
+  ---
+  duration_ms: 75.5317
+  ...
+# Subtest: Saraivada: recarga e distância mínima
+ok 597 - Saraivada: recarga e distância mínima
+  ---
+  duration_ms: 15.486
+  ...
+# Subtest: Uivo: chama reforços sem XP nem loot, com limite por cão e que não uivam
+ok 598 - Uivo: chama reforços sem XP nem loot, com limite por cão e que não uivam
+  ---
+  duration_ms: 196.2747
+  ...
+# Subtest: Uivo: morte durante o chamado cancela os reforços; reforços não dão recompensa ao morrer
+ok 599 - Uivo: morte durante o chamado cancela os reforços; reforços não dão recompensa ao morrer
+  ---
+  duration_ms: 9.3706
+  ...
+# Subtest: Uivo: pose do uivo usa o clipe howl e não ocorre com o alvo longe demais
+ok 600 - Uivo: pose do uivo usa o clipe howl e não ocorre com o alvo longe demais
+  ---
+  duration_ms: 5.6618
+  ...
+# Subtest: Soldado: corte frontal prepara 0,7 segundo, trava direcao e atinge uma unica vez
+ok 601 - Soldado: corte frontal prepara 0,7 segundo, trava direcao e atinge uma unica vez
+  ---
+  duration_ms: 7.2608
+  ...
+# Subtest: Soldado: sair do arco evita corte; morte cancela preparacao
+ok 602 - Soldado: sair do arco evita corte; morte cancela preparacao
+  ---
+  duration_ms: 13.1547
+  ...
+# Subtest: Orc: salta de longe para ponto travado, ganha altura e causa impacto so ao pousar
+ok 603 - Orc: salta de longe para ponto travado, ganha altura e causa impacto so ao pousar
+  ---
+  duration_ms: 19.5445
+  ...
+# Subtest: parâmetros das cinco magias vêm das funções e overrides atuais
+ok 604 - parâmetros das cinco magias vêm das funções e overrides atuais
+  ---
+  duration_ms: 344.4206
+  ...
+# Subtest: novos slots exigem aprendizado; seis ações sem duplicatas e save restaura loadout
+ok 605 - novos slots exigem aprendizado; seis ações sem duplicatas e save restaura loadout
+  ---
+  duration_ms: 53.1678
+  ...
+# Subtest: explosão causa dano imediato uma vez; mana, pausa, alcance e recarga são atômicos
+ok 606 - explosão causa dano imediato uma vez; mana, pausa, alcance e recarga são atômicos
+  ---
+  duration_ms: 139.5043
+  ...
+# Subtest: trocar slot não reinicia recarga e magia falha sem passar ao dispatcher de grupo
+ok 607 - trocar slot não reinicia recarga e magia falha sem passar ao dispatcher de grupo
+  ---
+  duration_ms: 9.83
+  ...
+# Subtest: chuva paga uma vez e aplica cada impacto só após atraso e queda
+ok 608 - chuva paga uma vez e aplica cada impacto só após atraso e queda
+  ---
+  duration_ms: 9.923
+  ...
+# Subtest: dano da chuva concorda em passos diferentes; pausa não avança quedas
+ok 609 - dano da chuva concorda em passos diferentes; pausa não avança quedas
+  ---
+  duration_ms: 112.7753
+  ...
+# Subtest: muralha impede travessia contínua, pulsa e tem duração; não barra tiro aliado
+ok 610 - muralha impede travessia contínua, pulsa e tem duração; não barra tiro aliado
+  ---
+  duration_ms: 8.7173
+  ...
+# Subtest: muralha absorve o primeiro projétil hostil pelo segmento e perde resistência
+ok 611 - muralha absorve o primeiro projétil hostil pelo segmento e perde resistência
+  ---
+  duration_ms: 9.0633
+  ...
+# Subtest: escudo escolhe zumbi mais ferido, sacrifica sem Pacto e exige recuperação de 20 s
+ok 612 - escudo escolhe zumbi mais ferido, sacrifica sem Pacto e exige recuperação de 20 s
+  ---
+  duration_ms: 14.1674
+  ...
+# Subtest: sem zumbi, escudo cobra 15% da vida máxima sem matar; dura até absorção e respeita Dash
+ok 613 - sem zumbi, escudo cobra 15% da vida máxima sem matar; dura até absorção e respeita Dash
+  ---
+  duration_ms: 37.3366
+  ...
+# Subtest: maldição afeta jogador e aliados por um caminho de dano; renovar não empilha e expira
+ok 614 - maldição afeta jogador e aliados por um caminho de dano; renovar não empilha e expira
+  ---
+  duration_ms: 8.001
+  ...
+# Subtest: maestrias alteram dano, área, duração, absorção, resistência e recarga uma vez
+ok 615 - maestrias alteram dano, área, duração, absorção, resistência e recarga uma vez
+  ---
+  duration_ms: 6.7976
+  ...
+# Subtest: morte, menu e reinício removem quedas, muralhas, maldição, escudo e recargas; save não guarda luta
+ok 616 - morte, menu e reinício removem quedas, muralhas, maldição, escudo e recargas; save não guarda luta
+  ---
+  duration_ms: 13.571
+  ...
+# Subtest: devolver pré-requisito remove também magia dependente equipada
+ok 617 - devolver pré-requisito remove também magia dependente equipada
+  ---
+  duration_ms: 66.8685
+  ...
+# Subtest: teia avisa, trava a direcao e imobiliza por dois segundos
+ok 618 - teia avisa, trava a direcao e imobiliza por dois segundos
+  ---
+  duration_ms: 155.7442
+  ...
+# Subtest: sair da trajetoria evita a teia e morte cancela a preparacao
+ok 619 - sair da trajetoria evita a teia e morte cancela a preparacao
+  ---
+  duration_ms: 61.269
+  ...
+# Subtest: dash evita a imobilizacao no impacto
+ok 620 - dash evita a imobilizacao no impacto
+  ---
+  duration_ms: 1.9266
+  ...
+# Subtest: chão da campanha com muros gera gradientes finitos
+ok 621 - chão da campanha com muros gera gradientes finitos
+  ---
+  duration_ms: 2355.1171
+  ...
+# Subtest: varredura impede atravessar parede fina em deslocamento longo e preserva raio no limite
+ok 622 - varredura impede atravessar parede fina em deslocamento longo e preserva raio no limite
+  ---
+  duration_ms: 5.4511
+  ...
+# Subtest: desliza junto da parede, permite afastar e respeita quinas arredondadas pelo raio
+ok 623 - desliza junto da parede, permite afastar e respeita quinas arredondadas pelo raio
+  ---
+  duration_ms: 0.7638
+  ...
+# Subtest: resolve centros exatos e sobreposição inicial sem NaN; evita círculo em alta velocidade
+ok 624 - resolve centros exatos e sobreposição inicial sem NaN; evita círculo em alta velocidade
+  ---
+  duration_ms: 0.9514
+  ...
+# Subtest: trajetos são contínuos e navegação contorna obstáculo sem cortar diagonal
+ok 625 - trajetos são contínuos e navegação contorna obstáculo sem cortar diagonal
+  ---
+  duration_ms: 73.936
+  ...
+# Subtest: movimentos variados não penetram sólidos ou limites da cena compartilhada
+ok 626 - movimentos variados não penetram sólidos ou limites da cena compartilhada
+  ---
+  duration_ms: 19.2672
+  ...
+# Subtest: atores nascem fora dos sólidos e caminhada bloqueada usa descanso
+ok 627 - atores nascem fora dos sólidos e caminhada bloqueada usa descanso
+  ---
+  duration_ms: 62.4017
+  ...
+# Subtest: IA usa rota para chegar ao outro lado da parede sem teleporte ou penetração
+ok 628 - IA usa rota para chegar ao outro lado da parede sem teleporte ou penetração
+  ---
+  duration_ms: 60.3583
+  ...
+# Subtest: pose do boss acompanha preparação e impacto sem antecipar o dano
+ok 629 - pose do boss acompanha preparação e impacto sem antecipar o dano
+  ---
+  duration_ms: 10.1198
+  ...
+# Subtest: gamepad ignora drift, normaliza diagonais, lê botões e suporta desconexão
+ok 630 - gamepad ignora drift, normaliza diagonais, lê botões e suporta desconexão
+  ---
+  duration_ms: 4.2462
+  ...
+# Subtest: alvo num bolsão fechado: não há caminho e a busca não roda de novo a cada quadro
+ok 631 - alvo num bolsão fechado: não há caminho e a busca não roda de novo a cada quadro
+  ---
+  duration_ms: 58.1208
+  ...
+# Subtest: colisores trocados (portas) invalidam o cache de regiões
+ok 632 - colisores trocados (portas) invalidam o cache de regiões
+  ---
+  duration_ms: 2.2859
+  ...
+# Subtest: caixa girada: colisão acompanha a diagonal
+ok 633 - caixa girada: colisão acompanha a diagonal
+  ---
+  duration_ms: 1.9063
+  ...
+# Subtest: caixa girada: busca de caminho contorna e sabe quando não há saída
+ok 634 - caixa girada: busca de caminho contorna e sabe quando não há saída
+  ---
+  duration_ms: 126.7821
+  ...
+# Subtest: a arena aplica o giro de cada peça, e a peça alinhada não muda
+ok 635 - a arena aplica o giro de cada peça, e a peça alinhada não muda
+  ---
+  duration_ms: 67.6056
+  ...
+# Subtest: ponte girada abre passagem e dá altura em diagonal
+ok 636 - ponte girada abre passagem e dá altura em diagonal
+  ---
+  duration_ms: 89.0966
+  ...
+# Subtest: índice de colisores: mesmas respostas da varredura direta
+ok 637 - índice de colisores: mesmas respostas da varredura direta
+  ---
+  duration_ms: 12012.8103
+  ...
+# Subtest: índice de colisores: consulta traz poucos, em ordem, e acompanha a troca de colisores
+ok 638 - índice de colisores: consulta traz poucos, em ordem, e acompanha a troca de colisores
+  ---
+  duration_ms: 5.9921
+  ...
+# Subtest: ajuste de nível e save: necromancer
+ok 639 - ajuste de nível e save: necromancer
+  ---
+  duration_ms: 74.2117
+  ...
+# Subtest: ajuste de nível e save: warrior
+ok 640 - ajuste de nível e save: warrior
+  ---
+  duration_ms: 68.1786
+  ...
+# Subtest: ajuste de nível e save: druid
+ok 641 - ajuste de nível e save: druid
+  ---
+  duration_ms: 24.6422
+  ...
+# Subtest: ajuste de nível e save: archer
+ok 642 - ajuste de nível e save: archer
+  ---
+  duration_ms: 15.0179
+  ...
+# Subtest: ajuste de nível e save: mercenary
+ok 643 - ajuste de nível e save: mercenary
+  ---
+  duration_ms: 49.9932
+  ...
+# Subtest: ajuste de nível e save: mage
+ok 644 - ajuste de nível e save: mage
+  ---
+  duration_ms: 13.4701
+  ...
+# Subtest: limites, ouro, restauração e proteções
+ok 645 - limites, ouro, restauração e proteções
+  ---
+  duration_ms: 9.4851
+  ...
+# Subtest: remover nível não apaga investimentos incompatíveis
+ok 646 - remover nível não apaga investimentos incompatíveis
+  ---
+  duration_ms: 79.4819
+  ...
+# Subtest: mapa da trilha mantém limites originais e obstáculos fora da faixa central
+ok 647 - mapa da trilha mantém limites originais e obstáculos fora da faixa central
+  ---
+  duration_ms: 64.6077
+  ...
+# Subtest: pontos de nascimento das emboscadas, partida e pista ficam livres e a trilha é atravessável
+ok 648 - pontos de nascimento das emboscadas, partida e pista ficam livres e a trilha é atravessável
+  ---
+  duration_ms: 57.7433
+  ...
+# Subtest: fase 3 usa a trilha; barricadas surgem na emboscada e as rochas permanecem depois
+ok 649 - fase 3 usa a trilha; barricadas surgem na emboscada e as rochas permanecem depois
+  ---
+  duration_ms: 70.3919
+  ...
+# Subtest: fase 3 completa: todas as emboscadas e o fim da trilha concluem a fase
+ok 650 - fase 3 completa: todas as emboscadas e o fim da trilha concluem a fase
+  ---
+  duration_ms: 47.8958
+  ...
+# Subtest: simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+ok 651 - simulação pura: serializável, sem objetos de renderização; reset limpa efeitos e usa novas identidades
+  ---
+  duration_ms: 68.0863
+  ...
+# Subtest: pausa congela preparação e movimento e impede novas magias
+ok 652 - pausa congela preparação e movimento e impede novas magias
+  ---
+  duration_ms: 42.2589
+  ...
+# Subtest: magia resolve dano uma vez e reiniciar remove o impacto antigo
+ok 653 - magia resolve dano uma vez e reiniciar remove o impacto antigo
+  ---
+  duration_ms: 137.4665
+  ...
+# Subtest: morte do atacante durante a preparação cancela o golpe pendente
+ok 654 - morte do atacante durante a preparação cancela o golpe pendente
+  ---
+  duration_ms: 3.0313
+  ...
+# Subtest: aviso travado permite esquiva e mantém o impacto no local original
+ok 655 - aviso travado permite esquiva e mantém o impacto no local original
+  ---
+  duration_ms: 2.725
+  ...
+# Subtest: subpassos resolvem impacto igualmente em passos diferentes
+ok 656 - subpassos resolvem impacto igualmente em passos diferentes
+  ---
+  duration_ms: 5.6057
+  ...
+# Subtest: limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+ok 657 - limites, diagonal normalizada, valores inválidos e alvo fora do alcance
+  ---
+  duration_ms: 491.1205
+  ...
+# Subtest: três serviços nascem na praça, acessíveis nos dois cenários de Jacarandá
+ok 658 - três serviços nascem na praça, acessíveis nos dois cenários de Jacarandá
+  ---
+  duration_ms: 2611.8631
+  ...
+# Subtest: modos abrem pela vila contínua sem concluir Ato I; sair retoma a praça e preserva quests
+ok 659 - modos abrem pela vila contínua sem concluir Ato I; sair retoma a praça e preserva quests
+  ---
+  duration_ms: 3977.0777
+  ...
+# Subtest: fora da vila e morto não inicia modos; não fabrica conclusão da campanha
+ok 660 - fora da vila e morto não inicia modos; não fabrica conclusão da campanha
+  ---
+  duration_ms: 298.6042
+  ...
+# Subtest: mapa da vila é determinístico, tem ids únicos de tema e mantém tudo dentro do limite
+ok 661 - mapa da vila é determinístico, tem ids únicos de tema e mantém tudo dentro do limite
+  ---
+  duration_ms: 175.5815
+  ...
+# Subtest: casas não se sobrepõem entre si nem com barracas e poço
+ok 662 - casas não se sobrepõem entre si nem com barracas e poço
+  ---
+  duration_ms: 54.0889
+  ...
+# Subtest: na vila, pontos de interação ficam livres e alcançáveis a pé
+ok 663 - na vila, pontos de interação ficam livres e alcançáveis a pé
+  ---
+  duration_ms: 186.3186
+  ...
+# Subtest: casa e poço bloqueiam o jogador; rua principal e praça ficam livres
+ok 664 - casa e poço bloqueiam o jogador; rua principal e praça ficam livres
+  ---
+  duration_ms: 56.0629
+  ...
+# Subtest: cinturão decorativo fica fora da área caminhável e deixa clareiras nos eixos
+ok 665 - cinturão decorativo fica fora da área caminhável e deixa clareiras nos eixos
+  ---
+  duration_ms: 20.3704
+  ...
+# Subtest: catálogo marcial só gera atributos próprios, valida forja e persiste trocas
+ok 666 - catálogo marcial só gera atributos próprios, valida forja e persiste trocas
+  ---
+  duration_ms: 136.0415
+  ...
+# Subtest: migração preserva equipamento antigo e não recria espada ou escudo após guardar ou vender
+ok 667 - migração preserva equipamento antigo e não recria espada ou escudo após guardar ou vender
+  ---
+  duration_ms: 49.3346
+  ...
+# Subtest: bloqueio anula todo o ataque sem gastar barreira; armadura continua separada
+ok 668 - bloqueio anula todo o ataque sem gastar barreira; armadura continua separada
+  ---
+  duration_ms: 3.689
+  ...
+# Subtest: árvore exige nível, investimento e orçamento sem usar bônus de equipamento
+not ok 669 - árvore exige nível, investimento e orçamento sem usar bônus de equipamento
+  ---
+  duration_ms: 9.6363
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\warrior-class.test.mjs:48:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/warrior-class.test.mjs:49:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: só cortes funcionam sem investimento; um ponto libera cada habilidade
+ok 670 - só cortes funcionam sem investimento; um ponto libera cada habilidade
+  ---
+  duration_ms: 11.7051
+  ...
+# Subtest: tornado atinge ao redor enquanto mantido e termina ao soltar, pausar, esgotar ou morrer
+ok 671 - tornado atinge ao redor enquanto mantido e termina ao soltar, pausar, esgotar ou morrer
+  ---
+  duration_ms: 5.7237
+  ...
+# Subtest: escudo acerta uma vez na ida e na volta; não bloqueia em voo e retorna
+not ok 672 - escudo acerta uma vez na ida e na volta; não bloqueia em voo e retorna
+  ---
+  duration_ms: 5.9836
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\warrior-class.test.mjs:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    9592 !== 9600
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 9600
+  actual: 9592
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/warrior-class.test.mjs:76:113)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: sinergias são temporárias, consumidas uma vez e morte limpa o escudo
+ok 673 - sinergias são temporárias, consumidas uma vez e morte limpa o escudo
+  ---
+  duration_ms: 6.4116
+  ...
+# Subtest: inimigo soldado usa modelo anterior e jogador preserva só oito clipes
+ok 674 - inimigo soldado usa modelo anterior e jogador preserva só oito clipes
+  ---
+  duration_ms: 13.0645
+  ...
+# Subtest: ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois acertos por inimigo
+ok 675 - ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois acertos por inimigo
+  ---
+  duration_ms: 88.3529
+  ...
+# Subtest: ricochete sem ponto ou sem outro alvo funciona como o arremesso atual
+ok 676 - ricochete sem ponto ou sem outro alvo funciona como o arremesso atual
+  ---
+  duration_ms: 53.4651
+  ...
+# Subtest: ricochete não salta através de paredes e mantém o escudo fora da mão durante a cadeia
+ok 677 - ricochete não salta através de paredes e mantém o escudo fora da mão durante a cadeia
+  ---
+  duration_ms: 10.7751
+  ...
+# Subtest: cadeia longa volta ao jogador sem sumir no ar
+ok 678 - cadeia longa volta ao jogador sem sumir no ar
+  ---
+  duration_ms: 6.3484
+  ...
+# Subtest: Ciclone e Furacão evoluem cumulativamente e ignoram a antiga preferência de variante
+ok 679 - Ciclone e Furacão evoluem cumulativamente e ignoram a antiga preferência de variante
+  ---
+  duration_ms: 4.6576
+  ...
+# Subtest: variante só troca fora de combate, exige o nó e persiste; variante sem nó volta à base
+ok 680 - variante só troca fora de combate, exige o nó e persiste; variante sem nó volta à base
+  ---
+  duration_ms: 22.2534
+  ...
+# Subtest: postura ofensiva e defensiva alteram dano, dano recebido e bloqueio; só uma fica ativa
+ok 681 - postura ofensiva e defensiva alteram dano, dano recebido e bloqueio; só uma fica ativa
+  ---
+  duration_ms: 8.6532
+  ...
+# Subtest: ofensiva devolve vigor por acerto de corte; defensiva recupera mais e cura ao bloquear
+ok 682 - ofensiva devolve vigor por acerto de corte; defensiva recupera mais e cura ao bloquear
+  ---
+  duration_ms: 3.5387
+  ...
+# Subtest: troca de postura é instantânea, tem recarga, não interrompe golpes e persiste
+ok 683 - troca de postura é instantânea, tem recarga, não interrompe golpes e persiste
+  ---
+  duration_ms: 61.4652
+  ...
+# Subtest: Brado desacelera inimigos no raio, dobra o vigor por 6 s e respeita paredes
+ok 684 - Brado desacelera inimigos no raio, dobra o vigor por 6 s e respeita paredes
+  ---
+  duration_ms: 3.4721
+  ...
+# Subtest: Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atravessa inimigos, alcança 7 u e para em paredes
+ok 685 - Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atravessa inimigos, alcança 7 u e para em paredes
+  ---
+  duration_ms: 15.5049
+  ...
+# Subtest: barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço de saves antigos
+ok 686 - barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço de saves antigos
+  ---
+  duration_ms: 19.8995
+  ...
+# Subtest: nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos
+ok 687 - nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos
+  ---
+  duration_ms: 1.0214
+  ...
+# Subtest: tornado continua encerrando com a variante escolhida
+ok 688 - tornado continua encerrando com a variante escolhida
+  ---
+  duration_ms: 1.3414
+  ...
+# Subtest: troca persiste, migra saves e executa tornado no novo slot
+ok 689 - troca persiste, migra saves e executa tornado no novo slot
+  ---
+  duration_ms: 67.6734
+  ...
+# Subtest: um clique executa somente um corte; três cliques aplicam os três danos uma vez
+not ok 690 - um clique executa somente um corte; três cliques aplicam os três danos uma vez
+  ---
+  duration_ms: 55.7563
+  location: 'C:\\projects\\games\\necromancer-rise-html-game\\v2\\tests\\warrior.test.mjs:13:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    950 !== 951
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 951
+  actual: 950
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/projects/games/necromancer-rise-html-game/v2/tests/warrior.test.mjs:19:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    node:internal/test_runner/harness:255:12
+    node:internal/process/task_queues:140:7
+    AsyncResource.runInAsyncScope (node:async_hooks:206:9)
+    AsyncResource.runMicrotask (node:internal/process/task_queues:137:8)
+  ...
+# Subtest: janela expira e reinicia no primeiro; clique na recuperação reserva apenas um próximo corte
+ok 691 - janela expira e reinicia no primeiro; clique na recuperação reserva apenas um próximo corte
+  ---
+  duration_ms: 6.4934
+  ...
+# Subtest: pausa congela a janela; esquiva, outra habilidade, morte e reset encerram o combo
+ok 692 - pausa congela a janela; esquiva, outra habilidade, morte e reset encerram o combo
+  ---
+  duration_ms: 7.5741
+  ...
+# Subtest: buffer respeita o instante de conclusão mesmo em um passo longo
+ok 693 - buffer respeita o instante de conclusão mesmo em um passo longo
+  ---
+  duration_ms: 2.3276
+  ...
+# Subtest: arco e paredes impedem acertos; estocada para antes do obstáculo
+ok 694 - arco e paredes impedem acertos; estocada para antes do obstáculo
+  ---
+  duration_ms: 5.4777
+  ...
+# Subtest: estocada atinge com a ponta e escudo empurra com custo único
+ok 695 - estocada atinge com a ponta e escudo empurra com custo único
+  ---
+  duration_ms: 4.0855
+  ...
+# Subtest: passivas não acumulam em recálculos e não curam; saves antigos e classe persistem
+ok 696 - passivas não acumulam em recálculos e não curam; saves antigos e classe persistem
+  ---
+  duration_ms: 16.2164
+  ...
+# Subtest: estocada avança até 7 u na direção da mira: alcance total de 10,4 u
+ok 697 - estocada avança até 7 u na direção da mira: alcance total de 10,4 u
+  ---
+  duration_ms: 1.3234
+  ...
+# Subtest: estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo
+ok 698 - estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo
+  ---
+  duration_ms: 1.5527
+  ...
+1..698
+# tests 698
+# suites 0
+# pass 688
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 26720.9862

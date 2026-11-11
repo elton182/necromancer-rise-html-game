@@ -11,7 +11,7 @@ from PIL import Image, ImageChops, ImageDraw
 HERE=Path(__file__).resolve().parents[1]
 FRAMES=HERE/'frames/frames_fallenKing'
 MASTER,CELL=320,256
-game=HERE.parent/'necromancer-canvas.html';html=game.read_text(encoding='utf-8')
+game=HERE.parent/'v1/necromancer-canvas.html';html=game.read_text(encoding='utf-8')
 board_rows=[]
 main_idle=json.loads((HERE/'spritesheets/fallenKing_sheet.json').read_text(encoding='utf-8'))['anims']['idle']
 for key in ('fallenKing','fallenKingSlam'):

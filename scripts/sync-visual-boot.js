@@ -1,5 +1,5 @@
 const fs=require('node:fs'),path=require('node:path');
-const file=process.argv[2]?path.resolve(process.argv[2]):path.resolve(__dirname,'../necromancer-canvas.html');
+const file=process.argv[2]?path.resolve(process.argv[2]):path.resolve(__dirname,'../v1/necromancer-canvas.html');
 let html=fs.readFileSync(file,'utf8');
 const block='<!-- VISUAL_BOOT_BEGIN -->\n<script>\n'+fs.readFileSync(path.join(__dirname,'visual-boot.js'),'utf8')+'\n</script>\n<!-- VISUAL_BOOT_END -->';
 if(html.includes('<!-- VISUAL_BOOT_BEGIN -->'))html=html.replace(/<!-- VISUAL_BOOT_BEGIN -->[\s\S]*?<!-- VISUAL_BOOT_END -->/,()=>block);

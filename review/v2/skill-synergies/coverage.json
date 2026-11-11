@@ -1,0 +1,1547 @@
+{
+  "date": "2026-11-09",
+  "rate": 0.02,
+  "totalNodes": 167,
+  "scope": "Auditoria do catálogo e das fontes; não substitui campanha completa jogada.",
+  "classes": [
+    {
+      "id": "necromancer",
+      "name": "Necromante",
+      "nodes": [
+        {
+          "id": "zombie",
+          "name": "Zumbis",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "Evoca 3 zumbis. Cada ponto dá +4% de dano e +3% de vida a Zumbis e Abominações.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "vigor",
+          "name": "Carne Reanimada",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "Aumenta a vida de Zumbis e Abominações.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "burst",
+          "name": "Explosão Cadavérica",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "Desbloqueia a detonação e aumenta seu dano. Cada ponto investido também dá +4% ao Salto Devastador da Abominação.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "abom",
+          "name": "Abominação",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "Evocação própria: +10% de dano e +15% de vida por ponto. Cada ponto investido também dá +4% de dano e +6% de vida aos zumbis, fortalecendo seus ataques e explosões.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "unstable",
+          "name": "Carne Instável",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "Sinergia entre a explosão dos Zumbis e Explosão Necrótica da árvore Profana.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "colossus",
+          "name": "Colosso de Carne",
+          "maxRank": 1,
+          "branch": "flesh",
+          "progression": "Especialização: Abominação ganha vida e o comando Salto Devastador. Exclui Horda Explosiva.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "plague",
+          "name": "Horda Explosiva",
+          "maxRank": 1,
+          "branch": "flesh",
+          "progression": "Especialização: +2 zumbis e explosões mais fortes. Exclui Colosso de Carne.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "skeleton",
+          "name": "Esqueletos",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "Evoca 3 guerreiros. Pontos fortalecem guerreiros e arqueiros.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "armor",
+          "name": "Armadura Óssea",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "Aumenta a vida dos guerreiros e arqueiros.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "archer",
+          "name": "Arqueiros",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "Desbloqueia 2 arqueiros e aprimora seu dano.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "blades",
+          "name": "Ossos Afiados",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "Aprimora ataques dos dois tipos de esqueletos.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "shot",
+          "name": "Tiro Sepulcral",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "Desbloqueia o disparo comandado dos arqueiros.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "guard",
+          "name": "Guarda Sepulcral",
+          "maxRank": 1,
+          "branch": "bone",
+          "progression": "Especialização: guerreiros ganham resistência e +1 integrante. Exclui Salva Sepulcral.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "salvo",
+          "name": "Salva Sepulcral",
+          "maxRank": 1,
+          "branch": "bone",
+          "progression": "Especialização: +2 arqueiros e tiro comandado mais forte. Exclui Guarda Sepulcral.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "specter",
+          "name": "Espectros",
+          "maxRank": 5,
+          "branch": "spirit",
+          "progression": "Evoca 2 espectros e aumenta seu dano mágico.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "drain",
+          "name": "Drenar Vida",
+          "maxRank": 5,
+          "branch": "spirit",
+          "progression": "Ataques dos espectros recuperam uma porcentagem do dano como vida própria.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "ethereal",
+          "name": "Essência Etérea",
+          "maxRank": 5,
+          "branch": "spirit",
+          "progression": "Aumenta a vida e o dano dos espectros.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "bond",
+          "name": "Vínculo Vital",
+          "maxRank": 5,
+          "branch": "spirit",
+          "progression": "A cura produzida pelos espectros também ajuda Zephyr.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "step",
+          "name": "Passo Espectral",
+          "maxRank": 5,
+          "branch": "spirit",
+          "progression": "Desbloqueia o comando de reposicionamento e aumenta sua frequência.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "vampire",
+          "name": "Ceifadores Vitais",
+          "maxRank": 1,
+          "branch": "spirit",
+          "progression": "Especialização: amplia a drenagem de vida. Exclui Cortejo dos Mortos.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "procession",
+          "name": "Cortejo dos Mortos",
+          "maxRank": 1,
+          "branch": "spirit",
+          "progression": "Especialização: +2 espectros e recuperação mais rápida. Exclui Ceifadores Vitais.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "bolt",
+          "name": "Tiro de Osso",
+          "maxRank": 5,
+          "branch": "osso",
+          "progression": "Desbloqueia o projétil principal. Sinergia: +4% ao dano da Chuva por ponto direto.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "pierce",
+          "name": "Perfuração",
+          "maxRank": 5,
+          "branch": "osso",
+          "progression": "Cada ponto permite atravessar um alvo adicional.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "rain",
+          "name": "Chuva de Ossos",
+          "maxRank": 5,
+          "branch": "osso",
+          "progression": "Desbloqueia dano em área. Sinergia: +4% ao dano do Tiro por ponto direto.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "shards",
+          "name": "Estilhaços",
+          "maxRank": 5,
+          "branch": "osso",
+          "progression": "Tiro de Osso dispara 3 estilhaços em leque, cobrindo uma área maior; cada inimigo é atingido uma vez por disparo. Melhora o dano de Tiro e Chuva de Ossos.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "wall",
+          "name": "Muralha de Corpos",
+          "maxRank": 5,
+          "branch": "osso",
+          "progression": "Desbloqueia a muralha e amplia sua duração e resistência a projéteis.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "lance",
+          "name": "Lança Sepulcral",
+          "maxRank": 1,
+          "branch": "osso",
+          "progression": "Especialização: projétil de alto dano. Exclui Tempestade Óssea.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "storm",
+          "name": "Tempestade Óssea",
+          "maxRank": 1,
+          "branch": "osso",
+          "progression": "Especialização: amplia área e dano da Chuva. Exclui Lança Sepulcral.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "shield",
+          "name": "Escudo de Carne",
+          "maxRank": 5,
+          "branch": "blood",
+          "progression": "Sacrifica um zumbi para proteger Zephyr. Herda o HP do zumbi aprimorado por Carne Reanimada.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "vitality",
+          "name": "Vitalidade Profana",
+          "maxRank": 5,
+          "branch": "blood",
+          "progression": "Aumenta a vida máxima de Zephyr.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "nova",
+          "name": "Explosão Necrótica",
+          "maxRank": 5,
+          "branch": "blood",
+          "progression": "Desbloqueia explosão em área com mana, sem coleta de souls.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "pact",
+          "name": "Pacto de Sangue",
+          "maxRank": 5,
+          "branch": "blood",
+          "progression": "Morte comum de aliado recupera vida de Zephyr. Não ativa em sacrifícios ou detonações.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "ritual",
+          "name": "Ritual Instável",
+          "maxRank": 5,
+          "branch": "blood",
+          "progression": "Melhora Explosão Necrótica e Explosão Cadavérica.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "bastion",
+          "name": "Bastião de Carne",
+          "maxRank": 1,
+          "branch": "blood",
+          "progression": "Especialização: amplia a absorção do escudo. Exclui Detonação Profana.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "detonation",
+          "name": "Detonação Profana",
+          "maxRank": 1,
+          "branch": "blood",
+          "progression": "Especialização: amplia as duas explosões. Exclui Bastião de Carne.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "dash",
+          "name": "Dash",
+          "maxRank": 5,
+          "branch": "shadow",
+          "progression": "Desbloqueia a evasão e reduz sua recarga.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "stride",
+          "name": "Passo Prolongado",
+          "maxRank": 5,
+          "branch": "shadow",
+          "progression": "Aumenta a distância do Dash.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "meditate",
+          "name": "Meditação Sombria",
+          "maxRank": 5,
+          "branch": "shadow",
+          "progression": "Aumenta reserva e regeneração de mana.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "veil",
+          "name": "Véu Noturno",
+          "maxRank": 5,
+          "branch": "shadow",
+          "progression": "A evasão deixa uma proteção breve.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "curse",
+          "name": "Maldição da Fraqueza",
+          "maxRank": 5,
+          "branch": "shadow",
+          "progression": "Desbloqueia maldição que reduz o dano dos inimigos afetados.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "walker",
+          "name": "Caminhante do Véu",
+          "maxRank": 1,
+          "branch": "shadow",
+          "progression": "Especialização: Dash mais frequente e longo. Exclui Aura das Sombras.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "aura",
+          "name": "Aura das Sombras",
+          "maxRank": 1,
+          "branch": "shadow",
+          "progression": "Especialização: aumenta o dano de toda a horda próxima. Exclui Caminhante do Véu.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "build-simulator/model.js"
+        },
+        {
+          "id": "lichform",
+          "name": "Forma da Morte",
+          "maxRank": 5,
+          "branch": "scythe",
+          "progression": "Libera a transformação em Lich, com barra de almas no lugar da mana, +25% de dano e +25% de defesa enquanto ativa. Cada ponto aumenta as almas máximas.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "reach",
+          "name": "Foice Longa",
+          "maxRank": 5,
+          "branch": "scythe",
+          "progression": "Aumenta o alcance dos golpes da foice e o dano da Ceifada.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "spinning",
+          "name": "Foice Giratória",
+          "maxRank": 5,
+          "branch": "scythe",
+          "progression": "Libera o arremesso; cada passagem prolonga Ceifado em 1 s, até 4 s. Aumenta seu dano.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "triple",
+          "name": "Colheita Tripla",
+          "maxRank": 5,
+          "branch": "scythe",
+          "progression": "Substitui o golpe do clique por três golpes gratuitos. O finalizador aplica Ceifado; aumenta seu dano.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "arc",
+          "name": "Gancho do Túmulo",
+          "maxRank": 5,
+          "branch": "scythe",
+          "progression": "Puxa inimigos na linha da mira; puxa mais os Ceifados. Chefes recebem lentidão. Aumenta seu dano.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "cyclone",
+          "name": "Ciclone da Morte",
+          "maxRank": 1,
+          "branch": "scythe",
+          "progression": "Especialização: libera a órbita de 360°, que consome Ceifado para um impacto com +75% de dano por alvo. Exclui Executor.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "executor",
+          "name": "Executor",
+          "maxRank": 1,
+          "branch": "scythe",
+          "progression": "Especialização: o golpe final da Colheita causa dano extra em alvos com pouca vida e marca por mais tempo. Exclui Ciclone da Morte.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "harvest",
+          "name": "Colheita de Almas",
+          "maxRank": 5,
+          "branch": "harvest",
+          "progression": "Cada espírito absorvido rende mais almas.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "hunger",
+          "name": "Fome Eterna",
+          "maxRank": 5,
+          "branch": "harvest",
+          "progression": "Reduz a drenagem passiva de almas.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "callspirit",
+          "name": "Chamado Espectral",
+          "maxRank": 5,
+          "branch": "harvest",
+          "progression": "Aumenta o raio em que os espíritos são absorvidos.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "vessel",
+          "name": "Recipiente",
+          "maxRank": 5,
+          "branch": "harvest",
+          "progression": "Aumenta as almas máximas.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "wail",
+          "name": "Lamento",
+          "maxRank": 5,
+          "branch": "harvest",
+          "progression": "Absorver um espírito recupera uma parte da vida máxima.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "reaper",
+          "name": "Ceifador de Almas",
+          "maxRank": 1,
+          "branch": "harvest",
+          "progression": "Especialização: elites e chefes rendem o dobro de almas. Exclui Avatar da Morte.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "avatar",
+          "name": "Avatar da Morte",
+          "maxRank": 1,
+          "branch": "harvest",
+          "progression": "Especialização: a forma reduz o dano recebido e a transformação é mais rápida. Exclui Ceifador de Almas.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/death-tree.mjs"
+        },
+        {
+          "id": "caoZumbi",
+          "name": "Cão Zumbi",
+          "maxRank": 5,
+          "branch": "flesh",
+          "progression": "+10% de dano e +5% de vida dos cães",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/horde.mjs"
+        },
+        {
+          "id": "cerberus",
+          "name": "Cerberus",
+          "maxRank": 1,
+          "branch": "flesh",
+          "progression": "Especialização do grupo permanente: um só cão, maior, com o triplo da vida e 160% do dano base de um cão. A Mordida Feroz automática atinge um cone de 100° até 1,9 u. Mantém morte, reanimação e save da horda.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/horde.mjs"
+        },
+        {
+          "id": "mages",
+          "name": "Magos",
+          "maxRank": 5,
+          "branch": "bone",
+          "progression": "+8% de dano e +5% de vida dos magos",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/horde.mjs"
+        },
+        {
+          "id": "raioNecrotico",
+          "name": "Raio Necrótico",
+          "maxRank": 3,
+          "branch": "bone",
+          "progression": "+10% de dano do raio por ponto",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/horde.mjs"
+        },
+        {
+          "id": "rupturaNecrotica",
+          "name": "Ruptura Necrótica",
+          "maxRank": 1,
+          "branch": "bone",
+          "progression": "Especialização: inimigos mortos pelos magos explodem em raio 2, com 60% do dano mágico em quem estiver perto.",
+          "synergy": "Regras explícitas preservadas",
+          "codeRef": "v2/scripts/horde.mjs"
+        }
+      ]
+    },
+    {
+      "id": "warrior",
+      "name": "Guerreiro",
+      "nodes": [
+        {
+          "id": "slash",
+          "name": "Slash · Três cortes",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+6% de dano dos cortes por ponto. O ataque básico já está disponível. Sinergia de Espada: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "thrust",
+          "name": "Estocada",
+          "maxRank": 3,
+          "branch": "sword",
+          "progression": "Libera a estocada (botão direito / 2): avança até 7 u na direção da mira e perfura até 3,4 u à frente, com 220% do dano. +10% de dano por ponto. Sinergia de Espada: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "momentum",
+          "name": "Ímpeto",
+          "maxRank": 3,
+          "branch": "sword",
+          "progression": "Completar os três cortes fortalece em 10% por ponto a próxima estocada, por 4 s. Sinergia de Espada: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "tornado",
+          "name": "Corte Vendaval",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+10% de dano depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "steelWave",
+          "name": "Onda de Aço",
+          "maxRank": 3,
+          "branch": "sword",
+          "progression": "+10% de dano depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "tornadoCyclone",
+          "name": "Ciclone",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+0,25 u de raio e +8% de dano depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "tornadoWhirl",
+          "name": "Furacão",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "−0,01 s entre golpes, +8% de dano e +1 vigor/s depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "bash",
+          "name": "Golpe de escudo",
+          "maxRank": 3,
+          "branch": "shield",
+          "progression": "Libera o golpe de escudo (3 / Q). +10% de dano por ponto. Sinergia de Escudo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "shieldDefense",
+          "name": "Guarda treinada",
+          "maxRank": 5,
+          "branch": "shield",
+          "progression": "+3 pontos percentuais de bloqueio com escudo por ponto Sinergia de Escudo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "shieldThrow",
+          "name": "Arremesso de escudo",
+          "maxRank": 5,
+          "branch": "shield",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "riposte",
+          "name": "Retaliação",
+          "maxRank": 3,
+          "branch": "shield",
+          "progression": "Bloquear fortalece em 10% por ponto o próximo golpe de escudo, por 4 s. Sinergia de Escudo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "ricochet",
+          "name": "Ricochete",
+          "maxRank": 5,
+          "branch": "shield",
+          "progression": "O Arremesso salta para o inimigo mais próximo em até 6 u: um salto por ponto, com 20% menos dano a cada salto. Mais saltos deixam você mais tempo sem escudo. Sinergia de Escudo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "strength",
+          "name": "Maestria da espada",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% de dano por ponto",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "vitality",
+          "name": "Vitalidade",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vida máxima por ponto",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "armor",
+          "name": "Disciplina defensiva",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+4 de armadura por ponto",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "regeneration",
+          "name": "Fôlego de batalha",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+0,4 de vida por segundo por ponto",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "equipmentMastery",
+          "name": "Domínio dos equipamentos",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% ao dano da espada e à armadura dos itens por ponto",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "stance",
+          "name": "Postura de Batalha",
+          "maxRank": 1,
+          "branch": "veteran",
+          "progression": "F: alterna entre Ofensiva e Defensiva, com só uma ativa e recarga de 6 s. Ofensiva: +20% de dano causado, +15% de dano recebido, -10 de bloqueio, cortes devolvem 2 de vigor. Defensiva: -15% de dano causado, -15% de dano recebido, +10 de bloqueio, vigor ×1,6, bloquear cura 2% da vida.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "warCry",
+          "name": "Brado de Guerra",
+          "maxRank": 5,
+          "branch": "veteran",
+          "progression": "+0,5 s de lentidão e de recuperação dobrada por ponto depois do primeiro",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/warrior-model.mjs"
+        },
+        {
+          "id": "impacto",
+          "name": "Impacto",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+15 pontos percentuais de dano depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior.mjs"
+        },
+        {
+          "id": "cadencia",
+          "name": "Cadência",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+10% do dano dos avanços adicionais por ponto depois do primeiro; mantém cinco avanços no máximo",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior.mjs"
+        },
+        {
+          "id": "corteEspacial",
+          "name": "Corte Espacial",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior.mjs"
+        },
+        {
+          "id": "rastro",
+          "name": "Rastro",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+15% de dano do rastro depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior.mjs"
+        },
+        {
+          "id": "tornado2",
+          "name": "Tornado",
+          "maxRank": 5,
+          "branch": "sword",
+          "progression": "+10% de dano depois do primeiro ponto",
+          "synergy": "Espada",
+          "codeRef": "v2/scripts/warrior.mjs"
+        },
+        {
+          "id": "armaduraDeEspinhos",
+          "name": "Armadura de Espinhos",
+          "maxRank": 5,
+          "branch": "shield",
+          "progression": "+8% de dano refletido",
+          "synergy": "Escudo",
+          "codeRef": "v2/scripts/warrior.mjs"
+        }
+      ]
+    },
+    {
+      "id": "druid",
+      "name": "Druida",
+      "nodes": [
+        {
+          "id": "spark",
+          "name": "Faísca",
+          "maxRank": 5,
+          "branch": "storm",
+          "progression": "Raio instantâneo no primeiro inimigo da linha. O ataque básico já está disponível. +6% de dano por ponto. Sinergia de Tempestade: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "chain",
+          "name": "Corrente de Raios",
+          "maxRank": 3,
+          "branch": "storm",
+          "progression": "Libera a Corrente: o raio salta entre inimigos próximos. Cada ponto acrescenta um salto. Sinergia de Tempestade: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "storm",
+          "name": "Tempestade",
+          "maxRank": 5,
+          "branch": "storm",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "roots",
+          "name": "Raízes",
+          "maxRank": 3,
+          "branch": "nature",
+          "progression": "Libera as Raízes: espinhos brotam no ponto mirado e prendem os inimigos no lugar. Presos ainda atacam quem estiver ao alcance. +10% de dano e +0,3 s de prisão por ponto. Sinergia de Natureza: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "thornbind",
+          "name": "Casca de Espinhos",
+          "maxRank": 3,
+          "branch": "nature",
+          "progression": "Inimigos presos pelas Raízes recebem +10% de dano por ponto, de qualquer fonte. Sinergia de Natureza: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "rejuvenate",
+          "name": "Rejuvenescer",
+          "maxRank": 5,
+          "branch": "nature",
+          "progression": "+5 pontos percentuais de cura por ponto depois do primeiro (30% a 50% da vida máxima)",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "wolf",
+          "name": "Forma de Lobo",
+          "maxRank": 3,
+          "branch": "wild",
+          "progression": "F: transforma em lobisomem. Garras corpo a corpo, 20% menos dano recebido e 35% mais movimento, mas sem magias. A forma consome mana e cada golpe de garra devolve 3. +8% de dano das garras por ponto. Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "leap",
+          "name": "Salto Feroz",
+          "maxRank": 5,
+          "branch": "wild",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "wildHeart",
+          "name": "Coração Selvagem",
+          "maxRank": 3,
+          "branch": "wild",
+          "progression": "A forma de lobo consome 1 mana por segundo a menos por ponto (de 4/s para até 1/s). Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "howl",
+          "name": "Uivo",
+          "maxRank": 5,
+          "branch": "wild",
+          "progression": "+5 pontos percentuais ao bônus de dano por ponto depois do primeiro (+25% a +45%)",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "vitality",
+          "name": "Vigor da floresta",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vida máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "wisdom",
+          "name": "Sabedoria antiga",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de mana máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "sap",
+          "name": "Seiva",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+0,4 de vida por segundo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "attunement",
+          "name": "Afinidade",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% de dano de magias e garras por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/druid-model.mjs"
+        },
+        {
+          "id": "turbilhao",
+          "name": "Turbilhão",
+          "maxRank": 5,
+          "branch": "storm",
+          "progression": "+8% de dano por ponto",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "tornado",
+          "name": "Tornado",
+          "maxRank": 5,
+          "branch": "storm",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "furacao",
+          "name": "Furacão",
+          "maxRank": 5,
+          "branch": "storm",
+          "progression": "+10% do dano base do Tornado e da explosão por ponto depois do primeiro; soma com os ranks do Tornado",
+          "synergy": "Tempestade",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "garraDeGelo",
+          "name": "Garra de Gelo",
+          "maxRank": 5,
+          "branch": "wild",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "corteSangrento",
+          "name": "Corte Sangrento",
+          "maxRank": 5,
+          "branch": "wild",
+          "progression": "+10% do dano do golpe e do sangramento por ponto depois do primeiro",
+          "synergy": "Selvagem",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "plantaCarnivora",
+          "name": "Planta Carnívora",
+          "maxRank": 5,
+          "branch": "nature",
+          "progression": "+10% de vida e dano da planta por ponto depois do primeiro",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "lobo",
+          "name": "Lobo",
+          "maxRank": 5,
+          "branch": "nature",
+          "progression": "+10% de vida e dano depois do primeiro ponto",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "mordidaPesada",
+          "name": "Mordida Pesada",
+          "maxRank": 3,
+          "branch": "nature",
+          "progression": "+20 pontos percentuais depois do primeiro ponto",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid.mjs"
+        },
+        {
+          "id": "alcateia",
+          "name": "Alcateia",
+          "maxRank": 3,
+          "branch": "nature",
+          "progression": "+1 lobo (até quatro no total)",
+          "synergy": "Natureza",
+          "codeRef": "v2/scripts/druid.mjs"
+        }
+      ]
+    },
+    {
+      "id": "archer",
+      "name": "Arqueira",
+      "nodes": [
+        {
+          "id": "shot",
+          "name": "Disparo",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+6% de dano do Disparo por ponto. O ataque básico já está disponível. Sinergia de Arco: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "pierce",
+          "name": "Flecha Perfurante",
+          "maxRank": 3,
+          "branch": "bow",
+          "progression": "Libera a Flecha Perfurante: carrega 0,55 s, andando a metade da velocidade, e atravessa todos os inimigos da linha, com 200% do dano. +10% de dano por ponto. Sinergia de Arco: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "fan",
+          "name": "Tiro Seguidor",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "rain",
+          "name": "Chuva de Flechas",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "leap",
+          "name": "Recuo",
+          "maxRank": 3,
+          "branch": "hunt",
+          "progression": "Libera o Recuo: salto de 5 u para trás, de frente para a mira. Inimigos a até 2,5 u do ponto de partida ficam 35% mais lentos por 2 s. −0,5 s de recarga por ponto. Sinergia de Caça: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Caça",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "falcon",
+          "name": "Falcão",
+          "maxRank": 3,
+          "branch": "hunt",
+          "progression": "Um falcão acompanha a Arqueira. A cada 2,5 s ele mergulha no inimigo mais próximo dela, até 8 u, com 35% do dano. F: manda o falcão ao inimigo mais perto da mira (até 3,5 u da mira e 14 u de você), com 120% do dano; o alvo fica marcado por 4 s e recebe +15% de dano das flechas. Recarga de 8 s, 10 foco. +10% de dano do falcão por ponto. Sinergia de Caça: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Caça",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "ambush",
+          "name": "Tiro de Emboscada",
+          "maxRank": 3,
+          "branch": "hunt",
+          "progression": "Depois do Recuo, o próximo Disparo, Flecha Perfurante ou Tiro Seguidor em até 3 s causa +15% de dano por ponto. Sinergia de Caça: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Caça",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "precision",
+          "name": "Precisão",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% de dano por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "vitality",
+          "name": "Vitalidade",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vida máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "focus",
+          "name": "Concentração",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de foco máximo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "swift",
+          "name": "Passo leve",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+3% de movimento por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "regeneration",
+          "name": "Fôlego",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+0,4 de vida por segundo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "saraivadaSeguidora",
+          "name": "Saraivada Seguidora",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "impactoCeleste",
+          "name": "Impacto Celeste",
+          "maxRank": 5,
+          "branch": "hunt",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Caça",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "penasVoadoras",
+          "name": "Penas Voadoras",
+          "maxRank": 5,
+          "branch": "hunt",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Caça",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "fechadefogo",
+          "name": "Flecha de Fogo",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+10% do dano do impacto e da queimadura por ponto depois do primeiro",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "flechaExplosiva",
+          "name": "Flecha Explosiva",
+          "maxRank": 5,
+          "branch": "bow",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Arco",
+          "codeRef": "v2/scripts/marksman.mjs"
+        }
+      ]
+    },
+    {
+      "id": "mercenary",
+      "name": "Mercenário",
+      "nodes": [
+        {
+          "id": "quarrel",
+          "name": "Virote pesado",
+          "maxRank": 5,
+          "branch": "crossbow",
+          "progression": "+6% de dano do Virote pesado por ponto. O ataque básico já está disponível. Sinergia de Besta: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Besta",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "volley",
+          "name": "Rajada",
+          "maxRank": 3,
+          "branch": "crossbow",
+          "progression": "Libera a Rajada: três virotes em sequência, a cada 0,15 s, com 70% do dano cada e atravessando um inimigo. +10% de dano por ponto. Sinergia de Besta: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Besta",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "breach",
+          "name": "Perfuração",
+          "maxRank": 2,
+          "branch": "crossbow",
+          "progression": "O Virote pesado atravessa +1 inimigo por ponto, ainda perdendo 25% a cada um. Sinergia de Besta: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Besta",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "bomb",
+          "name": "Bomba de fragmentação",
+          "maxRank": 3,
+          "branch": "powder",
+          "progression": "Libera a Bomba: arremesso em arco até 9 u. O ponto de queda fica marcado no chão durante o voo; ao cair, explode em raio 2,6 com 160% do dano e empurra 1 u. +10% de dano por ponto. Sinergia de Pólvora e Armadilhas: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "shrapnel",
+          "name": "Estilhaços",
+          "maxRank": 3,
+          "branch": "powder",
+          "progression": "+12% de raio da Bomba e da Mina por ponto. Sinergia de Pólvora e Armadilhas: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "mine",
+          "name": "Mina de pólvora",
+          "maxRank": 5,
+          "branch": "powder",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "firebomb",
+          "name": "Molotov",
+          "maxRank": 5,
+          "branch": "powder",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "caliber",
+          "name": "Calibre",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% de dano por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "vitality",
+          "name": "Couro curtido",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vida máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "armor",
+          "name": "Gibão reforçado",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+4 de armadura por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "stamina",
+          "name": "Resistência",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vigor máximo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "regeneration",
+          "name": "Fôlego",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+0,4 de vida por segundo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "redeDeCaca",
+          "name": "Rede de Caça",
+          "maxRank": 3,
+          "branch": "powder",
+          "progression": "+0,5 s de lentidão por ponto depois do primeiro",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "armadilhaDeUrso",
+          "name": "Armadilha de Urso",
+          "maxRank": 5,
+          "branch": "powder",
+          "progression": "+10% do dano base por ponto depois do primeiro (até +40%)",
+          "synergy": "Pólvora e Armadilhas",
+          "codeRef": "v2/scripts/marksman.mjs"
+        }
+      ]
+    },
+    {
+      "id": "mage",
+      "name": "Mago",
+      "nodes": [
+        {
+          "id": "fireball",
+          "name": "Bola de Fogo",
+          "maxRank": 3,
+          "branch": "fire",
+          "progression": "Libera a Bola de Fogo: explode ao tocar o primeiro inimigo, uma parede ou o fim do alcance, em raio 2,2, com 140% do dano. +10% de dano por ponto. Sinergia de Fogo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "combustion",
+          "name": "Combustão",
+          "maxRank": 5,
+          "branch": "fire",
+          "progression": "+0,5 s de chão em chamas (1 s no primeiro ponto)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "meteor",
+          "name": "Meteoro",
+          "maxRank": 5,
+          "branch": "fire",
+          "progression": "+10% de dano no impacto e no chão em chamas (a partir do segundo ponto)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "frost",
+          "name": "Rajada de Gelo",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+10% de dano",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "shatter",
+          "name": "Estilhaçar",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+6% de dano de fogo e arcano em inimigos lentos pelo gelo",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "bolt",
+          "name": "Seta Arcana",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+6% de dano da Seta Arcana por ponto. O ataque básico já está disponível. Sinergia de Arcano: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "blink",
+          "name": "Teleporte",
+          "maxRank": 3,
+          "branch": "arcane",
+          "progression": "Libera o Teleporte: salta até 7 u na direção da mira, sem atravessar paredes, e deixa no ponto de partida um eco arcano de raio 2,2 com 50% do dano. −1 s de recarga por ponto. Sinergia de Arcano: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "echo",
+          "name": "Eco Arcano",
+          "maxRank": 3,
+          "branch": "arcane",
+          "progression": "+25% de dano do eco do Teleporte por ponto. Sinergia de Arcano: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "intellect",
+          "name": "Intelecto",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+8% de dano mágico por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "vitality",
+          "name": "Vitalidade",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de vida máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "wisdom",
+          "name": "Sabedoria",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+10% de mana máxima por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "meditation",
+          "name": "Meditação",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+15% de regeneração de mana por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "regeneration",
+          "name": "Fôlego",
+          "maxRank": 5,
+          "branch": "passives",
+          "progression": "+0,4 de vida por segundo por ponto.",
+          "synergy": "Efeito próprio ou atributo geral",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "setasPerseguidoras",
+          "name": "Setas Perseguidoras",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+10% de dano por seta (a partir do segundo ponto)",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman-model.mjs"
+        },
+        {
+          "id": "esferaDeGelo",
+          "name": "Esfera de Gelo",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+10% de dano no contato e nos cristais (a partir do segundo ponto)",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "familiarDeFogo",
+          "name": "Familiar de Fogo",
+          "maxRank": 5,
+          "branch": "fire",
+          "progression": "+10% de dano das bolas de fogo (a partir do segundo ponto)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "golemDeGelo",
+          "name": "Golem de Gelo",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+10% de vida e de dano do golem (a partir do segundo ponto)",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/companions.mjs"
+        },
+        {
+          "id": "firewall",
+          "name": "Muralha de Fogo",
+          "maxRank": 5,
+          "branch": "fire",
+          "progression": "+10% de dano e +0,5 s de duração (a partir do segundo ponto)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "icenova",
+          "name": "Nova de Gelo",
+          "maxRank": 1,
+          "branch": "frost",
+          "progression": "Desbloqueio de variante; dano escala pelos pontos de Rajada de Gelo (+10% por ponto)",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "chuvaDeFogo",
+          "name": "Chuva de Fogo",
+          "maxRank": 1,
+          "branch": "fire",
+          "progression": "Desbloqueio de variante; dano escala pelos pontos de Meteoro (+10% por ponto depois do primeiro)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "avalanche",
+          "name": "Avalanche",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+1 bola de neve (a partir do segundo ponto, até 14)",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "imbuirFogo",
+          "name": "Imbuir Fogo",
+          "maxRank": 5,
+          "branch": "fire",
+          "progression": "+5% de dano de fogo na Seta e +1 s de duração (a partir do segundo ponto)",
+          "synergy": "Fogo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "lazerArcano",
+          "name": "Raio Arcano",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+10% de dano (a partir do segundo ponto)",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "clone",
+          "name": "Clone Arcano",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+10 pontos percentuais do dano copiado depois do primeiro (50% a 90% antes das sinergias)",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman.mjs, v2/scripts/companions.mjs"
+        },
+        {
+          "id": "imbuirGelo",
+          "name": "Imbuir Gelo",
+          "maxRank": 5,
+          "branch": "frost",
+          "progression": "+5% de dano de gelo na Seta e +1 s de duração (a partir do segundo ponto)",
+          "synergy": "Gelo",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "bigBang",
+          "name": "Big Bang",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+10% de dano depois do primeiro ponto",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman.mjs"
+        },
+        {
+          "id": "escudoArcano",
+          "name": "Escudo Arcano",
+          "maxRank": 5,
+          "branch": "arcane",
+          "progression": "+10 pontos percentuais de dano desviado para mana (máximo 50%)",
+          "synergy": "Arcano",
+          "codeRef": "v2/scripts/marksman.mjs"
+        }
+      ]
+    }
+  ]
+}

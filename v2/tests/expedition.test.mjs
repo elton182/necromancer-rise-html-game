@@ -22,7 +22,7 @@ test('mapa: determinístico, limites 156×80, 12 grupos, trilha livre e sem sól
  for(const wave of [1,2,3,4,5,6,50]){
   const a=expeditionArena(wave),b=expeditionArena(wave),plan=a.plan;assert.deepEqual(a,b);
   assert.deepEqual(a.bounds,{minX:0,maxX:156,minY:0,maxY:80});assert.equal(plan.groups.length,12);assert.ok(PALETTES[plan.biome]&&BIOME_NAMES[plan.biome]);assert.equal(a.palette,PALETTES[plan.biome]);
-  assert.ok(a.solids.length>10&&a.solids.every(s=>s.look&&s.height>0&&s.r>0));
+  assert.ok(a.solids.length>10&&a.solids.every(s=>s.look&&s.height>0&&(s.r>0||s.width>0&&s.depth>0)));
   assert.ok(plan.groups.every(g=>g.mobs.every(m=>!overlaps(m,.3,a))),'mob dentro de sólido na wave '+wave);
   const route=[];for(let x=1;x<plan.width-1;x+=1.5)route.push({x,y:Expedition.routeY(plan.route,x)});
   for(let i=1;i<route.length;i++)assert.ok(lineClear(route[i-1],route[i],.45,a),'trilha bloqueada na wave '+wave+' x='+route[i].x);

@@ -1,6 +1,6 @@
 # Simulador matemático de balanceamento
 
-Primeira implementação da Etapa 0 do [plano de equipamentos e waves](../docs/plano-equipamentos-waves.md). Funciona em Node.js, sem dependências, sem modificar o jogo ou seus saves.
+Primeira implementação da Etapa 0 do [plano de equipamentos e waves](../docs/v2-progressao.md). Funciona em Node.js, sem dependências, sem modificar o jogo ou seus saves.
 
 ```powershell
 node balance-simulator/run.js

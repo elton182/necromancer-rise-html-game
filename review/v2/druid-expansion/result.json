@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "checks": [
+    "quatro habilidades na árvore",
+    "quatro ações disponíveis na barra montável",
+    "Calamidade com vento, movimento e raios",
+    "cinco plantas da Floresta coexistem com a planta das Raízes",
+    "Escudo absorve e perde folhas conforme resistência",
+    "líder maior e matilha atacando a presa marcada",
+    "pontos e barra persistidos",
+    "limpeza ao trocar de cena"
+  ],
+  "errors": [],
+  "remote": []
+}

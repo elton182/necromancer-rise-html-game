@@ -1,0 +1,68 @@
+{
+  "cave": {
+    "groups": 19,
+    "initial": 57,
+    "total": 118,
+    "maxWaves": 4,
+    "respawning": 0,
+    "levels": [
+      1,
+      2
+    ]
+  },
+  "trail": {
+    "groups": 8,
+    "initial": 8,
+    "total": 8,
+    "maxWaves": 1,
+    "respawning": 0,
+    "levels": [
+      1,
+      1
+    ]
+  },
+  "world": {
+    "groups": 21,
+    "initial": 114,
+    "total": 342,
+    "maxWaves": 3,
+    "respawning": 16,
+    "levels": [
+      10,
+      13
+    ]
+  },
+  "itauna": {
+    "groups": 19,
+    "initial": 116,
+    "total": 348,
+    "maxWaves": 3,
+    "respawning": 18,
+    "levels": [
+      22,
+      25
+    ]
+  },
+  "itaunaCave": {
+    "groups": 10,
+    "initial": 68,
+    "total": 204,
+    "maxWaves": 3,
+    "respawning": 9,
+    "levels": [
+      34,
+      36
+    ]
+  },
+  "itaunaFort": {
+    "groups": 6,
+    "initial": 56,
+    "total": 168,
+    "maxWaves": 3,
+    "respawning": 0,
+    "levels": [
+      44,
+      46
+    ]
+  }
+}

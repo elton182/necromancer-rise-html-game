@@ -44,7 +44,9 @@ async function run(browser,classId,label,name){
    await page.waitForFunction(()=>!!NecromancerV2.world.falcon);
    assert.ok(await frozen('saraivadaSeguidora',()=>NecromancerV2.world.marksmanAction?.fired>=3)>0,'Saraivada causa dano');
    assert.ok(await frozen('impactoCeleste',()=>{const z=NecromancerV2.world.marksmanZones.find(z=>z.kind==='strike');return z&&z.at-NecromancerV2.world.time<.35;})>0,'Impacto Celeste causa dano');
-   assert.ok(await frozen('penasVoadoras',()=>NecromancerV2.world.marksmanShots.length>=3&&NecromancerV2.world.marksmanShots[0].remaining<8.5)>0,'Penas causam dano');
+   await reset();const feathersBefore=await damage();await page.evaluate(()=>{NecromancerV2.world.marksmanFeathersReady=0;});
+   await page.waitForFunction(()=>NecromancerV2.world.marksmanShots.some(s=>s.def?.id==='penasVoadoras'));
+   await page.evaluate(()=>{NecromancerV2.world.paused=true;});await shot('penasVoadoras');await page.evaluate(()=>{NecromancerV2.world.paused=false;});await idle();assert.ok(await damage()>feathersBefore,'Penas periódicas causam dano');
    // Tiro Seguidor: o mesmo id do antigo Leque, agora com flechas que curvam.
    await reset();await page.evaluate(()=>{const w=NecromancerV2.world,p=w.player;w.aim={x:p.x+6,y:p.y-2};NecromancerV2.equip(5,'fan');NecromancerV2.slot(5);});
    await page.waitForFunction(()=>NecromancerV2.world.marksmanShots.length===5&&NecromancerV2.world.marksmanShots[0].remaining<7);await page.evaluate(()=>{NecromancerV2.world.paused=true;});await page.waitForTimeout(250);await shot('tiro-seguidor');await page.evaluate(()=>{NecromancerV2.world.paused=false;});await idle();

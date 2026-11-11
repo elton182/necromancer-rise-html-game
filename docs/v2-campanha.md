@@ -12,7 +12,7 @@ O treino continua acessível separadamente pelo menu.
 ## Fontes e distribuição
 
 - `v2/tools/campaign-source.cjs` lê `CAMP_STAGES`, salas, corredores, portas,
-  emboscadas, Capitão, missões, falas, histórias e instruções de `necromancer-canvas.html`.
+  emboscadas, Capitão, missões, falas, histórias e instruções de `v1/necromancer-canvas.html`.
 - `v2/scripts/campaign-rules.mjs` é gerado pelo build; contém também os cálculos
   vigentes de `stageMul` e quantidade de inimigos por onda. Não editar diretamente.
 - `campaign-model.mjs` normaliza o progresso e determina desbloqueio/prêmios únicos.
@@ -268,18 +268,24 @@ O mundo tem **360 × 360** unidades. Regiões: Cripta Esquecida (início, no sar
 
 ### Encontros
 
-São 21 grupos fixos com tipos misturados (Guerreiro, Arqueiro, Mago Vivo, Cão de Cripta, Ladrão, Humanoide Grifo, Aranha, Ladino Arqueiro e Orc). Cada grupo nasce parado quando Zephyr chega a 18 unidades e reage pela regra de alerta das Expedições. `wave` escala atributos e nível dos itens por região: 1 perto da cripta, 2–3 nas estradas, mina e serraria, e 4 no cemitério. Alguns grupos têm um líder Mágico (mina e serra) ou Raro (cemitério). Ao voltar à vila, as ameaças somem e os grupos comuns voltam na próxima saída. Grupos de quest (guardas do posto, bando da mina e guardas das três pilhas) não voltam depois de derrotados.
+Os grupos fixos e as patrulhas das rotas combinam tipos misturados (Guerreiro, Arqueiro, Mago Vivo, Cão de Cripta, Ladrão, Humanoide Grifo, Aranha, Ladino Arqueiro e Orc). Cada grupo nasce parado quando o jogador se aproxima (até 16 u) e reage pela percepção comum dos inimigos. Os níveis efetivos de Jacarandá ficam entre 4 e 6, incluindo o bônus limitado dos grupos; o loot acompanha esse nível. Alguns grupos têm um líder Mágico (mina e serra) ou Raro (cemitério). Ao voltar à vila, as ameaças somem e os grupos comuns voltam na próxima saída. Grupos de quest (guardas do posto, bando da mina e guardas das três pilhas) não voltam depois de derrotados.
 
 ### Quests
 
 | Quest | Como progride | Prêmio |
 | --- | --- | --- |
 | Uma voz entre as ruínas → Resgate o prefeito | Falar com Lili na praça; derrotar os três guardas do posto; libertar Joaquim; falar com ele na praça | 90 ouro, 120 XP |
-| O ferreiro de Eldrin | Aberta ao concluir o resgate. Derrotar o bando da Mina de Valfundo (Orc líder, Ladrão, Ladino Arqueiro, Arqueiro); falar com Bruno na entrada; falar com ele na forja da vila | 100 ouro, 150 XP. Depois, Bruno abre a forja (painel de equipamentos) |
-| Madeira para Eldrin | Aberta junto com a do ferreiro. Cada uma das três pilhas da serraria tem seu grupo de guardas; com o grupo derrotado, **G** marca a pilha. Com as três marcadas, falar com Joaquim | 110 ouro, 160 XP |
-| O rastro de João | Só nas campanhas que passaram pelo prólogo, depois da forja e da madeira. Marta, na praça, aponta a Várzea de Itaúna; o livro do acampamento leva à Gruta das Tecelãs; o contrato fica no Forte da Pedra Negra; João espera na praça. Detalhes em [Várzea de Itaúna](v2-itauna.md#o-rastro-de-joão) | 600 ouro e 1550 XP, em três partes |
+| O ferreiro de Jacarandá | Joaquim oferece depois da defesa da vila (ou do resgate no fluxo antigo). Aceitar a missão; derrotar o bando da Mina de Valfundo; falar com Bruno na entrada; falar com ele na forja da vila | 100 ouro, 150 XP. Depois, Bruno abre a forja (painel de equipamentos) |
+| Madeira para Jacarandá | Joaquim oferece depois da conclusão da forja. Aceitar a missão; derrotar os guardas e marcar cada uma das três pilhas com **G**; retornar a Joaquim | 110 ouro, 160 XP |
+| O rastro de João | Marta oferece depois da forja e da madeira, nas campanhas com prólogo. Aceitar a busca; investigar o acampamento; vencer a Mãe-Tecelã e libertar João | 150 ouro, 350 XP |
+| A carta da Pedra Negra | João oferece ao voltar à praça após o resgate. Aceitar; vencer o capitão; recuperar a bolsa e as provas no forte; retornar a João | Provas: 200 ouro, 500 XP; retorno: 250 ouro, 700 XP |
+| A denúncia em Itavera → O convite de João | João oferece a viagem; entregar a denúncia a Helena; falar com João e aceitar o convite que encerra o ato. Detalhes em [Várzea de Itaúna](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026) | Sem novo pagamento |
 
-As duas quests ficam ativas ao mesmo tempo: o painel lista ambas, a bússola segue a primeira e o mapa marca todos os objetivos e as pilhas restantes. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem. Cada prêmio é pago uma vez. Saves que já tinham concluído o resgate recebem as duas quests ativas ao carregar.
+O NPC com **!** oferece o próximo pedido; abrir ou fechar a conversa não aceita a missão. O botão de aceitação inicia o acompanhamento no HUD, com **Etapa N de M**, objetivo atual e progresso. **?** indica uma etapa pronta para entregar ou concluir por conversa. A bússola acompanha o primeiro objetivo aceito; antes da aceitação, o painel orienta procurar os NPCs com !. As pilhas da serraria só recebem marcadores de missão após aceitar a madeira.
+
+No inventário, o atalho **Missões · em aberto e concluídas** abre o diário, também acessível pela aba **Missões** do Relicário. Cada entrada mostra o responsável e as etapas; concluídas ficam recolhidas e podem ser expandidas. O histórico deriva do progresso salvo. Aceitar não paga prêmio; cada recompensa continua sendo paga uma vez. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem.
+
+Saves antigos preservam missões concluídas e qualquer progresso efetivo. As antigas missões automáticas sem progresso passam a ofertas: primeiro Bruno, depois a madeira. Uma missão já aceita no novo fluxo permanece ativa ao recarregar. Fontes: [regras e histórico](../v2/scripts/quest-model.mjs), [diário](../v2/scripts/quest-journal.mjs) e [contrato de saves](v2-saves.md). [Verificação do fluxo e limites](../review/v2/quest-journal/validation-notes.md).
 
 ### Relevo, níveis, densidade e retorno à vila (05/11/2026)
 
@@ -293,10 +299,10 @@ As duas quests ficam ativas ao mesmo tempo: o painel lista ambas, a bússola seg
   - Cripta, vila, pátio da mina e capela ficam nivelados. O vale acompanha o rio da edição publicada.
 - **Edição publicada:** o relevo foi mesclado com `node v2/tools/world-relief.cjs`. Alturas esculpidas à mão ficam com a maior das duas, e o rio e as superfícies pintadas continuam. A cópia anterior fica em `blender/backups/campaign-world.before-relief.json`. Rodar de novo parte dessa cópia, então substitui alterações de relevo feitas depois no editor.
 - **Níveis e densidade** ([`area-tuning.mjs`](../v2/scripts/area-tuning.mjs)):
-  - Nível das áreas: Jacarandá 10, Várzea de Itaúna 20, Gruta das Tecelãs 30, Forte da Pedra Negra 40. Cada grupo soma a diferença do seu nível para o da planta, então missões mais duras continuam mais duras.
+  - Nível base das áreas: Jacarandá 4, Várzea de Itaúna 7, Gruta das Tecelãs 9, Forte da Pedra Negra 11, com bônus de até 2 por grupo. Plantas antigas com nível 1 sobre a base de Itaúna/gruta/forte usam o nível de referência original (4/5/5), preservando a diferença entre estrada, pátios e chefe.
   - **Nível do loot:** o equipamento que cai de um inimigo usa o nível do grupo dele (o `gearWave` de `spawnEnemy`). Drops sem grupo usam o nível da área. A recuperação de nível de `dropRoll` continua valendo por cima: com o equipamento vestido abaixo desse nível, parte dos drops sobe até +10. Antes os drops do mundo e das áreas caíam sempre no nível 1.
-  - Cada grupo tem o dobro de integrantes e o triplo de ondas, 5 s entre elas: seis vezes mais inimigos.
-  - Grupos que não são de missão renascem 90 s depois de vencidos, se o jogador estiver longe. Ao voltar à vila, todos rearmam na hora.
+  - Uma leva por grupo, com até três integrantes comuns ou quatro quando há líder. O Capitão da Pedra Negra fica com três. Poucos pontos recebem um único reforço, após 9 s: `mill-road-b`, `camp-gate`, `fork-spiders`, `lake-wolves` e `fort-west`. Não há mais multiplicador global de integrantes e ondas.
+  - Grupos vencidos não renascem pelo relógio enquanto o jogador explora. Ao voltar à vila, os grupos comuns rearmam para a próxima saída; grupos de missão concluídos permanecem vencidos.
   - Vale no jogo e no **Testar** de mapas da campanha. O editor continua mostrando a composição salva.
 - **Teleporte à vila:** botão no painel de objetivos que leva à praça de Jacarandá, a partir do mundo ou de qualquer área ligada, com a passagem escura.
   - Aparece depois que a vila é alcançada uma vez e some dentro dela.
@@ -305,8 +311,26 @@ As duas quests ficam ativas ao mesmo tempo: o painel lista ambas, a bússola seg
 
 ### Limitações
 
-- **Personagem recém-saído do prólogo:** sai em torno do nível 4 ou 5. Numa simulação no navegador, parado e só lançando o Tiro de Osso, com horda e equipamento iniciais, ele venceu os grupos da floresta, do acampamento, das ruínas e da estrada da mina. Cada grupo com três ondas levou de 23 a 134 s. O cemitério (nível 13, oito inimigos e líder raro) o matou em 6 a 21 s. Números em [`review/v2/itauna/survival-after-prologue.json`](../review/v2/itauna/survival-after-prologue.json). O teste não se move nem recua, e a experiência ganha com seis vezes mais inimigos não foi revista.
+- **Diagnóstico histórico, anterior à revisão de 11/11/2026 — personagem recém-saído do prólogo:** sai em torno do nível 4 ou 5. Numa simulação no navegador, parado e só lançando o Tiro de Osso, com horda e equipamento iniciais, ele venceu os grupos da floresta, do acampamento, das ruínas e da estrada da mina. Cada grupo com três ondas levou de 23 a 134 s. O cemitério (nível 13, oito inimigos e líder raro) o matou em 6 a 21 s. Números em [`review/v2/itauna/survival-after-prologue.json`](../review/v2/itauna/survival-after-prologue.json). O teste não se move nem recua, e a experiência ganha com seis vezes mais inimigos não foi revista.
 - A conclusão das quests não altera o cenário: as pilhas marcadas continuam visíveis e a vila não é reconstruída.
 - Os números de grupos, tipos, `wave` e prêmios são provisórios, sem passagem pelo `balance-simulator/`.
 - Testes: `node --test v2/tests/campaign-world.test.mjs` cobre rotas livres de colisores, pontos alcançáveis, grupos mistos e líderes, ordem das quests, prêmio único, retomada após morte e recarga, e migração de saves. `node v2/tests/campaign-world-browser-check.cjs` percorre as regiões no Edge com teleporte e abates injetados, abre o mapa e conclui a forja; capturas em `review/v2/campaign-world/`. Não valida dificuldade. A medição de quadro feita ali no Edge headless não representa a GPU do jogador.
 - `v2/tests/campaign-browser-check.cjs` ainda percorre as fases antigas a partir de uma campanha nova e precisa ser adaptado ao fluxo integrado.
+
+
+## Encerramento do Ato I · a carta de João (10/11/2026)
+
+Campanhas novas seguem agora até a recuperação da bolsa e das provas na Pedra Negra, entrega da denúncia a Helena na praça de Itavera e convite de João ao Vale de Itajuba. O fluxo está detalhado em [O rastro de João e a carta](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026). O final registra o Ato I concluído; a campanha do Ato II ainda não está disponível. Saves que já concluíram a missão local podem continuar pelo epílogo sem repetir recompensas.
+
+
+## Revisão de ritmo e Bruno (11/11/2026)
+
+A campanha usa grupos menores e mais pontos de contato, em vez de grandes quantidades de ondas no mesmo lugar. Foram acrescentadas patrulhas nas estradas da mina, serraria e Itaúna, e nos caminhos principal, sul, leste, da lagoa e da atalaia da várzea. A gruta recebe pequenos grupos nas ligações entre salões. Os IDs existentes, colisões, relevo e objetos publicados foram preservados; as patrulhas têm IDs próprios.
+
+A validação de rotas mede intervalos fora do alcance de ativação dos grupos, sem contar a zona segura da vila como vazio de combate. O Caminho de Jacarandá ganhou encontros menores entre as clareiras antigas; veja [prólogo](v2-prologo-arandu.md#revisão-de-encontros-e-textos-11112026). Vila e praça de Itavera continuam sendo locais seguros.
+
+Bruno volta da mina para **(52, 71)**, numa área aberta junto à rua a oeste da praça, com identificação **Bruno, o ferreiro · Ferraria** visível a até 18 u; G aparece no alcance de interação. O ponto é o mesmo antes e depois de reacender a forja, sem mover NPCs de saves pessoais nem criar outro ferreiro. Enquanto não for resgatado, ele permanece na mina.
+
+As falas de Tomás, Marta, João e Helena foram revistas; conversas longas podem ter parágrafos separados. Bruno não faz mais referência exclusiva à horda quando atende outras classes. Objetivos, custos e prêmios exclusivos das missões permanecem os mesmos.
+
+Testes, medições e limites em [review/v2/campaign-pacing](../review/v2/campaign-pacing/validation-notes.md). Amostras no motor real não substituem uma partida completa com as seis classes.

@@ -1,7 +1,7 @@
 import {warriorLoadout,warriorActionLearned,warriorEquipSlot,warriorInCombat,warriorTornado,WARRIOR_ACTION_COUNT} from './warrior-model.mjs';
 import {warriorAction,stopWarriorChannel,toggleStance} from './warrior.mjs';
-import {druidAction,toggleWolf,clearDruid} from './druid.mjs';
-import {marksmanAction,clearMarksman,falconCommand} from './marksman.mjs';
+import {druidAction,toggleWolf,clearDruid,snapshotDruidPack} from './druid.mjs';
+import {marksmanAction,clearMarksman,falconCommand,stopMarksmanChannel} from './marksman.mjs';
 import {isMarksman} from './class-registry.mjs';
 import {classLoadout,equipLoadout,loadoutAction,loadoutLearned} from './skill-loadout.mjs';
 import {isWolf} from './druid-model.mjs';
@@ -27,12 +27,13 @@ export function createSession(saved=freshSave()){
  session.world.onEnemyDeath=enemy=>rewardKill(session,enemy);session.world.onPickup=drop=>collect(session,drop);
  syncSkills(session.world);setPaused(session.world,true);return session;
 }
-export function transition(s,scene){
+export function transition(s,scene,{loading=false}={}){
  if(!['menu','training','dead'].includes(scene))throw Error('Cena indisponível: '+scene);
  if(scene==='dead'&&s.world.player.hp>0)throw Error('O personagem ainda está vivo.');
+ if(s.world.classId==='druid'&&!loading)s.save.character.druidPack=snapshotDruidPack(s.world);
  if(scene==='menu'||scene==='training'){let note='';if(s.scene==='training'){const {collected,left}=collectAll(s);if(collected||left)note=collected+' equipamento(s) coletado(s)'+(left?'; '+left+' ficaram no chão por falta de espaço':'')+'.';}
   if(s.world.armyMode==='groups')s.save.horde=snapshotHorde(s.world);resetWorld(s.world,{horde:s.save.settings.horde,armyMode:s.save.settings.armyMode,army:s.save.horde,character:s.save.character,gearLevel:s.save.settings.gearLevel,lootFilter:s.save.settings.lootFilter,encounterWave:s.save.settings.encounterWave});if(note)s.world.notice=note;}
- else {const lost=s.world.drops.filter(d=>d.kind==='equipment').length;if(lost)s.world.notice=lost+' equipamento(s) no chão foram perdidos.';clearSpells(s.world);s.world.drops=[];s.world.effects=[];s.world.projectiles=[];s.world.boltCharge=null;s.world.allyShots=[];s.world.hostileShots=[];s.world.hostileZones=[];s.world.command=null;s.world.dash.remaining=0;s.world.dash.cooldown=0;s.world.player.veilTime=0;s.world.player.barrier=0;s.world.player.boneShield=false;s.world.castCooldown=0;s.world.warriorAction=null;s.world.warriorCombo=null;s.world.warriorShieldFlight=null;s.world.warriorMomentum=null;s.world.warriorRiposte=null;s.world.warriorRally=null;s.world.warriorWaves=[];clearDruid(s.world);clearMarksman(s.world);clearCompanions(s.world);s.world.actors=s.world.actors.filter(a=>!a.warriorProjectile);for(const a of s.world.actors){a.timer=0;a.ability=null;a.king=null;a.pose=null;a.animationTime=0;a.navPath=null;a.navGoal=null;a.navRetry=0;a.leap=null;a.jumpZ=0;a.labelTime=0;a.evade=null;a.targetId=null;if(a.hp<=0)a.animation='death';else a.animation='idle';}}
+ else {const lost=s.world.drops.filter(d=>d.kind==='equipment').length;if(lost)s.world.notice=lost+' equipamento(s) no chão foram perdidos.';clearSpells(s.world);s.world.drops=[];s.world.effects=[];s.world.projectiles=[];s.world.boltCharge=null;s.world.allyShots=[];s.world.hostileShots=[];s.world.hostileZones=[];s.world.command=null;s.world.dash.remaining=0;s.world.dash.cooldown=0;s.world.player.veilTime=0;s.world.player.barrier=0;s.world.player.boneShield=false;s.world.castCooldown=0;s.world.warriorAction=null;s.world.warriorCombo=null;s.world.warriorShieldFlight=null;s.world.warriorMomentum=null;s.world.warriorRiposte=null;s.world.warriorRally=null;s.world.warriorWaves=[];s.world.warriorFireTrails=[];clearDruid(s.world);clearMarksman(s.world);clearCompanions(s.world);s.world.actors=s.world.actors.filter(a=>!a.warriorProjectile);for(const a of s.world.actors){a.timer=0;a.ability=null;a.king=null;a.pose=null;a.animationTime=0;a.navPath=null;a.navGoal=null;a.navRetry=0;a.leap=null;a.jumpZ=0;a.labelTime=0;a.evade=null;a.targetId=null;if(a.hp<=0)a.animation='death';else a.animation='idle';}}
  s.scene=scene;syncSkills(s.world);setPaused(s.world,scene!=='training');
 }
 export function pauseSession(s,paused){if(['training','village'].includes(s.scene))setPaused(s.world,paused);}
@@ -44,23 +45,24 @@ export function activateSlot(s,index,input){if(s.scene!=='training'||s.world.adv
 export function reviveSession(s,target=null,options={}){return s.world.classId==='necromancer'&&!s.world.adventure?.cinematic&&s.scene==='training'&&s.world.armyMode==='groups'&&revive(s.world,target,options);}
 export function orderSession(s,point){return !s.world.adventure?.cinematic&&s.scene==='training'&&s.world.armyMode==='groups'&&order(s.world,point);}
 export function equipSession(s,index,id){if(s.world.classId==='warrior'){if(!Number.isInteger(index)||index<0||index>5||!Number.isInteger(id)||id<0||id>=WARRIOR_ACTION_COUNT||s.scene==='dead')return {ok:false,message:'Slot inválido.'};if(!warriorActionLearned(id,s.world.warriorRanks))return {ok:false,message:'Libere na árvore.'};const result=warriorEquipSlot(s.world.warriorLoadout,index,id);if(!result.ok)return result;stopWarriorChannel(s.world);s.world.warriorLoadout=result.slots;s.save.character.warriorLoadout=[...result.slots];return {ok:true};}if(s.world.classId==='druid'||isMarksman(s.world.classId)){if(s.scene==='dead')return {ok:false,message:'Slot inválido.'};if(isWolf(s.world))return {ok:false,message:'Na forma de lobo a barra é fixa. Volte à forma humana para trocar.'};const ranks=s.world.classId==='druid'?s.world.druidRanks:s.world.marksmanRanks;if(loadoutAction(s.world.classId,id)<0)return {ok:false,message:'Slot inválido.'};if(!loadoutLearned(s.world.classId,id,ranks))return {ok:false,message:'Libere na árvore.'};const result=equipLoadout(s.world.classId,s.world.skillLoadout,index,id);if(!result.ok)return result;s.world.skillLoadout=result.slots;s.save.character.skillLoadout=[...result.slots];return {ok:true};}if(s.world.armyMode!=='groups'||s.scene==='dead')return {ok:false,message:'Ative os grupos reais no menu.'};const result=equipGroup(s.world,index,id,{preparation:s.scene==='menu'});if(result.ok)syncSkills(s.world);return result;}
-export function stepSession(s,dt,input){if(!['training','village'].includes(s.scene))return;if(s.world.player.hp>0&&!s.world.adventure?.cinematic)step(s.world,dt,input);if(s.world.player.hp<=0)transition(s,'dead');else{tickAdventure(s,Math.min(.25,dt));tickExpedition(s);tickSiege(s,Math.min(.25,dt));tickLab(s,Math.min(.25,dt));}}
+export function stepSession(s,dt,input){if(!['training','village'].includes(s.scene))return;if(s.world.player.hp>0&&!s.world.adventure?.cinematic)step(s.world,dt*(s.world.adventure?.timeScale||1),input);if(s.world.player.hp<=0)transition(s,'dead');else{tickAdventure(s,Math.min(.25,dt));tickExpedition(s);tickSiege(s,Math.min(.25,dt));tickLab(s,Math.min(.25,dt));}}
 export function applySave(s,value){
- const saved=normalizeSave(value);s.save=saved;s.world.armyMode='load';s.world.drops=[];transition(s,'menu');
+ const saved=normalizeSave(value);s.save=saved;s.world.armyMode='load';s.world.drops=[];transition(s,'menu',{loading:true});
 }
 export function updateSettings(s,settings){
  s.save=normalizeSave({...s.save,settings:{...s.save.settings,...settings}});
  Object.assign(s.world,{lootFilter:s.save.settings.lootFilter,gearLevel:s.save.settings.gearLevel,equipment:s.save.character.equipment});
 }
 // O nível efetivo pode estar à frente do resumo guardado (perfil de teste); o snapshot grava o que está em jogo.
-export function snapshot(s,now=Date.now()){const level=levelOf(s.world);return normalizeSave({...s.save,character:{...s.save.character,level,warriorLoadout:warriorLoadout(s.world.warriorLoadout),skillLoadout:classLoadout(s.world.classId,s.world.skillLoadout)??undefined,exp:clampExp(level,s.save.character.exp)},...(s.world.armyMode==='groups'?{horde:snapshotHorde(s.world)}:{}),savedAt:now});}
+export function snapshot(s,now=Date.now()){const level=levelOf(s.world);return normalizeSave({...s.save,character:{...s.save.character,level,druidPack:snapshotDruidPack(s.world),warriorLoadout:warriorLoadout(s.world.warriorLoadout),skillLoadout:classLoadout(s.world.classId,s.world.skillLoadout)??undefined,exp:clampExp(level,s.save.character.exp)},...(s.world.armyMode==='groups'?{horde:snapshotHorde(s.world)}:{}),savedAt:now});}
 // Perfis de teste substituem o nível em memória; o XP volta a zero e os atributos são recalculados sem curar.
 export function useProfile(s,profile){
  const result=setProfile(s.world,profile);if(!result.ok)return result;
  s.save.character.level=profile.level;s.save.character.exp=0;syncSkills(s.world);recalculateHorde(s.world);return result;
 }
 
-export function releaseWarriorSlot(s,index){return (index===undefined||warriorLoadout(s.world.warriorLoadout)[index]===4)&&stopWarriorChannel(s.world);}
+// Tecla ou botão solto: encerra o Tornado do Guerreiro ou o Raio Arcano do Mago, se for a ação daquele slot.
+export function releaseWarriorSlot(s,index){const w=s.world;if(isMarksman(w.classId)){const s0=w.marksmanAction;return !!s0&&(index===undefined||classLoadout(w.classId,w.skillLoadout)[index]===s0.id)&&stopMarksmanChannel(w);}return (index===undefined||warriorLoadout(w.warriorLoadout)[index]===4)&&stopWarriorChannel(w);}
 // A troca de postura vale em combate; a escolha persiste por personagem.
 export function stanceSession(s){if(s.scene!=='training'||s.world.adventure?.cinematic)return false;if(s.world.classId==='druid')return toggleWolf(s.world);if(isMarksman(s.world.classId))return falconCommand(s.world);const changed=toggleStance(s.world);if(changed)s.save.character.warriorStance=s.world.warriorStance;return changed;}
 export function tornadoVariantSession(s,id){const w=s.world;if(warriorTornado(id,w.warriorRanks).id!==id)return {ok:false,message:'Aprenda esta variante na árvore.'};if(s.scene==='training'&&warriorInCombat(w))return {ok:false,message:'Afaste-se dos inimigos para trocar a variante.'};stopWarriorChannel(w);w.warriorTornadoVariant=id;s.save.character.warriorTornadoVariant=id;return {ok:true};}

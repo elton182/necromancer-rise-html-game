@@ -130,8 +130,8 @@
 #pause-dialog .wt-necro .wt-branches button[aria-selected=true]{border-color:var(--wt-gold);background:linear-gradient(90deg,color-mix(in srgb,var(--branch-accent) 30%,#2a1c0d),#1a1109);color:var(--wt-text);box-shadow:inset 0 0 12px #f6dfa222;outline:0}
 #pause-dialog .wt-necro .wt-branches button[aria-selected=true] b{color:var(--wt-gold-hi)}
 .wt-side-actions{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;margin-top:auto;padding-top:8px;border-top:1px solid #6b4a2266}
-#pause-dialog .wt-necro .lg-reset{width:100%;margin:0;min-height:36px;padding:6px;font-size:13px;color:var(--wt-text);background:linear-gradient(#22180f,#0f0a06);border:1px solid var(--wt-bronze-dk);border-radius:3px}
-#pause-dialog .wt-necro .lg-gold{margin:0;font-size:13px;color:var(--wt-gold-hi);background:none;border:0;padding:0}
+#pause-dialog .wt .lg-reset{width:100%;margin:0;min-height:36px;padding:6px;font-size:13px;color:var(--wt-text);background:linear-gradient(#22180f,#0f0a06);border:1px solid var(--wt-bronze-dk);border-radius:3px}
+#pause-dialog .wt .lg-gold{margin:0;font-size:13px;color:var(--wt-gold-hi);background:none;border:0;padding:0}
 #pause-dialog .wt-necro .lg-detail{position:relative;top:auto;max-height:560px;overflow:auto;margin:0;align-self:start;scrollbar-width:thin;scrollbar-color:var(--wt-bronze) #120c08}
 #pause-dialog .wt-necro .wt-board,#pause-dialog .wt-necro .wt-side{align-self:start}
 #pause-dialog .wt-necro .wt-desc{margin:0;font-size:13.5px;line-height:1.5;color:var(--wt-text)}

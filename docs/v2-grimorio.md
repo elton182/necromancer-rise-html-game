@@ -1,20 +1,14 @@
 # V2 — Grimório e maestrias (E6)
 
-Integração da árvore e das maestrias, entregue na E6a e completada com as
-magias da E6b e o XP de maestria por abates. A arena possui um botão **Grimório e
-maestrias**, com as abas Minions, Profana e Maestrias. A edição usa o perfil
-da arena; árvore, maestrias e barra do personagem antigo seguem arquivadas. O perfil
-básico de nível 1 só ganha pontos ao subir de nível (3 por nível, E7). Para experimentar, use a build de teste da horda
-de nível 24 e seus pontos ainda disponíveis.
+O Grimório distribui os pontos do Necromante entre Minions, Profana e Morte; maestrias usam sua progressão própria. O catálogo e a disposição dos nós vêm de [habilidades/arvores.json](habilidades/arvores.json), filtrados pelo build; as mecânicas permanecem nos módulos do jogo. Veja [o contrato do catálogo](habilidades/README.md) e [a Forma de Lich](v2-morte-lich.md).
 
-> A aba **Morte** (árvore da Forma de Lich) e os novos rótulos das abas estão em [v2-morte-lich.md](v2-morte-lich.md#10-integração-etapa-4-29102026).
+O personagem ganha 3 pontos por nível, incluindo o nível 1. Os perfis de teste da arena são ferramentas de desenvolvimento, não o estado inicial de Novo Jogo. Árvores e maestrias importadas da v1 permanecem arquivadas conforme o [contrato de saves](v2-saves.md).
 
 ## Investimento e devolução
 
-O modelo canônico `build-simulator/model.js` define os nós, níveis mínimos,
-pré-requisitos, pontos, sinergias e especializações exclusivas. Selecionar um
+O catálogo `docs/habilidades/arvores.json` define os nós, níveis mínimos, pré-requisitos e pontos jogáveis. O modelo compartilhado `build-simulator/model.js` continua fornecendo as fórmulas e sinergias da base do Grimório. Selecionar um
 nó apenas mostra seus detalhes; **Investir ponto** gasta um ponto.
-O orçamento continua sendo três pontos por nível após o primeiro.
+O orçamento é de três pontos por nível, incluindo o nível 1, como nas outras classes (`budget` em `v2/scripts/full-build.mjs`). Saves existentes recebem os 3 pontos a mais ao carregar, sem perder investimentos. O modelo compartilhado da versão legada mantém `3 × (nível − 1)`.
 
 Devolver um ponto remove também dependentes que perderem o pré-requisito e
 cobra 20 de ouro por ponto efetivamente devolvido. Ouro insuficiente preserva
@@ -72,7 +66,7 @@ personagem.
 Os inimigos da arena ainda são de treino (E8). Até lá, cada zumbi de treino
 vale o XP do Guerreiro (`ENEMY_TYPES[0]`, o mesmo que o Rei Caído invoca) e o
 chefe vale o XP do Rei Caído na missão Extermínio. Os dois valores são lidos de
-`necromancer-canvas.html` por `v2/tools/combat-source.cjs`; a vida dos
+`v1/necromancer-canvas.html` por `v2/tools/combat-source.cjs`; a vida dos
 inimigos de treino não mudou. Sem grupos reais, abates não concedem maestria.
 O check do Grimório ainda injeta XP fictício para conferir a interface; o
 check das magias confere o XP de abates reais.

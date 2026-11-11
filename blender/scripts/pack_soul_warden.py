@@ -21,7 +21,7 @@ for name,a in meta['anims'].items():
     sheet.paste(im.resize((288,288),Image.Resampling.LANCZOS),(fi*288,row*288))
 sheet.save(HERE/'spritesheets'/'soulWarden_sheet.webp',quality=86,method=6)
 (HERE/'spritesheets'/'soulWarden_sheet.json').write_text(json.dumps(meta),encoding='utf-8')
-game=HERE.parent/'necromancer-canvas.html';html=game.read_text(encoding='utf-8')
+game=HERE.parent/'v1/necromancer-canvas.html';html=game.read_text(encoding='utf-8')
 html=re.sub(r"\nSPR\.load\('soulWarden',[^\n]+",'',html)
 payload=base64.b64encode((HERE/'spritesheets'/'soulWarden_sheet.webp').read_bytes()).decode()
 marker='\nfunction drawSprite(key,ref,o){';assert html.count(marker)==1

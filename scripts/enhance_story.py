@@ -15,7 +15,7 @@ from PIL import Image, ImageFilter, ImageChops, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "assets/story/manifest.json"
-GAME = ROOT / "necromancer-canvas.html"
+GAME = ROOT / "v1/necromancer-canvas.html"
 SCALE = 3
 PATTERN = re.compile(r"\{title:'([^']+)',src:'data:image/webp;base64,([^']+)'", re.ASCII)
 

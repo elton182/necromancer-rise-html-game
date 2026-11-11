@@ -77,7 +77,7 @@ test('pausa e menu não consomem a vida útil; reiniciar e morrer limpam o chão
 test('subir de nível aplica pontos, atributos e cura fixa sem passar do máximo',()=>{
  const s=field(),w=s.world,c=s.save.character,p=w.player;c.exp=95;p.hp=50;p.mp=70;
  w.onEnemyDeath({xp:12,x:0,y:0},p);assert.equal(c.level,2);assert.equal(c.exp,7);assert.equal(w.army.profile.level,2);
- assert.deepEqual([p.maxHp,p.maxMp,p.spellDamage],[110,85,44]);assert.equal(p.hp,70);assert.equal(p.mp,75);assert.equal(points(2,w.army.profile.ranks),3);assert.match(w.notice,/^Nível 2/);assert.ok(w.feed.some(m=>m.text.startsWith('Nível 2')));
+ assert.deepEqual([p.maxHp,p.maxMp,p.spellDamage],[110,85,44]);assert.equal(p.hp,70);assert.equal(p.mp,75);assert.equal(points(2,w.army.profile.ranks),6);assert.equal(points(1,{}),3);assert.match(w.notice,/^Nível 2/);assert.ok(w.feed.some(m=>m.text.startsWith('Nível 2')));
  p.hp=p.maxHp-5;c.exp=xpNext(2)-1;w.onEnemyDeath({xp:1+xpNext(3),x:0,y:0},p);assert.equal(c.level,4);assert.equal(p.hp,p.maxHp);assert.equal(c.exp,0);
 });
 test('XP de maestria usa o nível anterior ao do personagem e não é perdido no nível máximo',()=>{

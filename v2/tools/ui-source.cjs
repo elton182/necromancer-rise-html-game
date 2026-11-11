@@ -1,16 +1,16 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
-const canonical=repo=>fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8');
+const canonical=repo=>fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8');
 function readHudStyle(repo=path.resolve(__dirname,'../..')){
  const html=canonical(repo),start=html.indexOf('/* The Reliquary —'),end=html.indexOf('`; document.head.appendChild(st); }',start);
  if(start<0||end<0)throw Error('HUD canônico mudou; revisar adaptador de UI.');
- return '/* Gerado do Relicário em necromancer-canvas.html; não editar. */\n'+html.slice(start,end).trim()+'\n';
+ return '/* Gerado do Relicário em v1/necromancer-canvas.html; não editar. */\n'+html.slice(start,end).trim()+'\n';
 }
 // Tela inicial: estilo (com a arte embutida em #tl.art) e posições dos botões sobre a arte.
 function readTitleStyle(repo=path.resolve(__dirname,'../..')){
  const html=canonical(repo),start=html.indexOf('#tl{position:fixed;inset:0;z-index:60'),end=html.indexOf('`;\n  document.head.appendChild(st);\n  const root=document.createElement(\'div\'); root.id=\'tl\';',start);
  if(start<0||end<0||!html.slice(start,end).includes('#tl.art{background:#05000a url(data:image/webp'))throw Error('Tela inicial canônica mudou; revisar adaptador de UI.');
- return '/* Gerado da tela inicial em necromancer-canvas.html; não editar. */\n'+html.slice(start,end).trim()+'\n';
+ return '/* Gerado da tela inicial em v1/necromancer-canvas.html; não editar. */\n'+html.slice(start,end).trim()+'\n';
 }
 // Estilos do inventário (boneco, mochila, comparação) compartilhados com o jogo anterior.
 function readEquipmentStyle(repo=path.resolve(__dirname,'../..')){
@@ -40,7 +40,7 @@ module.exports.readMenuStyle=readMenuStyle;
 function readPortrait(repo=path.resolve(__dirname,'../..')){
  const m=/i\.src='(data:image\/webp;base64,[A-Za-z0-9+\/=]+)';\s*PORT\['zt'\]/.exec(canonical(repo));
  if(!m)throw Error('Retrato de Zephyr não encontrado no jogo canônico.');
- return '// Gerado de necromancer-canvas.html; não editar.\nexport default '+JSON.stringify(m[1])+';\n';
+ return '// Gerado de v1/necromancer-canvas.html; não editar.\nexport default '+JSON.stringify(m[1])+';\n';
 }
 module.exports.readPortrait=readPortrait;
 // Árvore de habilidades e maestrias do jogo anterior (scripts/skill-trees.css e skill-mastery.css).

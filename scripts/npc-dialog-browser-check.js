@@ -8,7 +8,7 @@ const path=require('node:path');
  try{
   const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
   await page.evaluate(()=>{TITLE.active=false;COMIC.active=false;CAMP.on=false;CAMP.map=false;gameState='hub';tlShow(false,false);});
   const modal=page.locator('#vil-modal'),quote=modal.locator('.say');
   async function checkLayout(){

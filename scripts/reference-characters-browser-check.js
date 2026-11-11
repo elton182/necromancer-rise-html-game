@@ -3,7 +3,7 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),path=require('node:path'),{pathToFileURL}=require('node:url'),fs=require('node:fs');
 (async()=>{const browser=await chromium.launch({channel:'chrome',headless:true});try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
  await page.waitForFunction(()=>typeof hasSave!=='undefined'&&window.CharacterVisuals&&['smith','necro','skeleton','archer'].every(k=>SPR.ready(k)));
  assert.deepEqual(await page.evaluate(()=>CharacterVisuals.active()),{});
  assert.equal(await page.evaluate(()=>Object.keys(SPR.sheets).some(k=>k.startsWith('reference_'))),false);

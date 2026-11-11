@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),{pathToFile
  const browser=await chromium.launch({channel:'chrome',headless:true});
  try{
   const page=await browser.newPage({viewport:{width:1200,height:850}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-canvas.html')).href);
+  await page.goto(pathToFileURL(path.resolve(__dirname,'../v1/necromancer-canvas.html')).href);
   await page.waitForFunction(()=>['necro','smith','elder','tilda','merch'].every(k=>SPR.ready(k))&&window.VillageEnvironment?.loaded);
   const metadata=await page.evaluate(()=>Object.fromEntries(['necro','smith','elder','tilda','merch'].map(key=>[key,SPR.sheets[key].meta])));
   for(const meta of Object.values(metadata))assert.equal(meta.dirs,8);

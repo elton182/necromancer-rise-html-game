@@ -1,0 +1,109 @@
+{
+  "errors": [],
+  "remote": [],
+  "trail": {
+    "w": 100,
+    "h": 204,
+    "player": {
+      "x": 0,
+      "y": 86
+    },
+    "foes": 8,
+    "trees": 424
+  },
+  "beat": {
+    "scale": 0.35,
+    "hud": 1,
+    "stage": "ambush"
+  },
+  "rebuilds": [
+    {
+      "kind": "rebuild",
+      "opacity": 1,
+      "stage": "fall"
+    },
+    {
+      "kind": "rebuild",
+      "opacity": 1,
+      "stage": "cave"
+    },
+    {
+      "kind": "rebuild",
+      "opacity": 1,
+      "stage": "trail"
+    },
+    {
+      "kind": "rebuild",
+      "opacity": 1,
+      "stage": "defense"
+    },
+    {
+      "kind": "rebuild",
+      "opacity": 0.97653,
+      "stage": "done"
+    }
+  ],
+  "hitches": [
+    {
+      "gap": 472,
+      "opacity": 1,
+      "stage": "fall",
+      "scene": "cinematic",
+      "mark": "shot:3-fade-to-fall"
+    },
+    {
+      "gap": 687,
+      "opacity": 1,
+      "stage": "cave",
+      "scene": "dialogue",
+      "mark": ""
+    },
+    {
+      "gap": 1222,
+      "opacity": 1,
+      "stage": "trail",
+      "scene": "",
+      "mark": "shot:5-fade-trail-title"
+    },
+    {
+      "gap": 1847,
+      "opacity": 0,
+      "stage": "trail",
+      "scene": "",
+      "mark": "shot:12-trail-edge-light-low-horde"
+    },
+    {
+      "gap": 2194,
+      "opacity": 1,
+      "stage": "defense",
+      "scene": "",
+      "mark": ""
+    },
+    {
+      "gap": 2715,
+      "opacity": 1,
+      "stage": "done",
+      "scene": "",
+      "mark": ""
+    }
+  ],
+  "longestVisibleFrameMs": 1847,
+  "longestCoveredFrameMs": 2715,
+  "checks": [
+    "respiro em câmera lenta no fim da emboscada e da defesa",
+    "conversa da despedida e do reencontro sem remontar o mapa",
+    "faixas de cena e HUD recolhido",
+    "queda, caverna, trilha, defesa e Jacarandá remontados com a tela escura",
+    "título do trecho na passagem para a trilha",
+    "trilha de 100 × 204 u com lobos, vigias, bolsa opcional e Tomás",
+    "Tomás liberado só pelos perseguidores próximos",
+    "borda em chão claro/qualidade baixa/horda e escuro",
+    "390 px",
+    "offline"
+  ],
+  "limitations": [
+    "encerramentos de combate com HP injetado",
+    "tempo de quadro medido em Edge headless; varia por máquina",
+    "sem validação de dificuldade"
+  ]
+}

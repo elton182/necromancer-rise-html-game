@@ -620,8 +620,8 @@
     "durations": {
       "dodge": 0.5
     },
-    "stride": 1.43,
-    "strafeStride": 1.1,
+    "stride": 2.3,
+    "strafeStride": 1.72,
     "layered": true
   },
   "mercenary": {
@@ -676,5 +676,20 @@
     "stride": 1.29,
     "strafeStride": 1.01,
     "layered": true
+  },
+  "carnivorousPlant": {
+    "path": "blender/exports/carnivorous_plant.glb",
+    "source": "blender/models/carnivorous_plant.blend",
+    "height": 1.8,
+    "requiredAnimations": [
+      "idle",
+      "attack",
+      "death"
+    ],
+    "durations": {
+      "idle": 2,
+      "attack": 1,
+      "death": 1
+    }
   }
 }

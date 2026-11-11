@@ -1,3 +1,4 @@
+import {campaignQuests} from './quest-model.mjs';
 import {WORLD_POINTS,WORLD_ROUTES,WORLD_PILES,WORLD_EXITS,WORLD_ROAD_ITAUNA,worldObjectives,worldRegion} from './campaign-world-model.mjs';
 import {nearbyWorldPerson,nearbyExit,homeTeleport,teleportHome,worldDialogue,worldDialogueAction,closeWorldOverlay,toggleWorldMap} from './campaign-world.mjs';
 import {AREAS,areaObjectives,areaRegion} from './itauna-model.mjs';
@@ -40,11 +41,11 @@ let trackerCollapsed=false;
 export function renderWorldPanel(s,{host,node,button,interact,merchant=()=>{}}){
  const r=s.world.adventure,p=s.save.campaign.world,area=r.area,objectives=area?areaObjectives(area,p):worldObjectives(p),objective=objectives[0],w=s.world;
  if(r.mapOpen){host.dataset.view='world-map';node('h2',area?AREAS[area].name:'Arredores de Jacarandá');for(const o of objectives)node('p',o.title+' · '+o.text);const canvas=node('canvas');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',area?'Mapa de '+AREAS[area].name+': relevo, água, trilhas e passagens. Sua posição e os objetivos estão marcados.':'Mapa contínuo de Jacarandá: cripta a oeste, bosque ao centro, vila a sudeste, posto e mina ao norte, serraria a sudoeste, cemitério a leste e a estrada para a Várzea de Itaúna. Sua posição e os objetivos estão marcados.');drawWorldMap(canvas,s);button('Fechar mapa · continuar',()=>closeWorldOverlay(s));return;}
- if(r.dialogue){host.dataset.view='world-dialogue';const d=worldDialogue(s);node('small','CRÔNICAS DE JACARANDÁ');node('h2',d.title);node('p',d.text);
+ if(r.dialogue){host.dataset.view='world-dialogue';const d=worldDialogue(s);node('small',area==='itavera'?'CRÔNICAS DE ITAVERA':'CRÔNICAS DE JACARANDÁ');node('h2',d.title);for(const paragraph of d.text.split('\n\n'))node('p',paragraph);
   if(d.kind==='forge')button(d.action,()=>{closeWorldOverlay(s);merchant();});else if(d.action)button(d.action,()=>worldDialogueAction(s));
   button('Fechar conversa',()=>closeWorldOverlay(s));return;}
  host.dataset.view='world';node('small',area?areaRegion(area,w.player):worldRegion(w.player));
- for(const [i,o] of objectives.entries()){node(i?'h4':'h3',o.title);node('p',o.text);}
+ for(const [i,o] of objectives.entries()){node(i?'h4':'h3',o.title);const q=campaignQuests(s.save).find(q=>q.status==='active'&&(q.id===o.questId||q.title===o.title));if(q)node('small','Etapa '+(q.current+1)+' de '+q.steps.length);node('p',o.text);}
  const target=objective.target,dx=target.x-w.player.x,dy=target.y-w.player.y,d=Math.hypot(dx,dy),direction=(dy<-4?'norte':dy>4?'sul':'')+(Math.abs(dx)>4?(Math.abs(dy)>4?' / ':'')+(dx>0?'leste':'oeste'):'');
  node('small',d<3.2?(area?'Você chegou':'G · conversar'):Math.round(d)+' m · '+direction);
  const exit=nearbyExit(w);if(exit)node('p','Caminho à frente · '+exit.name+' · pise no anel');

@@ -1,0 +1,849 @@
+
+> necromancer-rise@0.0.0 test:legacy
+> node v2/tools/run-tests.cjs scripts build-simulator balance-simulator
+
+TAP version 13
+# Subtest: late waves preserve hounds and reserve support slots using the shared composition
+ok 1 - late waves preserve hounds and reserve support slots using the shared composition
+  ---
+  duration_ms: 12.9591
+  ...
+# Subtest: source adapter captures live overrides, campaign layouts and captain
+ok 2 - source adapter captures live overrides, campaign layouts and captain
+  ---
+  duration_ms: 0.5017
+  ...
+# Subtest: XP crosses multiple levels and caps exactly at 60
+ok 3 - XP crosses multiple levels and caps exactly at 60
+  ---
+  duration_ms: 2.5503
+  ...
+# Subtest: all generated builds obey prerequisites and point budget at all levels
+ok 4 - all generated builds obey prerequisites and point budget at all levels
+  ---
+  duration_ms: 20.3628
+  ...
+# Subtest: level one has no free minions; the first invested zombie point enables the group
+ok 5 - level one has no free minions; the first invested zombie point enables the group
+  ---
+  duration_ms: 0.9935
+  ...
+# Subtest: simulation applies flat weapon bases before percentage damage just like the game preview
+ok 6 - simulation applies flat weapon bases before percentage damage just like the game preview
+  ---
+  duration_ms: 6.5677
+  ...
+# Subtest: item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+ok 7 - item points stack above investment cap, keep cross synergy direct and do not unlock nodes
+  ---
+  duration_ms: 0.717
+  ...
+# Subtest: finals and unlearned skills ignore item bonuses
+ok 8 - finals and unlearned skills ignore item bonuses
+  ---
+  duration_ms: 0.301
+  ...
+# Subtest: rarities have exact unique affix count and boss drops exclude common
+ok 9 - rarities have exact unique affix count and boss drops exclude common
+  ---
+  duration_ms: 176.09
+  ...
+# Subtest: legacy endless preserves original factors; current adapter uses the shared live wave model
+ok 10 - legacy endless preserves original factors; current adapter uses the shared live wave model
+  ---
+  duration_ms: 1.0162
+  ...
+# Subtest: completion rewards are unique when requested; defeats never reward
+ok 11 - completion rewards are unique when requested; defeats never reward
+  ---
+  duration_ms: 0.4112
+  ...
+# Subtest: hand-computable kill uses actual hit damage and awards no overkill XP twice
+ok 12 - hand-computable kill uses actual hit damage and awards no overkill XP twice
+  ---
+  duration_ms: 1.9599
+  ...
+# Subtest: mana depletion constrains sustained combat and cooldown constrains bursts
+ok 13 - mana depletion constrains sustained combat and cooldown constrains bursts
+  ---
+  duration_ms: 1.0536
+  ...
+# Subtest: minion deaths and revival reduce damage contribution
+ok 14 - minion deaths and revival reduce damage contribution
+  ---
+  duration_ms: 1.6779
+  ...
+# Subtest: merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+ok 15 - merchant cannot buy without gold and selling cannot create a buy/sell arbitrage
+  ---
+  duration_ms: 1.1369
+  ...
+# Subtest: campaign completion XP is actually credited after final encounter
+ok 16 - campaign completion XP is actually credited after final encounter
+  ---
+  duration_ms: 78.6275
+  ...
+# Subtest: failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+ok 17 - failed waves preserve unlock, award kill XP only, and farm returns lower drop levels
+  ---
+  duration_ms: 18.4567
+  ...
+# Subtest: reports are reproducible, finite, escape CSV and interpolate percentiles
+ok 18 - reports are reproducible, finite, escape CSV and interpolate percentiles
+  ---
+  duration_ms: 88.1765
+  ...
+# Subtest: configuration rejects invalid scenarios and dangerous numeric bounds
+ok 19 - configuration rejects invalid scenarios and dangerous numeric bounds
+  ---
+  duration_ms: 1.4016
+  ...
+# Subtest: summary detects stagnant levels, difficulty jumps and more efficient farming
+ok 20 - summary detects stagnant levels, difficulty jumps and more efficient farming
+  ---
+  duration_ms: 1.5783
+  ...
+# Subtest: 3 pontos por subida de nível, sem orçamento compartilhado duplicado
+ok 21 - 3 pontos por subida de nível, sem orçamento compartilhado duplicado
+  ---
+  duration_ms: 5.9594
+  ...
+# Subtest: bifurcações só abrem com nível e dois pontos no pai
+ok 22 - bifurcações só abrem com nível e dois pontos no pai
+  ---
+  duration_ms: 2.104
+  ...
+# Subtest: as duas rotas intermediárias coexistem, finais da escola são exclusivos
+ok 23 - as duas rotas intermediárias coexistem, finais da escola são exclusivos
+  ---
+  duration_ms: 1.2671
+  ...
+# Subtest: as 12 especializações finais abrem no nível 22, mantendo pré-requisitos
+ok 24 - as 12 especializações finais abrem no nível 22, mantendo pré-requisitos
+  ---
+  duration_ms: 7.0817
+  ...
+# Subtest: remover pré-requisito devolve descendentes, preservando outra bifurcação
+ok 25 - remover pré-requisito devolve descendentes, preservando outra bifurcação
+  ---
+  duration_ms: 0.5932
+  ...
+# Subtest: diminuir nível remove skills indisponíveis e respeita o novo orçamento
+ok 26 - diminuir nível remove skills indisponíveis e respeita o novo orçamento
+  ---
+  duration_ms: 3.2484
+  ...
+# Subtest: sinergia de Zumbi afeta Abominação; pontes de explosão somam sem recursão
+ok 27 - sinergia de Zumbi afeta Abominação; pontes de explosão somam sem recursão
+  ---
+  duration_ms: 2.1382
+  ...
+# Subtest: códigos inválidos não aceitam excesso de pontos, skills falsas ou pré-requisitos ausentes
+ok 28 - códigos inválidos não aceitam excesso de pontos, skills falsas ou pré-requisitos ausentes
+  ---
+  duration_ms: 1.1964
+  ...
+# Subtest: as cinco builds de exemplo sobrevivem a exportação e importação
+ok 29 - as cinco builds de exemplo sobrevivem a exportação e importação
+  ---
+  duration_ms: 4.7657
+  ...
+# Subtest: sequência de compras, devoluções e mudanças de nível mantém todas as builds válidas
+ok 30 - sequência de compras, devoluções e mudanças de nível mantém todas as builds válidas
+  ---
+  duration_ms: 57.6609
+  ...
+# Subtest: fixed windup, straight charge, first hit and full recovery
+ok 31 - fixed windup, straight charge, first hit and full recovery
+  ---
+  duration_ms: 13.6383
+  ...
+# Subtest: swept collision is independent of frame size and damages once
+ok 32 - swept collision is independent of frame size and damages once
+  ---
+  duration_ms: 5.9344
+  ...
+# Subtest: solids and corpse walls stop charge before a target; wall wins ties
+ok 33 - solids and corpse walls stop charge before a target; wall wins ties
+  ---
+  duration_ms: 2.027
+  ...
+# Subtest: earliest living target is hit even when targets are passed in reverse order
+ok 34 - earliest living target is hit even when targets are passed in reverse order
+  ---
+  duration_ms: 0.9225
+  ...
+# Subtest: first availability, activation range, death and boundary stop
+ok 35 - first availability, activation range, death and boundary stop
+  ---
+  duration_ms: 1.7259
+  ...
+# Subtest: arena introduces hounds without changing totals or campaign composition
+ok 36 - arena introduces hounds without changing totals or campaign composition
+  ---
+  duration_ms: 4.0149
+  ...
+# Subtest: expedition introductions retain seed geometry, tiers and mob counts
+ok 37 - expedition introductions retain seed geometry, tiers and mob counts
+  ---
+  duration_ms: 12.1193
+  ...
+# Subtest: defesa varia por nível, sem defesa não mitiga e teto é 70%
+ok 38 - defesa varia por nível, sem defesa não mitiga e teto é 70%
+  ---
+  duration_ms: 5.1132
+  ...
+# Subtest: slots de proteção sorteiam defesa percentual e itens antigos migram
+ok 39 - slots de proteção sorteiam defesa percentual e itens antigos migram
+  ---
+  duration_ms: 14.0549
+  ...
+# Subtest: 100% influence identifies missing leaders and leads directly to fortress after both victories
+ok 40 - 100% influence identifies missing leaders and leads directly to fortress after both victories
+  ---
+  duration_ms: 27.5691
+  ...
+# Subtest: legacy and malformed saves normalize safely and conquered saves retain their fragment
+ok 41 - legacy and malformed saves normalize safely and conquered saves retain their fragment
+  ---
+  duration_ms: 4.578
+  ...
+# Subtest: curse offers persist, contain four distinct options and reject off-offer or duplicate selections
+ok 42 - curse offers persist, contain four distinct options and reject off-offer or duplicate selections
+  ---
+  duration_ms: 79.6761
+  ...
+# Subtest: uncursed conquest reveals leaders, requires both for fortress and grants fragment only on victory
+ok 43 - uncursed conquest reveals leaders, requires both for fortress and grants fragment only on victory
+  ---
+  duration_ms: 5.8754
+  ...
+# Subtest: each cleared area opens three distinct biome routes, persists branches and converges at the tower
+ok 44 - each cleared area opens three distinct biome routes, persists branches and converges at the tower
+  ---
+  duration_ms: 4.325
+  ...
+# Subtest: fresh and existing characters can skip difficulties while regional objectives remain required
+ok 45 - fresh and existing characters can skip difficulties while regional objectives remain required
+  ---
+  duration_ms: 3.0022
+  ...
+# Subtest: difficulty changes clear map progress in either direction and preserve permanent records
+ok 46 - difficulty changes clear map progress in either direction and preserve permanent records
+  ---
+  duration_ms: 3.8212
+  ...
+# Subtest: aborted attempts cannot reward, victories apply once and reset only their difficulty offer
+ok 47 - aborted attempts cannot reward, victories apply once and reset only their difficulty offer
+  ---
+  duration_ms: 1.6502
+  ...
+# Subtest: risk increases loot, influence and special access, with bounded penalties
+ok 48 - risk increases loot, influence and special access, with bounded penalties
+  ---
+  duration_ms: 2.6354
+  ...
+# Subtest: regional difficulty and loot continue beyond the arena ceiling and survive migration
+ok 49 - regional difficulty and loot continue beyond the arena ceiling and survive migration
+  ---
+  duration_ms: 26.3653
+  ...
+# Subtest: Osso Carcomido survives equipment migration only on valid rare or epic staves
+ok 50 - Osso Carcomido survives equipment migration only on valid rare or epic staves
+  ---
+  duration_ms: 2.9067
+  ...
+# Subtest: loot thresholds include higher rarities, preserve other drops and persist across reloads
+ok 51 - loot thresholds include higher rarities, preserve other drops and persist across reloads
+  ---
+  duration_ms: 39.5757
+  ...
+# Subtest: hidden loot skips proximity and exit collection, remains recoverable and never blocks leaving
+ok 52 - hidden loot skips proximity and exit collection, remains recoverable and never blocks leaving
+  ---
+  duration_ms: 10.7823
+  ...
+# Subtest: generated pieces validate at every rarity, slot and level; boss never common
+ok 53 - generated pieces validate at every rarity, slot and level; boss never common
+  ---
+  duration_ms: 159.8222
+  ...
+# Subtest: migration rejects invalid values, duplicate IDs, wrong slots and malformed bonuses
+ok 54 - migration rejects invalid values, duplicate IDs, wrong slots and malformed bonuses
+  ---
+  duration_ms: 2.4649
+  ...
+# Subtest: all item bases are flat; staff starts at 10–12 and scales independently of rarity
+ok 55 - all item bases are flat; staff starts at 10–12 and scales independently of rarity
+  ---
+  duration_ms: 18.3629
+  ...
+# Subtest: old saves convert percentage bases once while preserving affixes, slots and identities
+ok 56 - old saves convert percentage bases once while preserving affixes, slots and identities
+  ---
+  duration_ms: 2.3171
+  ...
+# Subtest: staff flat damage is added before percent and skill multipliers in live combat and preview
+ok 57 - staff flat damage is added before percent and skill multipliers in live combat and preview
+  ---
+  duration_ms: 26.5481
+  ...
+# Subtest: grimoire flat damage feeds basic attacks, commanded explosions and the status preview
+ok 58 - grimoire flat damage feeds basic attacks, commanded explosions and the status preview
+  ---
+  duration_ms: 9.0504
+  ...
+# Subtest: temporary skill and school ranks stack; no unlock, budget change, finals or direct synergies
+ok 59 - temporary skill and school ranks stack; no unlock, budget change, finals or direct synergies
+  ---
+  duration_ms: 1.291
+  ...
+# Subtest: waves unlock only on valid completion; regression preserves best and lowers loot and threat
+ok 60 - waves unlock only on valid completion; regression preserves best and lowers loot and threat
+  ---
+  duration_ms: 1.1564
+  ...
+# Subtest: new wave records advance the next start; replaying an earlier wave preserves the chosen start
+ok 61 - new wave records advance the next start; replaying an earlier wave preserves the chosen start
+  ---
+  duration_ms: 0.835
+  ...
+# Subtest: loading reconciles a stale wave selector with the saved arena record without trusting the global wave
+ok 62 - loading reconciles a stale wave selector with the saved arena record without trusting the global wave
+  ---
+  duration_ms: 1.4578
+  ...
+# Subtest: progressing from wave 5 to 10 survives saving and starts the arena at wave 10
+ok 63 - progressing from wave 5 to 10 survives saving and starts the arena at wave 10
+  ---
+  duration_ms: 6.5243
+  ...
+# Subtest: equip and unequip affect actual skill stats without healing or altering ranks/cooldowns
+ok 64 - equip and unequip affect actual skill stats without healing or altering ranks/cooldowns
+  ---
+  duration_ms: 5.7537
+  ...
+# Subtest: existing dead minions stay dead and retain recovery on equipment changes
+ok 65 - existing dead minions stay dead and retain recovery on equipment changes
+  ---
+  duration_ms: 7.9242
+  ...
+# Subtest: horde-life equipment increases existing allies HP and regen without restoring full health
+ok 66 - horde-life equipment increases existing allies HP and regen without restoring full health
+  ---
+  duration_ms: 11.0835
+  ...
+# Subtest: rings swap either hand, full bag cannot unequip, and equipped items cannot be sold
+ok 67 - rings swap either hand, full bag cannot unequip, and equipped items cannot be sold
+  ---
+  duration_ms: 8.4708
+  ...
+# Subtest: discard all requires confirmation, preserves worn gear/consumables and only removes listed items
+ok 68 - discard all requires confirmation, preserves worn gear/consumables and only removes listed items
+  ---
+  duration_ms: 5.927
+  ...
+# Subtest: equipment boosts primary skills without multiplying invested cross synergies
+ok 69 - equipment boosts primary skills without multiplying invested cross synergies
+  ---
+  duration_ms: 1.0457
+  ...
+# Subtest: shop checks village, gold and capacity before payment; buy/sell never creates profit
+ok 70 - shop checks village, gold and capacity before payment; buy/sell never creates profit
+  ---
+  duration_ms: 6.4006
+  ...
+# Subtest: spawn replaces legacy multipliers exactly once with active wave difficulty
+ok 71 - spawn replaces legacy multipliers exactly once with active wave difficulty
+  ---
+  duration_ms: 8.3124
+  ...
+# Subtest: completion updates record and guards duplicate rewards
+ok 72 - completion updates record and guards duplicate rewards
+  ---
+  duration_ms: 7.5653
+  ...
+# Subtest: normal enemies move and attack faster and prepare specials earlier without touching damage
+ok 73 - normal enemies move and attack faster and prepare specials earlier without touching damage
+  ---
+  duration_ms: 8.2404
+  ...
+# Subtest: boss drops exactly one magical-or-better piece and repeat deaths never duplicate it
+ok 74 - boss drops exactly one magical-or-better piece and repeat deaths never duplicate it
+  ---
+  duration_ms: 9.2416
+  ...
+# Subtest: equipment chance doubles while orb rules favor mana and suppress extra campaign rolls
+ok 75 - equipment chance doubles while orb rules favor mana and suppress extra campaign rolls
+  ---
+  duration_ms: 622.4823
+  ...
+# Subtest: collector isolates equipment from potions; full bags leave items on ground
+ok 76 - collector isolates equipment from potions; full bags leave items on ground
+  ---
+  duration_ms: 3.6815
+  ...
+# Subtest: cooldown applies only to successful casts and never resets an existing cooldown
+ok 77 - cooldown applies only to successful casts and never resets an existing cooldown
+  ---
+  duration_ms: 4.5153
+  ...
+# Subtest: save migration recomputes equipped stats without accumulating bonuses
+ok 78 - save migration recomputes equipped stats without accumulating bonuses
+  ---
+  duration_ms: 7.7866
+  ...
+# Subtest: released HTML embeds sources once, orders equipment after trees, and has save bridges
+ok 79 - released HTML embeds sources once, orders equipment after trees, and has save bridges
+  ---
+  duration_ms: 631.8998
+  ...
+# Subtest: free hub can resume story before village unlock, preserving campaign and equipment
+ok 80 - free hub can resume story before village unlock, preserving campaign and equipment
+  ---
+  duration_ms: 3.7137
+  ...
+# Subtest: return from a wave requires confirmation; cancel preserves free mode and success collects drops
+ok 81 - return from a wave requires confirmation; cancel preserves free mode and success collects drops
+  ---
+  duration_ms: 2.3122
+  ...
+# Subtest: status preview matches equipped stats without changing HP, ranks, loadout or cooldowns
+ok 82 - status preview matches equipped stats without changing HP, ranks, loadout or cooldowns
+  ---
+  duration_ms: 4.0828
+  ...
+# Subtest: DPS separates summon attacks, burst and revive limits; utility skills have no invented damage
+ok 83 - DPS separates summon attacks, burst and revive limits; utility skills have no invented damage
+  ---
+  duration_ms: 3.7665
+  ...
+# Subtest: catch-up drops: gear at wave level never rolls above it; lagging gear rolls higher, more often, toward the weakest slot
+ok 84 - catch-up drops: gear at wave level never rolls above it; lagging gear rolls higher, more often, toward the weakest slot
+  ---
+  duration_ms: 0.7522
+  ...
+# Subtest: test settings scale existing enemies once, preserve health and restore zero damage
+ok 85 - test settings scale existing enemies once, preserve health and restore zero damage
+  ---
+  duration_ms: 5.405
+  ...
+# Subtest: armaduras sempre têm defesa inerente; sorteio só concede percentual; migração é idempotente
+ok 86 - armaduras sempre têm defesa inerente; sorteio só concede percentual; migração é idempotente
+  ---
+  duration_ms: 2.3277
+  ...
+# Subtest: maps are reproducible, change terrain and biome, and keep the boss directly reachable
+ok 87 - maps are reproducible, change terrain and biome, and keep the boss directly reachable
+  ---
+  duration_ms: 436.9484
+  ...
+# Subtest: magic and rare encounters trade increased attributes for higher drop rates and rarity floors
+ok 88 - magic and rare encounters trade increased attributes for higher drop rates and rarity floors
+  ---
+  duration_ms: 33.8902
+  ...
+# Subtest: corte trava a direção, só acerta no contato e uma única vez
+ok 89 - corte trava a direção, só acerta no contato e uma única vez
+  ---
+  duration_ms: 7.026
+  ...
+# Subtest: salto marca o ponto, voa até ele e causa o impacto ao pousar
+ok 90 - salto marca o ponto, voa até ele e causa o impacto ao pousar
+  ---
+  duration_ms: 3.5935
+  ...
+# Subtest: salto limita o alcance e um quadro longo não pula a preparação nem repete o impacto
+ok 91 - salto limita o alcance e um quadro longo não pula a preparação nem repete o impacto
+  ---
+  duration_ms: 1.9019
+  ...
+# Subtest: conjuração só começa abaixo de 50%, uma vez por fase, e respeita o limite de aliados
+ok 92 - conjuração só começa abaixo de 50%, uma vez por fase, e respeita o limite de aliados
+  ---
+  duration_ms: 2.448
+  ...
+# Subtest: chefe morto não executa golpe armado e reset limpa salto e recargas
+ok 93 - chefe morto não executa golpe armado e reset limpa salto e recargas
+  ---
+  duration_ms: 0.5941
+  ...
+# Subtest: pose acompanha a fase real e coloca o contato no quadro de impacto
+ok 94 - pose acompanha a fase real e coloca o contato no quadro de impacto
+  ---
+  duration_ms: 1.0637
+  ...
+# Subtest: fora de alcance ou sem alvo ele apenas persegue
+ok 95 - fora de alcance ou sem alvo ele apenas persegue
+  ---
+  duration_ms: 0.8612
+  ...
+# Subtest: abilities wait for their staggered cooldown, then fire once and restart the timer
+ok 96 - abilities wait for their staggered cooldown, then fire once and restart the timer
+  ---
+  duration_ms: 18.2681
+  ...
+# Subtest: no cast without a reachable target, while rallying or outside the field
+ok 97 - no cast without a reachable target, while rallying or outside the field
+  ---
+  duration_ms: 3.8611
+  ...
+# Subtest: skeleton spin hits every nearby enemy and archer volley spreads over three targets
+ok 98 - skeleton spin hits every nearby enemy and archer volley spreads over three targets
+  ---
+  duration_ms: 10.9708
+  ...
+# Subtest: specter dashes through its target and the abomination slows crowds without displacing targets
+ok 99 - specter dashes through its target and the abomination slows crowds without displacing targets
+  ---
+  duration_ms: 7.5418
+  ...
+# Subtest: decomposition ticks for four seconds and repeated bites refresh without stacking
+ok 100 - decomposition ticks for four seconds and repeated bites refresh without stacking
+  ---
+  duration_ms: 3.9771
+  ...
+# Subtest: frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+ok 101 - frontline takes 20% less damage; ranged and spirits retain full damage and lethality
+  ---
+  duration_ms: 51.5623
+  ...
+# Subtest: manual revive spends 30 mana once, restores visibility and places ally beside hero
+ok 102 - manual revive spends 30 mana once, restores visibility and places ally beside hero
+  ---
+  duration_ms: 4.3187
+  ...
+# Subtest: sacrificed/exploded allies and insufficient mana cannot bypass recovery
+ok 103 - sacrificed/exploded allies and insufficient mana cannot bypass recovery
+  ---
+  duration_ms: 4.731
+  ...
+# Subtest: paused keyboard revive is blocked; explicit paid action in Horde menu works
+ok 104 - paused keyboard revive is blocked; explicit paid action in Horde menu works
+  ---
+  duration_ms: 4.2678
+  ...
+# Subtest: zombies and skeletons react after a delay and move out of warned area without invulnerability
+ok 105 - zombies and skeletons react after a delay and move out of warned area without invulnerability
+  ---
+  duration_ms: 23.1172
+  ...
+# Subtest: hostile projectiles are dodged; friendly projectiles do not trigger evasion
+ok 106 - hostile projectiles are dodged; friendly projectiles do not trigger evasion
+  ---
+  duration_ms: 6.737
+  ...
+# Subtest: hound charge exposes a finite line hazard, removed during recovery
+ok 107 - hound charge exposes a finite line hazard, removed during recovery
+  ---
+  duration_ms: 5.4907
+  ...
+# Subtest: dodge respects collision constraints and does not replace return-to-hero or leap AI
+ok 108 - dodge respects collision constraints and does not replace return-to-hero or leap AI
+  ---
+  duration_ms: 14.5785
+  ...
+# Subtest: no hazard preserves normal AI and killing an ally clears dodge state
+ok 109 - no hazard preserves normal AI and killing an ally clears dodge state
+  ---
+  duration_ms: 3.9953
+  ...
+# Subtest: revive HUD cannot intercept clicks while hidden and explains insufficient mana
+ok 110 - revive HUD cannot intercept clicks while hidden and explains insufficient mana
+  ---
+  duration_ms: 8.0564
+  ...
+# Subtest: enemies walk around a centered tree and overlapping building colliders without crossing terrain
+ok 111 - enemies walk around a centered tree and overlapping building colliders without crossing terrain
+  ---
+  duration_ms: 67.6029
+  ...
+# Subtest: collision recovers exact obstacle centers and large mobs take a wider route
+ok 112 - collision recovers exact obstacle centers and large mobs take a wider route
+  ---
+  duration_ms: 11.1301
+  ...
+# Subtest: route recovers after crowd displacement, target movement and a new map
+ok 113 - route recovers after crowd displacement, target movement and a new map
+  ---
+  duration_ms: 14.7503
+  ...
+# Subtest: large enemies approach a target standing close to a tree instead of freezing
+ok 114 - large enemies approach a target standing close to a tree instead of freezing
+  ---
+  duration_ms: 24.6733
+  ...
+# Subtest: horde ranges persist, reject invalid values and recall allies outside the new range
+ok 115 - horde ranges persist, reject invalid values and recall allies outside the new range
+  ---
+  duration_ms: 25.2758
+  ...
+# Subtest: each minion reacquires its own nearest enemy while explicit commands retain priority
+ok 116 - each minion reacquires its own nearest enemy while explicit commands retain priority
+  ---
+  duration_ms: 37.621
+  ...
+# Subtest: focus loss honors the saved preference and always clears held keyboard input
+ok 117 - focus loss honors the saved preference and always clears held keyboard input
+  ---
+  duration_ms: 10.6667
+  ...
+# Subtest: CLI requires an export and bounds expensive or invalid scenarios
+ok 118 - CLI requires an export and bounds expensive or invalid scenarios
+  ---
+  duration_ms: 7.6266
+  ...
+# Subtest: summary distinguishes no minion death from a late death and caps no invented duration
+ok 119 - summary distinguishes no minion death from a late death and caps no invented duration
+  ---
+  duration_ms: 4.2191
+  ...
+# Subtest: specializations mirror exactly six bar slots and reject duplicates or unknown skills
+ok 120 - specializations mirror exactly six bar slots and reject duplicates or unknown skills
+  ---
+  duration_ms: 5.3416
+  ...
+# Subtest: standalone release embeds current mastery sources and persists the progression fields
+ok 121 - standalone release embeds current mastery sources and persists the progression fields
+  ---
+  duration_ms: 579.5797
+  ...
+# Subtest: all 12 skills start unchanged and each can spend 19 separate points
+ok 122 - all 12 skills start unchanged and each can spend 19 separate points
+  ---
+  duration_ms: 3.0895
+  ...
+# Subtest: XP remains independent, crosses several levels and catches up without overshooting bonus XP
+ok 123 - XP remains independent, crosses several levels and catches up without overshooting bonus XP
+  ---
+  duration_ms: 2.8562
+  ...
+# Subtest: save migration is idempotent, caps corrupted budgets and enforces dependencies
+ok 124 - save migration is idempotent, caps corrupted budgets and enforces dependencies
+  ---
+  duration_ms: 2.7634
+  ...
+# Subtest: equipment previews include mastery without consuming or modifying either point pool
+ok 125 - equipment previews include mastery without consuming or modifying either point pool
+  ---
+  duration_ms: 6.1865
+  ...
+# Subtest: Zumbi e Abominação fortalecem vida e dano um do outro e retiram bônus ao devolver pontos
+ok 126 - Zumbi e Abominação fortalecem vida e dano um do outro e retiram bônus ao devolver pontos
+  ---
+  duration_ms: 39.6883
+  ...
+# Subtest: migração redistribui exatamente o orçamento e remove souls e upgrades antigos
+ok 127 - migração redistribui exatamente o orçamento e remove souls e upgrades antigos
+  ---
+  duration_ms: 16.3491
+  ...
+# Subtest: save novo conserva ranks e remove liberações narrativas antigas
+ok 128 - save novo conserva ranks e remove liberações narrativas antigas
+  ---
+  duration_ms: 16.2213
+  ...
+# Subtest: uma subida dá 3 pontos sem bônus por alma ou marcos de campanha
+ok 129 - uma subida dá 3 pontos sem bônus por alma ou marcos de campanha
+  ---
+  duration_ms: 17.5324
+  ...
+# Subtest: Zumbi e Carne Reanimada modificam stats reais da Abominação
+ok 130 - Zumbi e Carne Reanimada modificam stats reais da Abominação
+  ---
+  duration_ms: 17.1031
+  ...
+# Subtest: Tiro e Chuva recebem sinergias e perfuração sem consumir souls
+ok 131 - Tiro e Chuva recebem sinergias e perfuração sem consumir souls
+  ---
+  duration_ms: 17.9822
+  ...
+# Subtest: Estilhaços liberam o leque de 3 ossos do Tiro de Osso
+ok 132 - Estilhaços liberam o leque de 3 ossos do Tiro de Osso
+  ---
+  duration_ms: 14.8074
+  ...
+# Subtest: Tiro sem equipamento exige dois acertos no guerreiro inicial e cinco no bruto
+ok 133 - Tiro sem equipamento exige dois acertos no guerreiro inicial e cinco no bruto
+  ---
+  duration_ms: 16.0437
+  ...
+# Subtest: explosão de zumbi usa dano ampliado e raio de 3,5, preservando sacrifício e recarga
+ok 134 - explosão de zumbi usa dano ampliado e raio de 3,5, preservando sacrifício e recarga
+  ---
+  duration_ms: 15.5397
+  ...
+# Subtest: Explosão Necrótica só usa mana e soma sinergias de ambas as árvores
+ok 135 - Explosão Necrótica só usa mana e soma sinergias de ambas as árvores
+  ---
+  duration_ms: 14.5471
+  ...
+# Subtest: Maldição altera dano do inimigo e restaura ao expirar
+ok 136 - Maldição altera dano do inimigo e restaura ao expirar
+  ---
+  duration_ms: 15.547
+  ...
+# Subtest: Pacto cura morte comum, sem cura em detonação ou sacrifício
+ok 137 - Pacto cura morte comum, sem cura em detonação ou sacrifício
+  ---
+  duration_ms: 15.8323
+  ...
+# Subtest: Dash, defesa após Dash e muralha usam os ranks reais
+ok 138 - Dash, defesa após Dash e muralha usam os ranks reais
+  ---
+  duration_ms: 15.4
+  ...
+# Subtest: arquivo final inclui exatamente o modelo e as regras atuais, com sintaxe válida
+ok 139 - arquivo final inclui exatamente o modelo e as regras atuais, com sintaxe válida
+  ---
+  duration_ms: 266.7218
+  ...
+# Subtest: Aura soma com a escola e com o comando, respeitando distância do personagem
+ok 140 - Aura soma com a escola e com o comando, respeitando distância do personagem
+  ---
+  duration_ms: 17.9049
+  ...
+# Subtest: refund é bloqueado em combate e durante recuperação de sacrifício
+ok 141 - refund é bloqueado em combate e durante recuperação de sacrifício
+  ---
+  duration_ms: 16.1852
+  ...
+# Subtest: refund is available while paused between waves and explains gold or recovery restrictions
+ok 142 - refund is available while paused between waves and explains gold or recovery restrictions
+  ---
+  duration_ms: 18.9382
+  ...
+# Subtest: drenagem do Espectro cura a si mesmo e compartilha a cura efetiva com Zephyr
+ok 143 - drenagem do Espectro cura a si mesmo e compartilha a cura efetiva com Zephyr
+  ---
+  duration_ms: 15.221
+  ...
+# Subtest: ouro cai uma vez por inimigo, fica no chão e só é creditado ao coletar
+ok 144 - ouro cai uma vez por inimigo, fica no chão e só é creditado ao coletar
+  ---
+  duration_ms: 14.5257
+  ...
+# Subtest: gold não restaura mana, chefes deixam mais e alvos de treino não deixam ouro
+ok 145 - gold não restaura mana, chefes deixam mais e alvos de treino não deixam ouro
+  ---
+  duration_ms: 14.2353
+  ...
+# Subtest: reset cobra 20 ouro por ponto; saldo insuficiente não modifica a build
+ok 146 - reset cobra 20 ouro por ponto; saldo insuficiente não modifica a build
+  ---
+  duration_ms: 13.9341
+  ...
+# Subtest: devolução parcial cobra os descendentes e não contorna o custo do reset
+ok 147 - devolução parcial cobra os descendentes e não contorna o custo do reset
+  ---
+  duration_ms: 12.6919
+  ...
+# Subtest: campanha não concede skills nem bloqueia invocações da árvore
+ok 148 - campanha não concede skills nem bloqueia invocações da árvore
+  ---
+  duration_ms: 15.0922
+  ...
+# Subtest: tutorial é agendado uma vez no nível 2 e termina após os três primeiros pontos
+ok 149 - tutorial é agendado uma vez no nível 2 e termina após os três primeiros pontos
+  ---
+  duration_ms: 15.1785
+  ...
+# Subtest: personagem novo começa sem zumbis e precisa investir o primeiro ponto para equipar e evocar
+ok 150 - personagem novo começa sem zumbis e precisa investir o primeiro ponto para equipar e evocar
+  ---
+  duration_ms: 15.2531
+  ...
+# Subtest: saves sem ponto em Zumbis perdem a liberação antiga e seus grupos gratuitos
+ok 151 - saves sem ponto em Zumbis perdem a liberação antiga e seus grupos gratuitos
+  ---
+  duration_ms: 15.1203
+  ...
+# Subtest: aprender habilidade equipável agenda orientação uma vez, melhorias e passivas não repetem
+ok 152 - aprender habilidade equipável agenda orientação uma vez, melhorias e passivas não repetem
+  ---
+  duration_ms: 25.0677
+  ...
+# Subtest: orientação não aparece para habilidade já equipada e só conclui a pendência selecionada
+ok 153 - orientação não aparece para habilidade já equipada e só conclui a pendência selecionada
+  ---
+  duration_ms: 21.9782
+  ...
+# Subtest: save preserva orientação pendente e descarta pendência de habilidade indisponível
+ok 154 - save preserva orientação pendente e descarta pendência de habilidade indisponível
+  ---
+  duration_ms: 22.0998
+  ...
+# Subtest: slam locks its target, warns for 1.2s, hits once and waits through recovery
+ok 155 - slam locks its target, warns for 1.2s, hits once and waits through recovery
+  ---
+  duration_ms: 11.1003
+  ...
+# Subtest: phase two happens once, adds seven projectiles and three locked seals
+ok 156 - phase two happens once, adds seven projectiles and three locked seals
+  ---
+  duration_ms: 2.1209
+  ...
+# Subtest: dead boss cannot execute an armed hit; reset cancels it and restores the opener
+ok 157 - dead boss cannot execute an armed hit; reset cancels it and restores the opener
+  ---
+  duration_ms: 0.9453
+  ...
+# Subtest: target range and first phase projectile count are bounded
+ok 158 - target range and first phase projectile count are bounded
+  ---
+  duration_ms: 0.6592
+  ...
+# Subtest: draws from the full sheet until strips exist, then from the cell inside the row strip
+ok 159 - draws from the full sheet until strips exist, then from the cell inside the row strip
+  ---
+  duration_ms: 29.6607
+  ...
+# Subtest: rebuilds only when the screen needs clearly more detail
+ok 160 - rebuilds only when the screen needs clearly more detail
+  ---
+  duration_ms: 11.9088
+  ...
+# Subtest: windup grants no bonus, channel lasts four seconds, cooldown begins after it
+ok 161 - windup grants no bonus, channel lasts four seconds, cooldown begins after it
+  ---
+  duration_ms: 5.8147
+  ...
+# Subtest: phase boundaries survive long frames and do not cast multiple times
+ok 162 - phase boundaries survive long frames and do not cast multiple times
+  ---
+  duration_ms: 5.4543
+  ...
+# Subtest: source death, departure, disengagement and reset end live bonus immediately
+ok 163 - source death, departure, disengagement and reset end live bonus immediately
+  ---
+  duration_ms: 1.5021
+  ...
+# Subtest: auras never stack and never buff self, other acolytes, bosses or dummies
+ok 164 - auras never stack and never buff self, other acolytes, bosses or dummies
+  ---
+  duration_ms: 2.3267
+  ...
+# Subtest: no ritual without allies or nearby threat; death during windup cancels
+ok 165 - no ritual without allies or nearby threat; death during windup cancels
+  ---
+  duration_ms: 1.6865
+  ...
+# Subtest: arena introduction preserves dog quota, old waves, campaign and list size
+ok 166 - arena introduction preserves dog quota, old waves, campaign and list size
+  ---
+  duration_ms: 3.8794
+  ...
+# Subtest: expedition introduction preserves geometry, tiers and seeded original plans
+ok 167 - expedition introduction preserves geometry, tiers and seeded original plans
+  ---
+  duration_ms: 12.1054
+  ...
+1..167
+# tests 167
+# suites 0
+# pass 167
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2284.9735

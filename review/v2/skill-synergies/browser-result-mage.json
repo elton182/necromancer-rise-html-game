@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "checks": [
+    "mage: sinergia de escola na árvore +46%",
+    "mage: árvore completa",
+    "Escudo Arcano: 50% vida / 50% mana, bolha segue o jogador",
+    "Big Bang: projétil e explosão"
+  ],
+  "errors": [],
+  "remote": []
+}

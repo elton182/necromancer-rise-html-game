@@ -1,6 +1,6 @@
 # Arqueira e Mercenário — classes jogáveis
 
-Implementado na v2. O Novo Jogo oferece cinco classes: Necromante, Guerreiro, Druida, **Arqueira** e **Mercenário**. Cada personagem tem seu próprio save e progresso. Saves anteriores sem classe continuam Necromantes.
+Implementado na v2. O Novo Jogo oferece seis classes: Necromante, Guerreiro, Druida, **Arqueira**, **Mercenário** e Mago. Cada personagem tem seu próprio save e progresso. Saves anteriores sem classe continuam Necromantes.
 
 - **Etapa 1**: modelo, animações, tiro básico, esquiva, atributos e equipamento de armadura.
 - **Etapa 2**: árvores de talentos, quatro habilidades por classe, bombas, minas e fogo do Mercenário e o **falcão** da Arqueira.
@@ -63,11 +63,21 @@ A direção e o ponto-alvo ficam fixos ao iniciar. A esquiva cancela a ação; o
 | Disparo | — / 0,5 s | 0,50 s, solta em 0,26 s | 85% do dano. Flecha a 24 u/s, alcance 13 u; para no primeiro inimigo. |
 | Flecha Perfurante | 20 foco / 5 s | 0,75 s, solta em 0,55 s | 200% do dano. A linha de 16 u aparece no chão durante a carga, que pode ser feita andando a metade da velocidade. Flecha a 34 u/s que atravessa todos os inimigos, com dano cheio em cada um. |
 | Recuo | 15 foco / 6 s (−0,5 s por ponto) | 0,40 s | Salto de 5 u para trás, de frente para a mira, entre 0,05 e 0,35 s, respeitando paredes. Inimigos a até 2,5 u do ponto de partida (sem parede no meio) ficam 35% mais lentos por 2 s; chefes não. |
-| Chuva de Flechas | 35 foco / 12 s | 0,60 s, marca em 0,35 s | Área de raio 3 no ponto mirado (até 12 u), marcada no chão. Depois de 0,7 s caem 5 ondas, uma a cada 0,4 s, com 45% do dano em quem estiver dentro. |
+| Chuva de Flechas | 35 foco / 12 s | 0,60 s, marca em 0,35 s | Área de raio 3–4,2 conforme pontos no ponto mirado (até 12 u), marcada no chão. Depois de 0,7 s caem 5 ondas, uma a cada 0,4 s, com 45% do dano em quem estiver dentro. |
 | Tiro Seguidor (antigo Leque, id `fan`) | 22 foco / 7 s | 0,50 s, solta em 0,26 s | Cinco flechas em cone de 50°, alcance 10 u, 70% do dano cada. Cada flecha vira até 4 rad/s em direção ao inimigo mais próximo à frente dela (até 6 u); a curva é visível no ar. |
 | Saraivada Seguidora | 25 foco / 9 s | 0,80 s, primeira flecha em 0,20 s | Trava no inimigo mais perto da mira (até 3,5 u dela e 13 u da Arqueira), marcado por um anel dourado. Cinco flechas, uma a cada 0,12 s, com 45% do dano cada, que viram até 9 rad/s em direção a ele. Se o alvo cair, as restantes buscam o inimigo mais próximo à frente (até 8 u). Anda a 50% durante a ação. |
-| Impacto Celeste | 25 foco / 12 s | 0,60 s, marca em 0,30 s | Marca uma área de raio 2,5 no ponto mirado (até 12 u). O falcão desce até ela e, 0,9 s depois, a área recebe 150% do dano e empurra os inimigos 1 u a partir do centro (chefes não são empurrados). Até o impacto o falcão não ataca sozinho e o comando F fica bloqueado. |
-| Penas Voadoras | 15 foco / 7 s | 0,50 s, solta em 0,30 s | Seis penas saem do falcão, uma para cada inimigo mais próximo da Arqueira (até 8 u, com linha de visão), com 40% do dano cada; seguem o alvo (até 6 rad/s). Sem alvos suficientes, as que sobram seguem a mira em leque de 0,6 rad, sem procurar alvo. |
+| Impacto Celeste | 25 foco / 12 s | 0,60 s, marca em 0,30 s | Marca uma área de raio 4,5 no ponto mirado (até 12 u). O falcão desce até ela e, 0,9 s depois, a área recebe 150% do dano e empurra os inimigos 1 u a partir do centro (chefes não são empurrados). Até o impacto o falcão não ataca sozinho e o comando F fica bloqueado. |
+| Penas Voadoras (passiva) | Sem custo / 7 s | Automática, com inimigos visíveis até 8 u | Seis penas saem do falcão, uma para cada inimigo mais próximo da Arqueira (até 8 u, com linha de visão), com 40% do dano cada; seguem o alvo (até 6 rad/s). Sem alvos suficientes, as que sobram seguem a mira em leque de 0,6 rad, sem procurar alvo. |
+| Disparo Preciso | 35 foco / 20 s | 1,45 s, solta em 1,2 s | 500% do dano, alcance 24 u e velocidade 65 u/s; para no primeiro inimigo ou parede. Durante a preparação, linha clara mostra a trajetória e anda a 20%. Esquiva cancela, mantendo custo e recarga. |
+| Rasante Relâmpago | 30 foco / 16 s | Prepara 0,25 s; seis rasantes em 1,5 s | Seleciona área de raio 4,5 até 12 u. Cada rasante acerta uma presa com 65% do dano. Prioriza a Marca do Caçador dentro da área, depois presas ainda não atingidas; pode repetir. O falcão percorre as trajetórias e causa dano na chegada, respeitando paredes. |
+| Saraivada Múltipla | 40 foco / 12 s | Cinco ondas, uma a cada 0,12 s | Variante da Seguidora: até cinco inimigos visíveis a até 5 u da mira e 13 u da Arqueira, cinco flechas de 45% por alvo (até 25). Um inimigo sozinho recebe cinco. Sequências de presas mortas podem passar para presas ainda não selecionadas; não acumulam nos alvos já escolhidos. |
+| Chuva de Flechas Explosivas | 45 foco / 16 s | Mesmo atraso e cinco ondas da Chuva | Variante de fogo: 55% por onda, raio 3,6–4,8 conforme pontos da Chuva. Cada onda renova um único campo de fogo até 2 s depois dela; a cada 0,5 s causa 30% do dano de uma onda. |
+
+Desde 10/11/2026, o raio da **Chuva de Flechas** cresce de 3 a 4,2 u: +0,3 u por ponto depois do primeiro, além da escala de dano existente. O aviso acompanha o raio real. Chuva Explosiva e Saraivada Múltipla são opções da barra montável, compartilham a recarga com suas ações de origem e usam os pontos delas para a escala de dano. Cada lançamento usa a recarga e o custo da variante escolhida. Disparo Preciso e Rasante ganham +10% do dano base por ponto depois do primeiro, além das sinergias de ramo.
+
+**Emboscada em Dupla:** o primeiro acerto do tiro fortalecido por Tiro de Emboscada chama um Impacto Celeste gratuito no ponto atingido, se o falcão estiver livre. Uma ativação por Recuo, compartilhada pelas flechas do Leque; não duplica o bônus de Emboscada. Cada ponto depois do primeiro acrescenta 10% ao multiplicador desse Impacto. Se o falcão estiver ocupado, o acerto consome a oportunidade sem guardar um Impacto para depois.
+
+**Impacto Feroz:** após qualquer Impacto Celeste, três rajadas circulares de seis penas saem do ponto do impacto, a primeira após 0,15 s e as seguintes a cada 0,2 s. Usam o dano de Penas Voadoras e +10% por ponto depois do primeiro no aperfeiçoamento. As penas seguem em linha reta, respeitam paredes e não geram novos Impactos.
 
 ### Falcão
 
@@ -79,6 +89,12 @@ Com o selo **Falcão** (Caça, nível 2), um falcão acompanha a Arqueira em ór
 - **Escala:** cada ponto no selo soma +10% ao dano do falcão.
 - **No HUD:** o botão da postura passa a mostrar `FALCÃO · F` e a recarga.
 
+### Marca do Caçador e ocupação do falcão
+
+O aperfeiçoamento **Marca do Caçador** (1 ponto, nível 6, requer Falcão) evolui o mesmo comando F. Mantém o mergulho comandado e o custo de 10 foco; a recarga passa a 12 s. Ao comandar, aplica imediatamente uma marca de 8 s, com anel dourado seguindo a presa. Ela recebe **+20% de todo dano**, aplicado uma única vez pelo caminho central de dano, incluindo flechas, fogo, falcão e aliados. Não acumula com a marca antiga de +15% de flechas. Só uma presa pode estar marcada: novo comando remove a marca anterior. O comando exige linha de visão; sem alvo válido não gasta foco nem recarga.
+
+A presa marcada tem prioridade nos mergulhos automáticos enquanto estiver visível e até 8 u da Arqueira. Fora disso, o falcão pode atacar outros inimigos. A marca termina por tempo, morte da presa, morte da Arqueira ou limpeza da cena; não entra no save. Durante Rasante Relâmpago e Impacto Celeste, o falcão não usa mergulhos automáticos, Penas Voadoras nem outro comando ativo. As ações de falcão bloqueadas não gastam foco nem recarga. O Rasante pode continuar após uma esquiva da Arqueira, mas morte e troca de cena o removem.
+
 ## Ações do Mercenário
 
 | Ação | Custo / recarga | Tempo | Efeito |
@@ -86,7 +102,7 @@ Com o selo **Falcão** (Caça, nível 2), um falcão acompanha a Arqueira em ór
 | Virote pesado | — / 0,8 s | 0,80 s, solta em 0,36 s | 150% do dano. Virote a 28 u/s, alcance 12 u. Atravessa até 2 inimigos extras (+1 por ponto em Perfuração), perdendo 25% a cada um. Empurra 0,35 u. |
 | Rajada | 24 vigor / 7 s | 0,80 s | Três virotes, em 0,25, 0,40 e 0,55 s, com 70% do dano cada; cada um atravessa um inimigo, perdendo 25%. |
 | Bomba de fragmentação | 20 vigor / 6 s | 0,60 s, arremesso em 0,30 s | Arco de 0,6 s até o ponto mirado (entre 1,5 e 9 u). A marca de queda fica no chão durante o voo. Explode em raio 2,6 (+12% por ponto em Estilhaços) com 160% do dano e empurra 1 u para fora; paredes bloqueiam a explosão. |
-| Mina de pólvora | 25 vigor / 9 s | 0,60 s, assenta em 0,40 s | Mina à frente dos pés. Arma em 1 s (o anel muda de cor) e explode quando um inimigo chega a 1,4 u: raio 3 (+Estilhaços), 220% do dano, empurrão de 1 u. No máximo duas, e a mais antiga sai. Duram 25 s. |
+| Mina de pólvora | 25 vigor / 9 s | 0,60 s, assenta em 0,40 s | Mina à frente dos pés. Arma em 1 s (o anel muda de cor) e explode quando um inimigo chega a 1,4 u: raio 6 (+Estilhaços), 220% do dano, empurrão de 1 u. No máximo duas, e a mais antiga sai. Duram 25 s. |
 | Molotov (antiga Garrafa incendiária, id `firebomb`) | 30 vigor / 12 s | 0,60 s, arremesso em 0,30 s | Arco de 0,55 s até o ponto mirado. Incendeia o chão em raio 2,4 por 4 s, com 30% do dano a cada 0,5 s em quem estiver dentro (9 pulsos). |
 | Rede de Caça | 15 vigor / 9 s | 0,60 s, arremesso em 0,30 s | Arco de 0,55 s até o ponto mirado (entre 1,5 e 9 u), com a marca de queda no chão. A rede cobre raio 2,4: 30% do dano e 50% de lentidão por 3 s (+0,5 s por ponto depois do primeiro), com anel bege sob quem ficou preso. Chefes recebem o dano, mas não ficam lentos. Paredes bloqueiam. |
 | Armadilha de Urso | 20 vigor / 10 s | 0,60 s, assenta em 0,40 s | Armadilha à frente dos pés. Arma em 0,6 s (anel cinza que clareia) e fecha no primeiro inimigo que chega a 0,9 u: 120% do dano e o prende por 2 s (chefes ficam 50% mais lentos). No máximo duas, e a mais antiga sai. Duram 30 s. |
@@ -103,14 +119,14 @@ O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao car
 |---|---|---|---|---|
 | Arco | Disparo | 5 | — | +6% de dano do Disparo por ponto |
 | Arco | Flecha Perfurante | 3 | — | Libera; +10% de dano por ponto |
-| Arco | Tiro Seguidor | 1 | nível 4, Disparo | Libera |
-| Arco | Saraivada Seguidora | 1 | nível 8, Tiro Seguidor | Libera |
-| Arco | Chuva de Flechas | 1 | nível 6, Perfurante | Libera |
+| Arco | Tiro Seguidor | 5 | nível 4, Disparo | Libera |
+| Arco | Saraivada Seguidora | 5 | nível 12, Tiro Seguidor | Libera |
+| Arco | Chuva de Flechas | 5 | nível 12, Perfurante | Libera |
 | Caça | Recuo | 3 | — | Libera; −0,5 s de recarga por ponto |
-| Caça | Tiro de Emboscada | 3 | nível 4, Recuo | Depois do Recuo, o próximo Disparo, Perfurante ou Leque em até 3 s causa +15% por ponto (uma vez) |
+| Caça | Tiro de Emboscada | 3 | nível 6, Recuo | Depois do Recuo, o próximo Disparo, Perfurante ou Leque em até 3 s causa +15% por ponto (uma vez) |
 | Caça | Falcão | 3 | nível 2 | Libera o falcão; +10% de dano dele por ponto |
-| Caça | Penas Voadoras | 1 | nível 4, Falcão | Libera |
-| Caça | Impacto Celeste | 1 | nível 8, Falcão | Libera |
+| Caça | Penas Voadoras | 5 | nível 4, Falcão | Disparo automático de seis penas a cada 7 s |
+| Caça | Impacto Celeste | 5 | nível 8, Falcão | Libera |
 | Passivas | Precisão / Vitalidade / Concentração / Passo leve / Fôlego | 5 cada | — | +8% de dano / +10% de vida / +10% de foco / +3% de movimento / +0,4 vida/s |
 
 **Mercenário:**
@@ -122,10 +138,10 @@ O orçamento é de 3 pontos por nível, incluindo o nível 1, recalculado ao car
 | Besta | Perfuração | 2 | nível 4, Virote | +1 inimigo atravessado por ponto |
 | Pólvora | Bomba de fragmentação | 3 | — | Libera; +10% de dano por ponto |
 | Pólvora | Estilhaços | 3 | nível 4, Bomba | +12% de raio da Bomba e da Mina por ponto |
-| Pólvora | Mina de pólvora | 1 | nível 6, Bomba | Libera |
-| Pólvora | Molotov | 1 | nível 6, Bomba | Libera |
+| Pólvora | Mina de pólvora | 5 | nível 6, Bomba | Libera |
+| Pólvora | Molotov | 5 | nível 6, Bomba | Libera |
 | Pólvora | Rede de Caça | 3 | nível 2 | Libera; +0,5 s de lentidão por ponto depois do primeiro |
-| Pólvora | Armadilha de Urso | 1 | nível 6, Rede de Caça | Libera |
+| Pólvora | Armadilha de Urso | 5 | nível 6, Rede de Caça | Libera |
 | Passivas | Calibre / Couro curtido / Gibão reforçado / Resistência / Fôlego | 5 cada | — | +8% de dano / +10% de vida / +4 de armadura / +10% de vigor / +0,4 vida/s |
 
 A redução de recarga dos itens (até 50%) vale para as habilidades e para o comando do falcão; os tiros básicos mantêm o ritmo autoral.
@@ -174,6 +190,21 @@ O gerador [ranged_heroes.py](../blender/scripts/ranged_heroes.py):
 3. Ajusta a escala à altura do corpo: arco com 74%, besta com 50%.
 4. Une a arma à malha com peso rígido na mão: arco na esquerda, besta na direita.
 5. Gera os clipes in-place a 30 fps com IK analítica.
+
+Só na Arqueira (`fix_archer_weights` e `SOFT` no gerador):
+
+- **Pesos.** A aljava e as flechas ficam rígidas no peito (`Spine2`), com transição curta para a capa. Os pesos automáticos da fonte prendiam a aljava ao ombro, ao braço, à coxa direita e à cabeça; por isso ela balançava com a corda e com a passada. A pele do ombro encostada na boca da aljava continua presa ao braço. No joelho, a troca coxa/canela agora é gradual em ±2,5 cm, e o cano da bota acompanha só a canela.
+- **`idle`.** As pernas ficam quase retas. Nesta escala, cada centímetro de quadril abaixado dobra o joelho em cerca de 10°. O peso passa de um pé para o outro, o peito respira e a cabeça oscila com fase própria. Os braços acompanham o peito, e a mão livre fica solta ao lado da coxa.
+- **Ritmo da passada.** No jogo, a fase do ciclo vem da distância percorrida dividida por `stride` / `strafeStride` em `v2/assets/models.json`. O jogador anda a 6 u/s; com a passada antiga (1,43 u), o ciclo rodava a 4,2 por segundo, quase 3× o ritmo do clipe no Blender. Com pernas de ~0,9 u, essa velocidade é de corrida. Por isso o `walk` da Arqueira virou uma corrida leve de 2,3 u por ciclo (~2,6 ciclos/s), e o clipe tem 13 quadros (0,4 s), o mesmo ritmo do jogo.
+- **`walk` (corrida).** O apoio é curto, há fase de voo e o calcanhar sobe alto na volta. O quadril fica mais baixo no meio do apoio, com contrarrotação entre quadril e ombros e o tronco inclinado à frente. A mão livre corre com o cotovelo a 90°, e o arco vai baixo, balançando menos.
+- **`strafe_left` / `strafe_right` (chassé).** O pé guia abre, o de trás fecha sem passar dele (folga mínima de 12 cm entre os tornozelos) e há um salto curto. O quadril vai sobre o pé que apoia. São 1,72 u por ciclo e 10 quadros (0,3 s).
+- **`shoot` / `shoot_up` (gerador).** A linha da flecha passa abaixo do capuz, que desce até ~0,70. A âncora fica logo atrás da cabeça, onde a mão continua visível de cima, com o cotovelo para trás na linha da flecha. Depois da soltura, a mão desce pela lateral até o repouso.
+- **`shoot` / `shoot_up` (versão atual, editada no Blender).** As duas ações em `blender/models/archer_hero.blend` não saem mais do gerador.
+  - O `shoot` foi posado à mão: a mão da corda recolhe no lado direito do peito, fora da silhueta da cabeça vista de cima. A ação passou por uma limpeza: quaternions com sinal coerente, puxada em dois quadros (corda no 5, peito no 6, âncora no 7), sem chaves fora de 1–16 e sem curvas de escala. A tensão máxima vai do quadro 8 ao 12 e cobre a soltura do Disparo (52%) e a da Flecha Perfurante (73%).
+  - O `shoot_up` deriva do `shoot`. A sequência foi reencaixada em 19 quadros, com ancoragem até 46% e tensão até 80%; as solturas da Chuva de Flechas, do Impacto Celeste e das Penas Voadoras (50–60%) caem nela. O tronco inclina 0,7 rad para trás e o braço do arco sobe mais 0,4 rad. O arco gira na mão até ficar perpendicular à flecha e inclina 0,15 rad de lado, para longe da cabeça. A flecha sobe 44–49°, e o arco não fica a menos de 3,4 cm da cabeça.
+  - **Rodar `ranged_heroes.py -- archer` de novo apaga essas duas ações.** Antes disso, exporte-as do `.blend` ou passe as poses para o gerador.
+
+O Mercenário mantém os clipes e pesos originais.
 
 | Personagem | Clipes |
 |---|---|
@@ -262,3 +293,23 @@ As ações dos atiradores não tocam mais o `raio` (som do Tiro de Osso); a esqu
 - O falcão não pode ser alvo nem morrer e voa através de paredes; o mergulho automático exige linha de visão a partir da Arqueira.
 - A bomba voa sobre obstáculos; só a explosão é bloqueada por paredes.
 - O retrato 2D do menu existe só para o Necromante; as demais classes usam o modelo 3D.
+
+## Revisões aprovadas em 09/11/2026
+
+A Flecha de Fogo (`fechadefogo`, id preservado) está integrada como ação equipável: 15 foco, recarga 4 s, alcance 13 u, 100% do dano no contato e queimadura por 4 s (15% a cada 0,5 s, renovada sem acumular). A Flecha Explosiva requer esse nó e é uma ação distinta: 25 foco, recarga 7 s, alcance 13 u e 160% do dano em raio 2,5 ao tocar inimigo, parede ou fim do alcance; não deixa queimadura. A explosão respeita paredes.
+
+Penas Voadoras é **passiva periódica**, sem slot nem custo de foco: dispara seis penas a cada 7 s quando houver presas visíveis até 8 u. Mantém uma pena por alvo e direciona as restantes pela mira. Espera o Impacto Celeste terminar; pausa congela sua execução. Barras antigas com a ação recebem outra opção pela normalização da barra, preservando os pontos do nó. O Impacto Celeste usa o raio revisado de **4,5 u**, mantendo dano, atraso e custo.
+
+A Mina de Pólvora usa o raio revisado de **6 u**, antes de Estilhaços (+12% de raio por ponto). Gatilho continua em 1,4 u, duração 25 s, limite duas minas, dano 220%, custo 25 e recarga 9 s. Perfuração do Mercenário passa a exigir nível 6; Estilhaços e Mina também exigem nível 6. Essas mudanças são de regra/balanceamento.
+
+Regras e integração verificadas por `skill-ideas-revision.test.mjs`; conferência visual em `skill-ideas-revision-browser-check.cjs`, ambos em `v2/tests/`. Evidências em [review/v2/skill-ideas-revision](../review/v2/skill-ideas-revision/). O simulador de balanceamento não modela essas novas rotações; os números ainda precisam de campanha completa jogada.
+
+## Progressão por pontos corrigida (09/11/2026)
+
+Na Arqueira, Tiro Seguidor, Chuva de Flechas, Saraivada Seguidora, Impacto Celeste, Penas Voadoras e Flecha Explosiva passam de um para cinco pontos. A Flecha de Fogo já aceitava cinco, mas faltava aplicar a escala no runtime; agora impacto e queimadura escalam juntos. No Mercenário, Mina de Pólvora, Molotov e Armadilha de Urso também passam a cinco pontos.
+
+O primeiro ponto conserva o dano atual; cada ponto seguinte soma +10% do dano base da própria habilidade, até +40%. A escala vale por projétil, onda, pulso ou explosão, sem multiplicar quantidade, raio, duração, custo ou recarga. Penas continua passiva, sem slot e sem custo. Molotov aumenta cada pulso; Estilhaços continua responsável pelo raio da Mina. Investimentos existentes são mantidos, sem conceder ranks adicionais ao carregar. Evidências em [review/v2/skill-rank-scaling](../review/v2/skill-rank-scaling/).
+
+## Sinergias de escola (09/11/2026)
+
+Além da progressão própria, cada ponto investido em uma habilidade do ramo fortalece em **2% do dano base** as outras habilidades de dano desse mesmo ramo. Os bônus são somados aos próprios, sem realimentação, sem contar passivas gerais ou bônus de equipamento. Dano contínuo e invocações recebem a escola correspondente; vida, custos, recargas e controle preservam suas regras. A árvore mostra o bônus recebido e suas fontes, ou a contribuição dos nós de suporte. A [regra completa de progressão e sinergias](habilidades/sinergias.md) descreve variantes e exceções. Essa mudança é de balanceamento e passa a beneficiar os ranks já investidos nos saves.

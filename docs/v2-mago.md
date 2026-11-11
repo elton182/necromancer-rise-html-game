@@ -23,13 +23,15 @@ Orçamento de 3 pontos por nível, como nas outras classes, salvo em `character.
 |---|---|---|---|---|
 | Arcano | Seta Arcana | 5 | — | +6% de dano da Seta por ponto |
 | Fogo | Bola de Fogo | 3 | — | Libera; +10% de dano por ponto |
-| Gelo | Rajada de Gelo | 3 | — | Libera; +10% de dano por ponto |
+| Gelo | Rajada de Gelo | 5 | — | Libera; +10% de dano por ponto |
 | Arcano | Teleporte | 3 | — | Libera; −1 s de recarga por ponto |
-| Fogo | Combustão | 3 | nível 4, Bola de Fogo | A explosão deixa o chão em chamas (raio 2) por 1 s por ponto, com 25% do dano a cada 0,5 s |
-| Gelo | Estilhaçar | 3 | nível 4, Rajada de Gelo | Inimigos lentos pela Rajada recebem +10% por ponto do dano de fogo e arcano |
+| Fogo | Combustão | 5 | nível 4, Bola de Fogo | A explosão deixa o chão em chamas (raio 2), com 25% do dano a cada 0,5 s: 1 s com 1 ponto, +0,5 s por ponto seguinte, até 3 s |
+| Gelo | Estilhaçar | 5 | nível 12, Imbuir Gelo | Inimigos lentos pelo gelo do Mago (Rajada, Nova, cristais da Esfera, Imbuir Gelo e Avalanche) recebem +6% por ponto do dano de fogo e arcano, até 30%. A lentidão do Golem não conta |
 | Arcano | Eco Arcano | 3 | nível 4, Teleporte | +25% de dano do eco por ponto |
-| Fogo | Meteoro | 1 | nível 6, Bola de Fogo | Libera |
+| Fogo | Meteoro | 5 | nível 12, Muralha de Fogo | Libera; +10% de dano no impacto e no chão em chamas por ponto depois do primeiro |
 | Passivas | Intelecto / Vitalidade / Sabedoria / Meditação / Fôlego | 5 cada | — | +8% de dano mágico / +10% de vida / +10% de mana / +15% de regeneração de mana / +0,4 vida/s |
+
+**Rebalanceamento de 09/11/2026.** A árvore passou a usar 5 pontos na maioria dos selos. Nas habilidades que antes tinham 1 ponto (Meteoro, Esfera, Familiar, Golem e Setas Perseguidoras), o primeiro ponto mantém o número antigo e cada ponto seguinte soma +10% (`rankFrom` em `marksman-model.mjs`). Combustão e Estilhaçar foram espalhados em 5 pontos sem mudar o teto (3 s e 30%); quem tinha 3 pontos neles fica com 2 s e 18% até investir mais. O nível exigido do Meteoro subiu de 6 para 12, o do Estilhaçar de 4 para 12 e o do Familiar de 8 para 16. Com a segunda leva, o Meteoro passou a exigir a Muralha de Fogo, o Familiar o Imbuir Fogo e o Estilhaçar o Imbuir Gelo. Ao carregar, os pontos de quem está abaixo do nível novo ou sem o pré-requisito novo voltam ao orçamento. A árvore inclui também Escudo Arcano e Big Bang, descritos abaixo; o catálogo define os ranks e pré-requisitos atuais.
 
 ### Habilidades novas (08/11/2026)
 
@@ -37,12 +39,31 @@ Desenhadas em [docs/habilidades/arvores.json](habilidades/README.md). Entram pel
 
 | Ação | Custo / recarga | Efeito |
 |---|---|---|
-| Setas Perseguidoras (Arcano, nível 4, requer Seta Arcana) | 20 mana / 6 s | Cinco setas em leque de 70°, 40% do dano cada; cada uma vira até 6 rad/s para o inimigo mais próximo à frente (até 7 u). |
-| Esfera de Gelo (Gelo, nível 6, requer Rajada de Gelo) | 30 mana / 4 s | Um pequeno planeta de gelo com dois anéis inclinados, como Saturno (efeito `iceOrb`), que flutua à altura do peito e atravessa o campo bem devagar: 2 u/s por até 10 u (5 s), parando em paredes. Fere uma vez quem toca, em raio 1,1 (50%). Girando, solta dois cristais opostos a cada 0,15 s em espiral, a partir da borda; cada cristal curva até 5 rad/s para inimigos a até 3 u, com 20% do dano e 20% de lentidão por 1 s, que conta para o Estilhaçar. |
-| Familiar de Fogo (Fogo, nível 8, requer Combustão) | 35 mana / 25 s | Espírito de fogo em órbita por 20 s. A cada 1,2 s lança uma bola de fogo (40%, explosão de raio 1,2; com a Combustão, o chão queima) no inimigo mais próximo do Mago, até 9 u, com linha de visão. Lançar de novo renova. |
-| Golem de Gelo (Gelo, nível 10, requer Esfera de Gelo) | 40 mana / 30 s | Companheiro por 25 s, com 120% da vida máxima do Mago. Avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando-o 30% mais lento por 1,5 s (chefes não). Inimigos a menos de 5 u dele passam a atacá-lo. Só um por vez; usa o modelo da Abominação com tinta azul-gelo e escala 0,85 (`companions.mjs`). |
+| Setas Perseguidoras (Arcano, nível 4, requer Seta Arcana, até 5 pontos) | 20 mana / 6 s | Cinco setas em leque de 70°, 40% do dano cada (+10% por ponto depois do primeiro); cada uma vira até 6 rad/s para o inimigo mais próximo à frente (até 7 u). |
+| Esfera de Gelo (Gelo, nível 6, requer Rajada de Gelo, até 5 pontos; +10% de dano no contato e nos cristais por ponto depois do primeiro) | 30 mana / 4 s | Um pequeno planeta de gelo com dois anéis inclinados, como Saturno (efeito `iceOrb`), que flutua à altura do peito e atravessa o campo bem devagar: 2 u/s por até 10 u (5 s), parando em paredes. Fere uma vez quem toca, em raio 1,1 (50%). Girando, solta dois cristais opostos a cada 0,15 s em espiral, a partir da borda; cada cristal curva até 5 rad/s para inimigos a até 3 u, com 20% do dano e 20% de lentidão por 1 s, que conta para o Estilhaçar. |
+| Familiar de Fogo (Fogo, nível 16, requer Imbuir Fogo, até 5 pontos; +10% de dano das bolas por ponto depois do primeiro) | 35 mana / 25 s | Espírito de fogo em órbita por 20 s. A cada 1,2 s lança uma bola de fogo (40%, explosão de raio 1,2; com a Combustão, o chão queima) no inimigo mais próximo do Mago, até 9 u, com linha de visão. Lançar de novo renova. |
+| Golem de Gelo (Gelo, nível 10, requer Esfera de Gelo, até 5 pontos; +10% de vida e de dano por ponto depois do primeiro) | 40 mana / 30 s | Companheiro por 25 s, com 120% da vida máxima do Mago. Avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando-o 30% mais lento por 1,5 s (chefes não). Inimigos a menos de 5 u dele passam a atacá-lo. Só um por vez; usa o modelo da Abominação com tinta azul-gelo e escala 0,85 (`companions.mjs`). |
 
 Testes em `v2/tests/class-ideas.test.mjs`; navegador em `v2/tests/class-ideas-browser-check.cjs` (evidências em `review/v2/class-ideas/`).
+
+### Segunda leva (09/11/2026)
+
+Implementadas em `marksman.mjs`, com as definições no fim da tabela do Mago em `marksman-model.mjs`. Entram pela barra montável. Os números são iniciais e não foram jogados em campanha. Mana do Mago sem itens nem passivas, para referência: 105 no nível 6, 135 no 12, 175 no 20; regeneração de 5,5 / 7,3 / 9,7 por segundo. "Por ponto" vale a partir do segundo ponto.
+
+| Ação | Tipo, nível, requisito | Custo / recarga | Efeito | Leitura no combate |
+|---|---|---|---|---|
+| Muralha de Fogo | ativa, 6, Bola de Fogo | 30 / 12 s | Muralha de 6 u atravessada na mira, no ponto mirado (até 10 u), por 5 s. Arma 0,3 s depois. Quem a toca recebe 30% do dano a cada 0,5 s e sai queimando: 10% a cada 0,5 s por 2 s, renovado sem acumular. Não bloqueia passagem. Por ponto: +10% de dano e +0,5 s | Linha de aviso no chão, depois cinco focos de chamas; anel laranja sob quem queima |
+| Imbuir Fogo | ativa, 8, Combustão | 25 / 20 s | Por 12 s a Seta Arcana causa +20% e deixa o alvo queimando como a Muralha. Por ponto: +5% e +1 s. Usar o Imbuir Gelo encerra este | Setas alaranjadas e anel da cor do elemento sob o Mago |
+| Imbuir Gelo | ativa, 8, Rajada de Gelo | 25 / 20 s | Por 12 s a Seta Arcana causa +15% e deixa 25% mais lento por 1,5 s (conta para o Estilhaçar; chefes não). Por ponto: +5% e +1 s. Usar o Imbuir Fogo encerra este | Setas azuis, anel sob o Mago e anel azul sob os lentos |
+| Nova de Gelo | variante da Rajada, 6 | 25 / 8 s | Onda em volta do Mago, raio 4,5, 90% do dano e lentidão de 40% por 3 s. Paredes bloqueiam. Divide a recarga com a Rajada e usa os pontos dela para o dano | Onda de gelo saindo do Mago |
+| Chuva de Fogo | variante do Meteoro, 20 | 55 / 8 s | Área de raio 4,5 no ponto mirado; 5 meteoros em pontos aleatórios, um a cada 0,3 s, o primeiro 1 s depois. Cada um causa 130% em raio 1,8 e deixa o chão em chamas por 1,5 s. Divide a recarga com o Meteoro e usa os pontos dele | Círculo da área e uma sombra crescendo para cada queda |
+| Avalanche | ativa, 20, Golem de Gelo | 60 / 24 s | Área de raio 5; 10 bolas de neve ao longo de 3 s, cada uma com 80% em raio 1,4 e 30% de lentidão por 2 s. Por ponto: +1 bola | Círculo azul e bolas brancas caindo com sombra |
+| Raio Arcano | ativa canalizada, 16, Setas Perseguidoras | 10 + 12 por segundo / 8 s | Enquanto a tecla ou o botão do slot fica pressionado: raio de 12 u e 0,6 u de largura que atravessa inimigos e para em paredes, 30% do dano a cada 0,2 s. A direção segue a mira; o Mago anda a 30%. Soltar, ficar sem mana, esquivar ou chegar a 4 s encerra o raio, e a recarga começa nessa hora. Por ponto: +10% | Raio roxo contínuo do cajado até o ponto final |
+| Clone Arcano | evocação, 20, Escudo Arcano | 50 / 40 s | Clone parado no ponto mirado (até 7 u) por 12 s, com 50% da vida máxima do Mago. Repete da própria posição, mirando o mesmo ponto, a Seta e cada feitiço do Mago com 50% do dano. Não repete Teleporte, Imbuir, Raio Arcano nem evocações. Inimigos a menos de 5 u passam a atacá-lo. Só um por vez. Por ponto: +10% do dano copiado | Modelo do Mago com tinta roxa, que conjura junto |
+
+As variantes ficam na barra como ações próprias. Como dividem a recarga, usar uma bloqueia a de origem pelo tempo da recarga. O gamepad não aciona os slots da barra, então o Raio Arcano não se aplica a ele. A tabela de dano do painel de equipamento mostra o dano por uso com uma nota (por queda, por tique, a mais por Seta) e um traço no Clone.
+
+Testes em `v2/tests/mage-new-skills.test.mjs`; navegador em `v2/tests/mage-new-skills-browser-check.cjs`, que também confere o Raio segurando a tecla 6 e o botão direito (evidências em `review/v2/mage-new-skills/`).
 
 ## Atributos e equipamento
 
@@ -57,13 +78,39 @@ O registro `mageHero` usa agora `blender/exports/mage_hero_t.glb`, gerado por
 `blender/models/sources/mage_hero_t_source.blend`; a cena animada é `blender/models/mage_hero_t.blend`.
 O modelo e o gerador anteriores continuam preservados, conforme a seção histórica abaixo.
 
-O rig novo tem 29 ossos, com IDs `mixamorig:` para manter a separação de tronco e pernas.
+O rig tem 44 ossos, com IDs `mixamorig:` para manter a separação de tronco e pernas.
 São controles FK com soluções de braços e pernas calculadas e gravadas nos clipes; não há
 controladores IK interativos. Chapéu, barba e lados do manto têm ossos próprios. Os pesos
 da malha nova são atribuídos por região, com no máximo duas influências por vértice.
-O cajado foi extraído da malha antiga com UV e material, endireitado e preso rigidamente
-à mão direita. A mão tem fechamento dos dedos; não há articulação individual de cada dedo.
-A pose T original continua como bind pose. Todos os clipes são in-place e usam 30 FPS.
+O cajado preserva a cabeça esculpida da malha antiga, com UV e material originais;
+a haste inferior foi reconstruída como madeira contínua e fechada. A mão direita usa
+a malha e a textura originais. `mage_hero_fingers.py` adiciona três falanges para cada
+dedo (`RightHandThumb1–3`, `RightHandIndex1–3`, `RightHandMiddle1–3`,
+`RightHandRing1–3`, `RightHandPinky1–3`), com pesos próprios e transições nas juntas.
+Cada cadeia começa no osso `RightHand`; o antigo `RightHandFingers` permanece por
+compatibilidade, sem comandar a pegada. A malha e as UVs da fonte em T são preservadas.
+Todos os clipes são in-place e usam 30 FPS.
+
+**Repouso revisado.** O `idle` tem 121 frames (intervalo de 4 s), braço livre mais baixo,
+cotovelo solto e apoio assimétrico. A respiração move discretamente tronco e quadril;
+cabeça, barba, chapéu e manto acompanham com atraso. Os pés ficam fixos no chão.
+A mão direita segura o cajado com o polegar para cima; a orientação de bind da haste
+compensa a correção da mão em todos os clipes. `pose_grip` em `mage_hero_fingers.py`
+controla a flexão das falanges e a oposição do polegar; os valores são gravados nos oito
+clipes pelo gerador, sem controles de dedos adicionais no jogo. Os ossos podem ser
+editados em Pose Mode na cena fonte. `mage_hero_grip.py` continua reconstruindo a haste.
+O antebraço acompanha a orientação da palma.
+Prévias em `blender/previews/mage_idle/`: `idle.gif`, `poses.png` e detalhes da pegada
+em `grip/`. Para reproduzir, execute `mage_hero_t_review.py -- --idle` sobre a cena
+gerada e depois `python blender/scripts/pack_mage_idle_preview.py`; use `-- --grip`
+para os detalhes em quatro vistas nos oito clipes. A auditoria
+`validate_mage_hero_t.py -- --idle` grava `validation.json` nessa pasta e também exige
+pés imóveis no repouso, pesos em todas as falanges, preservação das posições e UVs da
+malha original e haste reconstruída sem bordas abertas. `mage_hero_t_review.py -- --fingers`
+produz a comparação entre mão aberta e pegada em `blender/previews/mage_finger_rig/`.
+O teste
+`node v2/tests/mage-idle-browser-check.cjs` confere o ciclo e o retorno após caminhada
+e conjuração, incluindo as 15 falanges no GLB e na camada de conjuração, com capturas em `review/v2/mage-idle/`.
 
 **Locomoção humana revisada.** `mage_hero_gait.py`, chamado pelo gerador, refaz `walk`,
 `strafe_left` e `strafe_right`. O apoio percorre o chão a velocidade constante; o balanço
@@ -98,7 +145,7 @@ conjuração andando e grupo em chão claro/qualidade baixa. Evidências em
 
 | Action no Blender | Clipe GLB | Frames | Duração | Poses e eventos |
 |---|---|---|---|---|
-| `AN_MageT_idle` | `idle` | 1–61 | 2 s | Respiração, barba e ponta do chapéu; ciclo |
+| `AN_MageT_idle` | `idle` | 1–121 | 4 s | Apoio assimétrico, braço solto e respiração com movimentos secundários atrasados; ciclo |
 | `AN_MageT_walk` | `walk` | 1–25 | 0,8 s | Contato, passagem e troca de apoio; ciclo |
 | `AN_MageT_strafe_left` | `strafe_left` | 1–25 | 0,8 s | Passada lateral à esquerda; ciclo |
 | `AN_MageT_strafe_right` | `strafe_right` | 1–25 | 0,8 s | Passada lateral à direita; ciclo |
@@ -213,3 +260,23 @@ node v2/tools/build.cjs
 - Animações procedurais de primeira versão; sem clipe de reação a dano. O Teleporte usa o `cast`, sem clipe próprio de desaparecer e reaparecer.
 - A Combustão usa o mesmo chão em chamas da Garrafa incendiária.
 - O retrato 2D do menu existe só para o Necromante.
+
+## Escudo Arcano e Big Bang (09/11/2026)
+
+**Escudo Arcano:** nível 10, requer Eco Arcano, até cinco pontos. Ação equipável sem custo inicial, liberação em 0,3 s, duração 12 s e recarga 20 s (reduzida por itens). Desvia 10% por ponto do dano que restou depois de defesas/barreiras para a mana, até 50%. Cada ponto de dano desviado custa 1 MP. Com cinco pontos e 100 de dano restante: 50 na vida e 50 na mana. Se só houver 7 MP, são 7 na mana e 93 na vida. Sem mana, todo o dano segue para a vida. Não acumula; morte, troca de cena e fim da duração encerram. Uma bolha roxa e um anel seguem a posição real do Mago. O Clone Arcano passa a depender do Escudo Arcano.
+
+**Big Bang:** nível 22, requer Raio Arcano, até cinco pontos. Ação equipável de 50 MP, recarga 12 s, liberação em 0,5 s, movimento a 30% durante a conjuração. Esfera arcana a 7 u/s, alcance 14 u, que explode uma vez ao tocar inimigo, parede ou fim do alcance: raio 4 e 360% do dano mágico, +10% por ponto depois do primeiro. Atravessa apenas espaço livre; a explosão também verifica paredes. O Clone pode repetir a esfera com sua fração de dano, mas não replica o Escudo.
+
+Ambas usam o caminho comum de dano, slots, recargas e aprendizado. O Escudo aparece na ficha com a porcentagem desviada em vez de um número de dano. Combustão e Estilhaçar mantêm as revisões anteriores, já descritas neste guia. Verificações: `v2/tests/skill-ideas-revision.test.mjs` e `v2/tests/skill-ideas-revision-browser-check.cjs`; evidências em [review/v2/skill-ideas-revision](../review/v2/skill-ideas-revision/). Números iniciais, sem campanha completa jogada.
+
+### Variantes e progressão por pontos
+
+Nova de Gelo e Chuva de Fogo permanecem desbloqueios de um ponto porque seu dano já escala pelos pontos da Rajada de Gelo e do Meteoro, respectivamente. Não existe uma segunda cobrança de ranks para obter a mesma escala: Nova recebe +10% por ponto da Rajada e Chuva recebe +10% por ponto do Meteoro depois do primeiro. As especializações finais do Necromante também mantêm sua função de desbloqueio, com progressão nos nós de origem.
+
+### Apresentação do Big Bang
+
+O Big Bang concentra faíscas e contrai um anel durante os 0,5 s de preparação. A concentração acompanha o Mago e desaparece se a conjuração for interrompida. A esfera tem núcleo branco-violeta, halo e rastro arcano próprios. Ao colidir, a expansão luminosa, a onda no chão e o tremor breve substituem o impacto alaranjado genérico. O anel chega ao raio real de 4 u; a animação de 0,85 s é apenas visual, sem novo pulso de dano. Na qualidade baixa, núcleo e onda permanecem, com menos partículas. Dano, custo, recarga, colisões e alcance não mudaram.
+
+## Sinergias de escola (09/11/2026)
+
+Além da progressão própria, cada ponto investido em uma habilidade do ramo fortalece em **2% do dano base** as outras habilidades de dano desse mesmo ramo. Os bônus são somados aos próprios, sem realimentação, sem contar passivas gerais ou bônus de equipamento. Dano contínuo e invocações recebem a escola correspondente; vida, custos, recargas e controle preservam suas regras. A árvore mostra o bônus recebido e suas fontes, ou a contribuição dos nós de suporte. A [regra completa de progressão e sinergias](habilidades/sinergias.md) descreve variantes e exceções. Essa mudança é de balanceamento e passa a beneficiar os ranks já investidos nos saves.

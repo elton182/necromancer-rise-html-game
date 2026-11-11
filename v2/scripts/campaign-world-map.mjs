@@ -1,4 +1,5 @@
 import {WORLD_SIZE,WORLD_POINTS,WORLD_ROUTES,WORLD_ENCOUNTERS,WORLD_PILES,WORLD_ROAD_ITAUNA} from './campaign-world-model.mjs';
+import {addRouteEncounters} from './area-tuning.mjs';
 import {villageArena} from './village-map.mjs';
 import {flattenBake,closeGrid} from './map-terrain.mjs';
 import {worldRelief,MARSH,POND} from './world-relief.mjs';
@@ -183,5 +184,5 @@ export function campaignWorldMap(){
  for(let n=0,t=0;n<40&&t<2000;t++){const x=b3(-90,100),y=b3(-60,100);if(!free(x,y,3)||!busy.some(([a,b])=>Math.hypot(x-a,y-b)<5))continue;place('fern',x,y,{s:+b3(.9,1.4).toFixed(2)});n++;}
  // Marcos de pedra ao longo da subida da mina, para a estrada ler como caminho seguro.
  for(const [x,y] of [[48,-70],[38,-98],[34,-120]])for(const s of [-1,1])if(free(x+s*5,y,1))place('cairn',x+s*5,y);
- return {terrain:closeGrid(relief,[]),name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:WORLD_ENCOUNTERS.map(({id,x,y,count,type,mix,wave,leader,quest})=>({id,x,y,count,type,mix,level:wave,leader,quest,trigger:'near',radius:18,idle:true,spread:2.2})),objects};
+ return {terrain:closeGrid(relief,[]),name:'Eldrin · Arredores',biome:'forest',size:{w:WORLD_SIZE,h:WORLD_SIZE},start:{x:WORLD_POINTS.crypt.x,y:WORLD_POINTS.crypt.y},level:1,spawns:addRouteEncounters(WORLD_ENCOUNTERS.map(({id,x,y,count,type,mix,wave,leader,quest})=>({id,x,y,count,type,mix,level:wave,leader,quest,trigger:'near',radius:18,idle:true,spread:2.2})),'world'),objects};
 }

@@ -1,0 +1,50 @@
+{
+  "data": "2026-11-09",
+  "documentacao": {
+    "documentos_verificados": 69,
+    "links_locais": 479,
+    "links_ausentes": 0,
+    "documentos_obsoletos_removidos": 11,
+    "historico_local_preservado": "review/v2/migracao/plano-migracao.md"
+  },
+  "regras": {
+    "comando": "npm test",
+    "total": 796,
+    "aprovados": 794,
+    "falhas": 2,
+    "log": "rules.log",
+    "pendencias_existentes": [
+      "mage/clone depende de escudoArcano fora dos status jogáveis em docs/habilidades/arvores.json",
+      "archer/fechadefogo marcado implementado no catálogo mas ausente do módulo gerado"
+    ]
+  },
+  "legado": {
+    "cenarios_game_check": 76,
+    "testes_aprovados": 167,
+    "log": "legacy-rules.log"
+  },
+  "editor": {
+    "comando": "node --test v2/tests/map-editor-server.test.mjs",
+    "aprovados": 9
+  },
+  "empacotadores_python": {
+    "sintaxe_verificada": 12
+  },
+  "build": {
+    "comando": "node v2/tools/build.cjs",
+    "concluido": false,
+    "motivo": "Catálogo local de habilidades em edição tem clone com pré-requisito não jogável; nenhuma mudança de habilidade realizada nesta reorganização.",
+    "distribuicao": "HTML já existente preservado e usado na abertura oficial."
+  },
+  "navegador": {
+    "aprovado": true,
+    "entradas": 4,
+    "resultado": "result.json",
+    "capturas": [
+      "v2-http.png",
+      "v2-file.png",
+      "v1-http.png",
+      "v1-file.png"
+    ]
+  }
+}

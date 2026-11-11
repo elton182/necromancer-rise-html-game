@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 // Lê as regras de progressão e recompensa das fontes atuais, sem executar o runtime do jogo antigo.
 function readProgression(repo=path.resolve(__dirname,'../..')){
- const html=fs.readFileSync(path.join(repo,'necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8'),gear=fs.readFileSync(path.join(repo,'scripts/equipment.js'),'utf8');
+ const html=fs.readFileSync(path.join(repo,'v1/necromancer-canvas.html'),'utf8'),tree=fs.readFileSync(path.join(repo,'scripts/skill-trees.js'),'utf8'),gear=fs.readFileSync(path.join(repo,'scripts/equipment.js'),'utf8');
  const need=(source,regex,name)=>{const m=source.match(regex);if(!m)throw Error('Regra atual mudou; revisar adaptador E7: '+name);return m;};
  const num=(source,regex,name)=>Number(need(source,regex,name)[1]);
  const part=(source,start,end)=>{const a=source.indexOf(start),b=source.indexOf(end,a+start.length);if(a<0||b<0)throw Error('Trecho ausente; revisar adaptador E7: '+start);return source.slice(a,b);};

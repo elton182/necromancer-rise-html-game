@@ -1,4 +1,4 @@
-/* Gerado do Relicário em necromancer-canvas.html; não editar. */
+/* Gerado do Relicário em v1/necromancer-canvas.html; não editar. */
 /* The Reliquary — original Zephyr combat dock, made entirely in CSS. */
 #hud{--orb-size:112px;--core-width:380px;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:auto;display:flex;align-items:flex-end;gap:5px;padding:0;border:0;background:none;pointer-events:none;filter:drop-shadow(0 8px 12px #000b)}
 .hud-core{position:relative;width:var(--core-width);padding:15px 14px 8px;background:linear-gradient(175deg,#393b32 0,#171c19 5%,#0b1110 54%,#242b24 95%,#62604b);border:1px solid #5c604d;border-radius:12px 12px 4px 4px;box-shadow:inset 0 2px #a4a08a33,inset 0 -3px 6px #000;pointer-events:auto}

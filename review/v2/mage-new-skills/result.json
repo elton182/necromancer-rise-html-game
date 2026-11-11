@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "checks": [
+    "painel com 25 selos",
+    "seletor da barra",
+    "Muralha de Fogo",
+    "Imbuir Fogo",
+    "Imbuir Gelo",
+    "Nova de Gelo",
+    "Chuva de Fogo",
+    "Avalanche",
+    "Raio Arcano segurando e soltando",
+    "Clone Arcano",
+    "chão claro e qualidade baixa",
+    "Raio Arcano no botão direito"
+  ],
+  "errors": [],
+  "remote": []
+}

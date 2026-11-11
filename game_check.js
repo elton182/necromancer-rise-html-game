@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
-const html = fs.readFileSync(`${__dirname}/necromancer-canvas.html`, 'utf8');
+const html = fs.readFileSync(`${__dirname}/v1/necromancer-canvas.html`, 'utf8');
 const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 scripts.forEach((s, i) => new vm.Script(s, {filename: `game-script-${i}`}));
 const source = scripts.join('\n');

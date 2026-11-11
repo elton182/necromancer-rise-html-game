@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: plantas são determinísticas e cabem nos limites do editor
+ok 1 - plantas são determinísticas e cabem nos limites do editor
+  ---
+  duration_ms: 3050.2657
+  ...
+# Subtest: todo caminho da história é alcançável a pé e as chegadas ficam fora dos anéis
+ok 2 - todo caminho da história é alcançável a pé e as chegadas ficam fora dos anéis
+  ---
+  duration_ms: 3036.4095
+  ...
+# Subtest: rio e lagos têm travessias legíveis: ponte seca, vau lento, fundo bloqueado
+ok 3 - rio e lagos têm travessias legíveis: ponte seca, vau lento, fundo bloqueado
+  ---
+  duration_ms: 2912.3631
+  ...
+# Subtest: save: saves anteriores continuam no mundo; área inválida é ignorada e a passagem é lembrada
+ok 4 - save: saves anteriores continuam no mundo; área inválida é ignorada e a passagem é lembrada
+  ---
+  duration_ms: 19.3133
+  ...
+# Subtest: estrada de Jacarandá: pisar no anel pede a viagem, chega na várzea e volta pelo mesmo caminho
+ok 5 - estrada de Jacarandá: pisar no anel pede a viagem, chega na várzea e volta pelo mesmo caminho
+  ---
+  duration_ms: 11326.4849
+  ...
+# Subtest: coordenadas da vila não valem em outra área: nada de abrigo nem serviços na várzea
+ok 6 - coordenadas da vila não valem em outra área: nada de abrigo nem serviços na várzea
+  ---
+  duration_ms: 1870.3351
+  ...
+# Subtest: grupos vencidos seguem derrotados ao trocar de mapa e rearmam ao voltar à vila
+ok 7 - grupos vencidos seguem derrotados ao trocar de mapa e rearmam ao voltar à vila
+  ---
+  duration_ms: 5276.1892
+  ...
+# Subtest: gruta usa lobos nomeados e líder único; a Mãe-Tecelã não volta depois de derrotada
+ok 8 - gruta usa lobos nomeados e líder único; a Mãe-Tecelã não volta depois de derrotada
+  ---
+  duration_ms: 2994.6509
+  ...
+# Subtest: grade do forte fecha o pátio interno até os três grupos caírem e continua aberta na volta
+ok 9 - grade do forte fecha o pátio interno até os três grupos caírem e continua aberta na volta
+  ---
+  duration_ms: 5079.1696
+  ...
+# Subtest: morte retoma na entrada do mapa; voltar ao abrigo pelo menu esquece a passagem
+ok 10 - morte retoma na entrada do mapa; voltar ao abrigo pelo menu esquece a passagem
+  ---
+  duration_ms: 2992.0125
+  ...
+# Subtest: plantas entram no editor da campanha, com a história conferida; a edição publicada do mundo mantém a estrada livre
+ok 11 - plantas entram no editor da campanha, com a história conferida; a edição publicada do mundo mantém a estrada livre
+  ---
+  duration_ms: 3366.2207
+  ...
+# Subtest: Testar do editor percorre as passagens e a grade, sem tocar no save da campanha
+ok 12 - Testar do editor percorre as passagens e a grade, sem tocar no save da campanha
+  ---
+  duration_ms: 2202.8673
+  ...
+# Subtest: teleporte à vila: leva à praça de qualquer área, mas não no meio de uma luta nem antes de conhecer a vila
+ok 13 - teleporte à vila: leva à praça de qualquer área, mas não no meio de uma luta nem antes de conhecer a vila
+  ---
+  duration_ms: 2147.1856
+  ...
+# Subtest: níveis graduais, grupos pequenos e áreas vencidas não renascem durante a exploração
+ok 14 - níveis graduais, grupos pequenos e áreas vencidas não renascem durante a exploração
+  ---
+  duration_ms: 6835.4197
+  ...
+# Subtest: loot do mundo da campanha segue o nível do grupo do inimigo, não o nível 1
+ok 15 - loot do mundo da campanha segue o nível do grupo do inimigo, não o nível 1
+  ---
+  duration_ms: 4810.8908
+  ...
+# Subtest: relevo de Jacarandá: regiões variadas sem bloquear a história, também na edição publicada
+ok 16 - relevo de Jacarandá: regiões variadas sem bloquear a história, também na edição publicada
+  ---
+  duration_ms: 6683.8722
+  ...
+# Subtest: caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+ok 17 - caverna: as ordens só exigem os guardas da sala delas; salas laterais são opcionais
+  ---
+  duration_ms: 110.7844
+  ...
+# Subtest: vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+ok 18 - vida e experiência do mapa valem em todas as ondas; ouro e caverna sem ajuste não mudam
+  ---
+  duration_ms: 33.3902
+  ...
+# Subtest: caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+ok 19 - caverna original: guarda que saiu correndo continua contando; salas anteriores são opcionais
+  ---
+  duration_ms: 22.3879
+  ...
+# Subtest: nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+ok 20 - nova campanha começa na caravana; saves sem prólogo mantêm fluxo anterior
+  ---
+  duration_ms: 1036.1588
+  ...
+# Subtest: defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+ok 21 - defesa, flecha roteirizada, pista, mensageiro, vila e recompensa única
+  ---
+  duration_ms: 609.3325
+  ...
+# Subtest: morte e reload retomam trecho; pista e vitória da caverna persistem
+ok 22 - morte e reload retomam trecho; pista e vitória da caverna persistem
+  ---
+  duration_ms: 50.6183
+  ...
+# Subtest: caverna e estrada possuem percurso e nascimentos livres
+ok 23 - caverna e estrada possuem percurso e nascimentos livres
+  ---
+  duration_ms: 127.9466
+  ...
+# Subtest: viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+ok 24 - viagem mantém passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+  ---
+  duration_ms: 15.7165
+  ...
+# Subtest: introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+ok 25 - introdução congela a viagem e sua leitura persiste sem afetar saves anteriores
+  ---
+  duration_ms: 21.5495
+  ...
+# Subtest: caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+ok 26 - caverna revela a ocupação antes da lista e preserva a conversa dos guardas
+  ---
+  duration_ms: 38.4005
+  ...
+# Subtest: Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+ok 27 - Jacarandá salva mantém a planta intacta ao entrar e recarregar o mundo
+  ---
+  duration_ms: 816.1333
+  ...
+# Subtest: queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+ok 28 - queda do prólogo usa o modelo da classe ativa e o restaura na caverna
+  ---
+  duration_ms: 74.3949
+  ...
+# Subtest: fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+ok 29 - fim do combate: respiro em câmera lenta e conversa no mesmo mapa, sem reconstruir a cena
+  ---
+  duration_ms: 35.5771
+  ...
+# Subtest: Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+ok 30 - Caminho de Jacarandá: trilha longa, encontros no caminho e Tomás liberado pelos perseguidores próximos
+  ---
+  duration_ms: 209.2597
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 65146.7551

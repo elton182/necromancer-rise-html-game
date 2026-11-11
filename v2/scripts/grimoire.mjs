@@ -5,6 +5,13 @@ import {TYPES,snapshotHorde,initializeHorde,locked,recalculateHorde,effects} fro
 import {applyAttributes} from './progression.mjs';
 import {setLichRanks} from './lich-model.mjs';
 import {LICH_ABILITIES} from './lich-mastery.mjs';
+import {warriorRanks,warriorSpent} from './warrior-model.mjs';
+import {druidRanks,druidSpent} from './druid-model.mjs';
+import {marksmanRanks,marksmanSpent} from './marksman-model.mjs';
+import {levelOf} from './progression.mjs';
+import {clearDruid} from './druid.mjs';
+import {clearMarksman} from './marksman.mjs';
+import {clearCompanions} from './companions.mjs';
 export {Build,Model};
 export const SPELL_TEST_PROFILE={version:1,level:24,act1:false,ranks:{bolt:2,rain:2,wall:1,shield:2,nova:1,dash:2,meditate:2,curse:1,zombie:2,vigor:2}};
 // A edição vale no menu, na vila e no mapa; no treino, só com o Relicário aberto (mundo pausado), pois o refresh preserva vida e recuperação dos integrantes.
@@ -33,8 +40,34 @@ export function changeRank(s,id,{refund=false}={}){
   refresh(s,state);s.save.character.gold-=cost;return {ok:true,message:refund?'Pontos devolvidos · '+cost+' ouro.':'Ponto investido.'};
  }catch(error){return {ok:false,message:error.message};}
 }
-// Redistribuição total: devolve todos os pontos por 20 ouro cada, como "Redistribuir" do jogo anterior.
+// As árvores próprias usam o mesmo preço do Grimório, sem depender dos grupos da horda.
+export function talentResetInfo(s){
+ const w=s.world,level=levelOf(w),id=w.classId;
+ const field=id==='warrior'?'warriorRanks':id==='druid'?'druidRanks':['mage','archer','mercenary'].includes(id)?'marksmanRanks':null;
+ const ranks=field?(id==='warrior'?warriorRanks(w[field],level):id==='druid'?druidRanks(w[field],level):marksmanRanks(id,w[field],level)):{};
+ const spent=field?(id==='warrior'?warriorSpent(ranks):id==='druid'?druidSpent(ranks):marksmanSpent(id,ranks)):0,cost=spent*20;
+ const reason=!field?'Personagem sem árvore de talentos.':w.player.hp<=0||w.player.dead?'O personagem precisa estar vivo.':!(['menu','village','map'].includes(s.scene)||s.scene==='training'&&w.paused)?'Volte ao menu para redistribuir habilidades.':!spent?'Nenhum ponto investido.':(s.save.character.gold||0)<cost?'Ouro insuficiente: '+cost+' ouro.':'';
+ return {field,cost,reason};
+}
+function resetTalents(s){
+ const {field,cost,reason}=talentResetInfo(s);if(reason)return {ok:false,message:reason};
+ const w=s.world;
+ // Encerra efeitos aprendidos sem reiniciar as recargas nem curar o personagem.
+ if(w.classId==='druid'){
+  clearDruid(w);w.druidPack=[];s.save.character.druidPack=[];w.druidForm='human';w.player.model='druid';
+ }else if(w.classId==='warrior'){
+  Object.assign(w,{warriorAction:null,warriorCombo:null,warriorShieldFlight:null,warriorMomentum:null,warriorRiposte:null,warriorRally:null,warriorWaves:[],warriorFireTrails:[]});
+  w.actors=w.actors.filter(a=>!a.warriorProjectile);w.effects=w.effects.filter(f=>!f.warriorTrail);
+ }else clearMarksman(w);
+ clearCompanions(w);
+ w[field]={};s.save.character[field]={};s.save.character.gold-=cost;
+ w.player.timer=0;w.player.pose=null;w.player.animation='idle';w.player.animationTime=0;w.player.actionId++;
+ syncSkills(w);w.progressChanged=true;
+ return {ok:true,message:'Todos os pontos devolvidos · '+cost+' ouro.'};
+}
+// Redistribuição total: devolve todos os pontos por 20 ouro cada, em todas as classes.
 export function resetRanks(s){
+ if(s.world.classId!=='necromancer')return resetTalents(s);
  const error=editReason(s);if(error)return {ok:false,message:error};
  try{
   const state=snapshotHorde(s.world),profile=structuredClone(state.profile),before=Build.spent(profile.ranks);

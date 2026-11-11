@@ -7,7 +7,9 @@ import {TEST_PROFILE,setProfile,members,killMember,recalculateHorde} from '../sc
 import {masteryBonus} from '../scripts/mastery.mjs';
 function fixture(){const s=createSession();setProfile(s.world,TEST_PROFILE);equipSession(s,0,'raio');equipSession(s,1,'zombie');equipSession(s,2,'dash');s.save.character.gold=1000;return s;}
 test('Grimório aplica pré-requisitos, pontos diretos e limites sem mutação em falha',()=>{
- const s=createSession(),before=snapshot(s);assert.equal(changeRank(s,'zombie').ok,false);assert.deepEqual(snapshot(s).horde,before.horde);
+ // Nível 1 tem 3 pontos, como nas outras classes; o quarto investimento falha sem alterar a horda.
+ const s=createSession();for(let i=0;i<3;i++)assert.equal(changeRank(s,'zombie').ok,true);assert.equal(s.world.army.profile.ranks.zombie,3);
+ const before=snapshot(s);assert.equal(changeRank(s,'zombie').ok,false);assert.deepEqual(snapshot(s).horde,before.horde);
  const t=fixture();assert.equal(changeRank(t,'storm').ok,false);assert.equal(changeRank(t,'bolt').ok,true);assert.equal(t.world.army.profile.ranks.bolt,1);
  assert.equal(t.world.modifiers.boltDamagePercent,10.000000000000009);assert.ok(Build.spent(t.world.army.profile.ranks)<=Build.budget(24));
 });

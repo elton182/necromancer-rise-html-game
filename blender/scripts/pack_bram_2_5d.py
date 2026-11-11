@@ -14,7 +14,7 @@ from PIL import Image, ImageChops, ImageDraw
 import numpy as np, json, re, base64, sys, io, shutil
 
 HERE = Path(__file__).resolve().parent; BLENDER = HERE.parent; ROOT = BLENDER.parent
-HTML = ROOT / 'necromancer-canvas.html'; BACKUP = BLENDER / 'backups' / 'necromancer-canvas.before-bram-2-5d.html'
+HTML = ROOT / 'v1/necromancer-canvas.html'; BACKUP = BLENDER / 'backups' / 'necromancer-canvas.before-bram-2-5d.html'
 SOURCE = BLENDER / 'spritesheets' / 'bram_2_5d_source.png'; OUT = BLENDER / 'spritesheets' / 'bram_2_5d_sheet.webp'
 COLS, ROWS, N = 14, 10, 7
 # Mesma altura na tela do Bram anterior: 2,52 u (242 px a 96 px/u) para ~95 px de figura.

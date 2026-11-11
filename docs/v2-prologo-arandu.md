@@ -10,9 +10,9 @@ Antes da carroça, uma tela de texto em fundo escuro apresenta Arandu, Ferrabrá
 2. **Proteja a caravana:** três bandidos, incluindo um atirador, precisam ser derrotados. Usam dano, projéteis, colisões, XP e loot comuns da v2. Não há uma segunda rotina de dano. As carroças bloqueiam o movimento; os passageiros não têm um objetivo de vida próprio nesta versão.
 3. **O último disparo:** após a vitória e a conversa, um arqueiro restante dispara da encosta. Uma cena de aproximadamente 5,2 segundos mostra a flecha, o desequilíbrio, o chão cedendo e a descida pelo poço. A câmera se aproxima da abertura; terreno recortado, borda irregular, paredes abaixo do chão e destroços dão profundidade à queda. Uma passagem escura liga a descida à chegada na caverna, onde há fragmentos no ponto de início. É um acontecimento roteirizado, não um ataque evitável: não reduz HP, não produz game over nem conta como morte. Durante a cena, movimento e combate ficam suspensos; a pausa congela a cena. A caravana acredita que o personagem morreu e segue para Jacarandá.
 4. **Saia da caverna:** o personagem desperta sozinho numa galeria usada como esconderijo. Dois bandidos guardam os papéis. Após derrotá-los, G próximo da lista revela a ordem de capturar **João vivo**, sem identificar o contratante. A leitura é necessária antes de usar G na saída ao norte. Tochas e marcadores indicam os pontos de interação.
-5. **Um pedido de socorro:** dois perseguidores ameaçam Tomás, mensageiro ferido de Jacarandá. Após vencê-los, conversar com ele leva à vila que está sendo atacada.
+5. **Um pedido de socorro:** a saída da caverna abre o [Caminho de Jacarandá](#caminho-de-jacarandá-09112026), uma trilha de mata com lobos, vigias e uma bolsa caída. No fim dela, dois perseguidores ameaçam Tomás, mensageiro ferido de Jacarandá. Após vencê-los, conversar com ele leva à vila que está sendo atacada.
 6. **Defenda Jacarandá:** quatro bandidos atacam a praça. Marta e outros companheiros reaparecem, e um guarda aliado ajuda no combate. Derrotar os atacantes abre a conversa do reencontro: a vila foi salva, mas João foi levado.
-7. **Primeiro abrigo:** Jacarandá passa a usar o mundo contínuo existente, com Joaquim na vila, resgate de Bruno e madeira disponíveis. A defesa substitui o antigo resgate do prefeito nas campanhas novas. O desaparecimento de João permanece registrado como gancho; depois da forja e da madeira, Marta abre [O rastro de João](v2-itauna.md#o-rastro-de-joão), que atravessa a Várzea de Itaúna, a Gruta das Tecelãs e o Forte da Pedra Negra.
+7. **Primeiro abrigo:** Jacarandá passa a usar o mundo contínuo existente, com Joaquim na vila oferecendo o resgate de Bruno. Depois da forja, ele oferece a madeira. Cada pedido começa ao aceitar na conversa com o NPC marcado com **!** e avança em etapas no HUD e no diário do inventário. A defesa substitui o antigo resgate do prefeito nas campanhas novas. O desaparecimento de João permanece registrado como gancho; depois da forja e da madeira, Marta oferece [O rastro de João](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026). Após o resgate na gruta, João oferece na vila a missão da carta no Forte da Pedra Negra.
 
 Marta, João e Tomás são nomes de trabalho introduzidos nesta entrega; a identidade secreta de João continua em aberto. Todas as classes começam com poderes conhecidos na ficção; a abertura não explica a aquisição da necromancia. Novo Jogo oferece Necromante e Guerreiro; o [Guerreiro](v2-guerreiro.md) tem ações marciais e passivas próprias.
 
@@ -42,7 +42,7 @@ Executados: geração do kit no Blender, build e suíte completa `v2/tests/*.tes
 
 `node v2/tests/prologue-browser-check.cjs` usa Playwright/Edge e armazenamento isolado. Confere criação pelo menu, diálogo, um disparo real, sequência até a vila, leitura da lista e recarga na caverna. O restante dos encontros é encerrado com HP injetado: isso verifica integração e transições, **não comprova dificuldade nem uma partida completa**. Capturas e resultado ficam em `review/v2/arandu-prologue/`.
 
-Limites desta primeira versão: passageiros ainda usam poses de pé, sem animação específica de assento ou fala; corte de caverna sem teto; transições entre mapas por corte; queda com animação própria, ainda sem uma animação exclusiva de aterrissagem; sequestro relatado no reencontro, sem cena própria. Não há dublagem nem identidade secreta revelada. O mundo integrado renomeia a apresentação de Eldrin para Jacarandá; IDs, arquivos e o fluxo histórico por fases permanecem compatíveis.
+Limites desta primeira versão: passageiros ainda usam poses de pé, sem animação específica de assento ou fala; corte de caverna sem teto; queda com animação própria, ainda sem uma animação exclusiva de aterrissagem; sequestro relatado no reencontro, sem cena própria. Não há dublagem nem identidade secreta revelada. O mundo integrado renomeia a apresentação de Eldrin para Jacarandá; IDs, arquivos e o fluxo histórico por fases permanecem compatíveis.
 
 
 ## Revisão da viagem narrativa
@@ -108,3 +108,49 @@ A caverna ampliada tem entrada em (0,165), três salões de lobos/aranhas, vozes
 As nove salas têm portas alternadas entre esquerda e direita. As salas 3, 5 e 7 se alargam em nichos opcionais com carga investigável. A caverna tem continuação rochosa além dos limites jogáveis, sobre o horizonte de piso.
 
 A disposição das nove salas agora segue leste, sul e oeste, com uma ligação alternativa entre a terceira galeria de animais e a primeira sala humana. Túneis e salas compartilham um contorno único, sem paredes sobrepostas nas junções. Carga opcional permanece nas salas 3, 5 e 7; ordens e saída mantêm suas posições.
+
+
+## Caminho de Jacarandá (09/11/2026)
+
+O trecho entre a saída da caverna e Tomás passou de 40 × 60 u para **100 × 204 u**. A trilha sai da boca da caverna, ao norte, em (0, 86), e serpenteia até Tomás, em (0, −82): cerca de 200 u de caminho. Fonte: `trailMap` em `v2/scripts/prologue-map-data.mjs`; edições no [editor de mapas](v2-mapas.md) continuam valendo pela vaga `trail`.
+
+- **Encosta da caverna:** rochedos e a boca da caverna fecham o lado norte.
+- **Clareira dos lobos**, em (−25, 47): três lobos (tipo 4) entre ossos e uma árvore morta.
+- **Riacho** atravessando a mata em y ≈ 11, com ponte de madeira na trilha. A água é só visual.
+- **Carroça tombada**, em (22, −27): dois ladrões e um ladino arqueiro vigiam. A **bolsa de Tomás**, em (17, −23), é uma interação opcional que indica para onde ele fugiu; não muda a etapa.
+- **Tomás encurralado**, perto da placa para Jacarandá: os dois perseguidores de antes.
+- Mata densa fora do corredor, mais aberta perto do caminho, e sub-bosque na beira da trilha.
+
+Os inimigos da trilha começam parados no lugar, com a percepção por proximidade usada na caverna. Para conversar com Tomás basta derrotar quem guarda o ponto dele (`MESSENGER_GUARD_RADIUS`, 16 u, pela posição de guarda); lobos e vigias do meio do caminho são opcionais. Antes, todos os inimigos do mapa bloqueavam a conversa. Os oito inimigos usam dano, XP e loot comuns; não houve balanceamento por partida completa. O save não mudou: recarregar na trilha recomeça na boca da caverna.
+
+## Transições das cenas (09/11/2026)
+
+Antes, cada troca de etapa reconstruía o mapa de uma vez, sem cobertura: a imagem congelava por alguns segundos e a cena seguinte aparecia de repente. Agora:
+
+- **Fim de combate (emboscada e defesa da praça):** um respiro de 1,3 s (`STORY_BEAT`). A simulação comum fica a 35% da velocidade (`adventure.timeScale`), o jogador ainda se move, faixas de cinema entram e o HUD se recolhe. A conversa da despedida e a do reencontro abrem **no mesmo mapa**, sem remontagem; recarregar nelas continua remontando a cena da etapa, como antes.
+- **Troca de mapa** (viagem → bloqueio, despedida → queda, queda → caverna, caverna → trilha, Tomás → praça, reencontro → Jacarandá): a tela escurece em 0,5 s, mostra o título do trecho quando há um, monta o mapa seguinte com a tela escura e só clareia depois dos quadros da montagem.
+- **Conversas e cinemáticas:** faixas de cinema e HUD recolhido enquanto durarem; voltam ao fim.
+
+Fontes: `useStoryFade`, `sceneChange`, `settleBeat` e `storyScene` em `prologue.mjs`; cobertura e faixas em `app.mjs`; estilo em `prologue.css` (`#story-fade`, `#story-bars`, `data-story-scene` no `body`). Sem o registro do aplicativo (testes de regra), a troca continua imediata. `prefers-reduced-motion` remove as animações das faixas e da cobertura.
+
+Verificados: build, suíte completa `v2/tests/*.test.mjs` (incluindo respiro, conversa sem remontagem, trilha longa e liberação de Tomás em `prologue.test.mjs`) e `node v2/tests/story-transition-browser-check.cjs` no Edge. A sonda do check registra, a cada quadro, quando a cena é remontada e a opacidade da cobertura: as cinco remontagens do percurso ocorreram com a tela coberta; a mais longa, na entrada de Jacarandá, levou cerca de 2,7 s no Edge headless. Capturas: respiro, conversas, título, trilha (boca da caverna, lobos, ponte, carroça, bolsa, Tomás), borda em chão claro/qualidade baixa/horda e escuro, e 390 px, em `review/v2/story-transitions/`. Encerramentos de combate usam HP injetado; o tempo de montagem varia por máquina.
+
+
+## João, a bolsa e a denúncia (10/11/2026)
+
+A conversa da caravana agora apresenta a bolsa que João mantém junto de si. As ordens do esconderijo exigem a carta intacta e a captura para interrogatório. No reencontro, Marta relata que João correu até a carroça de mantimentos antes da captura e que ela também foi saqueada; ainda não sabe onde a carta está. A bolsa de Tomás na trilha é outro objeto.
+
+João escondeu a bolsa na carroça, com a carta costurada no forro. O conteúdo e sua posição de emissário só são revelados durante o resgate na Gruta das Tecelãs. A continuação implementada está em [O rastro de João e a carta](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026): bolsa e provas no forte, retorno a Jacarandá, entrega a Helena em Itavera e convite para o Vale de Itajuba.
+
+A espera pela pista de Marta ocorre durante os reparos de emergência (forja e madeira), preservando as condições existentes. Esta revisão não altera os combates, a queda nem os prêmios do prólogo.
+
+
+## Revisão de encontros e textos (11/11/2026)
+
+A caverna publicada tinha 57 integrantes na primeira leva e 118 contando as ondas, incluindo muitos líderes sobrepostos. Agora são 31 na primeira leva e **35 no total**: um ou dois inimigos por ponto, sem reaparecimento contínuo. Só `opening-enemy-4` e `opening-enemy-10` recebem uma segunda leva, com 9 s de intervalo. Há dois líderes mágicos; o capitão mantém seu papel e a vida triplicada anteriores. Grupos começam por aproximação, não todos na entrada. Os limites também se aplicam às edições antigas da caverna no navegador.
+
+O Caminho de Jacarandá passa de oito para **16 inimigos**, divididos em encontros pequenos. Lobos aparecem no início da trilha; aranhas entre a clareira e o riacho; dois bandidos perto da ponte; outro par de lobos antes de Tomás. Os oito pontos anteriores mantêm IDs e posições. Não houve alteração do traçado, dos colisores ou da vegetação para acomodar os encontros.
+
+Na caminhada automatizada com colisões e percepção reais, o primeiro contato ocorreu após cerca de 8 u. A cobertura das rotas também é verificada por amostragem ao longo do caminho; ela não estima duração de luta nem dificuldade. Tomás continua exigindo somente a derrota dos perseguidores próximos dele, sem obrigar a limpar a trilha inteira.
+
+As falas de Tomás conectam melhor o pedido de ajuda à perseguição ao passageiro; o objetivo da trilha aponta sinais de saque em vez de anunciar gritos desde a saída da caverna. João e Helena apresentam a denúncia em parágrafos curtos. As condições da história e os prêmios exclusivos permanecem iguais. Registros em [review/v2/campaign-pacing](../review/v2/campaign-pacing/validation-notes.md).

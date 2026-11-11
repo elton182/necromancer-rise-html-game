@@ -1,0 +1,12 @@
+{
+  "journey": {
+    "name": "Itavera · praça das guildas",
+    "detail": "A denúncia chega a Itavera"
+  },
+  "helena": "npcTilda",
+  "marta": "npcLysa",
+  "errors": [],
+  "remote": [],
+  "complete": true,
+  "act1": true
+}

@@ -7,7 +7,7 @@ import json,re,base64,sys
 ROOT=Path(__file__).resolve().parents[2];SOURCE=ROOT/'blender/reference';DEST=ROOT/'assets/characters/reference';DEST.mkdir(parents=True,exist_ok=True)
 IDS=['bram','zephyr','skeleton','archer','skeleton_mage','raider','corrupted','shadow_wolf'];CORE={'bram':'smith','zephyr':'necro','skeleton':'skeleton','archer':'archer'}
 selected=next((a.split('=',1)[1].split(',') for a in sys.argv if a.startswith('--only=')),IDS)
-html=(ROOT/'necromancer-canvas.html').read_text();reports={}
+html=(ROOT/'v1/necromancer-canvas.html').read_text();reports={}
 for ident in selected:
  if ident=='bram':
   from bram_sprite_reference import extract
@@ -38,7 +38,7 @@ for ident in selected:
   payload=base64.b64encode((DEST/(ident+'.webp')).read_bytes()).decode();record=f"SPR.load('{CORE[ident]}',"+json.dumps(runtime,separators=(',',':'))+",'"+payload+"');"
   html,n=re.subn(r"SPR\.load\('"+CORE[ident]+r"',[^\n]+",lambda _:record,html);assert n==1,(ident,n)
  reports[ident]={'frames':checked,'decodedBytes':sheet.width*sheet.height*4,'atlasSize':[sheet.width,sheet.height]}
-(ROOT/'necromancer-canvas.html').write_text(html)
+(ROOT/'v1/necromancer-canvas.html').write_text(html)
 # JS catalogue avoids fetch/CORS on the standalone file:// entrypoint. Optional sheets remain lazy.
 catalog={k:{'meta':json.loads((DEST/(k+'.json')).read_text()),'b64':base64.b64encode((DEST/(k+'.webp')).read_bytes()).decode() if k not in CORE else None,'url':'assets/characters/reference/'+k+'.webp'} for k in IDS if (DEST/(k+'.json')).exists()}
 (DEST/'catalog.js').write_text('window.ReferenceCharacterCatalog='+json.dumps(catalog,separators=(',',':'))+';\n')

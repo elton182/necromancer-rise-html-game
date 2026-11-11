@@ -1,0 +1,217 @@
+{
+  "bruno": {
+    "x": 52,
+    "y": 71,
+    "name": "Bruno, o ferreiro"
+  },
+  "contacts": [
+    {
+      "x": -10,
+      "y": 72,
+      "distance": 7.6
+    },
+    {
+      "x": -13,
+      "y": 70,
+      "distance": 11.2
+    },
+    {
+      "x": -23,
+      "y": 50,
+      "distance": 33.6
+    },
+    {
+      "x": -21,
+      "y": 43,
+      "distance": 40.4
+    },
+    {
+      "x": -28,
+      "y": 44,
+      "distance": 41.2
+    },
+    {
+      "x": -16,
+      "y": 30,
+      "distance": 55.4
+    },
+    {
+      "x": -13,
+      "y": 28,
+      "distance": 59.2
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "distance": 90.2
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "distance": 92.6
+    },
+    {
+      "x": 19,
+      "y": -24,
+      "distance": 124.2
+    },
+    {
+      "x": 25,
+      "y": -30,
+      "distance": 131.6
+    },
+    {
+      "x": 27,
+      "y": -34,
+      "distance": 136.2
+    },
+    {
+      "x": 9,
+      "y": -48,
+      "distance": 152.6
+    },
+    {
+      "x": 6,
+      "y": -50,
+      "distance": 156.4
+    },
+    {
+      "x": -3,
+      "y": -78,
+      "distance": 185.6
+    },
+    {
+      "x": 4,
+      "y": -79,
+      "distance": 189
+    }
+  ],
+  "cave": {
+    "groups": [
+      {
+        "id": "opening-enemy-0",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-1",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-2",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-3",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-4",
+        "count": 2,
+        "waves": 2,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-5",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-6",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-7",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-8",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-9",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-10",
+        "count": 2,
+        "waves": 2,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-11",
+        "count": 2,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-12",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-13",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "opening-enemy-14",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "sjbht6820",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "sjndrdo9p",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "sjzy2ilum",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      },
+      {
+        "id": "sk9b1s4o8",
+        "count": 1,
+        "waves": 1,
+        "respawn": 0
+      }
+    ],
+    "first": 2,
+    "second": 2,
+    "after": 0,
+    "state": "clear"
+  },
+  "errors": [],
+  "remote": [],
+  "limitations": [
+    "HP elevado para percorrer a trilha sem morte; caminhada, colisões e alertas reais",
+    "mortes e tempo acelerados para conferir o limite de ondas; não mede dificuldade por partida completa"
+  ]
+}

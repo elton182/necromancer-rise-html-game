@@ -174,20 +174,18 @@ test('teleporte à vila: leva à praça de qualquer área, mas não no meio de u
  // Prólogo e Testar do editor não têm o botão.
  const t=createSession();t.save.campaign.prologue={stage:'cave'};startCampaign(t,{opening:false});assert.equal(homeTeleport(t).ok,false);
 });
-test('níveis por área, seis vezes mais inimigos por grupo e renascimento só fora das missões',()=>{
- assert.deepEqual(AREA_LEVELS,{world:10,itauna:20,'itauna-cave':30,'itauna-fort':40});assert.equal(DENSITY.count*DENSITY.waves,6);
- const [g]=tuneGroups([{id:'a',x:0,y:0,count:3,type:0,mix:[0,1,0],level:3,waves:1}],{area:'world',mapLevel:1});
- assert.deepEqual(g.mix,[0,1,0,0,1,0]);assert.equal(g.count,6);assert.equal(g.waves,3);assert.equal(g.level,12,'bônus do grupo sobre o nível da área');assert.equal(g.respawn,DENSITY.respawn);
- assert.equal(tuneGroups([{id:'q',x:0,y:0,count:2,type:0,mix:null,level:1,quest:true}],{area:'world',mapLevel:1})[0].respawn,0,'missão não volta');
- assert.equal(tuneGroups([{id:'z',x:0,y:0,count:30,type:0,mix:null}],{area:'itauna'})[0].count,30,'limite do editor');
- const s=started(),w=s.world;assert.equal(w.adventure.level,10);assert.ok(w.adventure.groups.every(g=>g.level>=10&&g.level<=14));
- for(const [area,entry,low,high] of [['itauna','west',20,22],['itauna-cave','mouth',30,32],['itauna-fort','gate',40,42]]){enter(s,area,entry);assert.ok(w.adventure.groups.every(g=>g.level>=low&&g.level<=high),area);}
- // Grupo comum vencido renasce depois do tempo, com o jogador longe; o do forte (missão) não.
- enter(s,'itauna','west');clear(s,'road-west');const g2=w.adventure.groups.find(g=>g.id==='road-west');assert.equal(g2.state,'clear');
- Object.assign(w.player,{x:-168,y:22});for(let i=0;i<DENSITY.respawn*10+5;i++)tick(s);assert.equal(g2.state,'dormant');
- Object.assign(w.player,{x:g2.x,y:g2.y});tick(s);assert.ok(w.actors.some(a=>a.worldGroup==='road-west'&&a.hp>0),'volta a atacar');
- const e=w.actors.find(a=>a.worldGroup==='road-west');assert.equal(e.gearWave,20);
+test('níveis graduais, grupos pequenos e áreas vencidas não renascem durante a exploração',()=>{
+ assert.deepEqual(AREA_LEVELS,{world:4,itauna:7,'itauna-cave':9,'itauna-fort':11});assert.equal(DENSITY.count*DENSITY.waves,1);
+ const [g]=tuneGroups([{id:'a',x:0,y:0,count:3,type:0,mix:[0,1,0],level:3,waves:4,respawn:30}],{area:'world',mapLevel:1});
+ assert.deepEqual(g.mix,[0,1,0]);assert.equal(g.count,3);assert.equal(g.waves,1);assert.equal(g.level,6);assert.equal(g.respawn,0);
+ assert.equal(tuneGroups([{id:'z',x:0,y:0,count:30,type:0,mix:null}],{area:'itauna'})[0].count,3,'cap da campanha, sem mudar o editor de mapas pessoais');
+ const s=started(),w=s.world;assert.equal(w.adventure.level,4);assert.ok(w.adventure.groups.every(g=>g.level>=4&&g.level<=6));
+ for(const [area,entry,low,high] of [['itauna','west',7,9],['itauna-cave','mouth',9,11],['itauna-fort','gate',11,13]]){enter(s,area,entry);assert.ok(w.adventure.groups.every(g=>g.level>=low&&g.level<=high),area);}
+ enter(s,'itauna','west');clear(s,'road-west');const g2=w.adventure.groups.find(g=>g.id==='road-west');
+ Object.assign(w.player,{x:-168,y:22});tick(s,180);assert.equal(g2.state,'clear','limpeza não vira farm automático');
+ Object.assign(w.player,{x:g2.x,y:g2.y});tick(s);assert.equal(w.actors.some(a=>a.worldGroup==='road-west'&&a.hp>0),false);
 });
+
 test('loot do mundo da campanha segue o nível do grupo do inimigo, não o nível 1',()=>{
  const s=started(),w=s.world;assert.equal(w.gearLevel,AREA_LEVELS.world);
  // Sem equipamento vestido a recuperação de nível pode somar até +10; o piso é o nível do grupo (ou da área).

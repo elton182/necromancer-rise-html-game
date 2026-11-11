@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "checks": [
+        "druid: painel",
+        "barra humana",
+        "Turbilhão",
+        "Tornado com Furacão",
+        "Corte Sangrento",
+        "Garra de Gelo"
+      ],
+      "errors": [],
+      "remote": []
+    },
+    {
+      "checks": [
+        "mage: painel",
+        "Setas Perseguidoras",
+        "Esfera de Gelo",
+        "Familiar de Fogo",
+        "Golem de Gelo",
+        "chão claro e qualidade baixa"
+      ],
+      "errors": [],
+      "remote": []
+    },
+    {
+      "classId": "necromancer",
+      "checks": [
+        "Grimório com os nós novos",
+        "Cão Zumbi",
+        "Magos com Raio Necrótico",
+        "painel da horda",
+        "reanimação manual e automática",
+        "persistência após recarregar",
+        "Cérbero",
+        "horda em chão claro e qualidade baixa"
+      ],
+      "errors": [],
+      "remote": []
+    }
+  ]
+}

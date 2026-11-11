@@ -2,6 +2,10 @@
 
 [`arvores.json`](arvores.json) guarda o design das árvores de habilidades de todas as classes: nós, ligações, números e notas de produção. É editado visualmente pelo [editor de árvores](../../tools/skill-tree-editor.html). [`arvores.md`](arvores.md) é o guia legível **gerado** a cada gravação pelo servidor do editor; não o edite à mão.
 
+[Avaliação das revisões e expansão das classes](avaliacao-e-expansao.md): proposta de dois ramos principais, colunas de progressão e novas habilidades para as classes com menos opções. Não altera o catálogo aprovado.
+
+[Progressão e sinergias](sinergias.md): regras atuais de bônus entre habilidades do mesmo ramo nas seis classes, cálculo de +2% por ponto nas cinco classes e sinergias explícitas do Necromante.
+
 > **Estado atual (08/11/2026):** o jogo lê este arquivo para o Guerreiro, a Druida, a Arqueira, o Mercenário e o Mago. No Necromante, os nós do modelo compartilhado continuam em `build-simulator/model.js` (usado também pela versão legada) e `v2/scripts/death-tree.mjs`; um teste avisa se divergirem do arquivo. Os nós jogáveis que só existem no arquivo (Cão Zumbi, Cérbero, Magos, Raio e Ruptura Necrótica) e os efeitos que o arquivo acrescenta a nós existentes entram pelo Grimório estendido da v2 (`full-build.mjs`).
 
 ## Como o jogo usa o arquivo

@@ -6,7 +6,7 @@ const crypto = require('node:crypto');
 
 // Evaluate only bounded, repository-owned data literals, never the game runtime.
 function readSource(root = path.resolve(__dirname, '..')) {
-  const html = fs.readFileSync(path.join(root, 'necromancer-canvas.html'), 'utf8');
+  const html = fs.readFileSync(path.join(root, 'v1/necromancer-canvas.html'), 'utf8');
   function constant(name) {
     const match = html.match(new RegExp('const ' + name + '\\s*=([\\s\\S]*?);\\r?\\n'));
     if (!match) throw Error('Source data missing: ' + name);
@@ -45,7 +45,7 @@ function readSource(root = path.resolve(__dirname, '..')) {
     missions: constant('MISSION_TEMPLATES'), captain: constant('CAPTAIN'),
     rooms: rooms.flatMap(r => r.waves), strip: strip.flatMap(z => z.waves),
     provenance: {
-      game: 'necromancer-canvas.html', sha256: crypto.createHash('sha256').update(html).digest('hex'),
+      game: 'v1/necromancer-canvas.html', sha256: crypto.createHash('sha256').update(html).digest('hex'),
       treeSha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'build-simulator/model.js'))).digest('hex'),
       equipmentSha256:crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'scripts/equipment-model.js'))).digest('hex'),
       currentRules: 'Live equipment model supplies current endless scaling, item generation and skill bonuses. Legacy formulas remain available under rules=legacy; campaign keeps stageMul.',

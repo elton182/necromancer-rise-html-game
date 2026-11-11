@@ -38,7 +38,7 @@ test('rota: bioma da rota, no máximo 8 grupos, escala regional, infectados e po
  const scale=Endgame.combatScale(1);assert.equal(w.boss.maxHp,Math.round(R.boss.hp*scale.hp*Endgame.encounters.expedition.hp*V2_KING.hp));assert.equal(w.boss.gearWave,run.reward.itemLevel);assert.equal(w.gearLevel,run.reward.itemLevel);
  const mobs=foes(s).filter(e=>!e.isBoss);assert.equal(mobs.length,w.arena.plan.groups.reduce((n,g)=>n+g.mobs.length,0));assert.equal(mobs.filter(e=>e.infected).length,Math.ceil(mobs.length/5));
  assert.ok(mobs.every(e=>e.home&&!e.alert&&e.gearWave===run.reward.itemLevel));assert.equal(w.hostileZones.length,4);assert.ok(w.hostileZones.every(z=>z.delay>0&&z.life>1e6));
- for(const biome of ['swamp','river','mountain'])assert.ok(expeditionArena(1,{biome,groups:4}).solids.length>5);assert.ok(expeditionArena(1,{biome:'river'}).decor.water.length>10);
+ for(const biome of ['swamp','river','mountain'])assert.ok(expeditionArena(1,{biome,groups:4}).solids.length>5);{const river=expeditionArena(1,{biome:'river'});assert.ok(river.terrain.hasWater&&river.terrain.blocks.length>5,'rio com leito fundo no relevo');}
 });
 test('maldições: multiplicam atributos, dano e horda só na tentativa e somem ao voltar',()=>{
  const base=village(true);launchConquest(base,'expedition');const b=base.world,baseHp=b.player.maxHp,baseMp=b.player.mpRegen,baseMove=b.player.moveSpeed,baseAlly=b.actors.find(a=>a.team==='ally').maxHp;

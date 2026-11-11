@@ -53,6 +53,9 @@ else:
     hero_key = args[0] if args else 'archer'
 H = HEROES[hero_key]
 CLIPS = CLIPS + EXTRA[hero_key]
+if hero_key == 'archer':
+    # Corrida e chassé com a duração do ciclo no jogo (6 u/s): 0,4 s e 0,3 s a 30 fps.
+    CLIPS = [(n, {'walk': 13, 'strafe_left': 10, 'strafe_right': 10}.get(n, f)) for n, f in CLIPS]
 if bpy.app.background:
     bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
@@ -83,6 +86,101 @@ body.name = H['label'] + 'Body'
 for o in (rig, body):
     o['ranged_hero'] = H['id']
 body_height = max((body.matrix_world @ v.co).z for v in body.data.vertices)
+
+
+def vertex_colors(obj):
+    """Cor-base média de cada vértice, lida da textura do material 0 (para separar peças por cor)."""
+    import numpy as np
+    me = obj.data
+    mat = me.materials[0]
+    img = next(n.image for n in mat.node_tree.nodes if n.type == 'TEX_IMAGE' and n.image
+               and any(l.to_socket.name == 'Base Color' for l in n.outputs[0].links))
+    w, h = img.size
+    px = np.empty(w * h * 4, dtype=np.float32)
+    img.pixels.foreach_get(px)
+    px = px.reshape(h, w, 4)
+    uv = me.uv_layers.active.data
+    col = np.zeros((len(me.vertices), 3))
+    cnt = np.zeros(len(me.vertices))
+    for poly in me.polygons:
+        if poly.material_index != 0:
+            continue
+        for li in poly.loop_indices:
+            u, v = uv[li].uv
+            vi = me.loops[li].vertex_index
+            col[vi] += px[min(h - 1, int(v % 1 * h)), min(w - 1, int(u % 1 * w)), :3]
+            cnt[vi] += 1
+    return col / np.maximum(cnt, 1)[:, None]
+
+
+def fix_archer_weights():
+    """Pesos automáticos da fonte Tripo corrigidos para a Arqueira.
+
+    Aljava: vinha presa ao ombro e braço direitos, à coxa direita e à cabeça, e balançava com a
+    corda e a passada; agora é rígida no peito (Spine2), com transição suave na capa ao redor.
+    Joelho: a troca coxa/canela era um degrau de 2 cm sobre a joelheira, e o cano da bota ainda
+    seguia um pouco a coxa; agora a troca é suave em ±2,5 cm e o cano segue só a canela.
+    Medidas no espaço do rig (eixo da aljava ajustado por círculos sobre a malha da fonte)."""
+    me = body.data
+    col = vertex_colors(body)
+    green = col[:, 1] > col[:, 0] * 0.95
+    groups = {vg.name: vg for vg in body.vertex_groups}
+    names = {vg.index: vg.name for vg in body.vertex_groups}
+    chest = groups['mixamorig:Spine2']
+    spine2 = rig.data.bones['mixamorig:Spine2'].head_local
+    axis_c = spine2 + Vector((-0.0403, 0.1389, -0.0614))
+    axis_d = Vector((0.3003, 0.252, -0.9199)).normalized()  # da boca (flechas) para o fundo
+    arm_chain = {groups[n].index for n in groups if any(k in n for k in ('Arm', 'Hand'))}
+    quiver = 0
+    for v in me.vertices:
+        d = v.co - axis_c
+        t = d.dot(axis_d)
+        rad = (d - axis_d * t).length
+        if t < -0.37 or t > 0.23:
+            continue
+        top = t < -0.20  # flechas acima da boca: exclui o capuz (verde)
+        if top and green[v.index]:
+            continue
+        reach = 0.075 if top else 0.070
+        if sum(g.weight for g in v.groups if g.group in arm_chain) >= 0.5:
+            # Pele do ombro encostada na boca da aljava: só o que está bem dentro do cilindro.
+            w = 1.0 if rad < 0.055 else 0.0
+        else:
+            w = 1.0 if rad < reach else max(0.0, 1 - (rad - reach) / 0.025)
+        if t > 0.20:
+            w *= 1 - (t - 0.20) / 0.03
+        if w <= 0:
+            continue
+        for g in v.groups:
+            if names[g.group] != chest.name:
+                g.weight *= 1 - w
+        old = next((g.weight for g in v.groups if g.group == chest.index), 0.0)
+        chest.add([v.index], old + w, 'REPLACE')
+        quiver += w >= 1
+    for side in ('Left', 'Right'):
+        up = rig.data.bones['mixamorig:' + side + 'UpLeg']
+        low = rig.data.bones['mixamorig:' + side + 'Leg']
+        gu, gl = groups[up.name], groups[low.name]
+        knee = low.head_local
+        along = (up.head_local - low.tail_local).normalized()
+        for v in me.vertices:
+            d = v.co - knee
+            h = d.dot(along)
+            if abs(h) > 0.06 or (d - along * h).length > 0.07:
+                continue
+            w = {names[g.group]: g.weight for g in v.groups}
+            pair = w.get(gu.name, 0) + w.get(gl.name, 0)
+            if pair < 0.85 * sum(w.values()):
+                continue
+            share = min(1, max(0, (h + 0.025) / 0.05))
+            share = share * share * (3 - 2 * share)
+            gu.add([v.index], pair * share, 'REPLACE')
+            gl.add([v.index], pair * (1 - share), 'REPLACE')
+    print('PESOS aljava rígida no peito:', quiver, 'vértices; joelhos suavizados')
+
+
+if hero_key == 'archer':
+    fix_archer_weights()
 
 # Arma recortada da prancha.
 sheet = next(o for o in import_glb(H['sheet']) if o.type == 'MESH')
@@ -326,6 +424,79 @@ def gait(t, stride, lateral):
     return feet, bob
 
 
+# Arqueira: idle e deslocamento orgânicos (peso alternando, quadril/ombros em contrarrotação,
+# rolagem do pé, braços acompanhando o peito). O Mercenário mantém os clipes originais.
+SOFT = hero_key == 'archer'
+TOE = {s: rest(s + 'ToeBase') for s in ('Left', 'Right')}
+HEEL = {s: FOOT[s] + Vector((0, 0.02, -0.075)) for s in ('Left', 'Right')}
+
+
+def roll_foot(side, offset, angle):
+    """Desloca o tornozelo para que o pé gire sobre o calcanhar (ângulo < 0, ponta para cima)
+    ou sobre a base dos dedos (ângulo > 0, calcanhar erguido) em vez de girar no tornozelo."""
+    pivot = HEEL[side] if angle < 0 else TOE[side]
+    turned = pivot + Quaternion((1, 0, 0), angle) @ (FOOT[side] - pivot)
+    return offset + turned - FOOT[side]
+
+
+# O jogador anda a 6 u/s: com pernas de ~0,9 u isso é corrida. O `walk` da Arqueira é uma corrida
+# leve com fase de voo; a passada (RUN_STRIDE) fecha com a velocidade numa cadência de ~2,6 ciclos/s,
+# e o clipe tem essa duração, para o Blender mostrar o mesmo ritmo do jogo. Os valores de passada em
+# unidades do jogo ficam em v2/assets/models.json (stride/strafeStride = passada x 2,3).
+RUN_STRIDE = 1.0
+RUN_DUTY = 0.34
+RUN_LAND = 0.13          # o pé toca à frente do quadril e sai RUN_STRIDE x RUN_DUTY atrás
+GALLOP_STRIDE = 0.75     # passo lateral: chassé (pé guia abre, o outro fecha sem cruzar, salto curto)
+GALLOP_DUTY = 0.32
+GALLOP_TRAIL = 0.22      # fase em que o pé de trás toca, depois do pé guia
+
+
+def run_cycle(t):
+    """Corrida: apoio curto com toque na sola média, desenrolar até os dedos, voo e calcanhar
+    alto na volta. Retorna deslocamento do tornozelo e inclinação do pé por lado."""
+    reach = RUN_STRIDE * RUN_DUTY
+    feet, pitch = {}, {}
+    for side, phase in (('Left', 0.0), ('Right', 0.5)):
+        u = (t + phase) % 1
+        if u < RUN_DUTY:
+            y = RUN_LAND - reach * u / RUN_DUTY
+            z = 0.0
+            k = u / RUN_DUTY
+            angle = lerp(-0.12, 0.0, smooth(min(1, k / 0.3))) + 0.6 * smooth(max(0, (k - 0.55) / 0.45))
+        else:
+            v = (u - RUN_DUTY) / (1 - RUN_DUTY)
+            y = lerp(RUN_LAND - reach, RUN_LAND, smooth(v))
+            # O calcanhar sobe cedo, rente às costas; o pé desce estendido para o toque.
+            z = 0.075 * math.sin(math.pi * v ** 0.6)
+            back = 0.05 * math.sin(math.pi * min(1, v / 0.6)) if v < 0.6 else 0.0
+            y -= back
+            angle = lerp(0.6, -0.12, smooth(v))
+        off = Vector((-0.018 if side == 'Left' else 0.018, -y, z))
+        feet[side] = roll_foot(side, off, angle)
+        pitch[side] = angle
+    return feet, pitch
+
+
+def gallop_cycle(t, lead):
+    """Passo lateral em chassé para o lado de `lead` ('Left' anda para +X). O pé guia toca em t=0,
+    o de trás toca em GALLOP_TRAIL sem passar do guia (folga >= 0,12 entre tornozelos)."""
+    sign = 1 if lead == 'Left' else -1
+    trail = 'Right' if lead == 'Left' else 'Left'
+    reach = GALLOP_STRIDE * GALLOP_DUTY
+    feet = {}
+    for side, phase, land in ((lead, 0.0, 0.16), (trail, GALLOP_TRAIL, 0.08)):
+        u = (t - phase) % 1
+        if u < GALLOP_DUTY:
+            x = land - reach * u / GALLOP_DUTY
+            z = 0.0
+        else:
+            v = (u - GALLOP_DUTY) / (1 - GALLOP_DUTY)
+            x = lerp(land - reach, land, smooth(v))
+            z = 0.04 * math.sin(math.pi * v)
+        feet[side] = Vector((x * sign, 0.0, z))
+    return feet
+
+
 def bow_draw(draw, lift=0.0):
     """Arqueira de lado para o alvo: braço do arco estendido, mão da corda recuada.
     lift (0-1) inclina a mira para cima, até 45°, para a Chuva de Flechas."""
@@ -356,7 +527,54 @@ def pose(name, t):
     p['hip'].z += 0.006 * breath
     p['feet']['Left'] = Vector((0.015, -0.03, 0))
     p['feet']['Right'] = Vector((-0.015, 0.04, 0))
-    if name in ('walk', 'strafe_left', 'strafe_right'):
+    if SOFT and name == 'idle':
+        # Pernas quase retas (cada cm de quadril abaixado dobra muito o joelho nesta escala),
+        # peso indo de um pé ao outro, respiração no peito e cabeça com atraso de fase.
+        sway = math.sin(t * math.tau)
+        drift = math.sin(t * math.tau + 0.6)
+        p['hip'] = Vector((0.007 * sway, 0, -0.003 + 0.0015 * breath))
+        p['pelvis'] = Vector((0.015, -0.03 * sway, 0.025 * drift))
+        p['chest'] = Vector((0.035 - 0.015 * breath, 0.02 * sway, -0.02 * drift))
+        p['neck'] = Vector((0.012 * math.sin(2 * t * math.tau + 1.1), -0.01 * sway, 0.06 * math.sin(t * math.tau + 2.2)))
+        p['follow'] = True
+        p['grip'] = p['grip'] + Vector((0, 0.004 * math.sin(t * math.tau + 2.5), 0.02 + 0.003 * breath))
+        # Mão livre solta ao lado da coxa, cotovelo levemente dobrado (antes ficava à frente, em garra).
+        p['free'] = HIP + Vector((-0.15 + 0.003 * math.sin(t * math.tau + 1.9), 0.02 + 0.005 * math.sin(t * math.tau + 0.4), -0.004 + 0.004 * breath))
+        p['free_curl'] = 0.30
+    elif SOFT and name == 'walk':
+        feet, pitch = run_cycle(t)
+        swing = math.cos(t * math.tau)  # +1 com o pé esquerdo à frente
+        side = math.sin(t * math.tau + 0.5)  # +1 com o peso no pé esquerdo
+        # Mais baixo no meio do apoio (o joelho amortece), mais alto no voo.
+        p['hip'] = Vector((0.006 * side, 0, -0.033 - 0.008 * math.cos((t - RUN_DUTY / 2) * 4 * math.pi)))
+        p['pelvis'] = Vector((0.06, -0.03 * side, -0.12 * swing))
+        p['chest'] = Vector((0.17, 0.012 * side, 0.13 * swing))
+        p['neck'] = Vector((0.04, 0.0, 0.03 * swing))
+        # Braço livre de corrida: cotovelo a 90°, mão do quadril (atrás) até a frente do peito.
+        f = smooth((swing + 1) / 2)
+        p['free'] = lerp(HIP + Vector((-0.14, 0.09, 0.07)), HIP + Vector((-0.07, -0.12, 0.16)), f)
+        p['free_curl'] = 0.85
+        # O arco vai baixo ao lado do corpo e balança menos, do lado oposto.
+        p['grip'] = p['grip'] + Vector((0, 0.05 * swing, 0.03 + 0.02 * max(0, -swing)))
+        p['feet'] = feet
+        p['pitch'] = pitch
+        p['toes'] = {s: max(0.0, a) for s, a in pitch.items()}
+        p['follow'] = True
+    elif SOFT and name in ('strafe_left', 'strafe_right'):
+        lead = 'Left' if name == 'strafe_left' else 'Right'
+        sign = 1 if lead == 'Left' else -1
+        p['feet'] = gallop_cycle(t, lead)
+        low = math.cos((t - 0.27) * math.tau)  # +1 no apoio duplo, -1 no meio do salto
+        # O quadril vai sobre o pé que apoia: guia ao tocar, o de trás ao impulsionar.
+        p['hip'] = Vector((0.055 * sign * math.cos((t - 0.03) * math.tau), 0, -0.036 - 0.012 * low))
+        p['pelvis'] = Vector((0.03, -0.04 * sign * math.cos((t - 0.03) * math.tau), 0.0))
+        p['chest'] = Vector((0.07, 0.02 * sign * math.cos((t - 0.03) * math.tau), 0.0))
+        p['neck'] = Vector((0.02, 0.0, 0.0))
+        p['free'] = HIP + Vector((-0.15, -0.02, 0.06 + 0.012 * low))
+        p['free_curl'] = 0.7
+        p['grip'] = p['grip'] + Vector((0, 0, 0.02 + 0.012 * low))
+        p['follow'] = True
+    elif name in ('walk', 'strafe_left', 'strafe_right'):
         direction = {'walk': (0, -1), 'strafe_left': (1, 0), 'strafe_right': (-1, 0)}[name]
         stride = STRIDE if name == 'walk' else STRAFE_STRIDE
         feet, bob = gait(t, stride, direction)
@@ -375,15 +593,34 @@ def pose(name, t):
             k = 1.16 if up_shot else 1.0
             draw = ease([(0, 0.0), (0.38 * k, 1.0), (0.62 * k, 1.0), (1.0, 0.0)], t)
             twist, grip, wq = bow_draw(draw, 1.0 if up_shot else 0.0)
+            yaw = Quaternion((0, 0, 1), twist)
+            if SOFT:
+                # A cabeça e o capuz descem até ~0,70 e, vistos de cima (câmera do jogo), cobrem a
+                # região do queixo: a linha da flecha passa abaixo do capuz e a âncora fica logo atrás
+                # da cabeça, onde a mão continua visível; o cotovelo aponta para trás, na linha da flecha.
+                grip = grip + Vector((0, 0, -0.025 * draw))
+                anchor = HIP + yaw @ (Vector((-0.13, 0.0, SH['Right'].z - 0.035)) - HIP)
+                p['free_pole'] = yaw @ Vector((-0.30, 0.12, 0.08))
+                rest_hand = HIP + Vector((-0.15, 0.02, 0.0))
+            else:
+                anchor = HIP + yaw @ (Vector((-0.06, -0.02, HEAD.z - 0.04)) - HIP)
+                rest_hand = Vector((-0.17, -0.10, HIP.z + 0.04))
             p['twist'] = twist
             p['grip'] = grip
             p['wq'] = wq
-            yaw = Quaternion((0, 0, 1), twist)
-            anchor = HIP + yaw @ (Vector((-0.06, -0.02, HEAD.z - 0.04)) - HIP)
             string = grip + wq @ Vector((0, -0.05, 0))
             released = ease([(0, 0.0), (0.46 * k, 0.0), (0.52 * k, 1.0), (0.75, 1.0), (1.0, 0.0)], t)
-            p['free'] = lerp(lerp(Vector((-0.17, -0.10, HIP.z + 0.04)), string, min(1, draw * 1.6)), anchor, ease([(0, 0), (0.18, 0), (0.42, 1), (1, 1)], t) * draw)
-            p['free'] = p['free'] + yaw @ Vector((-0.06, 0.04, 0.02)) * released
+            p['free'] = lerp(lerp(rest_hand, string, min(1, draw * 1.6)), anchor, ease([(0, 0), (0.18, 0), (0.42, 1), (1, 1)], t) * draw)
+            if SOFT and t > 0.52 * k:
+                # Depois da soltura a mão recua um pouco e desce pela lateral até o repouso,
+                # em vez de voltar pela frente do rosto até a corda.
+                u = (t - 0.52 * k) / (1 - 0.52 * k)
+                follow = anchor + yaw @ Vector((-0.03, 0.03, 0.0))
+                side = HIP + yaw @ Vector((-0.17, 0.07, 0.08))
+                a, b = lerp(follow, side, smooth(min(1, u * 1.6))), lerp(side, rest_hand, smooth(max(0, u * 1.6 - 0.6)))
+                p['free'] = lerp(a, b, smooth(u))
+            else:
+                p['free'] = p['free'] + yaw @ Vector((-0.06, 0.04, 0.02)) * released
             p['feet']['Left'] = Vector((0.03, -0.10 * draw, 0))
             p['feet']['Right'] = Vector((-0.04, 0.08 * draw, 0))
             p['head'] = -twist * 0.8
@@ -465,12 +702,22 @@ def apply(name, t):
         b.location = (0, 0, 0)
     p = pose(name, t)
     death = p.get('death', 0)
-    rot_world('Hips', (p['lean'] * .15, p['roll'], p['twist'] * .40))
-    rot_world('Spine', (p['lean'] * .30, 0, p['twist'] * .22))
-    rot_world('Spine1', (p['lean'] * .30, 0, p['twist'] * .22))
-    rot_world('Spine2', (p['lean'] * .25, 0, p['twist'] * .16))
-    rot_world('Neck', (-p['lean'] * .25, 0, p['head'] * .4))
-    rot_world('Head', (-p['lean'] * .35, 0, p['head'] * .6))
+    if 'pelvis' in p:
+        # Ângulos (frente, lado, giro) do quadril, do peito e da cabeça no mundo; cada osso
+        # recebe a diferença para o pai, então peito e quadril podem girar em sentidos opostos.
+        pel, chest, head = p['pelvis'], p['chest'], p['neck']
+        rot_world('Hips', pel)
+        for key, k in (('Spine', .30), ('Spine1', .35), ('Spine2', .35)):
+            rot_world(key, (chest - pel) * k)
+        rot_world('Neck', (head - chest) * .4)
+        rot_world('Head', (head - chest) * .6)
+    else:
+        rot_world('Hips', (p['lean'] * .15, p['roll'], p['twist'] * .40))
+        rot_world('Spine', (p['lean'] * .30, 0, p['twist'] * .22))
+        rot_world('Spine1', (p['lean'] * .30, 0, p['twist'] * .22))
+        rot_world('Spine2', (p['lean'] * .25, 0, p['twist'] * .16))
+        rot_world('Neck', (-p['lean'] * .25, 0, p['head'] * .4))
+        rot_world('Head', (-p['lean'] * .35, 0, p['head'] * .6))
     if death:
         # Cair para trás girando sobre os calcanhares; a arma acompanha a mão.
         rot_world('Hips', (-1.45 * death, 0.10 * death, 0.15 * death))
@@ -488,7 +735,17 @@ def apply(name, t):
             target = FOOT[side] + Vector((0, -0.12 * death, 0.02))
             leg(side, target, target + Vector((0, -0.2, 0.3)), 0, 0)
         else:
-            leg(side, foot, pole, 0.0, 0.0)
+            leg(side, foot, pole, p.get('pitch', {}).get(side, 0.0), 0.0)
+    for side, angle in p.get('toes', {}).items():
+        rot_world(side + 'ToeBase', (-angle, 0, 0))  # dedos ficam no chão com o calcanhar erguido
+    if p.get('follow'):
+        # Braços presos ao peito (não a pontos fixos no mundo): acompanham respiração, peso e giro.
+        bpy.context.view_layer.update()
+        chest_bone = bones['Spine2']
+        follow = chest_bone.matrix @ chest_bone.bone.matrix_local.inverted()
+        p['grip'] = follow @ p['grip']
+        p['free'] = follow @ p['free']
+        p['wq'] = follow.to_quaternion() @ p['wq']
     rot_q = transform.to_quaternion()
     grip = transform @ p['grip'] if death else p['grip']
     wq = rot_q @ p['wq'] if death else p['wq']
@@ -505,8 +762,9 @@ def apply(name, t):
     else:
         free = transform @ p['free'] if death else p['free']
         side_sign = 1 if free_side == 'Left' else -1
-        arm(free_side, free, free + Vector((0.30 * side_sign, 0.30, -0.10)))
-        curl(free_side, 0.8 if name in ('shoot', 'shoot_up', 'throw', 'plant') else 0.45, 0.6)
+        pole = p.get('free_pole', Vector((0.30 * side_sign, 0.30, -0.10)))
+        arm(free_side, free, free + pole)
+        curl(free_side, p.get('free_curl', 0.8 if name in ('shoot', 'shoot_up', 'throw', 'plant') else 0.45), 0.6)
 
 
 rig.animation_data_clear()

@@ -29,6 +29,7 @@ export function createWorld(options={}){
  resetWorld(world,options);return world;
 }
 export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearLevel=1,lootFilter='common',encounterWave=null}={}){
+ w.warriorFireTrails=[];
  if(!Number.isInteger(horde)||horde<0||horde>64)throw Error('Quantidade de aliados inválida.');
  Object.assign(w,{actors:[],effects:[],time:0,paused:false,hits:0,horde,armyMode,army:null,onAllyDeath:null,allyShots:[],command:null,castCooldown:0,arena:TRAINING_ARENA,equipment:character?.equipment||{},level:character?.level||1,gearLevel,lootFilter});
  w.classId=character?.classId||'necromancer';w.warriorLoadout=warriorLoadout(character?.warriorLoadout);w.skillLoadout=classLoadout(w.classId,character?.skillLoadout);w.warriorCooldowns=[];w.warriorWaveReady=0;w.warriorAction=null;w.warriorCombo=null;w.warriorMomentum=null;w.warriorRiposte=null;w.warriorShieldFlight=null;w.warriorRanks=character?.warriorRanks||{};w.warriorStance=warriorStanceId(character?.warriorStance);w.warriorStanceReady=0;w.warriorTornadoVariant=warriorTornado(character?.warriorTornadoVariant,w.warriorRanks).id;w.warriorRally=null;w.warriorWaves=[];initializeDruid(w,character);initializeMarksman(w,character);initializeCompanions(w);w.summonReady={};clearDrops(w);w.spawnKingAdd=null;w.adventure=null;w.story=null;w.tutorial=null;w.offer=null;w.portal=null;w.landmarks=[];

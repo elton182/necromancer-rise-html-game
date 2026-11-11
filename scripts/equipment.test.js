@@ -214,7 +214,7 @@ test('equipment chance doubles while orb rules favor mana and suppress extra cam
  const {run}=fixture();assert.equal(run('COMBAT_TUNING.gearChance'),.16);assert.equal(run('COMBAT_TUNING.orbChance*COMBAT_TUNING.hpOrbShare'),.04);assert.equal(run('COMBAT_TUNING.orbChance*(1-COMBAT_TUNING.hpOrbShare)'),.12);
  run('CAMP.on=true;const normal={dead:false,gearWave:1};killEnemy(normal,0,0)');assert.equal(run('normal.dropChance'),.16);
  run('droppedItems=[];const originalRandom=Math.random;Math.random=()=>.1;spawnDrop(0,0);Math.random=()=>.5;spawnDrop(0,0);Math.random=originalRandom;');assert.equal(run('droppedItems[0].type'),'hp');assert.equal(run('droppedItems[1].type'),'mp');
- const html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8');assert.equal(html.includes('Math.max(e.dropChance||0,.55)'),false);assert.equal(html.includes('Math.random()<.7) spawnDrop(hx,hz)'),false);
+ const html=fs.readFileSync(path.join(__dirname,'../v1/necromancer-canvas.html'),'utf8');assert.equal(html.includes('Math.max(e.dropChance||0,.55)'),false);assert.equal(html.includes('Math.random()<.7) spawnDrop(hx,hz)'),false);
 });
 test('collector isolates equipment from potions; full bags leave items on ground',()=>{
  const {context,run}=fixture();context.piece=item();run('droppedItems=[{type:"equipment",item:piece,mesh:mkMesh2(0,0),life:Infinity,t:0}];checkPickups(.1)');assert.equal(run('player.gearBag.length'),1);assert.equal(run('droppedItems.length'),0);
@@ -227,7 +227,7 @@ test('save migration recomputes equipped stats without accumulating bonuses',()=
  const {context,run}=fixture();context.piece=item(10,'body');run('const d={level:12,skillTreeVersion:1,skillRanks:{bolt:5},equipment:{body:piece},hp:100,maxHp:210,mp:80,maxMp:135};skillMigrateSave(d);const first=JSON.stringify(d);skillMigrateSave(d);');assert.equal(run('JSON.stringify(d)'),run('first'));assert.ok(run('d.maxHp')>210);
 });
 test('released HTML embeds sources once, orders equipment after trees, and has save bridges',()=>{
- const html=fs.readFileSync(path.join(__dirname,'../necromancer-canvas.html'),'utf8');
+ const html=fs.readFileSync(path.join(__dirname,'../v1/necromancer-canvas.html'),'utf8');
  for(const [name,file]of [['EQUIPMENT_MODEL','equipment-model.js'],['EQUIPMENT_RULES','equipment.js'],['EQUIPMENT_STYLE','equipment.css'],['MENU_STYLE','menu.css'],['MINION_CARE','minion-care.js'],['MINION_ABILITIES','minion-abilities.js'],['SPRITE_CACHE','sprite-cache.js']]){assert.equal(html.split(name+'_BEGIN').length,2);assert.ok(html.replace(/\r\n/g,'\n').includes(fs.readFileSync(path.join(__dirname,file),'utf8').replace(/\r\n/g,'\n')));}
  assert.ok(html.indexOf('/* EQUIPMENT_RULES_BEGIN */')>html.indexOf('/* SKILL_TREE_RULES_END */'));
  assert.ok(html.includes('gearBag:player.gearBag,equipment:player.equipment,waveProgress:player.waveProgress'));

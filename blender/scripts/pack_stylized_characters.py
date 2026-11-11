@@ -11,7 +11,7 @@ PREVIEW='--preview' in sys.argv
 def outline(im):
  alpha=im.getchannel('A');dilated=alpha.filter(ImageFilter.MaxFilter(5));ink=Image.new('RGBA',im.size,(31,28,21,255));ink.putalpha(dilated);return Image.alpha_composite(ink,im)
 board=Image.new('RGB',(5*320,3*350),'#8b9667');draw=ImageDraw.Draw(board)
-html=(HERE.parent/'necromancer-canvas.html').read_text();count=0
+html=(HERE.parent/'v1/necromancer-canvas.html').read_text();count=0
 for i,(ident,key) in enumerate(IDS.items()):
  if any(a.startswith('--only=') for a in sys.argv) and '--only='+ident not in sys.argv:continue
  meta=json.loads((HERE/'frames'/('frames_stylized_'+ident)/'render.json').read_text());cell=meta['cell'];rows=8*len(meta['anims']);cols=max(a['n'] for a in meta['anims'].values())
@@ -50,6 +50,6 @@ for i,(ident,key) in enumerate(IDS.items()):
    board.paste(im,(i*320+(320-im.width)//2,j*350+40),im);draw.text((i*320+15,j*350+15),ident+' / '+str(direction*45)+' deg',fill='#201e17')
 board.save(HERE/'previews'/'preview_stylized_characters.png')
 if not PREVIEW:
- game=HERE.parent/'necromancer-canvas.html';pending=game.with_suffix('.html.pending');pending.write_text(html);pending.replace(game)
+ game=HERE.parent/'v1/necromancer-canvas.html';pending=game.with_suffix('.html.pending');pending.write_text(html);pending.replace(game)
  print('Outlined, validated and embedded',count,'frames across five characters.')
 else:print('Saved enlarged character review board.')

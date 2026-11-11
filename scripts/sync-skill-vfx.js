@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
-const file=path.join(__dirname,'../necromancer-canvas.html');
+const file=path.join(__dirname,'../v1/necromancer-canvas.html');
 let html=fs.readFileSync(file,'utf8');
 const begin='<!-- SKILL_VFX_BEGIN -->',end='<!-- SKILL_VFX_END -->';
 const block=begin+'\n<script>\n'+fs.readFileSync(path.join(__dirname,'skill-vfx.js'),'utf8')+'\n</script>\n'+end+'\n';

@@ -12,7 +12,10 @@ ROOT=Path(__file__).resolve().parents[1]
 sc=bpy.context.scene
 rig=bpy.data.objects['ARM_MageT']
 GAIT='--gait' in sys.argv
-out=ROOT/('frames/mage_gait' if GAIT else 'frames/mage_hero_t')
+IDLE='--idle' in sys.argv
+FINGERS='--fingers' in sys.argv
+GRIP='--grip' in sys.argv or FINGERS
+out=ROOT/('previews/mage_finger_rig' if FINGERS else 'previews/mage_idle/grip' if GRIP else 'frames/mage_idle' if IDLE else 'frames/mage_gait' if GAIT else 'frames/mage_hero_t')
 out.mkdir(parents=True,exist_ok=True)
 for o in sc.objects:
     visible=o.name in ('ARM_MageT','MageTBody','MageTStaff')
@@ -49,18 +52,34 @@ sc.render.image_settings.file_format='PNG'
 sc.render.fps=30
 if hasattr(sc,'eevee'): sc.eevee.taa_render_samples=16
 for tr in rig.animation_data.nla_tracks:
+    if FINGERS and tr.name!='idle':continue
+    if IDLE and tr.name!='idle':continue
     if GAIT and tr.name not in ('walk','strafe_left','strafe_right'):continue
     tr.mute=True
     action=tr.strips[0].action
     rig.animation_data.action=action
     end=int(action.frame_range[1])
-    for view in (['front','right','iso'] if GAIT else ['iso']):
-        direction={'front':Vector((0,-1,.12)),'right':Vector((1,0,.12)),'iso':Vector((.7,-1,.65))}[view].normalized()
+    if GRIP:
+        sc.frame_set(8 if tr.name=='cast' else 15 if tr.name=='cast_up' else 1)
+        bpy.context.view_layer.update()
+        target=rig.pose.bones['mixamorig:RightHand'].head.copy()
+        cam.data.ortho_scale=.42
+        sc.render.resolution_x=sc.render.resolution_y=512
+    for view in (['front','right','back','iso'] if GRIP else ['front','right','iso'] if GAIT or IDLE else ['iso']):
+        direction={'front':Vector((0,-1,.12)),'right':Vector((1,0,.12)),'back':Vector((0,1,.12)),'iso':Vector((.7,-1,.65))}[view].normalized()
         cam.location=target+direction*4
         cam.rotation_euler=(-direction).to_track_quat('-Z','Y').to_euler()
-        for f in sorted(set(range(1,end+1,2)) | {end}):
-            sc.frame_set(f)
-            label=f'{tr.name}_{view}' if GAIT else tr.name
+        for f in ([1,2] if FINGERS else [int(sc.frame_current)] if GRIP else sorted(set(range(1,end+1,8 if IDLE else 2)) | {end})):
+            if FINGERS:
+                sc.frame_set(2);sc.frame_set(1)
+                if f==1:
+                    for b in rig.pose.bones:
+                        if b.name.startswith('mixamorig:RightHand') and b.name!='mixamorig:RightHand':b.rotation_quaternion=(1,0,0,0)
+                    bpy.context.view_layer.update()
+            else:
+                sc.frame_set(f)
+            label=f'{tr.name}_{view}' if GAIT or IDLE or GRIP and view!='iso' else tr.name
+            if FINGERS:label=f'{"open" if f==1 else "grip"}_{view}'
             sc.render.filepath=str(out/f'{label}_{f:03d}.png')
             bpy.ops.render.render(write_still=True)
     print('PREVIEW_CLIP',tr.name,flush=True)

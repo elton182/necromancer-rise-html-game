@@ -1,3 +1,4 @@
+import {schoolSynergy} from '../scripts/skill-synergy.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import EQ from '../scripts/warrior-equipment.mjs';
@@ -31,7 +32,7 @@ test('ricochete salta um alvo por ponto, com 20% menos dano e no máximo dois ac
 test('ricochete sem ponto ou sem outro alvo funciona como o arremesso atual',()=>{
  for(const ranks of [SHIELD,{...SHIELD,ricochet:3}]){
   const w=field(ranks),e=target(w,3);assert.ok(warriorAction(w,5));fly(w);
-  assert.equal(w.warriorShieldFlight,null);assert.equal(e.hp,10000-2*Math.floor(w.player.damage*1.2));
+  assert.equal(w.warriorShieldFlight,null);assert.equal(e.hp,10000-2*Math.floor(w.player.damage*1.2*(1+schoolSynergy('warrior',w.warriorRanks,'shieldThrow'))));
  }
  const plain=field(SHIELD),a=target(plain,3),b=target(plain,3,3);assert.ok(warriorAction(plain,5));fly(plain);assert.ok(a.hp<10000);assert.equal(b.hp,10000);
 });
@@ -47,14 +48,16 @@ test('cadeia longa volta ao jogador sem sumir no ar',()=>{
  let peak=0,last=null;for(let i=0;i<600&&(w.warriorShieldFlight||i<20);i++){advance(w,1/60);if(w.warriorShieldFlight){peak=Math.max(peak,w.warriorShieldFlight.time);last={x:w.warriorShieldFlight.actor.x,y:w.warriorShieldFlight.actor.y};}}
  assert.ok(list.every(e=>e.hp<10000));assert.equal(w.warriorShieldFlight,null);assert.ok(Math.hypot(last.x-w.player.x,last.y-w.player.y)<1,'retorno completo');assert.ok(peak>2,'voo além dos 2 s antigos');
 });
-test('Ciclone e Turbilhão mudam alcance, ritmo, gasto e movimento; só a escolhida vale',()=>{
+test('Ciclone e Furacão evoluem cumulativamente e ignoram a antiga preferência de variante',()=>{
  const ranks={thrust:1,tornado:1,tornadoCyclone:1,tornadoWhirl:1};
- assert.equal(warriorTornado('cyclone',{tornado:1}).id,'base');assert.equal(warriorTornado('nada',ranks).id,'base');assert.equal(warriorTornado('constructor',ranks).id,'base');
- const base=field({thrust:1,tornado:1}),far=target(base,3.5);assert.ok(warriorAction(base,4));for(let i=0;i<60;i++)advance(base,1/60);assert.equal(far.hp,10000);assert.equal(base.warriorAction.tornado.move,.55);
- const cyclone=field(ranks,{warriorTornadoVariant:'cyclone'}),near=target(cyclone,3.5);assert.ok(warriorAction(cyclone,4));for(let i=0;i<60;i++)advance(cyclone,1/60);assert.ok(near.hp<10000);assert.equal(cyclone.warriorAction.tornado.move,.4);
- const hits=variant=>{const w=field(ranks,{warriorTornadoVariant:variant}),e=target(w,1);w.player.mp=500;w.player.maxMp=500;const start=w.player.mp;warriorAction(w,4);const paid=start-w.player.mp;const n=Math.floor(w.player.damage*.65);for(let i=0;i<60;i++)advance(w,1/60);return {hits:Math.round((10000-e.hp)/n),spent:start-w.player.mp-paid};};
- const slow=hits('base'),fast=hits('whirl');assert.equal(slow.hits,3);assert.equal(fast.hits,5);assert.ok(Math.abs(slow.spent-12)<.01);assert.ok(Math.abs(fast.spent-16)<.01);
+ assert.equal(warriorTornado('cyclone',{tornado:1}).id,'base');
+ assert.equal(warriorTornado('nada',ranks).id,'whirl');assert.equal(warriorTornado('constructor',ranks).id,'whirl');
+ const base=field({tornado:1}),far=target(base,3.5);warriorAction(base,4);fly(base,1);assert.equal(far.hp,10000);
+ const evolved=field(ranks,{warriorTornadoVariant:'base'}),near=target(evolved,3.5);evolved.player.mp=500;warriorAction(evolved,4);fly(evolved,1);
+ assert.ok(near.hp<10000);assert.equal(evolved.warriorAction.tornado.range,3.7);assert.equal(evolved.warriorAction.tornado.move,.4);assert.equal(evolved.warriorAction.tornado.interval,.2);
+ assert.ok(Math.abs(evolved.player.mp-(500-5-16))<.01);
 });
+
 test('variante só troca fora de combate, exige o nó e persiste; variante sem nó volta à base',()=>{
  const save=freshSave();Object.assign(save.character,{classId:'warrior',level:20,warriorRanks:{thrust:1,tornado:1,tornadoCyclone:1}});
  const s=createSession(save);s.scene='training';s.world.paused=false;
@@ -98,7 +101,7 @@ test('Onda de Aço sai do terceiro corte, sem custo e com recarga própria; atra
  const none=field({slash:1});combo(none);assert.equal(none.warriorWaves?.length||0,0,'sem o selo não há onda');
  const w=field({slash:1,steelWave:1}),a=target(w,3),b=target(w,6.5),out=target(w,9),side=target(w,4,1.5);const mp=w.player.mp;
  combo(w);assert.equal(w.player.mp,mp,'sem custo');fly(w,1);
- const hit=10000-Math.floor(w.player.damage*1.8);assert.equal(a.hp,hit);assert.equal(b.hp,hit);assert.equal(out.hp,10000);assert.equal(side.hp,10000);assert.deepEqual(w.warriorWaves,[]);
+ const hit=10000-Math.floor(w.player.damage*1.8*(1+schoolSynergy('warrior',w.warriorRanks,'steelWave')));assert.equal(a.hp,hit);assert.equal(b.hp,hit);assert.equal(out.hp,10000);assert.equal(side.hp,10000);assert.deepEqual(w.warriorWaves,[]);
  combo(w);assert.equal(w.warriorWaves.length,0,'recarga de 8 s');fly(w,8);combo(w);assert.equal(w.warriorWaves.length,1,'depois da recarga');
  const v=field({slash:1,steelWave:1}),behind=target(v,5);v.arena.solids=[{kind:'box',x:3,y:0,width:1,depth:8}];combo(v);fly(v,1);assert.equal(behind.hp,10000);assert.deepEqual(v.warriorWaves,[]);
  const dead=field({slash:1,steelWave:1});combo(dead);assert.equal(dead.warriorWaves.length,1);dead.player.hp=0;advance(dead,.1);assert.deepEqual(dead.warriorWaves,[]);
@@ -117,9 +120,9 @@ test('barra aceita sete ações, mantém Cortes e Esquiva e troca a Onda de Aço
  assert.deepEqual(createSession(snapshot(s)).world.warriorLoadout,[0,6,2,3,4,1]);
 });
 test('nós novos respeitam nível e pré-requisito sem alterar investimentos de saves antigos',()=>{
- assert.equal(canLearn({bash:1,shieldThrow:1},'ricochet',7),false);assert.ok(canLearn({bash:1,shieldThrow:1},'ricochet',8));assert.equal(canLearn({},'ricochet',8),false);
- assert.equal(canLearn({slash:1},'steelWave',9),false);assert.ok(canLearn({slash:1},'steelWave',10));
- assert.equal(canLearn({thrust:1,tornado:1},'tornadoCyclone',11),false);assert.ok(canLearn({thrust:1,tornado:1},'tornadoWhirl',12));
+ assert.equal(canLearn({bash:1,shieldThrow:1},'ricochet',11),false);assert.ok(canLearn({bash:1,shieldThrow:1},'ricochet',12));assert.equal(canLearn({},'ricochet',12),false);
+ assert.equal(canLearn({slash:1},'steelWave',9),false);assert.ok(canLearn({slash:1,momentum:1},'steelWave',10));
+ assert.equal(canLearn({thrust:1,tornado:1},'tornadoCyclone',11),false);assert.ok(canLearn({thrust:1,tornado:1,tornadoCyclone:1},'tornadoWhirl',18));
  assert.equal(canLearn({},'stance',9),false);assert.ok(canLearn({},'stance',10));assert.equal(canLearn({},'warCry',13),false);assert.ok(canLearn({},'warCry',14));
  const old={strength:5,vitality:5,armor:5,regeneration:5,shieldDefense:5,equipmentMastery:5,slash:5,thrust:3,tornado:1,bash:3,shieldThrow:1,riposte:3,momentum:3};
  const loaded=warriorRanks(old,17);assert.equal(warriorSpent(loaded),49);for(const [id,value] of Object.entries(old))assert.equal(loaded[id],value);

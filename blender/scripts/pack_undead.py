@@ -22,7 +22,7 @@ def pack(kind):
     return meta
 
 if __name__=='__main__':
-    game=HERE.parent/'necromancer-canvas.html'
+    game=HERE.parent/'v1/necromancer-canvas.html'
     for kind in ('archer','specter'):
         if '--embed-only' not in sys.argv: pack(kind)
     html=game.read_text(encoding='utf-8')

@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "checks": [
+    "mage: árvore completa",
+    "concentração, voo e explosão: dark/high",
+    "concentração, voo e explosão: light/low"
+  ],
+  "errors": [],
+  "remote": []
+}

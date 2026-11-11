@@ -17,6 +17,8 @@ export const PROLOGUE_TEXT={
   ['João','Marta… Você vai assustar a nossa proteção antes mesmo de chegarmos a Itavera.','nilo'],
   ['Marta','Estou só perguntando! Da última vez, o sujeito prometeu enfrentar um ogro. Fugiu quando ouviu um lobo.','marta'],
   ['João','Deixe {player} em paz. Se veio de tão longe por esse contrato, deve saber se virar.','nilo'],
+  ['Marta','Essa bolsa não sai do seu lado, João. Nem quando a carroça pula! Está levando ouro?','marta'],
+  ['João','Só coisas que não posso perder. Prefiro chegar a Itavera com tudo no lugar.','nilo'],
   ['Marta','É o que eu espero. Primeiro Jacarandá, uma cama de verdade… Depois, as muralhas de Itavera.','marta'],
   ['Cocheiro','Ô! Esperem… Tem alguma coisa bloqueando a estrada!','driver'],
   ['Cocheiro','Ei, {player}! Você precisa ver isso.','driver']
@@ -29,7 +31,7 @@ export const PROLOGUE_TEXT={
  ],
  cave_whispers:[
   ['Uma voz entre as pedras','Você ouviu isso? Veio da passagem velha. Eu disse que aquela estrada ia ceder.'],
-  ['Outra voz','Esquece a estrada. O chefe quer o passageiro vivo. O resto não é problema nosso. Vigie a entrada e deixe os papéis na mesa.']
+  ['Outra voz','Esquece a estrada. O chefe quer o passageiro vivo e o documento inteiro. Precisa descobrir quem mais sabe. Vigie a entrada e deixe as ordens na mesa.']
  ],
  cargo:[
   ['Carga sem dono','Símbolos de guildas diferentes foram raspados dos caixotes. Há mantimentos, ferramentas e rolos de tecido sob uma lona velha. Este depósito não foi montado para um único assalto.'],
@@ -37,12 +39,13 @@ export const PROLOGUE_TEXT={
  ],
  clue:[
   ['Ordens sobre a mesa','Ao lado de uma vela, um papel foi preso sob uma adaga. A ordem é curta: “João. Viaja com a caravana que segue para Itavera. Parada prevista em Jacarandá.”'],
-  ['Uma captura encomendada','“Confirmem o nome antes de agir. O homem deve ser entregue vivo. A carga fica com o bando; o pagamento é pelo passageiro.” O trecho com a identificação do remetente foi arrancado.'],
-  ['Você','João… O homem da carroça. Não era só um roubo. Preciso alcançar a caravana antes que tentem de novo.']
+  ['Uma captura encomendada','“Confirmem o nome antes de agir. João deve ser entregue vivo para interrogatório. Recuperem a carta intacta; descubram quem mais conhece seu conteúdo. A carga fica com o bando.” O trecho com a identificação do remetente foi arrancado.'],
+  ['Você','João… O homem da carroça. Não era só um roubo. Estão caçando João por causa de uma carta. Preciso avisar a caravana.']
  ],
  cave_exit:[['Ar do lado de fora','Uma corrente de ar frio atravessa a passagem. Além das rochas, a luz do dia revela uma trilha entre as árvores. Jacarandá: foi lá que Marta disse que a caravana pararia. Ainda pode haver tempo.']],
- messenger:[['Tomás · mensageiro ferido','Você… está vindo da estrada? Eu tentava buscar ajuda em Itavera. Os bandidos estão atacando Jacarandá!'],['Tomás','Uma caravana chegou há pouco. Os guardas ficaram para ajudar. Siga esta trilha até a praça. Ainda pode dar tempo!']],
- reunion:[['Marta · reencontro','Você está vivo! Vimos a terra ceder… Não conseguimos alcançar você. Achei que tínhamos perdido mais alguém.'],['Marta','A vila resistiu, mas levaram João durante o ataque. Sabiam o nome dele. Não estavam aqui só para roubar.'],['Uma nova dívida','Você conta sobre a lista encontrada na caverna. Joaquim oferece abrigo em Jacarandá. O passageiro continua desaparecido; descobrir quem o procurava será o próximo passo.']]
+ satchel:[['Bolsa de mensageiro','Uma bolsa de couro caída junto à carroça, com o selo de Jacarandá. A alça foi cortada a faca. Gotas de sangue seguem pela trilha, para o sul: quem a carregava ainda está fugindo.']],
+ messenger:[['Tomás · mensageiro ferido','Você… está vindo da estrada? Saí de Jacarandá para buscar ajuda, mas eles me alcançaram. A vila está sendo atacada!'],['Tomás','Uma caravana acabou de chegar. Vi os bandidos perguntando por um passageiro. Siga a trilha até a praça — precisamos de você lá!']],
+ reunion:[['Marta · reencontro','Você está vivo! Vimos a terra ceder… Não conseguimos alcançar você. Achei que tínhamos perdido mais alguém.'],['Marta','Vieram atrás da caravana até aqui. Perguntavam por João. Ele correu até a carroça de mantimentos antes de ser levado; os bandidos roubaram a carroça também. A vila resistiu, mas ainda não sabemos para onde foram.'],['Uma nova dívida','Você conta sobre as ordens e a carta procurada. Marta vai ouvir Tomás e os viajantes para localizar os sequestradores. Joaquim oferece abrigo: o ferreiro está encurralado e a madeira para os reparos de emergência precisa ser liberada.']]
 };
 export function travelLine(index,name='Zephyr'){
  const [speaker,text,actor]=PROLOGUE_TEXT.travel[index]||PROLOGUE_TEXT.travel[0];
@@ -50,7 +53,7 @@ export function travelLine(index,name='Zephyr'){
 }
 export const caveTitle=p=>p.clue?'Esconderijo dos salteadores':p.caveCleared?'Depósito dos salteadores':p.caveHeard?'Galeria ocupada':'Sob a estrada';
 export function caveObjective(p){
- if(p.clue)return ['Alcance a caravana','João era o alvo. Siga a corrente de ar até a saída ao norte.'];
+ if(p.clue)return ['Alcance a caravana','João era o alvo. Siga a corrente de ar até a saída.'];
  if(p.caveCleared)return ['O que eles procuravam?','Examine as ordens sobre a mesa antes de deixar o esconderijo.'];
  if(p.caveHeard)return ['Vozes entre as pedras','Há bandidos nas galerias adiante. Avance com cuidado e investigue as ordens.'];
  return ['Encontre outra saída','O buraco ficou alto demais. Siga as marcas no chão e a luz das tochas.'];
@@ -61,7 +64,7 @@ export function prologueObjective(p){return {
  farewell:['A estrada está livre','A caravana foi salva. Ouça Marta.'],
  fall:['O último disparo','Uma flecha vem da encosta…'],
  cave:caveObjective(p),
- trail:['Um pedido de socorro','Siga a trilha, derrote os perseguidores e ajude o mensageiro ferido.'],
+ trail:['Um pedido de socorro','Siga a trilha até Jacarandá. Lobos rondam o caminho e há sinais de saque perto do riacho.'],
  defense:['Defenda Jacarandá','Reencontre a caravana e derrote os bandidos que atacam a praça.'],
  reunion:['Salvamos Jacarandá','Fale com Marta sobre o passageiro desaparecido.'],
  done:['O passageiro desaparecido','João foi levado. Jacarandá agora oferece abrigo.']
