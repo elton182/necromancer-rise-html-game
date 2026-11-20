@@ -2,14 +2,15 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
 (async()=>{
- const dir=path.resolve(__dirname,'../../review/v2/mage-gait');fs.mkdirSync(dir,{recursive:true});
- const browser=await chromium.launch({channel:'msedge',headless:true});
+ const dir=path.resolve(__dirname,process.env.NR_MAGE_REVIEW_DIR||'../../review/v2/mage-gait');fs.mkdirSync(dir,{recursive:true});
+ const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true,args:['--use-angle=d3d11','--enable-gpu','--ignore-gpu-blocklist']});
  try{
   const page=await browser.newPage({viewport:{width:1440,height:900}}),errors=[],remote=[],movement=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
   page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);
-  await page.waitForFunction(()=>document.body.dataset.ready==='true'&&!document.getElementById('loading'),null,{timeout:90000});
+  await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000}).catch(async e=>{console.error(JSON.stringify({errors,loading:await page.locator('#loading').innerText().catch(()=>null)}));throw e;});
+  await page.locator('#loading-start').click();await page.waitForFunction(()=>!document.getElementById('loading'));
   await page.click('[data-title="campaign"]');await page.click('.class-choice[data-class="mage"]');
   await page.waitForSelector('.journeys-stage[data-ready="true"]',{timeout:30000});
   await page.locator('#character-name').fill('Mago em marcha');await page.getByRole('button',{name:'Iniciar jornada',exact:false}).click();
@@ -39,6 +40,23 @@ const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('n
   await page.evaluate(()=>{const w=NecromancerV2.world,p=w.player;w.paused=false;w.actors=[p,...w.gaitDummies];w.gaitDummies.forEach((e,i)=>Object.assign(e,{x:p.x-2+(i%4),y:p.y-5-Math.floor(i/4),dummy:true,hp:5000,maxHp:5000}));for(const [id,value] of [['ground','light'],['quality','low']]){const el=document.getElementById(id);el.value=value;el.dispatchEvent(new Event('change'));}});
   await page.waitForFunction(()=>!NecromancerV2.world.marksmanAction);await page.keyboard.down('KeyD');await page.waitForTimeout(400);
   await page.evaluate(()=>{NecromancerV2.world.paused=true;});await page.screenshot({path:path.join(dir,'group-light-low.png')});await page.keyboard.up('KeyD');
+  // Confere no GLB carregado que o pé de acompanhamento cruza por trás.
+  const crossBehind=[];
+  for(const [clip,progress,sign] of [['strafe_left',.5,1],['strafe_right',0,-1]]){
+   const sample=await page.evaluate(async({clip,progress,sign})=>{
+    const THREE=await import('three'),n=NecromancerV2,w=n.world,p=w.player;
+    p.pose={anim:clip,progress};p.actionId++;n.view.render(w,0);
+    const o=n.view.actors.get(p.id);o.body.updateMatrixWorld(true);
+    const inverse=o.body.matrixWorld.clone().invert(),feet={};
+    o.body.traverse(b=>{if(b.isBone){const name=b.name.replace(/[^a-z]/gi,'');for(const side of ['Left','Right'])if(name.endsWith(side+'Foot'))feet[side]=new THREE.Vector3().setFromMatrixPosition(b.matrixWorld).applyMatrix4(inverse);}});
+    const lead=feet[sign===1?'Left':'Right'],trail=feet[sign===1?'Right':'Left'];
+    return {clip,cross:sign*(trail.x-lead.x),behind:lead.z-trail.z};
+   },{clip,progress,sign});
+   assert.ok(sample.cross>.015&&sample.behind>.12,JSON.stringify(sample));crossBehind.push(sample);
+   await page.screenshot({path:path.join(dir,clip+'-cross-behind.png')});
+  }
+  await page.evaluate(()=>{delete NecromancerV2.world.player.pose;});
+  fs.writeFileSync(path.join(dir,'cross-behind.json'),JSON.stringify(crossBehind,null,2));
   assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
   fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({ok:true,movement,errors,remote},null,2));console.log(JSON.stringify({ok:true,checks:['frente','esquerda','direita','ré','diagonal','conjuração andando'],errors,remote}));
  }finally{await browser.close();}

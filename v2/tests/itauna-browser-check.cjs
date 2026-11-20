@@ -1,7 +1,7 @@
 'use strict';
 // Várzea de Itaúna no HTML empacotado: passagem real pela estrada, forte, gruta, grade, inimigos e save em armazenamento isolado. Evidências em review/v2/itauna/.
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('node:url');
-(async()=>{const dir=path.resolve(__dirname,'../../review/v2/itauna');fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true,args:['--use-angle=d3d11','--enable-gpu','--ignore-gpu-blocklist']});try{
+(async()=>{const dir=path.resolve(__dirname,'../../review/v2/itauna');fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true,args:['--use-angle=d3d11','--enable-gpu','--ignore-gpu-blocklist']});try{
  // Testar do editor: a mesma planta, por outro caminho de entrada. Caminha de verdade, com o teclado, até o anel.
  {const test=await browser.newPage({viewport:{width:1440,height:900}}),testErrors=[];test.on('pageerror',e=>testErrors.push(e.message));
   await test.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await test.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:120000});
@@ -51,10 +51,12 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  await silence();await look(0,20,6);await shot('fort-yard-closed');
  state=await page.evaluate(()=>{const w=NecromancerV2.world;return {open:w.arena.gates[0].open,solid:w.arena.solids.some(o=>o.gateId==='fort-portcullis'),types:[...new Set(w.adventure.groups.flatMap(g=>g.mix))].sort()};});
  assert.deepEqual(state,{open:false,solid:true,types:[0,1,3,6,9]});
+ const fortDensity=await page.evaluate(()=>{const g=NecromancerV2.world.adventure.groups;return {groups:g.length,enemies:g.reduce((n,g)=>n+g.count*g.waves,0),reinforcements:g.filter(g=>g.waves===2).length};});assert.ok(fortDensity.groups>=12);assert.ok(fortDensity.enemies>=60);result.fortDensity=fortDensity;
  await page.evaluate(()=>{const n=NecromancerV2;for(const id of ['fort-gate','fort-west','fort-east'])n.session.save.campaign.world.cleared.push(id);});await page.waitForFunction(()=>NecromancerV2.world.arena.gates[0].open,null,{timeout:5000});
  await page.waitForTimeout(4600);assert.equal(await page.evaluate(()=>NecromancerV2.world.arena.solids.some(o=>o.gateId==='fort-portcullis')),false);await look(0,14,4);await shot('fort-gate-open');
  for(const [name,x,y,z] of [['fort-entry',0,56,6],['fort-camp',-44,30,6],['fort-training',38,34,6],['fort-inner',0,-10,8],['fort-keep',0,-22,4]]){await look(x,y,z);await shot(name);result.render[name]=await stats();}
  await release('fort-captain',0,-14);await shot('fort-captain');
+ for(const ground of ['dark','light']){await page.evaluate(ground=>{for(const [id,value] of [['ground',ground],['quality','low']]){const e=document.getElementById(id);e.value=value;e.dispatchEvent(new Event('change'));}},ground);await look(0,-14,10);await shot('fort-combat-'+ground+'-low');}
  assert.equal(await page.evaluate(()=>NecromancerV2.world.actors.find(a=>a.worldGroup==='fort-captain'&&a.lootTier==='rare')?.name),'Capitão da Pedra Negra');
  // De volta à várzea e para a gruta.
  result.passagens.saidaForte=await travel(0,69,'itauna');
@@ -72,10 +74,10 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  result.passagens.volta=await travel(-176,22,null);
  assert.deepEqual(await page.evaluate(()=>{const n=NecromancerV2,w=n.world;return {area:w.adventure.area??null,saved:n.session.save.campaign.world.area??null,x:w.player.x,y:w.player.y};}),{area:null,saved:null,x:166,y:95});
  // Teleporte à vila pelo botão do painel: com inimigo alerta perto fica desligado; longe, leva à praça.
- await page.evaluate(()=>NecromancerV2.campaign.update?.());
+ await page.evaluate(()=>{NecromancerV2.session.save.campaign.world.portalUnlocked=true;NecromancerV2.campaign.update?.();});
  await page.evaluate(()=>{const n=NecromancerV2,w=n.world;w.actors=w.actors.filter(a=>a.team!=='enemy');Object.assign(w.player,{x:120,y:84,hp:w.player.maxHp});});await page.waitForTimeout(500);
  await page.waitForSelector('#world-home:not([disabled])',{timeout:8000});await page.screenshot({path:path.join(dir,'home-button.png')});
- {const t=Date.now();await page.click('#world-home');await page.waitForFunction(()=>{const w=NecromancerV2.world;return w.adventure.inVillage&&Math.hypot(w.player.x-60,w.player.y-64)<1&&!document.getElementById('area-fade').classList.contains('on');},null,{timeout:30000});result.passagens.teleporteVila=Date.now()-t;}
+ {const t=Date.now();await page.click('#world-home');await page.waitForFunction(()=>{const w=NecromancerV2.world;return w.adventure.inVillage&&Math.hypot(w.player.x-60,w.player.y-78)<1&&!document.getElementById('area-fade').classList.contains('on');},null,{timeout:30000});result.passagens.teleporteVila=Date.now()-t;}
  await page.waitForTimeout(800);await shot('home-arrival');assert.equal(await page.evaluate(()=>!!document.getElementById('world-home')),false,'na vila o botão some');
  assert.deepEqual(errors,[]);result.errors=errors;fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result.passagens),JSON.stringify(result.densidade));console.log('Várzea de Itaúna: OK');
 }finally{await browser.close();}})().catch(e=>{console.error(e.stack);process.exitCode=1;});

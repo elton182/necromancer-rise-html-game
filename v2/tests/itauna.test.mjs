@@ -117,7 +117,7 @@ test('grade do forte fecha o pátio interno até os três grupos caírem e conti
  const gate=()=>w.arena.gates[0],below={x:0,y:12},above={x:0,y:0};
  assert.equal(gate().open,false);assert.ok(w.arena.solids.some(o=>o.gateId===FORT_GATE.id));assert.equal(overlaps({x:0,y:6},.45,w.arena),true,'a grade é um colisor real');
  const closed=reachable(w.arena,AREAS['itauna-fort'].entries.gate,{step:1});assert.equal(canReach(closed,below),true);assert.equal(canReach(closed,above),false,'sem outro caminho até a torre');assert.equal(canReach(closed,FORT_POINTS.keep),false);
- assert.equal(areaObjectives('itauna-fort',s.save.campaign.world)[0].target,FORT_POINTS.inner);
+ assert.equal(areaObjectives('itauna-fort',s.save.campaign.world)[0].target.id,'fort-gate');
  clear(s,'fort-gate');clear(s,'fort-west');assert.equal(gate().open,false,'faltando um grupo a grade não sobe');
  clear(s,'fort-east');assert.equal(gate().open,true);assert.equal(w.arena.solids.some(o=>o.gateId===FORT_GATE.id),false);assert.match(w.notice,/grade/);
  const opened=reachable(w.arena,AREAS['itauna-fort'].entries.gate,{step:1});assert.equal(canReach(opened,FORT_POINTS.keep),true);
@@ -159,23 +159,24 @@ test('Testar do editor percorre as passagens e a grade, sem tocar no save da cam
  const free=createSession();assert.equal(launchMap(free,builtinMap('builtin:forest'),()=>null).ok,true);assert.equal(free.world.arena.exits,undefined);assert.deepEqual(free.world.arena.gates,[]);
 });
 test('teleporte à vila: leva à praça de qualquer área, mas não no meio de uma luta nem antes de conhecer a vila',()=>{
- const s=started(),w=s.world,p=s.save.campaign.world;
+ const s=started(),w=s.world,p=s.save.campaign.world;p.portalUnlocked=true;
  p.checkpoint='crypt';assert.equal(homeTeleport(s).ok,false);assert.equal(teleportHome(s),false);assert.match(w.notice,/Jacarandá/);
  p.checkpoint='village';Object.assign(w.player,WORLD_POINTS.village);tick(s);assert.equal(w.adventure.inVillage,true);assert.equal(homeTeleport(s).ok,false,'já está na vila');
  enter(s,'itauna-fort','gate');clear(s,'fort-gate');assert.equal(homeTeleport(s).ok,true);
  // Inimigo alerta por perto bloqueia; parado longe ou ocioso não.
  const g=w.adventure.groups.find(g=>g.id==='fort-west');Object.assign(w.player,{x:g.x,y:g.y});tick(s);const e=w.actors.find(a=>a.worldGroup==='fort-west'&&a.hp>0);
+ w.actors=w.actors.filter(a=>a.team!=='enemy'||a===e); // Isola a distância do alvo: o pátio agora contém outras tropas em combate.
  e.alert=true;Object.assign(w.player,{x:e.x+HOME_DANGER-2,y:e.y});assert.equal(teleportHome(s),false);assert.match(w.notice,/afaste-se/);
  Object.assign(w.player,{x:e.x+HOME_DANGER+2,y:e.y});assert.equal(homeTeleport(s).ok,true);
- assert.equal(teleportHome(s),true);assert.equal(w.paused,true);assert.equal(w.areaTravel.entry,'village');
+ assert.equal(teleportHome(s),true);assert.equal(w.paused,true);assert.equal(w.areaTravel.portal,'home');
  assert.equal(travelArea(s),true);assert.equal(w.adventure.area,undefined);assert.equal('area' in s.save.campaign.world,false);
- assert.deepEqual({x:w.player.x,y:w.player.y},{x:WORLD_POINTS.village.x,y:WORLD_POINTS.village.y});assert.equal(w.adventure.inVillage,true);assert.equal(w.adventure.clearedRun.size,0);
+ assert.deepEqual({x:w.player.x,y:w.player.y},{x:60,y:78});assert.equal(w.adventure.inVillage,true);assert.equal(w.adventure.clearedRun.size,0);
  assert.ok(s.save.campaign.world.cleared.includes('fort-gate'),'o progresso permanente fica');
  // Prólogo e Testar do editor não têm o botão.
  const t=createSession();t.save.campaign.prologue={stage:'cave'};startCampaign(t,{opening:false});assert.equal(homeTeleport(t).ok,false);
 });
 test('níveis graduais, grupos pequenos e áreas vencidas não renascem durante a exploração',()=>{
- assert.deepEqual(AREA_LEVELS,{world:4,itauna:7,'itauna-cave':9,'itauna-fort':11});assert.equal(DENSITY.count*DENSITY.waves,1);
+ assert.deepEqual(AREA_LEVELS,{cedro:13,world:4,itauna:7,'itauna-cave':9,'itauna-fort':11});assert.equal(DENSITY.count*DENSITY.waves,1);
  const [g]=tuneGroups([{id:'a',x:0,y:0,count:3,type:0,mix:[0,1,0],level:3,waves:4,respawn:30}],{area:'world',mapLevel:1});
  assert.deepEqual(g.mix,[0,1,0]);assert.equal(g.count,3);assert.equal(g.waves,1);assert.equal(g.level,6);assert.equal(g.respawn,0);
  assert.equal(tuneGroups([{id:'z',x:0,y:0,count:30,type:0,mix:null}],{area:'itauna'})[0].count,3,'cap da campanha, sem mudar o editor de mapas pessoais');
@@ -207,4 +208,32 @@ test('relevo de Jacarandá: regiões variadas sem bloquear a história, também 
  const published=JSON.parse(fs.readFileSync(new URL('../assets/maps/campaign-world.json',import.meta.url)));
  const {map:flat}=resolveMap(normalizeMap(published).map,()=>null);assert.equal(flat.terrain.rivers.length,1,'o rio da edição continua');
  for(const a of [toArena(flat),withIntactVillage(toArena(flat))]){const r=reachable(a,WORLD_POINTS.crypt,{step:1});for(const p of [...Object.values(WORLD_POINTS),...WORLD_ENCOUNTERS,...WORLD_PILES,...WORLD_EXITS,...Object.values(WORLD_ARRIVALS)])assert.equal(canReach(r,p),true,p.name||p.id||p.key);}
+});
+
+test('gruta tem combate mais denso, sem respawn e com as rotas acessíveis',()=>{
+ const s=started();enter(s,'itauna-cave','mouth');const w=s.world,groups=w.adventure.groups;
+ const total=groups.reduce((n,g)=>n+g.count*g.waves,0);assert.ok(total>=90,'volume de encontros da gruta: '+total);
+ assert.ok(groups.every(g=>g.count>=4&&g.count<=6&&g.respawn===0));
+ assert.ok(groups.every(g=>spawnTypes(g).every(t=>[4,8].includes(t))));
+ const path=reachable(w.arena,AREAS['itauna-cave'].entries.mouth,{step:1});
+ for(const g of groups)assert.equal(canReach(path,g),true,g.id);
+ assert.equal(new Set(groups.map(g=>g.id)).size,groups.length,'grupos sem duplicação na edição publicada');
+ clear(s,'nursery-a');assert.equal(groups.find(g=>g.id==='nursery-a').state,'clear','as duas levas encerram normalmente');
+});
+
+test('forte mantém magos, distribui guardas e preserva a grade e os grupos permanentes',()=>{
+ const s=started();enter(s,'itauna-fort','gate');const w=s.world,gs=w.adventure.groups;
+ assert.ok(gs.length>=12);assert.ok(gs.reduce((n,g)=>n+g.count*g.waves,0)>=60);
+ assert.deepEqual([...new Set(gs.flatMap(spawnTypes))].sort(),[0,1,3,6,9],'magos não são cortados pelo limite da campanha');
+ assert.ok(gs.every(g=>g.level>=11&&g.level<=13&&g.respawn===0));
+ assert.equal(gs.find(g=>g.id==='fort-captain').count,10);
+ const patrol='route-fort-entry-west';clear(s,patrol);
+ assert.equal(s.save.campaign.world.cleared.includes(patrol),false,'patrulhas não viram conclusão permanente');
+ for(const id of FORT_GATE.requires)clear(s,id);
+ assert.equal(w.arena.gates[0].open,true,'as patrulhas novas não mudam os requisitos da grade');
+ const r=reachable(w.arena,AREAS['itauna-fort'].entries.gate,{step:1});for(const g of gs)assert.equal(canReach(r,g),true,g.id);
+ clear(s,'fort-captain');assert.ok(s.save.campaign.world.cleared.includes('fort-captain'));
+ enter(s,'itauna','fort');enter(s,'itauna-fort','gate');
+ assert.equal(w.adventure.groups.find(g=>g.id===patrol).state,'clear','limpeza da patrulha é lembrada nesta saída');
+ assert.equal(w.adventure.groups.find(g=>g.id==='fort-captain').state,'clear');
 });

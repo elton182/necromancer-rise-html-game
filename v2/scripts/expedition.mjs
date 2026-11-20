@@ -19,10 +19,14 @@ import R from './enemy-rules.mjs';
 import {V2_KING} from './fallen-king.mjs';
 export const BIOME_NAMES={grave:'Cemitério',forest:'Floresta',desert:'Deserto',snow:'Tundra',village:'Vila'};
 export const ENTRY_RANGE=3,EXIT_RANGE=4;
+// Valdoria tem dificuldade regional própria: a entrada não deve reutilizar a vida de patrulhas frágeis.
+// Piso fixo de resistência; dano, XP e dificuldades cuja curva já supera o piso mantêm a regra canônica.
+export const CONQUEST_MIN_HP_SCALE=3.5;
+export function conquestCombatScale(difficulty){const s=Endgame.combatScale(difficulty);return {...s,hp:Math.max(CONQUEST_MIN_HP_SCALE,s.hp)};}
 const GROUPS={expedition:8,fortress:6,apothecary:4,drowned:4};
 const near=(a,b,r)=>Math.hypot(a.x-b.x,a.y-b.y)<r;
 // Limpa o que pertence ao encontro anterior; recargas continuam correndo (não há reinício gratuito).
-function wipe(w){const cooldowns=w.spellCooldowns;clearSpells(w);w.spellCooldowns=cooldowns;w.drops=[];w.effects=[];w.projectiles=[];w.allyShots=[];w.hostileShots=[];w.hostileZones=[];w.command=null;w.dash.remaining=0;}
+function wipe(w){w.potionHeal=null;const cooldowns=w.spellCooldowns;clearSpells(w);w.spellCooldowns=cooldowns;w.drops=[];w.effects=[];w.projectiles=[];w.allyShots=[];w.hostileShots=[];w.hostileZones=[];w.command=null;w.dash.remaining=0;}
 // Mapa de uma rota da Conquista: wave de sorteio derivada da semente, do ciclo, da dificuldade e do tipo (como no jogo antigo).
 const routeWave=(state,run)=>1+(state.seed+run.cycle*31+run.difficulty*7+Object.keys(Endgame.encounters).indexOf(run.kind)*13)%1000;
 // Troca o mapa mantendo o jogador e a horda como estão: sem cura nem reanimação.
@@ -34,7 +38,7 @@ function load(s,wave){
  const start=resolvePosition({x:plan.entry.x+3,y:plan.entry.y+2},w.player.radius,arena);Object.assign(w.player,start);w.aim={x:start.x+1,y:start.y};
  w.actors.filter(a=>a.team==='ally').forEach((a,i)=>{const t=i*2.4;Object.assign(a,resolvePosition({x:start.x+Math.cos(t)*2,y:start.y+Math.sin(t)*2},a.radius,arena));Object.assign(a,{targetId:null,navPath:null,returning:false,leap:null,jumpZ:0,evade:null,ability:null});});
  // Conquista: escala pela dificuldade regional; um a cada cinco inimigos é infectado e deixa uma poça ao morrer.
- const scale=run?Endgame.combatScale(run.difficulty):null;let index=0;
+ const scale=run?conquestCombatScale(run.difficulty):null;let index=0;
  const level=run?8:wave+2;
  const types=withNewTypes(plan.groups.flatMap(g=>g.mobs.map(m=>m.type)),level);
  for(const group of plan.groups)for(const mob of group.mobs){

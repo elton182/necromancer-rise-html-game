@@ -1,38 +1,41 @@
 import {schoolSynergy} from './skill-synergy.mjs';
+import {tickElements,isFrozen} from './elements.mjs';
+import {applyAttributes} from './progression.mjs';
 // Druida em combate: magias de raio, vento e plantas na forma humana, garras na forma de lobo.
 // Unidades de mundo, segundos, atualização por dt. O renderizador lê w.druidAction (pose) e os efeitos `fx`.
 import {dealDamage} from './combat.mjs';
 import {lineClear,moveCircle,resolvePosition} from './terrain.mjs';
 import {fx} from './vfx-events.mjs';
-import {druidActionLearned,WOLF,wolfDrain,isWolf,normalizeDruidPack,DRUID_SUMMONS,DRUID_ADVANCED,druidRankFactor,druidTornadoFactor,druidHowlBonus,druidHealShare} from './druid-model.mjs';
+import {druidActionLearned,WOLF,isWolf,normalizeDruidPack,DRUID_SUMMONS,DRUID_ADVANCED,druidRankFactor,druidTornadoFactor,druidHowlBonus,druidHealShare,FRANTIC,franticStacks,franticSpeed} from './druid-model.mjs';
 import {spawnCompanion} from './companions.mjs';
 
 // Recargas das habilidades em 4 s desde 08/11/2026 (docs/habilidades/arvores.json); Faísca e Garras mantêm o ritmo do ataque básico.
 export const HUMAN_ACTIONS=[
  {id:'spark',name:'Faísca',cost:0,cooldown:.55,duration:.45,release:.17,range:10,width:.45,multiplier:.45,clip:'cast'},
- {id:'chain',name:'Corrente de Raios',cost:22,cooldown:4,duration:.5,release:.2,range:10,pick:2.5,jumpRange:5,jumps:1,multiplier:1.2,falloff:.8,clip:'cast'},
- {id:'roots',name:'Raízes',cost:18,cooldown:4,duration:.6,release:.33,range:10,radius:2.4,root:2,multiplier:.8,clip:'slam'},
+ {id:'chain',name:'Corrente de Raios',cost:26,cooldown:1.5,duration:.5,release:.2,range:10,pick:2.5,jumpRange:5,jumps:1,multiplier:1.2,falloff:.8,clip:'cast'},
+ {id:'roots',name:'Raízes',cost:24,cooldown:2,duration:.6,release:.33,range:10,radius:2.4,root:2,multiplier:.8,clip:'slam'},
  {id:'dodge',name:'Esquiva',cost:0,cooldown:3},
- {id:'storm',name:'Tempestade',cost:35,cooldown:4,duration:.7,release:.4,range:10,radius:3.5,time:4,interval:.5,targets:3,multiplier:.6,clip:'cast_up'},
- {id:'rejuvenate',name:'Rejuvenescer',cost:25,cooldown:4,duration:.6,release:.3,heal:.3,time:5,clip:'cast_up'},
+ {id:'storm',name:'Tempestade',cost:42,cooldown:3,duration:.7,release:.4,range:10,radius:3.5,time:4,interval:.5,targets:3,multiplier:.6,clip:'cast_up'},
+ {id:'rejuvenate',name:'Rejuvenescer',cost:30,cooldown:4,duration:.6,release:.3,heal:.3,time:5,clip:'cast_up'},
  // Vento (docs/habilidades/arvores.json): o turbilhão atravessa a fila e empurra para os lados; o tornado anda devagar,
  // puxa para o centro e, com o Furacão, cresce, dura mais e explode no fim.
- {id:'turbilhao',name:'Turbilhão',cost:12,cooldown:4,duration:.45,release:.2,range:9,speed:10,radius:.9,push:.6,multiplier:.6,clip:'cast'},
- {id:'tornado',name:'Tornado',cost:30,cooldown:4,duration:.6,release:.35,range:10,radius:1.8,time:4,drift:1.2,pull:1.6,interval:.4,multiplier:.25,clip:'cast_up',hurricane:{radius:2.7,time:6,multiplier:1.2,push:1.5}},
- {id:'lobo',name:'Lobo',cost:30,cooldown:8,duration:.7,release:.35,range:2,multiplier:0,clip:'cast_up'},
- {id:'calamidade',name:'Calamidade',cost:55,cooldown:24,duration:.9,release:.55,range:10,multiplier:DRUID_ADVANCED.calamity.multiplier,clip:'cast_up'},
- {id:'florestaTropical',name:'Floresta Tropical',cost:45,cooldown:20,duration:.8,release:.45,range:10,multiplier:0,clip:'cast_up'},
- {id:'escudoDeFolhas',name:'Escudo de Folhas',cost:25,cooldown:18,duration:.6,release:.3,multiplier:0,clip:'cast_up'},
- {id:'liderDaMatilha',name:'Líder da Matilha',cost:20,cooldown:12,duration:.5,release:.25,range:DRUID_ADVANCED.leader.range,multiplier:0,clip:'cast'},
+ {id:'turbilhao',name:'Turbilhão',cost:18,cooldown:1.5,duration:.45,release:.2,range:9,speed:10,radius:.9,push:.6,multiplier:.6,clip:'cast'},
+ {id:'tornado',name:'Tornado',cost:40,cooldown:3,duration:.6,release:.35,range:10,radius:1.8,time:4,drift:1.2,pull:1.6,interval:.4,multiplier:.25,clip:'cast_up',hurricane:{radius:2.7,time:6,multiplier:1.2,push:1.5}},
+ {id:'lobo',name:'Lobo',cost:40,cooldown:3,duration:.7,release:.35,range:2,multiplier:0,clip:'cast_up'},
+ {id:'calamidade',name:'Calamidade',cost:70,cooldown:6,duration:.9,release:.55,range:10,multiplier:DRUID_ADVANCED.calamity.multiplier,clip:'cast_up'},
+ {id:'florestaTropical',name:'Floresta Tropical',cost:60,cooldown:6,duration:.8,release:.45,range:10,multiplier:0,clip:'cast_up'},
+ {id:'escudoDeFolhas',name:'Escudo de Folhas',cost:35,cooldown:5,duration:.6,release:.3,multiplier:0,clip:'cast_up'},
+ {id:'liderDaMatilha',name:'Líder da Matilha',cost:25,cooldown:3,duration:.5,release:.25,range:DRUID_ADVANCED.leader.range,multiplier:0,clip:'cast'},
 ];
 export const WOLF_ACTIONS=[
- {id:'claws',name:'Garras',cost:0,cooldown:.42,duration:.42,release:.2,range:2.3,arc:Math.PI*.72,multiplier:.75,clips:['claw_1','claw_2'],lock:true},
- {id:'leap',name:'Salto Feroz',cost:15,cooldown:4,duration:.6,release:.47,advance:[.1,.45],distance:6,radius:2.2,multiplier:1.5,clip:'leap',lock:true},
- {id:'howl',name:'Uivo',cost:0,cooldown:4,duration:.7,release:.25,radius:6,slow:.35,slowTime:3,frenzy:.25,frenzyTime:6,clip:'howl',lock:true},
+ {id:'claws',name:'Garras',cost:0,cooldown:.42,duration:.42,release:.2,range:2.3,arc:Math.PI*.72,multiplier:.45,clips:['claw_1','claw_2','claw_cross'],lock:true},
+ {id:'leap',name:'Salto Feroz',cost:20,cooldown:1.5,duration:.6,release:.47,advance:[.1,.45],distance:6,radius:2.2,multiplier:1.5,clip:'leap',lock:true},
+ {id:'howl',name:'Uivo',cost:10,cooldown:3,duration:.7,release:.25,radius:6,slow:.35,slowTime:3,frenzy:.25,frenzyTime:6,clip:'howl',lock:true},
  {id:'dodge',name:'Esquiva',cost:0,cooldown:3},
  // Corte Sangrento: sangramento renovado (não soma). Garra de Gelo: lentidão; chefes só recebem o dano.
- {id:'corteSangrento',name:'Corte Sangrento',cost:12,cooldown:4,duration:.42,release:.2,range:4.6,arc:Math.PI,multiplier:.9,bleed:{time:4,interval:.5,multiplier:.15},clip:'claw_1',lock:true},
- {id:'garraDeGelo',name:'Garra de Gelo',cost:15,cooldown:4,duration:.42,release:.2,range:3,arc:Math.PI*.45,multiplier:1.3,slow:.5,slowTime:2.5,clip:'claw_2',lock:true},
+ {id:'corteSangrento',name:'Corte Sangrento',cost:18,cooldown:1.2,duration:.42,release:.2,range:6,arc:Math.PI,multiplier:.9,bleed:{time:4,interval:.5,multiplier:.15},clip:'claw_1',lock:true},
+ {id:'garraDeGelo',name:'Garra de Gelo',cost:22,cooldown:1.5,duration:.42,release:.2,range:4.5,arc:Math.PI*.45,multiplier:1.3,slow:.5,slowTime:2.5,clip:'claw_2',lock:true},
+ {id:'luaPrateada',name:'Lua Prateada',cost:50,cooldown:8,duration:.6,release:.3,time:30,clip:'howl',lock:true},
 ];
 export const druidActions=w=>isWolf(w)?WOLF_ACTIONS:HUMAN_ACTIONS;
 const COLORS={bolt:'#bfe4ff',nature:'#8fd16a',wolf:'#e0b07a',wind:'#d6f4ff',blood:'#d03a3a',ice:'#9fe0ff'};
@@ -43,14 +46,20 @@ const gearFactor=w=>1-Math.min(50,Math.max(0,w.modifiers?.gearCooldown||0))/100;
 
 export function initializeDruid(w,character){
  w.druidPack=normalizeDruidPack(character?.druidPack);
- Object.assign(w,{druidRanks:character?.druidRanks||{},druidForm:'human',druidAction:null,druidCooldowns:{},druidStorms:[],druidWinds:[],druidTornados:[],druidHeal:null,druidLeafShield:null,druidHunt:null,druidFrenzy:0,druidFormReady:0,druidClawSide:0});
+ resetClawCombo(w);
+ w.druidMoonUntil=0;w.druidMoonMeteors=[];
+ Object.assign(w,{druidRanks:character?.druidRanks||{},druidForm:'human',druidAction:null,druidCooldowns:{},druidStorms:[],druidWinds:[],druidTornados:[],druidHeal:null,druidLeafShield:null,druidHunt:null,druidFrenzy:0,druidFormReady:0,druidClawSide:0,druidFrantic:null});
 }
+const CLAW_COMBO_GAP=.9;
+function resetClawCombo(w){w.druidClawSide=0;w.druidComboUntil=0;}
 // Morte, troca de cena e reinício: nada do que a Druida lançou continua no mundo.
 export function clearDruid(w){
+ w.druidMoonUntil=0;w.druidMoonMeteors=[];
  w.druidPack=w.player?.hp>0?snapshotDruidPack(w):[];
  w.actors=(w.actors||[]).filter(a=>!['druidWolf','carnivorousPlant','forestPlant'].includes(a.companion));
  w.druidAction=null;w.druidStorms=[];w.druidWinds=[];w.druidTornados=[];w.druidHeal=null;w.druidFrenzy=0;
- w.druidLeafShield=null;w.druidHunt=null;
+ w.druidLeafShield=null;w.druidHunt=null;w.druidFrantic=null;
+ resetClawCombo(w);
  if(w.effects)w.effects=w.effects.filter(f=>!f.druidRing&&!f.druidAdvanced);
  for(const a of w.actors||[]){delete a.druidBleed;delete a.druidChill;}
  if(w.player)w.player.timer=0;
@@ -65,6 +74,7 @@ function power(w,def){
  return p.spellDamage*def.multiplier*factor*wolf;
 }
 export function druidAction(w,index=0,aim=w.aim){
+ if(isFrozen(w,w.player))return false;
  const p=w.player,form=w.druidForm==='wolf'?'wolf':'human',list=form==='wolf'?WOLF_ACTIONS:HUMAN_ACTIONS,def=list[index];
  if(!def||def.id==='dodge'||w.classId!=='druid'||w.paused||p.hp<=0||p.dead||w.dash.remaining>0)return false;
  if(!druidActionLearned(form,index,w.druidRanks)||w.druidAction||w.castCooldown>1e-9||p.mp<def.cost||druidCooldown(w,def.id)>1e-9)return false;
@@ -78,15 +88,35 @@ export function druidAction(w,index=0,aim=w.aim){
  if(def.id==='florestaTropical'&&forest.length!==DRUID_ADVANCED.forest.count)return false;
  if(def.id==='calamidade'&&!lineClear(p,target,.05,w.arena))return false;
  if(def.id==='liderDaMatilha'&&(!prey||!w.actors.some(a=>a.companion==='druidWolf'&&a.hp>0)))return false;
+ const claws=def.id==='claws',speed=claws?franticSpeed(w.druidRanks,franticStacks(w)):1,pounce=claws?pounceTarget(w,aim,dx/d,dy/d):null;
  p.mp-=def.cost;
- w.druidCooldowns[def.id]=w.time+(['spark','claws'].includes(def.id)?def.cooldown:def.cooldown*gearFactor(w));
- const clip=def.clips?def.clips[w.druidClawSide=(w.druidClawSide+1)%2]:def.clip;
- w.druidAction={form,index,id:def.id,clip,time:0,released:false,duration:def.duration,dx:dx/d,dy:dy/d,target:{x:p.x+dx/d*reach,y:p.y+dy/d*reach},origin:{x:p.x,y:p.y},travel:def.distance?Math.min(def.distance,Math.max(0,d-.6)):0,lock:!!def.lock};
+ w.druidCooldowns[def.id]=w.time+(def.id==='spark'?def.cooldown:claws?def.cooldown/speed:def.cooldown*gearFactor(w));
+ if(def.id!=='claws'||w.time>(w.druidComboUntil||0))resetClawCombo(w);
+ const clip=pounce?'leap':def.clips?def.clips[w.druidClawSide||0]:def.clip;
+ w.druidAction={form,index,id:def.id,clip,time:0,released:false,duration:def.duration/speed,release:def.release/speed,dx:dx/d,dy:dy/d,target:{x:p.x+dx/d*reach,y:p.y+dy/d*reach},origin:{x:p.x,y:p.y},travel:def.distance?Math.min(def.distance,Math.max(0,d-.6)):0,lock:!!def.lock};
+ if(pounce){
+  const s=w.druidAction;Object.assign(s,pounce.action);s.prey=pounce.target.id;
+  w.druidFrantic.pounceReady=w.time+FRANTIC.pounceCooldown;w.druidCooldowns.claws=w.time+s.duration;
+  fx(w,'impact',{x:p.x,y:p.y,h:.5,color:'#ffb35c',size:.7,duration:.3});
+ }
  w.druidAction.prey=prey?.id;w.druidAction.forest=forest;
- w.castCooldown=def.duration;p.angle=Math.atan2(dx,dy);p.animation=clip;p.animationTime=0;p.actionId++;p.timer=def.duration;
+ w.castCooldown=w.druidAction.duration;p.angle=Math.atan2(w.druidAction.dx,w.druidAction.dy);p.animation=clip;p.animationTime=0;p.actionId++;p.timer=def.duration;
  return true;
 }
 // Pose do jogador durante a ação: o clipe avança pelo tempo da regra.
+// Bote do Frenético: só com acúmulos suficientes, fora da recarga do bote e sem ninguém ao alcance das garras na mira.
+// Alvo: o inimigo visível até `pounceRange` da Druida mais próximo do ponto mirado. A Druida para a `land` u do corpo dele.
+const POUNCE={advance:[.04,.24],release:.26,duration:.36};
+function pounceTarget(w,aim,dx,dy){
+ const p=w.player,f=w.druidFrantic,claws=WOLF_ACTIONS[0];
+ if(!(w.druidRanks?.frenetico>0)||franticStacks(w)<FRANTIC.pounceStacks||!f||w.time<(f.pounceReady||0)||p.rootTime>0)return null;
+ const close=w.actors.some(e=>{if(!living(e))return false;const x=e.x-p.x,y=e.y-p.y,n=Math.hypot(x,y);return n<=claws.range+e.radius&&(n<1e-9||(x*dx+y*dy)/n>=Math.cos(claws.arc/2))&&lineClear(p,e,.05,w.arena);});
+ if(close)return null;
+ const target=w.actors.filter(e=>living(e)&&Math.hypot(e.x-p.x,e.y-p.y)<=FRANTIC.pounceRange+e.radius&&lineClear(p,e,.05,w.arena)).sort((a,b)=>Math.hypot(a.x-aim.x,a.y-aim.y)-Math.hypot(b.x-aim.x,b.y-aim.y))[0];
+ if(!target)return null;
+ const tx=target.x-p.x,ty=target.y-p.y,n=Math.hypot(tx,ty)||1;
+ return {target,action:{dx:tx/n,dy:ty/n,travel:Math.max(0,n-target.radius-FRANTIC.land),advance:POUNCE.advance,release:POUNCE.release,duration:POUNCE.duration,pounce:true,target:{x:target.x,y:target.y}}};
+}
 export function druidPose(w){const s=w.druidAction;return s?{anim:s.clip,progress:Math.min(1,s.time/s.duration)}:null;}
 
 // Alterna entre a forma humana e a de lobo. A forma de lobo exige o nó aprendido e alguma mana.
@@ -97,35 +127,47 @@ export function toggleWolf(w){
  shift(w,w.druidForm==='wolf'?'human':'wolf',WOLF.toggleCooldown);return true;
 }
 function shift(w,form,cooldown){
+ resetClawCombo(w);w.druidFrantic=null;
  const p=w.player;w.druidForm=form;p.model=form==='wolf'?'druidWolf':'druid';p.animation='idle';p.animationTime=0;p.actionId++;p.timer=0;
+ applyAttributes(w);
  w.druidFormReady=w.time+cooldown;w.castCooldown=Math.max(w.castCooldown,WOLF.shift);
- fx(w,'summonBurst',{x:p.x,y:p.y,radius:1.3,color:form==='wolf'?COLORS.wolf:COLORS.nature,duration:.6});
- fx(w,'impact',{x:p.x,y:p.y,h:1.1,color:COLORS.nature,size:1.2,radius:1,duration:.35});
+ // Só visual: redemoinho de folhas e clarão que cobre a troca do corpo (vfx.mjs, `shapeshift`).
+ fx(w,'shapeshift',{x:p.x,y:p.y,form,radius:1.4,color:form==='wolf'?COLORS.wolf:COLORS.nature,shake:form==='wolf'?.1:0,duration:.8});
 }
 export function tickDruid(w,dt){
+ tickElements(w,dt,dealDamage);
  if(w.classId!=='druid'||w.paused)return;
  const p=w.player;
  if(p.hp<=0||p.dead){clearDruid(w);return;}
+ if(w.dash.remaining>0)resetClawCombo(w);
  if(w.druidLeafShield&&w.time>=w.druidLeafShield.until)w.druidLeafShield=null;
  if(w.druidHunt&&(w.time>=w.druidHunt.until||!w.actors.some(a=>a.id===w.druidHunt.target&&living(a))))w.druidHunt=null;
- tickStorms(w,dt);tickWinds(w,dt);tickTornados(w,dt);tickBleeds(w);tickRings(w);
+ tickMoonMeteors(w);tickStorms(w,dt);tickWinds(w,dt);tickTornados(w,dt);tickBleeds(w);tickRings(w);
  if(p.hp<=0||p.dead){clearDruid(w);return;}
  restorePack(w);
  // w.time já avançou neste quadro: cura só a parte do passo que ainda cabe na duração.
  if(w.druidHeal){const h=w.druidHeal,step=Math.max(0,Math.min(dt,h.until-(w.time-dt)));p.hp=Math.min(p.maxHp,p.hp+h.rate*step);if(w.time>=h.until-1e-9)w.druidHeal=null;}
- if(isWolf(w)){p.mp=Math.max(0,p.mp-wolfDrain(w.druidRanks)*dt);if(p.mp<=0&&!w.druidAction)shift(w,'human',WOLF.exhaustedCooldown);}
  const s=w.druidAction;if(!s)return;
+ if(isFrozen(w,p)){w.druidAction=null;p.timer=0;resetClawCombo(w);return;}
  if(w.dash.remaining>0){w.druidAction=null;p.timer=0;return;}
  const def=(s.form==='wolf'?WOLF_ACTIONS:HUMAN_ACTIONS)[s.index],before=s.time;s.time+=dt;
- if(def.advance&&s.travel>0){
-  const [a,b]=def.advance,elapsed=Math.max(0,Math.min(b,s.time)-Math.max(a,before));
+ const advance=s.advance||def.advance;
+ if(advance&&s.travel>0){
+  const [a,b]=advance,elapsed=Math.max(0,Math.min(b,s.time)-Math.max(a,before));
   if(elapsed){const f=elapsed/(b-a),pos=moveCircle(p,{x:s.dx*s.travel*f,y:s.dy*s.travel*f},p.radius,w.arena,{slide:false});p.x=pos.x;p.y=pos.y;if(pos.blocked)s.travel=0;}
  }
- if(!s.released&&s.time+1e-9>=def.release){s.released=true;release(w,s,def);}
- if(s.time+1e-9>=s.duration){w.druidAction=null;p.timer=0;w.castCooldown=0;if(isWolf(w)&&p.mp<=0)shift(w,'human',WOLF.exhaustedCooldown);}
+ if(!s.released&&s.time+1e-9>=(s.release??def.release)){s.released=true;release(w,s,def);}
+ if(s.time+1e-9>=s.duration){w.druidAction=null;p.timer=0;w.castCooldown=0;}
 }
 function release(w,s,def){
  const p=w.player;
+ if(def.id==='luaPrateada'){w.druidMoonUntil=w.time+def.time;fx(w,'summonBurst',{x:p.x,y:p.y,radius:1.6,color:'#d1e8ff',duration:.6});return;}
+ if(s.form==='wolf'&&w.druidMoonUntil>w.time&&['claws','corteSangrento','garraDeGelo','leap'].includes(def.id)){
+  const target=w.actors.filter(e=>living(e)&&Math.hypot(e.x-p.x,e.y-p.y)<=(def.range||6)+e.radius&&lineClear(p,e,.05,w.arena)).sort((a,b)=>Math.hypot(a.x-s.target.x,a.y-s.target.y)-Math.hypot(b.x-s.target.x,b.y-s.target.y))[0];
+  const point=target||s.target,id=w.nextId++,fall={id,x:point.x,y:point.y,at:w.time+.5,damage:Math.max(1,Math.floor(power(w,{id:'luaPrateada',multiplier:.65}))),radius:1.8};
+  (w.druidMoonMeteors??=[]).push(fall);
+  fx(w,'meteor',{x:fall.x,y:fall.y,dx:s.dx,dy:s.dy,radius:fall.radius,color:'#b9e9ff',snow:true,ground:false,duration:.5});
+ }
  if(def.id==='escudoDeFolhas'){
   const amount=Math.max(1,Math.round(p.maxHp*DRUID_ADVANCED.leaves.share));w.druidLeafShield={remaining:amount,max:amount,until:w.time+DRUID_ADVANCED.leaves.time};
   fx(w,'summonBurst',{x:p.x,y:p.y,radius:1.2,color:COLORS.nature,duration:.5});return;
@@ -165,28 +207,36 @@ function release(w,s,def){
  }
  if(def.id==='rejuvenate'){w.druidHeal={until:w.time+def.time,rate:p.maxHp*druidHealShare(w.druidRanks)/def.time};fx(w,'summonRune',{x:p.x,y:p.y,radius:1.4,color:COLORS.nature,duration:.9});return;}
  if(def.id==='claws'){
+  if(s.pounce){const t=w.actors.find(e=>e.id===s.prey&&living(e));if(t){const x=t.x-p.x,y=t.y-p.y,n=Math.hypot(x,y);if(n>1e-9){s.dx=x/n;s.dy=y/n;p.angle=Math.atan2(s.dx,s.dy);}}}
+  else w.druidClawSide=(def.clips.indexOf(s.clip)+1)%def.clips.length;
+  w.druidComboUntil=w.time+Math.max(0,s.duration-s.time)+CLAW_COMBO_GAP;
   let hit=false;
   for(const e of w.actors){
    if(!living(e))continue;const x=e.x-p.x,y=e.y-p.y,n=Math.hypot(x,y);
    if(n>def.range+e.radius||n>0&&(x*s.dx+y*s.dy)/n<Math.cos(def.arc/2)||!lineClear(p,e,.05,w.arena))continue;
    if(dealDamage(w,e,Math.max(1,Math.floor(power(w,def))),p,def.name).applied>0)hit=true;
   }
-  if(hit)p.mp=Math.min(p.maxMp,p.mp+WOLF.hitRestore);
+  if(hit){p.mp=Math.min(p.maxMp,p.mp+WOLF.hitRestore);p.hp=Math.min(p.maxHp,p.hp+p.maxHp*WOLF.hitHeal);}
+  if(hit&&w.druidRanks?.frenetico>0){const f=w.druidFrantic??={stacks:0,until:0,pounceReady:0},before=franticStacks(w);f.stacks=Math.min(FRANTIC.max,before+1);f.until=w.time+FRANTIC.expire;if(f.stacks===FRANTIC.max&&before<FRANTIC.max)fx(w,'roar',{x:p.x,y:p.y,radius:1.6,color:'#ff9a3c',mood:'howl',duration:.35});}
   w.combatEvents?.push({kind:'scytheWind'});
-  w.effects.push({id:w.nextId++,kind:'slash',fx:'slash',x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:def.range,arc:def.arc,sparks:5,time:0,duration:.2,color:COLORS.wolf,mood:'claw',visual:true});
+  const frantic=franticStacks(w);
+  fx(w,'wolfClaws',{x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:def.range*1.3,arc:def.arc,h:s.clip==='claw_cross'?2:1.75,sweep:s.clip==='claw_1'||s.pounce?1:-1,cross:s.clip==='claw_cross',duration:.23,color:frantic>=FRANTIC.pounceStacks?'#ffc07a':'#fff1ce'});
+  if(s.pounce)fx(w,'groundBreak',{x:p.x,y:p.y,radius:1.2,color:COLORS.wolf,shake:.06,duration:.35});
   return;
  }
  if(def.id==='corteSangrento'||def.id==='garraDeGelo'){
   const bleed=def.bleed?Math.max(1,Math.floor(power(w,{...def,multiplier:def.bleed.multiplier}))):0;
+  let drained=0;
   for(const e of w.actors){
    if(!living(e))continue;const x=e.x-p.x,y=e.y-p.y,n=Math.hypot(x,y);
    if(n>def.range+e.radius||n>0&&(x*s.dx+y*s.dy)/n<Math.cos(def.arc/2)||!lineClear(p,e,.05,w.arena))continue;
-   dealDamage(w,e,Math.max(1,Math.floor(power(w,def))),p,def.name);if(!living(e))continue;
+   drained+=dealDamage(w,e,Math.max(1,Math.floor(power(w,def))),p,def.name,def.id==='garraDeGelo'?'frost':null).applied;if(!living(e))continue;
    if(def.bleed)e.druidBleed={until:w.time+def.bleed.time,next:w.time+def.bleed.interval,damage:bleed};
    if(def.slow&&!isBoss(w,e)){e.slow=Math.max(e.slow||0,def.slow);e.slowTime=Math.max(e.slowTime||0,def.slowTime);e.druidChill=w.time+def.slowTime;}
   }
   w.combatEvents?.push({kind:'scytheWind'});
-  w.effects.push({id:w.nextId++,kind:'slash',fx:'slash',x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:def.range,arc:def.arc,sparks:7,time:0,duration:.22,color:def.bleed?COLORS.blood:COLORS.ice,mood:'claw',visual:true});
+  if(def.bleed&&drained>0){const healed=Math.min(p.maxHp*.05,drained*.12);p.hp=Math.min(p.maxHp,p.hp+healed);fx(w,'impact',{x:p.x,y:p.y,h:1,color:'#f06579',size:.6,duration:.3});}
+  fx(w,'wolfClaws',{x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:def.range,arc:def.arc,h:1.75,sweep:def.bleed?1:-1,color:def.bleed?'#ff536f':'#b9efff',element:def.bleed?'blood':'frost',duration:.28});
   return;
  }
  if(def.id==='leap'){
@@ -198,6 +248,15 @@ function release(w,s,def){
   w.druidFrenzy=w.time+def.frenzyTime;w.combatEvents?.push({kind:'wolfHowl'});
   fx(w,'roar',{x:p.x,y:p.y,radius:def.radius,color:COLORS.wolf,mood:'howl',shake:.08,duration:.6});
  }
+}
+function tickMoonMeteors(w){
+ const p=w.player,falls=w.druidMoonMeteors||[];
+ for(const m of falls){
+  if(m.at>w.time||m.done)continue;m.done=true;
+  for(const e of w.actors)if(living(e)&&Math.hypot(e.x-m.x,e.y-m.y)<=m.radius+e.radius&&lineClear(m,e,.05,w.arena))dealDamage(w,e,m.damage,p,'Meteoro da Lua Prateada','frost');
+  fx(w,'groundBreak',{x:m.x,y:m.y,radius:m.radius,color:'#b9e9ff',shake:.08,duration:.5});fx(w,'impact',{x:m.x,y:m.y,h:.7,color:'#e3f7ff',size:1.3,duration:.4});
+ }
+ w.druidMoonMeteors=falls.filter(m=>!m.done);
 }
 // Raio instantâneo: o primeiro inimigo cujo corpo cruza a linha da mira; sem alvo, para no alcance ou na primeira parede.
 function lineTarget(w,from,dx,dy,range,width,skip=new Set()){
@@ -375,6 +434,7 @@ function tickBleeds(w){
 // Anéis no chão ligados à posição real: inimigos presos pelas Raízes e a cura em andamento.
 function tickRings(w){
  w.effects=w.effects.filter(f=>!f.druidRing);
+ if(w.druidMoonUntil>w.time&&isWolf(w)&&w.player.hp>0)w.effects.push({id:'silver-moon',druidRing:true,fx:'moonBlessing',x:w.player.x,y:w.player.y,remaining:w.druidMoonUntil-w.time,visual:true,time:0,duration:10});
  for(const a of w.actors)if(a.druidRoot>w.time&&a.hp>0)w.effects.push({id:'druid-root-'+a.id,druidRing:true,x:a.x,y:a.y,radius:a.radius+.45,color:COLORS.nature,visual:true,ground:true,fixedRadius:true,time:0,duration:10});
  const ring=(id,x,y,radius,color,time=0)=>w.effects.push({id,druidRing:true,x,y,radius,color,visual:true,ground:true,fixedRadius:true,time,duration:10});
  for(const a of w.actors){if(a.hp<=0)continue;if(a.druidBleed&&w.time<=a.druidBleed.until)ring('druid-bleed-'+a.id,a.x,a.y,a.radius+.35,COLORS.blood,1);if(a.druidChill>w.time)ring('druid-chill-'+a.id,a.x,a.y,a.radius+.4,COLORS.ice,2);}

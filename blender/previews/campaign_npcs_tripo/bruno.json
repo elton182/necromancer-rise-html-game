@@ -1,0 +1,18 @@
+{
+  "name": "bruno",
+  "source": "bruno-pbr-57566671/model.glb",
+  "sourceTriangles": 1462148,
+  "triangles": 17999,
+  "vertices": 14717,
+  "bytes": 1884992,
+  "clips": [
+    "idle",
+    "greet",
+    "walk",
+    "death"
+  ],
+  "textureMaxSize": 512,
+  "bones": 23,
+  "idleSeconds": 12,
+  "idleProfile": "bruno"
+}

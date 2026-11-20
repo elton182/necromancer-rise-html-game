@@ -9,10 +9,16 @@ import {druidRanks} from './druid-model.mjs';
 import {marksmanRanks} from './marksman-model.mjs';
 import {isMarksman} from './class-registry.mjs';
 
-export function testAction(s,action){
+export function testAction(s,action,value){
  const w=s.world,c=s.save.character,level=levelOf(w),p=w.player;
  if(!w.paused||p.hp<=0||w.adventure?.cinematic)return {ok:false,message:'Pause o jogo com o personagem vivo e fora de uma cena de história.'};
  let message;
+ if(action==='move-speed'){
+  const speed=Number(value);
+  if(!Number.isFinite(speed)||speed<1||speed>5)return {ok:false,message:'Escolha uma velocidade entre 1× e 5×.'};
+  w.testMoveSpeed=speed;
+  return {ok:true,message:'Movimentação em '+speed+'× nesta sessão. Não altera o save.'};
+ }
  if(action==='level-up'){
   if(level>=MAX_LEVEL)return {ok:false,message:'Nível máximo atingido.'};
   grantExperience(s,xpNext(level)-c.exp);message='Nível '+levelOf(w)+' alcançado.';

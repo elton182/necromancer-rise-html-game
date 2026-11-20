@@ -1,3 +1,4 @@
+import {tickElements,isFrozen} from './elements.mjs';
 import {schoolSynergy} from './skill-synergy.mjs';
 // Arqueira e Mercenário em combate: tiros com projétil real (alguns teleguiados), Recuo, Chuva de Flechas,
 // ataques do falcão, bombas e redes em arco, minas, armadilhas e chão em chamas. Unidades de mundo, segundos, atualização por dt.
@@ -38,6 +39,7 @@ export const marksmanCooldown=(w,id=marksmanShot(w).id)=>Math.max(0,(w.marksmanC
 
 // Inicia a ação do slot na direção da mira. Direção e ponto-alvo ficam fixos durante a ação.
 export function marksmanAction(w,index=0,aim=w.aim){
+ if(isFrozen(w,w.player))return false;
  const p=w.player,list=marksmanActions(w.classId),def=list[index];
  if(!isMarksman(w.classId)||!def||def.kind==='dodge'||w.paused||p.hp<=0||p.dead||w.dash.remaining>0||w.marksmanAction||p.rootTime>0)return false;
  if(!marksmanLearned(w.classId,index,w.marksmanRanks)||marksmanCooldown(w,def.id)>1e-9||p.mp<def.cost)return false;
@@ -66,12 +68,14 @@ export function marksmanMove(w){const s=w.marksmanAction;return s?marksmanAction
 export function marksmanPose(w){const s=w.marksmanAction;return s?{anim:s.clip,progress:Math.min(1,s.time/s.duration),upper:marksmanMove(w)>0}:null;}
 
 export function tickMarksman(w,dt){
+ tickElements(w,dt,dealDamage);
  if(!isMarksman(w.classId)||w.paused)return;
  if(w.player.hp<=0||w.player.dead){clearMarksman(w);return;}
  if(w.marksmanShield&&w.time>=w.marksmanShield.until)w.marksmanShield=null;
- tickShots(w,dt);tickOrbs(w,dt);tickFamiliar(w,dt);tickLobs(w,dt);tickZones(w);tickBurns(w);tickMines(w);tickTraps(w);tickFalcon(w,dt);rings(w);
+ tickShots(w,dt);tickOrbs(w,dt);tickFamiliar(w,dt);tickLobs(w,dt);tickZones(w);tickMines(w);tickTraps(w);tickFalcon(w,dt);rings(w);
  const p=w.player,s=w.marksmanAction;
  if(p.hp<=0||p.dead){if(s&&marksmanActions(w.classId)[s.index]?.kind==='beam')stopMarksmanChannel(w);w.marksmanAction=null;return;}
+ if(isFrozen(w,p)){w.marksmanAction=null;return;}
  if(!s||w.paused)return;
  // A esquiva cancela a ação; o que já foi lançado continua. O Raio Arcano encerra e entra em recarga.
  if(w.dash.remaining>0){if(marksmanActions(w.classId)[s.index]?.kind==='beam')stopMarksmanChannel(w);w.marksmanAction=null;p.timer=0;w.castCooldown=0;return;}
@@ -110,7 +114,7 @@ function channelBeam(w,s,def,dt){
  s.beamEnd=end;
  if(w.time+1e-9>=(s.nextTick??0)){
   s.nextTick=w.time+def.tick;const damage=actionDamage(def,power(w),w.marksmanRanks);
-  for(const e of w.actors){if(!living(e))continue;if(sweep(from.x,from.y,end.x,end.y,e.x,e.y,def.width+(e.radius||.3))===null)continue;dealDamage(w,e,Math.max(1,Math.round(damage*bonusVs(w,e,def))),p,def.name);if(roll(w)<.5)fx(w,'impact',{x:e.x,y:e.y,dx:s.dx,dy:s.dy,color:def.color,size:.6,mood:'magic',duration:.2});}
+  for(const e of w.actors){if(!living(e))continue;if(sweep(from.x,from.y,end.x,end.y,e.x,e.y,def.width+(e.radius||.3))===null)continue;dealDamage(w,e,Math.max(1,Math.round(damage*bonusVs(w,e,def))),p,def.name,def.element);if(roll(w)<.5)fx(w,'impact',{x:e.x,y:e.y,dx:s.dx,dy:s.dy,color:def.color,size:.6,mood:'magic',duration:.2});}
   w.combatEvents?.push({kind:'arcaneBolt'});
  }
  // Traço contínuo: um raio novo a cada 0,07 s, cada um durando mais que o intervalo, e brilho no ponto final.
@@ -130,21 +134,8 @@ function mirror(w,s,def){
  try{release(w,{...s,dx,dy,target,aim:d,mirror:true},def);}finally{p.x=save.x;p.y=save.y;p.angle=save.angle;w.marksmanMirror=0;}
  c.angle=Math.atan2(dx,dy);c.animation=def.clip;c.animationTime=0;c.actionId++;
 }
-// Queimadura (Muralha de Fogo, Imbuir Fogo): dano a cada intervalo; uma nova renova a duração, sem acumular.
-function burn(w,e,damage,spec){
- if(!living(e))return;
- const active=e.burnUntil>w.time;
- e.burnDamage=Math.max(active?e.burnDamage||0:0,Math.max(1,Math.floor(damage)));e.burnInterval=spec.interval;e.burnUntil=Math.max(active?e.burnUntil:0,w.time+spec.time);
- if(!active)e.burnNext=w.time+spec.interval;
-}
-function tickBurns(w){
- if(w.paused)return;
- for(const e of w.actors){
-  if(!e.burnUntil||!living(e))continue;
-  while(e.burnNext<=w.time+1e-9&&e.burnNext<=e.burnUntil+1e-9&&living(e)){e.burnNext+=e.burnInterval;dealDamage(w,e,Math.max(1,Math.round(e.burnDamage*bonusVs(w,e,{element:'fire'}))),w.player,'Queimadura');}
-  if(w.time>=e.burnUntil){e.burnUntil=0;e.burnDamage=0;e.burnNext=0;}
- }
-}
+// Os selos antigos podem aumentar a potência do fogo já aplicado, sem criar uma carga extra.
+function burn(w,e,damage,spec){if(e.burnUntil>w.time)e.burnDamage=Math.max(e.burnDamage||0,Math.max(1,Math.floor(damage)));}
 // Lentidão do gelo do Mago: conta para o Estilhaçar; chefes recebem o dano, mas não ficam lentos.
 function chill(w,e,slow,time){if(!living(e)||boss(w,e))return;e.slow=Math.max(e.slow||0,slow);e.slowTime=Math.max(e.slowTime||0,time);e.frostUntil=Math.max(e.frostUntil||0,w.time+time);}
 
@@ -222,7 +213,7 @@ function release(w,s,def){
  if(def.kind==='clone'){const t=s.target||{x:p.x+s.dx*2,y:p.y+s.dy*2},spec=COMPANIONS[def.companion];const c=spawnCompanion(w,def.companion,t,{hp:p.maxHp*spec.hp,damage:0});c.angle=p.angle;fx(w,'summonBurst',{x:p.x,y:p.y,radius:.8,color:def.color,duration:.4});w.combatEvents?.push({kind:'blink'});return;}
  // Esfera de Gelo: avança devagar e solta cristais. Familiar de Fogo: acompanha e atira. Golem: companheiro.
  if(def.kind==='orb'){w.marksmanOrbs.push({id:w.nextId++,x:p.x+s.dx*.6,y:p.y+s.dy*.6,dx:s.dx,dy:s.dy,left:def.range,hits:new Set(),next:w.time+def.shard.interval,index:s.index,damage:actionDamage(def,power(w),w.marksmanRanks),k:w.marksmanMirror||0});w.combatEvents?.push({kind:'frostBlast'});return;}
- if(def.kind==='familiar'){w.marksmanFamiliar={index:s.index,until:w.time+def.life,next:w.time+.6,angle:0,x:p.x,y:p.y};fx(w,'summonBurst',{x:p.x,y:p.y,radius:1.2,color:def.color,duration:.5});w.combatEvents?.push({kind:'fireIgnite'});return;}
+ if(def.kind==='familiar'){w.marksmanFamiliar={index:s.index,next:w.time+.6,angle:0,x:p.x,y:p.y};fx(w,'summonBurst',{x:p.x,y:p.y,radius:1.2,color:def.color,duration:.5});w.combatEvents?.push({kind:'fireIgnite'});return;}
  if(def.kind==='summon'){const spec=COMPANIONS[def.companion],k=def.node==='golemDeGelo'?1+Math.max(0,(w.marksmanRanks?.golemDeGelo||0)-1)*MAGE.golemPerRank:1,damageK=summonDamageFactor(def,w.marksmanRanks);spawnCompanion(w,def.companion,{x:p.x+s.dx*1.5,y:p.y+s.dy*1.5},{hp:p.maxHp*spec.hp*k,damage:power(w)*spec.damage*damageK});w.combatEvents?.push({kind:'frostBlast'});return;}
  // Armadilha de Urso: assentada aos pés, arma depois de um instante; as mais antigas saem acima do limite.
  if(def.kind==='trap'){const traps=w.marksmanTraps;traps.push({id:w.nextId++,x:p.x+s.dx*.5,y:p.y+s.dy*.5,armAt:w.time+def.arm,until:w.time+def.life,index:s.index});while(traps.length>def.max)traps.shift();return;}
@@ -278,7 +269,7 @@ function tickShots(w,dt){
    s.hits.add(e.id);
    // Bola de Fogo: o contato vira explosão em área (que inclui o alvo).
    if(def.explode){explodeShot(w,def,e.x,e.y,s.k);stopped=true;break;}
-   dealDamage(w,e,Math.max(1,Math.round(s.damage*s.factor*bonusVs(w,e,def))),p,def.name);
+   dealDamage(w,e,Math.max(1,Math.round(s.damage*s.factor*bonusVs(w,e,def))),p,def.name,s.imbue?.element||def.element);
    if(s.doubleAmbush&&s.doubleAmbush===w.marksmanDoubleAmbush){
     w.marksmanDoubleAmbush=false;
     const d=marksmanActions('archer').find(d=>d.id==='impactoCeleste');
@@ -321,7 +312,7 @@ function explode(w,def,x,y,k=1){
  for(const e of w.actors){
   if(!living(e))continue;const dx=e.x-x,dy=e.y-y,d=Math.hypot(dx,dy);
   if(d>r+(e.radius||.3)||!lineClear(c,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name);push(w,e,d>1e-6?dx/d:1,d>1e-6?dy/d:0,def.knockback);
+  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name,def.element);push(w,e,d>1e-6?dx/d:1,d>1e-6?dy/d:0,def.knockback);
  }
  if(def.id==='bigBang'){fx(w,'bigBangBlast',{x,y,radius:r,color:def.color,marksmanBurst:true,duration:.85});w.combatEvents?.push({kind:'meteorImpact'});return;}
  fx(w,'groundBreak',{x,y,radius:r,color:def.color,shake:.15,duration:.55});
@@ -334,7 +325,7 @@ function tickLobs(w,dt){
  for(const b of w.marksmanLobs){
   if(w.paused)break;b.time+=dt;if(b.time+1e-9<b.flight)continue;
   const def=list[b.index];b.done=true;
-  if(def.fire){w.marksmanZones.push({kind:'fire',x:b.tx,y:b.ty,radius:def.radius,next:w.time,interval:def.interval,until:w.time+def.fireTime,damage:actionDamage(def,power(w),w.marksmanRanks),name:def.name,color:def.color,id:w.nextId++});fx(w,'impact',{x:b.tx,y:b.ty,h:.4,color:def.color,size:1.2,radius:1,mood:'fire',duration:.35});w.combatEvents?.push({kind:'fireIgnite'});}
+  if(def.fire){w.marksmanZones.push({kind:'fire',x:b.tx,y:b.ty,radius:def.radius,next:w.time,interval:def.interval,until:w.time+def.fireTime,damage:actionDamage(def,power(w),w.marksmanRanks),name:def.name,color:def.color,element:'fire',id:w.nextId++});fx(w,'impact',{x:b.tx,y:b.ty,h:.4,color:def.color,size:1.2,radius:1,mood:'fire',duration:.35});w.combatEvents?.push({kind:'fireIgnite'});}
   else if(def.net)net(w,def,b.tx,b.ty);
   else explode(w,def,b.tx,b.ty);
  }
@@ -347,7 +338,7 @@ function tickOrbs(w,dt){
  w.marksmanOrbs=w.marksmanOrbs.filter(o=>{
   const def=list[o.index];if(!def||w.paused)return !!def;
   const step=Math.min(o.left,def.speed*dt),pos=moveCircle(o,{x:o.dx*step,y:o.dy*step},.1,w.arena,{slide:false});o.x=pos.x;o.y=pos.y;o.left-=step;
-  for(const e of w.actors){if(!living(e)||o.hits.has(e.id)||Math.hypot(e.x-o.x,e.y-o.y)>def.radius+(e.radius||.3))continue;o.hits.add(e.id);dealDamage(w,e,Math.max(1,Math.round(o.damage*bonusVs(w,e,def))),p,def.name);}
+  for(const e of w.actors){if(!living(e)||o.hits.has(e.id)||Math.hypot(e.x-o.x,e.y-o.y)>def.radius+(e.radius||.3))continue;o.hits.add(e.id);dealDamage(w,e,Math.max(1,Math.round(o.damage*bonusVs(w,e,def))),p,def.name,def.element);}
   const S=def.shard;o.spin??=Math.atan2(o.dy,o.dx);
   while(o.next<=w.time+1e-9){
    o.next+=S.interval;o.spin+=S.step;
@@ -366,7 +357,7 @@ function tickOrbs(w,dt){
 function tickFamiliar(w,dt){
  const f=w.marksmanFamiliar;if(!f)return;
  const def=marksmanActions(w.classId)[f.index],p=w.player;
- if(!def||p.hp<=0||w.time>=f.until){w.marksmanFamiliar=null;if(def)fx(w,'summonBurst',{x:f.x,y:f.y,radius:.8,color:def.color,duration:.4});return;}
+ if(!def||p.hp<=0){w.marksmanFamiliar=null;if(def)fx(w,'summonBurst',{x:f.x,y:f.y,radius:.8,color:def.color,duration:.4});return;}
  if(!w.paused){f.angle+=dt*2.2;f.x=p.x+Math.cos(f.angle)*def.orbit;f.y=p.y+Math.sin(f.angle)*def.orbit;}
  if(!w.paused&&f.next<=w.time+1e-9){
   let best=null,near=def.pick;
@@ -381,7 +372,7 @@ function net(w,def,x,y){
  const p=w.player,c={x,y},rank=Math.max(1,w.marksmanRanks?.[def.node]||1),time=def.slowTime+(rank-1)*def.slowPerRank,damage=actionDamage(def,power(w),w.marksmanRanks);
  for(const e of w.actors){
   if(!living(e)||Math.hypot(e.x-x,e.y-y)>def.radius+(e.radius||.3)||!lineClear(c,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.max(1,Math.round(damage*bonusVs(w,e,def))),p,def.name);
+  dealDamage(w,e,Math.max(1,Math.round(damage*bonusVs(w,e,def))),p,def.name,def.element);
   if(e.hp>0&&!boss(w,e)){e.slow=Math.max(e.slow||0,def.slow);e.slowTime=Math.max(e.slowTime||0,time);e.netUntil=w.time+time;}
  }
  fx(w,'shockwave',{x,y,radius:def.radius,color:def.color,duration:.45});w.combatEvents?.push({kind:'scytheWind'});
@@ -392,7 +383,7 @@ function strike(w,z){
  for(const e of w.actors){
   if(!living(e))continue;const dx=e.x-z.x,dy=e.y-z.y,d=Math.hypot(dx,dy);
   if(d>z.radius+(e.radius||.3)||!lineClear(c,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name);push(w,e,d>1e-6?dx/d:1,d>1e-6?dy/d:0,z.knockback);
+  dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name,z.element||(z.kind==='fire'?'fire':null));push(w,e,d>1e-6?dx/d:1,d>1e-6?dy/d:0,z.knockback);
  }
  fx(w,'groundBreak',{x:z.x,y:z.y,radius:z.radius,color:z.color,shake:.2,duration:.6});
  fx(w,'impact',{x:z.x,y:z.y,h:.8,color:'#fff2c0',size:1.6,radius:z.radius*.6,mood:'claw',duration:.4});
@@ -426,7 +417,7 @@ function tickZones(w){
   if(z.kind==='wall'){
    while(z.next<=w.time+1e-9&&z.next<=z.until+1e-9){
     z.next+=z.interval;
-    for(const e of w.actors){if(!living(e)||wallDistance(z,e)>z.width+(e.radius||.3))continue;dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name);burn(w,e,z.burn.damage,z.burn);}
+    for(const e of w.actors){if(!living(e)||wallDistance(z,e)>z.width+(e.radius||.3))continue;dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name,z.element||(z.kind==='fire'?'fire':null));burn(w,e,z.burn.damage,z.burn);}
    }
    // Chamas só depois do aviso: cinco focos ao longo do segmento.
    if(w.time+1e-9>=z.armAt)for(let i=0;i<5;i++){const t=-z.half+z.half*i/2;w.effects.push({id:'mwall-'+z.id+'-'+i,marksmanFire:true,fx:'fireField',x:z.x+z.ux*t,y:z.y+z.uy*t,radius:.85,remaining:z.until-w.time,color:z.color,visual:true,ground:true,time:0,duration:10});}
@@ -434,7 +425,7 @@ function tickZones(w){
   }
   while(z.next<=w.time+1e-9&&z.next<=z.until+1e-9&&(z.kind!=='rain'||z.left>0)){
    z.next+=z.interval;if(z.kind==='rain')z.left--;
-   for(const e of w.actors){if(!living(e)||Math.hypot(e.x-z.x,e.y-z.y)>z.radius+(e.radius||.3)||(w.classId==='archer'&&!lineClear(z,e,.05,w.arena)))continue;dealDamage(w,e,Math.round(z.damage*(z.kind==='rain'||z.element?bonusVs(w,e,z):1)),p,z.name);}
+   for(const e of w.actors){if(!living(e)||Math.hypot(e.x-z.x,e.y-z.y)>z.radius+(e.radius||.3)||(w.classId==='archer'&&!lineClear(z,e,.05,w.arena)))continue;dealDamage(w,e,Math.round(z.damage*(z.kind==='rain'||z.element?bonusVs(w,e,z):1)),p,z.name,z.element||(z.kind==='fire'?'fire':null));}
    if(z.explosiveRain){
     fx(w,'impact',{x:z.x,y:z.y,h:.4,radius:z.radius,size:1.6,color:z.color,mood:'fire',duration:.35});
     let field=w.marksmanZones.find(f=>f.rainOwner===z.id);
@@ -471,7 +462,7 @@ function tickTraps(w){
   let prey=null,near=Infinity;
   for(const e of w.actors){if(!living(e))continue;const d=Math.hypot(e.x-t.x,e.y-t.y);if(d<=def.trigger+(e.radius||.3)&&d<near){near=d;prey=e;}}
   if(!prey)continue;
-  t.done=true;dealDamage(w,prey,Math.max(1,Math.round(actionDamage(def,power(w),w.marksmanRanks)*bonusVs(w,prey,def))),p,def.name);
+  t.done=true;dealDamage(w,prey,Math.max(1,Math.round(actionDamage(def,power(w),w.marksmanRanks)*bonusVs(w,prey,def))),p,def.name,def.element);
   if(prey.hp>0){prey.slow=boss(w,prey)?Math.max(prey.slow||0,def.bossSlow):1;prey.slowTime=Math.max(prey.slowTime||0,def.root);prey.trapUntil=w.time+def.root;}
   fx(w,'impact',{x:t.x,y:t.y,h:.3,color:def.color,size:1,radius:.6,mood:'claw',duration:.3});w.combatEvents?.push({kind:'soldierCut'});
  }
@@ -602,8 +593,8 @@ function cone(w,s,def){
  for(const e of w.actors){
   if(!living(e))continue;const x=e.x-p.x,y=e.y-p.y,n=Math.hypot(x,y);
   if(n>def.range+(e.radius||.3)||n>1e-6&&(x*s.dx+y*s.dy)/n<Math.cos(def.arc/2)||!lineClear(p,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name);
-  if(!boss(w,e)){e.slow=Math.max(e.slow||0,def.slow);e.slowTime=Math.max(e.slowTime||0,def.slowTime);e.frostUntil=w.time+def.slowTime;}
+  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name,def.element);
+  if(!boss(w,e)){e.slow=Math.max(e.slow||0,def.slow);e.slowTime=Math.max(e.slowTime||0,def.slowTime);e.frostUntil=Math.max(e.frostUntil||0,w.time+def.slowTime);}
  }
  w.effects.push({id:w.nextId++,kind:'slash',fx:'slash',x:p.x,y:p.y,dx:s.dx,dy:s.dy,radius:def.range,arc:def.arc,sparks:10,time:0,duration:.35,color:def.color,mood:'blade',visual:true});
  fx(w,'shockwave',{x:p.x+s.dx*2,y:p.y+s.dy*2,radius:2.5,color:def.color,duration:.4});
@@ -614,7 +605,7 @@ function nova(w,def){
  const p=w.player,damage=actionDamage(def,power(w),w.marksmanRanks);
  for(const e of w.actors){
   if(!living(e)||Math.hypot(e.x-p.x,e.y-p.y)>def.radius+(e.radius||.3)||!lineClear(p,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name);chill(w,e,def.slow,def.slowTime);
+  dealDamage(w,e,Math.round(damage*bonusVs(w,e,def)),p,def.name,def.element);chill(w,e,def.slow,def.slowTime);
  }
  fx(w,'shockwave',{x:p.x,y:p.y,radius:def.radius,color:def.color,duration:.5});
  fx(w,'groundBreak',{x:p.x,y:p.y,radius:def.radius*.8,color:'#cfefff',shake:.08,duration:.5});
@@ -627,7 +618,7 @@ function land(w,z,d){
  const p=w.player,c={x:d.x,y:d.y};
  for(const e of w.actors){
   if(!living(e)||Math.hypot(e.x-d.x,e.y-d.y)>z.drop+(e.radius||.3)||!lineClear(c,e,.05,w.arena))continue;
-  dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name);if(z.slow)chill(w,e,z.slow,z.slowTime);
+  dealDamage(w,e,Math.max(1,Math.round(z.damage*bonusVs(w,e,z))),p,z.name,z.element||(z.kind==='fire'?'fire':null));if(z.slow)chill(w,e,z.slow,z.slowTime);
  }
  fx(w,'groundBreak',{x:d.x,y:d.y,radius:z.drop,color:z.color,shake:z.snow?.08:.18,duration:.6});
  fx(w,'impact',{x:d.x,y:d.y,h:.8,color:z.snow?'#f4fbff':'#ffcf7a',size:z.snow?1.3:1.6,radius:z.drop*.6,mood:z.snow?'magic':'fire',duration:.45});

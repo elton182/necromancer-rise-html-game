@@ -2201,12 +2201,17 @@ export default {
        ],
        [
         "leap",
-        24,
+        16,
         122
        ],
        [
         "wildHeart",
-        76,
+        50,
+        122
+       ],
+       [
+        "frenetico",
+        84,
         122
        ],
        [
@@ -2223,6 +2228,11 @@ export default {
         "howl",
         84,
         226
+       ],
+       [
+        "luaPrateada",
+        50,
+        330
        ]
       ]
      },
@@ -2352,7 +2362,7 @@ export default {
    },
    "wolf": {
     "name": "Forma de Lobo",
-    "description": "F: transforma em lobisomem. Garras corpo a corpo, 20% menos dano recebido e 35% mais movimento, mas sem magias. A forma consome mana e cada golpe de garra devolve 3. +8% de dano das garras por ponto. Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Transforma em lobo: +40% de vida máxima e 40% menos dano recebido. Regenera 0,7% da vida máxima por segundo e as Garras curam 1,2% da vida máxima quando acertam, uma vez por golpe. Não consome mana enquanto dura, mas também não a regenera; Garras recuperam 3 mana. Transformar preserva a proporção de vida.",
     "perRank": "",
     "icon": "",
     "effects": {},
@@ -2382,7 +2392,7 @@ export default {
    },
    "wildHeart": {
     "name": "Coração Selvagem",
-    "description": "A forma de lobo consome 1 mana por segundo a menos por ponto (de 4/s para até 1/s). Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
     "perRank": "",
     "icon": "",
     "effects": {},
@@ -2391,6 +2401,22 @@ export default {
     "branch": "wild",
     "max": 3,
     "level": 6,
+    "requires": [
+     "wolf"
+    ],
+    "excludes": []
+   },
+   "frenetico": {
+    "name": "Frenético",
+    "description": "Cada golpe de Garras que acerta soma 1 acúmulo de Frenético (até 5); cada acúmulo deixa as Garras 12% mais rápidas (+4% por ponto além do primeiro). Os acúmulos somem juntos após 2,5 s sem acertar as garras ou ao voltar à forma humana. Com 3 ou mais acúmulos, Garras sem inimigo ao alcance na mira viram um bote até o inimigo visível mais próximo da mira, a até 6 u: a Druida salta, golpeia ao cair e continua o combo (o bote espera 1 s para se repetir).",
+    "perRank": "",
+    "icon": "",
+    "effects": {},
+    "type": "passiva",
+    "tree": "habilidades",
+    "branch": "wild",
+    "max": 3,
+    "level": 4,
     "requires": [
      "wolf"
     ],
@@ -2516,7 +2542,7 @@ export default {
    },
    "garraDeGelo": {
     "name": "Garra de Gelo",
-    "description": "Na forma de lobo (T / 6): garra gelada em cone estreito, até 3 u, com 130% do dano. Os atingidos ficam 50% mais lentos por 2,5 s; chefes recebem só o dano. +10% do dano base por ponto depois do primeiro (até +40%). Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Na forma de lobo: três garras gélidas até 4,5 u, 130% do dano, 50% de lentidão por 2,5 s e uma carga de gelo por alvo. Cinco cargas provocam congelamento breve; chefes sofrem duração menor.",
     "perRank": "+10% do dano base por ponto depois do primeiro (até +40%)",
     "icon": "",
     "effects": {},
@@ -2532,7 +2558,7 @@ export default {
    },
    "corteSangrento": {
     "name": "Corte Sangrento",
-    "description": "Na forma de lobo: golpe em semicírculo de 180° até 4,6 u com 90% do dano. Os atingidos sangram: 15% a cada 0,5 s por 4 s. Um novo corte renova, sem somar. +10% do dano do golpe e do sangramento por ponto depois do primeiro. Sinergia de Selvagem: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Na forma de lobo: três garras vermelhas até 6 u, dano e sangramento. Recupera 12% da vida realmente retirada pelo golpe inicial, limitado a 5% da vida máxima por uso. Sem acerto, sem cura.",
     "perRank": "+10% do dano do golpe e do sangramento por ponto depois do primeiro",
     "icon": "",
     "effects": {},
@@ -2548,7 +2574,7 @@ export default {
    },
    "plantaCarnivora": {
     "name": "Planta Carnívora",
-    "description": "Usar Raízes faz nascer uma planta carnívora no ponto mirado por 8 s. Ela tem 60% da vida máxima da Druida, ataca até 4,5 u a cada 1,4 s com 45% do dano mágico e pode ser destruída. Só uma planta por vez; não ocupa slot adicional. +10% de vida e dano da planta por ponto depois do primeiro. Sinergia de Natureza: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Usar Raízes faz nascer uma planta carnívora permanente no ponto mirado, sem limite de duração. Ela tem 60% da vida máxima da Druida, ataca até 4,5 u a cada 1,4 s com 45% do dano mágico e pode ser destruída. Só uma planta por vez; não ocupa slot adicional. +10% de vida e dano da planta por ponto depois do primeiro. Sinergia de Natureza: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
     "perRank": "+10% de vida e dano da planta por ponto depois do primeiro",
     "icon": "",
     "effects": {},
@@ -2627,7 +2653,7 @@ export default {
    },
    "florestaTropical": {
     "name": "Floresta Tropical",
-    "description": "Evoca cinco plantas carnívoras por 10 s numa área de raio 4,5, até 10 u. Cada uma usa os atributos de Planta Carnívora: 60% da vida máxima, 45% do dano mágico, alcance 4,5 u e ataque a cada 1,4 s, com os pontos e sinergias dela. Podem ser destruídas. Uma nova Floresta substitui as cinco anteriores; a planta das Raízes tem limite separado. Sem espaço para cinco plantas visíveis fora de paredes, não gasta mana nem recarga.",
+    "description": "Evoca cinco plantas carnívoras permanentes, sem limite de duração, numa área de raio 4,5, até 10 u. Cada uma usa os atributos de Planta Carnívora: 60% da vida máxima, 45% do dano mágico, alcance 4,5 u e ataque a cada 1,4 s, com os pontos e sinergias dela. Podem ser destruídas. Uma nova Floresta substitui as cinco anteriores; a planta das Raízes tem limite separado. Sem espaço para cinco plantas visíveis fora de paredes, não gasta mana nem recarga.",
     "perRank": "",
     "icon": "🌳",
     "effects": {},
@@ -2670,6 +2696,22 @@ export default {
     "level": 12,
     "requires": [
      "alcateia"
+    ],
+    "excludes": []
+   },
+   "luaPrateada": {
+    "name": "Lua Prateada",
+    "description": "Por 30 segundos, cada ataque lançado na forma de lobo evoca um meteoro de gelo na presa à frente ou no ponto mirado. Impacto após 0,5 s, raio 1,8 u, 65% do poder natural e uma carga de gelo. Um meteoro por ataque, inclusive no cruzado. Y ou botão próprio junto à transformação.",
+    "perRank": "",
+    "icon": "",
+    "effects": {},
+    "type": "ativa",
+    "tree": "habilidades",
+    "branch": "wild",
+    "max": 1,
+    "level": 12,
+    "requires": [
+     "garraDeGelo"
     ],
     "excludes": []
    }
@@ -3985,7 +4027,7 @@ export default {
    },
    "familiarDeFogo": {
     "name": "Familiar de Fogo",
-    "description": "Invoca um espírito de fogo que acompanha o Mago por 20 s. A cada 1,2 s ele lança uma pequena bola de fogo no inimigo mais próximo do Mago, até 9 u, com 40% do dano e explosão de raio 1,2 (com a Combustão, o chão também queima). Lançar de novo renova o espírito. Sinergia de Fogo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Invoca um espírito de fogo permanente, sem limite de duração, que acompanha o Mago. A cada 1,2 s ele lança uma pequena bola de fogo no inimigo mais próximo do Mago, até 9 u, com 40% do dano e explosão de raio 1,2 (com a Combustão, o chão também queima). Lançar de novo renova o espírito. Sinergia de Fogo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
     "perRank": "+10% de dano das bolas de fogo (a partir do segundo ponto)",
     "icon": "",
     "effects": {},
@@ -4001,7 +4043,7 @@ export default {
    },
    "golemDeGelo": {
     "name": "Golem de Gelo",
-    "description": "Invoca um golem de gelo ao lado do Mago por 25 s. Ele tem 120% da vida máxima do Mago, avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando o alvo 30% mais lento por 1,5 s. Inimigos perto dele passam a atacá-lo. Só um golem por vez. Sinergia de Gelo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
+    "description": "Invoca um golem de gelo permanente ao lado do Mago, sem limite de duração. Ele tem 120% da vida máxima do Mago, avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando o alvo 30% mais lento por 1,5 s. Inimigos perto dele passam a atacá-lo. Só um golem por vez. Sinergia de Gelo: cada ponto investido fortalece em +2% do dano base as outras habilidades de dano deste ramo.",
     "perRank": "+10% de vida e de dano do golem (a partir do segundo ponto)",
     "icon": "",
     "effects": {},

@@ -1,3 +1,4 @@
+import {isFrozen} from './elements.mjs';
 import {ACTIONS,available} from './actions.mjs';
 import R from './horde-rules.mjs';
 import Build from './full-build.mjs';
@@ -154,7 +155,7 @@ export function tickHorde(w,dt){
  for(const key of Object.keys(w.army.cooldowns))w.army.cooldowns[key]=Math.max(0,w.army.cooldowns[key]-dt);
  const group=w.actors.filter(m=>m.groupType);
  for(let index=0;index<group.length;index++){
-  const m=group[index];
+  const m=group[index];if(isFrozen(w,m)){m.animation='idle';continue;}
   if(m.possessed){if(!alive(m)){m.animationTime+=dt;m.corpseTime=(m.corpseTime||0)+dt;if(m.corpseTime>=2)w.actors=w.actors.filter(a=>a!==m);continue;}m.possessionRemaining=Math.max(0,m.possessionRemaining-dt);m.abilityLabel='Possuído · '+Math.ceil(m.possessionRemaining)+'s';m.labelTime=.2;if(m.possessionRemaining<=1e-9||w.player.hp<=0){killMember(w,m,'expired');continue;}}
   m.animationTime+=dt;m.timer=Math.max(0,m.timer-dt);m.attackCooldown=Math.max(0,m.attackCooldown-dt);m.abilityCooldown=Math.max(0,m.abilityCooldown-dt);m.labelTime=Math.max(0,(m.labelTime||0)-dt);m.pose=null;
   if(!alive(m)){if(!m.deathHandled)killMember(w,m,m.sacrificed?'sacrificed':m.exploded?'exploded':'normal');m.deadTimer=Math.max(0,m.deadTimer-dt);if(m.deadTimer<=1e-9)restore(w,m,R.tuning.autoReviveHealth);continue;}

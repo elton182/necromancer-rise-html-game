@@ -1,7 +1,21 @@
 // Várzea de Itaúna: área ligada a Jacarandá por estrada, com um forte e uma gruta em mapas próprios.
 import {NILO_POINTS} from './nilo-model.mjs';
+import {CEDRO_POINTS,CEDRO_GATES,CEDRO_GROUPS,cedroObjectives} from './cedro-model.mjs';
 // Regras puras: pontos da história, passagens entre mapas, grade do forte e objetivos. Sem DOM nem Three.js.
 export const FORT_GATE={id:'fort-portcullis',x:0,y:6,width:4.8,depth:1,height:4.4,requires:['fort-gate','fort-west','fort-east']};
+export const FORT_ASSAULT_POINTS=[
+ {id:'fort-gate',key:'fort-position-gate',x:0,y:50,name:'Guarda da entrada',direction:'à frente da entrada'},
+ {id:'fort-west',key:'fort-position-west',x:-44,y:38,name:'Barracas do oeste',direction:'à esquerda, nas barracas do oeste'},
+ {id:'fort-east',key:'fort-position-east',x:42,y:40,name:'Campo de treino do leste',direction:'à direita, no campo de treino do leste'}
+];
+export function fortAssaultObjective(p){
+ const cleared=p?.cleared||[],left=FORT_ASSAULT_POINTS.filter(g=>!cleared.includes(g.id)),count=3-left.length;
+ return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:`Abra o pátio interno: ${count}/3 posições tomadas. Derrote todas as levas ${left[0]?.direction||'do pátio'}. A grade abre automaticamente ao tomar as três posições.`,target:left[0]||FORT_POINTS.inner};
+}
+export const fortAssaultCast=p=>!gateOpen(FORT_GATE,p?.cleared)?[
+ ...FORT_ASSAULT_POINTS.filter(g=>!p?.cleared?.includes(g.id)).map(g=>({...g,questMarker:'⚔'})),
+ {key:'fort-gate-orders',x:0,y:12,name:'Grade interna — tome as três posições',questMarker:'!'}
+]:[];
 export const ITAUNA_POINTS={
  entrance:{x:-176,y:22,name:'Estrada de Jacarandá'},
  fortGate:{x:105,y:-77.5,name:'Portão do Forte da Pedra Negra'},
@@ -19,6 +33,7 @@ export const FORT_POINTS={keep:{x:0,y:-30,name:'Torre de menagem'},gate:{x:0,y:6
 export const CAVE_POINTS={exit:{x:66,y:75,name:'Saída da gruta'},queen:{x:-40,y:-58,name:'Câmara da Mãe-Tecelã'},den:{x:8,y:52,name:'Covil dos lobos'},lake:{x:-2,y:-40,name:'Lago subterrâneo'},nursery:{x:62,y:-36,name:'Berçário'}};
 // `exits`: pisar no anel leva a `to` (null é o mundo de Jacarandá) e chega em `entry`. As chegadas ficam fora dos anéis, para ninguém voltar sem querer.
 export const AREAS={
+ cedro:{slot:'cedro',ref:'builtin:cedro',name:'Passo do Cedro',music:'forest',entries:{village:{x:-126,y:134},camp:{x:80,y:-76}},exits:[{id:'cedro-home',...CEDRO_POINTS.exit,r:3,to:null,entry:'village',name:'Voltar a Jacarandá'}],gates:CEDRO_GATES},
  itavera:{slot:'itavera',ref:'builtin:itavera',name:'Itavera · praça das guildas',music:'village',
   entries:{caravan:{x:0,y:24}},exits:[{id:'itavera-home',x:0,y:30,r:2.5,to:null,entry:'village',name:'Caravana para Jacarandá'}]},
  itauna:{slot:'itauna',ref:'builtin:itauna',name:'Várzea de Itaúna',music:'forest',
@@ -35,7 +50,7 @@ export const AREA_IDS=Object.keys(AREAS);
 export const isArea=id=>typeof id==='string'&&Object.hasOwn(AREAS,id);
 export const areaEntry=(id,entry)=>{const a=AREAS[id];return a.entries[entry]||Object.values(a.entries)[0];};
 // Grupos que não voltam depois de derrotados. Os demais rearmam ao retornar à vila, como no mundo de Jacarandá.
-export const ITAUNA_QUEST_GROUPS=['fort-gate','fort-west','fort-east','fort-inner-w','fort-inner-e','fort-captain','cave-queen','islet-guard'];
+export const ITAUNA_QUEST_GROUPS=[...CEDRO_GROUPS,'fort-gate','fort-west','fort-east','fort-inner-w','fort-inner-e','fort-captain','cave-queen','islet-guard'];
 export const gateOpen=(gate,cleared=[])=>gate.requires.every(id=>cleared.includes(id));
 export const gateSolid=g=>({kind:'box',x:g.x,y:g.y,width:g.width,depth:g.depth,height:g.height,look:'fort-gate',gateId:g.id});
 // Nomes da fala do jogo: o tipo continua o mesmo (índice, regras e modelo); só o rótulo muda.
@@ -48,17 +63,19 @@ const ZONES={itauna:[[ITAUNA_POINTS.camp,24],[ITAUNA_POINTS.fishing,20],[ITAUNA_
  'itauna-fort':[[{x:0,y:-24,name:'Pátio interno'},52],[{x:0,y:36,name:'Pátio externo'},60]],
  'itauna-cave':[[CAVE_POINTS.queen,24],[CAVE_POINTS.den,24],[{x:-2,y:-22,name:'Lago subterrâneo'},28],[CAVE_POINTS.nursery,24]]};
 export function areaRegion(id,p){
+ if(id==='cedro')return p.y<-70?'Acampamento da Colina':p.y<52?'Povoado do Cedro':'Estrada das Carroças';
  let best=null,score=Infinity;for(const [point,r] of ZONES[id]||[]){const d=Math.hypot(p.x-point.x,p.y-point.y);if(d<r&&d/r<score){best=point;score=d/r;}}
  return best?.name||AREAS[id]?.name||'';
 }
 // Objetivos da área em que o jogador está: os alvos usam as coordenadas do próprio mapa.
 export function areaObjectives(id,progress){
+ if(id==='cedro')return cedroObjectives(progress);
  if(id==='itavera'){
   if(progress?.nilo==='itavera')return [{title:'A denúncia chega a Itavera',text:'Fale com Helena, do Conselho das Guildas, e entregue a carta e as provas da Pedra Negra.',target:NILO_POINTS.helena}];
   if(progress?.nilo==='invitation')return [{title:'Uma conversa com João',text:'Helena recebeu a denúncia. João tem uma proposta: procure o ! sobre ele.',target:NILO_POINTS.cityJoao}];
   return [{title:'Ato I · Além das Muralhas concluído',text:'A escolta foi cumprida e o convite está aceito. A viagem do Ato II ainda não está disponível; volte a Jacarandá ou explore a praça.',target:AREAS.itavera.exits[0]}];
  }
- const nilo=niloAreaObjective(id,progress),base=placeObjectives(id,progress);
+ const nilo=niloAreaObjective(id,progress),base=id==='itauna-fort'&&progress?.nilo==='fort'?[]:placeObjectives(id,progress);
  return nilo?[nilo,...base]:base;
 }
 // O rastro de João na área: vem antes dos objetivos de exploração e guia a bússola.
@@ -73,14 +90,14 @@ function niloAreaObjective(id,progress){
   return {title:'A denúncia recuperada',text:'Você tem a bolsa e as provas. Volte a Jacarandá pela estrada oeste e entregue tudo a João.',target:ITAUNA_POINTS.entrance};
  }
  if(id==='itauna-cave'){
-  if(stage==='road'||stage==='cave')return done('cave-queen')?{questId:'joao-rescue',title:'João nas teias',text:'A Mãe-Tecelã caiu. Corte o casulo no fundo da câmara e liberte João (G).',target:NILO_POINTS.cocoon}:{questId:'joao-rescue',title:'João nas teias',text:'João fugiu para as galerias e foi apanhado pelas aranhas. Derrote a Mãe-Tecelã, a noroeste, para libertá-lo.',target:NILO_POINTS.cocoon};
+  if(stage==='road'||stage==='cave')return done('cave-queen')?{questId:'joao-rescue',title:'João nas teias',text:'A Mãe-Tecelã caiu. Corte o casulo no fundo da câmara e liberte João (G).',target:NILO_POINTS.cocoon}:{questId:'joao-rescue',title:'João nas teias',text:'João fugiu para as galerias e foi apanhado pelas aranhas. Derrote a Mãe-Tecelã gigante e a guarda do ninho, a noroeste. Desvie das teias e do veneno; depois, liberte João no casulo com G.',target:NILO_POINTS.cocoon};
   return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:stage==='fort'?'João está livre. Saia da gruta e siga ao forte para recuperar a bolsa e as provas.':'Volte a Jacarandá e leve a bolsa e as provas a João.',target:CAVE_POINTS.exit};
  }
  if(id==='itauna-fort'){
   if(stage==='fort'){
-   if(!gateOpen(FORT_GATE,progress?.cleared))return {questId:'joao-letter',title:'A carta e a Pedra Negra',text:'Tome o pátio externo para abrir a grade. A carga e as provas estão no pátio interno.',target:FORT_POINTS.inner};
-   if(!done('fort-captain'))return {questId:'joao-letter',title:'Detenha a operação da Pedra Negra',text:'Derrote o capitão para impedir a nova incursão a Jacarandá e recuperar a carga.',target:FORT_POINTS.keep};
-   return !progress.niloLetter?{questId:'joao-letter',title:'A bolsa de João',text:'Recupere a bolsa com a carta no depósito a leste do pátio interno (G).',target:NILO_POINTS.bag}:{questId:'joao-letter',title:'As provas da perseguição',text:'A carta está segura. Examine a mesa diante da torre para guardar o contrato e as ordens (G).',target:NILO_POINTS.contract};
+   if(!gateOpen(FORT_GATE,progress?.cleared))return fortAssaultObjective(progress);
+   if(!done('fort-captain'))return {questId:'joao-letter',title:'Detenha a operação da Pedra Negra',text:'A grade abriu. Avance pelo corredor central e derrote o capitão e todas as levas da guarda diante da torre. Depois, recolha dois objetos com !: contrato na mesa e carta no depósito leste.',target:FORT_POINTS.keep};
+   return !progress.niloEvidence?{questId:'joao-letter',title:'As provas da perseguição',text:progress.niloLetter?'A carta já está com você. Vá ao ! na mesa diante da torre e pressione G para guardar o contrato e as ordens; depois, volte a João.':'O capitão caiu. Vá ao ! na mesa diante da torre e pressione G para guardar o contrato e as ordens. A bolsa com a carta é outro objeto, no depósito leste.',target:NILO_POINTS.contract}:{questId:'joao-letter',title:'A bolsa de João',text:'Contrato guardado. Vá ao ! no depósito à direita (leste) do pátio interno e pressione G para recuperar a bolsa com a carta. Depois, volte a João em Jacarandá.',target:NILO_POINTS.bag};
   }
   return {questId:'joao-rescue',title:'O rastro de João',text:stage==='return'?'Volte a Jacarandá e leve a bolsa e as provas a João.':stage==='cave'?'João fugiu para a Gruta das Tecelãs.':'O livro dos saqueadores, no acampamento, pode dizer para onde João foi.',target:FORT_POINTS.gate};
  }
@@ -89,7 +106,7 @@ function niloAreaObjective(id,progress){
 function placeObjectives(id,progress){
  const done=g=>progress?.cleared?.includes(g);
  if(id==='itauna-fort'){
-  if(!gateOpen(FORT_GATE,progress?.cleared))return [{title:'Tome o pátio externo',text:'A grade interna só sobe quando os três grupos do pátio caírem: portão, barracas a oeste e campo de treino a leste.',target:FORT_POINTS.inner}];
+  if(!gateOpen(FORT_GATE,progress?.cleared))return [fortAssaultObjective(progress)];
   if(!done('fort-captain'))return [{title:'O capitão da Pedra Negra',text:'A grade subiu. Atravesse o pátio interno e derrote o capitão diante da torre de menagem.',target:FORT_POINTS.keep}];
   return [{title:'Forte tomado',text:'A Pedra Negra está em silêncio. Volte à várzea pelo portão sul.',target:FORT_POINTS.gate}];
  }

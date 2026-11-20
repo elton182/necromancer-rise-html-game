@@ -1,3 +1,6 @@
+import {tickCaveQueen} from './cave-queen.mjs';
+import {tickBento} from './cedro-combat.mjs';
+import {isFrozen} from './elements.mjs';
 import BaseTypes from './enemy-types.mjs';
 import R from './enemy-rules.mjs';
 import Hound from './shared-crypt-hound.mjs';
@@ -9,10 +12,13 @@ import {navigate,resolvePosition,moveCircle,lineClear} from './terrain.mjs';
 import {blockEnemyByWalls,firstWallHit,absorbWallProjectile} from './spells.mjs';
 import {fx,slashFx,hitFx} from './vfx-events.mjs';
 import {plan} from './enemy-tactics.mjs';
+// Resistência global da v2, antes de nível, raridade e ajustes próprios dos modos.
+// A v1 e os índices dos tipos permanecem intactos; chefes conservam seus multiplicadores.
+export const ENEMY_RESILIENCE={floor:96,multiplier:3};
 // Extensão exclusiva da v2: índices legados permanecem intactos.
 const Types=[...BaseTypes.map((t,i)=>i===0?{...t,hp:60}:t),...[['hoodedThief','Ladrão'],['griffinHumanoid','Humanoide Grifo'],['spider','Aranha']].map(([id,name])=>({...BaseTypes[0],id,name})),
  // Ladino Arqueiro usa as regras do Arqueiro (`rules`); Orc é corpo a corpo com golpe de maça preparado. Atributos provisórios.
- {...BaseTypes[1],id:'hoodedArcher',name:'Ladino Arqueiro',rules:'Arqueiro'},{...BaseTypes[2],id:'orc',name:'Orc',hp:110,dmg:14,spd:1.5,xp:24,souls:16,sc:1.3}];
+ {...BaseTypes[1],id:'hoodedArcher',name:'Ladino Arqueiro',rules:'Arqueiro'},{...BaseTypes[2],id:'orc',name:'Orc',hp:110,dmg:14,spd:1.5,xp:24,souls:16,sc:1.3}].map(t=>({...t,hp:Math.max(ENEMY_RESILIENCE.floor,t.hp*ENEMY_RESILIENCE.multiplier)}));
 export {Types,R,Hound,Acolyte,Expedition};
 export const models=['enemySoldier','enemyRogue','brute','livingMage','cryptHound','warAcolyte','enemyThief','enemyGriffin','enemySpider','enemyRogue','enemyOrc'];
 // Voo baixo: a projeção no chão mantém as colisões e a vulnerabilidade comuns.
@@ -42,7 +48,7 @@ export function warBuffActive(w,e){return !!(e.warBuff&&e.warBuff.until>w.time&&
 function power(w,e,n){return Acolyte.damage(n,e,w.actors.filter(a=>a.team==='enemy'))*(warBuffActive(w,e)?CRY.damage:1);}
 function hurt(w,e,t,n){slashFx(w,e,t);return dealDamage(w,t,power(w,e,n),e);}
 function area(w,e,x,y,r,n,mult=1,def=null){
- for(const t of targets(w))if(Math.hypot(t.x-x,t.y-y)<=r)dealDamage(w,t,Math.round(power(w,e,n)*mult),e);
+ for(const t of targets(w))if(Math.hypot(t.x-x,t.y-y)<=r)dealDamage(w,t,Math.round(power(w,e,n)*mult),e,null,def?.kind==='fire'?'fire':null);
  if(def)fx(w,'shockwave',{x,y,radius:r,color:def.color,mood:def.kind==='fire'?'fire':'dust',shake:def.kind==='leap'?.3:.12,duration:.5});
 }
 function mark(w,e,key,x,y,r,color,extra={}){w.effects.push({id:`enemy-${e.id}-${key}`,enemyWarning:e.id,x,y,radius:r,color,kind:'enemyWarning',harmless:e.typeIndex===5,visual:true,ground:true,fixedRadius:true,time:0,duration:10,...extra});}
@@ -89,7 +95,8 @@ function callPack(w,e){
  for(let i=0;i<n;i++){const a=w.random()*Math.PI*2,p=resolvePosition({x:e.x+Math.cos(a)*1.9,y:e.y+Math.sin(a)*1.9},.3,w.arena),pup=spawnEnemy(w,4,p.x,p.y,{wave:e.gearWave,tier:'common'});pup.summoned=e.id;pup.rewarded=true;pup.xp=0;}
 }
 export function tickEnemy(w,e,dt){
- w.effects=w.effects.filter(f=>f.enemyWarning!==e.id);const t=target(w,e);if(!t)return;const rk=e.type.rules||e.type.name;e.abilityLabel=e.type.name+(e.lootTier==='common'?'':' · '+Expedition.tiers[e.lootTier].name);e.labelTime=.2;
+ if(isFrozen(w,e)){e.animation='idle';e.pose={anim:'idle',progress:0};return;}
+ w.effects=w.effects.filter(f=>f.enemyWarning!==e.id);if(e.cedroBoss)return tickBento(w,e,dt,{targets,target,spawnEnemy});if(e.caveQueen)return tickCaveQueen(w,e,dt,{targets,target,spawnEnemy,shoot});const t=target(w,e);if(!t)return;const rk=e.type.rules||e.type.name;e.abilityLabel=e.type.name+(e.lootTier==='common'?'':' · '+Expedition.tiers[e.lootTier].name);e.labelTime=.2;
  const dx=t.x-e.x,dy=t.y-e.y,d=Math.hypot(dx,dy)||1;e.angle=Math.atan2(dx,dy);e.atkTimer=Math.max(0,e.atkTimer-dt);
  if(e.typeIndex===10){
   e.cryCd=Math.max(0,(e.cryCd??5)-dt);
@@ -190,15 +197,16 @@ export function tickEnemy(w,e,dt){
  else{if(R.ranged[rk]&&tac.goal){const x=e.x,y=e.y;move(w,e,tac.goal,e.spd*tac.speed,dt);if(tac.mode==='strafe'&&Math.hypot(e.x-x,e.y-y)<1e-4)e.tac.side=-e.tac.side;}else e.animation='idle';if(e.atkTimer<=0){e.atkTimer=R.ranged[rk]?R.basic.rangedInterval:e.typeIndex===4?R.basic.hound.interval:e.typeIndex===5?R.basic.acolyte.interval:R.tuning.meleeInterval;e.animation='attack';e.animationTime=0;e.timer=.3;e.actionId++;if(R.ranged[rk])shoot(w,e,dx/d,dy/d,e.dmg,rk==='Arqueiro'?12:8,2,rk==='Arqueiro'?'arrow':'magic');else hurt(w,e,t,e.dmg);}}
 }
 export function tickHostiles(w,dt){
+ const sourceAlive=effect=>!effect.bossOwned||w.actors.some(a=>a.id===effect.source&&a.hp>0&&!a.dead);w.hostileZones=w.hostileZones.filter(sourceAlive);w.hostileShots=w.hostileShots.filter(sourceAlive);
  w.effects=w.effects.filter(f=>!f.warAura);for(const a of w.actors){if(!warBuffActive(w,a)){a.warBuff=null;continue;}if(a.hp>0)w.effects.push({id:'war-aura-'+a.id,warAura:true,fx:'dangerRune',x:a.x,y:a.y,radius:a.radius+.35,color:'#ed8051',harmless:true,noFill:true,progress:1,visual:true,ground:true,time:0,duration:10});}
 
  w.effects=w.effects.filter(f=>!f.hostileShot);for(const s of [...w.hostileShots]){const e=w.actors.find(a=>a.id===s.source);const travel=Math.min(s.remaining,s.speed*dt),end={x:s.x+s.dx*travel,y:s.y+s.dy*travel};let hit=null;
  for(const t of targets(w)){const k=Hound.circleHit(s.x,s.y,end.x,end.y,t.x,t.y,.6);if(k!==null&&(!hit||k<hit.t))hit={t:k,target:t};}
  const wall=firstWallHit(w,s,end);const q=moveCircle(s,{x:end.x-s.x,y:end.y-s.y},.1,w.arena,{slide:false}),solid=q.blocked?(travel?q.distance/travel:0):Infinity;
- if(wall&&wall.t<=solid&&(!hit||wall.t<=hit.t)){absorbWallProjectile(w,s,end,s.damage);s.remaining=0;}else if(solid!==Infinity&&(!hit||solid<=hit.t))s.remaining=0;else if(hit){const result=dealDamage(w,hit.target,s.damage,e);if(s.kind==='web'&&!result.blocked&&(result.applied>0||result.absorbed>0)&&hit.target.hp>0){hit.target.rootTime=2;}if(!e)hitFx(w,hit.target,s,{color:s.kind==='arrow'?'#f2e2a0':s.kind==='feather'?FEATHER.color:'#d08cff',size:.9,mood:'pierce'});s.remaining=0;}
+ if(wall&&wall.t<=solid&&(!hit||wall.t<=hit.t)){absorbWallProjectile(w,s,end,s.damage);s.remaining=0;}else if(solid!==Infinity&&(!hit||solid<=hit.t))s.remaining=0;else if(hit){const result=dealDamage(w,hit.target,s.damage,e,null,s.kind==='fire'?'fire':null);if(s.kind==='web'&&!result.blocked&&(result.applied>0||result.absorbed>0)&&hit.target.hp>0){hit.target.rootTime=2;}if(!e)hitFx(w,hit.target,s,{color:s.kind==='arrow'?'#f2e2a0':s.kind==='feather'?FEATHER.color:'#d08cff',size:.9,mood:'pierce'});s.remaining=0;}
  s.x=end.x;s.y=end.y;s.remaining-=travel;if(s.remaining>0)w.effects.push({id:`shot-${s.id}`,hostileShot:true,fx:'projectile',shot:s.kind,rogueTrail:s.rogueTrail,dx:s.dx,dy:s.dy,x:s.x,y:s.y,radius:s.kind==='arrow'?.16:s.kind==='feather'?.2:.3,color:s.kind==='web'?'#e3e9ec':s.kind==='arrow'?'#edce77':s.kind==='feather'?FEATHER.color:'#ff7755',visual:true,time:0,duration:10});if(s.remaining<=1e-9)w.hostileShots=w.hostileShots.filter(a=>a!==s);
  }
  // Poças com `delay` só avisam (cor clara) e depois causam dano a cada segundo; `gearWave` vem da fonte ou do próprio dado.
- for(const z of w.hostileZones){if(z.delay>0){z.delay-=dt;continue;}const active=Math.min(dt,z.life);z.tick-=active;while(z.tick<=1e-9){for(const t of targets(w))if(Math.hypot(t.x-z.x,t.y-z.y)<=z.radius)dealDamage(w,t,z.damage,{gearWave:z.gearWave??w.actors.find(a=>a.id===z.source)?.gearWave??1});z.tick++;}z.life-=dt;}
+ for(const z of w.hostileZones){if(z.delay>0){z.delay-=dt;continue;}const active=Math.min(dt,z.life);z.tick-=active;while(z.tick<=1e-9){for(const t of targets(w))if(Math.hypot(t.x-z.x,t.y-z.y)<=z.radius)dealDamage(w,t,z.damage,w.actors.find(a=>a.id===z.source)||{gearWave:z.gearWave??1},null,z.fire?'fire':null);z.tick++;}z.life-=dt;}
  w.hostileZones=w.hostileZones.filter(z=>z.life>1e-9);w.effects=w.effects.filter(f=>!f.hostileZone);for(const z of w.hostileZones){const waiting=z.delay>0;if(waiting)z.delayTotal??=z.delay;w.effects.push({id:`zone-${z.id}`,hostileZone:true,x:z.x,y:z.y,radius:z.radius,color:waiting?z.color||'#c6d48a':z.color||'#ff8951',visual:true,ground:true,fixedRadius:true,time:0,duration:10,...(z.fire&&!waiting?{fx:'fireField',remaining:z.life,span:z.span||z.life}:waiting?{fx:'dangerRune',mood:'plain',progress:1-z.delay/z.delayTotal}:{fx:'dangerRune',mood:'pool'})});}
 }

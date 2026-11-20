@@ -1,0 +1,15 @@
+{
+  "queen": {
+    "hp": 3376,
+    "damage": 41,
+    "scale": 2.6,
+    "radius": 1.15
+  },
+  "bento": {
+    "hp": 5963,
+    "damage": 48,
+    "speed": 5.950559999999999
+  },
+  "errors": [],
+  "remote": []
+}

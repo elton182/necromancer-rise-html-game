@@ -64,7 +64,7 @@ test('morte retoma no último abrigo; recarga mantém a missão, sem serializar 
 test('mapa e conversa pausam, fecham sem perder missão e recusam ação à distância',()=>{
  const s=fresh();assert.ok(toggleWorldMap(s));assert.equal(s.world.paused,true);assert.equal(s.world.adventure.mapOpen,true);assert.ok(toggleWorldMap(s));assert.equal(s.world.paused,false);
  go(s,WORLD_POINTS.child);assert.ok(interactWorld(s));assert.equal(toggleWorldMap(s),false);s.world.player.x=0;assert.equal(worldDialogueAction(s),false);closeWorldOverlay(s);assert.equal(s.save.campaign.world.stage,'village');
- assert.deepEqual(normalizeWorld({stage:'invalid'}),{questFlow:1,stage:'wake',checkpoint:'crypt',guardsCleared:false,smith:'locked',lumber:'locked',piles:[0,0,0],cleared:[]});
+ assert.deepEqual(normalizeWorld({stage:'invalid'}),{questFlow:1,cedro:'locked',portalUnlocked:false,stage:'wake',checkpoint:'crypt',guardsCleared:false,smith:'locked',lumber:'locked',piles:[0,0,0],cleared:[]});
 });
 const finish=s=>{accept(s);rescue(s);go(s,WORLD_POINTS.mayor);assert.ok(interactWorld(s));assert.ok(worldDialogueAction(s));};
 test('todos os pontos de quest, pilhas e encontros ficam em espaço livre e alcançável',()=>{
@@ -90,7 +90,7 @@ test('Joaquim oferece o resgate; Bruno exige a mina livre, volta à forja e paga
  assert.ok(interactWorld(s));assert.equal(worldDialogue(s).kind,'forge');assert.equal(worldDialogueAction(s),false);assert.equal(s.save.character.gold,gold+100);
 });
 test('madeira: cada pilha exige seus guardas; Joaquim só paga com as três marcadas',()=>{
- const s=fresh(),w=s.world,p=()=>s.save.campaign.world;finish(s);p().smith='done';p().lumber='active';
+ const s=fresh(),w=s.world,p=()=>s.save.campaign.world;finish(s);p().smith='done';p().portalUnlocked=true;p().lumber='active';
  const [a,b,c]=WORLD_PILES;go(s,a);assert.ok(interactWorld(s));assert.equal(worldDialogueAction(s),false,'guardas vivos');closeWorldOverlay(s);
  clear(s,a.guard);assert.ok(interactWorld(s));assert.ok(worldDialogueAction(s));assert.deepEqual(p().piles,[1,0,0]);assert.equal(w.landmarks.some(l=>l.key===a.key),false);
  go(s,WORLD_POINTS.mayor);assert.ok(interactWorld(s));assert.equal(worldDialogue(s).kind,undefined);closeWorldOverlay(s);
@@ -100,6 +100,6 @@ test('madeira: cada pilha exige seus guardas; Joaquim só paga com as três marc
  const resumed=createSession(snapshot(s));campaignMap(resumed);assert.deepEqual(resumed.save.campaign.world.piles,[1,1,1]);assert.equal(resumed.save.campaign.world.lumber,'done');
 });
 test('saves concluídos antes das novas quests recebem os pedidos de Joaquim',()=>{
- assert.deepEqual(normalizeWorld({stage:'complete',guardsCleared:true}),{questFlow:1,stage:'complete',checkpoint:'village',guardsCleared:true,smith:'available',lumber:'locked',piles:[0,0,0],cleared:[]});
+ assert.deepEqual(normalizeWorld({stage:'complete',guardsCleared:true}),{questFlow:1,cedro:'locked',portalUnlocked:false,stage:'complete',checkpoint:'village',guardsCleared:true,smith:'available',lumber:'locked',piles:[0,0,0],cleared:[]});
  assert.equal(normalizeWorld({stage:'rescue',smith:'done'}).smith,'locked');assert.deepEqual(normalizeWorld({stage:'complete',cleared:['mine-guards','forest-a','x']}).cleared,['mine-guards']);
 });

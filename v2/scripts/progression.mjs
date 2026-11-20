@@ -48,18 +48,22 @@ export function snapshotFor(w,equipment=w.equipment||{},level=levelOf(w)){
  // Druida: base mágica do mesmo modelo de itens, sem horda nem Grimório; a árvore própria ajusta o resultado.
  if(w.classId==='druid'){
   const base=EQ.snapshot(Build,{level,skillRanks:{},actionLoadout:[],skillMastery:{},equipment},R.defs,R.tuning,equipment).attributes,r=druidRanks(w.druidRanks,level),a=druidAttributes(base,r);
+  if(w.druidForm==='wolf'){a.hp=Math.round(a.hp*WOLF.health);a.hpRegen=(a.hpRegen||0)+a.hp*WOLF.regen;}
   const skill=(id,name,mult,mana,cooldown,learned=true,wolf=false)=>{
    const own=id==='spark'?1+r.spark*.06:id==='roots'?1+r.roots*.1:['storm','leap'].includes(id)?druidRankFactor(r,id):1;
    const factor=own+schoolSynergy('druid',r,id==='claws'?'wolf':id);
    return {id,name,damage:Math.floor(a.spell*mult*factor*(wolf?1+r.wolf*WOLF.damagePerRank:1)),cooldown:['spark','claws'].includes(id)?cooldown:cooldown*(1-a.cooldown/100),mana,equipped:learned,dps:null,sustained:null};
   };
   const advanced=[
-   {...skill('calamidade','Calamidade',DRUID_ADVANCED.calamity.multiplier,55,24,r.calamidade>0),note:'por pulso de vento; raios de '+Math.floor(a.spell*DRUID_ADVANCED.calamity.boltMultiplier*(1+schoolSynergy('druid',r,'calamidade')))+' a até duas presas por segundo'},
-   {...skill('florestaTropical','Floresta Tropical',0,45,20,r.florestaTropical>0),damage:Math.floor(a.spell*DRUID_SUMMONS.plantDamage*(druidRankFactor(r,'plantaCarnivora')+schoolSynergy('druid',r,'plantaCarnivora'))),note:'por ataque de cada uma das cinco plantas, por 10 s'},
-   {...skill('escudoDeFolhas','Escudo de Folhas',0,25,18,r.escudoDeFolhas>0),damage:null,note:'absorve até '+Math.round(a.hp*DRUID_ADVANCED.leaves.share)+' de dano por 8 s'},
-   {...skill('liderDaMatilha','Líder da Matilha',0,20,12,r.liderDaMatilha>0),damage:null,note:'líder com +30% de dano; comando de caçada por 6 s'},
+   {...skill('luaPrateada','Lua Prateada',.65,50,8,r.luaPrateada>0,true),note:'por meteoro de gelo durante 30 s'},
+   {...skill('corteSangrento','Corte Sangrento',.9,18,1.2,r.corteSangrento>0,true),note:'6 u; cura 12% da vida retirada, teto 5% da vida máxima'},
+   {...skill('garraDeGelo','Garra de Gelo',1.3,22,1.5,r.garraDeGelo>0,true),note:'4,5 u; aplica uma carga de gelo'},
+   {...skill('calamidade','Calamidade',DRUID_ADVANCED.calamity.multiplier,70,6,r.calamidade>0),note:'por pulso de vento; raios de '+Math.floor(a.spell*DRUID_ADVANCED.calamity.boltMultiplier*(1+schoolSynergy('druid',r,'calamidade')))+' a até duas presas por segundo'},
+   {...skill('florestaTropical','Floresta Tropical',0,60,6,r.florestaTropical>0),damage:Math.floor(a.spell*DRUID_SUMMONS.plantDamage*(druidRankFactor(r,'plantaCarnivora')+schoolSynergy('druid',r,'plantaCarnivora'))),note:'por ataque de cada uma das cinco plantas permanentes'},
+   {...skill('escudoDeFolhas','Escudo de Folhas',0,35,5,r.escudoDeFolhas>0),damage:null,note:'absorve até '+Math.round(a.hp*DRUID_ADVANCED.leaves.share)+' de dano por 8 s'},
+   {...skill('liderDaMatilha','Líder da Matilha',0,25,3,r.liderDaMatilha>0),damage:null,note:'líder com +30% de dano; comando de caçada por 6 s'},
   ];
-  return {attributes:a,skills:[skill('spark','Faísca',.45,0,.55),skill('chain','Corrente de Raios',1.2,22,6,r.chain>0),skill('roots','Raízes',.8,18,7,r.roots>0),skill('storm','Tempestade',.6,35,14,r.storm>0),skill('claws','Garras',.75,0,.42,r.wolf>0,true),skill('leap','Salto Feroz',1.5,15,6,r.leap>0,true),...advanced]};
+  return {attributes:a,skills:[skill('spark','Faísca',.45,0,.55),skill('chain','Corrente de Raios',1.2,26,1.5,r.chain>0),skill('roots','Raízes',.8,24,2,r.roots>0),skill('storm','Tempestade',.6,42,3,r.storm>0),skill('claws','Garras',.45,0,.42,r.wolf>0,true),skill('leap','Salto Feroz',1.5,20,1.5,r.leap>0,true),...advanced]};
  }
  const army=w.army;
  const result=EQ.snapshot(Build,{level,skillRanks:army?.profile.ranks||{},actionLoadout:army?.loadout||[],skillMastery:army?.mastery||{},equipment},R.defs,R.tuning,equipment);return result;

@@ -1,0 +1,47 @@
+{
+  "checks": [
+    {
+      "id": "necromancer",
+      "casts": 5,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "warrior",
+      "casts": 5,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "druid",
+      "casts": 6,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "archer",
+      "casts": 5,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "mercenary",
+      "casts": 5,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "mage",
+      "casts": 5,
+      "hp": 96,
+      "killed": true
+    },
+    {
+      "id": "druid-wolf",
+      "casts": 6,
+      "hp": 96,
+      "killed": true
+    }
+  ],
+  "errors": []
+}

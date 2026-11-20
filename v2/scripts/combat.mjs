@@ -1,4 +1,5 @@
 import {schoolSynergy} from './skill-synergy.mjs';
+import {applyElement,clearElement,isFrozen} from './elements.mjs';
 import RULES from './combat-rules.mjs';
 import {defenseReduction,spellDamage,moveSpeed} from './shared-equipment.mjs';
 import {moveCircle,resolvePosition} from './terrain.mjs';
@@ -17,10 +18,11 @@ export function initializeCombat(w){
  Object.assign(w.player,{mp:RULES.base.mp,maxMp:RULES.base.mp,mpRegen:RULES.base.regen,hpRegen:0,spellDamage:spellDamage(1),moveSpeed:moveSpeed(),defense:0,barrier:0,boneShield:false,veilTime:0,level:1});
 }
 function kill(w,a,source){
+ clearElement(a);
  if(a.dead)return;a.dead=true;a.hp=0;a.animation='death';a.animationTime=0;a.pose=null;a.timer=0;a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);
  if(a===w.boss){a.king=null;a.kingRoar=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);w.hostileZones=(w.hostileZones||[]).filter(z=>z.source!==a.id);for(const add of w.actors)if(add.kingOwner===a.id&&add.hp>0){add.hp=0;add.dead=true;add.animation='death';add.animationTime=0;add.kingOwner=null;}}
  w.combatEvents.push({kind:'death',id:w.nextId++,target:a.id,team:a.team,source:source?.id??null});
- if(a===w.player){w.warriorFireTrails=[];w.warriorWaves=[];w.marksmanShield=null;w.druidLeafShield=null;w.druidHunt=null;w.druidPack=[];w.actors=w.actors.filter(e=>!e.companion);for(const e of w.actors){e.hunterMark=0;e.hunterMarkBonus=0;e.falconMark=0;}w.marksmanDoubleAmbush=false;}
+ if(a===w.player){w.potionHeal=null;w.warriorFireTrails=[];w.warriorWaves=[];w.marksmanShield=null;w.druidLeafShield=null;w.druidHunt=null;w.druidPack=[];w.actors=w.actors.filter(e=>!e.companion);for(const e of w.actors){e.hunterMark=0;e.hunterMarkBonus=0;e.falconMark=0;}w.marksmanDoubleAmbush=false;}
  if(a.groupType)w.onAllyDeath?.(a);
  if(a.team==='enemy')w.onEnemyDeath?.(a,source);
  if(a.team==='enemy')w.onLichKill?.(a);
@@ -37,7 +39,7 @@ export function tickRot(w,dt){
   if(r.ttl<=0)delete e.rot;}
 }
 // `tag` só nomeia a origem do dano para o medidor do Laboratório; não muda nenhuma regra.
-export function dealDamage(w,target,amount,source=null,tag=null){
+export function dealDamage(w,target,amount,source=null,tag=null,element=null){
  const result={applied:0,absorbed:0,killed:false,blocked:false};
  if(!target||target.hp<=0||target.dead||!Number.isFinite(amount)||amount<=0)return result;
  let damage=amount*(source?.curse?1-source.curse.reduction:1)*highGround(w.arena,source,target);
@@ -72,6 +74,7 @@ export function dealDamage(w,target,amount,source=null,tag=null){
  if(result.applied>0&&source?.team==='enemy'&&(target===w.player||target.team==='ally'))hitFx(w,target,source);
  if(target.labDummy&&result.applied>0)w.onDummyHit?.(target,result.applied,source,tag);
  if(target.hp<=0){kill(w,target,source);result.killed=true;}
+ else if(result.applied>0&&element)applyElement(w,target,element,amount,source);
  // Reflexão usa somente vida realmente perdida; a etiqueta impede realimentação entre reflexões.
  if(target===w.player&&w.classId==='warrior'&&result.applied>0&&source?.team==='enemy'&&source.hp>0&&tag!=='Armadura de Espinhos'&&(w.warriorRanks?.armaduraDeEspinhos||0)>0){dealDamage(w,source,result.applied*w.warriorRanks.armaduraDeEspinhos*.08*(1+schoolSynergy('warrior',w.warriorRanks,'armaduraDeEspinhos')),target,'Armadura de Espinhos');fx(w,'impact',{x:source.x,y:source.y,h:.8,color:'#a8d4ec',radius:.5,duration:.25});}
  return result;
@@ -83,6 +86,7 @@ export function tickBoltCharge(w,dt){if(!w.boltCharge)return;if(!canChargeBolt(w
 export function releaseBoltCharge(w){if(!w.boltCharge)return false;const charge=w.boltCharge.time/LANCE.chargeTime;w.boltCharge=null;return castBolt(w,{charge});}
 export function lanceShape(charge){const q=Math.max(0,Math.min(1,charge)),count=3+2*Math.floor(q*4),width=LANCE.minWidth+(LANCE.maxWidth-LANCE.minWidth)*q;return Array.from({length:count},(_,i)=>{const side=(i-(count-1)/2)/((count-1)/2)*width;return {side,back:Math.abs(side)*.75};});}
 export function castBolt(w,{charge=0}={}){
+ if(isFrozen(w,w.player))return false;
  const p=w.player,m=w.modifiers;
  if(w.paused||p.hp<=0||w.lich&&w.lich.form!=='none'||w.castCooldown>1e-9||p.mp<boltCost(w)||!Number.isFinite(w.aim.x)||!Number.isFinite(w.aim.y))return false;
  const dx=w.aim.x-p.x,dy=w.aim.y-p.y,d=Math.hypot(dx,dy);if(d<1e-9)return false;
@@ -94,13 +98,14 @@ export function castBolt(w,{charge=0}={}){
  w.effects.push({id:w.nextId++,kind:'boneLaunch',fx:'boltCast',x:p.x,y:p.y,dx:dx/d,dy:dy/d,radius:.3,time:0,duration:.45,visual:true,ground:true,color:'#b8f2d0'});return true;
 }
 export function beginDash(w,input={}){
+ if(isFrozen(w,w.player))return false;
  if(w.player.rootTime>0||w.paused||w.player.hp<=0||w.dash.cooldown>1e-9||w.dash.remaining>0||w.lich?.form==='transform')return false;
  let x=Number(input.x)||0,y=Number(input.y)||0,dx=x+y,dy=y-x;
  if(Math.hypot(dx,dy)<.1){dx=w.aim.x-w.player.x;dy=w.aim.y-w.player.y;}
  const length=Math.hypot(dx,dy);if(!Number.isFinite(length)||length<1e-9){dx=Math.sin(w.player.angle)||1;dy=Math.cos(w.player.angle);}
  const n=Math.hypot(dx,dy),m=w.modifiers;
  if(w.classId==='warrior'){if(w.warriorAction?.index===4)(w.warriorCooldowns??=[])[4]=w.time+3;w.warriorAction=null;w.warriorCombo=null;w.castCooldown=0;w.player.timer=0;}
- if(w.classId==='druid'&&w.druidAction){w.druidAction=null;w.castCooldown=0;w.player.timer=0;}
+ if(w.classId==='druid'){w.druidClawSide=0;w.druidComboUntil=0;if(w.druidAction){w.druidAction=null;w.castCooldown=0;w.player.timer=0;}}
  if(w.marksmanAction){w.marksmanAction=null;w.castCooldown=0;w.player.timer=0;}
  w.boltCharge=null;
  Object.assign(w.dash,{remaining:DODGE_DURATION,cooldown:Math.max(1.5,RULES.dash.cooldown*(1+Math.max(-50,m.dashCooldownPercent||0)/100)*(1-Math.min(50,Math.max(0,m.gearCooldown||0))/100))*(1-(m.dashMasteryCooldown||0)/100),dx:dx/n,dy:dy/n,origin:{x:w.player.x,y:w.player.y}});

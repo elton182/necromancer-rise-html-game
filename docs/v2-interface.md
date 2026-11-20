@@ -46,7 +46,7 @@ para revisar o adaptador.
 
 NPCs com **!** dourado acima da cabeça oferecem uma missão; **?** verde indica uma etapa pronta para concluir por conversa. Aproximar-se e pressionar **G** abre o diálogo. A missão só entra no HUD depois de aceitar o pedido; fechar a conversa mantém a oferta. O HUD mostra a etapa atual como **Etapa N de M**, acompanhando o avanço salvo. Antes de aceitar, orienta procurar os NPCs com !.
 
-O inventário oferece o botão **Missões · em aberto e concluídas**, acima dos equipamentos. Ele abre a mesma aba **Missões** do Relicário. O diário separa **Em aberto** e **Concluídas**, mostra o NPC responsável e lista as etapas com a atual destacada. Entradas concluídas começam recolhidas e podem ser abertas. Listas vazias têm uma mensagem própria. Aceitação, etapas e conclusões sobrevivem ao recarregamento pelo estado existente da campanha.
+O inventário oferece o botão **Missões · em aberto e concluídas**, acima dos equipamentos. Ele abre a mesma aba **Missões** do Relicário. O diário separa **Em aberto** e **Concluídas**, mostra o NPC responsável e lista as etapas com a atual destacada. A lista fica à esquerda e a missão selecionada ganha um painel de detalhes com responsável, próximo passo, barra de progresso e linha de etapas. Contadores resumem as abertas e concluídas. A seleção anterior é mantida ao reabrir o diário, quando ainda existe. Em telas estreitas, a lista fica acima dos detalhes. Listas vazias têm uma mensagem própria. Aceitação, etapas e conclusões sobrevivem ao recarregamento pelo estado existente da campanha.
 
 O fluxo começa com Joaquim oferecendo Bruno; depois da forja, ele oferece a madeira. Marta oferece o resgate de João, e João oferece a missão da carta ao retornar à vila. A viagem a Itavera e o convite final também dependem de ações nas conversas. Veja [regras da campanha](v2-campanha.md#quests) e [evidências em desktop e 390 px](../review/v2/quest-journal/validation-notes.md).
 - **Controle:** navegação por foco nos diálogos e confirmação pelo botão principal;
@@ -241,7 +241,7 @@ Restyle só visual do HUD e dos painéis do mapa, em `v2/scripts/hud-ornate.css`
 
 Verificação executada: build e capturas em Edge headless (WebGL) no mundo de Jacarandá (exploração, combate com grupo real, mapa da região), no treino do Necromante e do Guerreiro, fundo claro com qualidade baixa e janelas de 1440, 1280 e 600 px, sem erros de página. Evidências em [review/v2/hud-ornate](../review/v2/hud-ornate/). `tests/ui-browser-check.cjs` está desatualizado (espera o botão de treino livre na tela inicial, removido antes desta entrega) e não chega ao HUD.
 
-Pendências: a moldura do orbe vem de um modelo gerado por IA, sem retoque à mão (a cabeça de dragão da referência virou volutas); os ícones das habilidades ainda são glifos/emoji (a referência pede arte pintada, que exige um atlas novo); não há pontos de nível embaixo dos slots, poções ao lado dos orbes nem contadores de buff; o Relicário (Esc) e os diálogos internos mantêm o estilo anterior; a doca cobre o diálogo do mapa da região na parte de baixo (comportamento anterior de camadas).
+Pendências: a moldura do orbe vem de um modelo gerado por IA, sem retoque à mão (a cabeça de dragão da referência virou volutas); os ícones das habilidades ainda são glifos/emoji (a referência pede arte pintada, que exige um atlas novo); não há pontos de nível embaixo dos slots, poções ao lado dos orbes nem contadores de buff; o Relicário (Esc) e os diálogos internos mantêm o estilo anterior; a sobreposição antiga da doca sobre o mapa foi corrigida no atlas de 11/11/2026.
 
 Os diálogos de viagem usam texto marfim e título e botão dourados claros sobre o painel ornamentado escuro, inclusive ao passar o mouse ou navegar pelo teclado.
 
@@ -250,3 +250,27 @@ Os diálogos de viagem usam texto marfim e título e botão dourados claros sobr
 O botão **Testes** na navegação do jogo abre uma aba do Relicário e pausa o combate. Permite adicionar ou remover um nível, adicionar ou remover 1.000 ouro (sem saldo negativo) e restaurar vida e recurso. O nível fica entre 1 e o máximo vigente. Ganhar nível usa o caminho normal de XP, atributos e horda; remover zera o XP e é recusado se invalidar os pontos ou pré-requisitos da árvore. Redistribua os pontos pela aba Habilidades nesse caso. Personagens mortos e cenas de história não aceitam ajustes.
 
 As ações alteram o personagem atual em memória e entram no próximo salvamento, inclusive automático da campanha. O painel informa esse comportamento antes dos botões.
+
+
+## Atlas da região — 11/11/2026
+
+**M** abre uma carta de viagem em pergaminho para a região atual, mantendo o jogo pausado. O atlas mostra relevo e água consultados do terreno real, vegetação simplificada, construções, estradas, marcos com símbolos e nomes, norte e escala. As posições, passagens e objetivos continuam usando as coordenadas do jogo. O azul marca o personagem e o dourado marca seus destinos atuais.
+
+A coluna lateral reúne os objetivos completos, os lugares da região e a legenda. Selecionar um lugar destaca seu marco; **+ / −** ampliam ou reduzem a vista, **Minha posição** centraliza o personagem com ampliação e **Visão geral** restaura o enquadramento. **M**, Esc ou o botão de fechar devolvem ao jogo. O atalho M funciona também após clicar nos controles do atlas; campos de edição e seletores preservam sua entrada normal. O atlas fica acima do HUD, sem controles encobertos. Em tela estreita, a coluna de informações vai para baixo da carta.
+
+Disponível em Jacarandá, Itaúna, Gruta das Tecelãs, Forte da Pedra Negra e praça de Itavera. O minimapa e o atlas das fases antigas não foram alterados. Fontes: [region-map.mjs](../v2/scripts/region-map.mjs), [quest-journal.mjs](../v2/scripts/quest-journal.mjs) e [journal-map.css](../v2/scripts/journal-map.css). [Conferência e limites](../review/v2/journal-map/validation-notes.md).
+
+## Poção de cura
+
+O botão encaixado na base da moldura do orbe de vida mostra o frasco vermelho, os **goles inteiros disponíveis (0–3)**, a tecla **B** e uma barra dividida em três goles. O líquido e a barra representam toda a carga, incluindo frações. O tooltip e o nome acessível informam o progresso de abates e, durante a cura, “Curando” com o tempo restante; a moldura acende enquanto a cura está ativa. Clique ou B usa a mesma ação; o botão fica indisponível com vida cheia, sem um gole completo ou durante a cura. Cada gole recupera 50% da vida máxima; 10 abates recarregam um gole. Ver [regras de combate](v2-combate.md#poção-de-cura-reutilizável).
+
+### Velocidade para testes
+
+Em **Testes**, o controle **Velocidade de movimentação** ajusta a caminhada de 1× a 5×, em passos de 0,5×. Aplica-se a todas as classes e formas, preservando colisões, terreno e efeitos de lentidão. Não acelera inimigos, ataques, esquivas ou o relógio do combate. O ajuste fica na sessão, inclusive entre mapas; carregar outro save restaura 1×. Não é gravado no personagem. Volte a 1× no controle para retomar a velocidade normal.
+
+Ao concluir o loading inicial, a tela permanece com o botão **Clique para iniciar** (também acionável por Enter ou Espaço). Esse gesto libera o áudio no navegador e abre o menu principal com a trilha, respeitando as preferências de volume e silêncio. O menu fica inativo até essa confirmação.
+
+
+### Objetivos dos assaltos ao forte e ao Cedro (13/11/2026)
+
+Nos dois mapas, a instrução principal do rastreador aparece inteira. Quando necessário, o painel pode rolar, com limite de altura menor no celular. Inimigos em combate, levas restantes e a contagem até os reforços acompanham o encontro mesmo com o jogador parado. No forte, espadas cruzadas identificam e nomeiam as três posições necessárias à grade; ! continua identificando contrato e bolsa. As posições deixam de ter marcador depois de tomadas. G junto a uma posição explica o objetivo. Os passos e o contador de posições são derivados do progresso salvo, sem um segundo estado de missão.

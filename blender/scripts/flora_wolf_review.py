@@ -47,7 +47,13 @@ for tr in rig.animation_data.nla_tracks:
         'paw_height_ranges':{n:[min(v),max(v)] for n,v in heights.items()}}
     assert low>-.001,(tr.name,'piso',low)
     assert not loop or seam<.0001,(tr.name,'ciclo',seam)
+    if DYNAMIC and tr.name in ['idle','claw_1','claw_2','claw_cross','howl','leap','dodge']:
+        assert min(min(heights[n]) for n in ['LeftHand','RightHand'])>.20,(tr.name,'guarda deve ser bípede')
+    if DYNAMIC and tr.name in ['walk','strafe_left','strafe_right']:
+        assert max(min(heights[n]) for n in paws)<.001,(tr.name,'locomoção deve usar quatro apoios')
     support=(['LeftHand','LeftFoot'] if DYNAMIC else ['LeftHand','LeftFoot','RightFoot']) if tr.name=='claw_1' else (['RightHand','RightFoot'] if DYNAMIC else ['RightHand','LeftFoot','RightFoot']) if tr.name=='claw_2' else ['LeftFoot','RightFoot'] if tr.name=='howl' else paws if tr.name=='idle' else []
+    if DYNAMIC:support=[n for n in support if n.endswith('Foot')]
+    if DYNAMIC and tr.name=='claw_cross':support=['LeftFoot','RightFoot']
     assert not support or max(travel[n] for n in support)<.001,(tr.name,'apoios',travel)
     if DYNAMIC and tr.name in ['claw_1','claw_2']:
         side='Right' if tr.name=='claw_1' else 'Left'
@@ -58,6 +64,25 @@ for tr in rig.animation_data.nla_tracks:
             'drive_ankle_travel':travel[side+'Foot'],'drive_toe_xy_drift':toe_xy}
         assert hip_travel>.07 and yaw_span>.7,(tr.name,'corpo pouco ativo',hip_travel,yaw_span)
         assert travel[side+'Foot']>.025 and toe_xy<.003,(tr.name,'pivô',travel,toe_xy)
+        hand=side+'Hand';sign=-1 if side=='Right' else 1
+        preparation=positions[round((end-1)*.30)][hand]
+        impact_index=round((end-1)*.46);impact=positions[impact_index][hand]
+        diagonal={'preparation_lift':preparation.z-positions[0][hand].z,
+            'preparation_outward':sign*(preparation.x-positions[0][hand].x),
+            'descending_cut':preparation.z-impact.z,
+            'cross_body':-sign*(impact.x-body_motion[impact_index][0].x)}
+        result['clips'][tr.name]['diagonal_cut']=diagonal
+        assert diagonal['preparation_lift']>.15 and diagonal['preparation_outward']>.02,(tr.name,'preparação diagonal',diagonal)
+        assert diagonal['descending_cut']>.15 and diagonal['cross_body']>.03,(tr.name,'corte cruzado descendente',diagonal)
+    if DYNAMIC and tr.name=='claw_cross':
+        crossing={}
+        for side,sign in [('Right',-1),('Left',1)]:
+            hand=side+'Hand';prep_index=round((end-1)*.30);impact_index=round((end-1)*.46)
+            preparation=positions[prep_index][hand];impact=positions[impact_index][hand]
+            crossing[side]={'lift':preparation.z-positions[0][hand].z,'descent':preparation.z-impact.z,
+                'cross_body':-sign*(impact.x-body_motion[impact_index][0].x)}
+            assert crossing[side]['lift']>.15 and crossing[side]['descent']>.10 and crossing[side]['cross_body']>.03,(tr.name,side,crossing)
+        result['clips'][tr.name]['crossed_hands']=crossing
     if tr.name=='leap':assert max(heights['LeftHand'])>.15
 (DEST/'validation.json').write_text(json.dumps(result,indent=2),encoding='utf8')
 print('AUDIT',json.dumps(result),flush=True)

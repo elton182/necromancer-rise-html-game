@@ -49,7 +49,7 @@ test('Tornado puxa e fere em pulsos por 4 s; chefe não é puxado; com Furacão 
  assert.ok(lost(e)>Math.floor(h.player.spellDamage*def.hurricane.multiplier),'explosão soma ao dano dos pulsos');
 });
 
-test('lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (chefes não)',()=>{
+test('lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo aplica acúmulo também em chefes',()=>{
  const w=druid({wolf:1,leap:1,corteSangrento:1,garraDeGelo:1});w.druidForm='wolf';
  const e=target(w,2,0),def=WOLF_ACTIONS[wolf('corteSangrento')];
  assert.ok(druidAction(w,wolf('corteSangrento')));dAdvance(w,Math.ceil(def.release*60)+1);
@@ -57,7 +57,7 @@ test('lobo: Corte Sangrento sangra por 4 s sem somar; Garra de Gelo desacelera (
  const tick=e.druidBleed?0:Math.floor((lost(e)-hit)/(def.bleed.time/def.bleed.interval));assert.ok(tick>0);assert.equal(lost(e)-hit,tick*8);
  const g=druid({wolf:1,leap:1,garraDeGelo:1});g.druidForm='wolf';const foe=target(g,2.5,0),boss=target(g,2.6,.3,{isBoss:true}),G=WOLF_ACTIONS[wolf('garraDeGelo')];
  assert.ok(druidAction(g,wolf('garraDeGelo')));dAdvance(g,Math.ceil(G.release*60)+1);
- assert.equal(foe.slow,G.slow);assert.equal(foe.slowTime,G.slowTime);assert.ok(lost(boss)>0);assert.ok(!boss.slow);
+ assert.equal(foe.slow,G.slow);assert.ok(foe.slowTime>=G.slowTime);assert.ok(lost(boss)>0);assert.equal(boss.frostStacks,1);assert.equal(boss.slow,.02);
  assert.ok(g.effects.some(f=>String(f.id)==='druid-chill-'+foe.id),'anel de gelo');
 });
 
@@ -76,7 +76,7 @@ test('Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espir
  // O alvo de lado fica mais perto da esfera no começo do trajeto: recebe os cristais; o do caminho, o contato.
  const w=mage({frost:1,esferaDeGelo:1}),side=target(w,2,3),path=target(w,8,0),d=mDef('esferaDeGelo');
  assert.ok(marksmanAction(w,mIndex('esferaDeGelo')));mAdvance(w,Math.ceil(d.release*60)+1);
- assert.equal(w.marksmanOrbs.length,1);assert.equal(d.cooldown,4);
+ assert.equal(w.marksmanOrbs.length,1);assert.equal(d.cooldown,2.5);
  const start=w.marksmanOrbs[0].x,fired=new Set();for(let i=0;i<30;i++){mAdvance(w,1);for(const s of w.marksmanShots)fired.add(s.id);}
  assert.ok(Math.abs(w.marksmanOrbs[0].x-start-d.speed*.5)<.1,'2 u/s');
  assert.ok(fired.size>=6,'dois cristais a cada 0,15 s (0,5 s: 3 pulsos ou mais)');assert.ok(w.effects.some(f=>f.fx==='iceOrb'),'planeta visível');
@@ -85,23 +85,23 @@ test('Esfera de Gelo: planeta lento que fere quem toca e solta cristais em espir
  mAdvance(w,150);assert.equal(w.marksmanOrbs.length,0,'some no fim do alcance (5 s)');
 });
 
-test('Familiar de Fogo acompanha por 20 s e lança bolas de fogo; recarga impede outro antes do tempo',()=>{
+test('Familiar de Fogo é permanente e lança bolas de fogo; recarga impede outro antes do tempo',()=>{
  const w=mage({fireball:1,combustion:1,imbuirFogo:1,familiarDeFogo:1}),e=target(w,6,0),d=mDef('familiarDeFogo');
  assert.ok(marksmanAction(w,mIndex('familiarDeFogo')));mAdvance(w,Math.ceil(d.release*60)+1);
  assert.ok(w.marksmanFamiliar);mAdvance(w,60*3);assert.ok(lost(e)>0,'bolas de fogo');
  assert.ok(w.effects.some(f=>f.id==='mfamiliar'),'espírito visível');
- mAdvance(w,60*18);assert.equal(w.marksmanFamiliar,null,'some depois de 20 s');
+ mAdvance(w,60*30);assert.ok(w.marksmanFamiliar,'permanente: segue depois de 30 s');
  clearMarksman(w);assert.equal(w.marksmanOrbs.length,0);
 });
 
-test('Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; some em 25 s',()=>{
+test('Golem de Gelo: companheiro com 120% da vida, golpeia e desacelera; só um por vez; permanente',()=>{
  const w=mage({frost:1,esferaDeGelo:1,golemDeGelo:1}),e=target(w,4,0),d=mDef('golemDeGelo'),spec=COMPANIONS.iceGolem;
  assert.ok(marksmanAction(w,mIndex('golemDeGelo')));mAdvance(w,Math.ceil(d.release*60)+1);
  const g=companionsOf(w,'iceGolem');assert.equal(g.length,1);assert.equal(g[0].maxHp,Math.round(w.player.maxHp*spec.hp));assert.equal(g[0].tint,spec.tint);
  mAdvance(w,60*4);assert.ok(lost(e)>=g[0].damage,'golpeou');assert.equal(lost(e)%g[0].damage,0);assert.equal(e.slow,spec.slow);
  w.marksmanCooldowns={};w.player.mp=w.player.maxMp;assert.ok(marksmanAction(w,mIndex('golemDeGelo')));mAdvance(w,40);
  assert.equal(companionsOf(w,'iceGolem').filter(a=>a.hp>0).length,1,'o novo substitui o antigo');
- mAdvance(w,60*26);assert.equal(companionsOf(w,'iceGolem').filter(a=>a.hp>0).length,0,'expira');
+ mAdvance(w,60*26);assert.equal(companionsOf(w,'iceGolem').filter(a=>a.hp>0).length,1,'permanente');
  clearCompanions(w);assert.equal(companionsOf(w,'iceGolem').length,0);
 });
 

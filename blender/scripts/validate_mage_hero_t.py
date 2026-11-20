@@ -10,6 +10,7 @@ from mathutils import Vector
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
+from mage_hero_gait import STRIDE, STRAFE_STRIDE
 sc=bpy.context.scene
 rig=bpy.data.objects['ARM_MageT']
 body=bpy.data.objects['MageTBody']
@@ -69,14 +70,19 @@ for tr in rig.animation_data.nla_tracks:
     rigid_error=0
     reference=None
     locomotion=tr.name in ['walk','strafe_left','strafe_right']
-    support={};drift=0;knee_min=math.pi;left_hands=[]
+    support={};drift=0;knee_min=math.pi;left_hands=[];crossed=[]
     for f in range(1,end+1):
         sc.frame_set(f)
         bpy.context.view_layer.update()
         samples.append([b.matrix.copy() for b in rig.pose.bones])
         feet.append([rig.pose.bones['mixamorig:'+s+'Foot'].head.copy() for s in ['Left','Right']])
+        if tr.name in ['strafe_left','strafe_right']:
+            lead,trail=feet[-1] if tr.name=='strafe_left' else feet[-1][::-1]
+            direction=1 if tr.name=='strafe_left' else -1
+            if direction*(trail.x-lead.x)>.015:
+                crossed.append(trail.y-lead.y)
         if locomotion:
-            t=(f-1)/(end-1);stride=.56 if tr.name=='walk' else .44
+            t=(f-1)/(end-1);stride=STRIDE if tr.name=='walk' else STRAFE_STRIDE
             for side,offset in [('Left',0),('Right',.5)]:
                 u=(t+offset)%1;foot=rig.pose.bones['mixamorig:'+side+'Foot']
                 if u<.56:
@@ -106,6 +112,10 @@ for tr in rig.animation_data.nla_tracks:
             'free_hand_travel':max((p-q).length for p in left_hands for q in left_hands)}
         assert drift<.004,(tr.name,'apoio',drift)
         assert knee_min>math.radians(4),(tr.name,'joelho travado',math.degrees(knee_min))
+        if tr.name in ['strafe_left','strafe_right']:
+            assert crossed,(tr.name,'sem cruzamento dos pés')
+            assert min(crossed)>.12,(tr.name,'pé de acompanhamento deve passar atrás',crossed)
+            result['clips'][tr.name]['gait']['cross_behind']={'frames':len(crossed),'minimum_depth_gap':min(crossed)}
     assert not loop or seam<1e-5,(tr.name,'loop',seam)
     assert tr.name!='idle' or contact<1e-5,(tr.name,'apoio parado',contact)
     assert tr.name not in ['cast','cast_up'] or contact<1e-5,(tr.name,'pés',contact)

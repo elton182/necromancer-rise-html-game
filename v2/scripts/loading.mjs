@@ -27,10 +27,16 @@ export function createLoading(doc=document){
  }
  function tip(){tipEl.textContent=TIPS[tipIndex++%TIPS.length];}
  function close(){ended=true;clearInterval(timer);}
- function done(){
+ function done(onStart){
   if(ended)return;
-  step(1,'Pronto');close();root.classList.add('done');
-  const remove=()=>root.remove();root.addEventListener('transitionend',remove,{once:true});setTimeout(remove,900);
+  step(1,'Pronto');close();
+  const dismiss=()=>{root.classList.add('done');const remove=()=>root.remove();root.addEventListener('transitionend',remove,{once:true});setTimeout(remove,900);};
+  const start=root.querySelector('#loading-start');
+  if(onStart&&start){
+   root.classList.add('awaiting-start');root.setAttribute('role','group');root.setAttribute('aria-label','ARANDU pronto para iniciar');
+   start.hidden=false;start.focus({preventScroll:true});
+   start.onclick=()=>{start.onclick=null;start.disabled=true;onStart();dismiss();};
+  }else dismiss();
  }
  function fail(){close();root.remove();}
  tip();timer=setInterval(tip,4500);

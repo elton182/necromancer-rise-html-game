@@ -1,5 +1,15 @@
 # Simulador matemático de balanceamento
 
+Para o balanceamento atual da **v2**, use o adaptador `v2-source.mjs` e os checks do motor real:
+
+```powershell
+node v2/tests/cave-balance-simulation.mjs review/v2/cave-balance/after.json
+node v2/tests/global-balance-simulation.mjs
+node --test v2/tests/cave-balance.test.mjs v2/tests/global-balance.test.mjs
+```
+
+Execute esses comandos na raiz do repositório. Resultados e limites ficam em [review/v2/cave-balance/report.md](../review/v2/cave-balance/report.md). O adaptador importa as regras da v2, incluindo resistência global, básicos e piso regional de Valdoria, sem duplicar valores. As instruções abaixo e `run.js` continuam descrevendo o simulador matemático da **v1**; seus resultados não validam o combate da v2.
+
 Primeira implementação da Etapa 0 do [plano de equipamentos e waves](../docs/v2-progressao.md). Funciona em Node.js, sem dependências, sem modificar o jogo ou seus saves.
 
 ```powershell

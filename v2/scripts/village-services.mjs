@@ -1,5 +1,8 @@
 import {inWorldVillage,WORLD_POINTS} from './campaign-world-model.mjs';
 
+// A câmera isométrica olha desde +X/+Z; os rostos dos GLBs apontam para +Z.
+export const VILLAGE_FACING=Math.PI/4;
+
 // Serviços da praça, compartilhados pela vila antiga e pelo mundo contínuo.
 export const VILLAGE_SERVICES=[
  {id:'endless',name:'Guardião das Ondas',serviceTitle:'Arena e Expedições',model:'npcBram',x:4,y:5},

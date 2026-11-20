@@ -1,0 +1,110 @@
+[
+  {
+    "ground": "dark",
+    "quality": "high",
+    "clip": "claw_1",
+    "cross": false,
+    "sweep": 1,
+    "radius": 2.9899999999999998,
+    "count": 6,
+    "cores": 3,
+    "minForward": 1.467618465423584,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7599999904632568,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  },
+  {
+    "ground": "dark",
+    "quality": "high",
+    "clip": "claw_2",
+    "cross": false,
+    "sweep": -1,
+    "radius": 2.9899999999999998,
+    "count": 6,
+    "cores": 3,
+    "minForward": 1.467618465423584,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7599999904632568,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  },
+  {
+    "ground": "dark",
+    "quality": "high",
+    "clip": "claw_cross",
+    "cross": true,
+    "sweep": -1,
+    "radius": 2.9899999999999998,
+    "count": 12,
+    "cores": 6,
+    "minForward": 3.1501998901367188,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7799999713897705,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  },
+  {
+    "ground": "light",
+    "quality": "low",
+    "clip": "claw_1",
+    "cross": false,
+    "sweep": 1,
+    "radius": 2.9899999999999998,
+    "count": 6,
+    "cores": 3,
+    "minForward": 1.467618465423584,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7599999904632568,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  },
+  {
+    "ground": "light",
+    "quality": "low",
+    "clip": "claw_2",
+    "cross": false,
+    "sweep": -1,
+    "radius": 2.9899999999999998,
+    "count": 6,
+    "cores": 3,
+    "minForward": 1.467618465423584,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7599999904632568,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  },
+  {
+    "ground": "light",
+    "quality": "low",
+    "clip": "claw_cross",
+    "cross": true,
+    "sweep": -1,
+    "radius": 2.9899999999999998,
+    "count": 12,
+    "cores": 6,
+    "minForward": 3.1501998901367188,
+    "maxForward": 3.1501998901367188,
+    "minHeight": 0.7799999713897705,
+    "stats": {
+      "particles": 0,
+      "effects": 1,
+      "failed": false
+    }
+  }
+]

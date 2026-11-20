@@ -1,0 +1,90 @@
+TAP version 13
+# Subtest: necromancer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 1 - necromancer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 81.3687
+  ...
+# Subtest: necromancer: habilidade inicial tem impacto superior ao b├ísico
+ok 2 - necromancer: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 6.452
+  ...
+# Subtest: warrior: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 3 - warrior: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 48.7471
+  ...
+# Subtest: warrior: habilidade inicial tem impacto superior ao b├ísico
+ok 4 - warrior: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 9.6934
+  ...
+# Subtest: druid: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 5 - druid: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 55.8639
+  ...
+# Subtest: druid: habilidade inicial tem impacto superior ao b├ísico
+ok 6 - druid: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 4.6556
+  ...
+# Subtest: archer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 7 - archer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 56.8565
+  ...
+# Subtest: archer: habilidade inicial tem impacto superior ao b├ísico
+ok 8 - archer: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 6.6819
+  ...
+# Subtest: mercenary: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 9 - mercenary: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 53.6148
+  ...
+# Subtest: mercenary: habilidade inicial tem impacto superior ao b├ísico
+ok 10 - mercenary: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 10.5009
+  ...
+# Subtest: mage: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 11 - mage: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 43.9104
+  ...
+# Subtest: mage: habilidade inicial tem impacto superior ao b├ísico
+ok 12 - mage: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 5.8795
+  ...
+# Subtest: druid-wolf: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 13 - druid-wolf: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 47.586
+  ...
+# Subtest: druid-wolf: habilidade inicial tem impacto superior ao b├ísico
+ok 14 - druid-wolf: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 5.0471
+  ...
+# Subtest: vida da caverna n├úo altera dano, XP ou inimigos de outros modos; elite mant├®m propor├º├úo
+ok 15 - vida da caverna n├úo altera dano, XP ou inimigos de outros modos; elite mant├®m propor├º├úo
+  ---
+  duration_ms: 5.0064
+  ...
+# Subtest: refor├ºos recebem exatamente a mesma resist├¬ncia da primeira leva
+ok 16 - refor├ºos recebem exatamente a mesma resist├¬ncia da primeira leva
+  ---
+  duration_ms: 4.198
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 702.7358

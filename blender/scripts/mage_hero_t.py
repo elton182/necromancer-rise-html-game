@@ -20,7 +20,7 @@ from mathutils import Vector, Matrix, Quaternion, Euler
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import common
-from mage_hero_gait import MageGait
+from mage_hero_gait import MageGait, STRIDE, STRAFE_STRIDE
 from mage_hero_grip import repair_shaft
 from mage_hero_fingers import add_finger_bones, weight_fingers, pose_grip
 
@@ -28,7 +28,6 @@ BLOCKING = '--blocking' in sys.argv
 FPS = 30
 CLIPS = [('idle', 121), ('walk', 25), ('strafe_left', 25), ('strafe_right', 25),
          ('cast', 16), ('cast_up', 22), ('dodge', 16), ('death', 31)]
-STRIDE, STRAFE_STRIDE = .56, .44
 scene = bpy.context.scene
 # Load only the source mesh; never clear the user's scene.
 for obj in list(scene.objects):

@@ -1,0 +1,18 @@
+{
+  "name": "tomas",
+  "source": "tomas-pbr-a7ecfa6f/model.glb",
+  "sourceTriangles": 1479726,
+  "triangles": 18000,
+  "vertices": 15873,
+  "bytes": 1900536,
+  "clips": [
+    "idle",
+    "greet",
+    "walk",
+    "death"
+  ],
+  "textureMaxSize": 512,
+  "bones": 23,
+  "idleSeconds": 12,
+  "idleProfile": "tomas"
+}

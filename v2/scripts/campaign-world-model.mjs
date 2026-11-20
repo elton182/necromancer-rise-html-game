@@ -1,3 +1,4 @@
+import {cedroStage,cedroAllowed,cedroWon} from './cedro-model.mjs';
 import {normalizeVillageQuests} from './quest-model.mjs';
 // Mundo contínuo de Jacarandá. Coordenadas compartilhadas pelo mapa, HUD e encontros.
 import {isArea,ITAUNA_QUEST_GROUPS} from './itauna-model.mjs';
@@ -69,7 +70,7 @@ export function normalizeWorld(raw){
  // `nilo`: etapa de O rastro de João; ausente equivale a `locked`, como nos saves anteriores.
  const nilo=done?normalizeNilo(raw.nilo):'locked';
  const recovered=NILO_RECOVERED.includes(nilo),fort=nilo==='fort';
- return {...quests,...(raw.passengerMissing===true?{passengerMissing:true}:{}),...(nilo!=='locked'?{nilo}:{}),...((recovered||fort&&raw.niloLetter===true)?{niloLetter:true}:{}),...((recovered||fort&&raw.niloEvidence===true)?{niloEvidence:true}:{}),...(isArea(raw.area)&&(raw.area!=='itavera'||NILO_CITY.includes(nilo))?{area:raw.area,entry:typeof raw.entry==='string'?raw.entry.slice(0,16):''}:{}),stage,checkpoint:stage==='wake'?'crypt':'village',guardsCleared:!!raw.guardsCleared||['return','complete'].includes(stage),piles,
+ return {...quests,cedro:cedroStage({...raw,nilo}),portalUnlocked:done&&raw.portalUnlocked===true,...(raw.passengerMissing===true?{passengerMissing:true}:{}),...(nilo!=='locked'?{nilo}:{}),...((recovered||fort&&raw.niloLetter===true)?{niloLetter:true}:{}),...((recovered||fort&&raw.niloEvidence===true)?{niloEvidence:true}:{}),...(isArea(raw.area)&&(raw.area!=='cedro'||cedroAllowed({...raw,nilo}))&&(raw.area!=='itavera'||NILO_CITY.includes(nilo))?{area:raw.area,entry:typeof raw.entry==='string'?raw.entry.slice(0,16):''}:{}),stage,checkpoint:stage==='wake'?'crypt':'village',guardsCleared:!!raw.guardsCleared||['return','complete'].includes(stage),piles,
   cleared:Array.isArray(raw.cleared)?[...new Set(raw.cleared.filter(id=>QUEST_GROUPS.includes(id)))]:[]};
 }
 export const inWorldVillage=p=>p.x>=34&&p.x<=86&&p.y>=36&&p.y<=98;
@@ -92,7 +93,7 @@ export function worldObjectives(progress){
   rescue:{title:'Resgate o prefeito',text:progress.guardsCleared?'Os guardas caíram. Fale com Joaquim no posto em ruínas.':'Siga a trilha ao norte da vila. Derrote os três guardas e fale com o prefeito.',target:WORLD_POINTS.prison},
   return:{title:'Um começo para Jacarandá',text:'Joaquim voltou pelo atalho. Retorne à praça e fale com ele para concluir o resgate.',target:WORLD_POINTS.mayor}
  }[stage]];
- const out=[],nilo=niloWorldObjective(progress);if(nilo?.lead)out.push(nilo);
+ const out=[];if(progress.smith==='done'&&!progress.portalUnlocked)out.push({title:'O Selo de Jacarandá',text:'Fale com Joaquim na praça para receber o selo que abre um portal de ida e volta.',target:WORLD_POINTS.mayor});const nilo=niloWorldObjective(progress);if(nilo?.lead)out.push(nilo);
  if(progress.smith==='active')out.push({title:'O ferreiro de Jacarandá',text:progress.cleared?.includes('mine-guards')?'A mina está livre. Fale com Bruno na entrada da Mina de Valfundo.':'Bruno se escondeu na Mina de Valfundo, ao norte do posto. Derrote o bando que tomou a mina.',target:WORLD_POINTS.mine});
  if(progress.smith==='found')out.push({title:'O ferreiro de Jacarandá',text:'Bruno voltou à vila. Fale com ele na frente da ferraria, na rua a oeste da praça.',target:WORLD_POINTS.forge});
  if(progress.lumber==='active'){const left=pilesLeft(progress),n=WORLD_PILES.length-left.length;out.push(left.length?{title:'Madeira para Jacarandá',text:`Marque as pilhas da Serraria do Vale, a sudoeste (${n}/${WORLD_PILES.length}). Cada pilha tem guardas.`,target:left[0]}:{title:'Madeira para Jacarandá',text:'As três pilhas estão marcadas. Volte à praça e avise Joaquim.',target:WORLD_POINTS.mayor});}
@@ -108,6 +109,7 @@ export const worldObjective=progress=>worldObjectives(progress)[0];
 // O rastro de João no mundo de Jacarandá. `lead`: guia a bússola (missão em curso ou oferta pronta); senão, fica depois dos pedidos de Joaquim.
 const ROAD=WORLD_EXITS[0];
 function niloWorldObjective(p){
+ if(p.nilo==='done'&&cedroStage(p)!=='done')return {lead:true,questId:'cedro-siege',title:cedroWon(p)?'O cerco foi rompido':'Romper o Cerco',text:cedroWon(p)?'Volte a João para concluir a missão e liberar a viagem a Itavera.':'Fale com João na praça. Bento Ferraz cercou a região para recuperar as provas.',target:NILO_POINTS.nilo};
  const stage=p.nilo||'locked';
  if(stage==='locked'){
   if(p.questFlow!==1&&niloReady(p))return {lead:true,questId:'joao-rescue',title:'O rastro de João',text:'Jacarandá voltou a respirar. Marta tem notícias de João: fale com ela na praça.',target:NILO_POINTS.marta};

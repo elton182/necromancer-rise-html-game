@@ -1,12 +1,14 @@
 # Mago — classe jogável
 
+**Revisão atual:** [elementos, Lua Prateada e custos/recargas](v2-elementos.md). Os valores dessa revisão substituem os números de entregas anteriores registrados abaixo.
+
 Implementado na v2. O Novo Jogo oferece seis classes; o **Mago** é a sexta. Fogo para grupos, gelo para quem chega perto e o arcano para sair do caminho. Usa o mesmo motor de ações da Arqueira e do Mercenário ([v2-arqueira-mercenario.md](v2-arqueira-mercenario.md)): barra montável (desde 08/11/2026), projéteis reais, atirar andando com camadas de tronco e pernas, tiro contínuo segurando o botão e mira na altura do tronco.
 
 ## Barra e feitiços
 
 | Slot | Feitiço | Custo / recarga | Tempo | Efeito |
 |---|---|---|---|---|
-| Clique / 1 | Seta Arcana | — / 0,45 s | 0,45 s, solta em 0,20 s | 60% do dano mágico. Projétil a 22 u/s, alcance 12 u, tolerância de acerto 0,95. Anda a 85% da velocidade. |
+| Clique / 1 | Seta Arcana | — / 0,45 s | 0,45 s, solta em 0,20 s | 50% do dano mágico. Projétil a 22 u/s, alcance 12 u, tolerância de acerto 0,95. Anda a 85% da velocidade. |
 | Botão direito / 2 | Bola de Fogo | 18 mana / 4 s | 0,60 s, solta em 0,30 s | Projétil a 16 u/s que explode ao tocar o primeiro inimigo, uma parede ou o fim do alcance (12 u), em raio 2,2, com 140% do dano. Paredes bloqueiam a explosão. Anda a 60%. |
 | 3 / Q | Rajada de Gelo | 20 mana / 7 s | 0,50 s, efeito em 0,22 s | Cone de 70° e 6 u à frente, com 110% do dano. Inimigos atingidos ficam 40% mais lentos por 3 s (anel azul no chão); chefes recebem o dano, mas não ficam lentos. Anda a 60%. |
 | C / E / 4 | Esquiva | — | — | Esquiva comum. |
@@ -41,8 +43,8 @@ Desenhadas em [docs/habilidades/arvores.json](habilidades/README.md). Entram pel
 |---|---|---|
 | Setas Perseguidoras (Arcano, nível 4, requer Seta Arcana, até 5 pontos) | 20 mana / 6 s | Cinco setas em leque de 70°, 40% do dano cada (+10% por ponto depois do primeiro); cada uma vira até 6 rad/s para o inimigo mais próximo à frente (até 7 u). |
 | Esfera de Gelo (Gelo, nível 6, requer Rajada de Gelo, até 5 pontos; +10% de dano no contato e nos cristais por ponto depois do primeiro) | 30 mana / 4 s | Um pequeno planeta de gelo com dois anéis inclinados, como Saturno (efeito `iceOrb`), que flutua à altura do peito e atravessa o campo bem devagar: 2 u/s por até 10 u (5 s), parando em paredes. Fere uma vez quem toca, em raio 1,1 (50%). Girando, solta dois cristais opostos a cada 0,15 s em espiral, a partir da borda; cada cristal curva até 5 rad/s para inimigos a até 3 u, com 20% do dano e 20% de lentidão por 1 s, que conta para o Estilhaçar. |
-| Familiar de Fogo (Fogo, nível 16, requer Imbuir Fogo, até 5 pontos; +10% de dano das bolas por ponto depois do primeiro) | 35 mana / 25 s | Espírito de fogo em órbita por 20 s. A cada 1,2 s lança uma bola de fogo (40%, explosão de raio 1,2; com a Combustão, o chão queima) no inimigo mais próximo do Mago, até 9 u, com linha de visão. Lançar de novo renova. |
-| Golem de Gelo (Gelo, nível 10, requer Esfera de Gelo, até 5 pontos; +10% de vida e de dano por ponto depois do primeiro) | 40 mana / 30 s | Companheiro por 25 s, com 120% da vida máxima do Mago. Avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando-o 30% mais lento por 1,5 s (chefes não). Inimigos a menos de 5 u dele passam a atacá-lo. Só um por vez; usa o modelo da Abominação com tinta azul-gelo e escala 0,85 (`companions.mjs`). |
+| Familiar de Fogo (Fogo, nível 16, requer Imbuir Fogo, até 5 pontos; +10% de dano das bolas por ponto depois do primeiro) | 35 mana / 25 s | Espírito de fogo permanente em órbita, sem limite de duração; sai na morte do Mago ou na troca de cena. A cada 1,2 s lança uma bola de fogo (40%, explosão de raio 1,2; com a Combustão, o chão queima) no inimigo mais próximo do Mago, até 9 u, com linha de visão. Lançar de novo renova. |
+| Golem de Gelo (Gelo, nível 10, requer Esfera de Gelo, até 5 pontos; +10% de vida e de dano por ponto depois do primeiro) | 40 mana / 30 s | Companheiro permanente, sem limite de duração (sai ao morrer, ao ser substituído ou na troca de cena), com 120% da vida máxima do Mago. Avança no inimigo mais próximo e golpeia a cada 1,4 s com 70% do dano mágico, deixando-o 30% mais lento por 1,5 s (chefes não). Inimigos a menos de 5 u dele passam a atacá-lo. Só um por vez; usa o modelo da Abominação com tinta azul-gelo e escala 0,85 (`companions.mjs`). |
 
 Testes em `v2/tests/class-ideas.test.mjs`; navegador em `v2/tests/class-ideas-browser-check.cjs` (evidências em `review/v2/class-ideas/`).
 
@@ -119,15 +121,43 @@ A passada rola do calcanhar à ponta, com biqueira articulada; a altura é confe
 sola real da malha. Quadril, ombros e cabeça têm contraposição e pequenos atrasos.
 O braço livre fica mais baixo, perto do corpo, balança para trás e flexiona à frente;
 o braço do cajado mantém uma pegada estável, com compensação do punho e haste acima do piso.
-Os passos laterais recebem uma base mais aberta, transferência lateral do quadril,
-inclinação discreta dos pés e postura dos braços própria. Manto, barba e chapéu seguem
-o corpo com atraso. Os três ciclos continuam com frames 1–25 (0,8 s); os strides 1,29/1,01,
-a velocidade de jogo, o rig e os clipes de combate foram mantidos.
+Os passos laterais cruzam o pé de acompanhamento por trás do pé que lidera,
+tanto à esquerda quanto à direita. Os apoios ficam em trilhos separados em profundidade
+para manter as botas afastadas durante o cruzamento. O quadril transfere o peso,
+com inclinação discreta dos pés e postura dos braços própria. Manto, barba e chapéu seguem
+o corpo com atraso. A revisão de movimentação alonga a passada frontal e reduz a abertura
+lateral, o agachamento e a oscilação vertical. O braço livre fica mais perto da postura
+de repouso e o cajado oscila menos. Os três ciclos continuam com frames 1–25 (0,8 s),
+com strides 1,47/0,92 no jogo (0,64/0,40 na autoria). A fase acompanha a distância
+percorrida, ajustando a cadência sem alterar a velocidade de movimento.
+
+O registro `mageHero.motionBlend` usa 0,14 s nas transições de locomoção e camadas;
+a direção da passada é preservada ao entrar e sair da conjuração, evitando reiniciar
+a mistura numa diagonal. Esquiva, morte e demais classes preservam seus tempos.
+O rig, os clipes de combate e as regras de movimento permanecem os mesmos.
 
 Prévias frontal, de perfil e isométrica em `blender/previews/mage_gait/locomotion.gif`.
 A auditoria inclui velocidade de apoio compensada pelo deslocamento do ator, flexão
 dos joelhos, amplitude do braço livre, ciclos, piso e rigidez do cajado. Ela verifica
 contatos em piso plano; não cria IK de terreno no runtime.
+
+Validação desta revisão: geração do GLB e build offline, auditoria Blender de pesos,
+apoios, joelhos, ciclos e rigidez da haste; prévias renderizadas frontal, lateral e
+isométrica; testes de locomoção e Mago. O cenário `mage-gait-browser-check.cjs` foi
+conferido no Chrome com armazenamento isolado, incluindo frente, ré, laterais,
+diagonal, conjuração andando e grupo no chão claro com qualidade baixa, sem erros
+de página nem requisições externas. Evidências: `review/v2/mage-motion/`.
+A revisão do passo cruzado também foi conferida no GLB dentro do navegador nos dois
+sentidos, medindo cruzamento e separação em profundidade dos tornozelos, além da
+auditoria de apoios no Blender. Evidências: `review/v2/mage-cross-step/`.
+Não houve campanha completa jogada nem validação de apoio sobre terreno irregular.
+
+```powershell
+$env:BROWSER_CHANNEL='chrome'
+$env:NR_MAGE_REVIEW_DIR='../../review/v2/mage-motion'
+node v2/tests/mage-gait-browser-check.cjs
+```
+
 
 ```powershell
 blender --background --python blender/scripts/mage_hero_t.py

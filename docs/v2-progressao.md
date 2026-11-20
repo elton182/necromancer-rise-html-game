@@ -49,7 +49,8 @@ o nível em memória e zera o XP. Salvar depois disso grava o nível de teste.
 Todas as seis classes têm o botão **Redistribuir** na aba **Habilidades** do
 Relicário. A operação devolve todos os pontos investidos na árvore da classe
 por **20 ouro por ponto**, com o custo total e o ouro disponível exibidos antes
-do clique. Sem pontos ou sem ouro suficiente, o botão fica desativado.
+do clique. O botão aparece logo abaixo dos pontos disponíveis, antes dos ramos,
+sem depender da altura da árvore. Sem pontos ou sem ouro suficiente, o botão fica desativado.
 
 A redistribuição funciona no menu, na vila, no mapa e no treino pausado pelo
 Relicário. O Necromante mantém também as restrições de recuperação da horda

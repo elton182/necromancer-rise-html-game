@@ -1,0 +1,22 @@
+{
+  "density": {
+    "groups": 25,
+    "enemies": 124,
+    "joao": false
+  },
+  "checks": [
+    "ultimato e aceitação",
+    "atlas",
+    "objetivos opcionais e portões",
+    "checkpoint",
+    "Bento e VFX",
+    "fundo claro/escuro, qualidade baixa, zoom máximo",
+    "retorno, prêmio e Itavera",
+    "390 px",
+    "arquivo offline",
+    "borda infinita clara/escura em zoom máximo",
+    "horda de zumbis no combate do chefe"
+  ],
+  "errors": [],
+  "remote": []
+}

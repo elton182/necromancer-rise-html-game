@@ -61,16 +61,16 @@ test('Seta Arcana: projétil com dano mágico, anda enquanto conjura',()=>{
 
 test('Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combustão deixa o chão em chamas',()=>{
  const w=field({fireball:1}),a=target(w,5),b=target(w,5,1.6),far=target(w,5,4);
- assert.ok(marksmanAction(w,1));advance(w,1/60,80);
+ assert.ok(marksmanAction(w,1));advance(w,1/60,40);
  assert.equal(lost(a),dmg(w,1));assert.equal(lost(b),dmg(w,1),'na área de 2,2');assert.equal(lost(far),0);
- const end=field({fireball:1}),c=target(end,12.5,1);end.aim={x:20,y:0};marksmanAction(end,1);advance(end,1/60,120);assert.equal(lost(c),dmg(end,1),'explode no fim do alcance');
+ const end=field({fireball:1}),c=target(end,12.5,1);end.aim={x:20,y:0};marksmanAction(end,1);advance(end,1/60,80);assert.equal(lost(c),dmg(end,1),'explode no fim do alcance');
  const fire=field({fireball:1,combustion:3}),d=target(fire,4);marksmanAction(fire,1);advance(fire,1/60,40);
  assert.ok(fire.marksmanZones.some(z=>z.kind==='fire'));advance(fire,1/60,200);
  assert.ok(lost(d)>dmg(fire,1),'queima depois da explosão');assert.equal(fire.marksmanZones.length,0);
 });
 
 test('Rajada de Gelo: cone de 70°, dano e lentidão; Estilhaçar aumenta fogo e arcano nos lentos',()=>{
- const w=field({frost:1,imbuirGelo:1,shatter:3}),inside=target(w,4,1),behind=target(w,-3,0),side=target(w,1,5);
+ const w=field({frost:1,icenova:1,imbuirGelo:1,shatter:3}),inside=target(w,4,1),behind=target(w,-3,0),side=target(w,1,5);
  assert.ok(marksmanAction(w,2));advance(w,1/60,40);
  assert.equal(lost(inside),dmg(w,2));assert.equal(lost(behind),0);assert.equal(lost(side),0,'fora do cone');
  assert.equal(inside.slow,.4);assert.ok(inside.frostUntil>w.time);assert.ok(w.effects.some(f=>String(f.id).startsWith('mfrost-')),'anel de gelo');
@@ -82,7 +82,7 @@ test('Teleporte: salta até 7 u sem atravessar paredes, eco fere quem ficou; rec
  const w=field({blink:3,echo:2}),e=target(w,1,0);w.aim={x:20,y:0};
  assert.ok(marksmanAction(w,4));advance(w,1/60,30);
  assert.ok(Math.abs(w.player.x-7)<1e-6);assert.equal(lost(e),dmg(w,4));assert.equal(dmg(w,4),Math.floor(w.player.spellDamage*.5*(1.5+schoolSynergy('mage',w.marksmanRanks,'blink'))));
- assert.equal(actionCooldown(A[4],w.marksmanRanks,0),5);
+ assert.equal(actionCooldown(A[4],w.marksmanRanks,0),2.25);
  const wall=field({blink:1});wall.arena.solids=[{kind:'box',x:3,y:0,width:.6,depth:4}];wall.aim={x:20,y:0};marksmanAction(wall,4);advance(wall,1/60,30);assert.ok(wall.player.x<3);
  const near=field({blink:1});near.aim={x:2,y:0};marksmanAction(near,4);advance(near,1/60,30);assert.ok(Math.abs(near.player.x-2)<1e-6,'para no ponto mirado');
 });
@@ -97,7 +97,7 @@ test('Meteoro: área marcada, bola de fogo caindo, 320% depois de 1 s e chão em
  assert.ok(w.effects.some(f=>f.fx==='groundBreak'));
  assert.equal(w.marksmanZones.length,1);assert.equal(w.marksmanZones[0].kind,'fire');assert.ok(w.effects.some(f=>f.fx==='fireField'),'chão queimando visível');
  const B=A[5].burn,pulse=Math.max(1,Math.floor(w.player.spellDamage*B.multiplier*(1+schoolSynergy('mage',w.marksmanRanks,'meteor'))));
- advance(w,1/60,Math.ceil(B.time*60)+5);assert.equal(lost(inside),dmg(w,5)+pulse*B.time/B.interval);assert.equal(lost(out),0);assert.equal(w.marksmanZones.length,0);
+ advance(w,1/60,Math.ceil(B.time*60)+5);assert.ok(lost(inside)>dmg(w,5)+pulse*B.time/B.interval);assert.ok(inside.fireStacks>0);assert.equal(lost(out),0);assert.equal(w.marksmanZones.length,0);
 });
 
 test('esquiva cancela; troca de cena limpa projéteis e chamas',()=>{

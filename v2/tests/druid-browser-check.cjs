@@ -43,7 +43,9 @@ await page.evaluate(()=>{const p=NecromancerV2.world.player;p.hp=Math.floor(p.ma
 await page.waitForTimeout(5200);assert.ok(await page.evaluate(()=>{const p=NecromancerV2.world.player;return p.hp>=Math.floor(p.maxHp/2)+Math.floor(p.maxHp*.3)-1;}),'Rejuvenescer cura 30%');
 await page.evaluate(()=>{const w=NecromancerV2.world;w.player.mp=w.player.maxMp;w.druidFormReady=0;});
 // Forma de lobo pelo F: troca o modelo e a barra.
-await page.waitForTimeout(400);await page.keyboard.press('KeyF');await page.waitForFunction(()=>NecromancerV2.world.druidForm==='wolf');
+// O efeito de transformação é capturado no meio, com as folhas fechando sobre o corpo novo.
+await page.waitForTimeout(400);await page.keyboard.press('KeyF');await page.waitForFunction(()=>{const w=NecromancerV2.world,f=w.druidForm==='wolf'&&w.effects.find(e=>e.fx==='shapeshift');if(f&&f.time>=.25){w.paused=true;return true;}return false;});
+await page.waitForTimeout(250);await page.screenshot({path:path.join(dir,'shapeshift-wolf.png')});await page.evaluate(()=>{NecromancerV2.world.paused=false;});
 assert.equal(await page.evaluate(()=>NecromancerV2.world.player.model),'druidWolf');
 await page.waitForTimeout(600);await page.screenshot({path:path.join(dir,'wolf.png')});
 assert.match(await page.locator('[data-hud-slot="0"]').innerText(),/Garras/);
@@ -52,6 +54,12 @@ await frozen('wolf-claws.png',()=>{NecromancerV2.world.castCooldown=0;return Nec
 await page.evaluate(()=>{const w=NecromancerV2.world,p=w.player,e=w.actors.find(a=>a.team==='enemy'&&a.hp>0);p.x=e.x;p.y=e.y+6;w.aim={x:e.x,y:e.y};p.mp=p.maxMp;});
 await frozen('wolf-leap.png',()=>NecromancerV2.slot(1));
 assert.ok(await page.evaluate(()=>{const w=NecromancerV2.world,e=w.actors.find(a=>a.team==='enemy'&&a.hp>0);return Math.hypot(w.player.x-e.x,w.player.y-e.y)<3;}),'Salto aproxima');
+// Frenético: com 3 acúmulos, Garras sem ninguém ao alcance viram um bote até o inimigo mais próximo da mira.
+await page.evaluate(()=>{const w=NecromancerV2.world,p=w.player,e=w.actors.find(a=>a.team==='enemy'&&a.hp>0);w.druidRanks.frenetico=1;w.druidFrantic={stacks:3,until:w.time+60,pounceReady:0};w.druidCooldowns.claws=0;p.x=e.x;p.y=e.y+4.5;w.aim={x:e.x,y:e.y};});
+await page.waitForTimeout(200);assert.match(await page.locator('[data-hud-slot="0"]').innerText(),/Frenético 3\/5 · bote/);
+before=await hp();await frozen('wolf-pounce.png',()=>{const w=NecromancerV2.world;w.castCooldown=0;const ok=NecromancerV2.slot(0);w.pounceSeen=!!w.druidAction?.pounce;return ok;});
+assert.ok(await page.evaluate(()=>NecromancerV2.world.pounceSeen),'bote do Frenético');assert.ok(await hp()<before,'bote golpeia ao cair');
+assert.ok(await page.evaluate(()=>{const w=NecromancerV2.world,e=w.actors.find(a=>a.team==='enemy'&&a.hp>0);return Math.hypot(w.player.x-e.x,w.player.y-e.y)<2;}),'bote aproxima');
 await frozen('wolf-howl.png',()=>NecromancerV2.slot(2),.15);
 assert.ok(await page.evaluate(()=>NecromancerV2.world.druidFrenzy>NecromancerV2.world.time),'Uivo ativa o frenesi');
 // Qualidade baixa e chão claro, ainda na forma de lobo.
@@ -59,12 +67,14 @@ await page.evaluate(()=>{for(const [id,value] of [['ground','light'],['quality',
 assert.deepEqual(await page.evaluate(()=>[NecromancerV2.session.save.settings.ground,NecromancerV2.session.save.settings.quality]),['light','low']);
 await page.evaluate(()=>{const w=NecromancerV2.world;w.castCooldown=0;});await page.evaluate(()=>NecromancerV2.slot(0));
 await page.waitForTimeout(500);await page.screenshot({path:path.join(dir,'wolf-light-low.png')});
-// Mana esgotada: volta à forma humana e espera para transformar de novo.
-await page.evaluate(()=>{NecromancerV2.world.player.mp=0;});await page.waitForFunction(()=>NecromancerV2.world.druidForm==='human');
+// Sem mana a forma de lobo continua; F volta à forma humana.
+await page.evaluate(()=>{NecromancerV2.world.player.mp=0;});await page.waitForTimeout(1500);
+assert.equal(await page.evaluate(()=>NecromancerV2.world.druidForm),'wolf','sem consumo de mana na forma de lobo');
+await page.evaluate(()=>{NecromancerV2.world.druidFormReady=0;});await page.keyboard.press('KeyF');await page.waitForFunction(()=>NecromancerV2.world.druidForm==='human');
 assert.equal(await page.evaluate(()=>NecromancerV2.world.player.model),'druid');
 await page.evaluate(()=>{const w=NecromancerV2.world;w.player.mp=w.player.maxMp;w.castCooldown=0;});
 await frozen('human-light-low.png',()=>NecromancerV2.slot(0));
 assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
-const result={ok:true,checks:['seleção da classe','árvore própria','Faísca','Corrente','Raízes','Tempestade','Rejuvenescer','Forma de Lobo','Garras','Salto Feroz','Uivo','qualidade baixa e chão claro','volta ao esgotar'],errors,remote};
+const result={ok:true,checks:['seleção da classe','árvore própria','Faísca','Corrente','Raízes','Tempestade','Rejuvenescer','Forma de Lobo','Garras','Salto Feroz','transformação','Frenético','Uivo','qualidade baixa e chão claro','lobo sem consumo de mana'],errors,remote};
 fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1);});

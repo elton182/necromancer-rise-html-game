@@ -1,5 +1,37 @@
 # V2 — dano, Tiro de Osso e Dash (E4)
 
+## Balanceamento global de resistência e ataques básicos (13/11/2026)
+
+A resistência dos arquétipos da v2 é definida em `enemies.mjs`: vida-base igual ao maior valor entre **96** e **três vezes a vida-base anterior**. A regra entra antes da escala de nível, raridade e dificuldade, na tabela `Types`; por isso vale também nos caminhos da campanha que recalculam a vida após criar a entidade. Reforços recebem a regra uma vez. Dano dos inimigos, XP, recompensas, índices, saves e fontes da v1 continuam com suas regras anteriores.
+
+Campanha ARANDU (prólogo, mundo, Itaúna, gruta, forte e Cedro), campanha anterior, Arena, Expedições, Conquista e mapas do editor usam essa tabela. Os multiplicadores existentes de elites e chefes derivados desses arquétipos continuam aplicados. O Rei Caído mantém sua curva própria. Os inimigos de treino e os bonecos da primeira sala da cripta usam o piso de 96. O Cerco tem uma curva própria por onda/grau: aplica o mesmo fator de resistência de três vezes à vida do plano antes do multiplicador de chefe, sem multiplicar novamente a tabela de tipos. Torres mantêm dano, custo e ritmo anteriores.
+
+A Conquista de Valdoria tem piso **3,5** para o multiplicador regional de vida da v2, inclusive no chefe. A dificuldade inicial reutilizava resistência equivalente a uma região de nível 4, permitindo abates em dois básicos por personagens mais avançados. Esse piso é fixo e não lê o jogador; dificuldades cuja curva original já passa de 3,5 não recebem aumento adicional. Dano e XP regionais mantêm a regra compartilhada.
+
+Ataques básicos ajustados em todos os modos:
+
+| Ataque | Multiplicador anterior | Atual |
+| --- | --- | --- |
+| Disparo da Arqueira | 0,85 | 0,65 |
+| Virote pesado do Mercenário | 1,50 | 0,65 |
+| Seta Arcana do Mago | 0,60 | 0,50 |
+| Garras da Druida | 0,75 | 0,45 |
+
+Tiro de Osso, Faísca e os três cortes do Guerreiro mantêm seus multiplicadores. Habilidades mantêm dano, custos, recargas, alcance, área e controle; passam a representar uma parcela maior da eficiência do combate. O painel de atributos da Druida acompanha o novo dano das Garras.
+
+Na caverna inicial, equipamento inicial, nível 1 e sem pontos no básico: os inimigos comuns medidos precisam de **5–7 básicos**, conforme classe e arquétipo. As habilidades iniciais medidas matam um lobo em **1–2 usos**, com mana e recarga reais; o Salto Feroz é medido no nível 4, quando fica disponível. Essa é uma referência de equilíbrio, sem proteção artificial por quantidade de acertos: níveis, itens e investimentos continuam permitindo derrotar inimigos fracos mais rapidamente. Soldados, orcs, elites e chefes resistem mais que as criaturas frágeis.
+
+Verificação reproduzível, na raiz:
+
+```powershell
+node v2/tests/cave-balance-simulation.mjs review/v2/cave-balance/after.json
+node v2/tests/global-balance-simulation.mjs
+node --test v2/tests/cave-balance.test.mjs v2/tests/global-balance.test.mjs
+node v2/tests/cave-balance-browser-check.cjs
+```
+
+O check de navegador usa Playwright, Edge por padrão ou `BROWSER_CHANNEL=chrome`, armazenamento isolado e o HTML autocontido. O [relatório](../review/v2/cave-balance/report.md) distingue alvos controlados, encontros com IA e os limites da cobertura. O adaptador `balance-simulator/v2-source.mjs` lê os números da v2; o `balance-simulator/run.js` anterior continua específico da v1.
+
 Fontes da v2: `v2/scripts/combat.mjs`, `training-model.mjs` e `session.mjs`.
 Empacotamento: `v2/tools/build.cjs` e `combat-source.cjs`.
 Os caminhos deste parágrafo são relativos à raiz do projeto.
@@ -197,3 +229,9 @@ Todo personagem do jogador pode esquivar com C, controle ou botão Esquiva, sem 
 | Lich | Rasante em parafuso, sem tocar o chão, com a foice girando atrás dele | `blender/scripts/lich_dodge.py` |
 
 A pose acompanha a duração real da esquiva e termina ao colidir ou morrer; ao colidir, o corpo volta à pose normal em 0,08 s, de onde estiver. O personagem olha para onde vai e, no fim, volta para a mira; esse giro leva 0,09 s só na apresentação (`dodgeYaw` em `v2/scripts/locomotion.mjs`), sem alterar o ângulo das regras. A animação não muda distância, duração, recarga, colisão nem proteção. Verificação: `node v2/tests/dodge-browser-check.cjs` (na raiz, com Playwright e Edge), que grava pranchas em `review/v2/dodge/`.
+
+## Poção de cura reutilizável
+
+Todas as classes começam com um frasco de **3 goles**, separado dos consumíveis do mercador. **B** ou o botão no HUD consome um gole e recupera **50% da vida máxima no momento do uso, em 5 segundos**, sem ultrapassar a vida máxima. Dano recebido não interrompe a cura. Não permite uso com vida cheia, durante outra cura, em pausa, cinemática ou após a morte.
+
+Cada abate válido pelo caminho único de recompensas (incluindo mortes pela horda e companheiros) restaura **1/10 de gole**; 10 abates restauram um gole, até 3. Bonecos sem XP e recompensas duplicadas não recarregam. Carga parcial é preservada no save e entre cenas; saves antigos recebem o frasco cheio. A cura em curso pausa com o jogo e acaba ao morrer ou trocar de cena; não é persistida. Não há recarga por tempo. Regras em `v2/scripts/healing-potion.mjs`.

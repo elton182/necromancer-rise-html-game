@@ -1,0 +1,918 @@
+{
+  "report": [
+    {
+      "id": "npcMarta",
+      "height": 2.397776822668478,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 18000,
+      "idleMotion": 0.012162387371063232,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    },
+    {
+      "id": "npcHelena",
+      "height": 2.401524198548671,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 18000,
+      "idleMotion": 0.019213199615478516,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    },
+    {
+      "id": "npcMayor",
+      "height": 2.400688738798183,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 17999,
+      "idleMotion": 0.024359405040740967,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    },
+    {
+      "id": "npcMessenger",
+      "height": 2.39605831324916,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 18000,
+      "idleMotion": 0.012242794036865234,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    },
+    {
+      "id": "npcBruno",
+      "height": 2.4017541859802876,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 17999,
+      "idleMotion": 0.022635683417320224,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    },
+    {
+      "id": "npcLili",
+      "height": 2.4029975408439803,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      },
+      "triangles": 18000,
+      "idleMotion": 0.029507510364055634,
+      "footDrift": 0,
+      "loopError": 0,
+      "idleDuration": 12.041666984558105,
+      "rigBones": [
+        "root",
+        "hips",
+        "legL",
+        "shinL",
+        "footL",
+        "legR",
+        "shinR",
+        "footR",
+        "spine",
+        "chest",
+        "cape",
+        "capeL",
+        "capeR",
+        "neck",
+        "head",
+        "shoulderL",
+        "armL",
+        "forearmL",
+        "handL",
+        "shoulderR",
+        "armR",
+        "forearmR",
+        "handR"
+      ]
+    }
+  ],
+  "cast": [
+    {
+      "key": "child",
+      "model": "npcLili"
+    },
+    {
+      "key": "mayor",
+      "model": "npcMayor"
+    },
+    {
+      "key": "smith",
+      "model": "npcBruno"
+    },
+    {
+      "key": "endless",
+      "model": "npcBram"
+    },
+    {
+      "key": "valdoria",
+      "model": "npcLysa"
+    },
+    {
+      "key": "siege",
+      "model": "npcMerchant"
+    },
+    {
+      "key": "marta",
+      "model": "npcMarta"
+    },
+    {
+      "key": "nilo",
+      "model": "npcJoao"
+    }
+  ],
+  "idleBefore": [
+    {
+      "id": 21,
+      "model": "npcLili",
+      "time": 0.9235000000000011,
+      "phase": 0.18205803632736206,
+      "bones": {
+        "chest": [
+          0.002246438850868287,
+          -1.3677818135457611e-15,
+          0,
+          0.9999974603642409
+        ],
+        "head": [
+          0.007874889841323542,
+          0.00022658713549126086,
+          0.028755851776579595,
+          0.9995554419705284
+        ],
+        "armL": [
+          -0.009076519939609696,
+          -0.011594739214371564,
+          0.6737988700160783,
+          0.738768070217841
+        ],
+        "forearmL": [
+          -0.1498041421692201,
+          -2.436050463202566e-8,
+          -2.653699565033271e-8,
+          0.9887156990519577
+        ],
+        "armR": [
+          -0.019831810198585754,
+          0.026024358887093722,
+          -0.6638547381996722,
+          0.7471454467629497
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "model": "npcMayor",
+      "time": 0.9235000000000011,
+      "phase": 0.4853485873900354,
+      "bones": {
+        "chest": [
+          0.0012954385412960704,
+          -2.5257928515193815e-16,
+          2.092585758706192e-17,
+          0.9999991622681124
+        ],
+        "head": [
+          -0.005974631372689528,
+          -5.736732518274799e-7,
+          0.0000960585929557378,
+          0.9999821471168264
+        ],
+        "armL": [
+          -0.013441193978842868,
+          -0.01715209682939672,
+          0.6682459635665778,
+          0.7436211931205348
+        ],
+        "forearmL": [
+          -0.1404182398491708,
+          -5.87589832594257e-9,
+          -1.2176503080574172e-8,
+          0.9900922790918608
+        ],
+        "armR": [
+          -0.02412924684299533,
+          0.031629558453435264,
+          -0.6581577221118884,
+          0.7518282804625807
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "model": "npcBruno",
+      "time": 0.9235000000000011,
+      "phase": 0.1003726099152118,
+      "bones": {
+        "chest": [
+          -0.000029061918172068082,
+          0.0001797368296161791,
+          4.6366840070967876e-9,
+          0.9999999834250384
+        ],
+        "head": [
+          -0.005399974252008075,
+          6.8042978127397846e-12,
+          8.523708260340853e-12,
+          0.9999854200327511
+        ],
+        "armL": [
+          -0.013539637721752774,
+          -0.018000117100040625,
+          0.6445025161895793,
+          0.7642703245866896
+        ],
+        "forearmL": [
+          -0.13455835356155835,
+          -7.064634359897649e-10,
+          1.9151932961808146e-9,
+          0.9909056591758529
+        ],
+        "armR": [
+          -0.023931342293682684,
+          0.032691526075222854,
+          -0.634152800171696,
+          0.7721455698333654
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "model": "npcMarta",
+      "time": 0.9235000000000011,
+      "phase": 0.21175739401951432,
+      "bones": {
+        "chest": [
+          -0.007778993097905457,
+          -5.393694980425157e-19,
+          1.538388877936731e-17,
+          0.9999697415384785
+        ],
+        "head": [
+          0.010098902129979938,
+          0.0002475999197841859,
+          0.02450552820400454,
+          0.9996486496826262
+        ],
+        "armL": [
+          -0.013741612117443026,
+          -0.017282147489144646,
+          0.6762397609856424,
+          0.7363506509378929
+        ],
+        "forearmL": [
+          -0.10532757795642336,
+          2.8083255750333914e-10,
+          -5.478435783032127e-10,
+          0.994437579842258
+        ],
+        "armR": [
+          -0.024528889643375386,
+          0.031685737028759646,
+          -0.6662374188408771,
+          0.7446623727422066
+        ]
+      }
+    }
+  ],
+  "idleAfter": [
+    {
+      "id": 21,
+      "model": "npcLili",
+      "time": 2.0551000000000004,
+      "phase": 0.18205803632736206,
+      "bones": {
+        "chest": [
+          -0.0007081467066867695,
+          1.1115745825076102e-16,
+          2.176101184486796e-19,
+          0.9999997492640894
+        ],
+        "head": [
+          0.002401512950024196,
+          1.9108332043487378e-8,
+          0.00000795536324147926,
+          0.9999971163319737
+        ],
+        "armL": [
+          -0.010722002435414782,
+          -0.013641430658719964,
+          0.6752243935702024,
+          0.7374082779309649
+        ],
+        "forearmL": [
+          -0.1012741581684273,
+          -7.21311427095448e-10,
+          -2.2762201431582674e-9,
+          0.9948585492131146
+        ],
+        "armR": [
+          -0.021478070032208776,
+          0.028069769202783992,
+          -0.6652654256396136,
+          0.7457698666566906
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "model": "npcMayor",
+      "time": 2.0551000000000004,
+      "phase": 0.4853485873900354,
+      "bones": {
+        "chest": [
+          0.0092679470954915,
+          0.000002763849134608209,
+          -2.5689763726784793e-8,
+          0.9999570516522176
+        ],
+        "head": [
+          -0.005999964280234353,
+          -8.754030958332067e-14,
+          1.2966369593880315e-14,
+          0.9999819997148517
+        ],
+        "armL": [
+          -0.009009049163517956,
+          -0.011623002629516436,
+          0.6643700773875127,
+          0.7472590870074142
+        ],
+        "forearmL": [
+          -0.1491834419117466,
+          6.796111392174918e-9,
+          -1.4753069027616955e-8,
+          0.9888095370997209
+        ],
+        "armR": [
+          -0.019695296222179512,
+          0.0261038365988285,
+          -0.654320602898679,
+          0.7555099163107333
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "model": "npcBruno",
+      "time": 2.0551000000000004,
+      "phase": 0.1003726099152118,
+      "bones": {
+        "chest": [
+          0.007574783248365874,
+          0.0043686073754537645,
+          -0.00003309676492454699,
+          0.9999617844671691
+        ],
+        "head": [
+          -0.00539997402454658,
+          1.9684616471991615e-10,
+          3.0860741460756576e-10,
+          0.9999854200339794
+        ],
+        "armL": [
+          -0.009413350119247557,
+          -0.012647434459073908,
+          0.6407029135729245,
+          0.7676269978187984
+        ],
+        "forearmL": [
+          -0.1429254858888217,
+          5.784174255958598e-9,
+          -6.024443758155256e-9,
+          0.9897334558411987
+        ],
+        "armR": [
+          -0.019803284506193838,
+          0.027342085191295343,
+          -0.6303886511483139,
+          0.7755452203473168
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "model": "npcMarta",
+      "time": 2.0551000000000004,
+      "phase": 0.21175739401951432,
+      "bones": {
+        "chest": [
+          0.0002586848924282551,
+          -2.6008984177031017e-15,
+          4.1608499890684924e-19,
+          0.9999999694815415
+        ],
+        "head": [
+          0.004868649998213158,
+          0.000007867776173707906,
+          0.0016129328899856434,
+          0.9999868394451958
+        ],
+        "armL": [
+          -0.009233019630878709,
+          -0.011740443226288354,
+          0.6723734351360491,
+          0.7400614008747487
+        ],
+        "forearmL": [
+          -0.11420436890264782,
+          1.529631111122253e-8,
+          -1.3425128136624691e-8,
+          0.9934572774526077
+        ],
+        "armR": [
+          -0.0200184530080973,
+          0.02614749847064654,
+          -0.662410515654531,
+          0.7484169202480421
+        ]
+      }
+    }
+  ],
+  "facing": [
+    {
+      "key": "child",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "mayor",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "smith",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "endless",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "valdoria",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "siege",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "marta",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    },
+    {
+      "key": "nilo",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974485
+    }
+  ],
+  "facingScenes": [
+    {
+      "scene": "Jacarandá",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "child",
+          "model": "npcLili",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "mayor",
+          "model": "npcMayor",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "smith",
+          "model": "npcBruno",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "endless",
+          "model": "npcBram",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "valdoria",
+          "model": "npcLysa",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "siege",
+          "model": "npcMerchant",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "nilo",
+          "model": "npcJoao",
+          "logicalAngle": 0.7853981633974483,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    },
+    {
+      "scene": "Itavera",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "helena",
+          "model": "npcHelena",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "city-joao",
+          "model": "npcJoao",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "city-marta",
+          "model": "npcMarta",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: travel",
+      "expected": 0.6146629519221656,
+      "npcs": [
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 1.5707963267948966,
+          "renderAngle": 0.6146629519221656
+        },
+        {
+          "key": "nilo",
+          "model": "npcJoao",
+          "logicalAngle": 1.5707963267948966,
+          "renderAngle": 0.6146629519221656
+        },
+        {
+          "key": "driver",
+          "model": "npcMerchant",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.6146629519221656
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: ambush",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "nilo",
+          "model": "npcJoao",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "guard",
+          "model": "npcGuard",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: fall",
+      "expected": 0.702256931509007,
+      "npcs": [
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.702256931509007
+        },
+        {
+          "key": "nilo",
+          "model": "npcJoao",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.702256931509007
+        },
+        {
+          "key": "guard",
+          "model": "npcGuard",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.702256931509007
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: trail",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "messenger",
+          "model": "npcMessenger",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: defense",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "oren",
+          "model": "npcMayor",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "guard",
+          "model": "npcGuard",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    },
+    {
+      "scene": "Prólogo: reunion",
+      "expected": 0.7853981633974485,
+      "npcs": [
+        {
+          "key": "marta",
+          "model": "npcMarta",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "oren",
+          "model": "npcMayor",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        },
+        {
+          "key": "guard",
+          "model": "npcGuard",
+          "logicalAngle": 3.141592653589793,
+          "renderAngle": 0.7853981633974485
+        }
+      ]
+    }
+  ],
+  "city": [
+    {
+      "key": "helena",
+      "model": "npcHelena"
+    },
+    {
+      "key": "city-joao",
+      "model": "npcJoao"
+    },
+    {
+      "key": "city-marta",
+      "model": "npcMarta"
+    }
+  ],
+  "prologue": [
+    {
+      "model": "necromancer"
+    },
+    {
+      "key": "marta",
+      "model": "npcMarta"
+    },
+    {
+      "key": "nilo",
+      "model": "npcJoao"
+    },
+    {
+      "key": "guard",
+      "model": "npcGuard"
+    },
+    {
+      "model": "enemyThief"
+    },
+    {
+      "model": "enemyThief"
+    },
+    {
+      "model": "enemyRogue"
+    }
+  ],
+  "errors": [],
+  "remote": []
+}

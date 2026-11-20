@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "blood": {
+        "radius": 6,
+        "element": "blood",
+        "hp": 69.56184620000002
+      },
+      "ice": {
+        "radius": 4.5,
+        "element": "frost",
+        "stacks": [
+          1,
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "meteorsPerAttack": 1,
+      "moonButton": true,
+      "moonKey": true
+    },
+    {
+      "fire": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "frozen": true
+    }
+  ],
+  "errors": [],
+  "remote": []
+}

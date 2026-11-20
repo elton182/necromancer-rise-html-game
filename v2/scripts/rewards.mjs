@@ -1,4 +1,5 @@
 // Caminho único de recompensa: cada morte de inimigo paga XP, maestria, ouro e drops uma vez.
+import {rechargePotion} from './healing-potion.mjs';
 import Expedition from './shared-expedition.mjs';
 import P from './progression-rules.mjs';
 import {addExp,goldFor,levelUp,levelOf,xpNext} from './progression.mjs';
@@ -29,6 +30,7 @@ export function rewardKill(s,enemy){
  if(enemy?.infected&&!enemy.rewarded&&w.infectedPool)w.hostileZones.push({id:w.nextId++,source:null,gearWave:enemy.gearWave,x:enemy.x,y:enemy.y,radius:2.3,delay:1.5,life:3,tick:0,damage:Math.max(1,Math.round(enemy.dmg*.4))});
  if(!validXp(xp)||enemy.rewarded)return false;
  enemy.rewarded=true;
+ rechargePotion(s);
  if(enemy.siegeLane!==undefined&&w.adventure?.kind==='siege'&&!w.adventure.done)w.adventure.essence+=enemy.siegeBoss?80:12;
  // `xpScale`: ajuste do mapa. Reduz personagem e maestria; o ouro segue o valor do inimigo.
  const gained=enemy.xpScale?Math.max(1,Math.round(xp*enemy.xpScale)):xp;

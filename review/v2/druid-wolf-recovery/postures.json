@@ -1,0 +1,380 @@
+[
+  {
+    "clip": "idle",
+    "progress": 0,
+    "headAboveHips": 0.37540645185005905,
+    "handAboveFeet": 0.8293141100877568
+  },
+  {
+    "clip": "idle",
+    "progress": 0.25,
+    "headAboveHips": 0.27719306110652764,
+    "handAboveFeet": 0.8159595979719922
+  },
+  {
+    "clip": "idle",
+    "progress": 0.48,
+    "headAboveHips": 0.17685992873319312,
+    "handAboveFeet": 0.8060287724821575
+  },
+  {
+    "clip": "idle",
+    "progress": 0.61,
+    "headAboveHips": 0.20176223810194305,
+    "handAboveFeet": 0.8062171401425833
+  },
+  {
+    "clip": "idle",
+    "progress": 0.76,
+    "headAboveHips": 0.2887320919583227,
+    "handAboveFeet": 0.8145832244862952
+  },
+  {
+    "clip": "idle",
+    "progress": 0.89,
+    "headAboveHips": 0.35716616167955606,
+    "handAboveFeet": 0.8254356560740848
+  },
+  {
+    "clip": "idle",
+    "progress": 1,
+    "headAboveHips": 0.37540953300074364,
+    "handAboveFeet": 0.829315546625502
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0,
+    "headAboveHips": 0.46521590682974634,
+    "handAboveFeet": 0.8496775686698133
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.25,
+    "headAboveHips": 0.4861848578357144,
+    "handAboveFeet": 0.7662580090349412
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.48,
+    "headAboveHips": 0.39444001452450683,
+    "handAboveFeet": 0.6887192889547143
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.61,
+    "headAboveHips": 0.37302784198961647,
+    "handAboveFeet": 0.7213938025579159
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.76,
+    "headAboveHips": 0.40712853379595804,
+    "handAboveFeet": 0.7636493390016801
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.89,
+    "headAboveHips": 0.4428364810481684,
+    "handAboveFeet": 0.8274381612570936
+  },
+  {
+    "clip": "claw_1",
+    "progress": 1,
+    "headAboveHips": 0.4652154271844293,
+    "handAboveFeet": 0.8496775399054743
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0,
+    "headAboveHips": 0.46521553487543077,
+    "handAboveFeet": 0.8285034665046223
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.25,
+    "headAboveHips": 0.48333467409406383,
+    "handAboveFeet": 0.8548985674369605
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.48,
+    "headAboveHips": 0.3955548016455297,
+    "handAboveFeet": 0.581700124740762
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.61,
+    "headAboveHips": 0.373419066888689,
+    "handAboveFeet": 0.7038819905360589
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.76,
+    "headAboveHips": 0.40820307861939353,
+    "handAboveFeet": 0.7857593146027435
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.89,
+    "headAboveHips": 0.4435379636868202,
+    "handAboveFeet": 0.8492395787833841
+  },
+  {
+    "clip": "claw_2",
+    "progress": 1,
+    "headAboveHips": 0.46521567760087,
+    "handAboveFeet": 0.8285037803557558
+  },
+  {
+    "clip": "howl",
+    "progress": 0,
+    "headAboveHips": 0.45905080120734776,
+    "handAboveFeet": 0.8488479468379928
+  },
+  {
+    "clip": "howl",
+    "progress": 0.25,
+    "headAboveHips": 0.5425320460717846,
+    "handAboveFeet": 0.7982841412641519
+  },
+  {
+    "clip": "howl",
+    "progress": 0.48,
+    "headAboveHips": 0.7544271714491713,
+    "handAboveFeet": 0.899235227423451
+  },
+  {
+    "clip": "howl",
+    "progress": 0.61,
+    "headAboveHips": 0.8321134517277304,
+    "handAboveFeet": 1.0327044148640447
+  },
+  {
+    "clip": "howl",
+    "progress": 0.76,
+    "headAboveHips": 0.8764939641218255,
+    "handAboveFeet": 1.2011756907968176
+  },
+  {
+    "clip": "howl",
+    "progress": 0.89,
+    "headAboveHips": 0.8818904891612274,
+    "handAboveFeet": 1.32729102152876
+  },
+  {
+    "clip": "howl",
+    "progress": 1,
+    "headAboveHips": 0.8810422492630576,
+    "handAboveFeet": 1.3645461486553416
+  },
+  {
+    "clip": "leap",
+    "progress": 0,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285029798301502
+  },
+  {
+    "clip": "leap",
+    "progress": 0.25,
+    "headAboveHips": 0.4447205774529088,
+    "handAboveFeet": 0.837551203482124
+  },
+  {
+    "clip": "leap",
+    "progress": 0.48,
+    "headAboveHips": 0.4097838071389974,
+    "handAboveFeet": 0.8493789517604817
+  },
+  {
+    "clip": "leap",
+    "progress": 0.61,
+    "headAboveHips": 0.41306269992936673,
+    "handAboveFeet": 0.8484332293144988
+  },
+  {
+    "clip": "leap",
+    "progress": 0.76,
+    "headAboveHips": 0.4368956228080436,
+    "handAboveFeet": 0.8405383924741359
+  },
+  {
+    "clip": "leap",
+    "progress": 0.89,
+    "headAboveHips": 0.4582214603058494,
+    "handAboveFeet": 0.831804766907589
+  },
+  {
+    "clip": "leap",
+    "progress": 1,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285029798301502
+  },
+  {
+    "clip": "dodge",
+    "progress": 0,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285027158140164
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.25,
+    "headAboveHips": 0.40819100253297624,
+    "handAboveFeet": 0.7064811709553713
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.48,
+    "headAboveHips": 0.40819100253297624,
+    "handAboveFeet": 0.7064811709553713
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.61,
+    "headAboveHips": 0.40819100253297624,
+    "handAboveFeet": 0.7064811709553713
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.76,
+    "headAboveHips": 0.4190988024587583,
+    "handAboveFeet": 0.7289599119177669
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.89,
+    "headAboveHips": 0.4504635683673104,
+    "handAboveFeet": 0.795769029649308
+  },
+  {
+    "clip": "dodge",
+    "progress": 1,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285027158140164
+  },
+  {
+    "clip": "walk",
+    "progress": 0,
+    "headAboveHips": -0.010856463741112599,
+    "handAboveFeet": -0.06015995401325419
+  },
+  {
+    "clip": "walk",
+    "progress": 0.25,
+    "headAboveHips": -0.006111639901611565,
+    "handAboveFeet": -0.007052540586903244
+  },
+  {
+    "clip": "walk",
+    "progress": 0.48,
+    "headAboveHips": -0.009465979883834907,
+    "handAboveFeet": -0.31920262061491667
+  },
+  {
+    "clip": "walk",
+    "progress": 0.61,
+    "headAboveHips": -0.013650871767083017,
+    "handAboveFeet": -0.4271531168136606
+  },
+  {
+    "clip": "walk",
+    "progress": 0.76,
+    "headAboveHips": -0.016069651387860207,
+    "handAboveFeet": -0.4399764204272612
+  },
+  {
+    "clip": "walk",
+    "progress": 0.89,
+    "headAboveHips": -0.014274076987182527,
+    "handAboveFeet": -0.2729831197838615
+  },
+  {
+    "clip": "walk",
+    "progress": 1,
+    "headAboveHips": -0.010856463741112599,
+    "handAboveFeet": -0.06015995401325419
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0,
+    "headAboveHips": -0.010856562550838667,
+    "handAboveFeet": -0.06015986759747011
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.25,
+    "headAboveHips": -0.008256812370845634,
+    "handAboveFeet": -0.00974857244192101
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.48,
+    "headAboveHips": -0.010004851306558926,
+    "handAboveFeet": -0.3203205713014533
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.61,
+    "headAboveHips": -0.013035383505734854,
+    "handAboveFeet": -0.42662037401239933
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.76,
+    "headAboveHips": -0.015148225863027998,
+    "handAboveFeet": -0.4411958678212526
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.89,
+    "headAboveHips": -0.013497198684152,
+    "handAboveFeet": -0.2740232555218766
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 1,
+    "headAboveHips": -0.010856562550838667,
+    "handAboveFeet": -0.06015986759747011
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0,
+    "headAboveHips": -0.010856703048950922,
+    "handAboveFeet": -0.06015848943834967
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.25,
+    "headAboveHips": -0.008256960590863227,
+    "handAboveFeet": -0.010840785865777414
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.48,
+    "headAboveHips": -0.010005009571218415,
+    "handAboveFeet": -0.320316707411088
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.61,
+    "headAboveHips": -0.01303553025926063,
+    "handAboveFeet": -0.4264190455855524
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.76,
+    "headAboveHips": -0.015148357231819953,
+    "handAboveFeet": -0.4411953598416938
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.89,
+    "headAboveHips": -0.01349732781384938,
+    "handAboveFeet": -0.2731824442749323
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 1,
+    "headAboveHips": -0.010856703048950922,
+    "handAboveFeet": -0.06015848943834967
+  }
+]

@@ -29,7 +29,7 @@ export const canLearnMarksman=(classId,ranks,id,level)=>canLearnNode(nodesOf(cla
 // seguem a passada; com 0 (Recuo, Mina) a pose é de corpo inteiro e o personagem fica parado.
 export const MARKSMAN_ACTIONS={
  archer:[
-  {id:'arrow',hit:0.95,move:0.85,name:'Disparo',kind:'shot',cost:0,cooldown:.5,duration:.5,release:.26,clip:'shoot',speed:24,range:13,radius:.18,multiplier:.85,pierce:0,color:'#b8f07a',rank:'shot',perRank:.06,ambush:true},
+  {id:'arrow',hit:0.95,move:0.85,name:'Disparo',kind:'shot',cost:0,cooldown:.5,duration:.5,release:.26,clip:'shoot',speed:24,range:13,radius:.18,multiplier:.65,pierce:0,color:'#b8f07a',rank:'shot',perRank:.06,ambush:true},
   {id:'pierce',hit:1,move:0.5,name:'Flecha Perfurante',kind:'shot',node:'pierce',cost:20,cooldown:5,duration:.75,release:.55,clip:'shoot',speed:34,range:16,radius:.24,multiplier:2,pierce:99,falloff:1,color:'#e2ff9a',rank:'pierce',perRank:.1,ambush:true,warn:true},
   {id:'leap',move:0,name:'Recuo',kind:'leap',node:'leap',cost:15,cooldown:6,duration:.4,release:.05,clip:'leap_back',distance:5,advance:[.05,.35],slowRadius:2.5,slow:.35,slowTime:2,cooldownPerRank:.5},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},
@@ -48,48 +48,48 @@ export const MARKSMAN_ACTIONS={
   {id:'chuvaDeFlechasExplosivas',shares:'rain',rank:'rain',perRank:.1,rankFrom:1,move:.6,name:'Chuva de Flechas Explosivas',kind:'rain',node:'chuvaDeFlechasExplosivas',cost:45,cooldown:16,duration:.6,release:.35,clip:'shoot_up',range:12,radius:3.6,delay:.7,waves:5,interval:.4,multiplier:.55,color:'#ff9a3a',element:'fire',explosiveRain:true},
  ],
  mage:[
-  {id:'arcane',hit:.95,move:.85,name:'Seta Arcana',kind:'shot',cost:0,cooldown:.45,duration:.45,release:.2,clip:'cast',speed:22,range:12,radius:.2,multiplier:.6,pierce:0,color:'#b78cff',size:.4,rank:'bolt',perRank:.06,element:'arcane'},
-  {id:'fireball',hit:1,move:.6,name:'Bola de Fogo',kind:'shot',node:'fireball',cost:18,cooldown:4,duration:.6,release:.3,clip:'cast',speed:16,range:12,radius:.3,multiplier:1.4,pierce:0,explode:2.2,color:'#ff8a3a',size:.75,rank:'fireball',perRank:.1,element:'fire'},
-  {id:'frost',move:.6,name:'Rajada de Gelo',kind:'cone',node:'frost',cost:20,cooldown:7,duration:.5,release:.22,clip:'cast',range:6,arc:70*Math.PI/180,multiplier:1.1,slow:.4,slowTime:3,color:'#9fe0ff',rank:'frost',perRank:.1,element:'frost'},
+  {id:'arcane',hit:.95,move:.85,name:'Seta Arcana',kind:'shot',cost:0,cooldown:.45,duration:.45,release:.2,clip:'cast',speed:22,range:12,radius:.2,multiplier:.5,pierce:0,color:'#b78cff',size:.4,rank:'bolt',perRank:.06,element:'arcane'},
+  {id:'fireball',hit:1,move:.6,name:'Bola de Fogo',kind:'shot',node:'fireball',cost:24,cooldown:1.2,duration:.6,release:.3,clip:'cast',speed:16,range:12,radius:.3,multiplier:1.4,pierce:0,explode:2.2,color:'#ff8a3a',size:.75,rank:'fireball',perRank:.1,element:'fire'},
+  {id:'frost',move:.6,name:'Rajada de Gelo',kind:'cone',node:'frost',cost:26,cooldown:2,duration:.5,release:.22,clip:'cast',range:6,arc:70*Math.PI/180,multiplier:1.1,slow:.4,slowTime:3,color:'#9fe0ff',rank:'frost',perRank:.1,element:'frost'},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},
-  {id:'blink',move:0,name:'Teleporte',kind:'blink',node:'blink',cost:15,cooldown:8,cooldownPerRank:1,duration:.35,release:.15,clip:'cast',distance:7,radius:2.2,multiplier:.5,rank:'echo',perRank:.25,color:'#b78cff',element:'arcane'},
-  {id:'meteor',move:.5,name:'Meteoro',kind:'rain',node:'meteor',cost:40,cooldown:4,duration:.7,release:.45,clip:'cast_up',range:12,radius:2.8,delay:1,waves:1,interval:1,multiplier:3.2,color:'#ff6a2a',fx:'meteor',element:'fire',rank:'meteor',perRank:.1,rankFrom:1,
+  {id:'blink',move:0,name:'Teleporte',kind:'blink',node:'blink',cost:20,cooldown:3,cooldownPerRank:.25,duration:.35,release:.15,clip:'cast',distance:7,radius:2.2,multiplier:.5,rank:'echo',perRank:.25,color:'#b78cff',element:'arcane'},
+  {id:'meteor',move:.5,name:'Meteoro',kind:'rain',node:'meteor',cost:50,cooldown:2.5,duration:.7,release:.45,clip:'cast_up',range:12,radius:2.8,delay:1,waves:1,interval:1,multiplier:3.2,color:'#ff6a2a',fx:'meteor',element:'fire',rank:'meteor',perRank:.1,rankFrom:1,
    // Depois do impacto o chão queima: 20% do dano a cada 0,5 s por 3 s em quem estiver dentro (o selo também vale aqui).
    burn:{radius:2.4,time:3,interval:.5,multiplier:.2}},
   // Mago, habilidades novas (docs/habilidades/arvores.json). A esfera solta cristais (shard) e o familiar lança
   // bolas de fogo (bolt): definições próprias de projétil, que o runtime usa direto.
-  {id:'setasPerseguidoras',hit:.9,move:.7,name:'Setas Perseguidoras',kind:'fan',node:'setasPerseguidoras',cost:20,cooldown:6,duration:.45,release:.2,clip:'cast',count:5,spread:70*Math.PI/180,speed:18,range:12,radius:.18,multiplier:.4,pierce:0,color:'#b78cff',size:.35,element:'arcane',rank:'setasPerseguidoras',perRank:.1,rankFrom:1,homing:{turn:6,seek:7}},
+  {id:'setasPerseguidoras',hit:.9,move:.7,name:'Setas Perseguidoras',kind:'fan',node:'setasPerseguidoras',cost:26,cooldown:2,duration:.45,release:.2,clip:'cast',count:5,spread:70*Math.PI/180,speed:18,range:12,radius:.18,multiplier:.4,pierce:0,color:'#b78cff',size:.35,element:'arcane',rank:'setasPerseguidoras',perRank:.1,rankFrom:1,homing:{turn:6,seek:7}},
   // Esfera de Gelo: um pequeno planeta com anéis que atravessa o campo bem devagar (2 u/s por 10 u) e, girando,
   // solta cristais em espiral: dois opostos a cada 0,15 s, que curvam para inimigos a até 3 u.
-  {id:'esferaDeGelo',move:.6,name:'Esfera de Gelo',kind:'orb',node:'esferaDeGelo',cost:30,cooldown:4,duration:.5,release:.25,clip:'cast',speed:2,range:10,radius:1.1,multiplier:.5,color:'#9fe0ff',size:1,element:'frost',rank:'esferaDeGelo',perRank:.1,rankFrom:1,
+  {id:'esferaDeGelo',move:.6,name:'Esfera de Gelo',kind:'orb',node:'esferaDeGelo',cost:38,cooldown:2.5,duration:.5,release:.25,clip:'cast',speed:2,range:10,radius:1.1,multiplier:.5,color:'#9fe0ff',size:1,element:'frost',rank:'esferaDeGelo',perRank:.1,rankFrom:1,
    shard:{name:'Cristal de Gelo',interval:.15,count:2,step:.55,speed:14,range:5,radius:.12,hit:.45,multiplier:.2,pierce:0,chill:true,slow:.2,slowTime:1,color:'#cff4ff',size:.25,element:'frost',rank:'esferaDeGelo',perRank:.1,rankFrom:1,homing:{turn:5,seek:3}}},
-  {id:'familiarDeFogo',move:.6,name:'Familiar de Fogo',kind:'familiar',node:'familiarDeFogo',cost:35,cooldown:25,duration:.6,release:.35,clip:'cast_up',life:20,interval:1.2,pick:9,orbit:1.3,color:'#ff7a2a',
+  {id:'familiarDeFogo',move:.6,name:'Familiar de Fogo',kind:'familiar',node:'familiarDeFogo',cost:50,cooldown:5,duration:.6,release:.35,clip:'cast_up',interval:1.2,pick:9,orbit:1.3,color:'#ff7a2a',
    bolt:{name:'Familiar de Fogo',speed:14,range:10,radius:.25,hit:.5,multiplier:.4,pierce:0,explode:1.2,color:'#ff8a3a',size:.5,element:'fire',rank:'familiarDeFogo',perRank:.1,rankFrom:1}},
-  {id:'golemDeGelo',move:.5,name:'Golem de Gelo',kind:'summon',node:'golemDeGelo',cost:40,cooldown:30,duration:.6,release:.35,clip:'cast_up',companion:'iceGolem',color:'#9fd8ff'},
+  {id:'golemDeGelo',move:.5,name:'Golem de Gelo',kind:'summon',node:'golemDeGelo',cost:60,cooldown:6,duration:.6,release:.35,clip:'cast_up',companion:'iceGolem',color:'#9fd8ff'},
   // Mago, segunda leva (09/11/2026, docs/habilidades/arvores.json). `shares`: variante que divide a recarga com a
   // ação de origem e usa os pontos dela para o dano. `burn`: queimadura no inimigo (dano a cada intervalo, sem acumular).
   // Muralha de Fogo: segmento de chamas atravessado na mira, no ponto mirado; arma depois de `arm` s.
-  {id:'firewall',move:.6,name:'Muralha de Fogo',kind:'wall',node:'firewall',cost:30,cooldown:12,duration:.6,release:.4,clip:'cast',range:10,length:6,width:.5,arm:.3,time:5,timePerRank:.5,interval:.5,multiplier:.3,rank:'firewall',perRank:.1,rankFrom:1,color:'#ff7a2a',element:'fire',burn:{time:2,interval:.5,multiplier:.1}},
+  {id:'firewall',move:.6,name:'Muralha de Fogo',kind:'wall',node:'firewall',cost:40,cooldown:3,duration:.6,release:.4,clip:'cast',range:10,length:6,width:.5,arm:.3,time:5,timePerRank:.5,interval:.5,multiplier:.3,rank:'firewall',perRank:.1,rankFrom:1,color:'#ff7a2a',element:'fire',burn:{time:2,interval:.5,multiplier:.1}},
   // Imbuir: por `time` s a Seta Arcana soma `bonus` do próprio dano e aplica o efeito do elemento. Um encerra o outro.
-  {id:'imbuirFogo',move:.8,name:'Imbuir Fogo',kind:'imbue',node:'imbuirFogo',cost:25,cooldown:20,duration:.5,release:.3,clip:'cast_up',element:'fire',time:12,timePerRank:1,bonus:.2,bonusPerRank:.05,color:'#ff8a3a',burn:{time:2,interval:.5,multiplier:.1}},
-  {id:'imbuirGelo',move:.8,name:'Imbuir Gelo',kind:'imbue',node:'imbuirGelo',cost:25,cooldown:20,duration:.5,release:.3,clip:'cast_up',element:'frost',time:12,timePerRank:1,bonus:.15,bonusPerRank:.05,slow:.25,slowTime:1.5,color:'#9fe0ff'},
+  {id:'imbuirFogo',move:.8,name:'Imbuir Fogo',kind:'imbue',node:'imbuirFogo',cost:35,cooldown:4,duration:.5,release:.3,clip:'cast_up',element:'fire',time:12,timePerRank:1,bonus:.2,bonusPerRank:.05,color:'#ff8a3a',burn:{time:2,interval:.5,multiplier:.1}},
+  {id:'imbuirGelo',move:.8,name:'Imbuir Gelo',kind:'imbue',node:'imbuirGelo',cost:35,cooldown:4,duration:.5,release:.3,clip:'cast_up',element:'frost',time:12,timePerRank:1,bonus:.15,bonusPerRank:.05,slow:.25,slowTime:1.5,color:'#9fe0ff'},
   // Nova de Gelo: variante da Rajada em volta do Mago.
-  {id:'icenova',move:.6,name:'Nova de Gelo',kind:'nova',node:'icenova',shares:'frost',cost:25,cooldown:8,duration:.5,release:.22,clip:'cast',radius:4.5,multiplier:.9,slow:.4,slowTime:3,color:'#9fe0ff',rank:'frost',perRank:.1,element:'frost'},
+  {id:'icenova',move:.6,name:'Nova de Gelo',kind:'nova',node:'icenova',shares:'frost',cost:35,cooldown:2,duration:.5,release:.22,clip:'cast',radius:4.5,multiplier:.9,slow:.4,slowTime:3,color:'#9fe0ff',rank:'frost',perRank:.1,element:'frost'},
   // Chuva de Fogo (variante do Meteoro) e Avalanche: quedas em pontos aleatórios da área marcada, cada uma com aviso
   // (sombra crescendo por `fall` s) e dano em raio `drop`. A primeira chega `fall` s depois da liberação.
-  {id:'chuvaDeFogo',move:.5,name:'Chuva de Fogo',kind:'shower',node:'chuvaDeFogo',shares:'meteor',cost:55,cooldown:8,duration:.7,release:.45,clip:'cast_up',range:12,radius:4.5,count:5,gap:.3,fall:1,drop:1.8,multiplier:1.3,rank:'meteor',perRank:.1,rankFrom:1,color:'#ff6a2a',element:'fire',
+  {id:'chuvaDeFogo',move:.5,name:'Chuva de Fogo',kind:'shower',node:'chuvaDeFogo',shares:'meteor',cost:65,cooldown:3,duration:.7,release:.45,clip:'cast_up',range:12,radius:4.5,count:5,gap:.3,fall:1,drop:1.8,multiplier:1.3,rank:'meteor',perRank:.1,rankFrom:1,color:'#ff6a2a',element:'fire',
    burn:{radius:1.4,time:1.5,interval:.5,multiplier:.2}},
-  {id:'avalanche',move:.5,name:'Avalanche',kind:'shower',node:'avalanche',cost:60,cooldown:24,duration:.9,release:.6,clip:'cast_up',range:12,radius:5,count:10,countPerRank:1,span:3,fall:.8,drop:1.4,multiplier:.8,color:'#dff4ff',element:'frost',snow:true,slow:.3,slowTime:2},
+  {id:'avalanche',move:.5,name:'Avalanche',kind:'shower',node:'avalanche',cost:75,cooldown:5,duration:.9,release:.6,clip:'cast_up',range:12,radius:5,count:10,countPerRank:1,span:3,fall:.8,drop:1.4,multiplier:.8,color:'#dff4ff',element:'frost',snow:true,slow:.3,slowTime:2},
   // Raio Arcano: canalizado enquanto a tecla fica pressionada (até duration − release s), com custo por segundo;
   // a recarga começa ao soltar. A direção acompanha a mira.
-  {id:'lazerArcano',move:.3,name:'Raio Arcano',kind:'beam',node:'lazerArcano',cost:10,drain:12,cooldown:8,duration:4.25,release:.25,clip:'cast',range:12,width:.3,tick:.2,multiplier:.3,rank:'lazerArcano',perRank:.1,rankFrom:1,color:'#b78cff',element:'arcane'},
+  {id:'lazerArcano',move:.3,name:'Raio Arcano',kind:'beam',node:'lazerArcano',cost:15,drain:18,cooldown:2,duration:4.25,release:.25,clip:'cast',range:12,width:.3,tick:.2,multiplier:.3,rank:'lazerArcano',perRank:.1,rankFrom:1,color:'#b78cff',element:'arcane'},
   // Clone Arcano: aliado parado que repete os feitiços do Mago da própria posição com `copy` do dano.
-  {id:'clone',move:0,name:'Clone Arcano',kind:'clone',node:'clone',cost:50,cooldown:40,duration:.6,release:.35,clip:'cast_up',range:7,companion:'arcaneClone',copy:.5,copyPerRank:.1,color:'#b78cff'},
-  {id:'bigBang',hit:1,move:.3,name:'Big Bang',kind:'shot',node:'bigBang',cost:50,cooldown:12,duration:.9,release:.5,clip:'cast_up',speed:7,range:14,radius:.6,size:1.8,multiplier:3.6,explode:4,pierce:0,element:'arcane',color:'#bd91ff',rank:'bigBang',perRank:.1,rankFrom:1},
-  {id:'escudoArcano',move:.7,name:'Escudo Arcano',kind:'manaShield',node:'escudoArcano',cost:0,cooldown:20,duration:.6,release:.3,clip:'cast_up',time:12,color:'#bd91ff'},
+  {id:'clone',move:0,name:'Clone Arcano',kind:'clone',node:'clone',cost:70,cooldown:6,duration:.6,release:.35,clip:'cast_up',range:7,companion:'arcaneClone',copy:.5,copyPerRank:.1,color:'#b78cff'},
+  {id:'bigBang',hit:1,move:.3,name:'Big Bang',kind:'shot',node:'bigBang',cost:65,cooldown:3,duration:.9,release:.5,clip:'cast_up',speed:7,range:14,radius:.6,size:1.8,multiplier:3.6,explode:4,pierce:0,element:'arcane',color:'#bd91ff',rank:'bigBang',perRank:.1,rankFrom:1},
+  {id:'escudoArcano',move:.7,name:'Escudo Arcano',kind:'manaShield',node:'escudoArcano',cost:20,cooldown:4,duration:.6,release:.3,clip:'cast_up',time:12,color:'#bd91ff'},
  ],
  mercenary:[
-  {id:'quarrel',hit:1,move:0.7,name:'Virote pesado',kind:'shot',cost:0,cooldown:.8,duration:.8,release:.36,clip:'shoot',speed:28,range:12,radius:.22,multiplier:1.5,pierce:2,falloff:.75,knockback:.35,color:'#ffb35a',rank:'quarrel',perRank:.06,pierceRank:'breach'},
+  {id:'quarrel',hit:1,move:0.7,name:'Virote pesado',kind:'shot',cost:0,cooldown:.8,duration:.8,release:.36,clip:'shoot',speed:28,range:12,radius:.22,multiplier:.65,pierce:2,falloff:.75,knockback:.35,color:'#ffb35a',rank:'quarrel',perRank:.06,pierceRank:'breach'},
   {id:'volley',hit:0.95,move:0.7,name:'Rajada',kind:'volley',node:'volley',cost:24,cooldown:7,duration:.8,release:.25,clip:'shoot',shots:3,gap:.15,speed:28,range:12,radius:.2,multiplier:.7,pierce:1,falloff:.75,color:'#ffb35a',rank:'volley',perRank:.1},
   {id:'bomb',move:0.8,name:'Bomba de fragmentação',kind:'lob',node:'bomb',cost:20,cooldown:6,duration:.6,release:.3,clip:'throw',range:9,minRange:1.5,flight:.6,radius:2.6,multiplier:1.6,knockback:1,color:'#ff9a3a',rank:'bomb',perRank:.1,blast:true},
   {id:'dodge',name:'Esquiva',kind:'dodge',cost:0},

@@ -1,0 +1,218 @@
+{
+  "report": [
+    {
+      "id": "npcJoao",
+      "height": 2.400000253266367,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    },
+    {
+      "id": "npcMarta",
+      "height": 2.635000091046099,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    },
+    {
+      "id": "npcHelena",
+      "height": 2.635000091046099,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    },
+    {
+      "id": "npcGuard",
+      "height": 2.7050000242888967,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    },
+    {
+      "id": "npcMessenger",
+      "height": 2.625000100582842,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    },
+    {
+      "id": "npcMayor",
+      "height": 2.635000091046099,
+      "clips": [
+        "death",
+        "greet",
+        "idle",
+        "walk"
+      ],
+      "frames": {
+        "death": true,
+        "greet": true,
+        "idle": true,
+        "walk": true
+      }
+    }
+  ],
+  "cast": [
+    {
+      "key": "child",
+      "model": "npcTilda"
+    },
+    {
+      "key": "mayor",
+      "model": "npcMayor"
+    },
+    {
+      "key": "smith",
+      "model": "npcBran"
+    },
+    {
+      "key": "endless",
+      "model": "npcBram"
+    },
+    {
+      "key": "valdoria",
+      "model": "npcLysa"
+    },
+    {
+      "key": "siege",
+      "model": "npcMerchant"
+    },
+    {
+      "key": "marta",
+      "model": "npcMarta"
+    },
+    {
+      "key": "nilo",
+      "model": "npcJoao"
+    }
+  ],
+  "facing": [
+    {
+      "key": "child",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "mayor",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "smith",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "endless",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "valdoria",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "siege",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "marta",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    },
+    {
+      "key": "nilo",
+      "angle": 0.7853981633974483,
+      "renderAngle": 0.7853981633974483
+    }
+  ],
+  "city": [
+    {
+      "key": "helena",
+      "model": "npcHelena"
+    },
+    {
+      "key": "city-joao",
+      "model": "npcJoao"
+    },
+    {
+      "key": "city-marta",
+      "model": "npcMarta"
+    }
+  ],
+  "prologue": [
+    {
+      "model": "necromancer"
+    },
+    {
+      "key": "marta",
+      "model": "npcMarta"
+    },
+    {
+      "key": "nilo",
+      "model": "npcJoao"
+    },
+    {
+      "key": "guard",
+      "model": "npcGuard"
+    },
+    {
+      "model": "enemyThief"
+    },
+    {
+      "model": "enemyThief"
+    },
+    {
+      "model": "enemyRogue"
+    }
+  ],
+  "errors": [],
+  "remote": []
+}

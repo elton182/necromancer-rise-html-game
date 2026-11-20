@@ -66,7 +66,13 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  const renderer=new THREE.WebGLRenderer({canvas,context,antialias:true});
  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
  const scene=new THREE.Scene();scene.background=new THREE.Color('#182428');scene.fog=new THREE.Fog('#182428',32,65);
- const camera=new THREE.OrthographicCamera(),models={},actors=new Map(),effects=new Map(),projectiles=new Map(),allyShots=new Map(),featherShots=new Map(),labels=new Map(),combatLabels=new Map(),fallingBones=new Map(),corpseWalls=new Map();let zoom=11,disposed=false;/* zoom inicial; a roda varia entre 8 e 24 */
+ const camera=new THREE.OrthographicCamera(),models={},actors=new Map(),effects=new Map(),projectiles=new Map(),allyShots=new Map(),featherShots=new Map(),labels=new Map(),combatLabels=new Map(),fallingBones=new Map(),corpseWalls=new Map();let zoom=11,disposed=false;/* zoom inicial; a roda varia entre 8 e 18 */
+ // Rostos dos NPCs apontam para +Z no GLB. A orientação de tela é só visual.
+ const npcViewDirection=new THREE.Vector3();
+ const cameraFacing=cam=>{cam.getWorldDirection(npcViewDirection);return Math.atan2(-npcViewDirection.x,-npcViewDirection.z);};
+ const screenNpc=a=>a.worldNpc||a.model?.startsWith('npc')||(a.team==='neutral'&&a.abilityLabel&&!a.dummy);
+ // Fase estável por personagem: NPCs criados no mesmo quadro não respiram em uníssono.
+ const npcIdlePhase=a=>{if(!screenNpc(a))return 0;let hash=2166136261;for(const char of String(a.key||a.id)+a.model)hash=Math.imul(hash^char.charCodeAt(0),16777619);return (hash>>>0)/4294967296;};
  const vfx=createVfx(scene,{pixelsPerUnit:()=>canvas.height/(2*zoom)});
  const sun=new THREE.DirectionalLight(0xffe2b0,3),hemisphere=new THREE.HemisphereLight(0xc1dfdc,0x50504a,2),SUN_OFFSET=new THREE.Vector3(8,16,6);sun.position.copy(SUN_OFFSET);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-30,right:30,top:30,bottom:-30,far:70});sun.shadow.bias=-.001;scene.add(sun,sun.target,hemisphere);
  /* A sombra acompanha o jogador, em passos de um texel, para não sumir longe da origem (cripta de 125 u) nem tremer. */
@@ -85,6 +91,11 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  }
  const siegeRange=new THREE.Mesh(new THREE.RingGeometry(.985,1,64),new THREE.MeshBasicMaterial({color:0xf5dda2,transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}));siegeRange.rotation.x=-Math.PI/2;siegeRange.visible=false;scene.add(siegeRange);
  const portalMark=new THREE.Mesh(new THREE.RingGeometry(1,1.15,40),new THREE.MeshBasicMaterial({color:0xbb88ff,side:THREE.DoubleSide}));portalMark.rotation.x=-Math.PI/2;scene.add(portalMark);const exitMark=portalMark.clone();exitMark.visible=false;scene.add(exitMark);
+ // Superfície de energia do portal de ida e volta; sem volume sólido nem colisão.
+ const linkedPortal=new THREE.Group();scene.add(linkedPortal);
+ const portalGlow=new THREE.Mesh(new THREE.CircleGeometry(1.15,48),new THREE.MeshBasicMaterial({color:0x7040c8,transparent:true,opacity:.38,side:THREE.DoubleSide,depthWrite:false}));
+ const portalRim=new THREE.Mesh(new THREE.RingGeometry(1.15,1.32,64),new THREE.MeshBasicMaterial({color:0xd5a6ff,transparent:true,opacity:.95,side:THREE.DoubleSide,depthWrite:false}));
+ linkedPortal.add(portalGlow,portalRim);linkedPortal.visible=false;
  let lightGround=false,theme='default',palette=null,lookKey='default',mapStyle=null,cameraLift=0;/* Paleta por tema: a floresta substitui as cores neutras do treino. */
  function paint(){const f=(palette||THEME_PALETTE[theme])?.[lightGround?'light':'dark']||null;ground.material.color.set(f?f.ground:lightGround?0xa5a393:0x35443e);scene.background.set(f?f.background:lightGround?0x777e79:0x182428);scene.fog.color.copy(scene.background);const crypt=theme==='crypt';sun.color.set(crypt?0xb9b4ec:0xffe2b0);sun.intensity=crypt?2.1:3;hemisphere.intensity=crypt?1.5:2;
   // Receita compartilhada de luz para os cenários com acabamento: tone mapping, exposição, reflexo difuso do céu e luzes ajustadas.
@@ -93,7 +104,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   for(const o of scenery.children){const u=o.userData;if(u.lightColor)o.material.color.copy(lightGround?u.lightColor:WHITE);if(u.lightOpacity!==undefined){u.darkOpacity??=o.material.opacity;o.material.opacity=lightGround?u.lightOpacity:u.darkOpacity;}}updateMapHorizon(scenery);}
  // Céu em gradiente pré-filtrado (PMREM): dá volume aos materiais PBR sem custo por quadro.
  let envTexture=null;function environment(){return envTexture??=(createSceneEnvironment(renderer));}
- function syncScenery(w){const a=w.arena,key=a.id+':'+(w.sceneryRevision||0);portalMark.visible=!!w.portal;if(w.portal)portalMark.position.set(w.portal.x,.06,w.portal.y);exitMark.visible=!!w.exitPortal;if(w.exitPortal)exitMark.position.set(w.exitPortal.x,.06,w.exitPortal.y);if(key===sceneryKey)return;sceneryKey=key;vfx.clear();
+ function syncScenery(w){const a=w.arena,key=a.id+':'+(w.sceneryRevision||0);linkedPortal.visible=!!w.portal?.linked;if(linkedPortal.visible){linkedPortal.position.set(w.portal.x,1.6,w.portal.y);linkedPortal.scale.set(1,1.3,1);portalGlow.material.opacity=.35+.1*Math.sin(w.time*2.8);}portalMark.visible=!!w.portal;if(w.portal)portalMark.position.set(w.portal.x,.06,w.portal.y);exitMark.visible=!!w.exitPortal;if(w.exitPortal)exitMark.position.set(w.exitPortal.x,.06,w.exitPortal.y);if(key===sceneryKey)return;sceneryKey=key;vfx.clear();
  for(const g of [scenery,collisionView]){for(const o of [...g.children]){g.remove(o);o.geometry?.dispose();o.material?.dispose();o.dispose?.();}}
  syncVillage(a);lookKey=sceneLookKey(a);theme=a.theme||'default';palette=a.palette||null;mapStyle=a.style||null;vfx.ground(a.terrain?(x,z)=>groundAt(a,x,z):null);if(a.theme){grid.visible=false;for(const o of ({siege:buildSiege,forest:buildForestScene,village:buildVillage,crypt:buildCrypt,trail:buildTrail,outpost:buildOutpost,expedition:buildExpedition})[a.theme](a,models))scenery.add(o);}for(const o of [...buildPrologueScenery(a,models),...buildFallScenery(a,models)])scenery.add(o);if(a.fallSite)for(const o of scenery.children)if(o.userData.replacesGround)fallMask.patch(o.material);ground.visible=!scenery.children.some(o=>o.userData.replacesGround);graves.visible=false;const b=a.bounds,cx=(b.minX+b.maxX)/2,cy=(b.minY+b.maxY)/2;const margin=(a.id==='village'||a.id===TRAINING_ARENA.id||a.theme==='forest'||a.theme==='expedition')?24:0;ground.scale.set((b.maxX-b.minX+margin)/60,(b.maxY-b.minY+margin)/60,1);ground.position.set(cx,0,cy);grid.position.set(cx,.012,cy);grid.scale.set((b.maxX-b.minX)/60,1,(b.maxY-b.minY)/60);
  const horizon=buildMapHorizon(scenery.children.find(o=>o.userData.replacesGround)||ground);if(a.fallSite)fallMask.patch(horizon.material);scenery.add(horizon);for(const mesh of buildForestBorder(a,models))scenery.add(mesh);areaMovers=buildAreaScenery(a,models);for(const mesh of areaMovers)scenery.add(mesh);paint();
@@ -172,15 +183,16 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   // Camadas (Arqueira, Mercenário): ações em pé ou andando tocam só no tronco; a passada fica nas pernas.
   let upper=null,lower=null;if(asset.layered){upper={};lower={};const top=/Spine|Neck|Head|Shoulder|Arm|Hand/i,part=(clip,keep,name)=>{const c=clip.clone();c.name=name;c.tracks=c.tracks.filter(t=>keep(top.test(t.name.split('.')[0])));return mixer.clipAction(c);};
    for(const [name,action] of Object.entries(actions)){const clip=action.getClip();if(['idle','walk','strafe_left','strafe_right'].includes(name))lower[name]=part(clip,up=>!up,'lower:'+name);else upper[name]=part(clip,up=>up,'upper:'+name);}}
-  return {root,body,mixer,actions,upper,lower,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
+  return {root,body,height:targetHeight*(TIER_SCALE[a.lootTier]||1)*(a.scale||1),mixer,actions,upper,lower,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
  }
  // Tronco com a ação (pose.upper) e pernas com a passada misturada pela direção do passo em relação à mira.
  function layered(o,a,pose,elapsed,frozen){
+  const fade=assets[a.model].motionBlend||.08;
   const walking=a.animation==='walk',up=o.upper[pose.anim],L=o.lower,set=walking?[L.walk,L.strafe_left,L.strafe_right]:[L.idle],upKey=pose.anim+':'+a.actionId,lowKey=walking?'walk':'idle';
-  const start=action=>{action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(.08);action.play();},stop=action=>{if(frozen)action.stop();else action.fadeOut(.08);};
+  const start=action=>{action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(fade);action.play();},stop=action=>{if(frozen)action.stop();else action.fadeOut(fade);};
   if(o.state!=='layer'){for(const action of Object.values(o.actions))stop(action);o.state='layer';o.upKey=o.lowKey=null;o.deathTime=0;}
   if(o.upKey!==upKey){for(const action of Object.values(o.upper))if(action!==up)stop(action);start(up);o.upKey=upKey;}
-  if(o.lowKey!==lowKey){for(const action of Object.values(L))if(!set.includes(action))stop(action);for(const action of set)start(action);o.lowKey=lowKey;o.gait=null;}
+  if(o.lowKey!==lowKey){for(const action of Object.values(L))if(!set.includes(action))stop(action);for(const action of set)start(action);o.lowKey=lowKey;if(!assets[a.model].motionBlend)o.gait=null;}
   if(walking){const target=gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse);o.gait=o.gait?blendGait(o.gait,target,elapsed):target;L.walk.weight=o.gait.walk;L.strafe_left.weight=o.gait.left;L.strafe_right.weight=o.gait.right;const asset=assets[a.model];o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-(o.gaitDistance??a.walkDistance)),o.gait,asset.stride||1.5,asset.strafeStride);}
   o.gaitDistance=a.walkDistance;o.mixer.update(elapsed);
   const legs=walking?o.gaitPhase:(a.animationTime/L.idle.getClip().duration)%1;for(const action of set)action.time=THREE.MathUtils.clamp(legs,0,1)*action.getClip().duration;
@@ -199,10 +211,10 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   if(key!==storyKey){storyKey=key;storyCast.clear();
    const text=w.story.pages[w.story.index],royal=/rei|Capitão|Guarda|Prendam|sábios/.test(text),dead=/corpo|cripta|profundezas|ANO DEPOIS/.test(text);
    const cast=['necromancer',royal?'fallenKing':dead?'zombie':'npcBram'];
-   for(let i=0;i<cast.length;i++){const id=models[cast[i]]?cast[i]:'necromancer',body=clone(models[id].scene);body.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(body),scale=2.4/Math.max(.01,box.max.y-box.min.y);body.scale.setScalar(scale);body.position.set(i?1.8:-1.3,-box.min.y*scale,0);body.rotation.y=i?-.6:.6;storyCast.add(body);}
+   for(let i=0;i<cast.length;i++){const id=models[cast[i]]?cast[i]:'necromancer',body=clone(models[id].scene);body.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(body),scale=2.4/Math.max(.01,box.max.y-box.min.y);body.scale.setScalar(scale);body.position.set(i?1.8:-1.3,-box.min.y*scale,0);body.rotation.y=i?-.6:.6;body.userData.screenNpc=id.startsWith('npc');storyCast.add(body);}
   }
   const rect=canvas.getBoundingClientRect();storyCamera.aspect=rect.width/Math.max(1,rect.height);storyCamera.updateProjectionMatrix();
-  const reverse=w.story.index%2;storyCamera.position.set(reverse?-4:4,3.4,8);storyCamera.lookAt(0,1.3,0);const mapping=renderer.toneMapping,exposure=renderer.toneMappingExposure;
+  const reverse=w.story.index%2;storyCamera.position.set(reverse?-4:4,3.4,8);storyCamera.lookAt(0,1.3,0);for(const body of storyCast.children)if(body.userData.screenNpc)body.rotation.y=cameraFacing(storyCamera);const mapping=renderer.toneMapping,exposure=renderer.toneMappingExposure;
   try{renderer.toneMapping=THREE.NoToneMapping;renderer.toneMappingExposure=1;renderer.render(storyScene,storyCamera);}
   finally{renderer.toneMapping=mapping;renderer.toneMappingExposure=exposure;}
  }
@@ -215,7 +227,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   for(const s of w.allyShots){const o=allyShots.get(s.id);if(o)add(o,s.x,s.y);}for(const o of featherShots.values())add(o);for(const o of spiritObjs.values())add(o);
   for(const o of fallingBones.values()){add(o.root);add(o.mark);add(o.shade);}
   for(const wall of w.walls){const o=corpseWalls.get(wall.id);if(o){add(o.root);add(o.shade);add(o.mark,wall.x,wall.y);}}
-  for(const o of [portalMark,exitMark,cursor,commandMarker,fleshArmor,fleshHalo,chargeRoot,chargePath,dashHalo,lichAura])if(o.visible)add(o);
+  for(const o of [linkedPortal,portalMark,exitMark,cursor,commandMarker,fleshArmor,fleshHalo,chargeRoot,chargePath,dashHalo,lichAura])if(o.visible)add(o);
   const p=w.player;if(dashTrail.visible)add(dashTrail,p.x,p.y);if(hookThread.visible)add(hookThread,p.x,p.y);if(lichTrail.visible)add(lichTrail,p.x,p.y);if(lichScythe?.visible)add(lichScythe);
   vfx.each(m=>add(m));
  }
@@ -223,7 +235,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
  function render(w,dt,{animateWhilePaused=false}={}){
  const gy=(x,z)=>groundAt(w.arena,x,z);
   const live=new Set(w.actors.map(a=>a.id));for(const [id,o]of actors)if(!live.has(id)){releaseActor(o);actors.delete(id);}
-  syncScenery(w);fallMask.update(w);updatePrologueScenery(scenery,w);updateFallScenery(scenery,w);clearFallFade(w);follow(w);const siege=w.adventure?.kind==='siege'?w.adventure:null,siegePad=siege&&SIEGE_PADS.find(p=>p.id===w.siegeSelectedPad);siegeRange.visible=!!siegePad&&!siege.done;if(siegePad){const t=siege.towers.find(t=>t.pad===siegePad.id),d=t&&SIEGE_TOWERS[t.kind];siegeRange.position.set(siegePad.x,.055,siegePad.y);siegeRange.scale.setScalar(d?d.range+.5*(t.rank-1):1.3);siegeRange.material.color.set(d?d.color:'#f5dda2');}for(const a of w.actors){let o=actors.get(a.id);/* Mundos reiniciados reutilizam ids: um ator novo com outro modelo não pode herdar o corpo do antigo. */if(o&&(o.model!==a.model||o.tier!==a.lootTier)){releaseActor(o);actors.delete(a.id);o=null;}if(!o){o=spawn(a);actors.set(a.id,o);}o.root.position.set(a.x,(a.jumpZ||0)+(a.warriorProjectile?1.1:0)+flightHeight(a,w.time)-corpseSink(a),a.y);o.root.rotation.y=a.angle;o.root.rotation.z=a===w.player&&w.adventure?.kind==='prologue'?-(w.adventure.fall||0)*1.1:0;o.root.scale.setScalar(a.pad?1+.12*(a.rank-1):a.visualScale||1);if(o.wobble){o.wobble(a,w.time);continue;}
+  syncScenery(w);fallMask.update(w);updatePrologueScenery(scenery,w);updateFallScenery(scenery,w);clearFallFade(w);follow(w);const npcFacing=cameraFacing(camera);const siege=w.adventure?.kind==='siege'?w.adventure:null,siegePad=siege&&SIEGE_PADS.find(p=>p.id===w.siegeSelectedPad);siegeRange.visible=!!siegePad&&!siege.done;if(siegePad){const t=siege.towers.find(t=>t.pad===siegePad.id),d=t&&SIEGE_TOWERS[t.kind];siegeRange.position.set(siegePad.x,.055,siegePad.y);siegeRange.scale.setScalar(d?d.range+.5*(t.rank-1):1.3);siegeRange.material.color.set(d?d.color:'#f5dda2');}for(const a of w.actors){let o=actors.get(a.id),reshaped=false;/* Mundos reiniciados reutilizam ids: um ator novo com outro modelo não pode herdar o corpo do antigo. */if(o&&(o.model!==a.model||o.tier!==a.lootTier)){reshaped=a===w.player&&o.model!==a.model;releaseActor(o);actors.delete(a.id);o=null;}if(!o){o=spawn(a);o.idlePhase=a===w.player?0:npcIdlePhase(a);actors.set(a.id,o);/* Troca de forma do jogador: o corpo novo cresce rápido de dentro do clarão (só visual). */if(reshaped)o.reshapedAt=w.time;}o.root.position.set(a.x,(a.jumpZ||0)+(a.warriorProjectile?1.1:0)+flightHeight(a,w.time)-corpseSink(a),a.y);o.root.rotation.y=a!==w.player&&screenNpc(a)?npcFacing:a.angle;o.root.rotation.z=a===w.player&&w.adventure?.kind==='prologue'?-(w.adventure.fall||0)*1.1:0;o.root.scale.setScalar((a.pad?1+.12*(a.rank-1):a.visualScale||1)*reshapeScale(o,w.time));if(o.wobble){o.wobble(a,w.time);continue;}
    for(const part of o.shieldMeshes||[])part.mesh.geometry.setIndex(w.warriorShieldFlight||!w.equipment?.shield?part.hidden:part.full);
    if(o.flightShadow)o.flightShadow.position.y=.025-o.root.position.y;
    const elapsed=w.paused&&!animateWhilePaused?0:dt;
@@ -236,12 +248,13 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    o.hitTime=Math.max(0,o.hitTime-elapsed);
    if(pose?.upper&&o.upper?.[pose.anim]&&a.hp>0){layered(o,a,pose,elapsed,w.paused&&!animateWhilePaused);continue;}
    const name=pose?.anim||a.animation,next=o.actions[name]||o.actions.idle;if(!next)continue;
+   const fade=!pose&&a.hp>0?(assets[a.model].motionBlend||.08):.08;
    const entered=o.state!==name||o.actionId!==a.actionId,frozen=w.paused&&!animateWhilePaused,sides=name==='walk'&&o.actions.strafe_left&&o.actions.strafe_right?[o.actions.strafe_left,o.actions.strafe_right]:null;
-   if(entered){for(const action of [...Object.values(o.actions),...Object.values(o.upper||{}),...Object.values(o.lower||{})])if(action!==next){if(frozen)action.stop();else action.fadeOut(.08);}for(const action of [next,...(sides||[])]){action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(.08);action.play();}o.state=name;o.actionId=a.actionId;o.deathTime=0;}
+   if(entered){for(const action of [...Object.values(o.actions),...Object.values(o.upper||{}),...Object.values(o.lower||{})])if(action!==next){if(frozen)action.stop();else action.fadeOut(fade);}for(const action of [next,...(sides||[])]){action.reset().setLoop(THREE.LoopOnce,1);action.clampWhenFinished=true;action.paused=true;if(frozen)action.stopFading().setEffectiveWeight(1);else action.fadeIn(fade);action.play();}o.state=name;o.actionId=a.actionId;o.deathTime=0;}
    // Passada do jogador: frente, ré e passo lateral misturados conforme o deslocamento em relação à mira.
-   const gaited=sides&&!pose&&a===w.player;if(sides){const target=gaited?gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse):{walk:1,left:0,right:0,reverse:false};o.gait=entered||!gaited?target:blendGait(o.gait,target,elapsed);next.weight=o.gait.walk;sides[0].weight=o.gait.left;sides[1].weight=o.gait.right;if(gaited){const asset=assets[a.model],from=entered?a.walkDistance:o.gaitDistance??a.walkDistance;o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-from),o.gait,asset.stride||1.5,asset.strafeStride);o.gaitDistance=a.walkDistance;}}
+   const gaited=sides&&!pose&&a===w.player;if(sides){const target=gaited?gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse):{walk:1,left:0,right:0,reverse:false};o.gait=!o.gait||!gaited||entered&&!assets[a.model].motionBlend?target:blendGait(o.gait,target,elapsed);next.weight=o.gait.walk;sides[0].weight=o.gait.left;sides[1].weight=o.gait.right;if(gaited){const asset=assets[a.model],from=entered?a.walkDistance:o.gaitDistance??a.walkDistance;o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-from),o.gait,asset.stride||1.5,asset.strafeStride);o.gaitDistance=a.walkDistance;}}
    o.mixer.update(elapsed);
-   let progress;if(pose)progress=pose.progress;else if(gaited)progress=o.gaitPhase;else if(name==='walk')progress=(a.walkDistance/(assets[a.model].stride||1.5))%1;else if(name==='idle')progress=(a.animationTime/next.getClip().duration)%1;else if(name==='death'){if(animateWhilePaused)o.deathTime+=elapsed;progress=Math.max(a.animationTime,o.deathTime)/next.getClip().duration;}else progress=a.animationTime/next.getClip().duration;
+   let progress;if(pose)progress=pose.progress;else if(gaited)progress=o.gaitPhase;else if(name==='walk')progress=(a.walkDistance/(assets[a.model].stride||1.5))%1;else if(name==='idle')progress=(a.animationTime/next.getClip().duration+(o.idlePhase||0))%1;else if(name==='death'){if(animateWhilePaused)o.deathTime+=elapsed;progress=Math.max(a.animationTime,o.deathTime)/next.getClip().duration;}else progress=a.animationTime/next.getClip().duration;
    next.time=THREE.MathUtils.clamp(progress,0,1)*next.getClip().duration;if(sides)for(const side of sides)side.time=THREE.MathUtils.clamp(progress,0,1)*side.getClip().duration;o.mixer.update(0);
   }
   const liveFx=new Set(w.effects.map(e=>e.id));for(const [id,o]of effects)if(!liveFx.has(id)){releaseEffect(o);effects.delete(id);}
@@ -316,7 +329,19 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   w.damageNumbers=(w.damageNumbers||[]).filter(n=>w.time-n.time<.9&&w.time>=n.time);
   for(const n of w.damageNumbers){const age=w.time-n.time,el=combatLabel('hit:'+n.id,n.x+n.offset,2.6+age*1.4+gy(n.x,n.y),n.y,'hit-number');el.textContent=String(Math.max(1,Math.round(n.amount)));el.style.opacity=String(Math.min(1,(.9-age)*4));}
   for(const [key,el]of combatLabels)if(!visibleCombat.has(key)){el.remove();combatLabels.delete(key);}
-  const labeled=new Set();for(const a of w.actors){const service=(a.service||a.showName)&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<18;const tier=a.hp>0&&!a.isBoss&&TIER_SCALE[a.lootTier]&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<TAG_RANGE?Expedition.tiers[a.lootTier]:null;const marker=a.questMarker&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<30?a.questMarker:'';if(a.hp<=0||!(a.curse||tier||a.reaped||service||marker))continue;labeled.add(a.id);let el=labels.get(a.id);if(!el){el=document.createElement('div');el.className='world-label';document.body.append(el);labels.set(a.id,el);}el.classList.toggle('service-label',!!service);el.classList.toggle('quest-only',!!marker&&!service&&!tier&&!a.curse&&!a.reaped);el.classList.toggle('has-quest',!!marker);el.dataset.questMarker=marker;el.setAttribute('aria-label',marker?(marker==='!'?'Missão disponível · ':'Etapa pronta para entregar · ')+(a.name||'Morador'):a.name||'');el.textContent=[service&&(a.name+'\n'+a.serviceTitle+(Math.hypot(a.x-w.player.x,a.y-w.player.y)<3.2?' · G':'')),tier&&a.type.name+' · '+tier.name,a.curse&&'Fraqueza · '+Math.ceil(a.curse.remaining)+'s',a.reaped&&'Ceifado · '+Math.ceil(a.reaped.remaining)+'s'].filter(Boolean).join('  ·  ');el.style.color=service?'#f0d69b':tier?.color||'';const p=new THREE.Vector3(a.x,(assets[a.model]?.height||(a.model==='woodDummy'?2.2:2.25))*(TIER_SCALE[a.lootTier]||1)+.4+(a.jumpZ||0)+flightHeight(a,w.time)+gy(a.x,a.y),a.y).project(camera),r=canvas.getBoundingClientRect();el.style.left=(r.left+(p.x+1)*r.width/2)+'px';el.style.top=(r.top+(1-p.y)*r.height/2)+'px';}
+  const labeled=new Set();for(const a of w.actors){const service=(a.service||a.showName)&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<18;const tier=a.hp>0&&!a.isBoss&&TIER_SCALE[a.lootTier]&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<TAG_RANGE?Expedition.tiers[a.lootTier]:null;const marker=a.questMarker&&Math.hypot(a.x-w.player.x,a.y-w.player.y)<30?a.questMarker:'';if(a.hp<=0||!(a.curse||tier||a.reaped||service||marker||a.elementLabel))continue;labeled.add(a.id);let el=labels.get(a.id);if(!el){el=document.createElement('div');el.className='world-label';document.body.append(el);labels.set(a.id,el);}el.classList.toggle('service-label',!!service);el.classList.toggle('quest-only',!!marker&&!service&&!tier&&!a.curse&&!a.reaped);el.classList.toggle('has-quest',!!marker);el.dataset.questMarker=marker;el.setAttribute('aria-label',marker?(marker==='!'?'Missão disponível · ':'Etapa pronta para entregar · ')+(a.name||'Morador'):a.name||'');el.textContent=[a.elementLabel,service&&(a.name+'\n'+a.serviceTitle+(Math.hypot(a.x-w.player.x,a.y-w.player.y)<3.2?' · G':'')),tier&&a.type.name+' · '+tier.name,a.curse&&'Fraqueza · '+Math.ceil(a.curse.remaining)+'s',a.reaped&&'Ceifado · '+Math.ceil(a.reaped.remaining)+'s'].filter(Boolean).join('  ·  ');el.style.color=service?'#f0d69b':tier?.color||'';const p=new THREE.Vector3(a.x,(actors.get(a.id)?.height??(assets[a.model]?.height||(a.model==='woodDummy'?2.2:2.25))*(TIER_SCALE[a.lootTier]||1))*(actors.get(a.id)?.root.scale.y||1)+.4+(a.jumpZ||0)+flightHeight(a,w.time)+gy(a.x,a.y),a.y).project(camera),r=canvas.getBoundingClientRect();el.style.left=(r.left+(p.x+1)*r.width/2)+'px';el.style.top=(r.top+(1-p.y)*r.height/2)+'px';}
+  // Objetos de missão sem ator GLB também usam o marcador legível em tela.
+  for(const [index,l]of (w.landmarks||[]).entries()){
+   if(l.model||!l.questMarker||Math.hypot(l.x-w.player.x,l.y-w.player.y)>=30)continue;
+   const id='landmark:'+index;labeled.add(id);let el=labels.get(id);
+   if(!el){el=document.createElement('div');document.body.append(el);labels.set(id,el);}
+   el.className='world-label quest-only has-quest quest-object';el.dataset.questMarker=l.questMarker;el.dataset.questObject=l.key;
+   el.setAttribute('aria-label',(l.questMarker==='⚔'?'Posição inimiga — ':'Objeto de missão — ')+l.name);
+   el.textContent=l.questMarker==='⚔'?l.name+(Math.hypot(l.x-w.player.x,l.y-w.player.y)<3.2?' · G: instruções':''):Math.hypot(l.x-w.player.x,l.y-w.player.y)<3.2?'G · '+l.name:'';
+   const p=new THREE.Vector3(l.x,(l.markerHeight||2.4)+gy(l.x,l.y),l.y).project(camera);
+   el.hidden=p.z < -1||p.z>1||Math.abs(p.x)>1.1||Math.abs(p.y)>1.1;
+   el.style.left=(rect.left+(p.x+1)*rect.width/2)+'px';el.style.top=(rect.top+(1-p.y)*rect.height/2)+'px';
+  }
   for(const [id,el]of labels)if(!labeled.has(id)){el.remove();labels.delete(id);}
   cursor.position.set(w.aim.x,.035,w.aim.y);cursor.visible=!w.paused;
   vfx.update(w,dt,{frozen:w.paused&&!animateWhilePaused});follow(w);
@@ -346,8 +371,10 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    return {x:point.x,y:point.z};},
   screen(x,y,w){if(w)follow(w);const p=new THREE.Vector3(x,w?groundAt(w.arena,x,y):0,y).project(camera),r=canvas.getBoundingClientRect();return {x:r.left+(p.x+1)*r.width/2,y:r.top+(1-p.y)*r.height/2};},
   colliders(visible){collisionView.visible=visible;},
-  zoom(delta){zoom=THREE.MathUtils.clamp(zoom+delta*.01,8,24);resize();},
+  zoom(delta){zoom=THREE.MathUtils.clamp(zoom+delta*.01,8,18);resize();},
   quality(low){renderer.shadowMap.enabled=!low;renderer.setPixelRatio(low?1:Math.min(devicePixelRatio,1.5));vfx.quality(low);scene.traverse(o=>{if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])m.needsUpdate=true;});resize();},
   ground(light){lightGround=!!light;paint();}
  };
 }
+// Escala do corpo recém-trocado: parte de 70%, passa um pouco de 100% e assenta em 0,35 s.
+const reshapeScale=(o,time)=>{if(o.reshapedAt===undefined)return 1;const k=(time-o.reshapedAt)/.35;if(!(k>=0)||k>=1){if(k>=1)o.reshapedAt=undefined;return 1;}return .7+.3*k+.12*Math.sin(Math.PI*k);};

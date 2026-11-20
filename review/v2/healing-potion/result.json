@@ -1,0 +1,66 @@
+{
+  "fraction": 0.599999999999999,
+  "checks": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "ground": "light",
+      "bounds": {
+        "x": 336.06561279296875,
+        "y": 846,
+        "width": 86.70001220703125,
+        "height": 32.29998779296875,
+        "insideHud": true,
+        "clickable": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "ground": "dark",
+      "bounds": {
+        "x": 336.06561279296875,
+        "y": 846,
+        "width": 86.70001220703125,
+        "height": 32.29998779296875,
+        "insideHud": true,
+        "clickable": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "ground": "light",
+      "bounds": {
+        "x": 14.336715698242188,
+        "y": 763.199951171875,
+        "width": 51.30000305175781,
+        "height": 28.5,
+        "insideHud": true,
+        "clickable": true
+      }
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "ground": "dark",
+      "bounds": {
+        "x": 14.336715698242188,
+        "y": 763.199951171875,
+        "width": 51.30000305175781,
+        "height": 28.5,
+        "insideHud": true,
+        "clickable": true
+      }
+    }
+  ],
+  "errors": []
+}

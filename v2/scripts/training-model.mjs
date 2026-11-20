@@ -1,3 +1,5 @@
+import {initializePotion,tickPotion} from './healing-potion.mjs';
+import {tickElements,isFrozen} from './elements.mjs';
 import {warriorLoadout,warriorStanceId,warriorTornado,warriorVigorFactor} from './warrior-model.mjs';
 import {tickSiegeCombat,tickSiegeEnemy} from './siege-combat.mjs';
 import {initializeSpells,tickSpells,blockEnemyByWalls} from './spells.mjs';
@@ -19,7 +21,7 @@ import {clearDrops,tickDrops} from './drops.mjs';
 import EQ from './shared-equipment.mjs';
 import {tickKing,V2_KING} from './fallen-king.mjs';
 import {initializeLich,tickLich} from './lich-model.mjs';
-import {spawnEnemy,composition,tickEnemy,tickSleep,tickHostiles,R,CORPSE_LIFETIME} from './enemies.mjs';
+import {spawnEnemy,composition,tickEnemy,tickSleep,tickHostiles,R,CORPSE_LIFETIME,ENEMY_RESILIENCE} from './enemies.mjs';
 export {dealDamage};
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 function animate(a,name){if(a.animation!==name){a.animation=name;a.animationTime=0;}}
@@ -29,6 +31,7 @@ export function createWorld(options={}){
  resetWorld(world,options);return world;
 }
 export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearLevel=1,lootFilter='common',encounterWave=null}={}){
+ initializePotion(w,character);
  w.warriorFireTrails=[];
  if(!Number.isInteger(horde)||horde<0||horde>64)throw Error('Quantidade de aliados inválida.');
  Object.assign(w,{actors:[],effects:[],time:0,paused:false,hits:0,horde,armyMode,army:null,onAllyDeath:null,allyShots:[],command:null,castCooldown:0,arena:TRAINING_ARENA,equipment:character?.equipment||{},level:character?.level||1,gearLevel,lootFilter});
@@ -41,7 +44,7 @@ export function resetWorld(w,{horde=w.horde,armyMode='load',army,character,gearL
  // Um encontro novo começa com vida e mana cheias, calculadas pelo nível, pela árvore e pelos itens atuais.
  applyAttributes(w,{fill:true});
  if(encounterWave){const list=composition(encounterWave,8,w.random);for(let i=0;i<list.length;i++)spawnEnemy(w,list[i],(i%4-1.5)*4,-7-Math.floor(i/4)*4,{wave:encounterWave,tier:encounterWave<6?'common':i===7?'rare':i===5?'magic':'common'});}
- else for(let i=0;i<8;i++)spawn('zombie','enemy',(i%4-1.5)*4,-7-Math.floor(i/4)*4,60).xp=RULES.rewards.enemyXp;
+ else for(let i=0;i<8;i++)spawn('zombie','enemy',(i%4-1.5)*4,-7-Math.floor(i/4)*4,ENEMY_RESILIENCE.floor).xp=RULES.rewards.enemyXp;
  const bs=EQ.waveStats(encounterWave||1);w.boss=spawn('fallenKing','enemy',1,-13,Math.round((encounterWave?R.boss.hp*bs.hp:1000)*V2_KING.hp));Object.assign(w.boss,{xp:Math.round(R.boss.xp*bs.xp),dmg:encounterWave?Math.round(R.boss.dmg*bs.damage):R.boss.dmg,isBoss:true,gearWave:encounterWave||1});
 }
 export function cast(w){
@@ -51,10 +54,12 @@ export function dash(w,input={}){return beginDash(w,input);}
 export function setPaused(w,paused){w.paused=!!paused;if(paused){w.boltCharge=null;stopWarriorChannel(w);}}
 function tick(w,dt,input){
  for(const a of w.actors)a.rootTime=Math.max(0,(a.rootTime||0)-dt);w.time+=dt;w.castCooldown=Math.max(0,w.castCooldown-dt);w.dash.cooldown=Math.max(0,w.dash.cooldown-dt);if(!isWolf(w))w.player.mp=Math.min(w.player.maxMp,w.player.mp+w.player.mpRegen*warriorVigorFactor(w)*dt);if(w.player.hp>0)w.player.hp=Math.min(w.player.maxHp,w.player.hp+w.player.hpRegen*dt);w.player.veilTime=Math.max(0,w.player.veilTime-dt);if(w.player.veilTime<1e-9)w.player.veilTime=0;
+ tickPotion(w,dt);
+ tickElements(w,dt,dealDamage);
  const p=w.player,x=clamp(Number(input.x)||0,-1,1),y=clamp(Number(input.y)||0,-1,1);
  // Movimento relativo à tela da câmera isométrica.
  let mx=x+y,my=y-x;const length=Math.hypot(mx,my);if(length){const magnitude=Math.min(1,Math.hypot(x,y));mx=mx/length*magnitude;my=my/length*magnitude;}
- const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&!w.druidAction?.lock&&marksmanMove(w)>0&&length&&p.hp>0&&!(p.rootTime>0)){const form=(isWolf(w)?WOLF.move:1)*marksmanMove(w);const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
+ const dashing=moveDash(w,dt);let moved=0;p.stepX=0;p.stepY=0;if(!dashing&&(!w.warriorAction||w.warriorAction.index===4)&&!w.druidAction?.lock&&marksmanMove(w)>0&&length&&p.hp>0&&!(p.rootTime>0)){const form=(w.testMoveSpeed??1)*(isWolf(w)?WOLF.move:1)*marksmanMove(w)*(p.frostUntil>w.time?Math.max(.6,1-(p.frostStacks||0)*.08):1);const ground=terrainSpeed(w.arena,p.x,p.y,mx,my),pos=moveCircle(p,{x:mx*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt,y:my*p.moveSpeed*(w.warriorAction?.index===4?w.warriorAction.tornado.move:1)*(w.lich?.moveFactor??1)*form*ground*dt},p.radius,w.arena);moved=pos.distance;p.stepX=pos.x-p.x;p.stepY=pos.y-p.y;p.x=pos.x;p.y=pos.y;p.walkDistance+=moved;}
  tickWarrior(w,dt);tickDruid(w,dt);tickMarksman(w,dt);tickCompanions(w,dt);tickBoltCharge(w,dt);tickDrops(w,dt);updateProjectiles(w,dt);tickRot(w,dt);tickSpells(w,dt);tickLich(w,dt);
  if(w.armyMode==='groups')tickHorde(w,dt);
  tickHostiles(w,dt);tickSiegeCombat(w,dt);w.effects=w.effects.filter(f=>!f.webRoot);for(const a of w.actors)if(a.rootTime>0&&a.hp>0)w.effects.push({id:'web-root-'+a.id,webRoot:true,x:a.x,y:a.y,radius:a.radius+.5,color:'#e3e9ec',visual:true,ground:true,fixedRadius:true,time:0,duration:10});
@@ -62,6 +67,7 @@ function tick(w,dt,input){
   if(a.groupType||a.companion)continue;
   a.slowTime=Math.max(0,(a.slowTime||0)-dt);a.timer=Math.max(0,a.timer-dt);a.animationTime+=dt;a.pose=a.labPose||null;
   if(a.hp<=0){animate(a,'death');w.effects=w.effects.filter(f=>f.enemyWarning!==a.id);a.ability=null;a.cut=null;a.cry=null;a.warBuff=null;a.web=null;a.rootTime=0;a.jumpZ=0;if(a===w.boss){a.king=null;a.kingV2=null;a.jumpZ=0;w.effects=w.effects.filter(f=>f.kingWarning!==a.id);}else if(a.team==='enemy'){a.corpseLifetime=w.army?.loadout.includes('specter')?POSSESSION.corpseLifetime:CORPSE_LIFETIME;a.corpseTime=(a.corpseTime||0)+dt;}continue;}
+  if(isFrozen(w,a)){a.pose={anim:'idle',progress:0};continue;}
   if(a.dummy||a.team==='neutral'||a.siegeGuard)continue;
   if(a.siegeLane!==undefined){tickSiegeEnemy(w,a,dt);continue;}
   if(a.home&&!tickSleep(w,a,dt))continue;

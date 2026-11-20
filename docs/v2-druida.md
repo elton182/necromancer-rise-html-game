@@ -1,8 +1,10 @@
 # Druida (Flora) — primeira versão jogável
 
+**Revisão atual:** [elementos, Lua Prateada e custos/recargas](v2-elementos.md). Os valores dessa revisão substituem os números de entregas anteriores registrados abaixo.
+
 Implementado na v2. Novo Jogo oferece seis classes, incluindo a Druida, com saves e progresso por personagem. Saves anteriores sem classe continuam Necromantes.
 
-A Druida luta a distância com raios e plantas e, quando os inimigos chegam perto, vira lobisomem. A decisão central do combate é **quando trocar de forma**: a forma humana tem controle e dano em área, mas é frágil; a forma de lobo aguenta mais e anda mais rápido, mas consome mana a cada segundo e só se sustenta acertando as garras.
+A Druida luta a distância com raios e plantas e, quando os inimigos chegam perto, vira lobisomem. A decisão central do combate é **quando trocar de forma**: a forma humana tem controle e dano em área, mas é frágil; a forma de lobo aguenta mais e anda mais rápido, mas não regenera mana: as magias de lobo dependem da mana que as garras devolvem.
 
 ## Ações
 
@@ -26,19 +28,53 @@ Durante as magias a Druida pode continuar andando; a pose da magia substitui a c
 
 | Slot / tecla | Ação | Regra inicial |
 |---|---|---|
-| Clique / 1 | **Garras** | Sem custo, recarga 0,42 s, impacto em 0,2 s. Arco de 130°, alcance 2,3 + raio do alvo. 75% do poder, +8% por ponto em Forma de Lobo. Golpes alternam as duas mãos. Um golpe que acerta pelo menos um inimigo devolve 3 de mana. |
+| Clique / 1 | **Garras** | Sem custo, recarga 0,42 s, impacto em 0,2 s. Arco de 130°, alcance 2,3 + raio do alvo. 45% do poder, +8% por ponto em Forma de Lobo. Combo: direita → esquerda → cruzado com as duas mãos. Cada golpe que acerta pelo menos um inimigo devolve 3 de mana. |
 | Botão direito / 2 | **Salto Feroz** | Nível 4, requer Forma de Lobo. 15 mana, recarga 4 s, ação de 0,6 s. Avança até 6 u (buscando cair a 0,6 u da mira) entre 0,1 e 0,45 s, com colisão contínua: não atravessa paredes. Em 0,47 s causa 150% do poder em raio 2,2. Não concede invulnerabilidade. |
 | 3 / Q | **Uivo** | Nível 8, requer Forma de Lobo. Sem custo, recarga 4 s, efeito em 0,25 s. Inimigos em 6 u ficam 35% mais lentos por 3 s (os presos pelas Raízes continuam presos) e as garras causam +25% por 6 s; um anel laranja sob a Druida marca o frenesi. |
 | 4 / E | Esquiva | Igual à forma humana. |
 
+**Combo das Garras:** cada comando aceito executa um golpe. A sequência começa
+pela direita (`claw_1`), segue pela esquerda (`claw_2`) e termina no cruzado
+(`claw_cross`), voltando à direita no quarto ataque. O próximo passo só é liberado
+quando o anterior chega ao instante de impacto, e o comando seguinte aguarda o fim
+da ação; cliques recusados não pulam golpes. O jogador precisa iniciar o próximo ataque até 0,9 s após o fim
+do anterior. Pausa maior, uso de outra habilidade, esquiva, troca de forma, morte,
+troca de cena ou reinicialização recomeçam pela direita. A sequência é transitória,
+sem campo novo no save.
+
+O cruzado mantém duração de 0,42 s, liberação em 0,20 s, custo, alcance, arco, dano
+e recuperação de mana dos outros golpes. As duas mãos produzem um único acerto
+por alvo e uma única recuperação de mana por golpe, inclusive com passos longos.
+O rastro do terceiro ataque mostra duas famílias de três garras formando um X.
+
+Verificação do combo: build, 27 testes da Druida e suas expansões, 34 regressões
+de combate/efeitos, auditoria dos 11 clipes via Blender MCP e testes de navegador
+das posturas e dos três golpes aprovados no Chrome. Os testes cobrem comandos
+recusados, passos longos, interrupções, dano único do cruzado, ambos os fundos,
+qualidade baixa e descarte do efeito. Evidências em `review/v2/druid-claw-combo/`,
+sem erros de página ou requisições remotas. As prévias antigas citadas abaixo
+continuam históricas; `pack_flora_wolf_review.py --dynamic` já inclui o terceiro
+golpe ao empacotar uma nova renderização completa.
+
 Garras, Salto e Uivo prendem a Druida no lugar durante a ação, como os golpes do Guerreiro.
+
+### Frenético (passiva do lobo)
+
+Nó `frenetico` do ramo Selvagem, nível 4, requer Forma de Lobo, até 3 pontos (desde 13/11/2026). Regras em `druid-model.mjs` (`FRANTIC`, `franticSpeed`) e `druid.mjs`.
+
+- **Acúmulos.** Cada golpe de Garras que acerta pelo menos um inimigo soma 1 acúmulo, até 5. Os acúmulos somem juntos se passar 2,5 s sem acerto das garras, ao voltar à forma humana, ao morrer ou ao trocar de cena. São transitórios (`w.druidFrantic`), sem campo no save.
+- **Velocidade.** Cada acúmulo acelera as Garras em 12% (+4% por ponto além do primeiro): duração, instante de impacto e recarga são divididos por `1 + acúmulos × taxa`. Com 5 acúmulos e 1 ponto, as garras ficam 60% mais rápidas; com 3 pontos, 100%. Dano, alcance, arco e mana devolvida não mudam. O clipe acompanha a duração da regra.
+- **Bote.** Com 3 ou mais acúmulos, Garras sem inimigo ao alcance na direção da mira viram um bote: a Druida salta até o inimigo visível mais próximo do ponto mirado, a até 6 u dela, e para a 0,9 u do corpo dele. Ação de 0,36 s com o clipe `leap`: avança entre 0,04 e 0,24 s com colisão contínua (paredes bloqueiam o caminho e a escolha do alvo) e golpeia em 0,26 s, virada para o alvo, com o arco normal das Garras. O bote conta como golpe: acerta, devolve mana e soma acúmulo. Fora disso, o combo continua de onde estava. O bote espera 1 s para se repetir e não acontece presa pelas Raízes.
+- **Leitura.** O slot 1 mostra `Frenético n/5` e acrescenta `· bote` quando o bote está disponível; com 3 ou mais acúmulos o rastro das garras fica alaranjado; ao chegar a 5 há um uivo curto (anel laranja). O bote solta faíscas na partida e poeira na queda.
+
+**Troca de forma (visual).** Entrar ou sair do lobo dispara o efeito `shapeshift` (`vfx.mjs`): anel rúnico girando no chão, onda, coluna de luz e um redemoinho de folhas que se fecha sobre o corpo e depois se abre. Na ida ao lobo as folhas são secas, há poeira e um tremor leve; na volta, folhas verdes sobem e se espalham. O clarão inicial cobre a troca de modelo, e o renderizador faz o corpo novo crescer de 70% a 100% em 0,35 s (`reshapeScale` em `renderer.mjs`). Nada disso muda regra, colisão ou recarga.
 
 **Regras da forma.** F alterna as formas, com recarga de 2 s e 0,35 s sem agir após a troca. Entrar exige pelo menos 10 de mana. Na forma de lobo:
 
 - Não há magias da forma humana nem regeneração de mana.
-- A forma consome 4 mana/s (−1/s por ponto em Coração Selvagem, mínimo 1/s).
+- A forma não consome mana (desde 13/11/2026); só as ações de lobo com custo gastam mana.
 - Dano recebido −20% e movimento +35%.
-- Sem mana, a Druida volta sozinha à forma humana ao terminar a ação em curso e espera 4 s para se transformar de novo.
+- Sem mana, a Druida continua lobo; volta à forma humana só com F, morte ou troca de cena.
 
 Morte e troca de cena devolvem a forma humana. A troca de forma usa o mecanismo do renderizador que recria o corpo quando `actor.model` muda (`druid` ↔ `druidWolf`).
 
@@ -72,7 +108,8 @@ Quatro ramos — **Tempestade**, **Natureza**, **Selvagem** e **Passivas** —, 
 | Natureza | Rejuvenescer | 1 | 6, Raízes | Libera a cura |
 | Selvagem | Forma de Lobo | 3 | — | Libera a forma; +8% de dano das garras e do Salto por ponto |
 | Selvagem | Salto Feroz | 1 | 4, Forma de Lobo | Libera o Salto |
-| Selvagem | Coração Selvagem | 3 | 6, Forma de Lobo | −1 mana/s de consumo da forma por ponto |
+| Selvagem | Coração Selvagem | 3 | 6, Forma de Lobo | Sem efeito próprio desde que a forma deixou de consumir mana; mantém só a sinergia do ramo |
+| Selvagem | Frenético | 3 | 4, Forma de Lobo | Acúmulos de velocidade das Garras e bote com 3+ acúmulos (veja [Frenético](#frenético-passiva-do-lobo)) |
 | Selvagem | Uivo | 1 | 8, Forma de Lobo | Libera o Uivo |
 | Passivas | Vigor da floresta | 5 | — | +10% de vida máxima |
 | Passivas | Sabedoria antiga | 5 | — | +10% de mana máxima |
@@ -109,29 +146,36 @@ A postura de repouso dos ossos existentes continua preservada.
 O galope reaproveita a base anterior. As duas garras foram reconstruídas com o quadril
 iniciando a preparação, o tórax girando na execução e a cabeça compensando para manter
 o olhar no alvo. A pelve recua e abaixa na preparação, avança e cruza o peso no golpe,
-enquanto a perna de impulso gira sobre a ponta da pata e levanta o calcanhar. A pata
-dianteira e a traseira opostas ficam fixas. A garra direita corta para baixo; a esquerda
-varre para cima. Há continuidade do braço e do tronco antes de recuperar a guarda.
-A excursão medida do tórax é aproximadamente 55 graus; a pelve percorre 0,153 unidade
-da fonte e o tornozelo de impulso, cerca de 0,07. O pivô conserva a posição horizontal
+enquanto a perna de impulso gira sobre a ponta da pata e levanta o calcanhar. O pé
+oposto fica fixo, e a mão livre acompanha o tórax sem apoiar no chão. As duas garras
+executam diagonais descendentes espelhadas: a mão sobe para fora na preparação,
+cruza para o lado oposto na altura média e continua o arco antes de recuperar a guarda.
+A trajetória cúbica mantém velocidade contínua entre os pontos intermediários.
+A continuação e a recuperação passam à frente do peito antes de reabrir a mão
+para a guarda; o cotovelo tem um polo próprio à frente e para fora do ombro, evitando
+que seja puxado para dentro do tronco ao final do cruzamento.
+A excursão medida do tórax é aproximadamente 91 graus; a pelve percorre 0,165 unidade
+da fonte e o tornozelo de impulso, cerca de 0,085. O pivô conserva a posição horizontal
 da ponta da pata. Essas medidas verificam a articulação e os contatos; não são uma
 simulação física do centro de massa.
 
-A revisão mede a malha real das patas para corrigir penetrações e assenta as quatro
-patas em repouso. O uivo se ergue sobre as traseiras, agora fixas no piso. A esquiva
-parte da guarda baixa e recolhe o corpo; a morte foi reconstruída como colapso lateral
-da postura quadrúpede, seguido de acomodação e imobilidade. A correção de piso da morte
+A revisão mede a malha real das patas para corrigir penetrações. O lobo fica ereto
+em repouso, nas garras, no uivo e no Salto Feroz. Apenas caminhada, corrida e passos
+laterais usam quatro apoios. Na guarda ereta, os pés ficam mais próximos e os joelhos
+dobram para a frente, reduzindo a abertura das pernas. A esquiva recolhe o corpo mantendo as mãos livres;
+a morte parte da guarda ereta e tomba de lado, seguida de acomodação e imobilidade. A correção de piso da morte
 usa a malha inteira, incluindo cauda e juba. Os clipes são in-place; o motor aplica o
 deslocamento real de corrida, esquiva e Salto Feroz.
 
 | Action (prefixo `AN_FloraWolf_`) | Frames | Duração a 30 FPS | Poses e eventos |
 |---|---|---|---|
-| `idle` | 1–85 | 2,8 s | Quatro apoios, respiração e cauda; ciclo |
+| `idle` | 1-85 | 2,8 s | Guarda ereta sobre os dois pés, respiração e cauda; ciclo |
 | `walk` | 1–22 | 0,7 s | Impulsão traseira, suspensão e recepção dianteira; ciclo |
 | `strafe_left`, `strafe_right` | 1–25 | 0,8 s | Deslocamentos laterais; ciclos |
-| `claw_1` | 1–14 | 0,433 s | Preparar a direita, cortar para frente/baixo e recuperar; impacto visual no frame 7 |
-| `claw_2` | 1–14 | 0,433 s | Preparar a esquerda, varrer para cima e recuperar; impacto visual no frame 7 |
-| `leap` | 1–19 | 0,6 s | Comprimir, estender, receber nas dianteiras e recuperar; impacto no frame 15 |
+| `claw_1` | 1-14 | 0,433 s | Preparar a direita em diagonal alta, cruzar para a esquerda média e recuperar; impacto visual no frame 7 |
+| `claw_2` | 1-14 | 0,433 s | Preparar a esquerda em diagonal alta, cruzar para a direita média e recuperar; impacto visual no frame 7 |
+| `claw_cross` | 1-14 | 0,433 s | Abrir e elevar as duas mãos, cruzar à frente em planos separados e reabrir a guarda; impacto visual no frame 7 |
+| `leap` | 1-19 | 0,6 s | Salto ereto com garras à frente e retorno à guarda; impacto no frame 15 |
 | `howl` | 1–22 | 0,7 s | Erguer peito e focinho, abrir mandíbula e voltar; emissão nos frames 8–9 |
 | `dodge` | 1–16 | 0,5 s | Recolher patas dianteiras e tronco, recuperar |
 | `death` | 1–37 | 1,2 s | Ceder, tombar de lado, acomodar e manter |
@@ -159,6 +203,32 @@ as duas garras em velocidade de autoria, com uma pausa na guarda. A auditoria pe
 todos os frames e verifica pesos, piso, fechamento dos ciclos, apoios opostos, pivô dos
 dedos, excursão do tronco/quadril/perna, traseiras fixas no uivo e elevação no salto.
 Os renders são prévias PBR em Eevee.
+Para a revisão de postura ereta, as prévias atuais de idle, garras e galope estão em
+`review/v2/druid-wolf-posture/` (Cycles, geradas via MCP); as pranchas e GIFs anteriores
+de `blender/previews/flora_wolf_dynamic/` ainda mostram a postura quadrúpede antiga.
+O teste `node v2/tests/druid-wolf-posture-browser-check.cjs` percorre os clipes no jogo
+e mede a separação entre mãos e pés. Use `NR_BROWSER_CHANNEL=chrome` para Chrome;
+o padrão é Edge. Os testes usam armazenamento isolado.
+Nesta revisão, a auditoria dos dez clipes no Blender via MCP, o build, os 24 testes
+da Druida e o teste de postura no Chrome passaram. Foram amostradas cinco poses
+de cada um dos nove clipes ativos; a conferência inclui chão claro e qualidade baixa,
+sem erros de página ou requisições remotas. O Edge encerrou na inicialização neste ambiente.
+
+A revisão das garras diagonais mantém os tempos e as regras de dano existentes.
+A auditoria verifica elevação e abertura da preparação, descida até o impacto e
+cruzamento da linha central nos dois golpes. Evidências em
+`review/v2/druid-wolf-diagonal/`; quadros Cycles em `blender/frames/flora_wolf_diagonal/`.
+Build, auditoria via MCP e teste de navegador no Chrome aprovados para as novas
+garras, incluindo chão claro e qualidade baixa, sem erros ou requisições remotas.
+`diagonal-cuts.gif` mostra os dois ataques juntos; `diagonal-cuts-slow.gif` usa
+metade da velocidade de autoria para conferir a preparação e o cruzamento.
+
+Correção da recuperação: conferidas as poses finais dos dois braços via MCP;
+build, auditoria e teste de navegador no Chrome aprovados. A verificação amostra
+também 61%, 76% e 89% dos clipes e grava as capturas finais das duas garras em
+`review/v2/druid-wolf-recovery/`, incluindo chão claro/qualidade baixa e ausência
+de erros de página ou requisições remotas. As prévias diagonais anteriores preservam
+o retorno anterior à correção.
 Essas medidas e a inspeção visual não comprovam ausência de toda interpenetração da
 juba, cauda e membros, nem substituem uma campanha completa jogada.
 
@@ -289,6 +359,11 @@ o jogo não adapta os pés a terrenos irregulares em tempo real.
 
 ## Efeitos visuais
 
+As Garras usam três riscos curvos no ar à frente do corpo, com varredura diagonal
+espelhada entre as mãos. O efeito tem raio visual 30% maior e duração de 0,23 s;
+o alcance de dano continua o mesmo. As três faixas permanecem em qualidade baixa.
+Detalhes e validação em [efeitos visuais](v2-efeitos-visuais.md#garras-da-forma-de-lobo).
+
 Em `vfx.mjs`, ligados à posição real:
 
 - `lightning`: trilha irregular com núcleo branco e halo azul, do cajado ao alvo ou do céu ao chão.
@@ -299,8 +374,8 @@ Também há anéis no chão: verde sob cada inimigo preso, verde-claro sob a Dru
 
 ## Verificação e limites
 
-- Regras: `node --test v2/tests/druid.test.mjs`, com 12 casos: classe e save, árvore, atributos, mundo sem horda, Faísca, Corrente, Raízes/Casca, Tempestade, Rejuvenescer, forma de lobo, Salto com parede e sessão.
-- Navegador: `node v2/tests/druid-browser-check.cjs`, com Playwright e Edge em perfil isolado. Cobre seleção da classe, árvore pela interface, todas as ações, forma de lobo, chão claro com qualidade baixa e volta ao esgotar a mana.
+- Regras: `node --test v2/tests/druid.test.mjs`: classe e save, árvore, atributos, mundo sem horda, Faísca, Corrente, Raízes/Casca, Tempestade, Rejuvenescer, forma de lobo, alcance visual versus dano das Garras, Salto com parede e sessão.
+- Navegador: `node v2/tests/druid-browser-check.cjs`, com Playwright e Edge em perfil isolado. Cobre seleção da classe, árvore pela interface, todas as ações, forma de lobo, chão claro com qualidade baixa e permanência na forma de lobo sem mana.
 - Evidências: [review/v2/druid](../review/v2/druid/).
 
 Limites desta versão:
@@ -336,15 +411,15 @@ Na caminhada e nos passos laterais da forma humana, o gerador orienta os joelhos
 - **Lobo:** ação equipável na forma humana, 30 MP, recarga 8 s (reduzida pelos itens), liberação em 0,35 s. Evoca um lobo com 65% da vida máxima e 45% do dano mágico da Druida, atacando a cada 1 s. Do segundo ao quinto ponto: +10% de vida e dano por ponto. Sem duração limite. Modelo animado `cryptHound` com tinta natural.
 - **Mordida Pesada:** passiva automática. A cada 6 s, o próximo ataque de cada lobo causa 180% do dano da mordida; o segundo e terceiro pontos acrescentam 20 pontos percentuais cada, até 220%. A mordida tem preparação visível e verifica novamente distância e parede no impacto.
 - **Alcateia:** +1 lobo por ponto, até quatro. Conjurar Lobo preenche vagas novas ou repõe mortos; não cura nem substitui os vivos. Com todas as vagas vivas, conjurar é recusado sem gastar mana. Os lobos continuam ativos durante a transformação da Druida.
-- **Planta Carnívora:** aperfeiçoamento de Raízes, sem tecla/custo adicional. Nasce no ponto mirado por 8 s, com 60% da vida máxima da Druida e 45% do dano mágico por ataque, a cada 1,4 s, até 4,5 u. É fixa, pode ser destruída e não ataca através de paredes. No máximo uma; novas Raízes a substituem. Usa GLB próprio em `blender/exports/carnivorous_plant.glb`, com `idle`, `attack` e `death`.
+- **Planta Carnívora:** aperfeiçoamento de Raízes, sem tecla/custo adicional. Nasce no ponto mirado e é permanente (sem limite de duração), com 60% da vida máxima da Druida e 45% do dano mágico por ataque, a cada 1,4 s, até 4,5 u. É fixa, pode ser destruída e não ataca através de paredes. No máximo uma; novas Raízes a substituem. Usa GLB próprio em `blender/exports/carnivorous_plant.glb`, com `idle`, `attack` e `death`.
 
-Lobos feridos e mortos são preservados ao salvar e trocar de mapa (`character.druidPack`, proporções de vida); não renascem automaticamente. A morte da Druida desfaz a alcateia. Plantas, sangramentos e demais efeitos temporários são limpos na morte ou troca de cena. O Corte Sangrento revisado usa alcance 4,6 u e semicírculo de 180°, preservando dano e renovação sem empilhar.
+Lobos feridos e mortos são preservados ao salvar e trocar de mapa (`character.druidPack`, proporções de vida); não renascem automaticamente. A morte da Druida desfaz a alcateia. Plantas (permanentes, mas presas ao ponto do mapa em que nasceram), sangramentos e efeitos temporários são limpos na morte ou troca de cena. O Corte Sangrento revisado usa alcance 4,6 u e semicírculo de 180°, preservando dano e renovação sem empilhar.
 
 Verificação de regras: `node --test v2/tests/skill-ideas-revision.test.mjs`. Conferência no navegador: `node v2/tests/skill-ideas-revision-browser-check.cjs` (Playwright, Edge/WebGL 2, perfil isolado). Evidências em [review/v2/skill-ideas-revision](../review/v2/skill-ideas-revision/). Números iniciais, sem campanha completa jogada.
 
 ## Progressão por pontos corrigida (09/11/2026)
 
-Tempestade, Salto Feroz, Tornado, Furacão, Garra de Gelo, Corte Sangrento e Planta Carnívora agora aceitam cinco pontos. O primeiro conserva os números descritos nas tabelas; cada ponto depois dele soma +10% do dano base, até +40%. Corte Sangrento aumenta impacto e sangramento; a Planta aumenta dano e vida, mantendo o limite de uma planta e a duração de 8 s.
+Tempestade, Salto Feroz, Tornado, Furacão, Garra de Gelo, Corte Sangrento e Planta Carnívora agora aceitam cinco pontos. O primeiro conserva os números descritos nas tabelas; cada ponto depois dele soma +10% do dano base, até +40%. Corte Sangrento aumenta impacto e sangramento; a Planta aumenta dano e vida, mantendo o limite de uma planta, que é permanente (13/11/2026; antes durava 8 s).
 
 Os ranks extras de Tornado e Furacão somam bônus, sem multiplicá-los entre si: até +80% do dano base nos pulsos e na explosão com ambos no máximo. O primeiro ponto em Furacão mantém a transformação atual (área, duração e explosão).
 
@@ -361,7 +436,7 @@ Quatro novas ações da **barra montável humana**, acrescentadas ao final da ta
 | Habilidade | Nível e pré-requisitos | Mana / recarga | Regra |
 |---|---|---|---|
 | Calamidade | 18; Tempestade e Furacão | 55 / 24 s | Prepara 0,55 s e cria um furacão de raio 4 até 10 u. Dura 8 s e avança a 0,8 u/s na direção escolhida. Vento causa 30% do dano mágico a cada 0,5 s; raios causam 65% a até duas presas a cada 1 s. Recebe sinergia de Tempestade. |
-| Floresta Tropical | 16; Planta Carnívora | 45 / 20 s | Prepara 0,45 s e evoca cinco plantas por 10 s numa região de raio 4,5 até 10 u. Cada planta usa vida, dano e pontos da Planta Carnívora. |
+| Floresta Tropical | 16; Planta Carnívora | 45 / 20 s | Prepara 0,45 s e evoca cinco plantas permanentes (sem limite de duração) numa região de raio 4,5 até 10 u. Cada planta usa vida, dano e pontos da Planta Carnívora. |
 | Escudo de Folhas | 6; Rejuvenescer | 25 / 18 s | Prepara 0,3 s e protege por até 8 s, absorvendo dano equivalente a 35% da vida máxima no instante da conjuração. |
 | Líder da Matilha | 12; Alcateia | 20 / 12 s | Aprender o nó fortalece um lobo vivo. A ação prepara 0,25 s e comanda a matilha contra uma presa por 6 s. |
 

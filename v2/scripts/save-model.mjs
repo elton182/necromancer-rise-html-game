@@ -15,6 +15,7 @@ import {clampExp} from './progression.mjs';
 import EQ from './shared-equipment.mjs';
 import Build from './shared-build.mjs';
 import {RARITY_ORDER} from './drops.mjs';
+import {normalizePotion} from './healing-potion.mjs';
 import {normalizeInventory} from './consumables.mjs';
 import {MODES} from './arena-model.mjs';
 import Endgame from './shared-endgame.mjs';
@@ -49,7 +50,7 @@ export function normalizeSave(raw){
  const gearLevel=number(s.gearLevel,1,'Nível dos itens',60);if(!Number.isInteger(gearLevel)||gearLevel<1)throw Error('Nível dos itens inválido.');
  if(s.lootFilter!==undefined&&!RARITY_ORDER.includes(s.lootFilter))throw Error('Filtro de loot inválido.');
  if(s.ground!==undefined&&!['dark','light'].includes(s.ground)||s.quality!==undefined&&!['high','low'].includes(s.quality))throw Error('Opções inválidas.');
- const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),playTime:number(p.playTime,0,'Tempo de jogo'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress,undefined,p.classId),inventory:normalizeInventory(p.inventory),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
+ const result={...copy(raw),format:FORMAT,version:VERSION,campaign:normalizeCampaign(raw.campaign??{}),savedAt:number(raw.savedAt,0,'Data'),character:{...copy(p),level,exp:number(p.exp,0,'Experiência'),gold:number(p.gold,0,'Ouro'),playTime:number(p.playTime,0,'Tempo de jogo'),mode:p.mode??'free',...normalizeGear(p.equipment,p.gearBag,p.waveProgress,undefined,p.classId),inventory:normalizeInventory(p.inventory),potionCharge:normalizePotion(p.potionCharge),conquest:Endgame.normalize(copy(p.conquest??{})),siege:normalizeSiege(p.siege)},settings:{...copy(s),encounterWave,horde,ground:s.ground??'dark',quality:s.quality??'high',gearLevel,lootFilter:s.lootFilter??'common',waveMode:s.waveMode??'expedition'}};
  if(!MODES.includes(result.settings.waveMode))throw Error('Modelo de waves inválido.');
  result.settings.armyMode=s.armyMode??(raw.settings?'load':'groups');if(!['load','groups'].includes(result.settings.armyMode))throw Error('Modo da horda inválido.');result.horde=normalizeHorde(raw.horde);
  // Nível do personagem e do perfil do Grimório são o mesmo progresso: vale o maior, e o XP respeita o nível final.

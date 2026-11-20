@@ -4,6 +4,7 @@ import {builtinMap,normalizeMap,resolveMap,reachable,canReach,toArena,centered} 
 import {PROLOGUE_POINTS,CAVE_ROOMS,PAPERS_GUARD_RADIUS,MESSENGER_GUARD_RADIUS} from './prologue-map-data.mjs';
 import {WORLD_POINTS,WORLD_PILES,WORLD_ENCOUNTERS} from './campaign-world-model.mjs';
 import {ITAUNA_POINTS,FORT_POINTS,CAVE_POINTS} from './itauna-model.mjs';
+import {CEDRO_POINTS,CEDRO_GROUPS} from './cedro-model.mjs';
 import {NILO_POINTS,NILO_GROUPS} from './nilo-model.mjs';
 
 const QUEST_SPAWNS=WORLD_ENCOUNTERS.filter(e=>e.quest).map(e=>e.id);
@@ -12,6 +13,7 @@ const QUEST_SPAWNS=WORLD_ENCOUNTERS.filter(e=>e.quest).map(e=>e.id);
 // `triggers`: se a cena respeita gatilho, ondas e retorno dos grupos.
 // `fixedStart`: cena roteirizada com posição inicial própria. `noTerrain`: cinemática sobre o plano, sem relevo.
 export const CAMPAIGN_SLOTS={
+ cedro:{ref:'builtin:cedro',name:'Passo do Cedro',note:'Cerco de Bento Ferraz. Dois portões; corneta, combustível e moradores alteram a ofensiva.',triggers:true,required:CEDRO_GROUPS.filter(id=>!['cedro-fuel','cedro-shortcut'].includes(id)),points:Object.values(CEDRO_POINTS)},
  itavera:{ref:'builtin:itavera',name:'Itavera · praça das guildas',note:'Encerramento do Ato I: recepção de Helena e convite de João. Sem combate.',noSpawns:true,points:[NILO_POINTS.helena,NILO_POINTS.cityJoao,NILO_POINTS.cityMarta,{x:0,y:24,name:'Chegada da caravana'},{x:0,y:30,name:'Retorno a Jacarandá'}]},
  world:{ref:'builtin:campaign-world',name:'Mundo de Jacarandá',note:'Cripta, bosque, vila, posto, mina, serraria e cemitério.',triggers:true,required:QUEST_SPAWNS,points:[...Object.values(WORLD_POINTS),...WORLD_PILES.map(p=>({x:p.x,y:p.y,name:p.name})),NILO_POINTS.marta,NILO_POINTS.nilo]},
  travel:{ref:'builtin:arandu-travel',name:'Estrada de Itavera',note:'Cinemática da caravana: só cenário e estilo; sem relevo nem inimigos.',noTerrain:true,noSpawns:true,fixedStart:true,points:[]},

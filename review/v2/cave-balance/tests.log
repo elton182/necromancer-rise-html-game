@@ -1,0 +1,470 @@
+TAP version 13
+# Subtest: regras geradas correspondem ├ás fontes atuais; atributos usam modelo compartilhado
+ok 1 - regras geradas correspondem ├ás fontes atuais; atributos usam modelo compartilhado
+  ---
+  duration_ms: 197.1805
+  ...
+# Subtest: tiro custa mana e recarga uma vez; pausa, morte, mira inv├ílida e mana insuficiente n├úo cobram
+ok 2 - tiro custa mana e recarga uma vez; pausa, morte, mira inv├ílida e mana insuficiente n├úo cobram
+  ---
+  duration_ms: 2.1872
+  ...
+# Subtest: colis├úo cont├¡nua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+ok 3 - colis├úo cont├¡nua acerta primeiro alvo no segmento mesmo com lista invertida e passo longo
+  ---
+  duration_ms: 1.4954
+  ...
+# Subtest: trajet├│ria m├íxima n├úo ultrapassa nove unidades; s├│lidos n├úo bloqueiam tiro, como na fonte atual
+ok 4 - trajet├│ria m├íxima n├úo ultrapassa nove unidades; s├│lidos n├úo bloqueiam tiro, como na fonte atual
+  ---
+  duration_ms: 1.2324
+  ...
+# Subtest: perfura├º├úo e estilha├ºos compartilham acertos e n├úo multiplicam dano num mesmo alvo
+ok 5 - perfura├º├úo e estilha├ºos compartilham acertos e n├úo multiplicam dano num mesmo alvo
+  ---
+  duration_ms: 1.1031
+  ...
+# Subtest: regenera├º├úo e cooldown respeitam tempo, sem avan├ºar na pausa
+ok 6 - regenera├º├úo e cooldown respeitam tempo, sem avan├ºar na pausa
+  ---
+  duration_ms: 5.1407
+  ...
+# Subtest: Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+ok 7 - Dash percorre 4,5 unidades em 0,5 s sem mana; usa movimento antes da mira
+  ---
+  duration_ms: 3.1829
+  ...
+# Subtest: Dash para no primeiro s├│lido e n├úo desliza ou atravessa paredes e limites
+ok 8 - Dash para no primeiro s├│lido e n├úo desliza ou atravessa paredes e limites
+  ---
+  duration_ms: 2.0883
+  ...
+# Subtest: prote├º├úo do Dash termina ao acabar o deslocamento e n├úo consome barreira
+ok 9 - prote├º├úo do Dash termina ao acabar o deslocamento e n├úo consome barreira
+  ---
+  duration_ms: 1.5981
+  ...
+# Subtest: defesa compartilhada, barreira, bloqueio ├│sseo e morte seguem um ├║nico caminho
+ok 10 - defesa compartilhada, barreira, bloqueio ├│sseo e morte seguem um ├║nico caminho
+  ---
+  duration_ms: 1.8582
+  ...
+# Subtest: dano da linha de frente arredonda uma vez; inimigos usam piso e mortes t├¬m cr├®dito ├║nico
+ok 11 - dano da linha de frente arredonda uma vez; inimigos usam piso e mortes t├¬m cr├®dito ├║nico
+  ---
+  duration_ms: 0.6992
+  ...
+# Subtest: pisos de recarga s├úo aplicados antes de maestria, e V├®u n├úo empilha defesa permanentemente
+ok 12 - pisos de recarga s├úo aplicados antes de maestria, e V├®u n├úo empilha defesa permanentemente
+  ---
+  duration_ms: 0.6394
+  ...
+# Subtest: morte e transi├º├úo removem proj├®teis, recargas e prote├º├Áes sem persistir combate
+ok 13 - morte e transi├º├úo removem proj├®teis, recargas e prote├º├Áes sem persistir combate
+  ---
+  duration_ms: 8.9103
+  ...
+# Subtest: ├írea hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+ok 14 - ├írea hostil passa pelo dano comum para jogador e aliado, incluindo morte durante o impacto
+  ---
+  duration_ms: 5.1842
+  ...
+# Subtest: custo do Tiro de Osso sobe de 5 MP no n├¡vel 1 at├® o custo das regras no n├¡vel m├íximo
+ok 15 - custo do Tiro de Osso sobe de 5 MP no n├¡vel 1 at├® o custo das regras no n├¡vel m├íximo
+  ---
+  duration_ms: 0.2621
+  ...
+# Subtest: corpo de inimigo some ap├│s o tempo de decomposi├º├úo; aliados e jogador permanecem
+ok 16 - corpo de inimigo some ap├│s o tempo de decomposi├º├úo; aliados e jogador permanecem
+  ---
+  duration_ms: 5.7031
+  ...
+# Subtest: Druida ├® uma classe v├ílida, com ├írvore pr├│pria persistida e saves antigos intactos
+ok 17 - Druida ├® uma classe v├ílida, com ├írvore pr├│pria persistida e saves antigos intactos
+  ---
+  duration_ms: 12.3525
+  ...
+# Subtest: or├ºamento, n├¡vel e pr├®-requisitos da ├írvore
+ok 18 - or├ºamento, n├¡vel e pr├®-requisitos da ├írvore
+  ---
+  duration_ms: 0.4844
+  ...
+# Subtest: atributos m├ígicos sem horda; passivas e itens do cat├ílogo do Necromante
+ok 19 - atributos m├ígicos sem horda; passivas e itens do cat├ílogo do Necromante
+  ---
+  duration_ms: 2.6975
+  ...
+# Subtest: mundo da Druida: modelo pr├│prio e nenhum aliado da horda
+ok 20 - mundo da Druida: modelo pr├│prio e nenhum aliado da horda
+  ---
+  duration_ms: 4.7563
+  ...
+# Subtest: Fa├¡sca atinge s├│ o primeiro inimigo na linha, sem custo, e respeita a recarga
+ok 21 - Fa├¡sca atinge s├│ o primeiro inimigo na linha, sem custo, e respeita a recarga
+  ---
+  duration_ms: 8.1253
+  ...
+# Subtest: Corrente salta para inimigos pr├│ximos, um salto extra por ponto, com perda por salto
+ok 22 - Corrente salta para inimigos pr├│ximos, um salto extra por ponto, com perda por salto
+  ---
+  duration_ms: 3.2604
+  ...
+# Subtest: Ra├¡zes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+ok 23 - Ra├¡zes prendem no lugar, poupam chefes e a Casca de Espinhos aumenta o dano recebido
+  ---
+  duration_ms: 3.907
+  ...
+# Subtest: Tempestade derruba raios s├│ dentro da ├írea, enquanto ela dura
+ok 24 - Tempestade derruba raios s├│ dentro da ├írea, enquanto ela dura
+  ---
+  duration_ms: 2.9367
+  ...
+# Subtest: Rejuvenescer cura 30% da vida ao longo de 5 s
+ok 25 - Rejuvenescer cura 30% da vida ao longo de 5 s
+  ---
+  duration_ms: 2.3957
+  ...
+# Subtest: Forma de Lobo: troca de modelo, garras devolvem mana e a forma n├úo consome mana
+ok 26 - Forma de Lobo: troca de modelo, garras devolvem mana e a forma n├úo consome mana
+  ---
+  duration_ms: 5.4736
+  ...
+# Subtest: Garras ampliam o rastro visual sem ampliar o dano e alternam a diagonal
+ok 27 - Garras ampliam o rastro visual sem ampliar o dano e alternam a diagonal
+  ---
+  duration_ms: 2.2625
+  ...
+# Subtest: Salto Feroz avan├ºa com colis├úo e atinge a ├írea de pouso
+ok 28 - Salto Feroz avan├ºa com colis├úo e atinge a ├írea de pouso
+  ---
+  duration_ms: 3.6423
+  ...
+# Subtest: Garras seguem direita, esquerda, cruzado e direita, com dano ├║nico mesmo em passos longos
+ok 29 - Garras seguem direita, esquerda, cruzado e direita, com dano ├║nico mesmo em passos longos
+  ---
+  duration_ms: 3.3109
+  ...
+# Subtest: Combo das Garras reinicia por pausa, outra habilidade, esquiva, troca de forma e cena
+ok 30 - Combo das Garras reinicia por pausa, outra habilidade, esquiva, troca de forma e cena
+  ---
+  duration_ms: 8.8709
+  ...
+# Subtest: sess├úo: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta ├á forma humana
+ok 31 - sess├úo: barra fixa por forma, F alterna, esquiva no slot 4 e troca de cena volta ├á forma humana
+  ---
+  duration_ms: 4.2784
+  ...
+# Subtest: Fren├®tico: garras que acertam somam ac├║mulos de velocidade, que expiram e somem ao trocar de forma
+ok 32 - Fren├®tico: garras que acertam somam ac├║mulos de velocidade, que expiram e somem ao trocar de forma
+  ---
+  duration_ms: 3.6216
+  ...
+# Subtest: Fren├®tico: com 3 ac├║mulos, Garras sem alvo ao alcance saltam at├® o inimigo mais pr├│ximo da mira e continuam
+ok 33 - Fren├®tico: com 3 ac├║mulos, Garras sem alvo ao alcance saltam at├® o inimigo mais pr├│ximo da mira e continuam
+  ---
+  duration_ms: 9.2803
+  ...
+# Subtest: cat├ílogo preserva ├¡ndices, IDs modulares e recompensas v├ílidas
+ok 34 - cat├ílogo preserva ├¡ndices, IDs modulares e recompensas v├ílidas
+  ---
+  duration_ms: 161.1916
+  ...
+# Subtest: Rei compartilhado preserva fases e morte cancela o avan├ºo
+ok 35 - Rei compartilhado preserva fases e morte cancela o avan├ºo
+  ---
+  duration_ms: 1.116
+  ...
+# Subtest: integra├º├úo: corte atinge uma vez, morte remove avisos e refor├ºos sem loot
+ok 36 - integra├º├úo: corte atinge uma vez, morte remove avisos e refor├ºos sem loot
+  ---
+  duration_ms: 16.5777
+  ...
+# Subtest: composi├º├úo apresenta c├úo isolado e, no lugar do ac├│lito desativado, o Ladino Arqueiro, sem mudar ├¡ndices
+ok 37 - composi├º├úo apresenta c├úo isolado e, no lugar do ac├│lito desativado, o Ladino Arqueiro, sem mudar ├¡ndices
+  ---
+  duration_ms: 0.9228
+  ...
+# Subtest: escala e raridade aplicadas uma vez; ac├│litos vivos refor├ºam sem empilhar
+ok 38 - escala e raridade aplicadas uma vez; ac├│litos vivos refor├ºam sem empilhar
+  ---
+  duration_ms: 2.9513
+  ...
+# Subtest: especial integrado: Guerreiro
+ok 39 - especial integrado: Guerreiro
+  ---
+  duration_ms: 9.9921
+  ...
+# Subtest: especial integrado: Arqueiro
+ok 40 - especial integrado: Arqueiro
+  ---
+  duration_ms: 7.6357
+  ...
+# Subtest: especial integrado: Bruto
+ok 41 - especial integrado: Bruto
+  ---
+  duration_ms: 3.9295
+  ...
+# Subtest: especial integrado: Mago Vivo
+ok 42 - especial integrado: Mago Vivo
+  ---
+  duration_ms: 3.2515
+  ...
+# Subtest: especial integrado: C├úo de Cripta
+ok 43 - especial integrado: C├úo de Cripta
+  ---
+  duration_ms: 4.74
+  ...
+# Subtest: especial integrado: Ac├│lito de Guerra
+ok 44 - especial integrado: Ac├│lito de Guerra
+  ---
+  duration_ms: 4.2557
+  ...
+# Subtest: proj├®til varre alvo e muro; Muralha absorve antes do alvo e ├® destru├¡da
+ok 45 - proj├®til varre alvo e muro; Muralha absorve antes do alvo e ├® destru├¡da
+  ---
+  duration_ms: 1.6096
+  ...
+# Subtest: morte durante salto/investida impede impactos e limpa altura
+ok 46 - morte durante salto/investida impede impactos e limpa altura
+  ---
+  duration_ms: 5.1869
+  ...
+# Subtest: Rei: salto trava destino, invoca at├® limite, morte desfaz refor├ºos sem cr├®dito
+ok 47 - Rei: salto trava destino, invoca at├® limite, morte desfaz refor├ºos sem cr├®dito
+  ---
+  duration_ms: 21.0446
+  ...
+# Subtest: encontro persistido, save antigo com padr├úo e troca de cena limpa os efeitos hostis
+ok 48 - encontro persistido, save antigo com padr├úo e troca de cena limpa os efeitos hostis
+  ---
+  duration_ms: 10.9705
+  ...
+# Subtest: elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+ok 49 - elite raro concede equipamento com os pesos compartilhados, sem repetir recompensa
+  ---
+  duration_ms: 2.96
+  ...
+# Subtest: flecha j├í lan├ºada sobrevive ├á morte da fonte, como no motor atual
+ok 50 - flecha j├í lan├ºada sobrevive ├á morte da fonte, como no motor atual
+  ---
+  duration_ms: 0.7936
+  ...
+# Subtest: aura ├® arredondada antes do multiplicador do especial, como o getter can├┤nico
+ok 51 - aura ├® arredondada antes do multiplicador do especial, como o getter can├┤nico
+  ---
+  duration_ms: 1.9865
+  ...
+# Subtest: Mago: classe registrada, cat├ílogo arcano, sem horda, modelo pr├│prio e dano m├ígico
+ok 52 - Mago: classe registrada, cat├ílogo arcano, sem horda, modelo pr├│prio e dano m├ígico
+  ---
+  duration_ms: 93.1809
+  ...
+# Subtest: ├írvore do Mago: or├ºamento, pr├®-requisitos e passivas
+ok 53 - ├írvore do Mago: or├ºamento, pr├®-requisitos e passivas
+  ---
+  duration_ms: 7.0181
+  ...
+# Subtest: Seta Arcana: proj├®til com dano m├ígico, anda enquanto conjura
+ok 54 - Seta Arcana: proj├®til com dano m├ígico, anda enquanto conjura
+  ---
+  duration_ms: 13.5991
+  ...
+# Subtest: Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combust├úo deixa o ch├úo em chamas
+ok 55 - Bola de Fogo: explode no contato, na parede ou no fim do alcance; Combust├úo deixa o ch├úo em chamas
+  ---
+  duration_ms: 8.2752
+  ...
+# Subtest: Rajada de Gelo: cone de 70┬░, dano e lentid├úo; Estilha├ºar aumenta fogo e arcano nos lentos
+ok 56 - Rajada de Gelo: cone de 70┬░, dano e lentid├úo; Estilha├ºar aumenta fogo e arcano nos lentos
+  ---
+  duration_ms: 2.8557
+  ...
+# Subtest: Teleporte: salta at├® 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+ok 57 - Teleporte: salta at├® 7 u sem atravessar paredes, eco fere quem ficou; recarga cai por ponto
+  ---
+  duration_ms: 4.318
+  ...
+# Subtest: Meteoro: ├írea marcada, bola de fogo caindo, 320% depois de 1 s e ch├úo em chamas por 3 s
+ok 58 - Meteoro: ├írea marcada, bola de fogo caindo, 320% depois de 1 s e ch├úo em chamas por 3 s
+  ---
+  duration_ms: 4.8847
+  ...
+# Subtest: esquiva cancela; troca de cena limpa proj├®teis e chamas
+ok 59 - esquiva cancela; troca de cena limpa proj├®teis e chamas
+  ---
+  duration_ms: 1.8648
+  ...
+# Subtest: pontos extras do Mago (09/11/2026): o primeiro ponto mant├®m o n├║mero antigo, os seguintes somam
+ok 60 - pontos extras do Mago (09/11/2026): o primeiro ponto mant├®m o n├║mero antigo, os seguintes somam
+  ---
+  duration_ms: 9.1496
+  ...
+# Subtest: registro: seis classes, ids preservados e Arqueira/Mercen├írio marciais e atiradores
+ok 61 - registro: seis classes, ids preservados e Arqueira/Mercen├írio marciais e atiradores
+  ---
+  duration_ms: 2.0603
+  ...
+# Subtest: Novo Jogo cria Arqueira e Mercen├írio sem horda; saves antigos continuam Necromantes
+ok 62 - Novo Jogo cria Arqueira e Mercen├írio sem horda; saves antigos continuam Necromantes
+  ---
+  duration_ms: 38.2032
+  ...
+# Subtest: mundo da classe: modelo pr├│prio, sem aliados e atributos marciais por n├¡vel
+ok 63 - mundo da classe: modelo pr├│prio, sem aliados e atributos marciais por n├¡vel
+  ---
+  duration_ms: 5.3523
+  ...
+# Subtest: Disparo da Arqueira: solta no instante da regra, voa e acerta uma vez o primeiro inimigo da linha
+ok 64 - Disparo da Arqueira: solta no instante da regra, voa e acerta uma vez o primeiro inimigo da linha
+  ---
+  duration_ms: 10.3703
+  ...
+# Subtest: Virote pesado do Mercen├írio atravessa at├® dois inimigos extras, perdendo for├ºa, e empurra
+ok 65 - Virote pesado do Mercen├írio atravessa at├® dois inimigos extras, perdendo for├ºa, e empurra
+  ---
+  duration_ms: 2.8774
+  ...
+# Subtest: paredes param o proj├®til; esquiva cancela antes da soltura; troca de cena limpa tiros
+ok 66 - paredes param o proj├®til; esquiva cancela antes da soltura; troca de cena limpa tiros
+  ---
+  duration_ms: 4.5667
+  ...
+# Subtest: recarga, movimento durante o tiro e barra: 1 atira, 4 esquiva, as demais pedem a ├írvore
+ok 67 - recarga, movimento durante o tiro e barra: 1 atira, 4 esquiva, as demais pedem a ├írvore
+  ---
+  duration_ms: 10.7576
+  ...
+# Subtest: equipamento: cat├ílogo marcial sem espada e escudo; afixos marciais valem
+ok 68 - equipamento: cat├ílogo marcial sem espada e escudo; afixos marciais valem
+  ---
+  duration_ms: 2.4034
+  ...
+# Subtest: journeySummary mostra a classe salva e o modelo certo
+ok 69 - journeySummary mostra a classe salva e o modelo certo
+  ---
+  duration_ms: 2.0705
+  ...
+# Subtest: caverna: as ordens s├│ exigem os guardas da sala delas; salas laterais s├úo opcionais
+ok 70 - caverna: as ordens s├│ exigem os guardas da sala delas; salas laterais s├úo opcionais
+  ---
+  duration_ms: 98.1791
+  ...
+# Subtest: vida e experi├¬ncia do mapa valem em todas as ondas; ouro e caverna sem ajuste n├úo mudam
+ok 71 - vida e experi├¬ncia do mapa valem em todas as ondas; ouro e caverna sem ajuste n├úo mudam
+  ---
+  duration_ms: 23.4129
+  ...
+# Subtest: caverna original: guarda que saiu correndo continua contando; salas anteriores s├úo opcionais
+ok 72 - caverna original: guarda que saiu correndo continua contando; salas anteriores s├úo opcionais
+  ---
+  duration_ms: 19.1034
+  ...
+# Subtest: nova campanha come├ºa na caravana; saves sem pr├│logo mant├¬m fluxo anterior
+ok 73 - nova campanha come├ºa na caravana; saves sem pr├│logo mant├¬m fluxo anterior
+  ---
+  duration_ms: 674.5254
+  ...
+# Subtest: defesa, flecha roteirizada, pista, mensageiro, vila e recompensa ├║nica
+ok 74 - defesa, flecha roteirizada, pista, mensageiro, vila e recompensa ├║nica
+  ---
+  duration_ms: 339.741
+  ...
+# Subtest: morte e reload retomam trecho; pista e vit├│ria da caverna persistem
+ok 75 - morte e reload retomam trecho; pista e vit├│ria da caverna persistem
+  ---
+  duration_ms: 25.1916
+  ...
+# Subtest: caverna e estrada possuem percurso e nascimentos livres
+ok 76 - caverna e estrada possuem percurso e nascimentos livres
+  ---
+  duration_ms: 82.9352
+  ...
+# Subtest: viagem mant├®m passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+ok 77 - viagem mant├®m passageiros a bordo, bloqueia combate e freia na chamada do cocheiro
+  ---
+  duration_ms: 6.1737
+  ...
+# Subtest: introdu├º├úo congela a viagem e sua leitura persiste sem afetar saves anteriores
+ok 78 - introdu├º├úo congela a viagem e sua leitura persiste sem afetar saves anteriores
+  ---
+  duration_ms: 11.794
+  ...
+# Subtest: caverna revela a ocupa├º├úo antes da lista e preserva a conversa dos guardas
+ok 79 - caverna revela a ocupa├º├úo antes da lista e preserva a conversa dos guardas
+  ---
+  duration_ms: 18.8482
+  ...
+# Subtest: Jacarand├í salva mant├®m a planta intacta ao entrar e recarregar o mundo
+ok 80 - Jacarand├í salva mant├®m a planta intacta ao entrar e recarregar o mundo
+  ---
+  duration_ms: 437.786
+  ...
+# Subtest: queda do pr├│logo usa o modelo da classe ativa e o restaura na caverna
+ok 81 - queda do pr├│logo usa o modelo da classe ativa e o restaura na caverna
+  ---
+  duration_ms: 24.59
+  ...
+# Subtest: fim do combate: respiro em c├ómera lenta e conversa no mesmo mapa, sem reconstruir a cena
+ok 82 - fim do combate: respiro em c├ómera lenta e conversa no mesmo mapa, sem reconstruir a cena
+  ---
+  duration_ms: 14.0111
+  ...
+# Subtest: Caminho de Jacarand├í: trilha longa, encontros no caminho e Tom├ís liberado pelos perseguidores pr├│ximos
+ok 83 - Caminho de Jacarand├í: trilha longa, encontros no caminho e Tom├ís liberado pelos perseguidores pr├│ximos
+  ---
+  duration_ms: 66.4083
+  ...
+# Subtest: um clique executa somente um corte; tr├¬s cliques aplicam os tr├¬s danos uma vez
+ok 84 - um clique executa somente um corte; tr├¬s cliques aplicam os tr├¬s danos uma vez
+  ---
+  duration_ms: 7.503
+  ...
+# Subtest: janela expira e reinicia no primeiro; clique na recupera├º├úo reserva apenas um pr├│ximo corte
+ok 85 - janela expira e reinicia no primeiro; clique na recupera├º├úo reserva apenas um pr├│ximo corte
+  ---
+  duration_ms: 1.4751
+  ...
+# Subtest: pausa congela a janela; esquiva, outra habilidade, morte e reset encerram o combo
+ok 86 - pausa congela a janela; esquiva, outra habilidade, morte e reset encerram o combo
+  ---
+  duration_ms: 3.0947
+  ...
+# Subtest: buffer respeita o instante de conclus├úo mesmo em um passo longo
+ok 87 - buffer respeita o instante de conclus├úo mesmo em um passo longo
+  ---
+  duration_ms: 0.7735
+  ...
+# Subtest: arco e paredes impedem acertos; estocada para antes do obst├ículo
+ok 88 - arco e paredes impedem acertos; estocada para antes do obst├ículo
+  ---
+  duration_ms: 1.6707
+  ...
+# Subtest: estocada atinge com a ponta e escudo empurra com custo ├║nico
+ok 89 - estocada atinge com a ponta e escudo empurra com custo ├║nico
+  ---
+  duration_ms: 3.1075
+  ...
+# Subtest: passivas n├úo acumulam em rec├ílculos e n├úo curam; saves antigos e classe persistem
+ok 90 - passivas n├úo acumulam em rec├ílculos e n├úo curam; saves antigos e classe persistem
+  ---
+  duration_ms: 8.4698
+  ...
+# Subtest: estocada avan├ºa at├® 7 u na dire├º├úo da mira: alcance total de 10,4 u
+ok 91 - estocada avan├ºa at├® 7 u na dire├º├úo da mira: alcance total de 10,4 u
+  ---
+  duration_ms: 0.7169
+  ...
+# Subtest: estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo
+ok 92 - estocada cobre o trajeto e a ponta com largura maior, uma vez por alvo
+  ---
+  duration_ms: 0.6995
+  ...
+1..92
+# tests 92
+# suites 0
+# pass 92
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2373.3768

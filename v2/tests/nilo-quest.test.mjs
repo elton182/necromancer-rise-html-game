@@ -16,7 +16,7 @@ import {journeyLocation} from '../scripts/journey-model.mjs';
 useCampaignMaps(null,null);
 
 // Campanha saída do prólogo, com os dois pedidos de Joaquim já concluídos.
-const ready=()=>{const s=createSession();startCampaign(s,{opening:false});Object.assign(s.save.campaign.world,{stage:'complete',smith:'done',lumber:'done',passengerMissing:true});s.save.campaign.prologue={stage:'done'};travel(s,null,'village');return s;};
+const ready=()=>{const s=createSession();startCampaign(s,{opening:false});Object.assign(s.save.campaign.world,{stage:'complete',smith:'done',lumber:'done',portalUnlocked:true,passengerMissing:true});s.save.campaign.prologue={stage:'done'};travel(s,null,'village');return s;};
 const tick=(s,dt=.1)=>tickAdventure(s,dt);
 function travel(s,to,entry){s.world.areaTravel={to,entry,name:'teste'};assert.equal(travelArea(s),true);assert.equal(s.world.adventure.area,to||undefined);}
 function clear(s,id){
@@ -50,7 +50,7 @@ test('pontos da missão ficam livres, alcançáveis e marcados no editor',()=>{
  for(const [slot,p] of [['world',NILO_POINTS.marta],['itauna',NILO_POINTS.ledger],['itaunaCave',NILO_POINTS.cocoon],['itaunaFort',NILO_POINTS.contract]])assert.ok(CAMPAIGN_SLOTS[slot].points.includes(p),slot);
 });
 test('Marta só oferece a busca com Jacarandá de pé',()=>{
- const p={stage:'complete',smith:'done',lumber:'active',passengerMissing:true};
+ const p={stage:'complete',smith:'done',lumber:'active',portalUnlocked:true,passengerMissing:true};
  assert.equal(niloReady(p),false);assert.equal(niloDialogue('marta',p).kind,undefined);
  assert.equal(worldObjectives(p)[0].title,'Madeira para Jacarandá','os pedidos de Joaquim guiam a bússola antes');
  p.lumber='done';assert.equal(niloReady(p),true);assert.equal(niloDialogue('marta',p).kind,'nilo-accept');assert.equal(worldObjectives(p)[0].target,NILO_POINTS.marta);
@@ -90,6 +90,9 @@ test('percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios
  const before={gold:c.gold,exp:c.exp,level:c.level};talk(s,NILO_POINTS.nilo);act(s,'nilo-done');
  assert.equal(p().nilo,'done');assert.equal(c.gold,before.gold+NILO_REWARDS.done.gold);assert.ok(c.level>before.level||c.exp>before.exp,'XP concedido');
  assert.equal(niloAction(s,'nilo-done'),false,'o prêmio final não se repete');
+ talk(s,NILO_POINTS.nilo);act(s,'cedro-accept');talk(s,NILO_POINTS.nilo);act(s,'cedro-travel');travelArea(s);
+ for(const id of ['cedro-road','cedro-captain','cedro-bento'])clear(s,id);
+ travel(s,null,'village');talk(s,NILO_POINTS.nilo);act(s,'cedro-finish');
  talk(s,NILO_POINTS.nilo);act(s,'nilo-travel');assert.equal(p().nilo,'itavera');assert.equal(s.world.paused,true);assert.equal(travelArea(s),true);
  assert.equal(s.world.adventure.area,'itavera');assert.equal(s.world.adventure.groups.length,0);
  assert.match(journeyLocation(s.save).name,/Itavera/);assert.match(journeyLocation(s.save).detail,/denúncia/);
@@ -99,7 +102,7 @@ test('percurso completo: Jacarandá, várzea, gruta, forte e volta, com prêmios
  assert.equal(niloAction(s,'nilo-deliver'),false);assert.equal(normalizeWorld(p()).nilo,'invitation');
  talk(s,NILO_POINTS.cityJoao);act(s,'nilo-finish');assert.equal(p().nilo,'complete');
  assert.equal(s.save.horde.profile.act1,true);assert.equal(s.world.army.profile.act1,true);
- assert.equal(niloAction(s,'nilo-finish'),false);assert.equal(s.save.character.gold,before.gold+NILO_REWARDS.done.gold);
+ assert.equal(niloAction(s,'nilo-finish'),false);assert.equal(s.save.character.gold,before.gold+NILO_REWARDS.done.gold+450);
  travel(s,null,'village');assert.match(worldObjectives(p())[0].title,/Ato I/);
  assert.equal(talk(s,NILO_POINTS.nilo).kind,'nilo-travel');closeWorldOverlay(s);
  assert.equal(talk(s,NILO_POINTS.marta).kind,undefined);
@@ -124,11 +127,13 @@ test('bolsa e provas podem ser recuperadas em qualquer ordem, sem avanço premat
  talk(s,NILO_POINTS.contract);act(s,'nilo-contract');assert.equal(s.save.campaign.world.nilo,'return');
 });
 
-test('saves antigos retomam o epílogo sem repetir resgate nem prêmios',()=>{
+test('saves antigos oferecem cerco antes do epílogo sem repetir resgate nem prêmios',()=>{
  for(const stage of ['return','done']){
   const s=ready();s.save.campaign.world=normalizeWorld({...s.save.campaign.world,nilo:stage});travel(s,null,'village');
   const p=s.save.campaign.world;assert.equal(p.niloLetter,true);assert.equal(p.niloEvidence,true);
   if(stage==='return'){talk(s,NILO_POINTS.nilo);act(s,'nilo-done');}
+  assert.equal(talk(s,NILO_POINTS.nilo).kind,'cedro-accept');closeWorldOverlay(s);
+  p.cedro='done'; // Estado após o novo confronto; seu percurso e prêmio são cobertos em cedro.test.mjs.
   const gold=s.save.character.gold;talk(s,NILO_POINTS.nilo);act(s,'nilo-travel');travelArea(s);
   assert.equal(s.world.adventure.area,'itavera');assert.equal(s.save.character.gold,gold);
   s.save.campaign.world=normalizeWorld(JSON.parse(JSON.stringify(p)));startCampaign(s);

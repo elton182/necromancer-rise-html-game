@@ -4,6 +4,8 @@ import bpy
 from mathutils import Vector,Matrix,Euler
 
 TAU=math.tau
+STRIDE=.64
+STRAFE_STRIDE=.40
 def smooth(t):
     t=max(0,min(1,t));return t*t*(3-2*t)
 def hermite(a,b,ma,mb,t):
@@ -18,12 +20,12 @@ def foot_cycle(t,stride,lateral=False):
     else:
         v=(u-duty)/(1-duty);tangent=-stride*(1-duty)
         travel=hermite(-half,half,tangent,tangent,v)
-        lift=(.040 if lateral else .052)*math.sin(math.pi*v)**2
+        lift=(.032 if lateral else .042)*math.sin(math.pi*v)**2
         roll=hermite(.34,-.18,-.35,0,v);support=False
     return {'travel':travel,'lift':lift,'roll':roll*(.22 if lateral else 1),'support':support}
 
 class MageGait:
-    def __init__(self,rig,body,staff,rot_world,arm,leg,staff_q,stride=.56,strafe_stride=.44):
+    def __init__(self,rig,body,staff,rot_world,arm,leg,staff_q,stride=STRIDE,strafe_stride=STRAFE_STRIDE):
         self.rig,self.body,self.staff=rig,body,staff
         self.rot,self.arm,self.leg,self.staff_q=rot_world,arm,leg,staff_q
         self.stride,self.strafe_stride=stride,strafe_stride
@@ -35,8 +37,9 @@ class MageGait:
         phase=t*TAU;sway=math.sin(phase)
         for b in self.rig.pose.bones:
             b.rotation_mode='QUATERNION';b.rotation_quaternion=(1,0,0,0);b.location=(0,0,0)
-        hip=Vector((.014*sway,.004*math.sin(phase*2),-.044-.008*math.cos(phase*2)))
-        if lateral:hip=Vector((.022*sway,0,-.056-.006*math.cos(phase*2)))
+        # Apoio menos agachado e oscilação pequena: peso legível sem quicar.
+        hip=Vector((.012*sway,.003*math.sin(phase*2),-.037-.005*math.cos(phase*2)))
+        if lateral:hip=Vector((.018*sway,0,-.043-.004*math.cos(phase*2)))
         self.rot('Hips',(.018,.035*sway,-.070*sway if not lateral else .035*sway))
         self.rot('Spine',(.026,-.018*sway,.020*sway))
         self.rot('Spine1',(.025,0,.022*sway))
@@ -52,7 +55,11 @@ class MageGait:
             p=foot_cycle(t+offset,self.strafe_stride if lateral else self.stride,lateral)
             target=self.feet[side].copy()
             if lateral:
-                target.x=s*.150+sign*p['travel'];target.y+=-.012 if s==sign else .018
+                # Passo cruzado: a perna de acompanhamento passa por trás.
+                # Trilhos separados em profundidade mantêm as botas afastadas
+                # no cruzamento, sem mover o pé durante seu apoio no chão.
+                target.x=s*.055+sign*p['travel']
+                target.y+=-.060 if s==sign else .100
             else:target.x=s*.102;target.y-=p['travel']
             target.z+=p['lift']
             bank=.025*s*math.sin((t+offset)*TAU) if lateral else 0
@@ -68,16 +75,16 @@ class MageGait:
                 target.z+=p['lift']-low
         swing=math.cos(phase-.18)
         if lateral:
-            left=Vector((.190,-.005+.025*swing,.410+.008*math.sin(phase-.3)))
+            left=Vector((.185,-.010+.022*swing,.430+.006*math.sin(phase-.3)))
             right=Vector((-.205,-.10+.010*swing,.515+.006*math.sin(phase*2-.3)))
         else:
-            left=Vector((.190+.010*sway,.015+.075*swing,.395+.025*(1-swing)*.5))
-            right=Vector((-.200,-.095+.018*math.cos(phase-.35),.515+.006*math.sin(phase*2-.35)))
+            left=Vector((.182+.008*sway,-.012+.055*swing,.427+.012*(1-swing)*.5))
+            right=Vector((-.205,-.108+.012*math.cos(phase-.35),.515+.004*math.sin(phase*2-.35)))
         self.arm('Left',left,self.bones['LeftArm'].head+Vector((.015,.10,-.22)))
-        self.arm('Right',right,right+Vector((-.18,.14,-.04)),self.staff_q(.14+.035*math.cos(phase-.4),.022*math.sin(phase-.55)))
+        self.arm('Right',right,right+Vector((-.16,.12,-.07)),self.staff_q(.12+.022*math.cos(phase-.4),-.025+.014*math.sin(phase-.55)))
         self.rot('RightHandFingers',(0,-1.45,0))
         lag=math.cos(phase-.45)
-        self.rot('LeftRobe',(-.11*lag,.035*sway if lateral else 0,.018*sway))
-        self.rot('RightRobe',(.11*lag,-.035*sway if lateral else 0,.018*sway))
+        self.rot('LeftRobe',(-.075*lag,.025*sway if lateral else 0,.012*sway))
+        self.rot('RightRobe',(.075*lag,-.025*sway if lateral else 0,.012*sway))
         self.rot('HeadBeard',(.022*math.sin(phase-.7),.010*math.sin(phase-.4),0))
         self.rot('HeadHatTip',(.018*math.sin(phase-.85),0,.014*math.sin(phase-.55)))

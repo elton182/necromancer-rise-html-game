@@ -87,7 +87,7 @@ O Grimório estendido (`v2/scripts/full-build.mjs`) acrescenta os nós jogáveis
 | Raio Necrótico | Ossos | 12 / 3 | Magos | O orbe vira um raio instantâneo de 8 u que atravessa a linha, com 137,5% do dano do ataque do mago (+10% por ponto). |
 | Ruptura Necrótica | Ossos | 22 / 1 | Raio Necrótico | Especialização: inimigos mortos pelos magos explodem em raio 2 com 60% do dano mágico. |
 
-Cães, Cérbero e magos são tipos permanentes em `horde.mjs`: ocupam vagas, recebem ordens, regeneram e são salvos com vida, morte, recuperação e reserva. Morte comum renasce em 12 s; reanimação manual custa 30 MP. Seus atributos agora seguem a escala por nível da horda, em vez de percentuais da vida/dano de Zephyr. As definições exclusivas ficam em `v2/tools/horde-source.cjs`; a versão legada permanece igual. Ainda não têm maestrias dedicadas. O Golem de Gelo permanece temporário em `companions.mjs`.
+Cães, Cérbero e magos são tipos permanentes em `horde.mjs`: ocupam vagas, recebem ordens, regeneram e são salvos com vida, morte, recuperação e reserva. Morte comum renasce em 12 s; reanimação manual custa 30 MP. Seus atributos agora seguem a escala por nível da horda, em vez de percentuais da vida/dano de Zephyr. As definições exclusivas ficam em `v2/tools/horde-source.cjs`; a versão legada permanece igual. Ainda não têm maestrias dedicadas. O Golem de Gelo fica em `companions.mjs`: é permanente (sem limite de duração desde 13/11/2026), mas não é salvo nem reanimado.
 
 **Área das explosões:** Explosão Cadavérica e Carne Instável ganharam no arquivo o efeito "Tamanho da área de explosão", +3% por ponto. Na v2 ele aumenta o raio da explosão dos zumbis (`horde.mjs`) e da Explosão Necrótica (`spells.mjs`). A versão legada não muda.
 

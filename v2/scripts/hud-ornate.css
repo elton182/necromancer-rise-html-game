@@ -190,3 +190,22 @@ body[data-lich="lich"] #hud .mana-vessel,body[data-lich="transform"] #hud .mana-
  #hud #top-left>div:not(#wave-txt){font-size:9px!important}#hud #warrior-stance{font-size:9px}
 }
 @media(max-width:420px){#hud{--orb-size:52px}#hud .hud-wing .resource-vessel{--orb-cy:38px}#hud .vessel-caption strong{font-size:9px}#hud .vessel-caption span{font-size:8px}#hud #top-left{padding:0 8px}}
+
+
+/* Poção encaixada na base do orbe de vida, com a mesma moldura de bronze. */
+#hud #healing-potion{position:absolute;z-index:6;bottom:-8px;left:calc(50% + var(--orb-dx));transform:translateX(-50%);display:flex;justify-content:center;align-items:center;gap:8px;width:102px;height:38px;min-height:0;margin:0;padding:3px 7px 7px;pointer-events:auto;border:1px solid #b8874a;border-radius:4px 4px 13px 13px;background:radial-gradient(ellipse at 50% 0,#533120,#1b100b 65%);color:#f6debd;box-shadow:inset 0 0 0 2px #1b100b,inset 0 0 0 3px #79502e77,0 2px 5px #000b;font:12px Georgia;cursor:pointer}
+#hud #healing-potion:hover:not(:disabled){border-color:#ffe1a0;background:radial-gradient(ellipse at 50% 0,#70452d,#24150d 65%)}
+#hud #healing-potion:disabled{opacity:1;cursor:default;color:#baa88b}
+#hud #healing-potion:focus-visible{outline:2px solid #ffe2a0;outline-offset:3px}
+#healing-potion strong{font:700 16px Georgia;color:#ffe0c5;white-space:nowrap;text-shadow:0 1px 2px #000}
+#healing-potion kbd{padding:1px 3px;border:1px solid #9e7b4c;border-radius:2px;color:#f8dfa7;background:#21140c;font:10px Georgia}
+.potion-bottle{position:relative;display:block;flex-shrink:0;width:16px;height:21px;margin-top:3px;border:1px solid #d9ba93;border-radius:4px 4px 6px 6px;background:#180a0e;box-shadow:inset 2px 0 #ffffff18}
+.potion-bottle:before{content:'';position:absolute;width:8px;height:5px;left:3px;top:-6px;border:1px solid #ba9558;border-radius:1px;background:#72512d}
+.potion-bottle i{position:absolute;bottom:1px;left:1px;right:1px;height:max(0px,calc(var(--potion-fill,100%) - 2px));max-height:calc(100% - 2px);border-radius:2px 2px 4px 4px;background:linear-gradient(90deg,#71192d,#f35d65,#ad263d);box-shadow:inset 0 1px #ffb7b2;transition:height .2s}
+.potion-charges{position:absolute;bottom:3px;left:12px;right:12px;height:3px;overflow:hidden;border-radius:2px;background:#090504;box-shadow:0 0 0 1px #86603b66}
+.potion-charges i{display:block;height:100%;width:var(--potion-fill,100%);background:linear-gradient(#f4a68b,#c34d49);transition:width .2s}
+.potion-charges:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 32%,#170c07 32% 35%,transparent 35% 65%,#170c07 65% 68%,transparent 68%)}
+#hud .potion-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#healing-potion[data-healing=true]{border-color:#f5a28f;box-shadow:inset 0 0 12px #e9636444,0 0 9px #fa697866}
+@media(max-width:760px){#hud #healing-potion{width:64px;height:32px;bottom:-7px;gap:5px;padding:2px 4px 6px}#healing-potion strong{font-size:12px}#healing-potion kbd{position:absolute;top:-5px;right:-3px;font-size:8px;padding:0 3px}.potion-bottle{width:12px;height:17px}.potion-bottle:before{left:2px;width:6px}.potion-charges{left:6px;right:6px}}
+@media(max-width:420px){#hud #healing-potion{width:54px;height:30px;gap:4px}#healing-potion strong{font-size:11px}}

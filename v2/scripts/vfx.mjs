@@ -208,6 +208,43 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  };
  RUN.slash=(o,e)=>{const t=life(e);o.mesh.scale.setScalar(lerp(.82,1.08,easeOut(t)));o.mesh.material.opacity=Math.pow(1-t,2)*.95;o.mesh.rotation.z=(t-.5)*o.arc*.3;};
 
+ // Garras do lobisomem: três riscos curvos no ar, à frente do peito.
+ // As faixas são decorativas; não representam um indicador de área de dano.
+ INIT.wolfClaws=(o,e)=>{
+  const segments=40,arc=e.arc||Math.PI*.72,r=e.radius||3;
+  o.segments=segments;
+  for(const spin of e.cross?[1,-1]:[e.sweep||1])for(let claw=0;claw<3;claw++)for(const outline of [true,false]){
+   const positions=[],indices=[],rr=r*.98;
+   for(let i=0;i<=segments;i++){
+    const u=i/segments,a=spin*(.5-u)*arc,taper=Math.pow(Math.sin(Math.PI*u),.65);
+    const width=(outline?.135:.08)*taper,center=(e.h??1.75)+(e.cross?.7:.48)-u*(e.cross?1.4:.95)-claw*.26;
+    // O finalizador desenha o X num plano à frente: a curvatura em
+    // profundidade dos cortes simples esconderia o cruzamento na câmera alta.
+    for(const edge of [-1,1])positions.push(Math.sin(a)*rr*(e.cross?.85:1),center+edge*width,.22+(e.cross?rr:Math.cos(a)*rr));
+    if(i<segments){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
+   }
+   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);
+   const mesh=new THREE.Mesh(geometry,material(null,outline?(e.element==='frost'?'#244969':e.element==='blood'?'#66172a':'#344b41'):e.color||'#fff1ce',outline?.7:1));
+   mesh.name='wolf-claw-'+spin+'-'+claw+(outline?'-outline':'-core');mesh.userData.ownGeometry=true;mesh.userData.wolfClaw=true;
+   mesh.rotation.y=Math.atan2(e.dx,e.dy);mesh.position.set(e.x,0,e.y);mesh.renderOrder=outline?10:11;
+   scene.add(mesh);o.objs.push(mesh);
+  }
+  if(e.element==='frost')for(let i=0;i<Math.round(10*density);i++){
+   const side=rand(-.7,.7)*r,forward=rand(.65,.95)*r,x=e.x+e.dx*forward+e.dy*side,z=e.y+e.dy*forward-e.dx*side;
+   particles.emit({x,z,h:rand(.7,1.8),vx:rand(-.4,.4),vz:rand(-.4,.4),vh:rand(.3,1),life:.3,s0:.13,s1:.02,c0:WHITE,c1:hex('#76d5ff'),drag:2});
+  }
+ };
+ RUN.wolfClaws=(o,e)=>{
+  const t=life(e),head=Math.min(1,.5+.5*easeOut(clamp01(t/.55))),tail=clamp01((t-.25)/.75);
+  const start=Math.floor(tail*o.segments),end=Math.ceil(head*o.segments);
+  for(const mesh of o.objs){mesh.geometry.setDrawRange(start*6,Math.max(0,end-start)*6);mesh.material.opacity=Math.pow(1-t,.65)*(mesh.name.endsWith('core')?1:.7);}
+ };
+
+ INIT.moonBlessing=(o,e)=>{
+  const mesh=new THREE.Mesh(new THREE.RingGeometry(.28,.43,40,1,.3,Math.PI*1.6),material(null,'#d9f4ff',.95));mesh.userData.ownGeometry=true;mesh.rotation.y=Math.PI/4;mesh.position.set(e.x,2.9,e.y);mesh.renderOrder=8;scene.add(mesh);o.objs.push(mesh);o.mesh=mesh;
+ };
+ RUN.moonBlessing=(o,e)=>{o.mesh.position.set(e.x,2.9+.06*Math.sin(time*3),e.y);o.mesh.material.opacity=.65+.3*Math.sin(time*2)**2;};
+
  // Vento do golpe: filetes de ar varrendo o arco (só desenho; o dano usa a geometria das regras).
  INIT.windarc=(o,e)=>{
   const arc=e.arc||Math.PI*.7,r=e.radius||3,dir=Math.atan2(e.dy,e.dx),c=hex(e.color||'#d6f4ff'),spin=e.sweep||-1,n=Math.round(54*density);
@@ -302,6 +339,29 @@ export function createVfx(scene,{pixelsPerUnit=()=>40}={}){
  };
 
  // ── Druida ──
+ // Troca de forma: anel rúnico no chão, redemoinho de folhas que fecha sobre o corpo e clarão no instante da troca
+ // (o renderizador recria o modelo nesse quadro). Para o lobo, folhas secas, poeira e tremor; para a humana, folhas
+ // verdes que sobem e se espalham. Nada aqui interfere na regra da forma.
+ INIT.shapeshift=(o,e)=>{
+  const wolf=e.form==='wolf',c=hex(e.color||'#8fd16a'),r=e.radius||1.4,n=Math.max(6,Math.round(22*density));
+  o.rune=decal(o,textures.runeA,wolf?'#ff9a3c':'#9fe05a',{y:.07});o.rune.position.set(e.x,.07,e.y);o.ring=shockRing(o,e);o.ring.scale.setScalar(.1);o.col=pillar(o,e.color||'#8fd16a');o.r=r;o.wolf=wolf;
+  o.leaves=[];for(let i=0;i<n;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.leaf,color:wolf?(i%3?'#ffb04a':'#ffe0a0'):(i%4?'#a6e25a':'#e6ffb0'),transparent:true,depthWrite:false}));m.renderOrder=9;scene.add(m);o.objs.push(m);o.leaves.push({m,a:i/n*TAU+rand(-.2,.2),h:rand(.1,2.2),s:rand(.8,1.25)});}o.acc=0;o.c=c;
+  particles.emit({x:e.x,h:1.1,z:e.y,life:.28,s0:r*2.6,s1:r*.9,c0:WHITE,c1:c,a0:.85});
+  for(let i=0;i<Math.round(18*density);i++){const a=rand(0,TAU),sp=rand(1.5,4);particles.emit({x:e.x,h:rand(.4,1.6),z:e.y,vx:Math.cos(a)*sp,vh:rand(.5,2.5),vz:Math.sin(a)*sp,life:rand(.35,.7),s0:rand(.14,.24),s1:.02,c0:mix(c,WHITE,.6),c1:c,grav:wolf?6:-1,drag:2});}
+  if(wolf){for(let i=0;i<Math.round(8*density);i++)smoke(e.x+rand(-.5,.5),e.y+rand(-.5,.5),{size:.6});if(e.shake)shake=Math.max(shake,e.shake);}
+ };
+ RUN.shapeshift=(o,e,step)=>{
+  const t=life(e),r=o.r,fade=Math.pow(1-t,1.3);
+  o.rune.scale.setScalar(r*(.6+.5*easeOut(clamp01(t*2.5))));o.rune.rotation.z=(o.wolf?-1:1)*time*2.2;o.rune.material.opacity=fade*.9;
+  o.ring.position.set(e.x,.07,e.y);o.ring.scale.setScalar(Math.max(.05,r*(.3+1.4*easeOut(t))));o.ring.material.opacity=fade*.85;
+  o.col.position.set(e.x,.05,e.y);o.col.scale.set(r*.55,lerp(.8,4,easeOut(t)),r*.55);o.col.material.opacity=Math.pow(1-t,1.5);
+  // Primeira metade: as folhas giram e se fecham no corpo; depois são lançadas para fora (lobo) ou para cima (humana).
+  const close=clamp01(t/.45),open=clamp01((t-.45)/.55);
+  for(const l of o.leaves){const a=l.a+(o.wolf?-1:1)*t*TAU*1.6,rr=r*l.s*(1.1-.5*easeOut(close)+(o.wolf?2.2:1.3)*easeOut(open)),h=lerp(l.h,1.1,easeOut(close))+(o.wolf?-.6:2.2)*easeOut(open);
+   l.m.position.set(e.x+Math.cos(a)*rr,Math.max(.1,h),e.y+Math.sin(a)*rr);l.m.scale.set(.58*l.s,.78*l.s,1);l.m.material.rotation=a*1.7;l.m.material.opacity=clamp01(t*8)*Math.pow(1-open,1.1);}
+  // Rastro brilhante atrás das folhas, para o redemoinho ler sobre o corpo e em chão claro.
+  o.acc+=step*o.leaves.length*14*density*(1-open);while(o.acc>=1){o.acc--;const l=o.leaves[Math.floor(Math.random()*o.leaves.length)].m;particles.emit({x:l.position.x,h:l.position.y,z:l.position.z,life:rand(.18,.32),s0:rand(.18,.28),s1:.02,c0:mix(o.c,WHITE,.6),c1:o.c,a0:.9,drag:2});}
+ };
  // Raio: trilha irregular entre dois pontos (do cajado ao alvo, ou do céu ao chão), núcleo branco e halo colorido.
  const boltSegment=new THREE.CylinderGeometry(1,1,1,5,1,true);boltSegment.translate(0,.5,0);
  const thornCone=new THREE.ConeGeometry(.2,1,5);thornCone.translate(0,.5,0);

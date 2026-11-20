@@ -15,9 +15,10 @@ export function spawnSlots(s){
 }
 export const makeGroups=spawns=>spawns.map(s=>({...s,state:'dormant',wavesLeft:s.waves||1,timer:s.trigger==='timer'?s.delay||0:0}));
 export function releaseGroup(w,g,level=1){
- const wave=g.level||level;
- spawnSlots(g).forEach((slot,i)=>{
-  const e=spawnEnemy(w,slot.type,slot.x,slot.y,{wave,tier:i===0&&g.leader||'common'});e.worldGroup=g.id;
+ const wave=g.level||level,reinforcement=g.wavesLeft<(g.waves||1),entry=reinforcement&&g.reinforcementEntry;
+ g.waveNumber=(g.waves||1)-g.wavesLeft+1;
+ spawnSlots(entry?{...g,x:entry.x,y:entry.y}:g).forEach((slot,i)=>{
+  const e=spawnEnemy(w,slot.type,slot.x,slot.y,{wave,tier:i===0&&g.leader&&!(reinforcement&&entry)?g.leader:'common'});e.worldGroup=g.id;
   // Ajustes do mapa: valem para todas as ondas dos grupos dele, sem mudar os tipos usados nos outros modos.
   const hp=w.arena?.enemyHp??1,xp=w.arena?.enemyXp??1;if(hp!==1)e.hp=e.maxHp=Math.round(e.maxHp*hp);if(xp!==1)e.xpScale=xp;
   if(g.idle)Object.assign(e,{home:{x:e.x,y:e.y},alert:false});
@@ -38,7 +39,7 @@ export function tickGroups(w,groups,dt,{level=1,blocked=false,onRelease,onClear}
    if(g.wavesLeft>0){g.state='between';g.timer=g.interval||0;}
    else{g.state='clear';onClear?.(g);if(g.respawn>0&&!g.quest)g.timer=g.respawn;}
   }else if(g.state==='between'){
-   g.timer-=dt;if(g.timer<=0&&!blocked)releaseGroup(w,g,level);
+   g.timer-=dt;if(g.timer<=0&&!blocked){releaseGroup(w,g,level);if(g.reinforcementEntry)onRelease?.(g);}
   }else if(g.state==='clear'&&g.respawn>0&&!g.quest){
    g.timer-=dt;if(g.timer<=0&&!near){g.state='dormant';g.wavesLeft=g.waves||1;g.timer=g.trigger==='timer'?g.delay||0:0;}
   }

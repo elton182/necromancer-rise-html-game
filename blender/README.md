@@ -1,5 +1,44 @@
 # Organização dos arquivos Blender
 
+## Pipeline Tripo pelo CLI
+
+Use `scripts/tripo_pipeline.ps1` para planejar e gerar um GLB a partir de uma
+imagem local, com rig opcional, estimativa de créditos e retomada sem nova
+geração. Comandos e limites em [notes/tripo_pipeline.md](notes/tripo_pipeline.md).
+
+## NPCs low poly da campanha
+
+**João atual (Tripo):** o ID `npcJoao` usa `exports/campaign_joao_tripo.glb`,
+com cena editável em `models/campaign_joao_tripo.blend`. O gerador
+`scripts/joao_tripo.py` importa a fonte preservada
+`exports/tripo-out/joao-pbr-ccfe3c4b/model.glb`, mantém UVs e texturas PBR,
+normaliza a altura para 2,4 u, cria rig com capa e clipes `idle`, `greet`, `walk`,
+`death`. Dedos têm peso integral na mão, sem influência residual do tórax;
+a capa fica independente dos braços e pernas. No jogo, o renderizador aplica
+o toon compartilhado aos mapas de cor e normal. O modelo anterior continua
+preservado em `models/campaign_joao.blend` / `exports/campaign_joao.glb`.
+Para regenerar em processo separado, na raiz:
+`blender --background --threads 4 --python blender/scripts/joao_tripo.py`,
+depois `node v2/tools/build.cjs`. Em uma sessão aberta, o script cria cena
+separada e recusa conflitos com ações preexistentes para preservar o trabalho.
+
+Fontes atuais: `scripts/campaign_npcs.py` (rig, animação e exportação) e
+`scripts/campaign_npc_sculpt.py` (volumes, rostos, roupas e acessórios, usando
+os utilitários de `character_sculpt.py`). Gera `models/campaign_<id>.blend` e
+`exports/campaign_<id>.glb` para João, Marta, Helena, guarda, Tomás e Joaquim.
+João usa capa articulada, capuz aberto, barba e bolsa; os demais têm roupas,
+acessórios e silhuetas próprias. As fontes anteriores dos moradores e o estudo
+`hooded_wanderer` continuam independentes.
+
+Na raiz do projeto, execute `blender --background --threads 4 --python blender/scripts/campaign_npcs.py`
+e `node v2/tools/build.cjs`. Os seis modelos têm `idle`, `greet`, `walk` e `death`;
+o catálogo do Laboratório permite inspecioná-los. Verificação no HTML offline:
+`node v2/tests/campaign-npcs-browser-check.cjs`, com evidências em `review/v2/campaign-npcs/`.
+
+Para comparar no Blender, execute `scripts/campaign_npc_lineup.py`: abre uma cena
+separada, com os seis lado a lado e virados de frente, e grava
+`models/campaign_npc_lineup.blend` sem substituir o arquivo de trabalho aberto.
+
 - `scripts/`: geração de modelos, renderização, empacotamento e módulos compartilhados.
 - `models/`: cenas editáveis atuais da v2 e do HUD; bases necessárias em `models/sources/` e fontes Canvas 2D em `models/legacy/`.
 - `exports/`: GLBs atuais; entradas de geração/laboratório em `exports/sources/` e exports Canvas 2D em `exports/legacy/`.
@@ -567,7 +606,9 @@ A cena `models/warrior.blend` inclui também a ação `tornado`, frames 1–25 a
 
 **Anterior, preservado:** `scripts/mage_hero.py` corrige os pesos do rig Tripo de `reference/mage/mage_source.glb` e gera `models/sources/mage_hero.blend` / `../_to_delete/blender-models/exports/mage_hero.glb`. Suas funções de movimento e a geometria do cajado são reutilizadas pelo novo gerador; os arquivos antigos permanecem intactos.
 
-A locomoção atual do Mago usa `scripts/mage_hero_gait.py`: apoio contínuo, rolamento de calcanhar/ponta, contraposição do quadril e ombros, braço livre mais baixo e balanço próprio para caminhada e passos laterais. Os três ciclos mantêm 25 frames a 30 FPS e os mesmos strides. Prévias em três vistas: execute `mage_hero_t_review.py` com `-- --gait` e depois `python blender/scripts/pack_mage_gait_preview.py`; saída em `previews/mage_gait/`. `validate_mage_hero_t.py -- --gait` inclui a auditoria de apoios e joelhos. A base anterior fica em `backups/mage_gait/`.
+A locomoção atual do Mago usa `scripts/mage_hero_gait.py`: apoio contínuo, rolamento de calcanhar/ponta, contraposição do quadril e ombros, braço livre mais baixo e balanço próprio para caminhada e passos laterais. Os três ciclos mantêm 25 frames a 30 FPS; a revisão atual usa strides 0,64/0,40 na autoria e 1,47/0,92 no jogo,
+com postura menos agachada e menos oscilação do cajado. Nos passos laterais, o pé de
+acompanhamento cruza por trás, em trilho separado para preservar a distância entre as botas. Prévias em três vistas: execute `mage_hero_t_review.py` com `-- --gait` e depois `python blender/scripts/pack_mage_gait_preview.py`; saída em `previews/mage_gait/`. `validate_mage_hero_t.py -- --gait` inclui a auditoria de apoios e joelhos. A base anterior fica em `backups/mage_gait/`.
 
 O repouso atual tem 121 frames (4 s), braço livre relaxado, apoio assimétrico e respiração com movimentos secundários atrasados. `scripts/mage_hero_fingers.py` mantém a mão original e suas UVs, com três falanges por dedo, pesos próprios e oposição do polegar; `pose_grip` define a flexão gravada nos oito clipes. `scripts/mage_hero_grip.py` reconstrói a haste contínua, preservando a cabeça esculpida. Execute `mage_hero_t_review.py -- --idle` sobre `models/mage_hero_t.blend` e depois `python blender/scripts/pack_mage_idle_preview.py` para gerar `previews/mage_idle/idle.gif` e `poses.png`; `-- --grip` renderiza detalhes em quatro vistas nos oito clipes e `-- --fingers` compara mão aberta/pegada em `previews/mage_finger_rig/`. `validate_mage_hero_t.py -- --idle` confere falanges, pesos, preservação da malha/UVs e fechamento da haste. A base anterior está em `backups/mage_idle/`.
 
@@ -594,8 +635,80 @@ Os modelos e geradores anteriores da Flora foram preservados como estudo.
 
 Flora humana atual: `models/flora_human_revised.blend` e `exports/flora_human_revised.glb`, gerados por `scripts/flora_human_motion.py` a partir de `models/sources/flora_tripo_druid_t.blend` (preservado). Revisão de capuz, capa, apoios, conjurações, contato do cajado, esquiva e morte; nove clipes a 30 FPS. `-- --blocking` grava poses CONSTANT em cena separada. `scripts/flora_human_review.py` audita todos os frames e renderiza prévias PBR em Eevee; `scripts/pack_flora_human_review.py` monta as pranchas e GIFs em `previews/flora_human_review/`. [Pipeline e eventos](../docs/v2-druida.md#base-humana-atual--pose-t).
 
-**Lobo atual:** `models/flora_wolf_dynamic.blend` / `exports/flora_wolf_dynamic.glb`, gerados por `scripts/flora_wolf_motion.py -- --dynamic` a partir de `models/sources/flora_tripo_wolf.blend` (preservado). Dez clipes a 30 FPS e rig com 68 ossos. As garras incluem torção de quadril/tórax, deslocamento do peso e pivô da perna de impulso; cauda, mandíbula, uivo, esquiva e morte mantêm a revisão anterior. `-- --dynamic --blocking` grava poses CONSTANT em `backups/blocking/flora_wolf_dynamic_blocking.blend`. `scripts/flora_wolf_review.py -- --dynamic` audita e renderiza prévias PBR em Eevee; `scripts/pack_flora_wolf_review.py --dynamic` monta PNG/GIF em `previews/flora_wolf_dynamic/`, incluindo `attacks.gif`. Sem `--dynamic`, o gerador reproduz a versão `flora_wolf_revised`, também preservada. [Pipeline, durações e eventos](../docs/v2-druida.md#forma-de-lobo-atual).
+**Lobo atual:** `models/flora_wolf_dynamic.blend` / `exports/flora_wolf_dynamic.glb`, gerados por `scripts/flora_wolf_motion.py -- --dynamic` a partir de `models/sources/flora_tripo_wolf.blend` (preservado). Onze clipes a 30 FPS e rig com 68 ossos, incluindo o finalizador `claw_cross` com as duas mãos. As garras incluem torção de quadril/tórax, deslocamento do peso e pivô da perna de impulso; cauda, mandíbula, uivo, esquiva e morte mantêm a revisão anterior. `-- --dynamic --blocking` grava poses CONSTANT em `backups/blocking/flora_wolf_dynamic_blocking.blend`. `scripts/flora_wolf_review.py -- --dynamic` audita e renderiza prévias PBR em Eevee; `scripts/pack_flora_wolf_review.py --dynamic` monta PNG/GIF em `previews/flora_wolf_dynamic/`, incluindo `attacks.gif`. Sem `--dynamic`, o gerador reproduz a versão `flora_wolf_revised`, também preservada. [Pipeline, durações e eventos](../docs/v2-druida.md#forma-de-lobo-atual).
+
+Revisão de postura: a forma de lobo permanece ereta em idle, garras, uivo e salto,
+com pés mais próximos e joelhos orientados para a frente. Apenas locomoção usa
+quatro patas. Esquiva e morte partem da guarda ereta. Fonte e export regenerados
+via MCP; prévias atuais em `../review/v2/druid-wolf-posture/`. Os GIFs anteriores
+citados acima preservam a revisão antiga e precisam ser regenerados para mostrar
+a guarda atual. A auditoria `--dynamic --audit-only` confere também mãos fora do
+chão nas ações e quatro apoios na locomoção.
 
 ### Planta Carnívora da Druida
 
 Modelo atual: `models/carnivorous_plant.blend`, exportado para `exports/carnivorous_plant.glb` e registrado como `carnivorousPlant` na v2. Gerador reproduzível: `blender --background --threads 4 --python blender/scripts/carnivorous_plant.py`, da raiz do projeto. Malha de 920 triângulos e quatro materiais sólidos, sem textura externa, rig com boca articulada e clipes `idle`, `attack`, `death` a 30 FPS. Relatório em `previews/carnivorous_plant/validation.json`; conferência no jogo em `review/v2/skill-ideas-revision/` na raiz do projeto. Uma planta por jogador; a malha leve é a mesma em qualidade baixa.
+
+## NPCs Tripo da campanha
+
+Marta, Helena, Joaquim, Tomás, Bruno e Lili usam os modelos preparados por
+`scripts/campaign_npcs_tripo.py`: cenas em `models/campaign_<nome>_tripo.blend`
+e GLBs em `exports/campaign_<nome>_tripo.glb`. As fontes de alta resolução
+permanecem intactas em `exports/tripo-out/<nome>-pbr-<tarefa>/model.glb`.
+João continua usando sua integração anterior, com a correção dos dedos.
+
+Da raiz do projeto:
+
+```powershell
+blender --background --threads 4 --python blender/scripts/campaign_npcs_tripo.py
+# Opcional: regenerar somente um personagem
+blender --background --threads 4 --python blender/scripts/campaign_npcs_tripo.py -- --only marta
+node v2/tools/build.cjs
+node --test v2/tests/distribution.test.mjs
+node v2/tests/campaign-npcs-tripo-browser-check.cjs
+```
+
+Cada modelo tem cerca de 18 mil triângulos, mapas PBR de até 512 px, rig
+espacial com ajustes de proporção por personagem e clipes `idle`, `greet`,
+`walk`, `death`. Capas possuem um osso separado; saias e aventais recebem
+passadas suaves. As animações são preparadas localmente, sem chamadas à API
+Tripo. Os JSONs em `previews/campaign_npcs_tripo/` registram a redução.
+`-- --resize-existing` reaplica o limite de texturas às seis cenas preparadas
+sem refazer a geometria e o rig.
+
+Os IDs de Marta, Helena, prefeito e mensageiro permanecem os mesmos. Bruno e
+Lili têm registros próprios (`npcBruno`, `npcLili`), sem substituir moradores
+que reutilizam os modelos antigos. Conferência no HTML offline, elenco,
+animações e vila em fundo claro/escuro, qualidade baixa e com horda:
+`review/v2/campaign-npcs-tripo/`.
+
+### Rig refinado e idle dos NPCs Tripo
+
+Os seis modelos possuem 23 ossos: raiz/quadril, coluna, tórax, pescoço,
+cabeça, ombros, braços, antebraços, mãos, pernas, canelas, pés e três
+segmentos de capa. Pesos redistribuídos no tronco, pescoço e ombros, com
+até quatro influências normalizadas por vértice. Os pés não acompanham
+os movimentos de respiração do tronco.
+
+O idle dura aproximadamente 12 segundos, com braços baixos, cotovelos
+relaxados, respiração no tórax e gestos espaçados próprios de cada personagem.
+O tronco não oscila como um pêndulo. Marta e Helena têm atitudes e olhares
+diferentes; Joaquim mantém os braços próximos ao corpo; Bruno acomoda o
+antebraço junto ao avental; Lili faz um pequeno gesto com o braço; Tomás
+confere a bolsa. O renderizador dá uma fase estável própria a cada NPC para
+evitar movimentos sincronizados. Para atualizar somente rig e idle nas cenas já
+preparadas, sem refazer a malha, execute na raiz:
+
+```powershell
+blender --background --threads 4 --python blender/scripts/campaign_npcs_tripo.py -- --refine-existing
+node v2/tools/build.cjs
+node v2/tests/campaign-npcs-tripo-browser-check.cjs
+python blender/scripts/pack_campaign_npcs_idle.py
+```
+
+O check compara poses em instantes diferentes nos seis GLBs e confirma avanço
+do relógio, movimento dos ossos e fases independentes na vila. Verifica também
+pés fixos e igualdade entre as chaves inicial e final de cada ciclo. Os 72 frames
+ficam em `frames/campaign_npcs_idle/`; o empacotador produz
+`previews/campaign_npcs_tripo/idle.gif`. As cenas `.blend` mantêm o rig
+visível sobre a malha, organizado em Corpo, Bracos, Pernas e Capa.

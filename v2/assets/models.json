@@ -305,7 +305,7 @@
   "npcBram": {
     "path": "blender/exports/stylized_bram.glb",
     "source": "blender/models/stylized_bram.blend",
-    "height": 2.25,
+    "height": 2.5875,
     "requiredAnimations": [
       "idle",
       "greet"
@@ -315,7 +315,7 @@
   "npcLysa": {
     "path": "blender/exports/stylized_lysa.glb",
     "source": "blender/models/stylized_lysa.blend",
-    "height": 2.25,
+    "height": 2.5875,
     "requiredAnimations": [
       "idle",
       "greet"
@@ -325,7 +325,7 @@
   "npcTilda": {
     "path": "blender/exports/stylized_tilda.glb",
     "source": "blender/models/stylized_tilda.blend",
-    "height": 1.45,
+    "height": 1.6675,
     "requiredAnimations": [
       "idle",
       "greet"
@@ -335,7 +335,7 @@
   "npcMerchant": {
     "path": "blender/exports/stylized_merchant.glb",
     "source": "blender/models/stylized_merchant.blend",
-    "height": 2.25,
+    "height": 2.5875,
     "requiredAnimations": [
       "idle",
       "greet"
@@ -402,7 +402,7 @@
   "npcBran": {
     "path": "blender/exports/bran.glb",
     "source": "blender/models/bran.blend",
-    "height": 3.15,
+    "height": 3.6225,
     "requiredAnimations": [
       "idle"
     ]
@@ -589,6 +589,7 @@
       "walk",
       "claw_1",
       "claw_2",
+      "claw_cross",
       "leap",
       "howl",
       "death",
@@ -673,8 +674,9 @@
     "durations": {
       "dodge": 0.5
     },
-    "stride": 1.29,
-    "strafeStride": 1.01,
+    "stride": 1.47,
+    "strafeStride": 0.92,
+    "motionBlend": 0.14,
     "layered": true
   },
   "carnivorousPlant": {
@@ -691,5 +693,101 @@
       "attack": 1,
       "death": 1
     }
+  },
+  "npcJoao": {
+    "path": "blender/exports/campaign_joao_tripo.glb",
+    "source": "blender/models/campaign_joao_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcMarta": {
+    "path": "blender/exports/campaign_marta_tripo.glb",
+    "source": "blender/models/campaign_marta_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcHelena": {
+    "path": "blender/exports/campaign_helena_tripo.glb",
+    "source": "blender/models/campaign_helena_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcGuard": {
+    "path": "blender/exports/campaign_guard.glb",
+    "source": "blender/models/campaign_guard.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcMessenger": {
+    "path": "blender/exports/campaign_tomas_tripo.glb",
+    "source": "blender/models/campaign_tomas_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcMayor": {
+    "path": "blender/exports/campaign_joaquim_tripo.glb",
+    "source": "blender/models/campaign_joaquim_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcBruno": {
+    "path": "blender/exports/campaign_bruno_tripo.glb",
+    "source": "blender/models/campaign_bruno_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
+  },
+  "npcLili": {
+    "path": "blender/exports/campaign_lili_tripo.glb",
+    "source": "blender/models/campaign_lili_tripo.blend",
+    "height": 2.5875,
+    "requiredAnimations": [
+      "idle",
+      "greet",
+      "walk",
+      "death"
+    ],
+    "stride": 1.4
   }
 }

@@ -1,4 +1,7 @@
-// Companheiros invocados fora da horda: o Golem de Gelo e o Clone Arcano do Mago. São aliados temporários com vida, dano e ritmo
+import {isFrozen} from './elements.mjs';
+// Companheiros invocados fora da horda: o Golem de Gelo e o Clone Arcano do Mago, os lobos e as plantas da Druida. Invocações são permanentes
+// (`life:0`, sem prazo): só saem ao morrer, ao serem substituídas ou na troca de cena. O Clone Arcano não é lacaio e
+// mantém duração. Cada um tem vida, dano e ritmo
 // próprios, desenhados com um modelo existente (tinta e escala). Inimigos perto dele passam a atacá-lo (enemies.mjs).
 // O laço comum de atores o ignora (`companion`); tudo acontece aqui. Os Cães Zumbis e os Esqueletos Magos do
 // Necromante são tipos da horda (horde.mjs), permanentes e com reanimação.
@@ -11,12 +14,12 @@ import {DRUID_SUMMONS,DRUID_ADVANCED} from './druid-model.mjs';
 
 // hp e damage são frações da vida máxima e do dano de quem invoca (MAGE_SUMMONS); range inclui o raio do alvo.
 export const COMPANIONS={
- iceGolem:{name:'Golem de Gelo',model:'abom',tint:'#9fd8ff',scale:.85,radius:.45,...MAGE_SUMMONS.iceGolem,range:1.8,rate:1.4,hitDelay:.45,speed:2.6,life:25,max:1,slow:.3,slowTime:1.5,color:'#9fe0ff'},
+ iceGolem:{name:'Golem de Gelo',model:'abom',tint:'#9fd8ff',scale:.85,radius:.45,...MAGE_SUMMONS.iceGolem,range:1.8,rate:1.4,hitDelay:.45,speed:2.6,life:0,max:1,slow:.3,slowTime:1.5,color:'#9fe0ff'},
  // Clone Arcano do Mago: parado, sem golpe próprio; marksman.mjs repete os feitiços do Mago a partir dele.
  arcaneClone:{name:'Clone Arcano',model:'mageHero',tint:'#b78cff',scale:1,radius:.35,...MAGE_SUMMONS.arcaneClone,static:true,life:12,max:1,color:'#b78cff'},
  druidWolf:{name:'Lobo',model:'cryptHound',tint:'#b8c4a0',scale:.8,radius:.3,range:1.3,rate:1,hitDelay:.3,speed:4.2,life:0,max:4,color:'#b8d69a'},
- carnivorousPlant:{name:'Planta Carnívora',model:'carnivorousPlant',scale:1,radius:.4,range:4.5,rate:1.4,hitDelay:.4,speed:0,rooted:true,life:DRUID_SUMMONS.plantLife,max:1,color:'#96ce65'},
- forestPlant:{name:'Floresta Tropical',model:'carnivorousPlant',scale:1,radius:.4,range:4.5,rate:1.4,hitDelay:.4,speed:0,rooted:true,life:DRUID_ADVANCED.forest.life,max:DRUID_ADVANCED.forest.count,color:'#96ce65'},
+ carnivorousPlant:{name:'Planta Carnívora',model:'carnivorousPlant',scale:1,radius:.4,range:4.5,rate:1.4,hitDelay:.4,speed:0,rooted:true,life:0,max:1,color:'#96ce65'},
+ forestPlant:{name:'Floresta Tropical',model:'carnivorousPlant',scale:1,radius:.4,range:4.5,rate:1.4,hitDelay:.4,speed:0,rooted:true,life:0,max:DRUID_ADVANCED.forest.count,color:'#96ce65'},
 };
 const living=e=>e.team==='enemy'&&e.hp>0&&!e.dead;
 const isBoss=(w,e)=>e===w.boss||e.isBoss;
@@ -49,7 +52,7 @@ function strike(w,a,spec){
  const t=w.actors.find(e=>e.id===s.target&&living(e));
  if(!t||Math.hypot(t.x-a.x,t.y-a.y)>spec.range+(t.radius||.3)+.4)return;
  if(!lineClear(a,t,.05,w.arena))return;
- dealDamage(w,t,Math.max(1,Math.floor(a.damage*(s.claw||s.bite||1))),a,s.claw?'Garras do Líder':s.bite?'Mordida Pesada':spec.name);
+ dealDamage(w,t,Math.max(1,Math.floor(a.damage*(s.claw||s.bite||1))),a,s.claw?'Garras do Líder':s.bite?'Mordida Pesada':spec.name,a.companion==='iceGolem'?'frost':null);
  if(s.claw)fx(w,'slash',{x:a.x,y:a.y,dx:Math.sin(a.angle),dy:Math.cos(a.angle),radius:spec.range,arc:Math.PI*.8,color:'#e5ca82',mood:'claw',duration:.25});
  if(spec.slow&&living(t)&&!isBoss(w,t)){t.slow=Math.max(t.slow||0,spec.slow);t.slowTime=Math.max(t.slowTime||0,spec.slowTime);t.companionChill=w.time+spec.slowTime;}
  if(spec.rooted)fx(w,'thorns',{x:t.x,y:t.y,radius:.6,color:spec.color,duration:.35});
@@ -66,6 +69,7 @@ export function tickCompanions(w,dt){
   a.animationTime+=dt;a.timer=Math.max(0,a.timer-dt);a.slowTime=Math.max(0,(a.slowTime||0)-dt);
   if(a.hp>0&&a.until&&w.time>=a.until){a.hp=0;fx(w,'summonBurst',{x:a.x,y:a.y,radius:1,color:spec.color,duration:.5});}
   if(a.hp<=0){animate(a,'death');a.strike=null;a.deadTime=(a.deadTime||0)+dt;if(a.deadTime>2)gone.add(a);continue;}
+  if(isFrozen(w,a)){a.animation='idle';continue;}
   // Parado (Clone Arcano): só vira para o inimigo mais próximo e volta ao repouso depois de conjurar.
   if(spec.static){const t=nearestEnemy(w,a,12);if(t)a.angle=Math.atan2(t.x-a.x,t.y-a.y);if(a.animation!=='idle'&&a.animationTime>.8)animate(a,'idle');continue;}
   if(a.strike&&w.time+1e-9>=a.strike.at)strike(w,a,spec);

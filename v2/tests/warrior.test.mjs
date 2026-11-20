@@ -1,3 +1,4 @@
+import {schoolSynergy} from '../scripts/skill-synergy.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createWorld,step,dash,resetWorld} from '../scripts/training-model.mjs';
@@ -16,7 +17,7 @@ test('um clique executa somente um corte; três cliques aplicam os três danos u
  assert.equal(e.hp,1000-Math.floor(damage*.55));assert.equal(w.warriorAction,null);advance(w,.1);assert.equal(e.hp,1000-Math.floor(damage*.55));
  assert.ok(warriorAction(w));assert.equal(warriorPose(w).anim,'slash_2');advance(w,durations[1]);
  assert.ok(warriorAction(w));assert.equal(warriorPose(w).anim,'slash_3');advance(w,durations[2]);
- assert.equal(e.hp,1000-[.55,.65,.9].reduce((s,n)=>s+Math.floor(damage*n),0));assert.equal(w.warriorCombo,null);advance(w,2);assert.ok(warriorAction(w));assert.equal(w.warriorAction.stage,0);
+ assert.equal(e.hp,1000-[.55,.65,.9].reduce((s,n)=>s+Math.floor(damage*n*(1+schoolSynergy('warrior',w.warriorRanks,'slash'))),0));assert.equal(w.warriorCombo,null);advance(w,2);assert.ok(warriorAction(w));assert.equal(w.warriorAction.stage,0);
 });
 test('janela expira e reinicia no primeiro; clique na recuperação reserva apenas um próximo corte',()=>{
  const w=field();warriorAction(w);advance(w,.1);assert.equal(warriorAction(w),false);advance(w,.3);assert.ok(warriorAction(w));assert.equal(warriorAction(w),false);

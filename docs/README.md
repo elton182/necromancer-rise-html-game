@@ -10,12 +10,13 @@ Os guias abaixo descrevem a **v2 em 3D**. Consulte a implementação indicada em
 | [v2-acabamento-visual](v2-acabamento-visual.md) | Acabamento visual do cenário |
 | [v2-arena](v2-arena.md) | Arena Infinita |
 | [v2-arqueira-mercenario](v2-arqueira-mercenario.md) | Arqueira e Mercenário — classes jogáveis |
-| [v2-campanha](v2-campanha.md) | campanha, vila e missões |
+| [v2-campanha](v2-campanha.md) | campanha, vila, missões e cerco do Passo do Cedro |
 | [v2-cenario-medieval](v2-cenario-medieval.md) | Cenário medieval experimental |
 | [v2-cerco](v2-cerco.md) | Cerco ao Ritual — defesa do Obelisco de Almas |
 | [v2-combate](v2-combate.md) | dano, Tiro de Osso e Dash |
 | [v2-conquista](v2-conquista.md) | Conquista de Valdoria |
 | [v2-druida](v2-druida.md) | Druida (Flora) — primeira versão jogável |
+| [v2-elementos](v2-elementos.md) | Acúmulos de fogo/gelo, Lua Prateada e custos atuais |
 | [v2-efeitos-visuais](v2-efeitos-visuais.md) | efeitos visuais de combate |
 | [v2-expedicoes](v2-expedicoes.md) | Expedições |
 | [v2-grimorio](v2-grimorio.md) | Grimório e maestrias |

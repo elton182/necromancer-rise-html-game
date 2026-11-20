@@ -9,6 +9,19 @@ const arrival=()=>{const s=createSession();Object.assign(s.save.campaign,{starte
 function talk(s,p){Object.assign(s.world.player,{x:p.x+.8,y:p.y});tickAdventure(s,.1);assert.equal(interactWorld(s),true);return worldDialogue(s);}
 const act=(s,kind)=>{assert.equal(worldDialogue(s).kind,kind);assert.equal(worldDialogueAction(s),true);};
 
+test('objetos de missão: ! acompanha a etapa e desaparece após a coleta',()=>{
+ const p={lumber:'locked',piles:[0,0,0],nilo:'locked'};
+ for(const key of [...WORLD_PILES.map(l=>l.key),'nilo-ledger','nilo-bag','nilo-contract'])assert.equal(questMarkerFor(key,p),'');
+ p.lumber='active';for(const pile of WORLD_PILES)assert.equal(questMarkerFor(pile.key,p),'!');
+ p.piles[1]=1;assert.equal(questMarkerFor(WORLD_PILES[1].key,p),'');assert.equal(questMarkerFor(WORLD_PILES[0].key,p),'!');
+ p.nilo='road';assert.equal(questMarkerFor('nilo-ledger',p),'!');
+ p.nilo='cave';assert.equal(questMarkerFor('nilo-ledger',p),'');
+ p.nilo='fort';assert.equal(questMarkerFor('nilo-bag',p),'!');assert.equal(questMarkerFor('nilo-contract',p),'!');
+ p.niloLetter=true;assert.equal(questMarkerFor('nilo-bag',p),'');assert.equal(questMarkerFor('nilo-contract',p),'!');
+ p.niloEvidence=true;p.nilo='return';assert.equal(questMarkerFor('nilo-contract',p),'');
+ p.lumber='done';for(const pile of WORLD_PILES)assert.equal(questMarkerFor(pile.key,p),'');
+});
+
 test('chegada: pedidos só entram no HUD e diário depois de aceitar; fechar não aceita',()=>{
  const s=arrival(),p=s.save.campaign.world,active=()=>campaignQuests(s.save).filter(q=>q.status==='active');
  assert.equal(active().length,0);assert.equal(questMarkerFor('mayor',p),'!');assert.equal(worldObjectives(p)[0].title,'Missões em Jacarandá');
@@ -27,6 +40,7 @@ test('etapas e ofertas em sequência: Bruno, madeira, pista de Marta; pagamento 
  const gold=s.save.character.gold;talk(s,WORLD_POINTS.forge);act(s,'smith');assert.equal(s.save.character.gold,gold+100);
  assert.equal(p.lumber,'available');assert.equal(questMarkerFor('mayor',p),'!');assert.equal(campaignQuests(s.save).find(q=>q.id==='smith').status,'done');
  assert.equal(campaignQuests(s.save).some(q=>q.id==='lumber'),false,'oferta ainda não é missão aceita');
+ talk(s,WORLD_POINTS.mayor);act(s,'portal-unlock');assert.equal(p.portalUnlocked,true);
  talk(s,WORLD_POINTS.mayor);act(s,'lumber-accept');
  for(const pile of WORLD_PILES){p.cleared.push(pile.guard);talk(s,pile);act(s,'pile');}
  assert.equal(questMarkerFor('mayor',p),'?');talk(s,WORLD_POINTS.mayor);act(s,'lumber');

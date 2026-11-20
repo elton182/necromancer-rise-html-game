@@ -124,7 +124,7 @@ test('Garrafa incendiária: chão em chamas por 4 s com dano em intervalos',()=>
  assert.ok(marksmanAction(w,5));advance(w,1/60,Math.ceil((d.release+d.flight)*60)+2);
  assert.ok(w.effects.some(f=>f.fx==='fireField'));
  advance(w,1/60,Math.ceil(d.fireTime*60)+10);
- assert.equal(lost(e),dmg*(Math.floor(d.fireTime/d.interval)+1));assert.equal(w.marksmanZones.length,0);
+ assert.ok(lost(e)>dmg*(Math.floor(d.fireTime/d.interval)+1));assert.ok(e.fireStacks>0);assert.equal(w.marksmanZones.length,0);
 });
 
 test('esquiva cancela a ação; morte e troca de cena limpam bombas, zonas e minas',()=>{

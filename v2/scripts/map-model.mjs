@@ -2,6 +2,7 @@ import {prologueMapData} from './prologue-map-data.mjs';
 import {campaignWorldMap} from './campaign-world-map.mjs';
 import {itaunaMap,fortMap,caveMap} from './itauna-map.mjs';
 import {itaveraMap} from './itavera-map.mjs';
+import {cedroMap} from './cedro-map.mjs';
 // Mapas personalizados: dados puros (sem DOM nem Three.js). Um mapa é um documento JSON com objetos posicionados,
 // ponto de início e pontos de inimigos. Pode ter um mapa base (`base`): herda dele os objetos, o bioma, o tamanho,
 // o início e os inimigos, e só guarda o que mudou (objetos novos, objetos da base ocultos e campos substituídos).
@@ -141,7 +142,7 @@ export function normalizeStyle(raw){
  const range=(v,a,b)=>v==null||v===''||!Number.isFinite(+v)?null:clamp(+v,a,b),out={sky:color(raw.sky),sun:range(raw.sun,0,6),sunColor:color(raw.sunColor),ambient:range(raw.ambient,0,4),fog:range(raw.fog,0,1),tint:color(raw.tint),ground:raw.ground in GROUND_STYLES?raw.ground:null,water:color(raw.water),grass:range(raw.grass,0,2),flowers:range(raw.flowers,0,2)};
  return Object.values(out).some(v=>v!==null)?out:null;
 }
-export const BUILTIN_BASES={'builtin:itavera':'Itavera · praça das guildas','builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin','builtin:itauna':'Várzea de Itaúna','builtin:itauna-fort':'Forte da Pedra Negra','builtin:itauna-cave':'Gruta das Tecelãs'};
+export const BUILTIN_BASES={'builtin:cedro':'Passo do Cedro','builtin:itavera':'Itavera · praça das guildas','builtin:arandu-caravan':'ARANDU · Desembarque da caravana','builtin:arandu-cave':'ARANDU · Caverna dos bandidos','builtin:arandu-travel':'ARANDU · Estrada de Itavera','builtin:arandu-trail':'ARANDU · Caminho de Jacarandá','builtin:campaign-world':'Campanha integrada · Cripta–Floresta–Vila','builtin:training':'Campo de treino','builtin:forest':'Floresta de Eldrin','builtin:itauna':'Várzea de Itaúna','builtin:itauna-fort':'Forte da Pedra Negra','builtin:itauna-cave':'Gruta das Tecelãs'};
 export const isBuiltin=ref=>typeof ref==='string'&&ref.startsWith('builtin:');
 export const mapRef=id=>'map:'+id;
 
@@ -221,6 +222,7 @@ function buildBuiltin(ref){
  const stage={'builtin:arandu-caravan':'ambush','builtin:arandu-cave':'cave','builtin:arandu-travel':'travel','builtin:arandu-trail':'trail'}[ref];
  if(stage)return normalizeMap({...prologueMapData(stage),id:ref}).map;
  if(ref==='builtin:campaign-world')return normalizeMap({...campaignWorldMap(),id:ref}).map;
+ if(ref==='builtin:cedro')return normalizeMap({...cedroMap(),id:ref}).map;
  if(ref==='builtin:itauna')return normalizeMap({...itaunaMap(),id:ref}).map;
  if(ref==='builtin:itavera')return normalizeMap({...itaveraMap(),id:ref}).map;
  if(ref==='builtin:itauna-fort')return normalizeMap({...fortMap(),id:ref}).map;

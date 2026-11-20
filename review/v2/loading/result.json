@@ -181,66 +181,152 @@
    "scrollX": false
   }
  ],
+ "startAudio": {
+  "ready": true,
+  "theme": "title",
+  "states": [
+   "running"
+  ],
+  "menuInert": false
+ },
  "samples": [
+  {
+   "bar": "",
+   "pct": "0%",
+   "label": "Carregando o mundo…",
+   "tip": ""
+  },
+  {
+   "bar": "10%",
+   "pct": "10%",
+   "label": "Despertando os modelos 3D (1/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
+  },
+  {
+   "bar": "14%",
+   "pct": "14%",
+   "label": "Despertando os modelos 3D (4/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
+  },
+  {
+   "bar": "23%",
+   "pct": "23%",
+   "label": "Despertando os modelos 3D (11/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
+  },
+  {
+   "bar": "27%",
+   "pct": "27%",
+   "label": "Despertando os modelos 3D (14/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
+  },
+  {
+   "bar": "28%",
+   "pct": "28%",
+   "label": "Despertando os modelos 3D (15/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
+  },
   {
    "bar": "31%",
    "pct": "31%",
-   "label": "Despertando os modelos 3D (14/49)…",
-   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+   "label": "Despertando os modelos 3D (17/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "38%",
-   "pct": "38%",
-   "label": "Despertando os modelos 3D (18/49)…",
-   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+   "bar": "32%",
+   "pct": "32%",
+   "label": "Despertando os modelos 3D (18/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "41%",
-   "pct": "41%",
-   "label": "Despertando os modelos 3D (20/49)…",
-   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+   "bar": "33%",
+   "pct": "33%",
+   "label": "Despertando os modelos 3D (19/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "43%",
-   "pct": "43%",
-   "label": "Despertando os modelos 3D (21/49)…",
-   "tip": "Cada abate rende XP às habilidades equipadas antes do personagem."
+   "bar": "35%",
+   "pct": "35%",
+   "label": "Despertando os modelos 3D (20/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "51%",
-   "pct": "51%",
-   "label": "Despertando os modelos 3D (26/49)…",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "36%",
+   "pct": "36%",
+   "label": "Despertando os modelos 3D (21/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "56%",
-   "pct": "56%",
-   "label": "Despertando os modelos 3D (29/49)…",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "42%",
+   "pct": "42%",
+   "label": "Despertando os modelos 3D (26/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "61%",
-   "pct": "61%",
-   "label": "Despertando os modelos 3D (32/49)…",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "46%",
+   "pct": "46%",
+   "label": "Despertando os modelos 3D (29/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "83%",
-   "pct": "83%",
-   "label": "Despertando os modelos 3D (46/49)…",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "47%",
+   "pct": "47%",
+   "label": "Despertando os modelos 3D (30/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "88%",
-   "pct": "88%",
-   "label": "Despertando os modelos 3D (49/49)…",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "50%",
+   "pct": "50%",
+   "label": "Despertando os modelos 3D (32/62)…",
+   "tip": "Shift + botão direito ordena a horda; V reanima os caídos."
   },
   {
-   "bar": "100%",
-   "pct": "100%",
-   "label": "Pronto",
-   "tip": "Esc abre o Relicário: Grimório, horda e equipamentos."
+   "bar": "65%",
+   "pct": "65%",
+   "label": "Despertando os modelos 3D (44/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "68%",
+   "pct": "68%",
+   "label": "Despertando os modelos 3D (46/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "72%",
+   "pct": "72%",
+   "label": "Despertando os modelos 3D (49/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "73%",
+   "pct": "73%",
+   "label": "Despertando os modelos 3D (50/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "75%",
+   "pct": "75%",
+   "label": "Despertando os modelos 3D (51/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "76%",
+   "pct": "76%",
+   "label": "Despertando os modelos 3D (52/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "77%",
+   "pct": "77%",
+   "label": "Despertando os modelos 3D (53/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
+  },
+  {
+   "bar": "80%",
+   "pct": "80%",
+   "label": "Despertando os modelos 3D (55/62)…",
+   "tip": "C usa o Dash e protege você durante o movimento."
   }
  ]
 }

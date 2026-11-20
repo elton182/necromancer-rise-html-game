@@ -1,5 +1,7 @@
 # V2 — Conquista de Valdoria (E10c)
 
+Balanceamento de 13/11/2026: os arquétipos usam a resistência global da v2. O multiplicador regional de vida, aplicado depois dessa base e também usado pelo chefe, tem piso **3,5** exclusivo da v2 (`conquestCombatScale` em `v2/scripts/expedition.mjs`). Quando a curva canônica ultrapassa o piso, mantém seu valor original. Dano, XP e recompensas regionais seguem as regras compartilhadas. A resistência não acompanha o nível ou o equipamento do jogador. Veja [combate](v2-combate.md#balanceamento-global-de-resistência-e-ataques-básicos-13112026).
+
 A **Conquista de Valdoria** usa o território **Pântano da Febre Negra**, com 17 rotas, influência, maldições, tenentes e fortaleza. Na praça de Jacarandá ou na Vila de Eldrin, aproxime-se da **Cartógrafa de Valdoria** e pressione **G**. O serviço abre seu painel próprio; não é uma aba do Relicário.
 
 O modelo compartilhado é `scripts/endgame-model.js`, gerado na v2 como `shared-endgame.mjs`. A [referência legada](../v1/docs/mecanicas/conquista-valdoria.md) explica a base compartilhada; as adaptações e os bônus exclusivos da v2 são descritos neste guia.

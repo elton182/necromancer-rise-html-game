@@ -60,7 +60,7 @@ O anel pequeno no chão mostra a mira enquanto o treino está ativo.
 
 WASD/setas continuam relativos à tela, com diagonal normalizada. Pressionar
 contra uma parede não mantém a animação de caminhada quando não há deslocamento.
-A roda mantém o intervalo de zoom já usado na arena, sem alterar alcances. O zoom inicial é 11 (antes 15), mais próximo do personagem; a roda continua variando de 8 a 24.
+A roda ajusta o zoom da câmera sem alterar alcances. O zoom inicial é 11 (antes 15), mais próximo do personagem; a roda varia de 8 a 18. O afastamento máximo foi reduzido de 24 para 18, preservando o zoom inicial e a aproximação máxima.
 
 ## Animações
 

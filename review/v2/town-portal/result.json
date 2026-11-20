@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "entrega pelo prefeito",
+    "botão abre portal e viagem com fade",
+    "G retorna ao mundo, gruta e forte",
+    "posição e grupos preservados",
+    "portal visível em fundo claro/escuro, horda e qualidade baixa",
+    "HTML offline"
+  ],
+  "errors": [],
+  "remote": [],
+  "browser": "chrome"
+}

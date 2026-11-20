@@ -1,0 +1,18 @@
+{
+  "name": "marta",
+  "source": "marta-pbr-151fdde5/model.glb",
+  "sourceTriangles": 1422140,
+  "triangles": 18000,
+  "vertices": 15089,
+  "bytes": 1908144,
+  "clips": [
+    "idle",
+    "greet",
+    "walk",
+    "death"
+  ],
+  "textureMaxSize": 512,
+  "bones": 23,
+  "idleSeconds": 12,
+  "idleProfile": "marta"
+}

@@ -10,6 +10,9 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  await page.waitForFunction(()=>document.body.dataset.ready==='true'&&!document.getElementById('loading'),null,{timeout:90000});
  await page.evaluate(()=>{NecromancerV2.go('training');});
  await page.click('#open-test-tools');assert.equal(await page.evaluate(()=>NecromancerV2.world.paused),true);
+ await page.locator('#test-move-speed').fill('3');
+ assert.equal(await page.evaluate(()=>NecromancerV2.world.testMoveSpeed),3);
+ assert.equal(await page.locator('output[for="test-move-speed"]').textContent(),'3×');
  const level=await page.evaluate(()=>NecromancerV2.session.save.character.level);
  await page.click('[data-test-action="level-up"]');assert.equal(await page.evaluate(()=>NecromancerV2.session.save.character.level),level+1);
  await page.click('[data-test-action="level-down"]');assert.equal(await page.evaluate(()=>NecromancerV2.session.save.character.level),level);
@@ -22,6 +25,10 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
  await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(dir,'mobile.png')});
  assert.equal(await page.evaluate(()=>{const p=document.querySelector('[data-menu-panel="tests"]');return p.scrollWidth>p.clientWidth+1;}),false);
  await page.click('#close-reliquary');assert.equal(await page.evaluate(()=>NecromancerV2.world.paused),false);
+ await page.setViewportSize({width:1440,height:900});
+ await page.click('#open-test-tools');assert.equal(await page.locator('#test-move-speed').inputValue(),'3');
+ await page.locator('#test-move-speed').fill('1');assert.equal(await page.evaluate(()=>NecromancerV2.world.testMoveSpeed),1);
+ await page.click('#close-reliquary');
  assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({ok:true,errors,remote},null,2));console.log('Painel de testes: cliques, pausa, desktop, celular e arquivo offline OK.');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1);});

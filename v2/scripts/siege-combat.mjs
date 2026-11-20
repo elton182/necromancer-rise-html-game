@@ -38,7 +38,7 @@ export function tickSiegeCombat(w,dt){
   for(const e of selected){
    const resistant=LANES[e.siegeLane].resist===t.kind;
    if(t.kind==='frost'){e.slow=Math.max(e.slowTime>0?e.slow||0:0,Math.min(.7,(.45+.06*(t.rank-1))*rune)*(resistant?.5:1));e.slowTime=Math.max(e.slowTime||0,1.5);}
-   dealDamage(w,e,def.damage*scale*(resistant?.5:1),{id:t.id,team:'ally'},def.name);
+   dealDamage(w,e,def.damage*scale*(resistant?.5:1),{id:t.id,team:'ally'},def.name,t.kind==='frost'?'frost':null);
   }
   const p=selected[0];t.angle=Math.atan2(p.x-t.x,p.y-t.y);
   fx(w,t.kind==='bone'?'siegeBolt':'siegePulse',{x:t.x,y:t.y,tx:p.x,ty:p.y,color:def.color,radius:def.range+.5*(t.rank-1),duration:t.kind==='plague'?.6:.35});

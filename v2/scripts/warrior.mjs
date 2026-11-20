@@ -1,3 +1,4 @@
+import {tickElements,isFrozen} from './elements.mjs';
 import {schoolSynergy} from './skill-synergy.mjs';
 import {dealDamage} from './combat.mjs';
 import {lineClear,moveCircle} from './terrain.mjs';
@@ -25,6 +26,7 @@ export const WARRIOR_ACTIONS=[
 const LAUNCHED=new Set([5,6,7]);
 const warriorPower=w=>w.player.damage*(activeStance(w)?.damage??1);
 export function warriorAction(w,index=0,aim=w.aim){
+ if(isFrozen(w,w.player))return false;
  const a=WARRIOR_ACTIONS[index],p=w.player;
  if(index===3||index>=WARRIOR_ACTION_COUNT||!warriorActionLearned(index,w.warriorRanks)||[2,5].includes(index)&&(!w.equipment?.shield||w.warriorShieldFlight))return false;
  if(!a||w.paused||p.hp<=0||p.dead||w.dash.remaining>0)return false;
@@ -56,11 +58,12 @@ export function toggleStance(w){
  return true;
 }
 export function tickWarrior(w,dt){
+ tickElements(w,dt,dealDamage);
  if(w.paused)return;
  tickStanceRing(w);tickWaves(w,dt);tickFireTrails(w);
  tickShieldFlight(w,dt);
  if(w.warriorCombo&&w.time>w.warriorCombo.expires)w.warriorCombo=null;
- const s=w.warriorAction;if(!s)return;
+ const s=w.warriorAction;if(isFrozen(w,w.player)){w.warriorAction=null;w.warriorCombo=null;return;}if(!s)return;
  const p=w.player,a=WARRIOR_ACTIONS[s.index];
  if(p.hp<=0||p.dead||w.dash.remaining>0){w.warriorAction=null;w.warriorCombo=null;p.timer=0;return;}
  const before=s.time;s.time+=dt;
@@ -188,7 +191,7 @@ function tickFireTrails(w){
  for(const e of w.actors){
   if(e.team!=='enemy'||e.hp<=0||(e.warriorBurnNext||0)>w.time)continue;
   const hit=w.warriorFireTrails.filter(z=>Math.hypot(e.x-z.x,e.y-z.y)<=.7+e.radius&&lineClear(z,e,.05,w.arena));
-  if(hit.length){e.warriorBurnNext=w.time+.5;dealDamage(w,e,Math.max(1,Math.floor(Math.max(...hit.map(z=>z.damage)))),w.player,'Rastro');}
+  if(hit.length){e.warriorBurnNext=w.time+.5;dealDamage(w,e,Math.max(1,Math.floor(Math.max(...hit.map(z=>z.damage)))),w.player,'Rastro','fire');}
  }
  w.effects=w.effects.filter(f=>!f.warriorTrail);
  for(const z of w.warriorFireTrails)w.effects.push({id:'wtrail-'+z.id,warriorTrail:true,fx:'fireField',x:z.x,y:z.y,radius:.7,remaining:z.until-w.time,color:'#ff8a3a',visual:true,ground:true,time:0,duration:10});

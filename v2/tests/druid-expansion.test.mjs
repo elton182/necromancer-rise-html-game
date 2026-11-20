@@ -43,13 +43,13 @@ test('Calamidade não atravessa parede para causar dano e morte limpa antes dos 
  const t=w.druidTornados[0];assert.ok(t.x<5);w.player.hp=0;tick(w,1);assert.equal(w.druidTornados.length,0);assert.equal(lost(hidden),0);
 });
 
-test('Floresta: cinco plantas animadas, limite separado das Raízes, substituição e expiração',()=>{
+test('Floresta: cinco plantas animadas, limite separado das Raízes, substituição, sem expiração',()=>{
  const w=field({florestaTropical:1});assert.ok(use(w,'roots'));tick(w,.7);assert.equal(living(w,'carnivorousPlant').length,1);
  assert.ok(use(w,'florestaTropical'));tick(w,.9);assert.equal(living(w,'forestPlant').length,5);assert.equal(living(w,'carnivorousPlant').length,1);
- const plants=living(w,'forestPlant'),ids=plants.map(a=>a.id);assert.ok(plants.every(a=>a.model==='carnivorousPlant'&&a.maxHp===600&&a.until>w.time));
+ const plants=living(w,'forestPlant'),ids=plants.map(a=>a.id);assert.ok(plants.every(a=>a.model==='carnivorousPlant'&&a.maxHp===600&&a.until===null));
  for(let i=0;i<plants.length;i++)for(let j=i+1;j<plants.length;j++)assert.ok(Math.hypot(plants[i].x-plants[j].x,plants[i].y-plants[j].y)>1.2);
  w.druidCooldowns={};assert.ok(use(w,'florestaTropical'));tick(w,.9);assert.equal(living(w,'forestPlant').length,5);assert.ok(living(w,'forestPlant').every(a=>!ids.includes(a.id)));
- tick(w,11);assert.equal(living(w,'forestPlant').length,0);
+ tick(w,11);assert.equal(living(w,'forestPlant').length,5,'permanentes');
 });
 
 test('Floresta bloqueada não gasta mana; plantas causam dano e podem ser destruídas',()=>{

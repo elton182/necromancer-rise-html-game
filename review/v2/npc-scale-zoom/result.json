@@ -1,0 +1,57 @@
+{
+  "cast": [
+    {
+      "model": "npcJoao",
+      "height": 2.5872273800179353,
+      "target": 2.5875,
+      "feet": -1.0319186316861328e-7
+    },
+    {
+      "model": "npcMarta",
+      "height": 2.5850054969753042,
+      "target": 2.5875,
+      "feet": 2.7529438398551795e-7
+    },
+    {
+      "model": "npcHelena",
+      "height": 2.5929061548933032,
+      "target": 2.5875,
+      "feet": -1.7275157828545832e-8
+    },
+    {
+      "model": "npcGuard",
+      "height": 2.587930675985189,
+      "target": 2.5875,
+      "feet": 1.734723475976807e-17
+    },
+    {
+      "model": "npcMessenger",
+      "height": 2.582545027074996,
+      "target": 2.5875,
+      "feet": 6.343637062367936e-9
+    },
+    {
+      "model": "npcMayor",
+      "height": 2.58435245075335,
+      "target": 2.5875,
+      "feet": 6.658253907802e-9
+    },
+    {
+      "model": "npcBruno",
+      "height": 2.59015307164051,
+      "target": 2.5875,
+      "feet": -5.5378734761433145e-8
+    },
+    {
+      "model": "npcLili",
+      "height": 1.683673732542293,
+      "target": 1.681875,
+      "feet": -3.597580191069165e-8
+    }
+  ],
+  "zoom": {
+    "near": 8,
+    "far": 18
+  },
+  "errors": []
+}

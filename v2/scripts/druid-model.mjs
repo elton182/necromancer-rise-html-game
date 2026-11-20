@@ -23,17 +23,22 @@ export const HUMAN_NODES={1:'chain',2:'roots',4:'storm',5:'rejuvenate',6:'turbil
 export const DRUID_HUMAN_IDS=['spark','chain','roots','dodge','storm','rejuvenate','turbilhao','tornado','lobo','calamidade','florestaTropical','escudoDeFolhas','liderDaMatilha'];
 // Só a proporção de vida dos lobos é persistida; posições, alvo e animação são transitórios.
 export const normalizeDruidPack=value=>Array.isArray(value)?value.slice(0,4).map(v=>Number.isFinite(v)?Math.max(0,Math.min(1,v)):0):[];
-export const DRUID_SUMMONS={wolfHp:.65,wolfDamage:.45,wolfPerRank:.1,bite:1.8,biteInterval:6,bitePerRank:.2,plantHp:.6,plantDamage:.45,plantLife:8};
-export const DRUID_ADVANCED={calamity:{radius:4,time:8,drift:.8,pull:1.2,interval:.5,multiplier:.3,boltInterval:1,boltTargets:2,boltMultiplier:.65},forest:{count:5,radius:4.5,life:10},leaves:{share:.35,time:8},leader:{damage:1.3,scale:1.1,claw:1.6,markTime:6,pick:3.5,range:12}};
+export const DRUID_SUMMONS={wolfHp:.65,wolfDamage:.45,wolfPerRank:.1,bite:1.8,biteInterval:6,bitePerRank:.2,plantHp:.6,plantDamage:.45};
+export const DRUID_ADVANCED={calamity:{radius:4,time:8,drift:.8,pull:1.2,interval:.5,multiplier:.3,boltInterval:1,boltTargets:2,boltMultiplier:.65},forest:{count:5,radius:4.5},leaves:{share:.35,time:8},leader:{damage:1.3,scale:1.1,claw:1.6,markTime:6,pick:3.5,range:12}};
 // Primeiro ponto mantém a habilidade atual; os seguintes somam 10% do dano base.
 export const druidRankFactor=(ranks,id)=>1+.1*Math.max(0,(ranks?.[id]||0)-1);
 export const druidTornadoFactor=(ranks,id='tornado')=>1+schoolSynergy('druid',ranks,id)+.1*(Math.max(0,(ranks?.tornado||0)-1)+Math.max(0,(ranks?.furacao||0)-1));
 export const druidHowlBonus=ranks=>.25+.05*Math.max(0,(ranks?.howl||0)-1);
 export const druidHealShare=ranks=>.3+.05*Math.max(0,(ranks?.rejuvenate||0)-1);
-export const WOLF_NODES={1:'leap',2:'howl',4:'corteSangrento',5:'garraDeGelo'};
+export const WOLF_NODES={1:'leap',2:'howl',4:'corteSangrento',5:'garraDeGelo',6:'luaPrateada'};
 export const druidActionLearned=(form,index,ranks)=>{const node=(form==='wolf'?WOLF_NODES:HUMAN_NODES)[index];return !node||(ranks?.[node]||0)>0;};
-export const WOLF={drain:4,hitRestore:3,taken:.8,move:1.35,toggleCooldown:2,exhaustedCooldown:4,shift:.35,damagePerRank:.08};
-export const wolfDrain=ranks=>Math.max(1,WOLF.drain-(ranks?.wildHeart||0));
+export const WOLF={hitRestore:3,taken:.6,health:1.4,regen:.007,hitHeal:.012,move:1.35,toggleCooldown:2,shift:.35,damagePerRank:.08};
+// Frenético (passiva do lobo): cada golpe de Garras que acerta soma um acúmulo de velocidade do ataque básico;
+// os acúmulos somem juntos se a Druida passar `expire` segundos sem acertar as garras ou voltar à forma humana.
+// Com `pounceStacks` acúmulos, Garras sem ninguém ao alcance viram um bote até o inimigo visível mais próximo da mira.
+export const FRANTIC={max:5,speed:.12,perRank:.04,expire:2.5,pounceStacks:3,pounceRange:6,pounceCooldown:1,land:.9};
+export const franticStacks=w=>w?.druidFrantic&&w.druidFrantic.until>w.time?w.druidFrantic.stacks:0;
+export const franticSpeed=(ranks,stacks)=>{const r=Math.max(0,Math.floor(ranks?.frenetico||0));return r>0?1+Math.min(FRANTIC.max,stacks)*(FRANTIC.speed+FRANTIC.perRank*(r-1)):1;};
 export const isWolf=w=>w?.classId==='druid'&&w.druidForm==='wolf';
 // Raízes: presos recebem dano extra pela Casca de Espinhos.
 export const rootedBonus=(w,target)=>w?.classId==='druid'&&target?.druidRoot>w.time?1+(w.druidRanks?.thornbind||0)*.1:1;

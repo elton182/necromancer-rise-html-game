@@ -35,6 +35,9 @@ Novo Jogo inicia ARANDU e oferece seis classes com personagens nomeados e saves 
 | `scripts/itauna-model.mjs`, `itauna-map.mjs`, `area-scene.mjs` | Várzea de Itaúna: passagens entre mapas, plantas da várzea, do forte e da gruta, grade e anéis. Veja [v2-itauna.md](../docs/v2-itauna.md) |
 | `scripts/nilo-model.mjs`, `nilo-quest.mjs` | O rastro de João e a carta: resgate, bolsa e provas no forte, entrega a Helena e convite final em Itavera; etapas, falas, prêmios e compatibilidade de saves. Veja [v2-itauna.md](../docs/v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026) |
 | `scripts/quest-model.mjs`, `quest-journal.mjs` | Ofertas dos NPCs (!), entregas (?), etapas aceitas no HUD e diário do inventário com missões em aberto e concluídas; histórico derivado dos estados da campanha |
+| `scripts/region-map.mjs`, `journal-map.css` | Atlas da região em pergaminho com marcos, lugares, ampliação e localização; apresentação do diário com lista e detalhes da missão selecionada |
+| `scripts/cave-queen.mjs` | Mãe-Tecelã gigante: mordida, veneno, teias e filhotes, antes do resgate de João ([guia](../docs/v2-itauna.md#mãe-tecelã-gigante-antes-do-resgate-13112026)) |
+| `scripts/cedro-model.mjs`, `cedro-map.mjs`, `cedro-quest.mjs`, `cedro-combat.mjs` | Cerco do Passo do Cedro: mapa, objetivos opcionais, retomada e Bento Ferraz ([guia](../docs/v2-campanha.md#passo-do-cedro--romper-o-cerco-13112026)) |
 | `scripts/itavera-map.mjs` | Praça de recepção das guildas em Itavera, com kits GLB existentes; encerramento do Ato I e retorno a Jacarandá |
 | `scripts/map-spawns.mjs` | Grupos de inimigos dos mapas: composição, gatilho, ondas e retorno |
 | `scripts/map-handles.mjs` | Seleção por raio e alças de edição no 3D, sem desenho |
@@ -50,6 +53,7 @@ Novo Jogo inicia ARANDU e oferece seis classes com personagens nomeados e saves 
 | `scripts/grimoire.mjs` | Investimento, maestrias e sincronização de atributos |
 | `scripts/spells.mjs` | Cinco magias, áreas, Muralha e limpeza |
 | `scripts/progression.mjs`, `rewards.mjs`, `drops.mjs` | Atributos, XP, crédito único, drops e coleta |
+| `scripts/healing-potion.mjs` | Frasco reutilizável de 3 goles: cura gradual, carga por abates e normalização do save |
 | `scripts/gear.mjs`, `consumables.mjs` | Mochila, equipamento, mercador e consumíveis |
 | `scripts/gear-panel.mjs`, `inventory-preview.mjs`, `inventory.css` | Aba de inventário: mochila, ficha da peça, modelo 3D da classe com os slots e atributos ([guia](../docs/v2-interface.md#equipamentos)) |
 | `scripts/character-panel.mjs`, `character-stats.mjs`, `character.css` | Aba Personagem: modelo 3D, origem dos atributos, resumo com Poder de Combate e XP ([guia](../docs/v2-interface.md#personagem)) |

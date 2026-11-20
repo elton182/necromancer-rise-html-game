@@ -1,0 +1,16 @@
+{
+  "asset": "npcJoao",
+  "sourceTask": "ccfe3c4b-1d3f-40f1-b211-b181c0ee9463",
+  "handVerticesChecked": 500,
+  "residualTorsoOrCapeWeights": 0,
+  "clips": [
+    "idle",
+    "greet",
+    "walk",
+    "death"
+  ],
+  "textures": "PBR embutidas: cor, normal, metalicidade/rugosidade",
+  "browser": "Chrome: campaign-npcs-browser-check passou; Edge não iniciou neste ambiente",
+  "visual": "Frente, costas e lateral no Blender; quatro poses, vila em fundo claro/escuro, qualidade baixa e horda no navegador",
+  "limits": "Verificação controlada; não equivale a uma partida completa da campanha."
+}

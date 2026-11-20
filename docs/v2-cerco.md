@@ -1,5 +1,7 @@
 # Cerco ao Ritual — defesa do Obelisco de Almas
 
+Balanceamento global de 13/11/2026: a vida de cada inimigo do plano é multiplicada por três, com piso 96, antes do fator de chefe (9). O cálculo fica em `v2/scripts/siege.mjs` e lê `ENEMY_RESILIENCE`; não aplica novamente a vida da tabela de arquétipos. Dano, velocidade, essência, integridade e regras das torres mantêm seus valores. Os ataques básicos reduzidos da Arqueira, Mercenário, Mago e lobo também valem aqui. Veja [combate](v2-combate.md#balanceamento-global-de-resistência-e-ataques-básicos-13112026).
+
 Modo de defesa de torres da v2, acessível com **G** no **Mestre do Cerco**, na praça de Jacarandá ou na Vila de Eldrin. Está liberado ao alcançar a vila, sem exigir conclusão do Ato I. É independente da Arena, das Expedições e da Conquista: não altera os recordes desses modos.
 
 ## Partida

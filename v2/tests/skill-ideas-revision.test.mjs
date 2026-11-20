@@ -53,7 +53,7 @@ test('Impacto e Cadência: até cinco avanços extras, presas únicas, parede e 
 test('Rastro não soma manchas sobrepostas e some ao morrer',()=>{
  const w=field('warrior',{thrust:1,impacto:1,cadencia:1,rastro:1});target(w,6);warriorAction(w,1);advance(w,.4);
  assert.ok(w.warriorFireTrails.length>2);w.warriorAction=null;const e=target(w,2);advance(w,.1);const first=lost(e);assert.equal(first,15);
- advance(w,.2);assert.equal(lost(e),first);advance(w,.4);assert.equal(lost(e),30);
+ advance(w,.2);assert.equal(lost(e),first);advance(w,.4);assert.equal(lost(e),31);assert.equal(e.fireStacks,2);
  w.player.hp=0;advance(w,.1);assert.deepEqual(w.warriorFireTrails,[]);
 });
 test('Espinhos usa dano na vida, ignora absorção e não reflete golpes esquivados',()=>{
@@ -72,12 +72,12 @@ test('Escudo Arcano desvia de 10% a 50%, após mitigação, com excedente na vid
  }
  const w=field('mage',{escudoArcano:5});cast(w,'escudoArcano');advance(w,.6);clearMarksman(w);assert.equal(w.marksmanShield,null);
 });
-test('Big Bang explode no contato uma vez; fogo da Arqueira queima sem acumular',()=>{
+test('Big Bang explode no contato uma vez; fogo da Arqueira acumula queimadura',()=>{
  const w=field('mage',{bigBang:1}),a=target(w,5),b=target(w,5,3),out=target(w,5,6);cast(w,'bigBang');advance(w,2);
  assert.equal(lost(a),360);assert.equal(lost(b),360);assert.equal(lost(out),0);assert.equal(w.marksmanShots.length,0);
  const v=field('archer',{fechadefogo:1,flechaExplosiva:1}),e=target(v,5);cast(v,'fechadefogo');advance(v,1);assert.ok(e.burnUntil>v.time);const tick=e.burnDamage;
- v.marksmanCooldowns={};cast(v,'fechadefogo');advance(v,.7);assert.equal(e.burnDamage,tick);assert.equal(tick,15);
- v.marksmanCooldowns={};const side=target(v,5,2);cast(v,'flechaExplosiva');advance(v,1);assert.equal(lost(side),163);
+ v.marksmanCooldowns={};cast(v,'fechadefogo');advance(v,.7);assert.equal(e.burnDamage,tick);assert.equal(tick,15);assert.equal(e.fireStacks,2);
+ v.marksmanCooldowns={};const side=target(v,5,2);cast(v,'flechaExplosiva');advance(v,1);assert.ok(lost(side)>=163);assert.ok(side.fireStacks>0);
 });
 test('Penas Voadoras é periódica, sem slot/custo; pausa e mergulho adiam o disparo',()=>{
  const w=field('archer',{falcon:1,penasVoadoras:1});advance(w,.02);w.falcon.next=Infinity;target(w,5);const mp=w.player.mp;
@@ -104,13 +104,13 @@ test('alcateia salva ferimentos e mortos, restaura nos mapas e aceita saves anti
  assert.deepEqual(normalizeSave({...save,character:{...save.character,druidPack:undefined}}).character.druidPack,[]);
  assert.deepEqual(normalizeSave({...save,character:{...save.character,druidPack:[NaN,4,-1]}}).character.druidPack,[0,1,0]);
 });
-test('Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e dura oito segundos',()=>{
+test('Planta Carnívora nasce com Raízes, ataca sem andar, respeita paredes e é permanente',()=>{
  const w=field('druid',{roots:1,thornbind:1,plantaCarnivora:1}),e=target(w,10);
  assert.ok(druidCast(w,'roots'));advance(w,.8);let plant=w.actors.find(a=>a.companion==='carnivorousPlant');assert.ok(plant);
  const pos=[plant.x,plant.y];advance(w,1.5);assert.ok(lost(e)>0);assert.deepEqual([plant.x,plant.y],pos);
  w.druidCooldowns={};druidCast(w,'roots');advance(w,.8);assert.equal(w.actors.filter(a=>a.companion==='carnivorousPlant').length,1);
  plant=w.actors.find(a=>a.companion==='carnivorousPlant');const hidden=target(w,plant.x+2,plant.y);w.arena.solids=[{kind:'box',x:plant.x+1,y:plant.y,width:.5,depth:10}];advance(w,2);assert.equal(lost(hidden),0);
- advance(w,10);assert.ok(!w.actors.some(a=>a.companion==='carnivorousPlant'&&a.hp>0));
+ advance(w,10);assert.ok(w.actors.some(a=>a.companion==='carnivorousPlant'&&a.hp>0),'permanente');
 });
 test('novos nós e precondições entram no build, sem alterar ids persistidos',()=>{
  const r=marksmanRanks('mage',{bolt:1,blink:1,echo:1,escudoArcano:5,clone:1,setasPerseguidoras:1,lazerArcano:1,bigBang:5},40);

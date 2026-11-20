@@ -4,21 +4,37 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
 const url=pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href,dir=path.resolve(__dirname,'../../review/v2/loading');
 (async()=>{fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true}),result={views:[]};
 try{
- // 1) carregamento real: a porcentagem acompanha a barra e a tela sai sozinha.
+ // 1) carregamento real: a porcentagem acompanha a barra e a tela aguarda o gesto que libera a música.
  {const context=await browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage(),errors=[],remote=[];
   page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
+  await page.addInitScript(()=>{window.audioContexts=[];window.AudioContext=new Proxy(window.AudioContext,{construct(Target,args){const ctx=new Target(...args);window.audioContexts.push(ctx);return ctx;}});});
   await page.goto(url);const samples=[];
-  for(let i=0;i<400&&await page.$('#loading');i++){const s=await page.evaluate(()=>{const r=document.getElementById('loading');return r&&{bar:r.querySelector('#loading-bar').style.width,pct:r.querySelector('#loading-percent').textContent,label:r.querySelector('#loading-label').textContent,tip:r.querySelector('#loading-tip').textContent};}).catch(()=>null);if(s&&(!samples.length||samples.at(-1).pct!==s.pct))samples.push(s);await page.waitForTimeout(50);}
-  await page.waitForFunction(()=>document.body.dataset.ready==='true'&&!document.getElementById('loading'),null,{timeout:90000});
+  for(let i=0;i<1800&&!(await page.locator('#loading-start').isVisible());i++){const s=await page.evaluate(()=>{const r=document.getElementById('loading');return r&&{bar:r.querySelector('#loading-bar').style.width,pct:r.querySelector('#loading-percent').textContent,label:r.querySelector('#loading-label').textContent,tip:r.querySelector('#loading-tip').textContent};}).catch(()=>null);if(s&&(!samples.length||samples.at(-1).pct!==s.pct))samples.push(s);await page.waitForTimeout(50);}
+  await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});
+  assert.ok(await page.locator('#loading-start').isVisible());
+  assert.equal(await page.locator('#tl').evaluate(e=>e.inert),true);
+  await page.screenshot({path:path.join(dir,'ready-desktop.png')});
+  await page.setViewportSize({width:375,height:812});
+  const bounds=await page.locator('#loading-start').boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=375&&bounds.y>=0&&bounds.y+bounds.height<=812);
+  await page.screenshot({path:path.join(dir,'ready-mobile.png')});
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(()=>!document.getElementById('loading'));
+  await page.waitForFunction(()=>window.audioContexts.some(ctx=>ctx.state==='running'&&ctx.currentTime>.2));
+  result.startAudio=await page.evaluate(()=>({ready:NecromancerV2.audio.ready,theme:NecromancerV2.audio.theme,states:audioContexts.map(c=>c.state),menuInert:document.getElementById('tl').inert}));
+  assert.equal(result.startAudio.ready,true);assert.equal(result.startAudio.menuInert,false);
+  // Outra página isolada: valida também o clique no botão.
+  const clickPage=await context.newPage();clickPage.on('pageerror',e=>errors.push(e.message));await clickPage.goto(url);
+  await clickPage.locator('#loading-start').click({timeout:90000});await clickPage.waitForFunction(()=>!document.getElementById('loading'));
+  assert.equal(await clickPage.evaluate(()=>NecromancerV2.audio.ready),true);await clickPage.close();
   assert.deepEqual(errors,[]);assert.deepEqual(remote,[]);
-  for(const s of samples){if(s.bar)assert.equal(s.pct,s.bar);assert.ok(s.tip.length>10);}
+  for(const s of samples){if(s.bar){assert.equal(s.pct,s.bar);assert.ok(s.tip.length>10);}}
   result.samples=samples;await context.close();}
  // 2) tela congelada em vários formatos para conferir o alinhamento sobre a arte.
  for(const [name,width,height] of [['desktop',1440,900],['native',1672,941],['ultrawide',2560,1080],['square',1000,1000],['mobile',375,812]]){
   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();
   await page.addInitScript(()=>{const remove=Element.prototype.remove;Element.prototype.remove=function(){if(this.id!=='loading')return remove.call(this);};});
   await page.goto(url);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});
-  const view=await page.evaluate(()=>{const r=document.getElementById('loading');r.classList.remove('done');r.style.transition='none';
+  const view=await page.evaluate(()=>{const r=document.getElementById('loading');r.classList.remove('done','awaiting-start');r.querySelector('#loading-start').hidden=true;r.style.transition='none';
    r.querySelector('#loading-bar').style.transition='none';r.querySelector('#loading-bar').style.width='72%';r.querySelector('#loading-percent').textContent='72%';
    r.querySelector('#loading-label').textContent='Carregando o mundo…';r.querySelector('#loading-tip').textContent='Use o Dash para se reposicionar rapidamente e evitar ataques em área.';
    const box=e=>{const b=e.getBoundingClientRect();return {left:Math.round(b.left),top:Math.round(b.top),right:Math.round(b.right),bottom:Math.round(b.bottom)};};

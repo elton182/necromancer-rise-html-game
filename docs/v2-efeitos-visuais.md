@@ -1,5 +1,7 @@
 # V2 — efeitos visuais de combate
 
+Regras e indicadores atuais de fogo/gelo, garras de sangue/gelo e Lua Prateada: [elementos](v2-elementos.md).
+
 Revisão de efeitos da v2: invocação com círculos de runas, lançamento do Tiro de Osso, golpes e áreas dos inimigos e
 as duas fases do Rei Caído. As mudanças de regra do Rei estão em [v2-inimigos.md](v2-inimigos.md#revisão-do-rei-na-v2-mudança-de-regra);
 o resto é só visual e não altera dano, custo, alcance, colisão nem recarga.
@@ -7,7 +9,7 @@ o resto é só visual e não altera dano, custo, alcance, colisão nem recarga.
 ## Como funciona
 
 - `v2/scripts/vfx-events.mjs` (sem Three.js, testável em Node): a simulação registra eventos em `w.effects` com o campo
-  `fx` (`impact`, `slash`, `shockwave`, `summonRune`, `summonBurst`, `dangerRune`, `fireField`, `boltCast`, `muzzle`,
+  `fx` (`impact`, `slash`, `shockwave`, `summonRune`, `summonBurst`, `shapeshift`, `dangerRune`, `fireField`, `boltCast`, `muzzle`,
   `dangerLine`, `roar`, `projectile`). Eventos pontuais têm teto de 80 simultâneos (`MAX_ONE_SHOT`); o excedente é
   descartado.
 - `v2/scripts/vfx.mjs` (Three.js): lê esses efeitos e o estado do mundo e desenha marcas no chão (texturas procedurais de
@@ -36,6 +38,34 @@ o resto é só visual e não altera dano, custo, alcance, colisão nem recarga.
 | Rei: Queda do Rei | Aviso hostil em círculo enchendo até o pouso, com chamas na borda, onda de fogo com tremor, chão em chamas | `fallen-king.mjs` |
 | Rei: Chamado da Coroa | Anel rúnico grande sob o Rei e círculos nos pontos de chegada, enchendo durante a invocação; colunas de luz na chegada | `fallen-king.mjs` |
 | Rei: fase II | Rugido (círculo de perigo, pilares de fogo em anel, onda grande, tremor) e depois aura permanente com runa sob os pés e brasas | `fallen-king.mjs`, `vfx.mjs` (aura lida de `w.boss.kingPhase2`) |
+
+### Garras da forma de lobo
+
+O ataque básico da Druida em forma de lobo emite `wolfClaws` na liberação do golpe:
+três riscos curvos marfim, com borda verde escura, suspensos à frente do peito.
+A varredura desce em diagonal e se espelha entre as mãos; os riscos crescem ao
+longo do corte e desaparecem pela cauda em 0,23 s. A origem e a direção são as do
+jogador no instante do golpe, inclusive ao errar um alvo.
+
+O terceiro golpe do combo usa o mesmo evento com `cross:true`: duas famílias de
+três riscos se cruzam em X num plano à frente do corpo. A inclinação mais acentuada
+mantém o cruzamento legível na câmera alta. Direita e esquerda conservam os arcos
+curvos individuais. É uma única liberação visual e de dano por comando.
+
+O parâmetro de raio visual é 30% maior que o alcance nominal das Garras; as faixas
+chegam a cerca de 3,15 u à frente da origem. É um rastro decorativo no ar; o alcance de dano
+continua em 2,3 u mais o raio do alvo, com o arco e o instante de impacto existentes.
+As três faixas e seus contornos permanecem em qualidade baixa. O evento usa o teto
+normal de efeitos pontuais; as seis malhas dos golpes simples ou doze do cruzado
+são liberadas quando ele termina.
+
+Verificação: `node --test v2/tests/druid.test.mjs` e
+`node v2/tests/druid-claws-vfx-browser-check.cjs` (Edge por padrão;
+`NR_BROWSER_CHANNEL=chrome` para Chrome). Evidências em `review/v2/druid-claws-vfx/`.
+Build, 13 testes da Druida e conferência no Chrome aprovados. As duas mãos foram
+conferidas em pedra escura/qualidade alta e pedra clara/qualidade baixa, incluindo
+descarte das malhas, sem erros de página ou requisições remotas. O teste de regra
+confirma que um alvo dentro do rastro ampliado, mas fora do alcance real, não recebe dano.
 
 ### Fogo
 

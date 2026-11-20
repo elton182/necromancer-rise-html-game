@@ -1,0 +1,272 @@
+[
+  {
+    "clip": "idle",
+    "progress": 0,
+    "headAboveHips": 0.37540645185005905,
+    "handAboveFeet": 0.8293141100877568
+  },
+  {
+    "clip": "idle",
+    "progress": 0.25,
+    "headAboveHips": 0.27719306110652764,
+    "handAboveFeet": 0.8159595979719922
+  },
+  {
+    "clip": "idle",
+    "progress": 0.48,
+    "headAboveHips": 0.17685992873319312,
+    "handAboveFeet": 0.8060287724821575
+  },
+  {
+    "clip": "idle",
+    "progress": 0.7,
+    "headAboveHips": 0.2505564047957427,
+    "handAboveFeet": 0.8101247253384629
+  },
+  {
+    "clip": "idle",
+    "progress": 1,
+    "headAboveHips": 0.37540953300074364,
+    "handAboveFeet": 0.829315546625502
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0,
+    "headAboveHips": 0.46521590682974634,
+    "handAboveFeet": 0.8496775686698133
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.25,
+    "headAboveHips": 0.4852281796329998,
+    "handAboveFeet": 0.7126707103393157
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.48,
+    "headAboveHips": 0.4073629772120495,
+    "handAboveFeet": 0.7631133011470473
+  },
+  {
+    "clip": "claw_1",
+    "progress": 0.7,
+    "headAboveHips": 0.40760607300199836,
+    "handAboveFeet": 0.7952275711014524
+  },
+  {
+    "clip": "claw_1",
+    "progress": 1,
+    "headAboveHips": 0.4652156787050863,
+    "handAboveFeet": 0.8496776679206557
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0,
+    "headAboveHips": 0.46521553487543077,
+    "handAboveFeet": 0.828503391996714
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.25,
+    "headAboveHips": 0.48289895468240207,
+    "handAboveFeet": 0.8012472867959478
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.48,
+    "headAboveHips": 0.40834971896645067,
+    "handAboveFeet": 0.8486656840580411
+  },
+  {
+    "clip": "claw_2",
+    "progress": 0.7,
+    "headAboveHips": 0.40852920622599065,
+    "handAboveFeet": 0.8825133180451074
+  },
+  {
+    "clip": "claw_2",
+    "progress": 1,
+    "headAboveHips": 0.46521521395710796,
+    "handAboveFeet": 0.828502999727925
+  },
+  {
+    "clip": "howl",
+    "progress": 0,
+    "headAboveHips": 0.45905080120734776,
+    "handAboveFeet": 0.8488479468379928
+  },
+  {
+    "clip": "howl",
+    "progress": 0.25,
+    "headAboveHips": 0.5425320460717846,
+    "handAboveFeet": 0.7982841412641519
+  },
+  {
+    "clip": "howl",
+    "progress": 0.48,
+    "headAboveHips": 0.7544271714491713,
+    "handAboveFeet": 0.899235227423451
+  },
+  {
+    "clip": "howl",
+    "progress": 0.7,
+    "headAboveHips": 0.8652909285091508,
+    "handAboveFeet": 1.1296445871463103
+  },
+  {
+    "clip": "howl",
+    "progress": 1,
+    "headAboveHips": 0.8810422492630576,
+    "handAboveFeet": 1.3645461486553416
+  },
+  {
+    "clip": "leap",
+    "progress": 0,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285029798301502
+  },
+  {
+    "clip": "leap",
+    "progress": 0.25,
+    "headAboveHips": 0.4447205774529088,
+    "handAboveFeet": 0.837551203482124
+  },
+  {
+    "clip": "leap",
+    "progress": 0.48,
+    "headAboveHips": 0.4097838071389974,
+    "handAboveFeet": 0.8493789517604817
+  },
+  {
+    "clip": "leap",
+    "progress": 0.7,
+    "headAboveHips": 0.4258927687671883,
+    "handAboveFeet": 0.8444297711812073
+  },
+  {
+    "clip": "leap",
+    "progress": 1,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285029798301502
+  },
+  {
+    "clip": "dodge",
+    "progress": 0,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285027158140164
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.25,
+    "headAboveHips": 0.40819100253297624,
+    "handAboveFeet": 0.7064811709553713
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.48,
+    "headAboveHips": 0.40819100253297624,
+    "handAboveFeet": 0.7064811709553713
+  },
+  {
+    "clip": "dodge",
+    "progress": 0.7,
+    "headAboveHips": 0.41022381951669096,
+    "handAboveFeet": 0.7106511818647886
+  },
+  {
+    "clip": "dodge",
+    "progress": 1,
+    "headAboveHips": 0.465215396969922,
+    "handAboveFeet": 0.8285027158140164
+  },
+  {
+    "clip": "walk",
+    "progress": 0,
+    "headAboveHips": -0.010856463741112599,
+    "handAboveFeet": -0.06015995401325419
+  },
+  {
+    "clip": "walk",
+    "progress": 0.25,
+    "headAboveHips": -0.006111639901611565,
+    "handAboveFeet": -0.007052540586903244
+  },
+  {
+    "clip": "walk",
+    "progress": 0.48,
+    "headAboveHips": -0.009465979883834907,
+    "handAboveFeet": -0.31920262061491667
+  },
+  {
+    "clip": "walk",
+    "progress": 0.7,
+    "headAboveHips": -0.01563248727869715,
+    "handAboveFeet": -0.45892629726249495
+  },
+  {
+    "clip": "walk",
+    "progress": 1,
+    "headAboveHips": -0.010856463741112599,
+    "handAboveFeet": -0.06015995401325419
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0,
+    "headAboveHips": -0.010856562550838667,
+    "handAboveFeet": -0.06015986759747011
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.25,
+    "headAboveHips": -0.008256812370845634,
+    "handAboveFeet": -0.00974857244192101
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.48,
+    "headAboveHips": -0.010004851306558926,
+    "handAboveFeet": -0.3203205713014533
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 0.7,
+    "headAboveHips": -0.014729816930523776,
+    "handAboveFeet": -0.45713143932985656
+  },
+  {
+    "clip": "strafe_left",
+    "progress": 1,
+    "headAboveHips": -0.010856562550838667,
+    "handAboveFeet": -0.06015986759747011
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0,
+    "headAboveHips": -0.010856703048950922,
+    "handAboveFeet": -0.06015848943834967
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.25,
+    "headAboveHips": -0.008256960590863227,
+    "handAboveFeet": -0.010840785865777414
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.48,
+    "headAboveHips": -0.010005009571218415,
+    "handAboveFeet": -0.320316707411088
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 0.7,
+    "headAboveHips": -0.01472995905933594,
+    "handAboveFeet": -0.4577074085358839
+  },
+  {
+    "clip": "strafe_right",
+    "progress": 1,
+    "headAboveHips": -0.010856703048950922,
+    "handAboveFeet": -0.06015848943834967
+  }
+]

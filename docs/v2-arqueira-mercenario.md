@@ -60,7 +60,7 @@ A direção e o ponto-alvo ficam fixos ao iniciar. A esquiva cancela a ação; o
 
 | Ação | Custo / recarga | Tempo | Efeito |
 |---|---|---|---|
-| Disparo | — / 0,5 s | 0,50 s, solta em 0,26 s | 85% do dano. Flecha a 24 u/s, alcance 13 u; para no primeiro inimigo. |
+| Disparo | — / 0,5 s | 0,50 s, solta em 0,26 s | 65% do dano. Flecha a 24 u/s, alcance 13 u; para no primeiro inimigo. |
 | Flecha Perfurante | 20 foco / 5 s | 0,75 s, solta em 0,55 s | 200% do dano. A linha de 16 u aparece no chão durante a carga, que pode ser feita andando a metade da velocidade. Flecha a 34 u/s que atravessa todos os inimigos, com dano cheio em cada um. |
 | Recuo | 15 foco / 6 s (−0,5 s por ponto) | 0,40 s | Salto de 5 u para trás, de frente para a mira, entre 0,05 e 0,35 s, respeitando paredes. Inimigos a até 2,5 u do ponto de partida (sem parede no meio) ficam 35% mais lentos por 2 s; chefes não. |
 | Chuva de Flechas | 35 foco / 12 s | 0,60 s, marca em 0,35 s | Área de raio 3–4,2 conforme pontos no ponto mirado (até 12 u), marcada no chão. Depois de 0,7 s caem 5 ondas, uma a cada 0,4 s, com 45% do dano em quem estiver dentro. |
@@ -99,7 +99,7 @@ A presa marcada tem prioridade nos mergulhos automáticos enquanto estiver visí
 
 | Ação | Custo / recarga | Tempo | Efeito |
 |---|---|---|---|
-| Virote pesado | — / 0,8 s | 0,80 s, solta em 0,36 s | 150% do dano. Virote a 28 u/s, alcance 12 u. Atravessa até 2 inimigos extras (+1 por ponto em Perfuração), perdendo 25% a cada um. Empurra 0,35 u. |
+| Virote pesado | — / 0,8 s | 0,80 s, solta em 0,36 s | 65% do dano. Virote a 28 u/s, alcance 12 u. Atravessa até 2 inimigos extras (+1 por ponto em Perfuração), perdendo 25% a cada um. Empurra 0,35 u. |
 | Rajada | 24 vigor / 7 s | 0,80 s | Três virotes, em 0,25, 0,40 e 0,55 s, com 70% do dano cada; cada um atravessa um inimigo, perdendo 25%. |
 | Bomba de fragmentação | 20 vigor / 6 s | 0,60 s, arremesso em 0,30 s | Arco de 0,6 s até o ponto mirado (entre 1,5 e 9 u). A marca de queda fica no chão durante o voo. Explode em raio 2,6 (+12% por ponto em Estilhaços) com 160% do dano e empurra 1 u para fora; paredes bloqueiam a explosão. |
 | Mina de pólvora | 25 vigor / 9 s | 0,60 s, assenta em 0,40 s | Mina à frente dos pés. Arma em 1 s (o anel muda de cor) e explode quando um inimigo chega a 1,4 u: raio 6 (+Estilhaços), 220% do dano, empurrão de 1 u. No máximo duas, e a mais antiga sai. Duram 25 s. |

@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "checks": [
+    "seleção da classe",
+    "árvore própria",
+    "Faísca",
+    "Corrente",
+    "Raízes",
+    "Tempestade",
+    "Rejuvenescer",
+    "Forma de Lobo",
+    "Garras",
+    "Salto Feroz",
+    "transformação",
+    "Frenético",
+    "Uivo",
+    "qualidade baixa e chão claro",
+    "lobo sem consumo de mana"
+  ],
+  "errors": [],
+  "remote": []
+}

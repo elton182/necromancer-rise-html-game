@@ -154,3 +154,54 @@ O Caminho de Jacarandá passa de oito para **16 inimigos**, divididos em encontr
 Na caminhada automatizada com colisões e percepção reais, o primeiro contato ocorreu após cerca de 8 u. A cobertura das rotas também é verificada por amostragem ao longo do caminho; ela não estima duração de luta nem dificuldade. Tomás continua exigindo somente a derrota dos perseguidores próximos dele, sem obrigar a limpar a trilha inteira.
 
 As falas de Tomás conectam melhor o pedido de ajuda à perseguição ao passageiro; o objetivo da trilha aponta sinais de saque em vez de anunciar gritos desde a saída da caverna. João e Helena apresentam a denúncia em parágrafos curtos. As condições da história e os prêmios exclusivos permanecem iguais. Registros em [review/v2/campaign-pacing](../review/v2/campaign-pacing/validation-notes.md).
+
+## Modelos Tripo dos moradores (13/11/2026)
+
+Marta, Joaquim, Tomás, Helena, Bruno e Lili usam os novos modelos texturizados
+fornecidos em `blender/exports/tripo-out/`, preparados com rig e animações
+locais. Marta aparece na caravana, em Jacarandá e em Itavera; Joaquim no
+reencontro e na vila (ou no cativeiro do fluxo anterior); Tomás na trilha;
+Helena em Itavera; Bruno na mina e na forja; Lili na praça. Os mesmos registros
+visuais continuam sendo reutilizados por figurantes dos encontros existentes.
+João mantém seu modelo Tripo já integrado.
+
+Os modelos entram no HTML autocontido, com malhas de aproximadamente 18 mil
+triângulos e texturas PBR de até 512 px. Há descanso, saudação, caminhada e
+morte; missões, condições de conversa, recompensas, colisões e formato de save
+permanecem os mesmos. Bruno usa o novo modelo também na Vila de Eldrin do
+fluxo antigo. Os modelos anteriores continuam preservados.
+
+Pipeline e comandos em [blender/README.md](../blender/README.md#npcs-tripo-da-campanha).
+Verificação: `node v2/tests/campaign-npcs-tripo-browser-check.cjs`, com
+armazenamento isolado e evidências em `review/v2/campaign-npcs-tripo/`.
+
+Os seis NPCs Tripo têm rig de 23 ossos com coluna, pescoço, ombros e abas da
+capa articuladas. O descanso usa um ciclo de aproximadamente 12 segundos: braços mais baixos,
+cotovelos relaxados, respiração no tórax e gestos espaçados por personagem,
+mantendo os pés no apoio. Cada NPC tem uma fase estável própria para evitar
+respiração e gestos sincronizados. A conferência
+compara os ossos em instantes diferentes também dentro da vila.
+
+## NPCs sempre de frente para a tela
+
+O renderizador orienta os moradores e personagens de NPC para a direção
+horizontal da câmera em cada quadro, em qualquer mapa ou etapa do prólogo.
+Isso inclui a caravana, Tomás na trilha, os cativos, a vila, Itavera e o
+guarda aliado. O palco narrativo também orienta seus modelos de NPC para
+sua câmera. O corpo permanece ereto; não há inclinação para cima.
+
+A regra é visual: `actor.angle`, direção de ataques, posição, colisões e
+missões permanecem independentes. As animações de idle continuam no rig.
+A implementação central está em `v2/scripts/renderer.mjs`.
+
+O check `v2/tests/campaign-npcs-tripo-browser-check.cjs` compara a rotação
+real dos modelos com a direção da câmera em Jacarandá, Itavera e nas etapas
+travel, ambush, fall, trail, defense e reunion, e confirma que os ângulos da
+simulação não foram alterados pela apresentação. Evidências em
+`review/v2/campaign-npcs-tripo/`.
+
+## Proporção dos moradores e câmera (16/11/2026)
+
+Os NPCs têm altura visual 15% maior que a configuração anterior: adultos comuns passam de 2,25 para 2,5875 unidades. As diferenças de porte dos modelos antigos são preservadas. Isso aumenta a presença e a leitura dos moradores ao lado do jogador. Lili mantém o fator visual de 65% na vila; poses da carroça e o mensageiro ferido preservam seus fatores próprios. Os nomes e marcadores acompanham a altura renderizada. A roda permite afastamento até 18 (antes 24), sem mudar colisões, alcance de interação ou combate.
+
+Conferência: `node v2/tests/npc-scale-zoom-browser-check.cjs` usa armazenamento isolado e grava as medidas e capturas em `review/v2/npc-scale-zoom/`. O teste compara a altura das malhas animadas com a referência, confere o apoio dos pés e os dois limites de zoom, com capturas em fundo escuro e claro, qualidade baixa e horda. A conferência visual cobre Jacarandá; não substitui uma revisão de todas as cenas da campanha.

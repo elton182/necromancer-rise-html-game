@@ -1,0 +1,18 @@
+{
+  "name": "lili",
+  "source": "lili-pbr-7ca110e8/model.glb",
+  "sourceTriangles": 1460644,
+  "triangles": 18000,
+  "vertices": 15795,
+  "bytes": 1981964,
+  "clips": [
+    "idle",
+    "greet",
+    "walk",
+    "death"
+  ],
+  "textureMaxSize": 512,
+  "bones": 23,
+  "idleSeconds": 12,
+  "idleProfile": "lili"
+}

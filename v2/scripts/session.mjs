@@ -1,3 +1,4 @@
+import {clearElements} from './elements.mjs';
 import {warriorLoadout,warriorActionLearned,warriorEquipSlot,warriorInCombat,warriorTornado,WARRIOR_ACTION_COUNT} from './warrior-model.mjs';
 import {warriorAction,stopWarriorChannel,toggleStance} from './warrior.mjs';
 import {druidAction,toggleWolf,clearDruid,snapshotDruidPack} from './druid.mjs';
@@ -28,6 +29,7 @@ export function createSession(saved=freshSave()){
  syncSkills(session.world);setPaused(session.world,true);return session;
 }
 export function transition(s,scene,{loading=false}={}){
+ clearElements(s.world);s.world.potionHeal=null;
  if(!['menu','training','dead'].includes(scene))throw Error('Cena indisponível: '+scene);
  if(scene==='dead'&&s.world.player.hp>0)throw Error('O personagem ainda está vivo.');
  if(s.world.classId==='druid'&&!loading)s.save.character.druidPack=snapshotDruidPack(s.world);
@@ -47,14 +49,14 @@ export function orderSession(s,point){return !s.world.adventure?.cinematic&&s.sc
 export function equipSession(s,index,id){if(s.world.classId==='warrior'){if(!Number.isInteger(index)||index<0||index>5||!Number.isInteger(id)||id<0||id>=WARRIOR_ACTION_COUNT||s.scene==='dead')return {ok:false,message:'Slot inválido.'};if(!warriorActionLearned(id,s.world.warriorRanks))return {ok:false,message:'Libere na árvore.'};const result=warriorEquipSlot(s.world.warriorLoadout,index,id);if(!result.ok)return result;stopWarriorChannel(s.world);s.world.warriorLoadout=result.slots;s.save.character.warriorLoadout=[...result.slots];return {ok:true};}if(s.world.classId==='druid'||isMarksman(s.world.classId)){if(s.scene==='dead')return {ok:false,message:'Slot inválido.'};if(isWolf(s.world))return {ok:false,message:'Na forma de lobo a barra é fixa. Volte à forma humana para trocar.'};const ranks=s.world.classId==='druid'?s.world.druidRanks:s.world.marksmanRanks;if(loadoutAction(s.world.classId,id)<0)return {ok:false,message:'Slot inválido.'};if(!loadoutLearned(s.world.classId,id,ranks))return {ok:false,message:'Libere na árvore.'};const result=equipLoadout(s.world.classId,s.world.skillLoadout,index,id);if(!result.ok)return result;s.world.skillLoadout=result.slots;s.save.character.skillLoadout=[...result.slots];return {ok:true};}if(s.world.armyMode!=='groups'||s.scene==='dead')return {ok:false,message:'Ative os grupos reais no menu.'};const result=equipGroup(s.world,index,id,{preparation:s.scene==='menu'});if(result.ok)syncSkills(s.world);return result;}
 export function stepSession(s,dt,input){if(!['training','village'].includes(s.scene))return;if(s.world.player.hp>0&&!s.world.adventure?.cinematic)step(s.world,dt*(s.world.adventure?.timeScale||1),input);if(s.world.player.hp<=0)transition(s,'dead');else{tickAdventure(s,Math.min(.25,dt));tickExpedition(s);tickSiege(s,Math.min(.25,dt));tickLab(s,Math.min(.25,dt));}}
 export function applySave(s,value){
- const saved=normalizeSave(value);s.save=saved;s.world.armyMode='load';s.world.drops=[];transition(s,'menu',{loading:true});
+ const saved=normalizeSave(value);s.world.testMoveSpeed=1;s.save=saved;s.world.armyMode='load';s.world.drops=[];transition(s,'menu',{loading:true});
 }
 export function updateSettings(s,settings){
  s.save=normalizeSave({...s.save,settings:{...s.save.settings,...settings}});
  Object.assign(s.world,{lootFilter:s.save.settings.lootFilter,gearLevel:s.save.settings.gearLevel,equipment:s.save.character.equipment});
 }
 // O nível efetivo pode estar à frente do resumo guardado (perfil de teste); o snapshot grava o que está em jogo.
-export function snapshot(s,now=Date.now()){const level=levelOf(s.world);return normalizeSave({...s.save,character:{...s.save.character,level,druidPack:snapshotDruidPack(s.world),warriorLoadout:warriorLoadout(s.world.warriorLoadout),skillLoadout:classLoadout(s.world.classId,s.world.skillLoadout)??undefined,exp:clampExp(level,s.save.character.exp)},...(s.world.armyMode==='groups'?{horde:snapshotHorde(s.world)}:{}),savedAt:now});}
+export function snapshot(s,now=Date.now()){const level=levelOf(s.world);return normalizeSave({...s.save,character:{...s.save.character,level,potionCharge:s.world.potionCharge,druidPack:snapshotDruidPack(s.world),warriorLoadout:warriorLoadout(s.world.warriorLoadout),skillLoadout:classLoadout(s.world.classId,s.world.skillLoadout)??undefined,exp:clampExp(level,s.save.character.exp)},...(s.world.armyMode==='groups'?{horde:snapshotHorde(s.world)}:{}),savedAt:now});}
 // Perfis de teste substituem o nível em memória; o XP volta a zero e os atributos são recalculados sem curar.
 export function useProfile(s,profile){
  const result=setProfile(s.world,profile);if(!result.ok)return result;

@@ -93,7 +93,7 @@ export function tickKing(w,e,dt){
  if(e.kingRoar&&!e.king&&!e.kingV2){roar(w,e,dt);return;}
  const ph=phase(e),targets=()=>w.actors.filter(a=>(a===w.player||a.team==='ally')&&a.hp>0&&!a.dead);
  const nearest=()=>target(w,e);
- const damage=(test,n)=>{for(const t of targets())if(test(t))dealDamage(w,t,n,e);};
+ const damage=(test,n)=>{for(const t of targets())if(test(t))dealDamage(w,t,n,e,'Ataque do Rei','fire');};
  const bound=(x,y)=>resolvePosition({x,y},e.radius,w.arena);
  const crowd=r=>targets().filter(t=>t.team==='ally'&&Math.hypot(t.x-e.x,t.y-e.y)<=r).length,adds=()=>w.actors.filter(a=>a.kingOwner===e.id&&a.hp>0).length;
  if(ph&&!e.king&&!e.kingV2)e.kingGap=Math.min(e.kingGap,V2_KING.gap[ph]);

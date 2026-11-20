@@ -9,7 +9,18 @@ a Vila de Eldrin em uma cena limpa; nenhuma luta ou entidade é restaurada.
 O botão da campanha usa o personagem atual, preservando itens, nível e pontos.
 O treino continua acessível separadamente pelo menu.
 
+## Objetos de missão
+
+Objetos necessários para avançar missões exibem um **! dourado** acima do ponto de interação, a até 30 unidades do jogador: ordens na caverna do prólogo, pilhas de madeira, livro de contas do acampamento, bolsa de João e mesa do capitão. Ao se aproximar (menos de 3,2 unidades), o marcador mostra também o nome e a tecla **G**. O ícone desaparece ao concluir a interação ou avançar a etapa; guardas e demais requisitos continuam sendo exigidos normalmente. O tamanho em tela é preservado no zoom, nos fundos claro/escuro e na qualidade baixa.
+
 ## Fontes e distribuição
+
+João usa o modelo Tripo `blender/exports/campaign_joao_tripo.glb`, registrado
+como `npcJoao`, com capa, capuz, texturas e rig preparados no Blender por
+`blender/scripts/joao_tripo.py`. Os clipes `idle`, `greet`, `walk` e `death`
+substituem a pose T da geração original. O mesmo ID atende ao prólogo, resgate,
+vila e Itavera; missões, diálogos, colisões e saves mantêm suas regras.
+Fonte editável: `blender/models/campaign_joao_tripo.blend`.
 
 - `v2/tools/campaign-source.cjs` lê `CAMP_STAGES`, salas, corredores, portas,
   emboscadas, Capitão, missões, falas, histórias e instruções de `v1/necromancer-canvas.html`.
@@ -283,7 +294,7 @@ Os grupos fixos e as patrulhas das rotas combinam tipos misturados (Guerreiro, A
 
 O NPC com **!** oferece o próximo pedido; abrir ou fechar a conversa não aceita a missão. O botão de aceitação inicia o acompanhamento no HUD, com **Etapa N de M**, objetivo atual e progresso. **?** indica uma etapa pronta para entregar ou concluir por conversa. A bússola acompanha o primeiro objetivo aceito; antes da aceitação, o painel orienta procurar os NPCs com !. As pilhas da serraria só recebem marcadores de missão após aceitar a madeira.
 
-No inventário, o atalho **Missões · em aberto e concluídas** abre o diário, também acessível pela aba **Missões** do Relicário. Cada entrada mostra o responsável e as etapas; concluídas ficam recolhidas e podem ser expandidas. O histórico deriva do progresso salvo. Aceitar não paga prêmio; cada recompensa continua sendo paga uma vez. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem.
+No inventário, o atalho **Missões · em aberto e concluídas** abre o diário, também acessível pela aba **Missões** do Relicário. A lista separa abertas e concluídas; selecionar uma entrada abre o responsável, o progresso, o próximo passo e as etapas no painel ao lado (abaixo em tela estreita). O histórico deriva do progresso salvo. Aceitar não paga prêmio; cada recompensa continua sendo paga uma vez. Conversar ou abrir o mapa pausa o jogo. Ações exigem estar a até 3,2 unidades do personagem.
 
 Saves antigos preservam missões concluídas e qualquer progresso efetivo. As antigas missões automáticas sem progresso passam a ofertas: primeiro Bruno, depois a madeira. Uma missão já aceita no novo fluxo permanece ativa ao recarregar. Fontes: [regras e histórico](../v2/scripts/quest-model.mjs), [diário](../v2/scripts/quest-journal.mjs) e [contrato de saves](v2-saves.md). [Verificação do fluxo e limites](../review/v2/quest-journal/validation-notes.md).
 
@@ -320,7 +331,7 @@ Saves antigos preservam missões concluídas e qualquer progresso efetivo. As an
 
 ## Encerramento do Ato I · a carta de João (10/11/2026)
 
-Campanhas novas seguem agora até a recuperação da bolsa e das provas na Pedra Negra, entrega da denúncia a Helena na praça de Itavera e convite de João ao Vale de Itajuba. O fluxo está detalhado em [O rastro de João e a carta](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026). O final registra o Ato I concluído; a campanha do Ato II ainda não está disponível. Saves que já concluíram a missão local podem continuar pelo epílogo sem repetir recompensas.
+Campanhas novas seguem agora até a recuperação da bolsa e das provas na Pedra Negra, entrega da denúncia a Helena na praça de Itavera e convite de João ao Vale de Itajuba. O fluxo está detalhado em [O rastro de João e a carta](v2-itauna.md#o-rastro-de-joão-e-a-carta-10112026). O final registra o Ato I concluído; a campanha do Ato II ainda não está disponível. Após a missão local, o cerco do Passo do Cedro precisa ser resolvido antes de viajar. Saves que já chegaram a Itavera preservam o epílogo sem repetir recompensas.
 
 
 ## Revisão de ritmo e Bruno (11/11/2026)
@@ -334,3 +345,62 @@ Bruno volta da mina para **(52, 71)**, numa área aberta junto à rua a oeste da
 As falas de Tomás, Marta, João e Helena foram revistas; conversas longas podem ter parágrafos separados. Bruno não faz mais referência exclusiva à horda quando atende outras classes. Objetivos, custos e prêmios exclusivos das missões permanecem os mesmos.
 
 Testes, medições e limites em [review/v2/campaign-pacing](../review/v2/campaign-pacing/validation-notes.md). Amostras no motor real não substituem uma partida completa com as seis classes.
+
+O mapa da região em **M** usa o [atlas em pergaminho](v2-interface.md#atlas-da-região--11112026), com lista de lugares, destaque de marcos, ampliação e localização do personagem. A cartografia lê o terreno, as estradas e os destinos reais da região; não altera limites, passagens ou progresso.
+
+A Gruta das Tecelãs tem uma exceção ao limite de três/quatro integrantes: desde 13/11/2026, usa quatro comuns ou até seis com líder, cinco reforços e patrulhas adicionais. Veja [combate ampliado na gruta](v2-itauna.md#combate-ampliado-na-gruta-13112026).
+
+O Forte da Pedra Negra também tem limite próprio: oito integrantes comuns e dez na guarda do capitão, com contra-ataques nas três posições externas e nos encontros internos. Consulte [combate ampliado no forte](v2-itauna.md#combate-ampliado-no-forte-13112026). A grade e os IDs de conclusão permanecem os mesmos.
+
+
+## Passo do Cedro — Romper o Cerco (13/11/2026)
+
+Depois de entregar a bolsa, a carta e o contrato a João, Rafael chega à praça com o ultimato de Bento Ferraz: entregar o emissário e os documentos ou sofrer um ataque. João fica em Jacarandá com Joaquim, organizando a defesa e protegendo as provas. Uma nova conversa com João oferece **Romper o Cerco**. Após aceitar, ele permite viajar ao Passo do Cedro; um anel na extremidade sudeste da vila também permite entrar e revisitar a área desbloqueada.
+
+O mapa próprio de 300 × 320 u conecta Estrada das Carroças, Povoado do Cedro e Acampamento da Colina. Tem 37 grupos e 355 inimigos contando reforços, sem respawn, com soldados, ladrões e atiradores. Todos os grupos concluídos ficam salvos, inclusive após morrer, retornar à vila ou recarregar. Os kits GLB existentes compõem carroças saqueadas, casas, depósitos, paliçadas, torres e tendas. Relevo suave eleva o acampamento; o horizonte do motor prolonga o piso e árvores externas continuam o bioma.
+
+O bloqueio da estrada e o capitão do povoado abrem o portão principal. Três desvios alteram o avanço:
+
+| Objetivo | Consequência |
+| --- | --- |
+| Derrotar o posto de sinalização | Impede a última reserva de seis soldados/atiradores de Bento. |
+| Tomar o depósito e destruir o combustível com G | Remove o especial incendiário do chefe. |
+| Derrotar os captores e libertar os moradores com G | Abre o portão lateral do acampamento. Rosa retorna à vila após concluir a missão. |
+
+Chegar à entrada do acampamento grava `entry: camp`, um ponto de retomada antes do pátio final. Vida parcial de inimigos e ações em curso não são preservadas. Sair pelo menu para o abrigo continua esquecendo a área; os grupos concluídos permanecem registrados.
+
+**Bento Ferraz** usa provisoriamente o GLB do soldado, maior e com tinta vermelha, com barra de chefe própria. A arte atual tem espada; a alabarda conceitual não foi produzida. Sua regra é exclusiva da v2, sem substituir o Rei Caído:
+
+- Varredura frontal: aviso em setor por 0,8 s (0,65 s na segunda fase), alcance 4,3 u e dano de 1,25× o dano do chefe.
+- Investida: linha marcada por 0,9 s (0,75 s na segunda fase), deslocamento por 0,65 s com colisão varrida, dano de 1,3× uma vez por alvo e recuperação.
+- Golpe de área: círculo travado no alvo por 1,1 s (0,95 s na segunda fase), raio 3 u e dano de 1,5×. Saia do círculo antes do impacto.
+- Incendiário: círculo de 3,4 u, mesma preparação, dano de fogo pelo caminho comum do combate. Destruir o combustível substitui esse especial por uma varredura.
+- Abaixo de 65% de vida, move-se mais rápido e encadeia duas varreduras. A 50%, tenta chamar uma única reserva: preparação de 1,5 s, interrompida ao perder 7% da vida máxima durante a ordem. A corneta silenciada impede a chamada. Os reforços pertencem ao mesmo encontro e precisam ser derrotados.
+
+Preparações e recuperações usam o relógio da simulação. Defesa, esquiva, obstáculos, Muralha, horda, abates e loot seguem os caminhos comuns. Derrotar Bento e sua guarda permite voltar a João para receber uma única recompensa de **450 ouro e 1.400 XP**, liberar Itavera e entregar as provas a Helena. Não há cronômetro global de ataque à vila.
+
+Fontes: `v2/scripts/cedro-{model,map,quest,combat}.mjs`, com integração nas áreas, campanha, diário, atlas, saves e build. Testes: `node --test v2/tests/cedro.test.mjs v2/tests/nilo-quest.test.mjs v2/tests/itauna.test.mjs`. A conferência `node v2/tests/cedro-browser-check.cjs` usa Playwright e Edge (ou `BROWSER_CHANNEL=chrome`), armazenamento isolado e evidências em `review/v2/cedro/`. Duração de 30–45 minutos e dificuldade nas seis classes continuam sendo metas a validar em partidas completas; não são resultado dos testes controlados.
+
+Validação executada e limitações: [registro do Passo do Cedro](../review/v2/cedro/validation-notes.md).
+
+
+### Revisão da densidade e dos contra-ataques (13/11/2026)
+
+Forte e Cedro agora usam grupos maiores e entram em combate ao ativar o encontro, sem aguardar uma segunda aproximação. No Cedro são sete integrantes nas patrulhas, oito nos objetivos opcionais, dez nos dois bloqueios principais e nove na guarda de Bento. O bloqueio da estrada e o capitão do povoado têm três levas cada; os três objetivos opcionais e três patrulhas recebem uma segunda leva. Os reforços chegam após 4,5 s, de uma posição de entrada diferente. Os líderes desses encontros não reaparecem nas levas seguintes.
+
+Doze encontros adicionais ocupam a chegada, estrada, povoado e pátio final. Seus IDs são novos (`cedro-patrol-19` a `cedro-patrol-30`): saves que já venceram os grupos anteriores conservam essas vitórias e podem encontrar as novas patrulhas ao revisitar a região. Todo grupo novo concluído também fica salvo. O HUD mostra inimigos em combate, levas restantes e a contagem até o próximo contra-ataque; objetivo principal fica integralmente legível.
+
+O total de 355 inclui o percurso e os reforços programados, não inimigos simultâneos. A reserva condicional de seis inimigos de Bento é adicional. O forte passa de 66 para 212 inimigos no percurso; o Cedro, de 124 para 355. Não foram alterados os níveis de área nem o dano/vida individuais: o aumento está na população, cobertura das rotas, ativação e levas. XP e loot seguem os abates normais, portanto o percurso mais longo rende mais recompensas de combate.
+
+O simulador matemático atual não representa estas rotas, aggro e combates em levas da v2. Os testes verificam execução e progressão; dificuldade e duração precisam de partidas completas. Verificação e capturas: [assault-pacing](../review/v2/assault-pacing/validation-notes.md).
+
+
+### Bento Ferraz — pressão e segunda fase (13/11/2026)
+
+Bento recebeu 2,5× a vida da revisão anterior: seu multiplicador sobre o soldado raro passa de 3 para 7,5. Seu dano básico é multiplicado por 1,45 na montagem, e sua velocidade por 1,4 sobre o soldado raro. O modificador só é aplicado uma vez. Agora também é identificado por `isBoss`, recebendo as regras já existentes de resistência a congelamento, controle de raízes, puxões e efeitos que distinguem chefes de inimigos comuns.
+
+Alvos a mais de 5 u provocam investidas em vez de varreduras que não os alcançariam. A investida percorre até 15,6 u, com aviso em linha, preparação de 0,9 s (0,75 s na segunda fase), colisão varrida e um impacto por alvo. A partir de 65% de vida, varreduras são encadeadas em dois golpes: cada golpe trava sua direção e prepara separadamente por 0,65 s. O jogador precisa evitar os dois setores. O primeiro estágio usa preparação de 0,8 s na varredura. Golpes de área e incendiários preparam por 1,1 s (0,95 s na segunda fase). As janelas de recuperação permanecem explícitas, com pausas menores entre ações.
+
+A 50%, tenta chamar uma única reserva de seis soldados/atiradores. A preparação ainda dura 1,5 s; perder 7% da vida máxima durante a ordem a interrompe. O posto de sinalização silenciado continua impedindo a reserva, e destruir o combustível ainda remove o incendiário. Chefes, guardas e reservas continuam usando dano, defesa, Dash, colisão e loot comuns. Esta revisão não altera a população nem os atributos dos soldados comuns.
+
+Verificação: `v2/tests/campaign-bosses.test.mjs` e `v2/tests/campaign-bosses-browser-check.cjs`; evidências e limites em [campaign-bosses](../review/v2/campaign-bosses/validation-notes.md). A agressividade foi conferida em cenários controlados; a dificuldade em uma partida completa com cada classe ainda precisa de playtest.

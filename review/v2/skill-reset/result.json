@@ -1,11 +1,167 @@
 {
   "checks": [
-    "necromancer",
-    "warrior",
-    "druid",
-    "mage",
-    "archer",
-    "mercenary"
+    {
+      "classId": "necromancer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "warrior",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "druid",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mage",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "archer",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mercenary",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "necromancer",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "warrior",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "druid",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mage",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "archer",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mercenary",
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "necromancer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "warrior",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "druid",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mage",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "archer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    },
+    {
+      "classId": "mercenary",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "visible": true,
+      "gold": 960
+    }
   ],
   "errors": []
 }

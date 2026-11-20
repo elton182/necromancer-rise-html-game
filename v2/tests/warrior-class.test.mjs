@@ -1,3 +1,4 @@
+import {schoolSynergy} from '../scripts/skill-synergy.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -46,7 +47,7 @@ test('bloqueio anula todo o ataque sem gastar barreira; armadura continua separa
  const rings={...w.equipment,ring1:item('ring1'),ring2:item('ring2')};rings.ring1.affixes=[{stat:'blockChance',value:100}];rings.ring2.affixes=[];assert.equal(snapshotFor(w,rings).attributes.blockChance,75);
 });
 test('árvore exige nível, investimento e orçamento sem usar bônus de equipamento',()=>{
- assert.equal(canLearn({},'tornado',6),false);assert.equal(canLearn({thrust:1},'tornado',5),false);assert.ok(canLearn({thrust:1},'tornado',6));
+ assert.equal(canLearn({},'tornado',6),true);assert.equal(canLearn({thrust:1},'tornado',5),false);assert.ok(canLearn({thrust:1},'tornado',6));
  const r=warriorRanks({strength:5,shieldThrow:1,tornado:1},2);assert.equal(warriorSpent(r),5);assert.equal(r.shieldThrow,0);assert.equal(r.tornado,0);
  const w=field({regeneration:2,equipmentMastery:2});assert.ok(w.player.hpRegen>=.8);const damage=w.player.damage;applyAttributes(w);assert.equal(w.player.damage,damage);
 });
@@ -73,7 +74,7 @@ test('escudo acerta uma vez na ida e na volta; não bloqueia em voo e retorna',(
  const w=field({bash:1,shieldThrow:1}),e=target(w,3);w.random=()=>0;assert.ok(warriorAction(w,5));advance(w,.2);assert.ok(w.warriorShieldFlight);assert.equal(warriorAction(w,2),false);
  const hp=w.player.hp;assert.ok(dealDamage(w,w.player,10,e).applied>0);assert.ok(w.player.hp<hp);
  for(let i=0;i<120;i++)advance(w,1/60);
- assert.equal(w.warriorShieldFlight,null);assert.equal(w.actors.filter(a=>a.warriorProjectile).length,0);assert.equal(e.hp,10000-2*Math.floor(w.player.damage*1.2));
+ assert.equal(w.warriorShieldFlight,null);assert.equal(w.actors.filter(a=>a.warriorProjectile).length,0);assert.equal(e.hp,10000-2*Math.floor(w.player.damage*1.2*(1+schoolSynergy('warrior',w.warriorRanks,'shieldThrow'))));
  const v=field({bash:1,shieldThrow:1}),behind=target(v,4);v.arena.solids=[{kind:'box',x:2,y:0,width:1,depth:6}];warriorAction(v,5);for(let i=0;i<120;i++)advance(v,1/60);assert.equal(behind.hp,10000);assert.equal(v.warriorShieldFlight,null);
 });
 test('sinergias são temporárias, consumidas uma vez e morte limpa o escudo',()=>{

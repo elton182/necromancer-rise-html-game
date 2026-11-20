@@ -27,7 +27,7 @@ export function journeyLocation(save){
  const c=save.campaign||{},p=c.prologue,w=c.world;
  if(p&&p.stage!=='done')return {name:p.stage==='cave'?caveTitle(p):PROLOGUE_PLACES[p.stage]||'Estrada de Jacarandá',detail:'Prólogo · '+prologueObjective(p)[0]};
  if(w){
-  if(isArea(w.area))return {name:AREAS[w.area].name,detail:w.area==='itavera'?areaObjectives(w.area,w)[0].title:w.area==='itauna'?'Arredores de Jacarandá':'Várzea de Itaúna'};
+  if(isArea(w.area))return {name:AREAS[w.area].name,detail:w.area==='cedro'?'Romper o Cerco':w.area==='itavera'?areaObjectives(w.area,w)[0].title:w.area==='itauna'?'Arredores de Jacarandá':'Várzea de Itaúna'};
   return {name:w.checkpoint==='crypt'?'Cripta Esquecida':'Vila de Jacarandá',detail:worldObjective(w).title};
  }
  if(c.village)return {name:'Vila de Eldrin',detail:'Campanha · Ato I'};

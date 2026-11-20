@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: grito prepara e aplica bonus temporario sem alterar atributos base
+ok 1 - grito prepara e aplica bonus temporario sem alterar atributos base
+  ---
+  duration_ms: 52.8755
+  ...
+# Subtest: morte cancela preparacao e encerra o bonus concedido
+ok 2 - morte cancela preparacao e encerra o bonus concedido
+  ---
+  duration_ms: 14.6624
+  ...
+# Subtest: vida maior e flechas do ladino carregam sinal de rastro
+ok 3 - vida maior e flechas do ladino carregam sinal de rastro
+  ---
+  duration_ms: 1.1304
+  ...
+# Subtest: fontes preservam fases, recompensas e hist├│rias da campanha
+ok 4 - fontes preservam fases, recompensas e hist├│rias da campanha
+  ---
+  duration_ms: 1.2147
+  ...
+# Subtest: normaliza├º├úo e conclus├úo: desbloqueio sequencial e pr├¬mio ├║nico
+ok 5 - normaliza├º├úo e conclus├úo: desbloqueio sequencial e pr├¬mio ├║nico
+  ---
+  duration_ms: 0.9982
+  ...
+# Subtest: portas e uni├úo dos corredores impedem atravessar paredes
+ok 6 - portas e uni├úo dos corredores impedem atravessar paredes
+  ---
+  duration_ms: 14.8775
+  ...
+# Subtest: personagem novo percorre Ato I, revisita sem pr├¬mio e volta ├á vila
+ok 7 - personagem novo percorre Ato I, revisita sem pr├¬mio e volta ├á vila
+  ---
+  duration_ms: 75.0513
+  ...
+# Subtest: morte e recarga n├úo completam fase nem restauram combate
+ok 8 - morte e recarga n├úo completam fase nem restauram combate
+  ---
+  duration_ms: 5.1559
+  ...
+# Subtest: ofertas e miss├Áes da vila: conclus├úo paga uma vez e retorno limpa o campo
+ok 9 - ofertas e miss├Áes da vila: conclus├úo paga uma vez e retorno limpa o campo
+  ---
+  duration_ms: 24.6119
+  ...
+# Subtest: save mant├®m hist├│rias e pr├¬mios mas n├úo restaura entidades ou zonas
+ok 10 - save mant├®m hist├│rias e pr├¬mios mas n├úo restaura entidades ou zonas
+  ---
+  duration_ms: 5.7857
+  ...
+# Subtest: grupos revivem entre fases sem duplicar integrantes
+ok 11 - grupos revivem entre fases sem duplicar integrantes
+  ---
+  duration_ms: 9.8962
+  ...
+# Subtest: miss├úo em arena s├│ conclui depois das ondas e do chefe
+ok 12 - miss├úo em arena s├│ conclui depois das ondas e do chefe
+  ---
+  duration_ms: 11.5574
+  ...
+# Subtest: floresta usa wave de combate para vida e fase para n├¡vel dos itens
+ok 13 - floresta usa wave de combate para vida e fase para n├¡vel dos itens
+  ---
+  duration_ms: 6.0715
+  ...
+# Subtest: chefe da campanha e refor├ºos preservam atributos e n├¡veis do encontro
+ok 14 - chefe da campanha e refor├ºos preservam atributos e n├¡veis do encontro
+  ---
+  duration_ms: 5.6559
+  ...
+# Subtest: floresta e miss├Áes liberam Ladr├úo, Grifo e Aranha por onda; a cripta de tutorial n├úo
+ok 15 - floresta e miss├Áes liberam Ladr├úo, Grifo e Aranha por onda; a cripta de tutorial n├úo
+  ---
+  duration_ms: 14.9069
+  ...
+# Subtest: necromancer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 16 - necromancer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 102.5885
+  ...
+# Subtest: necromancer: habilidade inicial tem impacto superior ao b├ísico
+ok 17 - necromancer: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 9.9133
+  ...
+# Subtest: warrior: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 18 - warrior: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 73.3702
+  ...
+# Subtest: warrior: habilidade inicial tem impacto superior ao b├ísico
+ok 19 - warrior: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 12
+  ...
+# Subtest: druid: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 20 - druid: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 70.435
+  ...
+# Subtest: druid: habilidade inicial tem impacto superior ao b├ísico
+ok 21 - druid: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 6.1389
+  ...
+# Subtest: archer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 22 - archer: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 56.4274
+  ...
+# Subtest: archer: habilidade inicial tem impacto superior ao b├ísico
+ok 23 - archer: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 8.5196
+  ...
+# Subtest: mercenary: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 24 - mercenary: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 56.6417
+  ...
+# Subtest: mercenary: habilidade inicial tem impacto superior ao b├ísico
+ok 25 - mercenary: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 10.5847
+  ...
+# Subtest: mage: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 26 - mage: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 49.113
+  ...
+# Subtest: mage: habilidade inicial tem impacto superior ao b├ísico
+ok 27 - mage: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 7.493
+  ...
+# Subtest: druid-wolf: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+ok 28 - druid-wolf: comuns da caverna resistem ao b├ísico; progress├úo continua reduzindo o tempo de abate
+  ---
+  duration_ms: 53.3816
+  ...
+# Subtest: druid-wolf: habilidade inicial tem impacto superior ao b├ísico
+ok 29 - druid-wolf: habilidade inicial tem impacto superior ao b├ísico
+  ---
+  duration_ms: 6.6048
+  ...
+# Subtest: resist├¬ncia global ├® igual entre modos, sem alterar dano/XP; elite mant├®m propor├º├úo
+ok 30 - resist├¬ncia global ├® igual entre modos, sem alterar dano/XP; elite mant├®m propor├º├úo
+  ---
+  duration_ms: 9.2411
+  ...
+# Subtest: refor├ºos recebem exatamente a mesma resist├¬ncia da primeira leva
+ok 31 - refor├ºos recebem exatamente a mesma resist├¬ncia da primeira leva
+  ---
+  duration_ms: 5.2855
+  ...
+# Subtest: acesso exige fim do Ato I, vila, grau e modificador v├ílidos; saves antigos ganham padr├Áes
+ok 32 - acesso exige fim do Ato I, vila, grau e modificador v├ílidos; saves antigos ganham padr├Áes
+  ---
+  duration_ms: 22.5525
+  ...
+# Subtest: constru├º├úo ├® at├┤mica e limitada a pedestais; melhorias at├® grau 3, sem ouro nem duplica├º├úo
+ok 33 - constru├º├úo ├® at├┤mica e limitada a pedestais; melhorias at├® grau 3, sem ouro nem duplica├º├úo
+  ---
+  duration_ms: 4.9397
+  ...
+# Subtest: rotas e chefe s├úo anunciados pelo plano; modificadores escalam vida e velocidade
+ok 34 - rotas e chefe s├úo anunciados pelo plano; modificadores escalam vida e velocidade
+  ---
+  duration_ms: 0.4926
+  ...
+# Subtest: dano das torres usa morte e recompensa comuns uma vez; resist├¬ncia n├úo d├í imunidade
+ok 35 - dano das torres usa morte e recompensa comuns uma vez; resist├¬ncia n├úo d├í imunidade
+  ---
+  duration_ms: 3.9389
+  ...
+# Subtest: gelo desacelera, peste atinge grupo e cripta reanima somente guardi├Áes ca├¡dos
+ok 36 - gelo desacelera, peste atinge grupo e cripta reanima somente guardi├Áes ca├¡dos
+  ---
+  duration_ms: 3.5748
+  ...
+# Subtest: invasores seguem pontos e vazamentos ferem obelisco uma vez sem ess├¬ncia ou XP
+ok 37 - invasores seguem pontos e vazamentos ferem obelisco uma vez sem ess├¬ncia ou XP
+  ---
+  duration_ms: 5.669
+  ...
+# Subtest: pausa bloqueia simula├º├úo e derrota congela o combate; retorno limpa estruturas
+ok 38 - pausa bloqueia simula├º├úo e derrota congela o combate; retorno limpa estruturas
+  ---
+  duration_ms: 19.8369
+  ...
+# Subtest: oito ondas vencidas encerram uma vez, pagam e liberam grau; runas persistem sem salvar partida
+ok 39 - oito ondas vencidas encerram uma vez, pagam e liberam grau; runas persistem sem salvar partida
+  ---
+  duration_ms: 115.1422
+  ...
+# Subtest: melhorar a Cripta refor├ºa guardi├Áes vivos sem curar; runa ├® aplicada no in├¡cio da partida
+ok 40 - melhorar a Cripta refor├ºa guardi├Áes vivos sem curar; runa ├® aplicada no in├¡cio da partida
+  ---
+  duration_ms: 2.501
+  ...
+# Subtest: runa g├®lida refor├ºa controle com limite e sem imunidade da rota resistente
+ok 41 - runa g├®lida refor├ºa controle com limite e sem imunidade da rota resistente
+  ---
+  duration_ms: 2.0264
+  ...
+# Subtest: simula├º├úo pura: serializ├ível, sem objetos de renderiza├º├úo; reset limpa efeitos e usa novas identidades
+ok 42 - simula├º├úo pura: serializ├ível, sem objetos de renderiza├º├úo; reset limpa efeitos e usa novas identidades
+  ---
+  duration_ms: 9.1148
+  ...
+# Subtest: pausa congela prepara├º├úo e movimento e impede novas magias
+ok 43 - pausa congela prepara├º├úo e movimento e impede novas magias
+  ---
+  duration_ms: 10.6799
+  ...
+# Subtest: magia resolve dano uma vez e reiniciar remove o impacto antigo
+ok 44 - magia resolve dano uma vez e reiniciar remove o impacto antigo
+  ---
+  duration_ms: 20.7776
+  ...
+# Subtest: morte do atacante durante a prepara├º├úo cancela o golpe pendente
+ok 45 - morte do atacante durante a prepara├º├úo cancela o golpe pendente
+  ---
+  duration_ms: 1.694
+  ...
+# Subtest: aviso travado permite esquiva e mant├®m o impacto no local original
+ok 46 - aviso travado permite esquiva e mant├®m o impacto no local original
+  ---
+  duration_ms: 1.4737
+  ...
+# Subtest: subpassos resolvem impacto igualmente em passos diferentes
+ok 47 - subpassos resolvem impacto igualmente em passos diferentes
+  ---
+  duration_ms: 6.0525
+  ...
+# Subtest: limites, diagonal normalizada, valores inv├ílidos e alvo fora do alcance
+ok 48 - limites, diagonal normalizada, valores inv├ílidos e alvo fora do alcance
+  ---
+  duration_ms: 93.248
+  ...
+1..48
+# tests 48
+# suites 0
+# pass 48
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 906.3504

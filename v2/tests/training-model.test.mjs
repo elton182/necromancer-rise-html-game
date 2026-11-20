@@ -11,7 +11,7 @@ test('pausa congela preparação e movimento e impede novas magias',()=>{
  const w=bossEncounter();step(w,.2);setPaused(w,true);const before=JSON.stringify(w);step(w,.25,{x:1});assert.equal(cast(w),false);assert.equal(JSON.stringify(w),before);setPaused(w,false);advance(w,1);assert.ok(w.player.hp<100);
 });
 test('magia resolve dano uma vez e reiniciar remove o impacto antigo',()=>{
- const w=createWorld({horde:0});const target=w.actors.find(a=>a.model==='zombie');w.actors=[w.player,target];target.x=0;target.y=0;w.aim={x:0,y:0};assert.equal(cast(w),true);assert.equal(cast(w),false);advance(w,.5);assert.equal(w.hits,1);assert.equal(target.hp,40);advance(w,.5);assert.equal(target.hp,40);cast(w);resetWorld(w);advance(w,.5);assert.equal(w.hits,0);
+ const w=createWorld({horde:0});const target=w.actors.find(a=>a.model==='zombie');w.actors=[w.player,target];target.x=0;target.y=0;w.aim={x:0,y:0};assert.equal(cast(w),true);assert.equal(cast(w),false);advance(w,.5);assert.equal(w.hits,1);assert.equal(target.hp,target.maxHp-20);advance(w,.5);assert.equal(target.hp,target.maxHp-20);cast(w);resetWorld(w);advance(w,.5);assert.equal(w.hits,0);
 });
 test('morte do atacante durante a preparação cancela o golpe pendente',()=>{
  const w=bossEncounter();advance(w,.2);assert.ok(w.effects.some(e=>e.kind==='kingWarning'));w.boss.hp=0;advance(w,1);assert.equal(w.player.hp,100);assert.equal(w.effects.length,0);assert.equal(w.boss.animation,'death');

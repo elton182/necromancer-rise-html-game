@@ -224,7 +224,7 @@ Arqueira e Mercenário (`classId: "archer"` / `"mercenary"`) persistem a árvore
 
 ### Classe Druida
 
-`character.druidRanks` guarda os 14 nós da árvore da Druida (`spark`, `chain`, `storm`, `roots`, `thornbind`, `rejuvenate`, `wolf`, `leap`, `wildHeart`, `howl`, `vitality`, `wisdom`, `sap`, `attunement`), de 0 até o máximo de cada nó, recalculados pelo orçamento e pelos pré-requisitos do nível ao carregar. Saves sem o campo, de qualquer classe, recebem zeros. A Druida usa os itens do catálogo do Necromante. Forma de lobo, ações, recargas, nuvens da Tempestade e cura em andamento são transitórios e não são gravados. Consulte [Druida](v2-druida.md).
+`character.druidRanks` guarda todos os nós da árvore da Druida definidos em `docs/habilidades/arvores.json` (por exemplo `spark`, `chain`, `wolf`, `leap`, `wildHeart`, `frenetico`, `howl`; nós novos entram com 0), de 0 até o máximo de cada nó, recalculados pelo orçamento e pelos pré-requisitos do nível ao carregar. Saves sem o campo, de qualquer classe, recebem zeros. A Druida usa os itens do catálogo do Necromante. Forma de lobo, ações, recargas, nuvens da Tempestade e cura em andamento são transitórios e não são gravados. Consulte [Druida](v2-druida.md).
 
 ## Áreas ligadas (Várzea de Itaúna)
 
@@ -250,3 +250,19 @@ Em `campaign.world`, `nilo` acrescenta `itavera`, `invitation` e `complete` aos 
 Campos opcionais booleanos `niloLetter` e `niloEvidence` registram a bolsa e as provas coletadas no forte. Ausentes são falsos na etapa `fort`; em `return`, `done` e nas etapas do epílogo, a normalização os considera verdadeiros, permitindo continuar saves anteriores sem repetir coletas nem prêmios. Nas etapas anteriores ao forte são descartados. Carta e provas podem ser guardadas em qualquer ordem.
 
 `area: 'itavera'` e `entry: 'caravan'` restauram a praça, com padrão de entrada seguro. A área é descartada se a etapa de João ainda não permite o epílogo. A entrega a Helena e a aceitação do convite são ações distintas e persistentes; recarga não as repete. Ao aceitar, `horde.profile.act1` e o perfil ativo recebem o marcador de conclusão já usado pelo fluxo antigo. Nenhuma entidade, diálogo em andamento ou animação de viagem é persistida. Chave e versão permanecem iguais.
+
+## Frasco de cura
+
+`character.potionCharge` armazena a carga inteira de 0 a 30 (10 unidades por gole). Saves sem esse campo começam com 30; valores numéricos são limitados a esse intervalo. Gasto e recarga por abates atualizam a carga do personagem; o snapshot a preserva, incluindo frações de gole. A cura em andamento (`world.potionHeal`) é transitória e não é gravada.
+
+
+## Selo de Jacarandá
+
+`campaign.world.portalUnlocked` é booleano, normalizado com `false` para saves anteriores e antes de concluir a primeira missão de Jacarandá. Joaquim grava `true` na entrega do selo, após a missão do ferreiro. Não altera a versão nem a chave de armazenamento. As coordenadas, área de origem e grupos vencidos do portal aberto são transitórios e não entram no save; recarregar conserva o selo e fecha o vínculo.
+
+
+## Cerco do Passo do Cedro
+
+`campaign.world.cedro` usa `locked`, `offered`, `active`, `return` e `done`, normalizados em `cedro-model.mjs`. Antes de `nilo: done`, o cerco fica bloqueado. Saves com a missão local concluída e sem esse campo recebem a oferta; saves em `itavera`, `invitation` ou `complete` preservam o epílogo, com cerco considerado concluído. O estado de João e os prêmios anteriores não são reiniciados.
+
+`area: cedro` só é aceita com o cerco desbloqueado. `entry: village` chega pela estrada e `entry: camp` retoma antes do acampamento final. `cleared` passa a admitir os IDs `cedro-*` declarados em `CEDRO_GROUPS`: grupos derrotados, `cedro-fuel` (combustível destruído) e `cedro-shortcut` (moradores libertados). O prêmio final exige a derrota do grupo de Bento e muda `cedro` para `done`, impedindo repetição. Não são persistidos vida parcial do chefe, preparações, reforços em andamento ou projéteis. Chave e versão do save permanecem iguais.

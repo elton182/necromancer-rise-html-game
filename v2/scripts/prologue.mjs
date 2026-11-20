@@ -63,8 +63,8 @@ export function launchPrologue(s){
  clean(s,arena,['ambush','cave','trail'].includes(stage)&&arena.prologueStart||start);s.scene='training';w.paused=false;w.gearLevel=1;w.aim={x:0,y:0};
  w.adventure={kind:'prologue',name:stage==='cave'?caveTitle(p):arena.name||'Jacarandá',stage,done:false,queue:[],zones:[],dialogue:null,cinematic:['travel','fall'].includes(stage),elapsed:0,wave:0};
  if(['travel','ambush','farewell','fall'].includes(stage)){
-  person(w,'marta','npcLysa','Marta',1,6);person(w,'nilo','npcBram','João',-1,-1);
-  person(w,'guard','npcLysa','Guarda da caravana',-5,0);
+  person(w,'marta','npcMarta','Marta',1,6);person(w,'nilo','npcJoao','João',-1,-1);
+  person(w,'guard','npcGuard','Guarda da caravana',-5,0);
   if(stage==='travel'){
    w.actors=w.actors.filter(a=>a===w.player||a.key==='marta'||a.key==='nilo');
    person(w,'driver','npcMerchant','Cocheiro',0,78);
@@ -85,16 +85,16 @@ export function launchPrologue(s){
  }
  if(stage==='cave'){
   if(!p.caveCleared)placeEnemies(w,arena,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));
-  w.landmarks=[...[2,4,6].map(i=>({key:'cargo',name:'Investigar a carga lateral',x:CAVE_ROOMS[i].x+8,y:CAVE_ROOMS[i].y+3})),{key:'papers',name:'Examinar as ordens',...PROLOGUE_POINTS.papers},{key:'cargo',name:'Examinar a carga roubada',x:7,y:7},{key:'exit',name:'Saída da caverna',...PROLOGUE_POINTS.exit}];
+  w.landmarks=[...[2,4,6].map(i=>({key:'cargo',name:'Investigar a carga lateral',x:CAVE_ROOMS[i].x+8,y:CAVE_ROOMS[i].y+3})),{key:'papers',name:'Examinar as ordens',questMarker:p.clue?'':'!',...PROLOGUE_POINTS.papers},{key:'cargo',name:'Examinar a carga roubada',x:7,y:7},{key:'exit',name:'Saída da caverna',...PROLOGUE_POINTS.exit}];
   if(!p.clue)dialogue(s,'cave');
  }
  if(stage==='trail'){
-  const m=PROLOGUE_POINTS.messenger;person(w,'messenger','npcBram','Tomás · mensageiro ferido',m.x,m.y,{visualScale:.9});
+  const m=PROLOGUE_POINTS.messenger;person(w,'messenger','npcMessenger','Tomás · mensageiro ferido',m.x,m.y,{visualScale:.9});
   placeEnemies(w,arena,arena.prologueSpawns.map(e=>[e.type,e.x,e.y]));w.landmarks=[{key:'satchel',name:'Examinar a bolsa caída',...PROLOGUE_POINTS.satchel},{key:'messenger',name:'Ajudar Tomás',...m}];
  }
  if(['defense','reunion'].includes(stage)){
-  person(w,'marta','npcLysa','Marta',1,7);person(w,'oren','npcBram','Joaquim',-3,5);
-  person(w,'guard','npcLysa','Guarda da caravana',3,5,{team:stage==='defense'?'ally':'neutral',hp:1000,maxHp:1000,phase:0});
+  person(w,'marta','npcMarta','Marta',1,7);person(w,'oren','npcMayor','Joaquim',-3,5);
+  person(w,'guard','npcGuard','Guarda da caravana',3,5,{team:stage==='defense'?'ally':'neutral',hp:1000,maxHp:1000,phase:0});
   if(stage==='defense'){enemies(w,[[6,-5,0],[9,5,-5],[6,0,-8],[0,-9,-3]]);w.notice='Marta: Você está vivo! Precisamos de ajuda na praça!';}
   else dialogue(s,'reunion');
  }
@@ -176,7 +176,7 @@ export function nextPrologueDialogue(s){
   // A defesa substitui o antigo resgate de Joaquim somente nas campanhas novas.
   s.save.campaign.world={stage:'complete',questFlow:1,smith:'available',lumber:'locked',passengerMissing:true};
   s.save.character.gold+=90;grantExperience(s,120);w.progressChanged=true;sceneChange(s,'Jacarandá',()=>{launchWorld(s);s.world.progressChanged=true;});
- }else {if(d.key==='clue'){s.save.campaign.prologue.clue=true;w.progressChanged=true;}if(d.key==='cave_whispers'){s.save.campaign.prologue.caveHeard=true;w.progressChanged=true;}if(r.stage==='cave')r.name=caveTitle(s.save.campaign.prologue);r.dialogue=null;w.paused=false;}
+ }else {if(d.key==='clue'){s.save.campaign.prologue.clue=true;for(const l of w.landmarks)if(l.key==='papers')l.questMarker='';w.progressChanged=true;}if(d.key==='cave_whispers'){s.save.campaign.prologue.caveHeard=true;w.progressChanged=true;}if(r.stage==='cave')r.name=caveTitle(s.save.campaign.prologue);r.dialogue=null;w.paused=false;}
  return true;
 }
 export function renderProloguePanel(s,{host,node,button,interact}){

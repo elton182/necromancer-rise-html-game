@@ -204,3 +204,7 @@ body[data-lich="lich"] .action-equipped,body[data-lich="transform"] .action-equi
 #pause-dialog .gear-stat-table tr.gear-stat-up{background:#254b2b70;box-shadow:inset 3px 0 #8fce8b}#pause-dialog .gear-stat-table tr.gear-stat-down{background:#61352f66;box-shadow:inset 3px 0 #e09b8b}#pause-dialog .gear-stat-table tr.gear-stat-up td:nth-child(n+3),#pause-dialog .stat-up{color:#a9e5a3;font-weight:700}#pause-dialog .gear-stat-table tr.gear-stat-down td:nth-child(n+3),#pause-dialog .stat-down{color:#ffb4a3;font-weight:700}#pause-dialog .gear-stat-table tr.gear-stat-changed th{color:#eee6ca}#pause-dialog .gear-stat-table td:last-child{white-space:nowrap}.gear-stat-heading>span{display:block;color:#c7b782;font-size:11px;line-height:1.5;margin:5px 0 12px}
 
 .world-label.service-label{white-space:pre-line;text-align:center;font:11px/1.5 Georgia,serif;padding:5px 9px;border:1px solid #a68d5788;border-radius:4px;background:#111b15df;box-shadow:0 2px 7px #0006;pointer-events:none}
+
+#hud #druid-moon{pointer-events:auto;cursor:pointer;width:100%;min-width:0;margin:0;padding:2px 4px;color:#d9f3ff;background:#172839;border:1px solid #94cae0;border-radius:3px;font:700 9px/14px Georgia,serif;white-space:nowrap}#hud #druid-moon:disabled{opacity:.65;cursor:default}
+
+#test-move-speed{display:block;width:min(100%,360px);margin:14px 0;accent-color:#c9ac60}

@@ -1,0 +1,14 @@
+{
+  "fort": {
+    "groups": 20,
+    "enemies": 212,
+    "reinforcements": 6
+  },
+  "cedro": {
+    "groups": 37,
+    "enemies": 355,
+    "reinforcements": 8
+  },
+  "errors": [],
+  "remote": []
+}

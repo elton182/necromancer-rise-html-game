@@ -1,4 +1,5 @@
 // O diário deriva das etapas já salvas: não cria uma segunda fonte de progresso ou de prêmios.
+import {cedroStage,cedroWon} from './cedro-model.mjs';
 import {niloReady,NILO_RECOVERED,NILO_CITY} from './nilo-model.mjs';
 export function normalizeVillageQuests(raw,complete){
  if(!complete)return {questFlow:1,smith:'locked',lumber:'locked'};
@@ -13,14 +14,24 @@ export function normalizeVillageQuests(raw,complete){
 export function questMarkerFor(key,p){
  if(!p)return '';
  const n=p.nilo||'locked',clear=id=>p.cleared?.includes(id);
+ const pileIndex=['pile-0','pile-1','pile-2'].indexOf(key);
+ if(pileIndex>=0&&p.lumber==='active'&&!p.piles?.[pileIndex])return '!';
+ if(key==='nilo-ledger'&&n==='road')return '!';
+ if(key==='nilo-bag'&&n==='fort'&&!p.niloLetter)return '!';
+ if(key==='nilo-contract'&&n==='fort'&&!p.niloEvidence)return '!';
  if(key==='child'&&['wake','village'].includes(p.stage))return '!';
  if(key==='mayor'){
   if(p.stage==='return'||p.stage==='rescue'&&p.guardsCleared)return '?';
+  if(p.stage==='complete'&&p.smith==='done'&&!p.portalUnlocked)return '!';
   if(p.stage==='complete'&&(p.smith==='available'||p.lumber==='available'))return '!';
   if(p.lumber==='active'&&p.piles?.every(Boolean))return '?';
  }
  if(key==='smith'&&(p.smith==='found'||p.smith==='active'&&clear('mine-guards')))return '?';
  if(key==='marta'&&n==='locked'&&niloReady(p))return '!';
+ if(key==='nilo'&&n==='done'&&cedroStage(p)!=='done')return cedroWon(p)?'?':'!';
+ if(key==='cedro-messenger'&&cedroStage(p)==='offered')return '!';
+ if(key==='cedro-prisoners'&&!clear('cedro-shortcut'))return clear('cedro-prisoners')?'?':'!';
+ if(key==='cedro-fuel'&&!clear('cedro-fuel'))return '!';
  if(key==='nilo')return ['rescued','done'].includes(n)?'!':n==='return'?'?':'';
  if(key==='nilo-cocoon'&&['road','cave'].includes(n)&&clear('cave-queen'))return '?';
  if(key==='helena'&&n==='itavera')return '?';
@@ -46,12 +57,17 @@ export function campaignQuests(save){
  if(['active','done'].includes(p.lumber))add('lumber','Madeira para Jacarandá','Joaquim',p.lumber==='done',[
   ['Marcar a pilha do barracão',p.piles?.[0]],['Marcar a pilha do riacho',p.piles?.[1]],['Marcar a pilha da serra',p.piles?.[2]],['Voltar a Joaquim',false]
  ]);
+ if(p.portalUnlocked)add('jacaranda-seal','O Selo de Jacarandá','Joaquim',true,[['Reacender a forja com Bruno',true],['Receber o selo de Joaquim',true]]);
  const n=p.nilo||'locked',rescued=['rescued','fort',...NILO_RECOVERED].includes(n);
  if(n!=='locked')add('joao-rescue','O rastro de João','Marta',rescued,[
   ['Investigar o acampamento de Itaúna',n!=='road'],['Derrotar a Mãe-Tecelã',p.cleared?.includes('cave-queen')],['Libertar João',rescued]
  ]);
  if(['fort',...NILO_RECOVERED].includes(n))add('joao-letter','A carta da Pedra Negra','João',['done',...NILO_CITY].includes(n),[
-  ['Derrotar o Capitão da Pedra Negra',p.cleared?.includes('fort-captain')],['Recuperar a bolsa com a carta',p.niloLetter],['Guardar o contrato e as ordens',p.niloEvidence],['Entregar a bolsa e as provas a João',false]
+  ['Tomar a guarda da entrada',NILO_RECOVERED.includes(n)||p.cleared?.includes('fort-gate')],['Tomar as barracas do oeste',NILO_RECOVERED.includes(n)||p.cleared?.includes('fort-west')],['Tomar o campo de treino do leste',NILO_RECOVERED.includes(n)||p.cleared?.includes('fort-east')],
+  ['Derrotar o Capitão da Pedra Negra e seus reforços',NILO_RECOVERED.includes(n)||p.cleared?.includes('fort-captain')],['Guardar o contrato e as ordens',p.niloEvidence],['Recuperar a bolsa com a carta',p.niloLetter],['Entregar a bolsa e as provas a João',false]
+ ]);
+ if(['active','return','done'].includes(cedroStage(p))&&p.cedro)add('cedro-siege','Romper o Cerco','João',cedroStage(p)==='done',[
+  ['Romper o bloqueio das carroças',p.cleared?.includes('cedro-road')],['Derrotar o capitão dos reforços',p.cleared?.includes('cedro-captain')],['Derrotar Bento Ferraz e sua guarda',cedroWon(p)],['Voltar a João em Jacarandá',false]
  ]);
  if(NILO_CITY.includes(n))add('itavera-letter','A denúncia chega a Itavera','João',['invitation','complete'].includes(n),[
   ['Viajar com a caravana a Itavera',p.area==='itavera'],['Entregar a denúncia a Helena',false]

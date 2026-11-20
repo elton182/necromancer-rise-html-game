@@ -46,3 +46,15 @@ test('sem a marcação, o carregamento é inofensivo', () => {
   const loading = createLoading({ getElementById: () => null });
   assert.doesNotThrow(() => { loading.step(.5, 'x'); loading.tip(); loading.done(); loading.fail(); });
 });
+
+test('a confirmação mantém o loading até um gesto e inicia uma única vez', () => {
+ const fake=fakeDoc();let starts=0,focused=false;
+ const start={hidden:true,focus(){focused=true;}};fake.nodes['loading-start']=start;
+ const loading=createLoading(fake.doc);loading.done(()=>starts++);
+ assert.equal(start.hidden,false);assert.ok(focused);
+ assert.ok(fake.classes.has('awaiting-start'));assert.ok(!fake.classes.has('done'));
+ loading.done(()=>starts++);assert.equal(starts,0);
+ start.onclick();assert.equal(starts,1);assert.equal(start.onclick,null);
+ assert.equal(start.disabled,true);assert.ok(fake.classes.has('done'));
+ loading.fail();
+});

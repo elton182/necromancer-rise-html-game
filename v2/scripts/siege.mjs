@@ -1,6 +1,6 @@
 import {inVillageHub,rememberVillage} from './village-services.mjs';
 import {clean} from './campaign.mjs';
-import {spawnEnemy} from './enemies.mjs';
+import {spawnEnemy,ENEMY_RESILIENCE} from './enemies.mjs';
 import {grantExperience} from './rewards.mjs';
 import {CORE,PADS,TOWERS,LANES,MODIFIERS,WAVES,MAX_TIER,normalizeSiege,guardianStats,siegeArena,wavePlan,towerCost,runeCost,victoryReward} from './siege-model.mjs';
 const fail=message=>({ok:false,message}),ok=message=>({ok:true,message});
@@ -37,7 +37,8 @@ export function tickSiege(s,dt){
  if(r.integrity<=0){endSiege(s,false);return;}if(!r.active)return;
  r.elapsed+=dt;for(const q of r.queue.filter(q=>q.time<=r.elapsed)){
   const pos=LANES[q.lane].points[0],e=spawnEnemy(w,q.type,pos.x,pos.y,{wave:1,tier:q.boss?'rare':'common'});
-  Object.assign(e,{siegeLane:q.lane,siegeNode:1,siegeBoss:q.boss,hp:q.hp*(q.boss?9:1),maxHp:q.hp*(q.boss?9:1),spd:q.speed*(q.boss?.7:1),dmg:q.damage*(q.boss?2:1),xp:q.boss?120:12,gearWave:w.gearLevel});
+  const hp=Math.max(ENEMY_RESILIENCE.floor,q.hp*ENEMY_RESILIENCE.multiplier)*(q.boss?9:1);
+  Object.assign(e,{siegeLane:q.lane,siegeNode:1,siegeBoss:q.boss,hp,maxHp:hp,spd:q.speed*(q.boss?.7:1),dmg:q.damage*(q.boss?2:1),xp:q.boss?120:12,gearWave:w.gearLevel});
   if(q.boss){e.model='fallenKing';e.isBoss=true;w.boss=e;}
  }r.queue=r.queue.filter(q=>q.time>r.elapsed);
  if(!r.queue.length&&!w.actors.some(a=>a.team==='enemy'&&a.siegeLane!==undefined&&a.hp>0)){

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "pilhas, livro, bolsa, mesa e ordens com !",
+    "interações reais removem marcadores",
+    "fundo claro e escuro, horda, qualidade baixa, zoom máximo",
+    "HTML offline sem requisições externas"
+  ],
+  "errors": [],
+  "remote": []
+}

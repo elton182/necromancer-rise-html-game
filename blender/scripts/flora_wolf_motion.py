@@ -72,6 +72,23 @@ keep={'rot_world','aim_bones','arm','leg','ease'}
 funcs=ast.Module(body=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in keep],type_ignores=[])
 lerp=lambda a,b,t:a+(b-a)*t
 exec(compile(funcs,'wolf_motion_helpers','exec'),globals())
+
+if DYNAMIC:
+    # A fonte preservada tem idle quadrúpede. A guarda de combate parte do
+    # repouso ereto do rig; os clipes de locomoção continuam vindo da fonte.
+    for b in rig.pose.bones:
+        b.location=Vector();b.rotation_quaternion=Quaternion()
+    for short,angles in {
+        'Spine':(4,0,0),'Spine2':(4,0,0),'Head':(-8,0,0),
+        'LeftArm':(-14,-8,0),'RightArm':(-14,8,0),
+        'LeftForeArm':(-18,0,0),'RightForeArm':(-18,0,0),
+        'LeftHand':(-8,0,0),'RightHand':(-8,0,0)
+    }.items():rot_world(short,tuple(math.radians(a) for a in angles))
+    bpy.context.view_layer.update()
+    idle={b.name:(b.location.copy(),b.rotation_quaternion.copy()) for b in rig.pose.bones}
+    base_hips=bones['Hips'].matrix.copy()
+    base_paws={s+k:bones[s+k].matrix.copy() for s in ['Left','Right'] for k in ['Hand','Foot']}
+    base_toes={s:bones[s+'ToeBase'].head.copy() for s in ['Left','Right']}
 def reset_idle():
     for b in rig.pose.bones:
         b.location,b.rotation_quaternion=idle.get(b.name,(Vector(),Quaternion()))
@@ -80,12 +97,24 @@ def move_hips(offset,angles):
     change=Matrix.Translation(origin+Vector(offset))@Euler(angles).to_matrix().to_4x4()@Matrix.Translation(-origin)
     bones['Hips'].matrix=change@base_hips
     bpy.context.view_layer.update()
-def solve_paw(side,kind,target,q):
-    if kind=='Hand':arm(side,target,target+Vector((.32 if side=='Left' else -.32,.18,.08)),q)
+def solve_paw(side,kind,target,q,pole=None):
+    if kind=='Hand':arm(side,target,pole if pole is not None else target+Vector((.32 if side=='Left' else -.32,.18,.08)),q)
     else:
-        leg(side,target,target+Vector((.35 if side=='Left' else -.35,-.15,.12)))
+        knee_width=0 if DYNAMIC else .35
+        leg(side,target,target+Vector((knee_width if side=='Left' else -knee_width,-.35 if DYNAMIC else -.15,.12)))
         bones[side+'Foot'].matrix=Matrix.LocRotScale(target,q,Vector((1,1,1)))
     bpy.context.view_layer.update()
+if DYNAMIC:
+    # Guarda bípede mais fechada; a locomoção conserva a base original.
+    center=base_hips.translation.x
+    for side in ['Left','Right']:
+        mat=base_paws[side+'Foot'];target=mat.translation.copy()
+        target.x=center+(target.x-center)*.60
+        solve_paw(side,'Foot',target,mat.to_quaternion())
+    idle={b.name:(b.location.copy(),b.rotation_quaternion.copy()) for b in rig.pose.bones}
+    base_paws={s+k:bones[s+k].matrix.copy() for s in ['Left','Right'] for k in ['Hand','Foot']}
+    base_toes={s:bones[s+'ToeBase'].head.copy() for s in ['Left','Right']}
+
 def custom(name,t):
     reset_idle()
     if name=='death':
@@ -99,6 +128,7 @@ def custom(name,t):
         for side in ['Left','Right']:
             for kind in ['Foot','Hand']:
                 mat=base_paws[side+kind];target=mat.translation.copy()
+                if DYNAMIC and kind=='Hand':continue
                 if kind=='Hand':target+=Vector((0,.025*tuck,.02*tuck))
                 solve_paw(side,kind,target,mat.to_quaternion())
 
@@ -107,44 +137,100 @@ def world_turn(short,angles):
     b.matrix=Matrix.LocRotScale(m.translation,Euler(angles).to_quaternion()@m.to_quaternion(),Vector((1,1,1)))
     bpy.context.view_layer.update()
 
+def claw_delta(sign,t):
+    # Arco contínuo comum aos cortes simples e às duas mãos do cruzado.
+    knots=[(0,(0,0,0)),(.27,(sign*.11,.045,.32)),
+        (.35,(sign*.085,-.015,.36)),(.46,(-sign*.52,-.24,.05)),
+        (.61,(-sign*.65,-.28,-.015)),(.76,(-sign*.30,-.32,.02)),
+        (.89,(sign*.015,-.17,.015)),(1,(0,0,0))]
+    for i,((a,v),(b,w)) in enumerate(zip(knots,knots[1:])):
+        if t<=b:
+            u=(t-a)/(b-a);v,w=Vector(v),Vector(w)
+            before=knots[max(0,i-1)];after=knots[min(len(knots)-1,i+2)]
+            m0=Vector() if i==0 else (w-Vector(before[1]))/(b-before[0])
+            m1=Vector() if i+2==len(knots) else (Vector(after[1])-v)/(after[0]-a)
+            return (2*u**3-3*u**2+1)*v+(u**3-2*u**2+u)*(b-a)*m0+(-2*u**3+3*u**2)*w+(u**3-u**2)*(b-a)*m1
+    return Vector()
+
 def attack(name,t):
     """Quadril inicia a torção; tórax acelera, perna de impulso pivota na ponta."""
     reset_idle()
     side,other,sign=('Right','Left',-1) if name=='claw_1' else ('Left','Right',1)
-    prep=ease([(0,0),(.23,1),(.34,1),(.46,0),(1,0)],t)
-    drive=ease([(0,0),(.30,0),(.46,1),(.65,.85),(.82,.3),(1,0)],t)
-    hip_twist=sign*(.23*prep-.26*drive)
-    chest_twist=sign*(.25*prep-.34*drive)
-    shift=Vector((sign*(.045*prep-.050*drive),.040*prep-.065*drive,-.045*prep+.012*drive))
-    move_hips(shift,(-.05*prep+.09*drive,sign*.045*(prep-drive),hip_twist))
-    world_turn('Spine',(.025*drive,0,chest_twist*.35))
-    world_turn('Spine1',(.025*drive,0,chest_twist*.3))
-    world_turn('Spine2',(.035*drive,0,chest_twist*.35))
+    prep=ease([(0,0),(.28,1),(.36,.95),(.49,0),(1,0)],t)
+    drive=ease([(0,0),(.31,0),(.46,1),(.63,.95),(.84,.3),(1,0)],t)
+    hip_twist=sign*(.34*prep-.38*drive)
+    chest_twist=sign*(.42*prep-.48*drive)
+    shift=Vector((sign*(.05*prep-.065*drive),.045*prep-.075*drive,-.035*prep-.008*drive))
+    move_hips(shift,(-.06*prep+.12*drive,sign*.065*(prep-drive),hip_twist))
+    world_turn('Spine',(.035*drive,0,chest_twist*.35))
+    world_turn('Spine1',(.035*drive,0,chest_twist*.3))
+    world_turn('Spine2',(.045*drive,0,chest_twist*.35))
     world_turn('Head',(-.04*drive,0,-(hip_twist+chest_twist)*.55))
-    # Apoio dianteiro oposto recebe a carga; a traseira oposta conserva o chão.
-    for limb in [other+'Hand',other+'Foot']:
+    # Em pé, só os pés sustentam o corpo; a mão livre acompanha o tórax.
+    for limb in ([other+'Foot'] if DYNAMIC else [other+'Hand',other+'Foot']):
         kind='Hand' if limb.endswith('Hand') else 'Foot';mat=base_paws[limb]
         solve_paw(other,kind,mat.translation,mat.to_quaternion())
     # Calcanhar gira ao redor dos dedos: joelho e coxa respondem ao quadril.
     pivot=base_toes[side]
-    heel=.33*prep+.25*drive
-    yaw=sign*(.23*prep-.30*drive)
+    heel=.35*prep+.30*drive
+    yaw=sign*(.34*prep-.40*drive)
     change=Matrix.Translation(pivot)@Euler((heel,0,yaw)).to_matrix().to_4x4()@Matrix.Translation(-pivot)
     foot=change@base_paws[side+'Foot']
     solve_paw(side,'Foot',foot.translation,foot.to_quaternion())
-    # Trajetória assimétrica: corte descendente e varredura ascendente.
-    knots=[(0,(0,0,0)),(.23,(sign*.075,.09,.12 if side=='Left' else .19)),
-        (.34,(sign*.085,.11,.14 if side=='Left' else .21)),
-        (.46,(-sign*.10,-.22,.27 if side=='Left' else .10)),
-        (.65,(-sign*.20,-.12,.20 if side=='Left' else .065)),
-        (.83,(-sign*.08,-.03,.09)),(1,(0,0,0))]
-    delta=Vector()
-    for (a,v),(b,w) in zip(knots,knots[1:]):
-        if t<=b:
-            delta=Vector(v).lerp(Vector(w),smooth((t-a)/(b-a)));break
-    target=base_paws[side+'Hand'].translation+delta
-    wrist=Euler((-.18*prep+.22*drive,sign*.13*drive,-sign*.3*drive)).to_quaternion()@base_paws[side+'Hand'].to_quaternion()
-    solve_paw(side,'Hand',target,wrist)
+    target=base_paws[side+'Hand'].translation+claw_delta(sign,t)
+    wrist=Euler((-.26*prep+.36*drive,sign*.20*drive,-sign*.45*drive)).to_quaternion()@base_paws[side+'Hand'].to_quaternion()
+    # A recuperação contorna o peito pela frente. O cotovelo recebe um
+    # polo próprio à frente do ombro, em vez de ser puxado para o tórax.
+    elbow_pole=bones[side+'Arm'].head+Vector((sign*.22,-.30,-.04))
+    solve_paw(side,'Hand',target,wrist,elbow_pole)
+
+def cross_attack(t):
+    reset_idle()
+    prep=ease([(0,0),(.28,1),(.36,.95),(.49,0),(1,0)],t)
+    drive=ease([(0,0),(.31,0),(.46,1),(.63,.95),(.84,.3),(1,0)],t)
+    # Carrega sobre as duas pernas e fecha o peito no X, sem girar os
+    # ombros para um só lado como nos cortes individuais.
+    move_hips((0,.04*prep-.055*drive,-.035*prep-.015*drive),(-.06*prep+.13*drive,0,0))
+    world_turn('Spine',(-.03*prep+.065*drive,0,0))
+    world_turn('Spine1',(-.025*prep+.055*drive,0,0))
+    world_turn('Spine2',(-.035*prep+.08*drive,0,0))
+    world_turn('Head',(.04*prep-.18*drive,0,0))
+    for side,sign in [('Right',-1),('Left',1)]:
+        foot=base_paws[side+'Foot']
+        solve_paw(side,'Foot',foot.translation,foot.to_quaternion())
+        # Planos ligeiramente diferentes evitam mãos/antebraços coincidentes
+        # quando as duas diagonais se encontram à frente do peito.
+        separation=Vector((0,(-.10 if side=='Right' else 0)*drive,(.08 if side=='Right' else -.015)*drive))
+        target=base_paws[side+'Hand'].translation+claw_delta(sign,t)+separation
+        wrist=Euler((-.26*prep+.36*drive,sign*.20*drive,-sign*.45*drive)).to_quaternion()@base_paws[side+'Hand'].to_quaternion()
+        pole=bones[side+'Arm'].head+Vector((sign*.22,-.30,-.04))
+        solve_paw(side,'Hand',target,wrist,pole)
+
+def upright(name,t):
+    reset_idle()
+    phase=t*math.tau
+    if name=='idle':
+        world_turn('Spine',(.015*math.sin(phase),0,0))
+        world_turn('Spine2',(.01*math.sin(phase-.5),0,.008*math.sin(phase)))
+        world_turn('Head',(-.01*math.sin(phase-.5),0,0))
+    elif name=='howl':
+        rise=ease([(0,0),(.25/.7,1),(.65,.85),(1,0)],t)
+        world_turn('Spine2',(-.13*rise,0,0))
+        world_turn('Neck',(-.12*rise,0,0))
+        world_turn('Head',(-.42*rise,0,0))
+        for side,sign in [('Left',1),('Right',-1)]:
+            world_turn(side+'Arm',(.12*rise,sign*.18*rise,0))
+    elif name=='leap':
+        # Salto ofensivo ereto, sem converter a recepção em apoio nas mãos.
+        arc=math.sin(math.pi*t)**2
+        move_hips((0,-.025*arc,.12*arc),(.12*arc,0,0))
+        for side in ['Left','Right']:
+            mat=base_paws[side+'Hand']
+            solve_paw(side,'Hand',mat.translation+Vector((0,-.14*arc,.15*arc)),mat.to_quaternion())
+        return
+    for side in ['Left','Right']:
+        mat=base_paws[side+'Foot']
+        solve_paw(side,'Foot',mat.translation,mat.to_quaternion())
 
 # Vértices de cada pata: mede a malha real, não apenas a altura dos ossos.
 paw_vertices={}
@@ -154,6 +240,7 @@ for side in ['Left','Right']:
         if kind=='Foot':indices|={g.index for g in mesh.vertex_groups if g.name.startswith('mixamorig:'+side+'Toe')}
         paw_vertices[side+kind]=[v.index for v in mesh.data.vertices if sum(g.weight for g in v.groups if g.group in indices)>.65]
 
+if DYNAMIC:source['claw_cross']=source['claw_1']
 actions={}
 for name,original in source.items():
     rig.animation_data.action=original
@@ -165,11 +252,13 @@ for name,original in source.items():
     rig.animation_data.action=action
     loop=name in ['idle','walk','strafe_left','strafe_right']
     picks=sorted({1,end,round(1+(end-1)*.2),round(1+(end-1)*.4),round(1+(end-1)*.6),round(1+(end-1)*.8)}) if BLOCKING else range(1,end+1)
-    if BLOCKING and name in ['claw_1','claw_2','leap','howl']:
-        picks=sorted(set(picks)|{round(1+{'claw_1':.2,'claw_2':.2,'leap':.47,'howl':.25}[name]*30)})
+    if BLOCKING and name in ['claw_1','claw_2','claw_cross','leap','howl']:
+        picks=sorted(set(picks)|{round(1+{'claw_1':.2,'claw_2':.2,'claw_cross':.2,'leap':.47,'howl':.25}[name]*30)})
     for f in picks:
         scene.frame_set(f);t=(f-1)/(end-1)
         if DYNAMIC and name in ['claw_1','claw_2']:attack(name,t)
+        elif DYNAMIC and name=='claw_cross':cross_attack(t)
+        elif DYNAMIC and name in ['idle','howl','leap']:upright(name,t)
         elif name in ['death','dodge']:custom(name,t)
         else:
             for b in rig.pose.bones:b.location,b.rotation_quaternion=samples[0 if loop and f==end else f-1][b.name]
@@ -203,7 +292,7 @@ for name,original in source.items():
                     ev=mesh.evaluated_get(bpy.context.evaluated_depsgraph_get())
                     low=min(ev.data.vertices[i].co.z for i in paw_vertices[side+kind])
                     active='Right' if name=='claw_1' else 'Left' if name=='claw_2' else None
-                    planted=name=='idle' or name in ['claw_1','claw_2'] and (kind=='Foot' or side!=active) or name=='howl' and kind=='Foot'
+                    planted=(name=='idle' or name=='claw_cross' and kind=='Foot' or name in ['claw_1','claw_2'] and (kind=='Foot' or side!=active) or name=='howl' and kind=='Foot') and (not DYNAMIC or kind=='Foot')
                     if DYNAMIC and name in ['claw_1','claw_2'] and kind=='Foot' and side==active:planted=False
                     if low<-.00005 or planted and abs(low)>.00005:
                         b=bones[side+kind];target=b.head.copy();q=b.matrix.to_quaternion();target.z-=low
@@ -220,8 +309,8 @@ for name,original in source.items():
                 for fc in bag.fcurves:
                     for k in fc.keyframe_points:
                         k.interpolation='CONSTANT' if BLOCKING else 'BEZIER';k.handle_left_type=k.handle_right_type='AUTO_CLAMPED'
-    if name in ['claw_1','claw_2','leap','howl']:
-        event={'claw_1':.2,'claw_2':.2,'leap':.47,'howl':.25}[name]
+    if name in ['claw_1','claw_2','claw_cross','leap','howl']:
+        event={'claw_1':.2,'claw_2':.2,'claw_cross':.2,'leap':.47,'howl':.25}[name]
         action.pose_markers.new('Impacto' if name!='howl' else 'Emissão').frame=round(1+event*30)
     actions[name]=action
 for tr in list(rig.animation_data.nla_tracks):rig.animation_data.nla_tracks.remove(tr)

@@ -218,7 +218,7 @@ export function fortMap(){
   group('fort-gate',0,50,[0,0,1,6],5,{quest:true,radius:16}),group('fort-west',-44,38,[6,6,9,0,0],5,{quest:true,radius:17,spread:4}),group('fort-east',42,40,[0,0,0,1,3],5,{quest:true,radius:17,spread:4}),
   group('fort-inner-w',-34,-24,[1,9,0,3],6,{quest:true,radius:17,spread:3}),group('fort-inner-e',38,-22,[0,0,9,3],6,{quest:true,radius:17,spread:3}),group('fort-captain',0,-27,[0,1,1,3,9,0],7,{leader:'rare',quest:true,radius:17,spread:4})
  ];
- return {id:'itauna-fort',name:'Forte da Pedra Negra',biome:'forest',size,start:{x:0,y:61},level:5,spawns,objects,terrain:closeGrid({...grid,x0,y0,h,s},[]),style:{ground:'dirt',tint:'#c6baa4',fog:.1,grass:0,flowers:0,sun:3}};
+ return {id:'itauna-fort',name:'Forte da Pedra Negra',biome:'forest',size,start:{x:0,y:61},level:5,spawns:addRouteEncounters(spawns,'itauna-fort'),objects,terrain:closeGrid({...grid,x0,y0,h,s},[]),style:{ground:'dirt',tint:'#c6baa4',fog:.1,grass:0,flowers:0,sun:3}};
 }
 
 // --- Gruta das Tecelãs ---
