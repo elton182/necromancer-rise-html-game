@@ -10,7 +10,7 @@ import {liftScenery,updateWater} from './terrain-scene.mjs';
 import {splitSceneIntoSectors} from './scene-sectors.mjs';
 import {groundAt} from './map-terrain.mjs';
 import {PADS as SIEGE_PADS,TOWERS as SIEGE_TOWERS} from './siege-model.mjs';
-import {gaitTarget,blendGait,advanceGaitPhase,dodgeYaw} from './locomotion.mjs';
+import {gaitTarget,blendGait,advanceGaitPhase,dodgeYaw,impactProgress} from './locomotion.mjs';
 import {buildSiege} from './siege-scene.mjs';
 import {LANCE,lanceShape,DODGE_DURATION} from './combat.mjs';
 import * as THREE from 'three';
@@ -185,6 +185,8 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    for(const [name,action] of Object.entries(actions)){const clip=action.getClip();if(['idle','walk','strafe_left','strafe_right'].includes(name))lower[name]=part(clip,up=>!up,'lower:'+name);else upper[name]=part(clip,up=>up,'upper:'+name);}}
   return {root,body,height:targetHeight*(TIER_SCALE[a.lootTier]||1)*(a.scale||1),mixer,actions,upper,lower,flightShadow,shieldMeshes,model:a.model,tier:a.lootTier,state:'',actionId:-1,deathTime:0,lastHp:a.hp,hitTime:0};
  }
+ // Ações com quadro de impacto registrado (models.json → impact) encaixam esse quadro no release da regra.
+ const poseProgress=(asset,pose,clip)=>pose.release!=null&&asset?.impact?.[pose.anim]!=null?impactProgress(pose.time,pose.release,pose.duration,clip.duration,asset.impact[pose.anim]):pose.progress;
  // Tronco com a ação (pose.upper) e pernas com a passada misturada pela direção do passo em relação à mira.
  function layered(o,a,pose,elapsed,frozen){
   const fade=assets[a.model].motionBlend||.08;
@@ -196,7 +198,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
   if(walking){const target=gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse);o.gait=o.gait?blendGait(o.gait,target,elapsed):target;L.walk.weight=o.gait.walk;L.strafe_left.weight=o.gait.left;L.strafe_right.weight=o.gait.right;const asset=assets[a.model];o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-(o.gaitDistance??a.walkDistance)),o.gait,asset.stride||1.5,asset.strafeStride);}
   o.gaitDistance=a.walkDistance;o.mixer.update(elapsed);
   const legs=walking?o.gaitPhase:(a.animationTime/L.idle.getClip().duration)%1;for(const action of set)action.time=THREE.MathUtils.clamp(legs,0,1)*action.getClip().duration;
-  up.time=THREE.MathUtils.clamp(pose.progress,0,1)*up.getClip().duration;o.mixer.update(0);
+  up.time=THREE.MathUtils.clamp(poseProgress(assets[a.model],pose,up.getClip()),0,1)*up.getClip().duration;o.mixer.update(0);
  }
  function resize(){const width=canvas.clientWidth||innerWidth,height=canvas.clientHeight||innerHeight,aspect=width/height,span=camera.userData.descent?5.5:camera.userData.journey?(aspect<.8?6:4.6):zoom;Object.assign(camera,{left:-span*aspect,right:span*aspect,top:span,bottom:-span,near:.1,far:120});camera.updateProjectionMatrix();renderer.setSize(width,height,false);}
  // Palco narrativo separado da simulacao de combate.
@@ -254,7 +256,7 @@ export async function createRenderer(canvas,assets,progress=()=>{}){
    // Passada do jogador: frente, ré e passo lateral misturados conforme o deslocamento em relação à mira.
    const gaited=sides&&!pose&&a===w.player;if(sides){const target=gaited?gaitTarget(a.stepX||0,a.stepY||0,a.angle,o.gait?.reverse):{walk:1,left:0,right:0,reverse:false};o.gait=!o.gait||!gaited||entered&&!assets[a.model].motionBlend?target:blendGait(o.gait,target,elapsed);next.weight=o.gait.walk;sides[0].weight=o.gait.left;sides[1].weight=o.gait.right;if(gaited){const asset=assets[a.model],from=entered?a.walkDistance:o.gaitDistance??a.walkDistance;o.gaitPhase=advanceGaitPhase(o.gaitPhase||0,Math.max(0,a.walkDistance-from),o.gait,asset.stride||1.5,asset.strafeStride);o.gaitDistance=a.walkDistance;}}
    o.mixer.update(elapsed);
-   let progress;if(pose)progress=pose.progress;else if(gaited)progress=o.gaitPhase;else if(name==='walk')progress=(a.walkDistance/(assets[a.model].stride||1.5))%1;else if(name==='idle')progress=(a.animationTime/next.getClip().duration+(o.idlePhase||0))%1;else if(name==='death'){if(animateWhilePaused)o.deathTime+=elapsed;progress=Math.max(a.animationTime,o.deathTime)/next.getClip().duration;}else progress=a.animationTime/next.getClip().duration;
+   let progress;if(pose)progress=poseProgress(assets[a.model],pose,next.getClip());else if(gaited)progress=o.gaitPhase;else if(name==='walk')progress=(a.walkDistance/(assets[a.model].stride||1.5))%1;else if(name==='idle')progress=(a.animationTime/next.getClip().duration+(o.idlePhase||0))%1;else if(name==='death'){if(animateWhilePaused)o.deathTime+=elapsed;progress=Math.max(a.animationTime,o.deathTime)/next.getClip().duration;}else progress=a.animationTime/next.getClip().duration;
    next.time=THREE.MathUtils.clamp(progress,0,1)*next.getClip().duration;if(sides)for(const side of sides)side.time=THREE.MathUtils.clamp(progress,0,1)*side.getClip().duration;o.mixer.update(0);
   }
   const liveFx=new Set(w.effects.map(e=>e.id));for(const [id,o]of effects)if(!liveFx.has(id)){releaseEffect(o);effects.delete(id);}

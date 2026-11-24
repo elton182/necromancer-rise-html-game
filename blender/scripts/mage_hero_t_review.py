@@ -1,6 +1,7 @@
 """Prévia PBR em Eevee do novo mago (não altera o .blend nem o GLB).
 
 Uso: blender --background blender/models/mage_hero_t.blend --python blender/scripts/mage_hero_t_review.py
+`-- --combat`: quadros-chave em quatro vistas para pack_mage_anim_review.py.
 PNG e GIF em previews/mage_hero_t; quadros descartáveis em frames/mage_hero_t.
 """
 from pathlib import Path
@@ -15,7 +16,11 @@ GAIT='--gait' in sys.argv
 IDLE='--idle' in sys.argv
 FINGERS='--fingers' in sys.argv
 GRIP='--grip' in sys.argv or FINGERS
-out=ROOT/('previews/mage_finger_rig' if FINGERS else 'previews/mage_idle/grip' if GRIP else 'frames/mage_idle' if IDLE else 'frames/mage_gait' if GAIT else 'frames/mage_hero_t')
+# Revisão de combate: quadros-chave (descanso, preparação, impacto, recuperação, fim) em quatro vistas.
+COMBAT='--combat' in sys.argv
+KEYFRAMES={'idle':[1,61],'walk':[1,7,13,19],'strafe_left':[1,7,13,19],'strafe_right':[1,7,13,19],
+    'cast':[1,5,8,12,16],'cast_up':[1,8,15,19,22],'dodge':[1,4,8,13,16],'death':[1,8,15,22,31]}
+out=ROOT/('frames/mage_anim_review' if COMBAT else 'previews/mage_finger_rig' if FINGERS else 'previews/mage_idle/grip' if GRIP else 'frames/mage_idle' if IDLE else 'frames/mage_gait' if GAIT else 'frames/mage_hero_t')
 out.mkdir(parents=True,exist_ok=True)
 for o in sc.objects:
     visible=o.name in ('ARM_MageT','MageTBody','MageTStaff')
@@ -65,11 +70,11 @@ for tr in rig.animation_data.nla_tracks:
         target=rig.pose.bones['mixamorig:RightHand'].head.copy()
         cam.data.ortho_scale=.42
         sc.render.resolution_x=sc.render.resolution_y=512
-    for view in (['front','right','back','iso'] if GRIP else ['front','right','iso'] if GAIT or IDLE else ['iso']):
+    for view in (['front','right','back','iso'] if GRIP or COMBAT else ['front','right','iso'] if GAIT or IDLE else ['iso']):
         direction={'front':Vector((0,-1,.12)),'right':Vector((1,0,.12)),'back':Vector((0,1,.12)),'iso':Vector((.7,-1,.65))}[view].normalized()
         cam.location=target+direction*4
         cam.rotation_euler=(-direction).to_track_quat('-Z','Y').to_euler()
-        for f in ([1,2] if FINGERS else [int(sc.frame_current)] if GRIP else sorted(set(range(1,end+1,8 if IDLE else 2)) | {end})):
+        for f in (KEYFRAMES[tr.name] if COMBAT else [1,2] if FINGERS else [int(sc.frame_current)] if GRIP else sorted(set(range(1,end+1,8 if IDLE else 2)) | {end})):
             if FINGERS:
                 sc.frame_set(2);sc.frame_set(1)
                 if f==1:
@@ -78,7 +83,7 @@ for tr in rig.animation_data.nla_tracks:
                     bpy.context.view_layer.update()
             else:
                 sc.frame_set(f)
-            label=f'{tr.name}_{view}' if GAIT or IDLE or GRIP and view!='iso' else tr.name
+            label=f'{tr.name}_{view}' if GAIT or IDLE or COMBAT or GRIP and view!='iso' else tr.name
             if FINGERS:label=f'{"open" if f==1 else "grip"}_{view}'
             sc.render.filepath=str(out/f'{label}_{f:03d}.png')
             bpy.ops.render.render(write_still=True)

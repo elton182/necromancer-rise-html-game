@@ -184,10 +184,54 @@ conjuração andando e grupo em chão claro/qualidade baixa. Evidências em
 | `AN_MageT_dodge` | `dodge` | 1–16 | 0,5 s | Recolher o corpo e o cajado, abaixar e recuperar |
 | `AN_MageT_death` | `death` | 1–31 | 1 s | Perda de equilíbrio, queda para trás e pose final mantida |
 
-As durações usam o intervalo entre o primeiro e o último frame. Os frames 8 de `cast` e 15
-de `cast_up` são referências visuais para disparo/marcação; a detecção real continua nas regras
-do feitiço, com os tempos já documentados acima. A troca visual não alterou dano ou recargas.
-O GLB exporta uma faixa NLA por clipe, com amostragem a cada frame, sem animar escala dos ossos.
+As durações usam o intervalo entre o primeiro e o último frame; desde a revisão de animação
+de 20/11/2026 cada faixa NLA começa no frame 0, então o frame 1 sai em t = 0 no GLB e as durações
+no jogo são exatamente as da tabela. O GLB exporta uma faixa NLA por clipe, com amostragem a cada
+frame, sem animar escala dos ossos.
+
+**Revisão de animação (20/11/2026).** Só apresentação; dano, custos, recargas, alcances, tempos de
+ação e `release` dos feitiços não mudaram.
+
+- **Impacto no `release`.** `models.json → mageHero.impact` registra o quadro de impacto como fração
+  do clipe (`cast` 0,4667 = frame 8; `cast_up` 0,6667 = frame 15). O renderizador
+  (`impactProgress` em `locomotion.mjs`) faz esse quadro coincidir com o `release` de cada feitiço:
+  a preparação ocupa o tempo até o `release` e a recuperação toca no ritmo natural do clipe; se a
+  ação durar mais, a pose de impacto é sustentada. Antes, o clipe era esticado pela duração
+  inteira: no Raio Arcano (4,25 s) o cajado só chegava à mira ~1,5 s depois de o raio sair, e o
+  frame de impacto variava de 0,43 a 0,67 da ação conforme o feitiço. Modelos sem `impact`
+  (Arqueira, Mercenário, Druida) continuam lineares.
+- **`cast`.** Preparação legível: até o frame 6 o cajado sobe e é puxado em pé junto ao corpo,
+  com o tronco girado para trás; avança continuamente até a extensão máxima no frame 8; depois do
+  disparo recua (coice) em vez de avançar de novo.
+- **`cast_up`.** Desce do alto em cerca de cinco quadros até o frame 15 com o cristal apontado para o
+  chão à frente, braço e cajado projetados para fora do manto (antes o cajado ficava na
+  horizontal, na altura do quadril, lendo como um tiro comum), e recupera sem o avanço extra do
+  frame 20.
+- **`dodge`.** Corpo mais baixo e projetado à frente, passada aberta e cajado recolhido; como o modelo
+  gira para a direção da esquiva, a silhueta se distingue da caminhada.
+- **Bordas.** `cast`, `cast_up` e `dodge` começam e terminam na pose do frame 1 do `idle`; `death`
+  começa nela. Antes partiam de uma pose antiga, a 0,10 u (autoria) do repouso.
+- **Cotovelos.** Os braços estendidos ficavam a menos de 10° de flexão; agora o mínimo é 31°.
+- **Morte.** O corpo ficava suspenso pela barra do manto e pelas botas (quadril a 0,18 e cajado a
+  0,35 na autoria, ≈0,4–0,8 u no jogo). Agora deita de costas: quadril e cabeça no chão, pernas
+  estendidas com o calcanhar apoiado, manto acompanhando as coxas e cajado deitado ao lado; no
+  desequilíbrio os joelhos cedem para a frente e os pés não saem do chão.
+
+Reproduzir e conferir, na raiz:
+
+```powershell
+blender --background --python blender/scripts/mage_hero_t.py
+blender --background blender/models/mage_hero_t.blend --python-exit-code 1 --python blender/scripts/validate_mage_hero_t.py -- --review
+blender --background blender/models/mage_hero_t.blend --python blender/scripts/mage_hero_t_review.py -- --combat
+python blender/scripts/pack_mage_anim_review.py
+node v2/tools/build.cjs
+node --test v2/tests/mage-animation-sync.test.mjs
+node v2/tests/mage-animation-browser-check.cjs
+```
+
+O validador grava `blender/previews/mage_anim_review/validation.json` e exige impacto nos frames 8/15,
+preparação do `cast` com recuo visível, bordas iguais ao `idle`, cotovelos acima de 15° e morte deitada. Pranchas em
+`blender/previews/mage_anim_review/`; capturas do jogo em `review/v2/mage-anim-review/`.
 
 Na raiz do projeto, com Blender e Python/Pillow instalados:
 

@@ -26,3 +26,13 @@ export function advanceGaitPhase(phase,distance,gait,stride,strafeStride=stride)
  const cycles=distance*(gait.walk/stride+(gait.left+gait.right)/strafeStride);
  return((phase+(gait.reverse?-cycles:cycles))%1+1)%1;
 }
+// Tempo de uma ação → posição no clipe, com o quadro de impacto (fração do clipe, em models.json → impact) caindo no
+// instante em que a regra solta o feitiço. Depois do impacto, a recuperação toca no ritmo natural do clipe; se a ação
+// durar mais (canal, Big Bang), a pose de impacto é sustentada até a recuperação. Só visual: não altera os tempos da regra.
+export function impactProgress(time,release,duration,clipDuration,impact){
+ if(!(impact>0&&impact<1)||!(release>0)||!(duration>release)||!(clipDuration>0))return Math.min(1,Math.max(0,duration>0?time/duration:0));
+ if(time<=release)return Math.max(0,time/release)*impact;
+ const after=time-release,remaining=duration-release,natural=(1-impact)*clipDuration;
+ if(remaining<=natural)return Math.min(1,impact+after/remaining*(1-impact));
+ const hold=remaining-natural;return after<=hold?impact:Math.min(1,impact+(after-hold)/natural*(1-impact));
+}

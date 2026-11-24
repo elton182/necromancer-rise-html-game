@@ -65,7 +65,7 @@ export function marksmanAction(w,index=0,aim=w.aim){
 // Fração do movimento permitida agora: 1 sem ação; a da ação em curso (0 trava).
 export function marksmanMove(w){const s=w.marksmanAction;return s?marksmanActions(w.classId)[s.index]?.move||0:1;}
 // Com movimento, o clipe vai só para o tronco (upper) e as pernas seguem a passada.
-export function marksmanPose(w){const s=w.marksmanAction;return s?{anim:s.clip,progress:Math.min(1,s.time/s.duration),upper:marksmanMove(w)>0}:null;}
+export function marksmanPose(w){const s=w.marksmanAction;if(!s)return null;const def=marksmanActions(w.classId)[s.index];return{anim:s.clip,progress:Math.min(1,s.time/s.duration),upper:marksmanMove(w)>0,time:s.time,duration:s.duration,release:def?.release};}
 
 export function tickMarksman(w,dt){
  tickElements(w,dt,dealDamage);

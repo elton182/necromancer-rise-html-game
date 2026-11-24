@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "checks": [
+    "seleção",
+    "HUD",
+    "Seta Arcana andando",
+    "árvore",
+    "Bola de Fogo",
+    "Rajada de Gelo",
+    "Teleporte",
+    "Meteoro",
+    "inventário arcano",
+    "sons",
+    "chão claro e qualidade baixa"
+  ],
+  "errors": [],
+  "remote": []
+}

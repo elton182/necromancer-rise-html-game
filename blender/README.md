@@ -6,6 +6,28 @@ Use `scripts/tripo_pipeline.ps1` para planejar e gerar um GLB a partir de uma
 imagem local, com rig opcional, estimativa de créditos e retomada sem nova
 geração. Comandos e limites em [notes/tripo_pipeline.md](notes/tripo_pipeline.md).
 
+## Teste: base neutra vestida no Blender
+
+Experimento, fora do jogo. A base `exports/tripo-out/base-neutra-ae9a693f/model.glb`
+foi gerada pelo Tripo (30 créditos) a partir de `examples/base_neutra_reference.webp`.
+`scripts/base_neutra_outfit.py` orienta a base (frente em -Y, 2,4 u) e reduz para
+24 mil faces. Cada peça é um tubo construído por fatias do contorno do corpo, com
+folga, bainha reta e saia em cone; assim o pano não copia músculos ou dedos e
+variantes do mesmo slot têm a mesma topologia. As peças ficam em coleções
+`Slot_<nome>` (torso, pernas, pes, bracos, cintura, ombro, arma, cabelo), cada
+objeto com `slot` e `variante`. `equip('aventureiro')` / `equip('necromante')`
+mostra uma variante por slot (túnica ou manto, botas curtas ou altas, cinto ou
+faixa). Cena em `models/base_neutra_outfit.blend`.
+Acabamento: pregas, blusê sobre o cinto, abertura com cordão, punhos e barras de
+couro; shaders procedurais de trama, couro, metal e cabelo (raiz escura → ponta
+clara) com costura tracejada e desgaste de borda guiados pelos atributos `borda`,
+`volta` e `fio`, mais sombra de contato por vértice (`sombra`). Espada, bainha,
+presilha, fivelas e mechas são varreduras de perfis (`sweep`).
+Ainda sem rig, animações, toon ou exportação GLB; os shaders procedurais
+precisam ser assados em textura antes do GLB.
+
+`blender --background --python blender/scripts/base_neutra_outfit.py`
+
 ## NPCs low poly da campanha
 
 **João atual (Tripo):** o ID `npcJoao` usa `exports/campaign_joao_tripo.glb`,
@@ -611,6 +633,8 @@ com postura menos agachada e menos oscilação do cajado. Nos passos laterais, o
 acompanhamento cruza por trás, em trilho separado para preservar a distância entre as botas. Prévias em três vistas: execute `mage_hero_t_review.py` com `-- --gait` e depois `python blender/scripts/pack_mage_gait_preview.py`; saída em `previews/mage_gait/`. `validate_mage_hero_t.py -- --gait` inclui a auditoria de apoios e joelhos. A base anterior fica em `backups/mage_gait/`.
 
 O repouso atual tem 121 frames (4 s), braço livre relaxado, apoio assimétrico e respiração com movimentos secundários atrasados. `scripts/mage_hero_fingers.py` mantém a mão original e suas UVs, com três falanges por dedo, pesos próprios e oposição do polegar; `pose_grip` define a flexão gravada nos oito clipes. `scripts/mage_hero_grip.py` reconstrói a haste contínua, preservando a cabeça esculpida. Execute `mage_hero_t_review.py -- --idle` sobre `models/mage_hero_t.blend` e depois `python blender/scripts/pack_mage_idle_preview.py` para gerar `previews/mage_idle/idle.gif` e `poses.png`; `-- --grip` renderiza detalhes em quatro vistas nos oito clipes e `-- --fingers` compara mão aberta/pegada em `previews/mage_finger_rig/`. `validate_mage_hero_t.py -- --idle` confere falanges, pesos, preservação da malha/UVs e fechamento da haste. A base anterior está em `backups/mage_idle/`.
+
+Revisão de animação de combate (20/11/2026): `mage_hero_t_review.py -- --combat` renderiza quadros-chave em quatro vistas e `python blender/scripts/pack_mage_anim_review.py` monta as pranchas em `previews/mage_anim_review/`; `validate_mage_hero_t.py -- --review` grava o `validation.json` ali, com impacto, bordas, cotovelos e morte deitada. A cena e o GLB anteriores ficam em `backups/mage_anim_review/`. [Detalhes](../docs/v2-mago.md#modelo-e-rig).
 
 ## Moldura dos orbes do HUD (v2)
 

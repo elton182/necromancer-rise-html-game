@@ -11,7 +11,8 @@ const fs=require('node:fs'),path=require('node:path'),{pathToFileURL}=require('n
   page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
   await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);
-  await page.waitForFunction(()=>document.body.dataset.ready==='true'&&!document.getElementById('loading'),null,{timeout:90000});
+  await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});
+  await page.locator('#loading-start').click();await page.waitForFunction(()=>!document.getElementById('loading'));
   await page.click('[data-title="campaign"]');await page.click('.class-choice[data-class="mage"]');
   await page.waitForSelector('.journeys-stage[data-ready="true"]',{timeout:30000});
   await page.locator('#character-name').fill('Mago em repouso');

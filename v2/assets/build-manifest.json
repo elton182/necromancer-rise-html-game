@@ -280,7 +280,7 @@
     },
     {
       "path": "v2/scripts/marksman.mjs",
-      "sha256": "0d9849421036702e908e65c9f90e7e10bc8aed8557fefac99d592c33dc4efa75"
+      "sha256": "6bcd105cb1a496c48ae9c4f5d19f4e09342023f95b4076cf7d5c3315f0417487"
     },
     {
       "path": "v2/scripts/cave-hideout.mjs",
@@ -688,7 +688,7 @@
     },
     {
       "path": "v2/scripts/locomotion.mjs",
-      "sha256": "88a31bbe6f2e150617dc2b5c6e54ad196d8e12be5494ba2d7c3c891f6cf38e23"
+      "sha256": "cf823bc5c71e1814a1e1fe9eb7c33107ef03c539622ec476a15d706e3c775afd"
     },
     {
       "path": "v2/scripts/audio.mjs",
@@ -720,7 +720,7 @@
     },
     {
       "path": "v2/scripts/renderer.mjs",
-      "sha256": "1848c6ef235f0603b28cd693c44024ff57758321df9fb129084d5e3bd17fca47"
+      "sha256": "10f4b976484916ed296ca1a1476f72585b0f050770efaf40d06d714026622932"
     },
     {
       "path": "v2/scripts/input.mjs",
@@ -744,7 +744,7 @@
     },
     {
       "path": "v2/assets/models.json",
-      "sha256": "57ca60229d3250a05a3b5a336e477526287ee678caf69339528dca29ac139b69"
+      "sha256": "348860aea4206494029a12f4cb07008a60acb81d3926598a70d0833be972c42b"
     },
     {
       "path": "blender/exports/v2_necromancer.glb",
@@ -964,7 +964,7 @@
     },
     {
       "path": "blender/exports/mage_hero_t.glb",
-      "sha256": "5298b8aebdf9fb86ffabf9de8b3fce28056d159648b7abac54e4d6191482c419"
+      "sha256": "be97d002fec3d0aebdc952af24f3b9481768ab2767dcd00086bff69ce6fef1c8"
     },
     {
       "path": "blender/exports/carnivorous_plant.glb",

@@ -677,7 +677,11 @@
     "stride": 1.47,
     "strafeStride": 0.92,
     "motionBlend": 0.14,
-    "layered": true
+    "layered": true,
+    "impact": {
+      "cast": 0.4667,
+      "cast_up": 0.6667
+    }
   },
   "carnivorousPlant": {
     "path": "blender/exports/carnivorous_plant.glb",

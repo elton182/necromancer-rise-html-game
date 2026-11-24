@@ -60,6 +60,51 @@ for ob in [body,staff]:
     assert result['weights'][ob.name]['max_influences']<=4
 for tr in rig.animation_data.nla_tracks:
     tr.mute=True
+# Revisão de combate: bordas iguais ao idle, impacto no frame previsto e cotovelos soltos.
+IMPACT_FRAME={'cast':8,'cast_up':15}
+TIP=max(range(len(staff.data.vertices)),key=lambda i:staff.data.vertices[i].co.z)
+KEYS=['Hips','Head','LeftHand','RightHand','LeftForeArm','RightForeArm','Spine2','LeftFoot','RightFoot']
+def snapshot(action,frame):
+    rig.animation_data.action=action;sc.frame_set(frame);bpy.context.view_layer.update()
+    d={k:rig.pose.bones['mixamorig:'+k].head.copy() for k in KEYS}
+    ev=staff.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    d['tip']=staff.matrix_world@ev.data.vertices[TIP].co
+    pb=rig.pose.bones
+    d['elbow']=min(math.degrees(math.pi-(pb['mixamorig:'+s+'Arm'].head-pb['mixamorig:'+s+'ForeArm'].head).angle(pb['mixamorig:'+s+'Hand'].head-pb['mixamorig:'+s+'ForeArm'].head)) for s in ['Left','Right'])
+    return d
+def pose_gap(a,b):return max((a[k]-b[k]).length for k in KEYS+['tip'])
+idle_action=next(tr.strips[0].action for tr in rig.animation_data.nla_tracks if tr.name=='idle')
+idle_start=snapshot(idle_action,1)
+combat={}
+for tr in rig.animation_data.nla_tracks:
+    if tr.name in ['idle','walk','strafe_left','strafe_right']:continue
+    a=tr.strips[0].action;end=int(a.frame_range[1]);frames=[snapshot(a,f) for f in range(1,end+1)]
+    c={'start_vs_idle':pose_gap(frames[0],idle_start),'end_vs_idle':pose_gap(frames[-1],idle_start),
+       'max_frame_jump':max(pose_gap(frames[i],frames[i+1]) for i in range(end-1)),
+       'elbow_min_flex_degrees':min(f['elbow'] for f in frames)}
+    if tr.name=='cast':
+        reach=[-(f['tip'].y-f['Hips'].y) for f in frames]
+        c['impact_frame']=1+max(range(end),key=lambda i:reach[i]);c['staff_reach']=[round(r,4) for r in reach]
+        k=IMPACT_FRAME['cast']-1;low=k
+        while low>1 and reach[low-1]<=reach[low]+1e-4:low-=1
+        # Preparação visível (cajado puxado no frame 5) e avanço contínuo do fim do recuo até o disparo.
+        c['windup_depth']=reach[k]-reach[4];c['thrust_frames']=k-low
+        assert c['windup_depth']>.15,('cast','preparação curta',reach)
+        assert c['thrust_frames']>=2,('cast','avanço curto',reach)
+    if tr.name=='cast_up':
+        low=[f['tip'].z for f in frames]
+        c['impact_frame']=1+min(range(end),key=lambda i:(round(low[i],3),i));c['staff_tip_z']=[round(z,4) for z in low]
+    if tr.name in IMPACT_FRAME:
+        assert c['impact_frame']==IMPACT_FRAME[tr.name],(tr.name,'impacto',c['impact_frame'])
+    assert c['start_vs_idle']<1e-4,(tr.name,'início difere do idle',c['start_vs_idle'])
+    assert tr.name=='death' or c['end_vs_idle']<1e-4,(tr.name,'fim difere do idle',c['end_vs_idle'])
+    assert c['elbow_min_flex_degrees']>15,(tr.name,'cotovelo travado',c['elbow_min_flex_degrees'])
+    if tr.name=='death':
+        # Pose final deitada: quadril e cabeça encostados, não suspensos pelas botas.
+        c['final_hips_z']=frames[-1]['Hips'].z;c['final_head_z']=frames[-1]['Head'].z
+        assert c['final_hips_z']<.13 and c['final_head_z']<.16,('morte suspensa',c['final_hips_z'],c['final_head_z'])
+    combat[tr.name]=c
+result['combat']=combat
 for tr in rig.animation_data.nla_tracks:
     a=tr.strips[0].action
     rig.animation_data.action=a
@@ -121,7 +166,7 @@ for tr in rig.animation_data.nla_tracks:
     assert tr.name not in ['cast','cast_up'] or contact<1e-5,(tr.name,'pés',contact)
     assert low>-.001,(tr.name,'solo',low)
     assert rigid_error<1e-5,(tr.name,'cajado',rigid_error)
-out=ROOT/('previews/mage_idle/validation.json' if '--idle' in sys.argv else 'previews/mage_gait/validation.json' if '--gait' in sys.argv else 'previews/mage_hero_t/validation.json')
+out=ROOT/('previews/mage_anim_review/validation.json' if '--review' in sys.argv else 'previews/mage_idle/validation.json' if '--idle' in sys.argv else 'previews/mage_gait/validation.json' if '--gait' in sys.argv else 'previews/mage_hero_t/validation.json')
 out.parent.mkdir(parents=True,exist_ok=True)
 out.write_text(json.dumps(result,indent=2),encoding='utf8')
 print(json.dumps(result))

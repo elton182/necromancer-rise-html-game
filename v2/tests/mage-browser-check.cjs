@@ -7,7 +7,7 @@ const shot=async(page,name)=>{for(let i=0;i<3;i++){try{await page.screenshot({pa
 (async()=>{fs.mkdirSync(dir,{recursive:true});const browser=await chromium.launch({channel:'msedge',headless:true});try{
  const ctx=await browser.newContext({viewport:{width:1440,height:900}}),page=await ctx.newPage(),errors=[],remote=[],checks=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});page.on('request',r=>{if(/^https?:/.test(r.url()))remote.push(r.url());});
- await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});await page.waitForFunction(()=>!document.getElementById('loading'));
+ await page.goto(pathToFileURL(path.resolve(__dirname,'../necromancer-3d.html')).href);await page.waitForFunction(()=>document.body.dataset.ready==='true',null,{timeout:90000});await page.locator('#loading-start').click();await page.waitForFunction(()=>!document.getElementById('loading'));
  await page.click('[data-title="campaign"]');assert.equal(await page.locator('.class-choice').count(),6);
  await page.locator('.class-choice[data-class="mage"]').click();await page.waitForSelector('.journeys-stage[data-ready="true"]',{timeout:30000});
  assert.match(await page.locator('.class-choice[data-class="mage"]').innerText(),/Mago/);await page.waitForTimeout(500);await shot(page,'selection.png');checks.push('seleção');

@@ -1,0 +1,592 @@
+{
+  "sync": [
+    {
+      "id": "arcane",
+      "clip": "cast",
+      "release": 0.2,
+      "duration": 0.45,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.1943999999999979,
+        "u": 0.4536323999999951,
+        "layered": true
+      },
+      "before": {
+        "t": 0.1943999999999979,
+        "u": 0.4536323999999951,
+        "layered": true
+      },
+      "after": {
+        "t": 0.20829999999999937,
+        "u": 0.4844055599999986,
+        "layered": true
+      },
+      "frames": 23
+    },
+    {
+      "id": "fireball",
+      "clip": "cast",
+      "release": 0.3,
+      "duration": 0.6,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.29850000000000015,
+        "u": 0.46436650000000024,
+        "layered": true
+      },
+      "before": {
+        "t": 0.29850000000000015,
+        "u": 0.46436650000000024,
+        "layered": true
+      },
+      "after": {
+        "t": 0.3054000000000016,
+        "u": 0.4667,
+        "layered": true
+      },
+      "frames": 34
+    },
+    {
+      "id": "frost",
+      "clip": "cast",
+      "release": 0.22,
+      "duration": 0.5,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.2222000000000008,
+        "u": 0.4667,
+        "layered": true
+      },
+      "before": {
+        "t": 0.20840000000000153,
+        "u": 0.4420921818181851,
+        "layered": true
+      },
+      "after": {
+        "t": 0.2222000000000008,
+        "u": 0.4667,
+        "layered": true
+      },
+      "frames": 26
+    },
+    {
+      "id": "blink",
+      "clip": "cast",
+      "release": 0.15,
+      "duration": 0.35,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.1458999999999978,
+        "u": 0.45394353333332654,
+        "layered": false
+      },
+      "before": {
+        "t": 0.1458999999999978,
+        "u": 0.45394353333332654,
+        "layered": false
+      },
+      "after": {
+        "t": 0.15959999999999855,
+        "u": 0.49229839999999614,
+        "layered": false
+      },
+      "frames": 26
+    },
+    {
+      "id": "meteor",
+      "clip": "cast_up",
+      "release": 0.45,
+      "duration": 0.7,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.44440000000000146,
+        "u": 0.658403288888891,
+        "layered": true
+      },
+      "before": {
+        "t": 0.44440000000000146,
+        "u": 0.658403288888891,
+        "layered": true
+      },
+      "after": {
+        "t": 0.4654000000000015,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 33
+    },
+    {
+      "id": "setasPerseguidoras",
+      "clip": "cast",
+      "release": 0.2,
+      "duration": 0.45,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.19459999999999858,
+        "u": 0.4540990999999967,
+        "layered": true
+      },
+      "before": {
+        "t": 0.19459999999999858,
+        "u": 0.4540990999999967,
+        "layered": true
+      },
+      "after": {
+        "t": 0.20839999999999786,
+        "u": 0.4846188799999954,
+        "layered": true
+      },
+      "frames": 34
+    },
+    {
+      "id": "esferaDeGelo",
+      "clip": "cast",
+      "release": 0.25,
+      "duration": 0.5,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.243,
+        "u": 0.4536324,
+        "layered": true
+      },
+      "before": {
+        "t": 0.243,
+        "u": 0.4536324,
+        "layered": true
+      },
+      "after": {
+        "t": 0.26390000000000147,
+        "u": 0.4963514800000031,
+        "layered": true
+      },
+      "frames": 21
+    },
+    {
+      "id": "familiarDeFogo",
+      "clip": "cast_up",
+      "release": 0.35,
+      "duration": 0.6,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.3541000000000022,
+        "u": 0.6667,
+        "layered": true
+      },
+      "before": {
+        "t": 0.32640000000000147,
+        "u": 0.6217453714285742,
+        "layered": true
+      },
+      "after": {
+        "t": 0.3541000000000022,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 34
+    },
+    {
+      "id": "golemDeGelo",
+      "clip": "cast_up",
+      "release": 0.35,
+      "duration": 0.6,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.34720000000000073,
+        "u": 0.6613664000000014,
+        "layered": true
+      },
+      "before": {
+        "t": 0.34720000000000073,
+        "u": 0.6613664000000014,
+        "layered": true
+      },
+      "after": {
+        "t": 0.36109999999999853,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 29
+    },
+    {
+      "id": "firewall",
+      "clip": "cast",
+      "release": 0.4,
+      "duration": 0.6,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.3956000000000022,
+        "u": 0.4615663000000026,
+        "layered": true
+      },
+      "before": {
+        "t": 0.3956000000000022,
+        "u": 0.4615663000000026,
+        "layered": true
+      },
+      "after": {
+        "t": 0.40950000000000003,
+        "u": 0.49203175000000005,
+        "layered": true
+      },
+      "frames": 18
+    },
+    {
+      "id": "imbuirFogo",
+      "clip": "cast_up",
+      "release": 0.3,
+      "duration": 0.5,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.30550000000000005,
+        "u": 0.67586575,
+        "layered": true
+      },
+      "before": {
+        "t": 0.2915999999999986,
+        "u": 0.6480323999999968,
+        "layered": true
+      },
+      "after": {
+        "t": 0.30550000000000005,
+        "u": 0.67586575,
+        "layered": true
+      },
+      "frames": 32
+    },
+    {
+      "id": "imbuirGelo",
+      "clip": "cast_up",
+      "release": 0.3,
+      "duration": 0.5,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.29869999999999725,
+        "u": 0.6638109666666605,
+        "layered": true
+      },
+      "before": {
+        "t": 0.29869999999999725,
+        "u": 0.6638109666666605,
+        "layered": true
+      },
+      "after": {
+        "t": 0.3055999999999987,
+        "u": 0.6760323999999979,
+        "layered": true
+      },
+      "frames": 46
+    },
+    {
+      "id": "icenova",
+      "clip": "cast",
+      "release": 0.22,
+      "duration": 0.5,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.2220999999999986,
+        "u": 0.4667,
+        "layered": true
+      },
+      "before": {
+        "t": 0.2150999999999986,
+        "u": 0.4563053181818152,
+        "layered": true
+      },
+      "after": {
+        "t": 0.2220999999999986,
+        "u": 0.4667,
+        "layered": true
+      },
+      "frames": 34
+    },
+    {
+      "id": "chuvaDeFogo",
+      "clip": "cast_up",
+      "release": 0.45,
+      "duration": 0.7,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.45139999999999436,
+        "u": 0.6667,
+        "layered": true
+      },
+      "before": {
+        "t": 0.4305999999999987,
+        "u": 0.6379578222222203,
+        "layered": true
+      },
+      "after": {
+        "t": 0.45139999999999436,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 44
+    },
+    {
+      "id": "avalanche",
+      "clip": "cast_up",
+      "release": 0.6,
+      "duration": 0.9,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.5970999999999987,
+        "u": 0.6634776166666653,
+        "layered": true
+      },
+      "before": {
+        "t": 0.5970999999999987,
+        "u": 0.6634776166666653,
+        "layered": true
+      },
+      "after": {
+        "t": 0.6115000000000002,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 65
+    },
+    {
+      "id": "lazerArcano",
+      "clip": "cast",
+      "release": 0.25,
+      "duration": 4.25,
+      "impact": 0.4667,
+      "nearest": {
+        "t": 0.25680000000000297,
+        "u": 0.4667,
+        "layered": true
+      },
+      "before": {
+        "t": 0.2429000000000015,
+        "u": 0.4534457200000028,
+        "layered": true
+      },
+      "after": {
+        "t": 0.25680000000000297,
+        "u": 0.4667,
+        "layered": true
+      },
+      "frames": 170
+    },
+    {
+      "id": "clone",
+      "clip": "cast_up",
+      "release": 0.35,
+      "duration": 0.6,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.35419999999999724,
+        "u": 0.6667,
+        "layered": false
+      },
+      "before": {
+        "t": 0.3402999999999958,
+        "u": 0.6482228857142777,
+        "layered": false
+      },
+      "after": {
+        "t": 0.35419999999999724,
+        "u": 0.6667,
+        "layered": false
+      },
+      "frames": 34
+    },
+    {
+      "id": "bigBang",
+      "clip": "cast_up",
+      "release": 0.5,
+      "duration": 0.9,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.49990000000000173,
+        "u": 0.6665666600000023,
+        "layered": true
+      },
+      "before": {
+        "t": 0.49990000000000173,
+        "u": 0.6665666600000023,
+        "layered": true
+      },
+      "after": {
+        "t": 0.5069000000000017,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 54
+    },
+    {
+      "id": "escudoArcano",
+      "clip": "cast_up",
+      "release": 0.3,
+      "duration": 0.6,
+      "impact": 0.6667,
+      "nearest": {
+        "t": 0.2985000000000001,
+        "u": 0.6633665000000002,
+        "layered": true
+      },
+      "before": {
+        "t": 0.2985000000000001,
+        "u": 0.6633665000000002,
+        "layered": true
+      },
+      "after": {
+        "t": 0.312300000000003,
+        "u": 0.6667,
+        "layered": true
+      },
+      "frames": 23
+    }
+  ],
+  "directions": [
+    {
+      "label": "n",
+      "state": "walk",
+      "gait": {
+        "walk": 0.4855832389651821,
+        "left": 0.5144167610348178,
+        "right": 0,
+        "reverse": false
+      },
+      "phase": 0.7812424626965084,
+      "idle": 0
+    },
+    {
+      "label": "ne",
+      "state": "walk",
+      "gait": {
+        "walk": 0.9996175105196293,
+        "left": 0.0003824894803706817,
+        "right": 0,
+        "reverse": false
+      },
+      "phase": 0.2116033549395584,
+      "idle": 0
+    },
+    {
+      "label": "e",
+      "state": "walk",
+      "gait": {
+        "walk": 0.49940533580062346,
+        "left": 2.814830351441766e-7,
+        "right": 0.5005943827163414,
+        "reverse": false
+      },
+      "phase": 0.9055195220263172,
+      "idle": 0
+    },
+    {
+      "label": "se",
+      "state": "walk",
+      "gait": {
+        "walk": 0.0003079652755267529,
+        "left": 1.1160549822367636e-10,
+        "right": 0.9996920346128678,
+        "reverse": false
+      },
+      "phase": 0.11368633879084822,
+      "idle": 0
+    },
+    {
+      "label": "s",
+      "state": "walk",
+      "gait": {
+        "walk": 0.8487880384219322,
+        "left": 0.15047567628865735,
+        "right": 0.0007362852894103617,
+        "reverse": true
+      },
+      "phase": 0.5447652258776676,
+      "idle": 0
+    },
+    {
+      "label": "so",
+      "state": "walk",
+      "gait": {
+        "walk": 0.9998504704140778,
+        "left": 0.00014923807215607435,
+        "right": 2.915137661241062e-7,
+        "reverse": true
+      },
+      "phase": 0.07127639113661077,
+      "idle": 0
+    },
+    {
+      "label": "o",
+      "state": "walk",
+      "gait": {
+        "walk": 0.5150647895141559,
+        "left": 1.0674480295398186e-7,
+        "right": 0.48493510374104104,
+        "reverse": true
+      },
+      "phase": 0.4004889671135703,
+      "idle": 0
+    },
+    {
+      "label": "no",
+      "state": "walk",
+      "gait": {
+        "walk": 0.000581543903867966,
+        "left": 0.9991332537468912,
+        "right": 0.0002852023492407691,
+        "reverse": false
+      },
+      "phase": 0.581970984555026,
+      "idle": 0
+    }
+  ],
+  "dodge": [
+    {
+      "remaining": 0.47920000000000434,
+      "u": 0.04159999999999131,
+      "weight": 0.25999438762664795
+    },
+    {
+      "remaining": 0.4653000000000029,
+      "u": 0.06939999999999424,
+      "weight": 0.43374454975128174
+    },
+    {
+      "remaining": 0.4514000000000014,
+      "u": 0.09719999999999718,
+      "weight": 0.6074947118759155
+    },
+    {
+      "remaining": 0.43049999999999994,
+      "u": 0.13900000000000012,
+      "weight": 0.868744969367981
+    },
+    {
+      "remaining": 0.40959999999999847,
+      "u": 0.18080000000000307,
+      "weight": 1
+    },
+    {
+      "remaining": 0.39590000000000136,
+      "u": 0.20819999999999728,
+      "weight": 1
+    },
+    {
+      "remaining": 0.3819999999999999,
+      "u": 0.2360000000000002,
+      "weight": 1
+    },
+    {
+      "remaining": 0.36120000000000424,
+      "u": 0.2775999999999915,
+      "weight": 1
+    }
+  ],
+  "death": {
+    "state": "death",
+    "minY": 2.0840104565655888e-8,
+    "maxY": 0.7644266242820609,
+    "ground": 0,
+    "height": 2.25,
+    "hipsY": 0.2367633245824297,
+    "headY": 0.31471416293407195
+  },
+  "errors": [],
+  "remote": []
+}
